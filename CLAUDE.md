@@ -6,9 +6,8 @@ tokens, its interaction conventions, and a self-launching `ExplorerActivity` gal
 independent consumer apps (SecondBrain, and future apps) import via **JitPack**. This repo names
 **no app-specific concepts** — every component takes its content + callbacks as parameters.
 
-- **Import root (current):** `com.example.secondbrain.yahirandroidtaste` — **not yet renamed.** The
-  rename to `io.github.ygaray.yahirandroidtaste` is a later phase (LIB-03 / Phase 101). Until then,
-  keep the `com.example.secondbrain.yahirandroidtaste` namespace verbatim; do **not** pre-rename.
+- **Import root:** `io.github.ygaray.yahirandroidtaste` (publisher-owned, consumer-name-free;
+  renamed to this publisher-owned root in Phase 101 / LIB-03).
 - **JitPack coordinate:** `com.github.Ygaray:yahirandroidtaste:<tag>` (first tag cut in Phase 102 —
   none exists yet).
 - **Public repo:** `github.com/Ygaray/yahirandroidtaste`

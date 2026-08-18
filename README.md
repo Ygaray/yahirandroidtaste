@@ -12,10 +12,8 @@ conventions such as reveal-confirm swipe and standardized snackbar feedback). It
 `@AndroidEntryPoint`** — the consuming app owns the Hilt composition root and aggregates the
 library's bindings into its `SingletonComponent`. See **[`INTEGRATION.md`](INTEGRATION.md)**.
 
-> **Namespace note (Phase 100):** the import root is still
-> `com.example.secondbrain.yahirandroidtaste`. The rename to `io.github.ygaray.yahirandroidtaste`
-> is a later phase (LIB-03 / Phase 101) — the coordinate below is the *artifact* coordinate,
-> independent of the package.
+> **Namespace note:** the import root is `io.github.ygaray.yahirandroidtaste`. The coordinate below
+> is the *artifact* coordinate, independent of the package.
 
 **Docs for agents & integrators:**
 - **[`INTEGRATION.md`](INTEGRATION.md)** — step-by-step checklist to consume the library, including

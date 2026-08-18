@@ -18,8 +18,7 @@ This is **not one project.** It is a shared Android **design-system library** mo
 independent apps that consume it:
 
 - **The hub — `yahirandroidtaste`** (this repo; JitPack `com.github.Ygaray:yahirandroidtaste`;
-  import root **currently** `com.example.secondbrain.yahirandroidtaste` — the rename to
-  `io.github.ygaray.yahirandroidtaste` is a later phase, LIB-03/Phase 101; public at
+  import root `io.github.ygaray.yahirandroidtaste`; public at
   `github.com/Ygaray/yahirandroidtaste`). A curated Compose UI component catalog: seven component
   families (cards, chips, sheets, buttons/FAB, pickers, feedback, empty-state), the theme tokens
   they read, the interaction conventions they enforce (reveal-confirm swipe, standardized snackbar

@@ -1,7 +1,6 @@
 # API.md — `yahirandroidtaste` public surface (the seven-family composable catalog)
 
-Everything a consumer calls. Package root (current): `com.example.secondbrain.yahirandroidtaste`
-(the rename to `io.github.ygaray.yahirandroidtaste` is Phase 101 — not yet applied). To wire the
+Everything a consumer calls. Package root: `io.github.ygaray.yahirandroidtaste`. To wire the
 library, see `INTEGRATION.md`; for the reuse rules, `CLAUDE.md`.
 
 This is a **UI component library**, so its public surface is a **catalog of composables**, not a

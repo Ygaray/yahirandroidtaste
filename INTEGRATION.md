@@ -134,8 +134,6 @@ it explicitly (`Intent` to `…explorer.ExplorerActivity`) if you want the galle
 - **Compose version skew is a runtime failure, not a compile failure.** A mismatched BOM compiles fine
   and crashes at composition — align the BOM (§4) and, if in doubt, check
   `./gradlew :app:dependencies | grep androidx.compose` for a single resolved Compose version.
-- **The package is still `com.example.secondbrain.yahirandroidtaste`.** The rename to
-  `io.github.ygaray.yahirandroidtaste` is Phase 101 — after that lands and a new tag is cut, your
-  imports change (a breaking repin). Until then, import from the current root.
+- **The package is `io.github.ygaray.yahirandroidtaste`.** Import composables from that root.
 - **Bumping to a new library version is human-gated** (see `CLAUDE.md` / `ECOSYSTEM.md` §7): change the
   coordinate, `--refresh-dependencies` + resolve-confirm, rebuild, re-verify on-device before shipping.
