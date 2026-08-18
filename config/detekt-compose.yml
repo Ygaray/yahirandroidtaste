@@ -1,0 +1,26 @@
+# Per-module detekt override for :yahirandroidtaste (Phase 47, D-05 corrected policy; module renamed from :designsystem in Phase 60).
+#
+# Layered AFTER the shared config/detekt/detekt.yml in yahirandroidtaste/build.gradle.kts's
+# config.setFrom(...) — later file wins on merged keys. Tunes ONLY the three idiomatic-Compose
+# size rules that fire on large-but-normal declarative composables (a 12-14-param card composable
+# and a 200-230-line declarative body are NOT code smells for Compose UI — they are the idiom).
+# :app's detekt config is untouched and stays strict (config/detekt/detekt.yml, unmodified) — this
+# override does not weaken :app's honest real-debt gate (T-47-04).
+#
+# Thresholds chosen to clear every current :yahirandroidtaste finding EXCEPT the one genuine outlier
+# (ExpandableFab, resolved separately via composable extraction — see FabActionRow) while still
+# failing meaningfully one step above today's highest legitimate values (ListCard: 228 L / 14
+# params / cyclomatic 22; SwipeableActionRow: cyclomatic 21).
+complexity:
+  active: true
+  LongMethod:
+    active: true
+    threshold: 240
+  LongParameterList:
+    active: true
+    functionThreshold: 18
+    constructorThreshold: 18
+    ignoreDefaultParameters: true
+  CyclomaticComplexMethod:
+    active: true
+    threshold: 25
