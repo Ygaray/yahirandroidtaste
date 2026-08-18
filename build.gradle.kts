@@ -19,9 +19,9 @@ detekt {
 }
 
 android {
-    // Phase 100 keeps the original package namespace verbatim — the rename to
-    // io.github.ygaray.yahirandroidtaste is LIB-03 / Phase 101, deliberately its own verified pass.
-    namespace = "com.example.secondbrain.yahirandroidtaste"
+    // Package renamed to io.github.ygaray.yahirandroidtaste in Phase 101 (LIB-03) —
+    // publisher-owned, consumer-name-free. The JitPack coordinate (com.github.Ygaray) is unaffected.
+    namespace = "io.github.ygaray.yahirandroidtaste"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
