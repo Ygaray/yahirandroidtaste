@@ -16,7 +16,7 @@ surface it references is in **`API.md`**; the deeper reuse doctrine is in **`CLA
   Your consumer must align its own Compose BOM so the Compose runtime/UI/material3 versions match and
   there is no duplicate/mismatched Compose on the classpath (a mismatch surfaces as
   `NoSuchMethodError` / composition crashes at runtime, not at compile time). See §4.
-- Android `minSdk 35`, `compileSdk 36`, JDK 17.
+- Android `minSdk 35`, `compileSdk 36` (minor API 36.1), JDK 17.
 
 ---
 

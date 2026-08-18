@@ -63,7 +63,7 @@ cross-repo-hub-phase convention.)
 ## Toolchain
 
 - AGP **9.2.1** / Kotlin **2.3.20** / Hilt **2.60.1** / Compose BOM **2026.02.01** / JDK **17**,
-  `minSdk 35`, `compileSdk 36`. Android **library** module with Compose enabled (no `applicationId`;
+  `minSdk 35`, `compileSdk 36` (minor API 36.1). Android **library** module with Compose enabled (no `applicationId`;
   the only `Activity` is the standalone `.explorer.ExplorerActivity` gallery).
 - **Single-module hub (D-01):** the repo root **IS** the publishable `:yahirandroidtaste` library
   (`build.gradle.kts` + `src/` at the root, `rootProject.name = "yahirandroidtaste"`). There is no

@@ -87,7 +87,7 @@ YahirAndroidTasteTheme {
 
 ## Requirements
 
-- Android `minSdk 35`, `compileSdk 36`
+- Android `minSdk 35`, `compileSdk 36` (minor API 36.1)
 - AGP 9.2.1 / Kotlin 2.3.20 / Hilt 2.60.1 / Compose BOM 2026.02.01 / JDK 17
 - Consumer prerequisites: a Hilt-enabled `Application` (`@HiltAndroidApp`) and a Compose BOM aligned
   with the library's — see **[`INTEGRATION.md`](INTEGRATION.md)**.
