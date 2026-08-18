@@ -30,16 +30,18 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | — | `~/Projects/SecondBrain` | *(pending — repin in Phase 103)* | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.0.0`** (repinned + device-verified, v1.20 Phase 103) | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
   No "Deploy host" column — Android apps are installed on devices, not daemon-deployed.)_
 
-**Current published tag:** *none yet.* The first immutable tag is cut in **Phase 102** (LIB-, the
-tag cut is human-gated), and SecondBrain's repin onto it is **Phase 103** (REPIN-). Until then the
-hub exists as source + a green local build only; **do not fabricate a tag or a repin that has not
-happened.**
+**Current published tag:** **`v1.0.0`** — the first immutable tag, cut human-gated in **Phase 102**
+(LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
+SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
+SM-S908U (Gate-1 all_pass: cold-start Hilt-across-AAR resolution, live undo + ExplorerActivity,
+move-only pixel parity). *(SB's in-repo `yahirandroidtaste/` module-directory deletion is deferred —
+an SB-internal cleanup — but SB consumes this published AAR regardless.)*
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
