@@ -24,6 +24,22 @@ import org.robolectric.annotation.Config
  * ([performTouchInput] with [doubleClick]/[longClick]) rather than issuing two separate clicks, so
  * the gesture actually reaches the [AppChip] inner Surface's `combinedClickable` modifier as a real
  * double-tap/long-press — not merely two independent single-tap invocations.
+ *
+ * **Latency claim scope (RESEARCH.md Pitfall 2 / Assumption A1 — confirmed by decompiling the
+ * resolved `androidx.compose.foundation:foundation-android` bytecode this session, see the Task 1
+ * commit message):** what this class proves is that the **default-null** `onDoubleClick` path is
+ * byte-identical to `AppChip`'s pre-phase behavior — every existing consumer is unaffected. It also
+ * proves the **active-binding** path eventually fires `onClick` on a single tap (see
+ * `single click with a non-null onDoubleClick still invokes onClick exactly once`, which needs a
+ * polling [androidx.compose.ui.test.junit4.ComposeContentTestRule.waitUntil] rather than a single
+ * `waitForIdle()` — direct empirical evidence that `onClick` is genuinely delayed, not instant, once
+ * `onDoubleClick` is non-null). What this class does **not** prove, and must not be read as proving,
+ * is that an actively-bound double-tap adds **zero** single-tap latency: Robolectric's test clock
+ * auto-advances, so any such assertion would pass vacuously without measuring real wall-clock delay,
+ * and the decompiled bytecode confirms the delay is real (`ViewConfiguration.getDoubleTapTimeoutMillis()`
+ * followed by `kotlinx.coroutines.delay()` before `onClick` fires). Real-perception judgment of an
+ * actively-bound double-tap's latency belongs to Phase 109's on-device Gate-1 — no call site binds
+ * `onDoubleClick` in this phase (D-02), so the question is moot for this phase's own shipped build.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35])
@@ -115,6 +131,130 @@ class AppChipTest {
             "A double-tap must invoke onLongClick exactly zero times",
             0,
             longClickCount
+        )
+    }
+
+    @Test
+    fun `both callbacks null - a single click invokes onClick exactly once and the label renders`() {
+        var clickCount = 0
+
+        composeTestRule.setContent {
+            AppChip(
+                label = "Work",
+                isSelected = false,
+                onClick = { clickCount++ }
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Work").assertExists()
+        composeTestRule.onNodeWithText("Work").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(
+            "With both callbacks null (the shipped default for every existing consumer), a single" +
+                " click must invoke onClick exactly once via the plain-clickable fallback branch",
+            1,
+            clickCount
+        )
+    }
+
+    @Test
+    fun `onLongClick only - long press fires it once, a separate click fires onClick once`() {
+        var clickCount = 0
+        var longClickCount = 0
+
+        composeTestRule.setContent {
+            AppChip(
+                label = "Work",
+                isSelected = false,
+                onClick = { clickCount++ },
+                onLongClick = { longClickCount++ }
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Work").performTouchInput { longClick() }
+        composeTestRule.waitForIdle()
+
+        assertEquals(
+            "Today's shipped context-menu-chip shape: a long press must invoke onLongClick exactly" +
+                " once",
+            1,
+            longClickCount
+        )
+
+        composeTestRule.onNodeWithText("Work").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(
+            "A separate single click must still invoke onClick exactly once — long-press-only" +
+                " does not delay onClick (no onDoubleClick disambiguation window applies here)",
+            1,
+            clickCount
+        )
+    }
+
+    @Test
+    fun `onDoubleClick only - double-tap fires it once, a long press fires nothing`() {
+        var doubleClickCount = 0
+        var longClickCount = 0
+
+        composeTestRule.setContent {
+            AppChip(
+                label = "Work",
+                isSelected = false,
+                onClick = {},
+                onDoubleClick = { doubleClickCount++ }
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Work").performTouchInput { doubleClick() }
+        composeTestRule.waitForIdle()
+
+        assertEquals(
+            "The newly reachable branch: a double-tap with only onDoubleClick supplied must" +
+                " invoke it exactly once",
+            1,
+            doubleClickCount
+        )
+
+        composeTestRule.onNodeWithText("Work").performTouchInput { longClick() }
+        composeTestRule.waitForIdle()
+
+        assertEquals(
+            "A long press on a double-tap-only chip must invoke nothing — there is no" +
+                " onLongClick to fire, and the long-press counter (tracking onDoubleClick" +
+                " misfires) must stay zero",
+            0,
+            longClickCount
+        )
+    }
+
+    @Test
+    fun `default parameters - constructing with only the three required args compiles and is clickable`() {
+        var clickCount = 0
+
+        composeTestRule.setContent {
+            AppChip(
+                label = "Work",
+                isSelected = false,
+                onClick = { clickCount++ }
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        // Omitting onLongClick/onDoubleClick/relatednessStrength/icons compiles unchanged and the
+        // chip behaves exactly as it did before this phase — the default-parameter parity claim.
+        composeTestRule.onNodeWithText("Work").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(
+            "A chip constructed with only its three required arguments must remain clickable," +
+                " byte-identical to pre-phase AppChip",
+            1,
+            clickCount
         )
     }
 }
