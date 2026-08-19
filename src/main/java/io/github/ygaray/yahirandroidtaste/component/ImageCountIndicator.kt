@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 
@@ -41,7 +42,7 @@ internal fun ImageCountIndicator(imageCount: Int, modifier: Modifier = Modifier)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
+        modifier = modifier.semantics(mergeDescendants = true) {}
     ) {
         Icon(
             imageVector = Icons.Default.Image,
