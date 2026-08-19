@@ -1,8 +1,10 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performTextReplacement
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Rule
@@ -84,6 +86,46 @@ class AlbumTitleConfirmSheetTest {
     fun `isEditDirty delegates to isRenameDirty when tags not dirty`() {
         assertEquals(true, isEditDirty("Bar", "Foo", tagsDirty = false))
     }
+
+    // ── isEditDirty four-combination matrix (Task 2) ────────────────────────
+
+    @Test
+    fun `isEditDirty is false when neither name nor tags dirty`() {
+        assertEquals(false, isEditDirty("Foo", "Foo", tagsDirty = false))
+    }
+
+    @Test
+    fun `isEditDirty is true when name only dirty`() {
+        assertEquals(true, isEditDirty("Bar", "Foo", tagsDirty = false))
+    }
+
+    @Test
+    fun `isEditDirty is true when tags only dirty`() {
+        assertEquals(true, isEditDirty("Foo", "Foo", tagsDirty = true))
+    }
+
+    @Test
+    fun `isEditDirty is true when both name and tags dirty`() {
+        assertEquals(true, isEditDirty("Bar", "Foo", tagsDirty = true))
+    }
+
+    @Test
+    fun `isEditDirty is false for whitespace-only title edit with tags not dirty`() {
+        assertEquals(false, isEditDirty(" Foo", "Foo", tagsDirty = false))
+    }
+
+    @Test
+    fun `isEditDirty is true for whitespace-only title edit when tags dirty`() {
+        assertEquals(true, isEditDirty(" Foo", "Foo", tagsDirty = true))
+    }
+
+    @Test
+    fun `isEditDirty is idempotent across repeated calls with identical arguments`() {
+        val first = isEditDirty("Bar", "Foo", tagsDirty = true)
+        val second = isEditDirty("Bar", "Foo", tagsDirty = true)
+
+        assertEquals(first, second)
+    }
 }
 
 /**
@@ -124,5 +166,81 @@ class AlbumTitleConfirmSheetComposeTest {
         // by its rendered label and asserts it enabled directly, inside SheetScaffold's
         // ModalBottomSheet composition root.
         composeTestRule.onNodeWithText("Rename Album").assertIsEnabled()
+    }
+
+    // ── Rendered dirty-gate matrix (Task 2) ─────────────────────────────────
+    // Every rendered case pins photoPaths explicitly empty (create-mode cases especially) so
+    // Coil's async image-preview loader never composes under Robolectric — the create-mode
+    // header only renders it when isRenameMode is false AND photoPaths is non-empty.
+
+    @Test
+    fun `rename mode, name-only dirty enables Rename Album`() {
+        composeTestRule.setContent {
+            AlbumTitleConfirmSheet(
+                photoPaths = emptyList(),
+                defaultTitle = "My Album",
+                isRenameMode = true,
+                tagsDirty = false,
+                onSave = {},
+                onDismiss = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("My Album").performTextReplacement("My Album Renamed")
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Rename Album").assertIsEnabled()
+    }
+
+    @Test
+    fun `rename mode, neither dirty does NOT enable Rename Album`() {
+        composeTestRule.setContent {
+            AlbumTitleConfirmSheet(
+                photoPaths = emptyList(),
+                defaultTitle = "My Album",
+                isRenameMode = true,
+                tagsDirty = false,
+                onSave = {},
+                onDismiss = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Rename Album").assertIsNotEnabled()
+    }
+
+    @Test
+    fun `create mode with false tags signal keeps Save Album enabled`() {
+        composeTestRule.setContent {
+            AlbumTitleConfirmSheet(
+                photoPaths = emptyList(),
+                defaultTitle = "My Album",
+                isRenameMode = false,
+                tagsDirty = false,
+                onSave = {},
+                onDismiss = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Save Album").assertIsEnabled()
+    }
+
+    @Test
+    fun `create mode with true tags signal keeps Save Album enabled — unconditional, new param cannot leak in`() {
+        composeTestRule.setContent {
+            AlbumTitleConfirmSheet(
+                photoPaths = emptyList(),
+                defaultTitle = "My Album",
+                isRenameMode = false,
+                tagsDirty = true,
+                onSave = {},
+                onDismiss = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Save Album").assertIsEnabled()
     }
 }
