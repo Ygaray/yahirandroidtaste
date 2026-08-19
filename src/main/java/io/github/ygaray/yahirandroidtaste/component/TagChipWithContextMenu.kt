@@ -58,6 +58,13 @@ import androidx.compose.ui.unit.dp
  * @param onDelete Deletes the tag everywhere (all cards, globally). Null omits the item.
  * @param removeLabel Scoped-Remove item text (e.g. "Remove from this card", "Remove from
  *   drill") — surface-specific per UI-SPEC's Per-Surface Capability Table.
+ * @param onDoubleClick Optional double-tap callback (Phase 106-02, TAG-02), forwarded verbatim to
+ *   the underlying [AppChip]'s parameter of the same name — a straight passthrough, not wrapped in
+ *   a lambda (unlike [onLongClick][AppChip.onLongClick], which this composable wraps locally to
+ *   fire the haptic and open the menu). Null omits the gesture entirely, matching [AppChip]'s own
+ *   default. Per phase decision D-02, no call site binds this parameter in Phase 106 — the
+ *   selected/drill-chip binding lands at Phase 109. Carries no hub-side menu behavior: the
+ *   double-tap gesture is deliberately independent of this composable's menu-visibility state.
  */
 @Composable
 fun TagChipWithContextMenu(
@@ -71,7 +78,8 @@ fun TagChipWithContextMenu(
     onEdit: (() -> Unit)? = null,
     onRemoveFromContext: (() -> Unit)? = null,
     onDelete: (() -> Unit)? = null,
-    removeLabel: String = ""
+    removeLabel: String = "",
+    onDoubleClick: (() -> Unit)? = null
 ) {
     var showMenu by remember { mutableStateOf(false) }
     val haptic = LocalHapticFeedback.current
@@ -87,7 +95,8 @@ fun TagChipWithContextMenu(
             onLongClick = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 showMenu = true
-            }
+            },
+            onDoubleClick = onDoubleClick
         )
         DropdownMenu(
             expanded = showMenu,
