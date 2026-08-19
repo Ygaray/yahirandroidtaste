@@ -60,6 +60,18 @@ import androidx.compose.ui.unit.dp
  *                    Surface, no separate gesture layer. Defaults to `null`, so every existing
  *                    call site keeps its plain-`clickable` gesture and renders byte-identical to
  *                    today (D-04 backward compatibility).
+ * @param onDoubleClick Optional double-tap callback (Phase 106-02, TAG-02). Defaults to `null`, so
+ *                    every existing call site keeps its current gesture and renders identically to
+ *                    today. A non-null value alone is enough to switch the inner Surface from the
+ *                    plain [clickable] modifier to the [combinedClickable] one, which is what makes
+ *                    a double-tap-only chip (no [onLongClick]) work. Per phase decision D-02, no
+ *                    call site binds this parameter in Phase 106 — the selected/drill-chip binding
+ *                    lands at Phase 109. Known trade-off, recorded honestly: supplying a non-null
+ *                    value engages the platform's tap-disambiguation window, so a bound single tap
+ *                    resolves only after the double-tap timeout elapses. That is a property of the
+ *                    [combinedClickable] gesture primitive the requirement mandates, not something
+ *                    this parameter's plumbing controls — real-perception judgment of it belongs to
+ *                    Phase 109's on-device verification.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -71,7 +83,8 @@ fun AppChip(
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
     relatednessStrength: Float? = null,
-    onLongClick: (() -> Unit)? = null
+    onLongClick: (() -> Unit)? = null,
+    onDoubleClick: (() -> Unit)? = null
 ) {
     val relatedness = if (!isSelected && relatednessStrength != null)
         relatednessVisual(relatednessStrength, MaterialTheme.colorScheme)
@@ -110,8 +123,12 @@ fun AppChip(
                 .height(32.dp)
                 .clip(shape)
                 .let { base ->
-                    if (onLongClick != null) {
-                        base.combinedClickable(onClick = onClick, onLongClick = onLongClick)
+                    if (onLongClick != null || onDoubleClick != null) {
+                        base.combinedClickable(
+                            onClick = onClick,
+                            onLongClick = onLongClick,
+                            onDoubleClick = onDoubleClick
+                        )
                     } else {
                         base.clickable(onClick = onClick)
                     }
