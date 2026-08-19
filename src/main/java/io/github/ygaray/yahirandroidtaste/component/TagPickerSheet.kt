@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -53,12 +54,15 @@ const val TAG_NAME_MAX_LENGTH = 50
  * Multi-add modal bottom sheet for tag assignment (D-01 / D-01a / D-01c).
  *
  * Behavior:
- *  - Live-filters [allTags] case-insensitively on typed [query] (Kotlin in-memory filter, no new query)
- *    — the field is filter-only (D-07); it no longer offers inline creation.
+ *  - Live-filters [allTags] case-insensitively on typed [query] (Kotlin in-memory filter, no new query).
+ *  - The field is dynamic again (TAG-01, D-01, restoring the inline-create affordance D-07
+ *    removed): an explicit IME Search confirm with text present creates-and-selects inline; a
+ *    confirm with a blank/whitespace-only field opens [BulkCreatePopup] instead.
  *  - Each matching tag is a [FilterChip]; tapping toggles selection (multi-add in one session)
- *  - Tag creation happens via the always-first create-chip (WIDGET-02, D-05/D-06), which opens
- *    [BulkCreatePopup]; duplicate-name and length validation live in that popup's `validate`
- *    closure at the call site (D-07), not in this composable.
+ *  - Tag creation also happens via the always-first create-chip (WIDGET-02, D-05/D-06), which
+ *    opens [BulkCreatePopup]; duplicate-name and length validation for that path live in the
+ *    popup's `validate` closure at the call site (D-07). The inline path mirrors that same
+ *    validation body into its own error state (TAG-01, D-01) rather than sharing it.
  *  - Empty state (no tags + blank query): "Tap \"Create tag\" to make your first tag" (D-01c)
  *  - Done button commits all selected IDs then dismisses (via onDone + onDismiss callbacks)
  *  - Dismissing without Done discards staged selections (no partial commit)
@@ -122,12 +126,28 @@ fun TagPickerSheet(
  * Plan 40-04 must place `Modifier.testTag("tag_flow_row")` on the FlowRow **in this composable**
  * (not on the ModalBottomSheet wrapper), since this is where the chip list lives.
  *
+ * TAG-01 (D-01): the search/create field is dynamic. Pressing the IME Search action with a
+ * non-blank trimmed value creates-and-selects inline (mirrors the create-chip's popup path's
+ * validation into this composable's own `errorText` state — duplicate-name and length-cap errors
+ * render via [ClearableTextField]'s `isError`/`supportingText`, and the typed text is preserved on
+ * a validation failure). Pressing it with a blank/whitespace-only value opens [BulkCreatePopup],
+ * unchanged. Only the explicit IME action confirms — never blur, focus loss, or sheet dismissal.
+ *
  * @param sortMode          Currently active tag sort mode (D-02). Defaulted so existing callers
  *                          (incl. `TagPickerSheetTest`) keep compiling.
  * @param onSortModeChange  Invoked when the header's [SortControl] selects a new mode. Defaulted
  *                          to a no-op. This composable never sorts [allTags] itself (Phase 48 —
  *                          `:designsystem` stays algorithm-free; sorted lists arrive pre-ordered).
  */
+// Phase 106-01 (TAG-01, D-01): the nested `confirm()` local function's mirrored validation `when`
+// pushes this composable's cyclomatic complexity from 21 to 27 against the module's 25 threshold
+// (config/detekt-compose.yml). detekt 1.23.8's CyclomaticComplexMethod has no config to exclude a
+// nested named function's body from its enclosing function's count. D-01 locks the validation body
+// as an in-place MIRROR of BulkCreatePopup's `validate` lambda (byte-for-byte, per the plan's own
+// must_haves) — extracting it to a shared/top-level function, the only alternative that would avoid
+// this, is the explicit anti-pattern D-01 forbids. Suppressed here, scoped to this one function,
+// rather than widening the module-wide threshold for every composable.
+@Suppress("CyclomaticComplexMethod")
 @Composable
 fun TagPickerSheetContent(
     existingTagIds: Set<String> = emptySet(),
@@ -143,6 +163,8 @@ fun TagPickerSheetContent(
     var selectedIds by remember { mutableStateOf<Set<String>>(existingTagIds) }
     var pendingCreationNames by remember { mutableStateOf<Set<String>>(emptySet()) }
     var showBulkCreatePopup by remember { mutableStateOf(false) }
+    // TAG-01 (D-01): inline-create validation error, mirrored from the popup's validate lambda.
+    var errorText by remember { mutableStateOf<String?>(null) }
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -168,6 +190,39 @@ fun TagPickerSheetContent(
     // Live Kotlin filter — no new DAO query (D-04 constraint: no new query/DAO work)
     val filteredTags = allTags.filter { tag ->
         tag.name.contains(trimmedQuery, ignoreCase = true)
+    }
+
+    // TAG-01 (D-01): confirming the search/create field on the explicit IME Search action.
+    // A blank/whitespace-only confirm opens the existing bulk-create popup (unchanged branch).
+    // A non-blank confirm validates then creates-and-selects inline. The `when` below is a
+    // byte-for-byte MIRROR of the `validate` lambda passed to BulkCreatePopup further down in
+    // this file (D-01's locked decision: mirror, not extract, since this is a published
+    // library file's public surface) — keep both bodies in sync by hand if either ever changes.
+    fun confirm() {
+        if (trimmedQuery.isBlank()) {
+            showBulkCreatePopup = true
+            return
+        }
+        val error = when {
+            trimmedQuery.isBlank() -> "Name cannot be blank"
+            trimmedQuery.length > TAG_NAME_MAX_LENGTH ->
+                "Name must be $TAG_NAME_MAX_LENGTH characters or fewer"
+            allTags.any { it.name.equals(trimmedQuery, ignoreCase = true) } ||
+                pendingCreationNames.any { it.equals(trimmedQuery, ignoreCase = true) } ->
+                "A tag with this name already exists"
+            else -> null
+        }
+        if (error != null) {
+            errorText = error
+            return
+        }
+        errorText = null
+        // SET BEFORE onCreate (BUG-02/D-08, mirrors the create-chip's onAction below) — the
+        // pre-existing LaunchedEffect(allTags, pendingCreationNames) depends on the name already
+        // being pending when onCreate fires, so it can auto-select once allTags reflects it.
+        pendingCreationNames = pendingCreationNames + trimmedQuery
+        onCreate(trimmedQuery)
+        query = ""
     }
 
     // BUG-02 (D-08 — widened to a Set<String>): reactively add every just-created tag to
@@ -213,7 +268,12 @@ fun TagPickerSheetContent(
                     value = query,
                     // D-03 (Phase 29-01) — block at input (cap also bounds search text; tag names
                     // cannot exceed 50 chars, so search text beyond that matches nothing anyway)
-                    onValueChange = { if (it.length <= TAG_NAME_MAX_LENGTH) query = it },
+                    onValueChange = {
+                        if (it.length <= TAG_NAME_MAX_LENGTH) {
+                            query = it
+                            errorText = null
+                        }
+                    },
                     label = { Text("Search/filter tags") },
                     singleLine = true,
                     modifier = Modifier
@@ -226,7 +286,12 @@ fun TagPickerSheetContent(
                             contentDescription = null
                         )
                     },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search)
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(onSearch = { confirm() }),
+                    isError = errorText != null,
+                    supportingText = errorText?.let { message ->
+                        { Text(message, color = MaterialTheme.colorScheme.error) }
+                    }
                 )
                 Spacer(Modifier.width(8.dp))
                 SortControl(
