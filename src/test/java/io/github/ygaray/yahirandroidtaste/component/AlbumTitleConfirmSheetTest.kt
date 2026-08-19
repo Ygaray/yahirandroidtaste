@@ -82,11 +82,6 @@ class AlbumTitleConfirmSheetTest {
         assertEquals(true, isEditDirty("Foo", "Foo", tagsDirty = true))
     }
 
-    @Test
-    fun `isEditDirty delegates to isRenameDirty when tags not dirty`() {
-        assertEquals(true, isEditDirty("Bar", "Foo", tagsDirty = false))
-    }
-
     // ── isEditDirty four-combination matrix (Task 2) ────────────────────────
 
     @Test
