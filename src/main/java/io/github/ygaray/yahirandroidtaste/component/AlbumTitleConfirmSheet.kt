@@ -44,6 +44,15 @@ fun previewImageFile(photoPaths: List<String>): File? = photoPaths.firstOrNull()
 internal fun isRenameDirty(title: String, baseline: String): Boolean = title.trim() != baseline.trim()
 
 /**
+ * Rename-mode dirty predicate, extended for EDIT-02/D-01: the Save/Rename control must enable on
+ * a title change OR a tags-only change, never title alone. [tagsDirty] is a caller-supplied
+ * signal — this sheet owns no tag-selection state of its own, so the tags half of the check is
+ * simply OR'd in rather than computed here. Delegates the title half unchanged to [isRenameDirty].
+ */
+internal fun isEditDirty(title: String, baseline: String, tagsDirty: Boolean): Boolean =
+    isRenameDirty(title, baseline) || tagsDirty
+
+/**
  * Title confirmation bottom sheet displayed after photos are captured or imported (create mode),
  * or when renaming an existing album (rename mode).
  *
@@ -84,6 +93,10 @@ internal fun isRenameDirty(title: String, baseline: String): Boolean = title.tri
  *   2; net-new for create mode per Phase 52 G2-03c). `:designsystem` cannot import `:app`'s
  *   `TagChipEditor` directly (one-directional module graph) — the caller (`AlbumCaptureHost` for
  *   create, `BrowseScreen` for rename) fills this slot. Rendered whenever supplied, in both modes.
+ * @param tagsDirty EDIT-02/D-01: caller-computed signal that the tag selection differs from what
+ *   it was when this sheet opened — OR'd into the rename-mode dirty gate alongside the title
+ *   check. Defaulted false so every existing call site compiles and behaves exactly as today; the
+ *   consumer app owns tag-selection state and binds this at the real call site (Phase 109).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -94,7 +107,8 @@ fun AlbumTitleConfirmSheet(
     onSave: (title: String) -> Unit,
     onDismiss: (title: String) -> Unit,
     onDiscard: () -> Unit = {},
-    tagContent: (@Composable () -> Unit)? = null
+    tagContent: (@Composable () -> Unit)? = null,
+    tagsDirty: Boolean = false
 ) {
     val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -159,10 +173,10 @@ fun AlbumTitleConfirmSheet(
             onDismiss = if (!isRenameMode) onDiscard else { { onDismiss(title.trim()) } },
             dismissLabel = if (isRenameMode) "Cancel" else "Discard",
             dismissDestructive = !isRenameMode,
-            // ALBUM-07 (D-03): rename-mode Save/Rename is dirty-gated via isRenameDirty;
-            // create-mode Save stays enabled unconditionally (a blank/default title is already a
-            // valid save).
-            enabled = if (isRenameMode) isRenameDirty(title, defaultTitle) else true,
+            // ALBUM-07 (D-03) / EDIT-02 (D-01): rename-mode Save/Rename is dirty-gated on a
+            // name-or-tags change via isEditDirty; create-mode Save stays enabled unconditionally
+            // (a blank/default title is already a valid save).
+            enabled = if (isRenameMode) isEditDirty(title, defaultTitle, tagsDirty) else true,
             saveLabel = if (isRenameMode) "Rename Album" else "Save Album",
             modifier = Modifier.fillMaxWidth()
         )
