@@ -4,9 +4,11 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.filled.Delete
@@ -102,6 +104,10 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  * @param onTagRemoveFromCard Phase 93 (TMENU-01/04/05): forwarded verbatim to [CardTagRow]'s
  *   [CardTagRow.onTagRemoveFromCard]. Null (default) omits the menu's "Remove from this card"
  *   item.
+ * @param imageCount IMG-02: caller-supplied number of inline images the card body contains.
+ *   Defaulted to zero so every existing call site compiles and shows nothing. Forwarded unchanged
+ *   to the hosted [TextCardBottomSheet]. The consumer app computes the real value and binds it at
+ *   Phase 109.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -131,7 +137,8 @@ fun TextCard(
     onCloseSiblingsClick: (cardId: String) -> Unit = {},
     onTagEdit: ((tagId: String) -> Unit)? = null,
     onTagDelete: ((tagId: String, name: String) -> Unit)? = null,
-    onTagRemoveFromCard: ((tagId: String) -> Unit)? = null
+    onTagRemoveFromCard: ((tagId: String) -> Unit)? = null,
+    imageCount: Int = 0
 ) {
     // Rename dialog state (replaces inline BasicTextField rename — UX change: now dialog-based)
     var showRenameDialog by remember(id) { mutableStateOf(false) }
@@ -252,6 +259,14 @@ fun TextCard(
                         modifier = Modifier.size(16.dp),
                         tint = MaterialTheme.colorScheme.tertiary
                     )
+                }
+                // Image-count indicator (IMG-02) — leading spacer only, additive; does not
+                // touch the existing (unspaced) Pin<->Favourite gap. Both the spacer and the
+                // indicator are gated on a positive count so nothing at all composes and no
+                // space is reserved at zero (conditional-render-no-dead-space).
+                if (imageCount > 0) {
+                    Spacer(modifier = Modifier.width(Dimens.ContentSpacing))
+                    ImageCountIndicator(imageCount = imageCount)
                 }
             }
         },
@@ -388,7 +403,8 @@ fun TextCard(
             onToggleFavorite = onToggleFavorite,
             onDelete = onDelete,
             onConfirmRename = onConfirmRename,
-            tagContent = tagContent
+            tagContent = tagContent,
+            imageCount = imageCount
         )
     }
 }
