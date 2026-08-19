@@ -237,4 +237,146 @@ class TagPickerSheetContentTest {
         composeTestRule.onNodeWithText("Work").assertExists()
         composeTestRule.onNodeWithText("Personal").assertDoesNotExist()
     }
+
+    // --- Task 3: inline validation errors, at parity with the popup path (D-01) ---
+    //
+    // The blank and over-cap branches of confirm()'s mirrored `when` are unreachable through the
+    // field by construction: the blank branch is shadowed by confirm()'s own earlier
+    // `trimmedQuery.isBlank()` early-return, and the over-cap branch is shadowed by the keystroke
+    // guard that already rejects any value longer than TAG_NAME_MAX_LENGTH. Both remain in the
+    // mirrored body as defense-in-depth (D-01) and are verified as source parity — the
+    // "characters or fewer" / "Name cannot be blank" strings appearing exactly twice each in
+    // TagPickerSheet.kt (Task 3's acceptance-criteria greps) — not at runtime here.
+
+    @Test
+    fun `duplicate name against an existing tag is case-insensitively rejected and text survives`() {
+        val createdNames = mutableListOf<String>()
+        composeTestRule.setContent {
+            TagPickerSheetContent(
+                allTags = listOf(TagChipUiModel(id = "w1", name = "Work", occurrenceCount = 0)),
+                onDone = {},
+                onCreate = { createdNames.add(it) },
+                onDismiss = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("tag_search_field").performTextInput("work")
+        composeTestRule.onNodeWithTag("tag_search_field").performImeAction()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("A tag with this name already exists").assertExists()
+        assertEquals(emptyList<String>(), createdNames)
+        composeTestRule
+            .onNode(hasTestTag("tag_search_field") and hasText("work", substring = true))
+            .assertExists()
+    }
+
+    @Test
+    fun `duplicate name against a pending creation is rejected before allTags catches up`() {
+        val createdNames = mutableListOf<String>()
+        composeTestRule.setContent {
+            TagPickerSheetContent(
+                allTags = emptyList(),
+                onDone = {},
+                onCreate = { createdNames.add(it) },
+                onDismiss = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("tag_search_field").performTextInput("Groceries")
+        composeTestRule.onNodeWithTag("tag_search_field").performImeAction()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("tag_search_field").performTextInput("GROCERIES")
+        composeTestRule.onNodeWithTag("tag_search_field").performImeAction()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("A tag with this name already exists").assertExists()
+        assertEquals(listOf("Groceries"), createdNames)
+    }
+
+    @Test
+    fun `the duplicate error clears on the next keystroke`() {
+        composeTestRule.setContent {
+            TagPickerSheetContent(
+                allTags = listOf(TagChipUiModel(id = "w1", name = "Work", occurrenceCount = 0)),
+                onDone = {},
+                onCreate = {},
+                onDismiss = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("tag_search_field").performTextInput("Work")
+        composeTestRule.onNodeWithTag("tag_search_field").performImeAction()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("A tag with this name already exists").assertExists()
+
+        composeTestRule.onNodeWithTag("tag_search_field").performTextInput("!")
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("A tag with this name already exists").assertDoesNotExist()
+    }
+
+    @Test
+    fun `a 50-character name confirms successfully and a 51st character is rejected at input`() {
+        val fixture = "A".repeat(TAG_NAME_MAX_LENGTH)
+        val createdNames = mutableListOf<String>()
+        composeTestRule.setContent {
+            TagPickerSheetContent(
+                allTags = emptyList(),
+                onDone = {},
+                onCreate = { createdNames.add(it) },
+                onDismiss = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("tag_search_field").performTextInput(fixture)
+        composeTestRule.waitForIdle()
+        composeTestRule
+            .onNode(hasTestTag("tag_search_field") and hasText(fixture, substring = true))
+            .assertExists()
+
+        composeTestRule.onNodeWithTag("tag_search_field").performTextInput("Z")
+        composeTestRule.waitForIdle()
+        composeTestRule
+            .onNode(hasTestTag("tag_search_field") and hasText(fixture, substring = true))
+            .assertExists()
+        composeTestRule
+            .onNode(hasTestTag("tag_search_field") and hasText(fixture + "Z", substring = true))
+            .assertDoesNotExist()
+
+        composeTestRule.onNodeWithTag("tag_search_field").performImeAction()
+        composeTestRule.waitForIdle()
+
+        assertEquals(listOf(fixture), createdNames)
+    }
+
+    @Test
+    fun `a 49-character name and a 1-character name both create normally`() {
+        val createdNames = mutableListOf<String>()
+        composeTestRule.setContent {
+            TagPickerSheetContent(
+                allTags = emptyList(),
+                onDone = {},
+                onCreate = { createdNames.add(it) },
+                onDismiss = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        val belowCap = "B".repeat(TAG_NAME_MAX_LENGTH - 1)
+        composeTestRule.onNodeWithTag("tag_search_field").performTextInput(belowCap)
+        composeTestRule.onNodeWithTag("tag_search_field").performImeAction()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("tag_search_field").performTextInput("C")
+        composeTestRule.onNodeWithTag("tag_search_field").performImeAction()
+        composeTestRule.waitForIdle()
+
+        assertEquals(listOf(belowCap, "C"), createdNames)
+    }
 }
