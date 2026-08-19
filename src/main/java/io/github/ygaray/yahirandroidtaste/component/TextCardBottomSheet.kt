@@ -64,6 +64,9 @@ import androidx.compose.ui.unit.dp
  * @param tagContent Optional canonical tag-row slot (bare, no label), rendered between the
  *   header/category-path block and the body content. Filled by the `:app` caller with a live
  *   `TagChipEditor` — `:designsystem` cannot import it directly (ASSIGN-03).
+ * @param imageCount IMG-02: caller-supplied number of inline images the card body contains.
+ *   Defaulted to zero so every existing call site compiles and shows nothing. The consumer app
+ *   computes the real value and binds it at Phase 109.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,7 +84,8 @@ fun TextCardBottomSheet(
     onToggleFavorite: () -> Unit,
     onDelete: () -> Unit,
     onConfirmRename: (String) -> Unit,
-    tagContent: (@Composable () -> Unit)? = null
+    tagContent: (@Composable () -> Unit)? = null,
+    imageCount: Int = 0
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showMenu by remember { mutableStateOf(false) }
@@ -135,6 +139,13 @@ fun TextCardBottomSheet(
                         tint = MaterialTheme.colorScheme.tertiary
                     )
                 }
+
+                // Image-count indicator (IMG-02) — after Favourite, before the overflow control
+                // so the overflow control remains the rightmost affordance on this surface.
+                ImageCountIndicator(
+                    imageCount = imageCount,
+                    modifier = Modifier.padding(top = 4.dp, end = 4.dp)
+                )
 
                 // Three-dot menu
                 Box {
