@@ -30,17 +30,23 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.0.0`** (repinned + device-verified, v1.20 Phase 103) | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.1.3`** (repinned + device-verified, v1.21 Phases 109→113; Gate-1 SC4 re-verify PASS) — matches latest | `gradle/libs.versions.toml` |
+  | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.0.0`** (adopted Phase 39 ADOPT-01, catalog alias `libs.yahirandroidtaste`); latest `v1.1.3` → repin deferred | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
   No "Deploy host" column — Android apps are installed on devices, not daemon-deployed.)_
 
-**Current published tag:** **`v1.0.0`** — the first immutable tag, cut human-gated in **Phase 102**
+**Current published tag:** **`v1.1.3`** — latest of the `v1.1.x` line cut after `v1.0.0`.
+**SecondBrain pins `v1.1.3`** (matches latest); **CalTracker still pins `v1.0.0`** and repins on
+its own cadence (a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
 SM-S908U (Gate-1 all_pass: cold-start Hilt-across-AAR resolution, live undo + ExplorerActivity,
-move-only pixel parity). *(SB's in-repo `yahirandroidtaste/` module-directory deletion is deferred —
+move-only pixel parity). SecondBrain subsequently **repinned to `v1.1.3`** across **v1.21
+Phases 109→113** (REPIN-02): the `v1.1.1`→`v1.1.2`→`v1.1.3` line was cut over the Phase 112→113
+remediation cycle (EDIT consolidation, album footer button, Voice rename dirty gate) and the repin
+is **Gate-1 device-verified** (SC4 re-verify all_pass, SM-S908U / API 35). *(SB's in-repo `yahirandroidtaste/` module-directory deletion is deferred —
 an SB-internal cleanup — but SB consumes this published AAR regardless.)*
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
