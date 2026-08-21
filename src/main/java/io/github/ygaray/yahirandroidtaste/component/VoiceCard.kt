@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.CompareArrows
-import androidx.compose.material.icons.automirrored.filled.Label
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Group
@@ -126,9 +125,10 @@ private fun formatDuration(ms: Long): String {
  * Card — CardBase's combinedClickable owns both tap and long-press; this fixes the previously-dead
  * long-press that was shadowed by Card(onClick=...) (SWIPE-02, Pitfall 3)).
  *
- * Three-dot menu: Rename, Edit tags, Manage links, Pin/Unpin, Favorite/Unfavorite, Delete.
- * Rename and Edit tags both invoke the same [onRenameOrTagsRequest] trigger — the host opens a
- * single [VoiceRenameTagsSheet] instance for both entry points (D-01, Pattern 3).
+ * Three-dot menu: Edit, Manage links, Pin/Unpin, Favorite/Unfavorite, Delete.
+ * The single "Edit" row invokes [onRenameOrTagsRequest] — the host opens one
+ * [VoiceRenameTagsSheet] instance (EDIT-01: the former separate "Rename" + "Edit tags" rows,
+ * which both called this same trigger, are collapsed into this one row; D-01, Pattern 3).
  *
  * @param id Stable card ID used for keyed remember state.
  * @param title Card title.
@@ -142,7 +142,7 @@ private fun formatDuration(ms: Long): String {
  * @param onTogglePin Toggle pin state.
  * @param onToggleFavorite Toggle favorite state.
  * @param onRenameOrTagsRequest Single external trigger for the hosted rename/tags sheet — invoked
- *   from right-swipe Edit, the three-dot "Rename" item, and the three-dot "Edit tags" item (D-01).
+ *   from right-swipe Edit and the three-dot "Edit" item (D-01, EDIT-01 unified action).
  * @param onManageLinks Optional — invoked when the "Manage links" overflow item is tapped (D-04).
  *   Opens [RelationshipPanelSheet] hosted in ModuleScreen.
  * @param openRowState Single-open row reference hoisted at [CardListSection] (D-02).
@@ -227,28 +227,16 @@ fun VoiceCard(
         openRowState = openRowState,
         onClick = onTap,                                // tap → playback; combinedClickable in CardBase owns long-press
         dropdownMenuContent = { dismissMenu ->
-            // Rename — same trigger as Edit tags and right-swipe Edit (D-01, single hosted sheet)
+            // Edit — single unified action (EDIT-01): the former "Rename" + "Edit tags" rows,
+            // which both already called onRenameOrTagsRequest, collapsed into one "Edit" row that
+            // fires the same host-owned rename+tags sheet trigger (D-01, single hosted sheet).
             DropdownMenuItem(
-                text = { Text("Rename") },
+                text = { Text("Edit") },
                 onClick = {
                     dismissMenu()
                     onRenameOrTagsRequest()
                 },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) }
-            )
-            // Edit tags — same trigger as Rename and right-swipe Edit (D-01, single hosted sheet)
-            DropdownMenuItem(
-                text = { Text("Edit tags") },
-                onClick = {
-                    dismissMenu()
-                    onRenameOrTagsRequest()
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Label,
-                        contentDescription = "Edit tags"
-                    )
-                }
             )
             // Manage links — opens RelationshipPanelSheet (D-04).
             // Only rendered when a handler is wired — avoids a silent dead menu item.
@@ -268,7 +256,6 @@ fun VoiceCard(
                 )
             }
             // See exact siblings — discoverable backup to the tag-row band gesture (D-07/D-08).
-            // Distinct icon (Group) from "Edit tags" (AutoMirrored.Filled.Label) above.
             if (tags.size >= 2) {
                 DropdownMenuItem(
                     text = { Text("See exact siblings") },
