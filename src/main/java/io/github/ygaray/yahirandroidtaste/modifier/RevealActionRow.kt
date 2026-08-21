@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -125,12 +126,20 @@ fun RevealActionRow(
         }
     }
 
+    // WR-01: gate slot composition on the row's actual reveal state, matching SwipeableActionRow's
+    // showEditSlot/showDeleteSlot precedent (this file's sibling, SwipeableActionRow.kt:235-239).
+    // Anchors haven't settled on the very first frame, so state.offset (non-throwing) is used and
+    // NaN is treated as "not revealed" — otherwise a hidden action's clickable would stay reachable
+    // by TalkBack while visually obscured behind the opaque foreground contentBackground.
+    val revealedStart by remember { derivedStateOf { state.offset.let { !it.isNaN() && it > 0f } } }
+    val revealedEnd by remember { derivedStateOf { state.offset.let { !it.isNaN() && it < 0f } } }
+
     // clipToBounds so the full-width foreground can't bleed past the row as it slides ±actionWidth.
     Box(modifier = modifier.clipToBounds()) {
         // Background action zones sit BEHIND the content — start at the leading edge, end at the
         // trailing edge, a weight(1f) spacer keeps them pinned as the content slides.
         Row(modifier = Modifier.matchParentSize()) {
-            if (startAction != null) {
+            if (startAction != null && revealedStart) {
                 Box(
                     modifier = Modifier
                         .width(actionWidth)
@@ -139,7 +148,7 @@ fun RevealActionRow(
                 ) { startAction() }
             }
             Spacer(Modifier.weight(1f))
-            if (endAction != null) {
+            if (endAction != null && revealedEnd) {
                 Box(
                     modifier = Modifier
                         .width(actionWidth)
