@@ -54,6 +54,7 @@ object ExplorerFamilies {
     const val PICKERS = "pickers"
     const val FEEDBACK = "feedback"
     const val EMPTY_STATE = "empty_state"
+    const val PROGRESS_METRICS = "progress_metrics"
 
     /** Fixed authored order rendered by [ExplorerIndexScreen] (EDGE ordering). */
     val ORDERED_KEYS: List<Pair<String, String>> = listOf(
@@ -63,7 +64,8 @@ object ExplorerFamilies {
         BUTTONS_FAB to "Buttons / FAB",
         PICKERS to "Pickers",
         FEEDBACK to "Feedback",
-        EMPTY_STATE to "Empty State"
+        EMPTY_STATE to "Empty State",
+        PROGRESS_METRICS to "Progress / Metrics"
     )
 }
 

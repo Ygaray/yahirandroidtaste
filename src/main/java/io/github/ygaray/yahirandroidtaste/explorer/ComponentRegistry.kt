@@ -79,7 +79,8 @@ object ComponentRegistry {
         buttonsFabFamilyEntries +
         pickersFamilyEntries +
         feedbackFamilyEntries +
-        emptyStateFamilyEntries
+        emptyStateFamilyEntries +
+        progressFamilyEntries
 
     /**
      * Sub-part composables intentionally excluded from a standalone tile (D-04), each with a

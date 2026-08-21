@@ -100,6 +100,12 @@ fun ExplorerEntry(onNavigateBack: () -> Unit) {
                     themeMode = themeMode,
                     onToggleTheme = onToggleTheme
                 )
+                ExplorerFamilies.PROGRESS_METRICS -> ProgressFamilyScreen(
+                    onNavigateBack = onBack,
+                    onNavigateToDetail = onDetail,
+                    themeMode = themeMode,
+                    onToggleTheme = onToggleTheme
+                )
                 else -> ExplorerIndexScreen(
                     // This branch renders the INDEX composable, so per this file's own back-nav
                     // contract (doc comment above) it must use the EXTERNAL onNavigateBack, not
