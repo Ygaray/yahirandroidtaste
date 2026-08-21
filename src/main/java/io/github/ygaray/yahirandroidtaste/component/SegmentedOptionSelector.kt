@@ -44,6 +44,11 @@ fun SegmentedOptionSelector(
     enabled: Boolean = true,
     disabledReason: String? = null,
 ) {
+    // WR-04: enforce the documented "exactly two options" contract at runtime -- a 1- or 3+
+    // element list previously compiled and rendered silently with the wrong segment count.
+    require(options.size == 2) {
+        "SegmentedOptionSelector requires exactly 2 options, got ${options.size}"
+    }
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
             options.forEachIndexed { index, label ->
