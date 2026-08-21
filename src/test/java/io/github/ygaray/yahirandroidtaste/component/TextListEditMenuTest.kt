@@ -157,4 +157,113 @@ class TextListEditMenuTest {
         assert(triggered) { "Edit row must fire onEditRequest when non-null" }
         composeTestRule.onNodeWithText("Cancel").assertDoesNotExist()
     }
+
+    // --- ListCard: active source-structural assertions ---
+    // ListCard's menu rows live in the private ListCardDropdownMenuContent helper (defined AFTER
+    // the rename dialog), so scope the menu assertion to that function's body specifically.
+
+    private fun listMenuHelperRegion(src: String): String {
+        val start = src.indexOf("private fun ListCardDropdownMenuContent")
+        val end = src.indexOf("private fun ListCardRenameDialog")
+        require(start >= 0 && end > start) { "could not locate ListCard menu helper region" }
+        return src.substring(start, end)
+    }
+
+    @Test
+    fun `ListCard gains trailing nullable onEditRequest and branches the Edit row on it`() {
+        val src = source("ListCard.kt")
+        assertTrue(
+            "ListCard must declare a trailing, nullable, defaulted onEditRequest param",
+            src.contains("onEditRequest: (() -> Unit)? = null")
+        )
+        assertTrue(
+            "ListCard's menu helper must branch on onEditRequest (non-null -> trigger, else local dialog)",
+            src.contains("if (onEditRequest != null) onEditRequest() else onRenameRequested()")
+        )
+    }
+
+    @Test
+    fun `ListCard menu row reads Edit not Rename, and the local rename dialog fallback is retained`() {
+        val src = source("ListCard.kt")
+        val menu = listMenuHelperRegion(src)
+        assertEquals("ListCard menu must have exactly one Text(\"Edit\") row", 1, countOccurrences(menu, "Text(\"Edit\")"))
+        assertEquals("ListCard menu must have no Text(\"Rename\") row", 0, countOccurrences(menu, "Text(\"Rename\")"))
+        assertTrue("ListCard must retain its showRenameDialog fallback", src.contains("showRenameDialog = true"))
+        assertTrue("ListCard must retain its ListCardRenameDialog", src.contains("ListCardRenameDialog("))
+    }
+
+    // --- ListCard: rendered proofs (quarantined; discharged at Phase 113 Gate-1) ---
+
+    @OptIn(ExperimentalFoundationApi::class)
+    @Test
+    @Ignore(
+        "ListCard is unrenderable under this Robolectric harness — CardBase's SwipeableActionRow " +
+            "blocker (see class KDoc). null->local-dialog proof is discharged at Phase 113 Gate-1. [Blocking]"
+    )
+    fun `ListCard with onEditRequest null opens the local rename dialog from the Edit row`() {
+        composeTestRule.setContent {
+            val openRowState = remember { mutableStateOf<AnchoredDraggableState<SwipeAnchor>?>(null) }
+            ListCard(
+                id = "l1",
+                title = "My List",
+                subType = "bulleted",
+                items = emptyList(),
+                categoryPath = null,
+                createdAt = 0L,
+                updatedAt = 0L,
+                isPinned = false,
+                isFavorite = false,
+                onEdit = {},
+                onDelete = {},
+                onTogglePin = {},
+                onToggleFavorite = {},
+                onConfirmRename = {},
+                onToggleItem = {},
+                openRowState = openRowState,
+                onEditRequest = null
+            )
+        }
+        composeTestRule.onNodeWithContentDescription("More options").performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("Edit").performClick()
+        composeTestRule.onNodeWithText("Cancel").assertIsDisplayed()
+    }
+
+    @OptIn(ExperimentalFoundationApi::class)
+    @Test
+    @Ignore(
+        "ListCard is unrenderable under this Robolectric harness — CardBase's SwipeableActionRow " +
+            "blocker (see class KDoc). non-null->trigger proof is discharged at Phase 113 Gate-1. [Blocking]"
+    )
+    fun `ListCard with non-null onEditRequest fires the trigger and shows no local dialog`() {
+        var triggered = false
+        composeTestRule.setContent {
+            val openRowState = remember { mutableStateOf<AnchoredDraggableState<SwipeAnchor>?>(null) }
+            ListCard(
+                id = "l1",
+                title = "My List",
+                subType = "bulleted",
+                items = emptyList(),
+                categoryPath = null,
+                createdAt = 0L,
+                updatedAt = 0L,
+                isPinned = false,
+                isFavorite = false,
+                onEdit = {},
+                onDelete = {},
+                onTogglePin = {},
+                onToggleFavorite = {},
+                onConfirmRename = {},
+                onToggleItem = {},
+                openRowState = openRowState,
+                onEditRequest = { triggered = true }
+            )
+        }
+        composeTestRule.onNodeWithContentDescription("More options").performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("Edit").performClick()
+
+        assert(triggered) { "Edit row must fire onEditRequest when non-null" }
+        composeTestRule.onNodeWithText("Cancel").assertDoesNotExist()
+    }
 }

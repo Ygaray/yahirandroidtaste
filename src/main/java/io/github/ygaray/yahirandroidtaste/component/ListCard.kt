@@ -100,6 +100,10 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  * @param onTagRemoveFromCard Phase 93 (TMENU-01/04/05): forwarded verbatim to [CardTagRow]'s
  *   [CardTagRow.onTagRemoveFromCard]. Null (default) omits the menu's "Remove from this card"
  *   item.
+ * @param onEditRequest EDIT-01/EDIT-03: external trigger for the host-owned shared name-and-tags
+ *   Edit sheet. When non-null, the three-dot "Edit" row invokes it (mirroring Voice); when null
+ *   (default), the row falls back to this card's local tag-less rename dialog, so every existing
+ *   call site compiles and behaves as before. The consumer app wires it at Phase 113.
  */
 @Composable
 fun ListCard(
@@ -130,7 +134,8 @@ fun ListCard(
     onCloseSiblingsClick: (cardId: String) -> Unit = {},
     onTagEdit: ((tagId: String) -> Unit)? = null,
     onTagDelete: ((tagId: String, name: String) -> Unit)? = null,
-    onTagRemoveFromCard: ((tagId: String) -> Unit)? = null
+    onTagRemoveFromCard: ((tagId: String) -> Unit)? = null,
+    onEditRequest: (() -> Unit)? = null
 ) {
     // Re-keyed by id so state resets correctly when a different card occupies this slot (UIQ-02).
     var isExpanded by remember(id) { mutableStateOf(false) }
@@ -163,6 +168,7 @@ fun ListCard(
                 onSiblingsClick = onSiblingsClick,
                 onCloseSiblingsClick = onCloseSiblingsClick,
                 onDelete = onDelete,
+                onEditRequest = onEditRequest,
                 onRenameRequested = {
                     renameText = title
                     showRenameDialog = true
@@ -265,14 +271,16 @@ private fun ListCardDropdownMenuContent(
     onSiblingsClick: (allTagIds: List<String>) -> Unit,
     onCloseSiblingsClick: (cardId: String) -> Unit,
     onDelete: () -> Unit,
+    onEditRequest: (() -> Unit)?,
     onRenameRequested: () -> Unit
 ) {
-    // Rename
+    // Edit (EDIT-01/EDIT-03) — external trigger to the host-owned shared name-and-tags sheet when
+    // wired; otherwise the null-fallback opens the local tag-less rename dialog via onRenameRequested.
     DropdownMenuItem(
-        text = { Text("Rename") },
+        text = { Text("Edit") },
         onClick = {
             dismissMenu()
-            onRenameRequested()
+            if (onEditRequest != null) onEditRequest() else onRenameRequested()
         },
         leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) }
     )
