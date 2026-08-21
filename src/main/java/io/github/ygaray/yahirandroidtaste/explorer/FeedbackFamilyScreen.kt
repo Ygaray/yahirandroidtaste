@@ -25,6 +25,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.component.AttentionCue
+import io.github.ygaray.yahirandroidtaste.component.AttentionCueDefaults
 import io.github.ygaray.yahirandroidtaste.component.ConfirmationDialog
 import io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent
 import io.github.ygaray.yahirandroidtaste.feedback.UndoCenterScreen
@@ -94,6 +96,29 @@ internal val feedbackFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             ComponentRegistry.StateCell("Focused")
         ),
         content = { UndoCenterScreenVariants() }
+    ),
+    ComponentRegistry.Entry(
+        name = "AttentionCue",
+        family = ExplorerFamilies.FEEDBACK,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = {
+                    AttentionCue(
+                        text = "Double-check this value",
+                        style = AttentionCueDefaults.Style.Inline,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+            ),
+            // AttentionCue is a non-interactive glyph — no press/select semantics — N/A.
+            ComponentRegistry.StateCell("Pressed / Selected"),
+            // AttentionCue has no enabled param — N/A.
+            ComponentRegistry.StateCell("Disabled"),
+            // AttentionCue has no focus-visual override — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { AttentionCueVariants() }
     )
 )
 
@@ -180,6 +205,23 @@ private fun UndoCenterScreenVariants() {
     ) {
         Text("Emit sample feedback event")
     }
+}
+
+/** AttentionCue's two real usage shapes, rendered side by side as its Variants. */
+@Composable
+private fun AttentionCueVariants() {
+    SectionLabel("AttentionCue — Inline style")
+    AttentionCue(
+        text = "Double-check this value",
+        style = AttentionCueDefaults.Style.Inline,
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+    SectionLabel("AttentionCue — Dot style")
+    AttentionCue(
+        text = null,
+        style = AttentionCueDefaults.Style.Dot,
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
