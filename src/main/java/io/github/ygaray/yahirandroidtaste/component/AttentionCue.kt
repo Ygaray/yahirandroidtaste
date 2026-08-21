@@ -14,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
@@ -76,7 +78,13 @@ fun AttentionCue(
         }
         AttentionCueDefaults.Style.Dot -> {
             Surface(
-                modifier = modifier.size(10.dp),
+                // WR-02: apply contentDescription via semantics — previously silently dropped for
+                // Dot, the one style where there's no visible text to derive an announcement from.
+                modifier = modifier.size(10.dp).semantics {
+                    if (contentDescription.isNotEmpty()) {
+                        this.contentDescription = contentDescription
+                    }
+                },
                 shape = MaterialTheme.shapes.small,
                 color = tint,
                 content = {},
