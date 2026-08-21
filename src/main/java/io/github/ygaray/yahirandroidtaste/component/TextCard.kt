@@ -108,6 +108,11 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  *   Defaulted to zero so every existing call site compiles and shows nothing. Forwarded unchanged
  *   to the hosted [TextCardBottomSheet]. The consumer app computes the real value and binds it at
  *   Phase 109.
+ * @param onEditRequest EDIT-01/EDIT-03: external trigger for the host-owned shared name-and-tags
+ *   Edit sheet. When non-null, the three-dot "Edit" row invokes it (the host opens the tag-inclusive
+ *   sheet, mirroring Voice); when null (default), the row falls back to this card's local tag-less
+ *   rename dialog, so every existing call site compiles and behaves as before. The consumer app
+ *   wires it at Phase 113.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -138,7 +143,8 @@ fun TextCard(
     onTagEdit: ((tagId: String) -> Unit)? = null,
     onTagDelete: ((tagId: String, name: String) -> Unit)? = null,
     onTagRemoveFromCard: ((tagId: String) -> Unit)? = null,
-    imageCount: Int = 0
+    imageCount: Int = 0,
+    onEditRequest: (() -> Unit)? = null
 ) {
     // Rename dialog state (replaces inline BasicTextField rename — UX change: now dialog-based)
     var showRenameDialog by remember(id) { mutableStateOf(false) }
@@ -163,13 +169,18 @@ fun TextCard(
         openRowState = openRowState,
         onClick = onShowBottomSheet,
         dropdownMenuContent = { dismissMenu ->
-            // Rename — opens AlertDialog
+            // Edit (EDIT-01/EDIT-03) — external trigger to the host-owned shared name-and-tags
+            // sheet when wired; otherwise falls back to the local tag-less rename AlertDialog.
             DropdownMenuItem(
-                text = { Text("Rename") },
+                text = { Text("Edit") },
                 onClick = {
                     dismissMenu()
-                    renameText = title
-                    showRenameDialog = true
+                    if (onEditRequest != null) {
+                        onEditRequest()
+                    } else {
+                        renameText = title
+                        showRenameDialog = true
+                    }
                 },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) }
             )
