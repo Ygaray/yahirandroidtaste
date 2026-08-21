@@ -69,8 +69,8 @@ class TextListEditMenuTest {
             src.contains("onEditRequest: (() -> Unit)? = null")
         )
         assertTrue(
-            "TextCard's Edit row must branch on onEditRequest (non-null -> external trigger)",
-            src.contains("if (onEditRequest != null)") && src.contains("onEditRequest()")
+            "TextCard's Edit row must route non-null -> onEditRequest() and null -> local dialog (not inverted)",
+            Regex("""if \(onEditRequest != null\) \{\s*onEditRequest\(\)\s*} else \{""").containsMatchIn(src)
         )
     }
 
