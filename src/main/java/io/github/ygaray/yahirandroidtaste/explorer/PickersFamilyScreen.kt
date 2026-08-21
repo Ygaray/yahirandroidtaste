@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.AccentColorPicker
 import io.github.ygaray.yahirandroidtaste.component.CropOverlay
 import io.github.ygaray.yahirandroidtaste.component.IconPickerGrid
+import io.github.ygaray.yahirandroidtaste.component.SegmentedOptionSelector
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
@@ -105,6 +106,43 @@ internal val pickersFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             ComponentRegistry.StateCell("Focused")
         ),
         content = { CropOverlayVariants() }
+    ),
+    ComponentRegistry.Entry(
+        name = "SegmentedOptionSelector",
+        family = ExplorerFamilies.PICKERS,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = {
+                    var selectedIndex by remember { mutableStateOf(0) }
+                    SegmentedOptionSelector(
+                        selectedIndex = selectedIndex,
+                        options = listOf("Option A", "Option B"),
+                        onSelect = { selectedIndex = it },
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                    )
+                }
+            ),
+            // The currently-selected segment is already shown live in Default — no separate
+            // discrete pressed/selected preview.
+            ComponentRegistry.StateCell("Pressed / Selected"),
+            ComponentRegistry.StateCell(
+                "Disabled",
+                render = {
+                    SegmentedOptionSelector(
+                        selectedIndex = 0,
+                        options = listOf("Option A", "Option B"),
+                        onSelect = {},
+                        enabled = false,
+                        disabledReason = "Unavailable right now",
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                    )
+                }
+            ),
+            // SegmentedButton has no custom focus-visual override — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { SegmentedOptionSelectorVariants() }
     )
 )
 
@@ -195,6 +233,19 @@ private fun CropOverlayVariants() {
     CropOverlayFreeCropPreview()
     SectionLabel("CropOverlay — fixed 1:1 aspect ratio")
     CropOverlayFixedAspectPreview()
+}
+
+/** SegmentedOptionSelector's interactive demo, reused verbatim as its Variants. */
+@Composable
+private fun SegmentedOptionSelectorVariants() {
+    var selectedIndex by remember { mutableStateOf(0) }
+    SectionLabel("SegmentedOptionSelector")
+    SegmentedOptionSelector(
+        selectedIndex = selectedIndex,
+        options = listOf("Option A", "Option B"),
+        onSelect = { selectedIndex = it },
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
