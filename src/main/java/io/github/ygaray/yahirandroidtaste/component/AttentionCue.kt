@@ -56,7 +56,12 @@ fun AttentionCue(
             ) {
                 Icon(
                     imageVector = icon,
-                    contentDescription = contentDescription,
+                    // WR-03: null, not `contentDescription` — the adjacent Text already carries
+                    // the same string, and a non-null description here made TalkBack announce it
+                    // twice per row. The icon is decorative alongside visible text; the public
+                    // contentDescription param is reserved for the Dot style (WR-02), which has
+                    // no visible text to derive an announcement from.
+                    contentDescription = null,
                     tint = tint,
                     modifier = Modifier.size(16.dp),
                 )
