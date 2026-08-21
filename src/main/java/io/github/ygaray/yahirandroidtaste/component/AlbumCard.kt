@@ -284,9 +284,12 @@ fun AlbumCard(
         } else null,
         // G2-01/D-05: net-new trailing icon cluster (AlbumCard previously only used footerContent
         // for the optional categoryPath label) — adds a single OpenInFull open-editor icon wired
-        // to onEditTags (guarded: nullable callback), preserving the existing categoryPath label
-        // ahead of it. No expand/collapse arrow (Album has none) and no second MoreVert — CardBase
-        // supplies the one trailing ⋮ via showThreeDot. Resulting trailing cluster: [✎][⋮].
+        // to onRename (the always-present unified open-editor path), preserving the existing
+        // categoryPath label ahead of it. It uses onRename, NOT onEditTags, so the button survives
+        // a consumer suppressing the redundant "Edit tags" menu row via onEditTags = null — both
+        // open the same rename+tags sheet, so the destination is unchanged. No expand/collapse arrow
+        // (Album has none) and no second MoreVert — CardBase supplies the one trailing ⋮ via
+        // showThreeDot. Resulting trailing cluster: [✎][⋮].
         footerContent = {
             if (categoryPath != null) {
                 Text(
@@ -298,7 +301,7 @@ fun AlbumCard(
                     modifier = Modifier.padding(end = 4.dp)
                 )
             }
-            IconButton(onClick = { onEditTags?.invoke() }) {
+            IconButton(onClick = onRename) {
                 Icon(
                     imageVector = Icons.Default.OpenInFull,
                     contentDescription = "Open editor",

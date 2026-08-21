@@ -11,6 +11,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
@@ -172,6 +173,24 @@ class VoiceAlbumEditMenuTest {
             "AlbumCard must have no Text(\"Rename\") row after EDIT-01 relabel",
             0,
             countOccurrences(src, "Text(\"Rename\")")
+        )
+    }
+
+    @Test
+    fun `AlbumCard footer Open editor button is wired to onRename, not onEditTags`() {
+        // Regression guard (113-REVIEW WR-01): the footer OpenInFull "Open editor" IconButton must
+        // use onRename (the always-present unified open-editor path), NOT onEditTags. If it used
+        // onEditTags, a consumer suppressing the redundant "Edit tags" menu row via onEditTags = null
+        // would leave a visible-but-dead footer button. onRename opens the same rename+tags sheet.
+        val src = source("AlbumCard.kt")
+        assertTrue(
+            "AlbumCard's footer Open-editor IconButton must be onClick = onRename",
+            src.contains("IconButton(onClick = onRename)")
+        )
+        assertEquals(
+            "No IconButton may be wired to onEditTags?.invoke() (that button dies when onEditTags = null)",
+            0,
+            countOccurrences(src, "IconButton(onClick = { onEditTags?.invoke() })")
         )
     }
 
