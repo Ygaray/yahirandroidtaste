@@ -37,14 +37,15 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  * Album card face for the module card list (list-context).
  *
  * Wraps [CardBase] with:
- * - Title header row with pin/favorite indicators and three-dot menu (Rename/Pin/Fav/Delete)
+ * - Title header row with pin/favorite indicators and three-dot menu (Edit/Pin/Fav/Delete)
  * - Full-width [AdaptiveMediaPreview] at fixed 196dp height (D-05, D-06)
  * - Optional category path footer
  *
- * Three-dot menu per D-08: Rename, Pin/Unpin, Favorite/Unfavorite, Delete.
+ * Three-dot menu per D-08: Edit, Pin/Unpin, Favorite/Unfavorite, Delete (plus a guarded "Edit
+ * tags" row, retained but suppressed by :app via onEditTags = null for the unified-Edit presentation).
  * NO "Show hidden images" — access is inside AlbumViewerScreen.
  *
- * Rename uses the shared [AlbumTitleConfirmSheet] (rename mode) hosted by the screen — this card
+ * Edit uses the shared [AlbumTitleConfirmSheet] (rename mode) hosted by the screen — this card
  * only emits [onRename]; the host opens the sheet with title + category. There is no card-local
  * rename dialog.
  *
@@ -119,9 +120,11 @@ fun AlbumCard(
         openRowState = openRowState,
         onClick = onTap,
         dropdownMenuContent = { dismissMenu ->
-            // Rename — opens the shared AlbumTitleConfirmSheet (rename mode) hosted by the screen
+            // Edit — opens the shared AlbumTitleConfirmSheet (rename mode) hosted by the screen.
+            // EDIT-01: relabelled "Rename" -> "Edit"; the guarded "Edit tags" row below is retained
+            // and suppressed by :app (onEditTags = null) so the menu shows one unified "Edit" action.
             DropdownMenuItem(
-                text = { Text("Rename") },
+                text = { Text("Edit") },
                 onClick = {
                     dismissMenu()
                     onRename()

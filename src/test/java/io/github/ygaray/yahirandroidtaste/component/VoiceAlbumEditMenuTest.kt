@@ -152,4 +152,98 @@ class VoiceAlbumEditMenuTest {
 
         assert(triggered) { "Tapping the single 'Edit' menu row must invoke onRenameOrTagsRequest" }
     }
+
+    // --- Album: active source-structural assertion ---
+
+    @Test
+    fun `AlbumCard menu declares one Edit row and retains the guarded Edit tags row, no Rename`() {
+        val src = source("AlbumCard.kt")
+        assertEquals(
+            "AlbumCard's first edit row must be relabelled Text(\"Edit\")",
+            1,
+            countOccurrences(src, "Text(\"Edit\")")
+        )
+        assertEquals(
+            "AlbumCard must RETAIN its guarded Text(\"Edit tags\") row (suppressed by :app, not deleted)",
+            1,
+            countOccurrences(src, "Text(\"Edit tags\")")
+        )
+        assertEquals(
+            "AlbumCard must have no Text(\"Rename\") row after EDIT-01 relabel",
+            0,
+            countOccurrences(src, "Text(\"Rename\")")
+        )
+    }
+
+    // --- Album: rendered proofs (quarantined; discharged at Phase 113 Gate-1) ---
+
+    @OptIn(ExperimentalFoundationApi::class)
+    @Test
+    @Ignore(
+        "AlbumCard is unrenderable under this Robolectric harness — CardBase's SwipeableActionRow " +
+            "blocker (see class KDoc). onEditTags=null single-Edit-row proof is discharged at " +
+            "Phase 113 Gate-1. [Blocking]"
+    )
+    fun `AlbumCard with onEditTags null shows a single Edit row, no Rename or Edit tags`() {
+        composeTestRule.setContent {
+            val openRowState = remember {
+                mutableStateOf<AnchoredDraggableState<SwipeAnchor>?>(null)
+            }
+            AlbumCard(
+                id = "a1",
+                title = "My Album",
+                isPinned = false,
+                isFavorite = false,
+                thumbnailItems = emptyList(),
+                onTap = {},
+                onDelete = {},
+                onRename = {},
+                onTogglePin = {},
+                onToggleFavorite = {},
+                openRowState = openRowState,
+                onEditTags = null
+            )
+        }
+        composeTestRule.onNodeWithContentDescription("More options").performClick()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Edit").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Rename").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Edit tags").assertDoesNotExist()
+    }
+
+    @OptIn(ExperimentalFoundationApi::class)
+    @Test
+    @Ignore(
+        "AlbumCard is unrenderable under this Robolectric harness — CardBase's SwipeableActionRow " +
+            "blocker (see class KDoc). The onEditTags-non-null (both-rows) case is proven " +
+            "structurally by the source assertion; device proof at Phase 113 Gate-1. [Blocking]"
+    )
+    fun `AlbumCard with non-null onEditTags shows both Edit and Edit tags rows`() {
+        composeTestRule.setContent {
+            val openRowState = remember {
+                mutableStateOf<AnchoredDraggableState<SwipeAnchor>?>(null)
+            }
+            AlbumCard(
+                id = "a1",
+                title = "My Album",
+                isPinned = false,
+                isFavorite = false,
+                thumbnailItems = emptyList(),
+                onTap = {},
+                onDelete = {},
+                onRename = {},
+                onTogglePin = {},
+                onToggleFavorite = {},
+                openRowState = openRowState,
+                onEditTags = {}
+            )
+        }
+        composeTestRule.onNodeWithContentDescription("More options").performClick()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Edit").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Edit tags").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Rename").assertDoesNotExist()
+    }
 }
