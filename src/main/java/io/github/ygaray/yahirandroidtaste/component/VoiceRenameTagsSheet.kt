@@ -31,6 +31,10 @@ import androidx.compose.runtime.setValue
  *   close — does NOT call [onSave].
  * @param tagContent Optional slot for the live tag row (`:app`'s `TagChipEditor`, keyed by cardId).
  *   Mounted bare directly below the title field — no preceding "Tags" label (Locked Decision 1).
+ * @param tagsDirty Whether the tags have changed since the sheet opened (EDIT-02). The Save button
+ *   enables on name-OR-tags dirty: name-dirty is computed here from [defaultTitle]; the tags half is
+ *   supplied by the caller since the live tag row lives in `:app`'s [tagContent] slot. Defaults false
+ *   so an unwired caller still gates on name change (never always-on).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +42,8 @@ fun VoiceRenameTagsSheet(
     defaultTitle: String,
     onSave: (title: String) -> Unit,
     onDismiss: () -> Unit,
-    tagContent: (@Composable () -> Unit)? = null
+    tagContent: (@Composable () -> Unit)? = null,
+    tagsDirty: Boolean = false
 ) {
     val sheetState = rememberModalBottomSheetState()
 
@@ -53,6 +58,7 @@ fun VoiceRenameTagsSheet(
             onNameChange = { title = it },
             nameLabel = "Title",
             tagsContent = { tagContent?.invoke() },
+            enabled = (title.trim() != defaultTitle) || tagsDirty,
             onSave = { onSave(title.trim().ifBlank { defaultTitle }) },
             onDismiss = onDismiss,
             saveLabel = "Rename Voice Note"
