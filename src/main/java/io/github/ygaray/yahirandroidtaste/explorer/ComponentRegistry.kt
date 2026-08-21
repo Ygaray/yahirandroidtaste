@@ -98,6 +98,11 @@ object ComponentRegistry {
             "Swipe-reveal mechanics powering CardBase and EditorItemRow — infrastructure, not " +
             "an independent visual archetype; already exercised indirectly via every card " +
             "entry's reveal-confirm swipe and via EditorItemRow's own demo.",
+        "RevealActionRow" to
+            "Swipe-reveal mechanics for arbitrary 0-2 action slots (vs SwipeableActionRow's fixed " +
+            "Delete/Edit pair) — infrastructure, not an independent visual archetype; exercised " +
+            "indirectly via callers' own row demos, mirroring SwipeableActionRow's own allowlist " +
+            "precedent.",
         "YahirAndroidTasteTheme" to
             "Theme-level wrapper every explorer screen (including this registry's own family " +
             "screens) already composes around itself — not an independently showcaseable " +
