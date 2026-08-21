@@ -27,12 +27,18 @@ import androidx.compose.ui.unit.dp
  * @param label the leading text in the header row (e.g. a metric name).
  * @param valueText the trailing text in the header row, fully caller-formatted (e.g.
  *   `"142 / 180 kcal"` or `"42 / 100 pts"`) — this composable performs no number formatting.
- * @param fraction the progress bar's fill fraction, `0f..1f`, caller-computed.
- * @param band the 5-band state driving [barColor]'s default.
+ * @param fraction the progress bar's fill fraction, `0f..1f`, caller-computed. Required (non-null)
+ *   when [remainingText] is non-null; unused and safely omittable for a header-only call
+ *   (`remainingText == null`, IN-02).
+ * @param band the 5-band state driving [barColor]'s default. Required (non-null) when
+ *   [remainingText] is non-null; unused and safely omittable for a header-only call.
  * @param modifier applied to the outer [Column].
  * @param remainingText when non-null, renders the progress bar + a trailing remaining-amount
- *   line below the header; when null, only the header row is shown (mirrors a no-goal metric).
- * @param barColor the progress fill color; defaults to [MetricBarDefaults.colorFor] for [band].
+ *   line below the header; when null, only the header row is shown (mirrors a no-goal metric) and
+ *   [fraction]/[band] are never read.
+ * @param barColor the progress fill color; defaults to [MetricBarDefaults.colorFor] for [band]
+ *   (or [MetricBarDefaults.Good] when [band] is null — only reachable in header-only mode, where
+ *   this default is never actually rendered).
  * @param trackColor the empty-track color. Defaults to [MaterialTheme.colorScheme.outline] —
  *   deliberately NOT `outlineVariant`, `surfaceVariant`, or `surface`. This is CalTracker's most
  *   recently fixed value (its own Phase 40-04 / D-03 contrast fix): on a FIXED (non-dynamic)
@@ -45,13 +51,19 @@ import androidx.compose.ui.unit.dp
 fun MetricBar(
     label: String,
     valueText: String,
-    fraction: Float,
-    band: MetricBand,
+    fraction: Float? = null,
+    band: MetricBand? = null,
     modifier: Modifier = Modifier,
     remainingText: String? = null,
-    barColor: Color = MetricBarDefaults.colorFor(band),
+    barColor: Color = band?.let(MetricBarDefaults::colorFor) ?: MetricBarDefaults.Good,
     trackColor: Color = MaterialTheme.colorScheme.outline,
 ) {
+    // IN-02: fraction/band are optional so a header-only call site (remainingText == null) isn't
+    // forced to fabricate meaningless values, but they're still required once remainingText makes
+    // the progress bar actually render.
+    require(remainingText == null || (fraction != null && band != null)) {
+        "MetricBar: fraction and band are required when remainingText is non-null"
+    }
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -77,7 +89,8 @@ fun MetricBar(
 
         if (remainingText != null) {
             LinearProgressIndicator(
-                progress = { fraction },
+                // Guarded by the require() above -- fraction is non-null whenever this branch runs.
+                progress = { fraction ?: 0f },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(14.dp),
