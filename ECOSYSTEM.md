@@ -31,14 +31,16 @@ independent apps that consume it:
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
   | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.1.3`** (repinned + device-verified, v1.21 Phases 109→113; Gate-1 SC4 re-verify PASS) — matches latest | `gradle/libs.versions.toml` |
-  | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.0.0`** (adopted Phase 39 ADOPT-01, catalog alias `libs.yahirandroidtaste`); latest `v1.1.3` → repin deferred | `gradle/libs.versions.toml` |
+  | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.2.0`** (repinned + Gate-1-confirmed, Phase 43 / GIVE-04) — matches latest | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
   No "Deploy host" column — Android apps are installed on devices, not daemon-deployed.)_
 
-**Current published tag:** **`v1.1.3`** — latest of the `v1.1.x` line cut after `v1.0.0`.
-**SecondBrain pins `v1.1.3`** (matches latest); **CalTracker still pins `v1.0.0`** and repins on
+**Current published tag:** **`v1.2.0`** — cut in **Phase 43** (GIVE-04), the give-leg minor bump
+past the `v1.1.x` line.
+**SecondBrain pins `v1.1.3`** (matches latest); **CalTracker now pins `v1.2.0`** (repinned Phase 43,
+GIVE-04) — each consumer repins on
 its own cadence (a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
@@ -48,6 +50,17 @@ Phases 109→113** (REPIN-02): the `v1.1.1`→`v1.1.2`→`v1.1.3` line was cut o
 remediation cycle (EDIT consolidation, album footer button, Voice rename dirty gate) and the repin
 is **Gate-1 device-verified** (SC4 re-verify all_pass, SM-S908U / API 35). *(SB's in-repo `yahirandroidtaste/` module-directory deletion is deferred —
 an SB-internal cleanup — but SB consumes this published AAR regardless.)*
+
+CalTracker cut and repinned onto **`v1.2.0`** in **Phase 43** (GIVE-04), human-gated on hub commit
+`9aea3d3b27969c99b7e7c5c32baacbf0ba8fee7f` (hub `main` tip, built on the Phase-42 give-leg content at
+`449c4b18fc1d1fce4572264388c967a8d48f86b1`; JitPack BUILD SUCCESSFUL, `.aar`/`.pom` HTTP 200 at the
+v-prefixed coordinate `com.github.Ygaray:yahirandroidtaste:v1.2.0`). This tag carries CalTracker's
+own 4 upstreamed give-leg components — **MetricBar** (new 8th "Progress / Metrics" `ComponentRegistry`
+family), **RevealActionRow** (additive swipe-reveal sibling, `SwipeableActionRow` kept
+byte-unchanged), **SegmentedOptionSelector**, and **AttentionCue** — plus the Compose BOM
+`2026.04.01` alignment. The repin is **Gate-1 self-UAT confirmed** (`43-02-SELF-UAT.md`, `gsd-api35`
+emulator): live (non-cached) `--refresh-dependencies` resolution confirm, zero crashes across a full
+navigation smoke pass, and the `RevealActionRow`/`SwipeRevealRow` fold spot-checked live on-device.
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
@@ -178,7 +191,7 @@ There is no `new_consumer` scaffolder for these Android hubs. To wire a new cons
 3. `./gradlew --refresh-dependencies :app:dependencies | grep yahirandroidtaste` — confirm it resolved.
 4. Ensure the two consumer prerequisites hold: a Hilt-enabled `Application` (`@HiltAndroidApp`) so
    the library's `@Singleton` bindings aggregate into your `SingletonComponent`, and a Compose BOM
-   aligned with the library's (2026.02.01). See this repo's `README.md`, `API.md`, and
+   aligned with the library's (2026.04.01). See this repo's `README.md`, `API.md`, and
    `INTEGRATION.md`.
 5. Register the new consumer in §1 above **and** in `~/.claude/context/deps/_index.md` +
    `deps/yahirandroidtaste.md` (the drift rule — four registries must agree, manifest wins).
