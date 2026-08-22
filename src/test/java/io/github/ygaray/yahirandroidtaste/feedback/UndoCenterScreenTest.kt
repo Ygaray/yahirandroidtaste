@@ -1,5 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.feedback
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -47,8 +49,9 @@ class UndoCenterScreenTest {
         val id = store.append("Tag deleted", preview = UndoPreview.Tag("Work")) { }
 
         composeTestRule.setContent {
+            val entries by store.entries.collectAsState()
             UndoCenterScreen(
-                entries = store.entries.value,
+                entries = entries,
                 onNavigateBack = {},
                 onUndo = {},
                 onClear = {}
@@ -74,8 +77,9 @@ class UndoCenterScreenTest {
         val id = store.append("Tag deleted", preview = UndoPreview.Tag("Work")) { }
 
         composeTestRule.setContent {
+            val entries by store.entries.collectAsState()
             UndoCenterScreen(
-                entries = store.entries.value,
+                entries = entries,
                 onNavigateBack = {},
                 onUndo = { undoInvoked = true },
                 onClear = {}
@@ -102,8 +106,9 @@ class UndoCenterScreenTest {
         store.append("Tag deleted", preview = UndoPreview.Tag("Work")) { }
 
         composeTestRule.setContent {
+            val entries by store.entries.collectAsState()
             UndoCenterScreen(
-                entries = store.entries.value,
+                entries = entries,
                 onNavigateBack = {},
                 onUndo = { undoCallCount++ },
                 onClear = {}
@@ -128,8 +133,9 @@ class UndoCenterScreenTest {
         val id = store.append("Card moved") { } // preview omitted -> null
 
         composeTestRule.setContent {
+            val entries by store.entries.collectAsState()
             UndoCenterScreen(
-                entries = store.entries.value,
+                entries = entries,
                 onNavigateBack = {},
                 onUndo = {},
                 onClear = {}
