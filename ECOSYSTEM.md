@@ -37,10 +37,10 @@ independent apps that consume it:
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
   No "Deploy host" column — Android apps are installed on devices, not daemon-deployed.)_
 
-**Current published tag:** **`v1.2.0`** — cut in **Phase 43** (GIVE-04), the give-leg minor bump
-past the `v1.1.x` line.
-**SecondBrain pins `v1.1.3`** (matches latest); **CalTracker now pins `v1.2.0`** (repinned Phase 43,
-GIVE-04) — each consumer repins on
+**Current published tag:** **`v1.3.0`** — cut in **SecondBrain Phase 114 Plan 05**, the
+gallery-curation-and-verification minor bump past the `v1.2.x` line.
+**SecondBrain pins `v1.1.3`** (repin to `v1.3.0` pending — SecondBrain Phase 115); **CalTracker
+pins `v1.2.0`** (repinned Phase 43, GIVE-04) — each consumer repins on
 its own cadence (a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
@@ -61,6 +61,21 @@ byte-unchanged), **SegmentedOptionSelector**, and **AttentionCue** — plus the 
 `2026.04.01` alignment. The repin is **Gate-1 self-UAT confirmed** (`43-02-SELF-UAT.md`, `gsd-api35`
 emulator): live (non-cached) `--refresh-dependencies` resolution confirm, zero crashes across a full
 navigation smoke pass, and the `RevealActionRow`/`SwipeRevealRow` fold spot-checked live on-device.
+
+`v1.3.0` was cut in **SecondBrain Phase 114** (`EDIT-04`, `ICON-01`, `TAG-03`), an autonomous
+minor bump — the owner's tag-cut checkpoint is waived for this personal-use hub ecosystem
+(2026-08-20, `[[personal-app-tag-cut-gate-waived]]`, Option C) — on hub commit
+`ea969a3b577eb611d5d1594d0f7d5ccc304e5742` (Plan 04's recorded green tip: full suite, CATALOG-03
+drift guard non-vacuously, states-matrix, detekt zero-baseline, build, and a
+JitPack-equivalent local publish all green). The tag carries three additive edits, none of them
+breaking: **`TextCardBottomSheet`/`ListCardBottomSheet`** gain a trailing nullable defaulted
+`onEditRequest: (() -> Unit)? = null` hook routing the three-dot menu's Edit row to the host's
+shared tag-inclusive sheet when bound (`EDIT-04`); **`IconPickerGrid`** gains an internal live
+name-substring search with an empty-state, public signature unchanged (`ICON-01`); and
+**`TagChipEditorContent`**'s applied-tag chips gain double-tap removal through the existing
+undo-backed `onRemoveTag` callback (`TAG-03`). Verified resolvable via a real (non-cached-local)
+JitPack build (`com.github.Ygaray:yahirandroidtaste:v1.3.0`) — see `114-05-SUMMARY.md` for the
+full evidence. **First consumer repin (SecondBrain) is pending — Phase 115.**
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
