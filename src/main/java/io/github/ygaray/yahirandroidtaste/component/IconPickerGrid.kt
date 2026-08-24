@@ -2,6 +2,9 @@ package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -10,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.BeachAccess
@@ -2040,6 +2044,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -4093,6 +4101,39 @@ val ICON_MAP: Map<String, ImageVector> = mapOf(
     "zoom_out_map" to Icons.Filled.ZoomOutMap,
 )
 
+/**
+ * Filters [ICON_MAP]'s entries by a plain, case-insensitive substring match on the snake_case key.
+ *
+ * A blank [query] returns every entry unchanged, in [ICON_MAP]'s own insertion order. A non-blank
+ * [query] returns only entries whose key contains it (case-insensitive) — no alias/synonym layer,
+ * no fuzzy matcher, no ranking pass (D-01, ICON-01 milestone research vocabulary spot-check).
+ *
+ * `internal`, not `public`: kept out of the AAR's public API surface while remaining visible to this
+ * module's own unit tests. Not `@Composable`, so the CATALOG-03 drift guard does not scan it.
+ */
+internal fun filterIconEntries(query: String): List<Map.Entry<String, ImageVector>> {
+    if (query.isBlank()) return ICON_MAP.entries.toList()
+    return ICON_MAP.entries.filter { it.key.contains(query, ignoreCase = true) }
+}
+
+/**
+ * A scrollable grid picker over [ICON_MAP], with an internal live search filter above the grid.
+ *
+ * @param selectedIcon The currently selected [ICON_MAP] key; its cell is highlighted with the
+ *   [MaterialTheme.colorScheme.primaryContainer] tint when it is present in the filtered set.
+ * @param onIconSelected Invoked with an [ICON_MAP] key when its cell is tapped.
+ * @param modifier Applied to the outer [Column] (search row + grid).
+ * @param showIndices Gallery-only debug flag; renders a numeric badge on each cell indicating its
+ *   position within the currently-rendered (i.e. filtered) list. Defaults to `false` in production.
+ *
+ * Search behavior: the field above the grid (labelled "Search icons") filters [ICON_MAP] live via
+ * [filterIconEntries] — a plain, case-insensitive substring match on the snake_case key, with no
+ * alias layer (D-01). An empty query shows the full grid; a query matching zero entries shows a
+ * defined empty state in place of the grid. The filter recomputes synchronously on every keystroke
+ * (no `remember`/`derivedStateOf` memoization) because a sub-millisecond in-memory scan over
+ * [ICON_MAP]'s ~2,038 short keys does not warrant it; that memoization is a documented backstop, to
+ * be added only if a future device pass observes real jank.
+ */
 @Composable
 fun IconPickerGrid(
     selectedIcon: String,
@@ -4100,40 +4141,70 @@ fun IconPickerGrid(
     modifier: Modifier = Modifier,
     showIndices: Boolean = false
 ) {
-    val entries = ICON_MAP.entries.toList()
-    Box(modifier = modifier.heightIn(max = 320.dp)) {
-        LazyVerticalGrid(columns = GridCells.Fixed(5)) {
-            itemsIndexed(entries, key = { _, e -> e.key }) { index, (name, vector) ->
-                val isSelected = name == selectedIcon
-                Box {
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
-                    ) {
-                        IconButton(
-                            onClick = { onIconSelected(name) },
-                            modifier = Modifier.size(48.dp)
+    var query by remember { mutableStateOf("") }
+    val entries = filterIconEntries(query)
+
+    Column(modifier = modifier) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            ClearableTextField(
+                value = query,
+                onValueChange = { query = it },
+                label = { Text("Search icons") },
+                singleLine = true,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = null
+                    )
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .testTag("icon_search_field")
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .heightIn(max = 320.dp)
+                .testTag("icon_search_grid")
+        ) {
+            LazyVerticalGrid(columns = GridCells.Fixed(5)) {
+                itemsIndexed(entries, key = { _, e -> e.key }) { index, (name, vector) ->
+                    val isSelected = name == selectedIcon
+                    Box {
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
                         ) {
-                            Icon(
-                                imageVector = vector,
-                                contentDescription = name
-                            )
+                            IconButton(
+                                onClick = { onIconSelected(name) },
+                                modifier = Modifier.size(48.dp)
+                            ) {
+                                Icon(
+                                    imageVector = vector,
+                                    contentDescription = name
+                                )
+                            }
                         }
-                    }
-                    if (showIndices) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .clip(RoundedCornerShape(50))
-                                .background(MaterialTheme.colorScheme.inverseSurface)
-                                .padding(horizontal = 4.dp)
-                                .testTag("icon_index_badge")
-                        ) {
-                            Text(
-                                text = "${index + 1}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.inverseOnSurface
-                            )
+                        if (showIndices) {
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .clip(RoundedCornerShape(50))
+                                    .background(MaterialTheme.colorScheme.inverseSurface)
+                                    .padding(horizontal = 4.dp)
+                                    .testTag("icon_index_badge")
+                            ) {
+                                Text(
+                                    text = "${index + 1}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.inverseOnSurface
+                                )
+                            }
                         }
                     }
                 }
