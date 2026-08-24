@@ -4,6 +4,8 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -104,5 +106,83 @@ class IconPickerSearchTest {
             ICON_MAP.entries.filter { it.key.contains("zoom", ignoreCase = true) },
             result
         )
+    }
+
+    // --- Test 5: zero-match query renders the empty state ---
+
+    @Test
+    fun `a zero-match query renders the empty-state heading, body, and container`() {
+        composeTestRule.setContent {
+            IconPickerGrid(selectedIcon = "", onIconSelected = {})
+        }
+        composeTestRule.waitForIdle()
+
+        // Obviously non-lexical -- cannot start matching/not-matching for vocabulary reasons if
+        // ICON_MAP grows (114-02-PLAN.md Task 2 action).
+        composeTestRule.onNodeWithTag("icon_search_field").performTextInput(ZERO_MATCH_QUERY)
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("icon_search_empty_state").assertExists()
+        composeTestRule.onNodeWithText("No icons found").assertExists()
+        composeTestRule.onNodeWithText("Try a different search term.").assertExists()
+    }
+
+    // --- Test 6: zero-match query -- the grid branch is not composed at all ---
+
+    @Test
+    fun `a zero-match query does not compose the grid branch`() {
+        composeTestRule.setContent {
+            IconPickerGrid(selectedIcon = "", onIconSelected = {})
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("icon_search_field").performTextInput(ZERO_MATCH_QUERY)
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("icon_search_grid").assertDoesNotExist()
+    }
+
+    // --- Test 7: clearing the field restores the full grid ---
+
+    @Test
+    fun `clearing the field via the built-in clear affordance restores the full grid`() {
+        composeTestRule.setContent {
+            IconPickerGrid(selectedIcon = "", onIconSelected = {})
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("icon_search_field").performTextInput(ZERO_MATCH_QUERY)
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("icon_search_empty_state").assertExists()
+
+        composeTestRule.onNodeWithContentDescription("Clear text").performClick()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("icon_search_empty_state").assertDoesNotExist()
+        // Selector confirmed by the Task-1 cell-semantics probe: unique contentDescription match.
+        // ICON_MAP.keys.first() is at scroll position zero, so it is guaranteed inside the viewport.
+        composeTestRule.onNodeWithContentDescription(ICON_MAP.keys.first()).assertExists()
+    }
+
+    // --- Test 8: the two branches are mutually exclusive ---
+
+    @Test
+    fun `a matching query does not render the empty state`() {
+        composeTestRule.setContent {
+            IconPickerGrid(selectedIcon = "", onIconSelected = {})
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("icon_search_field").performTextInput("zoom_out_map")
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("icon_search_empty_state").assertDoesNotExist()
+        composeTestRule.onNodeWithTag("icon_search_grid").assertExists()
+    }
+
+    private companion object {
+        // A run of repeated consonants -- not a plausible English word, so it cannot start
+        // matching/not-matching for vocabulary reasons if ICON_MAP grows (Task 2 action).
+        const val ZERO_MATCH_QUERY = "qxzqxzqxz"
     }
 }
