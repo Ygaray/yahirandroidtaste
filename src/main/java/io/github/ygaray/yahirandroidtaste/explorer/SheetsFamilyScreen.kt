@@ -641,6 +641,36 @@ private fun ListCardSheetSection() {
     }
 }
 
+// LIST-04: demonstrates the read-only, truncated items preview -- a static 3-item CHECKBOX
+// prefix (no live Checkbox, no toggle interaction) plus a non-zero previewOverflowCount so the
+// "+N more" hint is visible in the gallery too.
+@Composable
+private fun ListCardBottomSheetReadOnlyPreviewSection() {
+    var show by remember { mutableStateOf(false) }
+    ShowSheetButton("ListCardBottomSheet (read-only preview)") { show = true }
+    if (show) {
+        ListCardBottomSheet(
+            title = ExplorerFakeData.SHORT_TITLE,
+            items = ExplorerFakeData.checklistItems,
+            subType = "CHECKBOX",
+            categoryPath = null,
+            createdAt = ExplorerFakeData.CREATED_AT,
+            updatedAt = ExplorerFakeData.UPDATED_AT,
+            isPinned = false,
+            isFavorite = false,
+            onToggleItem = {},
+            onEdit = {},
+            onDismiss = { show = false },
+            onTogglePin = {},
+            onToggleFavorite = {},
+            onConfirmRename = {},
+            onDelete = {},
+            readOnlyPreview = true,
+            previewOverflowCount = 4
+        )
+    }
+}
+
 @Composable
 private fun AlbumTitleConfirmSheetSection() {
     var show by remember { mutableStateOf(false) }
@@ -902,6 +932,7 @@ private fun TextCardBottomSheetVariants() {
 @Composable
 private fun ListCardBottomSheetVariants() {
     WithSheetFeedback { ListCardSheetSection() }
+    WithSheetFeedback { ListCardBottomSheetReadOnlyPreviewSection() }
 }
 
 @Composable
