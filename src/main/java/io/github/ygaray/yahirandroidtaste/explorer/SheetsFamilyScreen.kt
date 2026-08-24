@@ -999,7 +999,7 @@ private fun DemoTagChipEditor(
     seedTags: List<TagChipUiModel>,
     modifier: Modifier = Modifier
 ) {
-    var tags by remember { mutableStateOf(seedTags) }
+    var tags by remember(seedTags) { mutableStateOf(seedTags) }
     TagChipEditorContent(
         currentTags = tags,
         isLastTag = tags.size == 1,
