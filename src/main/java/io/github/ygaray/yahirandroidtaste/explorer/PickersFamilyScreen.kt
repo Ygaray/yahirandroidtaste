@@ -174,7 +174,10 @@ fun PickersFamilyScreen(
 @Composable
 private fun IconPickerGridVariants() {
     var selectedIcon by remember { mutableStateOf("star") }
-    SectionLabel("IconPickerGrid")
+    // ICON-01: label names the live search capability so a gallery viewer knows to type in the
+    // field above the grid -- the composable itself already exercises the real search live, no
+    // demo wiring change was needed (Phase 114-02 shipped it inside IconPickerGrid itself).
+    SectionLabel("IconPickerGrid — type to search icons")
     IconPickerGrid(
         selectedIcon = selectedIcon,
         onIconSelected = { selectedIcon = it },

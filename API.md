@@ -76,15 +76,15 @@ these render its body) plus the shared scaffolding and editor rows.
 | `ClearableTextField` | Text field with a clear (✕) affordance | `value, onValueChange` |
 | `EditorItemRow` | A reorderable list-editor row — **exposes a `ReorderableCollectionItemScope` receiver** (from `sh.calvin.reorderable`, re-exported via `api`) | receiver `ReorderableCollectionItemScope`; `item: ListItemUiModel, itemIndex, isDragging, …` |
 | `CardEditorShellContent` | The pluggable card-editor shell body (content slot per card type) | `accentColor: Long?, onSave, onNavigateBack, …` |
-| `TextCardBottomSheet` | Text-card create/edit sheet content | title/content state + save callbacks |
-| `ListCardBottomSheet` | List-card create/edit sheet content | list items + subtype + save callbacks |
+| `TextCardBottomSheet` | Read-only text-card preview sheet content (pin/favorite/edit/delete) | metadata + `onEditRequest: (() -> Unit)? = null` — bound routes the Edit row to the host's shared name-and-tags sheet, null (default) falls back to this sheet's local tag-less rename dialog |
+| `ListCardBottomSheet` | Read-only list-card preview sheet content (pin/favorite/edit/delete) | items + subtype + `onEditRequest: (() -> Unit)? = null` — same two-state Edit-routing contract as `TextCardBottomSheet` |
 | `RecordingBottomSheetContent` | Voice-recording sheet body (waveform + timer) | `uiState: RecordingSheetUiState, elapsedSeconds` |
 | `AlbumSourcePickerSheet` | Camera-vs-gallery source picker sheet | `onNavigateToCamera, onNavigateToGallery, …` |
 | `AlbumTitleConfirmSheet` | Album-title confirmation sheet | title state + confirm callback |
 | `VoiceRenameTagsSheet` | Voice-note rename + tags sheet | `defaultTitle, onSave(title), …` |
 | `TagPickerSheet` | Full tag-picker sheet (host + content) | `existingTagIds: Set<String>, allTags: List<TagChipUiModel>, onDone(List<String>)` |
 | `TagPickerSheetContent` | Tag-picker body (no host) | `allTags, selection, onDone` |
-| `TagChipEditorContent` | Inline tag-chip editor body | `currentTags: List<TagChipUiModel>, isLastTag, …` |
+| `TagChipEditorContent` | Inline tag-chip editor body | `currentTags: List<TagChipUiModel>, isLastTag, …` — applied chips also support double-tap-to-remove, routed through the same undo-backed `onRemoveTag` callback the long-press menu's "Remove from this card" item uses |
 | `TagCreateSheet` | Create-a-tag sheet (host + content) | new-tag name/color + confirm |
 | `TagCreateSheetContent` | Create-a-tag body (no host) | new-tag name/color + confirm |
 | `BulkCreatePopup` | Bulk create-multiple popup (host + content) | `onDismissRequest, actionLabel, …` |
@@ -107,7 +107,7 @@ these render its body) plus the shared scaffolding and editor rows.
 | Composable | Purpose | Key parameters |
 |-----------|---------|----------------|
 | `AccentColorPicker` | Accent-color swatch picker | `selectedColor: Long, onColorSelected: (Long) -> Unit` |
-| `IconPickerGrid` | Module/tag icon grid picker | `selectedIcon: String, onIconSelected: (String) -> Unit` |
+| `IconPickerGrid` | Module/tag icon grid picker | `selectedIcon: String, onIconSelected: (String) -> Unit` — public parameters unchanged; the grid includes a built-in live case-insensitive name-substring search field with an empty-state when nothing matches |
 | `CropOverlay` | Crop-rectangle overlay for image editing | `bitmapWidth, bitmapHeight, aspectRatio: Float?, …` |
 
 ## 6. Feedback
