@@ -156,4 +156,66 @@ class TextListBottomSheetEditMenuSourceContractTest {
             src.contains("onConfirmRename(")
         )
     }
+
+    // --- ListCardBottomSheet (Task 2) ---
+
+    @Test
+    fun `ListCardBottomSheet declares a trailing nullable defaulted onEditRequest param`() {
+        val src = source("ListCardBottomSheet.kt")
+        assertTrue(
+            "ListCardBottomSheet must declare a trailing, nullable, defaulted onEditRequest param",
+            src.contains("onEditRequest: (() -> Unit)? = null")
+        )
+    }
+
+    @Test
+    fun `ListCardBottomSheet Edit row branches non-null onEditRequest, null local dialog, not inverted`() {
+        val src = source("ListCardBottomSheet.kt")
+        assertTrue(
+            "ListCardBottomSheet's Edit row must branch on `if (onEditRequest != null)` " +
+                "(not inverted)",
+            src.contains("if (onEditRequest != null)")
+        )
+        assertTrue(
+            "ListCardBottomSheet must retain its showRenameDialog fallback",
+            src.contains("showRenameDialog = true")
+        )
+        assertTrue(
+            "ListCardBottomSheet must retain its local rename AlertDialog",
+            src.contains("AlertDialog(")
+        )
+    }
+
+    @Test
+    fun `ListCardBottomSheet menu row reads Edit exactly once and Rename zero times`() {
+        val src = source("ListCardBottomSheet.kt")
+        val region = stripComments(editMenuItemRegion(src))
+        assertEquals(
+            "ListCardBottomSheet menu-item region must have exactly one Text(\"Edit\") row",
+            1,
+            countOccurrences(region, "Text(\"Edit\")")
+        )
+        assertEquals(
+            "ListCardBottomSheet menu-item region must have no Text(\"Rename\") row",
+            0,
+            countOccurrences(region, "Text(\"Rename\")")
+        )
+    }
+
+    @Test
+    fun `ListCardBottomSheet retains showRenameDialog local dialog fallback and unchanged Edit list button`() {
+        val src = source("ListCardBottomSheet.kt")
+        assertTrue(
+            "ListCardBottomSheet must retain showRenameDialog state (null-hook fallback)",
+            src.contains("showRenameDialog")
+        )
+        assertTrue(
+            "ListCardBottomSheet must retain its local rename AlertDialog block",
+            src.contains("AlertDialog(")
+        )
+        assertTrue(
+            "ListCardBottomSheet's bottom content-editor Button copy must be unchanged",
+            src.contains("Text(\"Edit list\")")
+        )
+    }
 }
