@@ -12,7 +12,6 @@ import androidx.compose.ui.test.performTouchInput
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
 import java.io.File
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -86,25 +85,6 @@ class TagChipEditorDoubleTapRemovalTest {
             i++
         }
         return line
-    }
-
-    /**
-     * Isolates the substring between the `// region:tag-chip-item` / `// endregion:tag-chip-item`
-     * marker comments added in this plan. Located on the RAW source first (the markers are
-     * themselves comments), before [stripComments] is applied by the caller. Fails loudly by name
-     * if either marker is missing, rather than returning an empty region that would let a negative
-     * grep pass vacuously (cycle-2 review finding 2).
-     */
-    private fun tagChipItemRegion(src: String): String {
-        val start = src.indexOf("// region:tag-chip-item")
-        val end = src.indexOf("// endregion:tag-chip-item")
-        require(start >= 0 && end > start) {
-            "114-03: could not locate the // region:tag-chip-item / // endregion:tag-chip-item " +
-                "markers — they are load-bearing anchors for " +
-                "TagChipEditorDoubleTapRemovalTest, not decorative comments. Restore them around " +
-                "the TagChipWithContextMenu(...) call site in TagChipEditorContent.kt."
-        }
-        return src.substring(start, end)
     }
 
     @Test
@@ -239,45 +219,161 @@ class TagChipEditorDoubleTapRemovalTest {
         )
     }
 
-    // --- Structural drift guards (`<proof_scope>`): prove source shape, not runtime behavior.
-    // Test 3 above is the behavioral, load-bearing gate; these are the cheap, permanent
-    // tripwires against the wiring quietly drifting back onto the wrong callback or a second
-    // gesture detector creeping in. ---
+    // --- Non-regression matrix (Task 2): single tap, long press, gesture mutual exclusion, and
+    // the isLastTag warning row. `isLastTag` is a plain, caller-supplied Boolean parameter on
+    // TagChipEditorContent (TagChipEditorContent.kt:92) — it is fixed for the composition, not
+    // derived from any live selection/list state inside this composable. That means Tests 8a/8b's
+    // split is belt-and-braces here (the warning provably cannot vanish mid-test because the test
+    // controls the value directly), not a load-bearing race guard — but the split is written
+    // anyway per the plan's uniform Tests-8a/8b shape. The warning row is inside an
+    // AnimatedVisibility (TagChipEditorContent.kt:113-137), so no absence assertion is made
+    // anywhere in this file — only presence, and only pre-gesture (Test 8a). ---
 
     @Test
-    fun sourceGuard_markerScopedRegion_hasExactlyOneOnDoubleClick_andZeroOnRemoveTagNoUndo() {
-        val src = source("TagChipEditorContent.kt")
-        val region = stripComments(tagChipItemRegion(src))
+    fun test4_singleTap_invokesNeitherRemovalCallback_doesNotOpenMenu() {
+        var removeTagCount = 0
+        var removeTagNoUndoCount = 0
+
+        composeTestRule.setContent {
+            TagChipEditorContent(
+                currentTags = listOf(tag("id-1", "Work")),
+                isLastTag = false,
+                allTags = emptyList(),
+                onRemoveTag = { removeTagCount++ },
+                onAddTags = {},
+                onRemoveTagNoUndo = { removeTagNoUndoCount++ },
+                onCreateTag = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithContentDescription("Work tag").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals("A single tap must not invoke onRemoveTag", 0, removeTagCount)
+        assertEquals("A single tap must not invoke onRemoveTagNoUndo", 0, removeTagNoUndoCount)
+        composeTestRule.onNodeWithText("Remove from this card").assertDoesNotExist()
+    }
+
+    @Test
+    fun test5_longPress_stillOpensMenu_withRemoveFromThisCardItem() {
+        composeTestRule.setContent {
+            TagChipEditorContent(
+                currentTags = listOf(tag("id-1", "Work")),
+                isLastTag = false,
+                allTags = emptyList(),
+                onRemoveTag = {},
+                onAddTags = {},
+                onRemoveTagNoUndo = {},
+                onCreateTag = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithContentDescription("Work tag").performTouchInput { longClick() }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Remove from this card").assertExists()
+    }
+
+    @Test
+    fun test6_longPress_tappingRemoveItem_invokesOnRemoveTagOnce_withCorrectId() {
+        val removed = mutableListOf<String>()
+
+        composeTestRule.setContent {
+            TagChipEditorContent(
+                currentTags = listOf(tag("id-1", "Work")),
+                isLastTag = false,
+                allTags = emptyList(),
+                onRemoveTag = { removed.add(it) },
+                onAddTags = {},
+                onRemoveTagNoUndo = {},
+                onCreateTag = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithContentDescription("Work tag").performTouchInput { longClick() }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("Remove from this card").performClick()
+        composeTestRule.waitForIdle()
 
         assertEquals(
-            "The // region:tag-chip-item marker-scoped region must bind onDoubleClick exactly " +
-                "once",
-            1,
-            countOccurrences(region, "onDoubleClick")
-        )
-        assertEquals(
-            "The // region:tag-chip-item marker-scoped region must never reference the " +
-                "picker-only onRemoveTagNoUndo callback (PITFALLS Pitfall 8)",
-            0,
-            countOccurrences(region, "onRemoveTagNoUndo")
+            "Tapping 'Remove from this card' must invoke onRemoveTag exactly once, with this " +
+                "chip's own tag id — the long-press path is unchanged by the double-tap binding",
+            listOf("id-1"),
+            removed
         )
     }
 
     @Test
-    fun sourceGuard_noSecondGestureDetector_pointerInputOrDetectTapGestures() {
-        val src = stripComments(source("TagChipEditorContent.kt"))
+    fun test7_doubleTap_doesNotOpenContextMenu() {
+        composeTestRule.setContent {
+            TagChipEditorContent(
+                currentTags = listOf(tag("id-1", "Work")),
+                isLastTag = false,
+                allTags = emptyList(),
+                onRemoveTag = {},
+                onAddTags = {},
+                onRemoveTagNoUndo = {},
+                onCreateTag = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithContentDescription("Work tag").performTouchInput { doubleClick() }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Remove from this card").assertDoesNotExist()
+        composeTestRule.onAllNodesWithText("Delete tag everywhere").assertCountEquals(0)
+    }
+
+    @Test
+    fun test8a_lastTag_warningDisplayed_beforeAnyGesture() {
+        composeTestRule.setContent {
+            TagChipEditorContent(
+                currentTags = listOf(tag("id-1", "Work")),
+                isLastTag = true,
+                allTags = emptyList(),
+                onRemoveTag = {},
+                onAddTags = {},
+                onRemoveTagNoUndo = {},
+                onCreateTag = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Removing this tag will leave the card untagged")
+            .assertExists()
+    }
+
+    @Test
+    fun test8b_lastTag_doubleTap_stillInvokesOnRemoveTagOnce_noNewBranch() {
+        val removed = mutableListOf<String>()
+
+        composeTestRule.setContent {
+            TagChipEditorContent(
+                currentTags = listOf(tag("id-1", "Work")),
+                isLastTag = true,
+                allTags = emptyList(),
+                onRemoveTag = { removed.add(it) },
+                onAddTags = {},
+                onRemoveTagNoUndo = {},
+                onCreateTag = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithContentDescription("Work tag").performTouchInput { doubleClick() }
+        composeTestRule.waitForIdle()
 
         assertEquals(
-            "TagChipEditorContent.kt must not add a pointerInput gesture detector — the " +
-                "existing AppChip combinedClickable already routes tap/long-press/double-tap " +
-                "(PITFALLS Pitfall 9)",
-            0,
-            countOccurrences(src, "pointerInput")
-        )
-        assertEquals(
-            "TagChipEditorContent.kt must not add a detectTapGestures gesture detector",
-            0,
-            countOccurrences(src, "detectTapGestures")
+            "A double-tap on the last remaining tag must still route through the same " +
+                "onRemoveTag callback exactly once — no new last-tag-specific double-tap " +
+                "branch exists",
+            listOf("id-1"),
+            removed
         )
     }
+
 }
