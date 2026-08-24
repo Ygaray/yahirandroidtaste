@@ -67,6 +67,11 @@ import androidx.compose.ui.unit.dp
  * @param imageCount IMG-02: caller-supplied number of inline images the card body contains.
  *   Defaulted to zero so every existing call site compiles and shows nothing. The consumer app
  *   computes the real value and binds it at Phase 109.
+ * @param onEditRequest EDIT-04: external trigger for the host-owned shared name-and-tags Edit
+ *   sheet. When non-null, the three-dot "Edit" row invokes it (the host opens the tag-inclusive
+ *   sheet, mirroring the already-shipped card-face [TextCard] pattern); when null (default), the
+ *   row falls back to this sheet's local tag-less rename dialog, so every existing call site
+ *   compiles and behaves as before. The consumer app wires it at Phase 115.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,7 +90,8 @@ fun TextCardBottomSheet(
     onDelete: () -> Unit,
     onConfirmRename: (String) -> Unit,
     tagContent: (@Composable () -> Unit)? = null,
-    imageCount: Int = 0
+    imageCount: Int = 0,
+    onEditRequest: (() -> Unit)? = null
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showMenu by remember { mutableStateOf(false) }
@@ -160,12 +166,26 @@ fun TextCardBottomSheet(
                         expanded = showMenu,
                         onDismissRequest = { showMenu = false }
                     ) {
-                        // Rename — opens inline dialog
+                        // region:edit-menu-item
+                        // Edit (EDIT-04) — external trigger to the host-owned shared
+                        // name-and-tags sheet when wired; otherwise falls back to the local
+                        // tag-less rename AlertDialog. TextListBottomSheetEditMenuSourceContractTest
+                        // anchors on the region markers below — they are load-bearing, not decorative.
                         DropdownMenuItem(
-                            text = { Text("Rename") },
-                            onClick = { showMenu = false; showRenameDialog = true },
+                            text = { Text("Edit") },
+                            onClick = {
+                                showMenu = false
+                                if (onEditRequest != null) {
+                                    onEditRequest()
+                                    onDismiss()
+                                } else {
+                                    renameText = title
+                                    showRenameDialog = true
+                                }
+                            },
                             leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) }
                         )
+                        // endregion:edit-menu-item
                         // Pin/Unpin
                         DropdownMenuItem(
                             text = { Text(if (isPinned) "Unpin" else "Pin") },
