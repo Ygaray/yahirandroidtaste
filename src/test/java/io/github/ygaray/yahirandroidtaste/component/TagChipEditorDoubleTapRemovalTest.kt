@@ -10,7 +10,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
-import java.io.File
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -49,43 +48,20 @@ class TagChipEditorDoubleTapRemovalTest {
     private fun tag(id: String, name: String) =
         TagChipUiModel(id = id, name = name, occurrenceCount = 0)
 
-    private fun source(file: String): String =
-        File("src/main/java/io/github/ygaray/yahirandroidtaste/component/$file").readText()
+    private fun source(file: String): String = SourceContractTestSupport.source(file)
 
     private fun countOccurrences(haystack: String, needle: String): Int =
-        haystack.split(needle).size - 1
+        SourceContractTestSupport.countOccurrences(haystack, needle)
 
     /**
      * Plan 01's extended `stripComments` contract, reused verbatim here (`<proof_scope>`'s
      * comment-stripping contract): drops full-line `//` comments, `*`-prefixed KDoc continuation
      * lines, and string-literal-aware trailing inline `//` comments on code lines. The third
      * clause is load-bearing for the marker-scoped negative grep below — without it, a trailing
-     * explanatory tail could carry a forbidden identifier past the gate.
+     * explanatory tail could carry a forbidden identifier past the gate. Delegates to the shared
+     * [SourceContractTestSupport] (114-REVIEW.md WR-01) rather than keeping its own copy.
      */
-    private fun stripComments(src: String): String =
-        src.lineSequence()
-            .filterNot { line ->
-                val trimmed = line.trimStart()
-                trimmed.startsWith("//") || trimmed.startsWith("*")
-            }
-            .map { line -> stripTrailingInlineComment(line) }
-            .joinToString("\n")
-
-    private fun stripTrailingInlineComment(line: String): String {
-        var inString = false
-        var i = 0
-        while (i < line.length) {
-            val c = line[i]
-            when {
-                c == '\\' && inString -> i++ // skip escaped char inside string
-                c == '"' -> inString = !inString
-                c == '/' && !inString && i + 1 < line.length && line[i + 1] == '/' ->
-                    return line.substring(0, i)
-            }
-            i++
-        }
-        return line
-    }
+    private fun stripComments(src: String): String = SourceContractTestSupport.stripComments(src)
 
     @Test
     fun probeA_composesAndChipIsFindable() {

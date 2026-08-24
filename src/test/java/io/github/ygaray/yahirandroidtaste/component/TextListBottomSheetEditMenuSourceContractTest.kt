@@ -3,7 +3,6 @@ package io.github.ygaray.yahirandroidtaste.component
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.io.File
 
 /**
  * Proves EDIT-04's bottom-sheet half in the hub: `TextCardBottomSheet` and `ListCardBottomSheet`
@@ -31,51 +30,12 @@ import java.io.File
  */
 class TextListBottomSheetEditMenuSourceContractTest {
 
-    private fun source(file: String): String =
-        File("src/main/java/io/github/ygaray/yahirandroidtaste/component/$file").readText()
+    private fun source(file: String): String = SourceContractTestSupport.source(file)
 
     private fun countOccurrences(haystack: String, needle: String): Int =
-        haystack.split(needle).size - 1
+        SourceContractTestSupport.countOccurrences(haystack, needle)
 
-    /**
-     * Strips comment noise from a source excerpt so label-literal counts are not polluted by
-     * comment prose. Strips three things:
-     *  1. whole lines whose first non-whitespace characters are `//`;
-     *  2. whole lines whose first non-whitespace character is `*` (KDoc/block-comment
-     *     continuation lines);
-     *  3. trailing inline `//` comments — the tail of a line from a `//` that appears *after*
-     *     code on the same line, cut only when that `//` sits outside a double-quoted string
-     *     (scanned left to right, honouring backslash escapes) so a legitimate `//` inside a
-     *     string literal (a URL, a path) is never truncated.
-     *
-     * Documented blind spots — deliberately NOT handled, extend this helper if a future
-     * assertion needs either: block `/* ... */` comments that open and close on a code line, and
-     * raw triple-quoted strings (a `//` inside one may be mis-treated as a comment start).
-     */
-    private fun stripComments(src: String): String =
-        src.lineSequence()
-            .filterNot { line ->
-                val trimmed = line.trimStart()
-                trimmed.startsWith("//") || trimmed.startsWith("*")
-            }
-            .map { line -> stripTrailingInlineComment(line) }
-            .joinToString("\n")
-
-    private fun stripTrailingInlineComment(line: String): String {
-        var inString = false
-        var i = 0
-        while (i < line.length) {
-            val c = line[i]
-            when {
-                c == '\\' && inString -> i++ // skip escaped char inside string
-                c == '"' -> inString = !inString
-                c == '/' && !inString && i + 1 < line.length && line[i + 1] == '/' ->
-                    return line.substring(0, i)
-            }
-            i++
-        }
-        return line
-    }
+    private fun stripComments(src: String): String = SourceContractTestSupport.stripComments(src)
 
     /**
      * Isolates the substring between the `// region:edit-menu-item` /
