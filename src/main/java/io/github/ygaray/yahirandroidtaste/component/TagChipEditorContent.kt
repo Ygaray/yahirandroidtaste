@@ -162,6 +162,9 @@ fun TagChipEditorContent(
                 // TMENU-05 (D-04): the trailing ✕ IconButton is retired — scoped removal now
                 // flows through the shared long-press menu's "Remove from this card" item,
                 // which reuses onRemoveTag verbatim (T-93-02: never aliases to onDeleteTag).
+                // region:tag-chip-item
+                // TagChipEditorDoubleTapRemovalTest anchors its marker-scoped source assertions
+                // on these two comment markers — load-bearing, not decorative.
                 TagChipWithContextMenu(
                     label = tag.name,
                     isSelected = true,
@@ -170,8 +173,10 @@ fun TagChipEditorContent(
                     onEdit = onEditTag?.let { edit -> { edit(tag.id) } },
                     onRemoveFromContext = { onRemoveTag(tag.id) },
                     removeLabel = "Remove from this card",
-                    onDelete = onDeleteTag?.let { del -> { del(tag.id, tag.name) } }
+                    onDelete = onDeleteTag?.let { del -> { del(tag.id, tag.name) } },
+                    onDoubleClick = { onRemoveTag(tag.id) }
                 )
+                // endregion:tag-chip-item
             },
             trailingContent = {
                 // "Add tag" AssistChip — opens TagPickerSheet (UI-SPEC §1)
