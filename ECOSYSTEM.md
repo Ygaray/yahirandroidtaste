@@ -30,19 +30,18 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.3.0`** (repinned + Gate-1 device-verified, v1.22 Phase 115; EDIT-04/ICON-01/TAG-03 all_pass) — matches latest | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.4.0`** (repinned, v1.23 Phase 118; LIST-04 `ListCardBottomSheet` read-only preview) — matches latest | `gradle/libs.versions.toml` |
   | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.2.0`** (repinned + Gate-1-confirmed, Phase 43 / GIVE-04) — one tag behind latest, repins on its own cadence | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
   No "Deploy host" column — Android apps are installed on devices, not daemon-deployed.)_
 
-**Current published tag:** **`v1.3.0`** — cut in **SecondBrain Phase 114 Plan 05**, the
-gallery-curation-and-verification minor bump past the `v1.2.x` line.
-**SecondBrain pins `v1.3.0`** (repinned + Gate-1 device-verified — SecondBrain v1.22 Phase 115,
-REPIN-04/REPIN-05; EDIT-04/ICON-01/TAG-03, all 5 in-scope Gate-1 criteria PASS,
-`115-02-SELF-UAT.md` — matches latest); **CalTracker
-pins `v1.2.0`** (repinned Phase 43, GIVE-04) — one tag behind latest, repins on
+**Current published tag:** **`v1.4.0`** — cut in **SecondBrain Phase 118 Plan 01**, an autonomous
+minor bump adding `readOnlyPreview`/`previewOverflowCount` to `ListCardBottomSheet` (`LIST-04`).
+**SecondBrain pins `v1.4.0`** (repinned — SecondBrain v1.23 Phase 118, agent-cut per the
+personal-app tag-cut waiver — matches latest); **CalTracker
+pins `v1.2.0`** (repinned Phase 43, GIVE-04) — two tags behind latest, repins on
 its own cadence (a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
@@ -84,6 +83,21 @@ full evidence. **First consumer repin (SecondBrain) landed in SecondBrain v1.22 
 (REPIN-04/REPIN-05), Gate-1 device-verified on the SM-S908U — EDIT-04 bottom-sheet Rename routing
 to the shared tag-inclusive editor, ICON-01 icon-picker live search, and TAG-03 double-tap tag
 removal all confirmed on-device, all 5 in-scope Gate-1 criteria PASS (`115-02-SELF-UAT.md`).
+
+`v1.4.0` was cut in **SecondBrain Phase 118 Plan 01** (`LIST-04`), an autonomous minor bump — the
+owner's tag-cut checkpoint is waived for this personal-use hub ecosystem
+(2026-08-20, `[[personal-app-tag-cut-gate-waived]]`, Option C) — on hub commit `0af7e4e` (green
+`testDebugUnitTest detekt`, 0 code smells). The tag carries two additive, defaulted trailing
+params on **`ListCardBottomSheet`**: `readOnlyPreview: Boolean = false` swaps the live tappable
+CHECKBOX `Checkbox` for a static, non-interactive check `Icon` (the item-toggle callback is never
+wired into that branch), and `previewOverflowCount: Int = 0` renders a "+N more" hint when the
+caller has truncated the list — neither param is wired by any existing call site, so every
+existing consumer keeps compiling and behaving unchanged. Verified resolvable via a real
+(non-cached-local) JitPack build (`com.github.Ygaray:yahirandroidtaste:v1.4.0`) — see
+`118-01-SUMMARY.md` for the full evidence. **SecondBrain repinned in the same plan**
+(`gradle/libs.versions.toml` → `v1.4.0`, `CardListSection.kt`'s List sheet call site wired to
+`readOnlyPreview = true` / a 3-item prefix / the computed overflow count) — device confirmation is
+Gate-1's job (`verify_work_agentic_gate`), not this plan's; not yet recorded here.
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
