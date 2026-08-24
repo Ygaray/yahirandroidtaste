@@ -4167,43 +4167,69 @@ fun IconPickerGrid(
             )
         }
 
-        Box(
-            modifier = Modifier
-                .heightIn(max = 320.dp)
-                .testTag("icon_search_grid")
-        ) {
-            LazyVerticalGrid(columns = GridCells.Fixed(5)) {
-                itemsIndexed(entries, key = { _, e -> e.key }) { index, (name, vector) ->
-                    val isSelected = name == selectedIcon
-                    Box {
-                        Surface(
-                            shape = RoundedCornerShape(8.dp),
-                            color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
-                        ) {
-                            IconButton(
-                                onClick = { onIconSelected(name) },
-                                modifier = Modifier.size(48.dp)
+        if (entries.isEmpty()) {
+            // Deliberately does NOT reuse the shared EmptyState composable: it hardcodes a 48dp
+            // icon, a headlineSmall heading, and Arrangement.Center -- all three conflict with
+            // this compact, in-sheet surface's UI-SPEC contract (titleMedium heading, no icon,
+            // no reserved height -- [[conditional-render-no-dead-space]]). Sized to its own two
+            // text lines only; no detekt LongMethod finding at this size, so kept inline rather
+            // than extracted into a private helper.
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .testTag("icon_search_empty_state")
+            ) {
+                Text(
+                    text = "No icons found",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "Try a different search term.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .heightIn(max = 320.dp)
+                    .testTag("icon_search_grid")
+            ) {
+                LazyVerticalGrid(columns = GridCells.Fixed(5)) {
+                    itemsIndexed(entries, key = { _, e -> e.key }) { index, (name, vector) ->
+                        val isSelected = name == selectedIcon
+                        Box {
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
                             ) {
-                                Icon(
-                                    imageVector = vector,
-                                    contentDescription = name
-                                )
+                                IconButton(
+                                    onClick = { onIconSelected(name) },
+                                    modifier = Modifier.size(48.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = vector,
+                                        contentDescription = name
+                                    )
+                                }
                             }
-                        }
-                        if (showIndices) {
-                            Box(
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .clip(RoundedCornerShape(50))
-                                    .background(MaterialTheme.colorScheme.inverseSurface)
-                                    .padding(horizontal = 4.dp)
-                                    .testTag("icon_index_badge")
-                            ) {
-                                Text(
-                                    text = "${index + 1}",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.inverseOnSurface
-                                )
+                            if (showIndices) {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomEnd)
+                                        .clip(RoundedCornerShape(50))
+                                        .background(MaterialTheme.colorScheme.inverseSurface)
+                                        .padding(horizontal = 4.dp)
+                                        .testTag("icon_index_badge")
+                                ) {
+                                    Text(
+                                        text = "${index + 1}",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.inverseOnSurface
+                                    )
+                                }
                             }
                         }
                     }
