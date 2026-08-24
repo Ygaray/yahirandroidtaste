@@ -39,6 +39,7 @@ import io.github.ygaray.yahirandroidtaste.component.ListCardBottomSheet
 import io.github.ygaray.yahirandroidtaste.component.NameAndTagsEditor
 import io.github.ygaray.yahirandroidtaste.component.RecordingBottomSheetContent
 import io.github.ygaray.yahirandroidtaste.component.RecordingSheetUiState
+import io.github.ygaray.yahirandroidtaste.component.SegmentedOptionSelector
 import io.github.ygaray.yahirandroidtaste.component.SheetScaffold
 import io.github.ygaray.yahirandroidtaste.component.TagChipEditorContent
 import io.github.ygaray.yahirandroidtaste.component.TagCreateSheet
@@ -49,6 +50,7 @@ import io.github.ygaray.yahirandroidtaste.component.TextCardBottomSheet
 import io.github.ygaray.yahirandroidtaste.component.VoiceRenameTagsSheet
 import io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell
 import io.github.ygaray.yahirandroidtaste.feedback.LocalFeedbackController
+import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import sh.calvin.reorderable.ReorderableItem
@@ -190,33 +192,27 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
         "TagChipEditorContent",
         ExplorerFamilies.SHEETS,
         states = listOf(
+            // TAG-03: double-tap a chip below to remove it for real -- currentTags is live demo
+            // state (DemoTagChipEditor), seeded with 2 tags so a removal demonstrates the
+            // derived last-tag warning appearing once exactly one remains. This cell's `remember`
+            // is scoped to this render lambda's own composition slot -- isolated from the
+            // Pressed / Selected cell below (114-REVIEWS.md finding 8).
             StateCell("Default") {
                 WithSheetFeedback {
-                    TagChipEditorContent(
-                        currentTags = ExplorerFakeData.tagChips.take(2),
-                        isLastTag = false,
-                        allTags = ExplorerFakeData.tagChips,
-                        onRemoveTag = {},
-                        onAddTags = {},
-                        onRemoveTagNoUndo = {},
-                        onCreateTag = {},
+                    DemoTagChipEditor(
+                        seedTags = ExplorerFakeData.tagChips.take(2),
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
             },
-            // Pressed / Selected: isLastTag = true drives the real last-tag warning row
-            // (D-03/D-03a in TagChipEditorContent's own doc) -- a genuine, non-fabricated
-            // state distinct from Default, curated against the real `isLastTag` param.
+            // Pressed / Selected: seeded with exactly 1 tag so the last-tag warning is visible
+            // immediately -- isLastTag is DERIVED from the live list (list.size == 1), not
+            // hardcoded, so this cell's warning genuinely reflects its own state and cannot be
+            // affected by a removal in the Default cell (separate `remember` instance).
             StateCell("Pressed / Selected") {
                 WithSheetFeedback {
-                    TagChipEditorContent(
-                        currentTags = ExplorerFakeData.tagChips.take(1),
-                        isLastTag = true,
-                        allTags = ExplorerFakeData.tagChips,
-                        onRemoveTag = {},
-                        onAddTags = {},
-                        onRemoveTagNoUndo = {},
-                        onCreateTag = {},
+                    DemoTagChipEditor(
+                        seedTags = ExplorerFakeData.tagChips.take(1),
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
@@ -539,7 +535,35 @@ private fun ShowSheetButton(label: String, onClick: () -> Unit) {
 @Composable
 private fun TextCardSheetSection() {
     var show by remember { mutableStateOf(false) }
+    var useSharedEditor by remember { mutableStateOf(true) }
+    var editorRequested by remember { mutableStateOf(false) }
     ShowSheetButton("TextCardBottomSheet") { show = true }
+    // EDIT-04: toggle which of the two onEditRequest branches the Edit row exercises --
+    // bound (routes to the host's shared name-and-tags editor) or null (falls back to the
+    // sheet's own local tag-less rename dialog). This state is `remember`-scoped to this
+    // section's own composition slot.
+    SegmentedOptionSelector(
+        selectedIndex = if (useSharedEditor) 0 else 1,
+        options = listOf("Shared editor", "Local rename"),
+        onSelect = { useSharedEditor = it == 0 },
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
+    if (editorRequested) {
+        // Stand-in surface for the host-owned shared name-and-tags editor (EDIT-04). The hub
+        // names no app-specific concepts, so a labelled stand-in is the correct hub-side
+        // demonstration of the routing -- the real editor is mounted by the consumer app.
+        SectionLabel("Shared editor requested by TextCardBottomSheet")
+        Text(
+            text = "The host would open its shared name-and-tags editor here.",
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        Button(
+            onClick = { editorRequested = false },
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Text("Reset")
+        }
+    }
     if (show) {
         TextCardBottomSheet(
             title = ExplorerFakeData.SHORT_TITLE,
@@ -554,7 +578,12 @@ private fun TextCardSheetSection() {
             onTogglePin = {},
             onToggleFavorite = {},
             onDelete = {},
-            onConfirmRename = {}
+            onConfirmRename = {},
+            onEditRequest = if (useSharedEditor) {
+                { editorRequested = true }
+            } else {
+                null
+            }
         )
     }
 }
@@ -562,7 +591,30 @@ private fun TextCardSheetSection() {
 @Composable
 private fun ListCardSheetSection() {
     var show by remember { mutableStateOf(false) }
+    var useSharedEditor by remember { mutableStateOf(true) }
+    var editorRequested by remember { mutableStateOf(false) }
     ShowSheetButton("ListCardBottomSheet") { show = true }
+    // EDIT-04: same two-state toggle as TextCardSheetSection above, `remember`-scoped to this
+    // section's own composition slot -- an independent instance, not shared with it.
+    SegmentedOptionSelector(
+        selectedIndex = if (useSharedEditor) 0 else 1,
+        options = listOf("Shared editor", "Local rename"),
+        onSelect = { useSharedEditor = it == 0 },
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
+    if (editorRequested) {
+        SectionLabel("Shared editor requested by ListCardBottomSheet")
+        Text(
+            text = "The host would open its shared name-and-tags editor here.",
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        Button(
+            onClick = { editorRequested = false },
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Text("Reset")
+        }
+    }
     if (show) {
         ListCardBottomSheet(
             title = ExplorerFakeData.SHORT_TITLE,
@@ -579,7 +631,12 @@ private fun ListCardSheetSection() {
             onTogglePin = {},
             onToggleFavorite = {},
             onConfirmRename = {},
-            onDelete = {}
+            onDelete = {},
+            onEditRequest = if (useSharedEditor) {
+                { editorRequested = true }
+            } else {
+                null
+            }
         )
     }
 }
@@ -627,14 +684,8 @@ private fun TagPickerContentSection() {
 @Composable
 private fun TagChipEditorSection() {
     SectionLabel("TagChipEditorContent")
-    TagChipEditorContent(
-        currentTags = ExplorerFakeData.tagChips.take(1),
-        isLastTag = true,
-        allTags = ExplorerFakeData.tagChips,
-        onRemoveTag = {},
-        onAddTags = {},
-        onRemoveTagNoUndo = {},
-        onCreateTag = {},
+    DemoTagChipEditor(
+        seedTags = ExplorerFakeData.tagChips.take(1),
         modifier = Modifier.padding(horizontal = 16.dp)
     )
 }
@@ -752,15 +803,7 @@ private fun NameAndTagsEditorSection() {
             onNameChange = { name = it },
             nameLabel = "Name",
             tagsContent = {
-                TagChipEditorContent(
-                    currentTags = ExplorerFakeData.tagChips.take(1),
-                    isLastTag = true,
-                    allTags = ExplorerFakeData.tagChips,
-                    onRemoveTag = {},
-                    onAddTags = {},
-                    onRemoveTagNoUndo = {},
-                    onCreateTag = {}
-                )
+                DemoTagChipEditor(seedTags = ExplorerFakeData.tagChips.take(1))
             },
             onSave = {},
             onDismiss = {},
@@ -796,15 +839,7 @@ private fun VoiceRenameTagsSheetSection() {
             onSave = { show = false },
             onDismiss = { show = false },
             tagContent = {
-                TagChipEditorContent(
-                    currentTags = ExplorerFakeData.tagChips.take(1),
-                    isLastTag = true,
-                    allTags = ExplorerFakeData.tagChips,
-                    onRemoveTag = {},
-                    onAddTags = {},
-                    onRemoveTagNoUndo = {},
-                    onCreateTag = {}
-                )
+                DemoTagChipEditor(seedTags = ExplorerFakeData.tagChips.take(1))
             }
         )
     }
@@ -943,6 +978,45 @@ private fun EditorItemRowVariants() {
     WithSheetFeedback { EditorItemRowSection() }
 }
 
+// --- TAG-03: real double-tap removal demo state -------------------------------------------
+
+/**
+ * TAG-03 demo helper — wraps [TagChipEditorContent] with real, per-call-site removal state so
+ * every gallery demo that shows applied tag chips demonstrates a genuine double-tap removal
+ * instead of a no-op `onRemoveTag = {}` binding.
+ *
+ * State scoping (`114-REVIEWS.md` finding 8): the `tags` list is created via [remember] INSIDE
+ * this composable's own body, so every call site gets its own independent instance -- two calls
+ * seeded from the same [ExplorerFakeData.tagChips] source (e.g. the Default and
+ * Pressed / Selected `StateCell`s) never share a backing list, and a removal in one cannot leak
+ * into another.
+ *
+ * `isLastTag` is DERIVED from the live list (`tags.size == 1`), not caller-supplied, so the
+ * last-tag warning row demonstrates its real trigger rather than a hardcoded flag.
+ */
+@Composable
+private fun DemoTagChipEditor(
+    seedTags: List<TagChipUiModel>,
+    modifier: Modifier = Modifier
+) {
+    var tags by remember { mutableStateOf(seedTags) }
+    TagChipEditorContent(
+        currentTags = tags,
+        isLastTag = tags.size == 1,
+        allTags = ExplorerFakeData.tagChips,
+        onRemoveTag = { id -> tags = tags.filterNot { it.id == id } },
+        onAddTags = { addedIds ->
+            val toAdd = ExplorerFakeData.tagChips.filter { candidate ->
+                candidate.id in addedIds && tags.none { it.id == candidate.id }
+            }
+            tags = tags + toAdd
+        },
+        onRemoveTagNoUndo = { id -> tags = tags.filterNot { it.id == id } },
+        onCreateTag = {},
+        modifier = modifier
+    )
+}
+
 // --- WR-01 fix: lean, label-free Default-cell previews -------------------------------------
 // Consumed only by the States-matrix "Default" cells above. Unlike the modal/gated Sheets
 // entries (whose Default cell is N/A -- see the states = listOf(...) comments), these four
@@ -986,15 +1060,7 @@ private fun NameAndTagsEditorPreview() {
                 onNameChange = { name = it },
                 nameLabel = "Name",
                 tagsContent = {
-                    TagChipEditorContent(
-                        currentTags = ExplorerFakeData.tagChips.take(1),
-                        isLastTag = true,
-                        allTags = ExplorerFakeData.tagChips,
-                        onRemoveTag = {},
-                        onAddTags = {},
-                        onRemoveTagNoUndo = {},
-                        onCreateTag = {}
-                    )
+                    DemoTagChipEditor(seedTags = ExplorerFakeData.tagChips.take(1))
                 },
                 onSave = {},
                 onDismiss = {},
