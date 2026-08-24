@@ -30,8 +30,8 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.1.3`** (repinned + device-verified, v1.21 Phases 109→113; Gate-1 SC4 re-verify PASS) — matches latest | `gradle/libs.versions.toml` |
-  | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.2.0`** (repinned + Gate-1-confirmed, Phase 43 / GIVE-04) — matches latest | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.3.0`** (repinned + Gate-1 device-verified, v1.22 Phase 115; EDIT-04/ICON-01/TAG-03 all_pass) — matches latest | `gradle/libs.versions.toml` |
+  | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.2.0`** (repinned + Gate-1-confirmed, Phase 43 / GIVE-04) — one tag behind latest, repins on its own cadence | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
@@ -39,8 +39,10 @@ independent apps that consume it:
 
 **Current published tag:** **`v1.3.0`** — cut in **SecondBrain Phase 114 Plan 05**, the
 gallery-curation-and-verification minor bump past the `v1.2.x` line.
-**SecondBrain pins `v1.1.3`** (repin to `v1.3.0` pending — SecondBrain Phase 115); **CalTracker
-pins `v1.2.0`** (repinned Phase 43, GIVE-04) — each consumer repins on
+**SecondBrain pins `v1.3.0`** (repinned + Gate-1 device-verified — SecondBrain v1.22 Phase 115,
+REPIN-04/REPIN-05; EDIT-04/ICON-01/TAG-03, all 5 in-scope Gate-1 criteria PASS,
+`115-02-SELF-UAT.md` — matches latest); **CalTracker
+pins `v1.2.0`** (repinned Phase 43, GIVE-04) — one tag behind latest, repins on
 its own cadence (a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
@@ -48,7 +50,10 @@ SM-S908U (Gate-1 all_pass: cold-start Hilt-across-AAR resolution, live undo + Ex
 move-only pixel parity). SecondBrain subsequently **repinned to `v1.1.3`** across **v1.21
 Phases 109→113** (REPIN-02): the `v1.1.1`→`v1.1.2`→`v1.1.3` line was cut over the Phase 112→113
 remediation cycle (EDIT consolidation, album footer button, Voice rename dirty gate) and the repin
-is **Gate-1 device-verified** (SC4 re-verify all_pass, SM-S908U / API 35). *(SB's in-repo `yahirandroidtaste/` module-directory deletion is deferred —
+was **Gate-1 device-verified** (SC4 re-verify all_pass, SM-S908U / API 35). SecondBrain then
+**repinned to `v1.3.0`** in **v1.22 Phase 115** (REPIN-04/REPIN-05), Gate-1 device-verified on the
+SM-S908U (EDIT-04 bottom-sheet Rename routing, ICON-01 icon-picker live search, TAG-03 double-tap
+tag removal — all 5 in-scope criteria PASS). *(SB's in-repo `yahirandroidtaste/` module-directory deletion is deferred —
 an SB-internal cleanup — but SB consumes this published AAR regardless.)*
 
 CalTracker cut and repinned onto **`v1.2.0`** in **Phase 43** (GIVE-04), human-gated on hub commit
@@ -75,7 +80,10 @@ name-substring search with an empty-state, public signature unchanged (`ICON-01`
 **`TagChipEditorContent`**'s applied-tag chips gain double-tap removal through the existing
 undo-backed `onRemoveTag` callback (`TAG-03`). Verified resolvable via a real (non-cached-local)
 JitPack build (`com.github.Ygaray:yahirandroidtaste:v1.3.0`) — see `114-05-SUMMARY.md` for the
-full evidence. **First consumer repin (SecondBrain) is pending — Phase 115.**
+full evidence. **First consumer repin (SecondBrain) landed in SecondBrain v1.22 Phase 115**
+(REPIN-04/REPIN-05), Gate-1 device-verified on the SM-S908U — EDIT-04 bottom-sheet Rename routing
+to the shared tag-inclusive editor, ICON-01 icon-picker live search, and TAG-03 double-tap tag
+removal all confirmed on-device, all 5 in-scope Gate-1 criteria PASS (`115-02-SELF-UAT.md`).
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
