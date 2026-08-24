@@ -180,6 +180,83 @@ class IconPickerSearchTest {
         composeTestRule.onNodeWithTag("icon_search_grid").assertExists()
     }
 
+    // --- Test 9: case-insensitivity ---
+
+    @Test
+    fun `filterIconEntries is case-insensitive`() {
+        val lower = filterIconEntries("zoom")
+        val upper = filterIconEntries("ZOOM")
+
+        assertEquals(lower, upper)
+    }
+
+    // --- Test 10: mid-key substring match, not just prefix ---
+
+    @Test
+    fun `filterIconEntries matches mid-key substrings, not just prefixes`() {
+        // "out_map" is a substring drawn from the middle/end of "zoom_out_map" -- not a prefix
+        // of any ICON_MAP key.
+        val result = filterIconEntries("out_map")
+
+        assertTrue(result.any { it.key == "zoom_out_map" })
+    }
+
+    // --- Test 11: non-lexical query is empty; blank query is everything ---
+
+    @Test
+    fun `filterIconEntries on a non-lexical query returns empty, on blank returns everything`() {
+        assertTrue(filterIconEntries(ZERO_MATCH_QUERY).isEmpty())
+        assertEquals(ICON_MAP.size, filterIconEntries("").size)
+    }
+
+    // --- Test 12: a long query returns empty without error ---
+
+    @Test
+    fun `filterIconEntries on a long query returns empty without error`() {
+        val longQuery = "a".repeat(500)
+
+        val result = filterIconEntries(longQuery)
+
+        assertTrue(result.isEmpty())
+    }
+
+    // --- Test 13: selection-during-filter ---
+
+    @Test
+    fun `selecting a key the active query does not match still renders, filter unaffected by selection`() {
+        // "zoom_out_map" is the only key matching this query; ICON_MAP.keys.first() (e.g. "book")
+        // does not match it, so the selection is filtered out of view -- correct, expected
+        // single-select pick-one-grid UX (UI-SPEC selection-during-filter resolution, PITFALLS
+        // Pitfall 3). No "current selection" preview chip is implemented or asserted.
+        val nonMatchingSelection = ICON_MAP.keys.first()
+        composeTestRule.setContent {
+            IconPickerGrid(selectedIcon = nonMatchingSelection, onIconSelected = {})
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("icon_search_field").performTextInput("zoom_out_map")
+        composeTestRule.waitForIdle()
+
+        // Render succeeds (no crash/exception) and the matching icon's cell is present --
+        // the filter decision is independent of the selection.
+        composeTestRule.onNodeWithContentDescription("zoom_out_map").assertExists()
+    }
+
+    // --- Test 14: vocabulary spot-check locks D-01 ---
+
+    @Test
+    fun `the D-01 vocabulary spot-check terms all return non-empty results`() {
+        val terms = listOf("car", "food", "phone", "money", "music", "book", "heart")
+
+        terms.forEach { term ->
+            assertTrue(
+                "Expected a non-empty result for common search term '$term' -- an empty result " +
+                    "would be real signal against D-01's no-alias-layer decision",
+                filterIconEntries(term).isNotEmpty()
+            )
+        }
+    }
+
     private companion object {
         // A run of repeated consonants -- not a plausible English word, so it cannot start
         // matching/not-matching for vocabulary reasons if ICON_MAP grows (Task 2 action).
