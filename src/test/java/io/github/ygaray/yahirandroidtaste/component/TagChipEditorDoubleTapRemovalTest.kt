@@ -376,4 +376,23 @@ class TagChipEditorDoubleTapRemovalTest {
         )
     }
 
+    // --- Scope carve-out guard (Task 3, D-02): the read-only card-face CardTagRow is
+    // deliberately excluded from this phase's double-tap binding — deferred as a fast
+    // follow-up, not an oversight. This test is a drift tripwire, not behavioral evidence
+    // (`<proof_scope>`): it exists to catch a future contributor silently lifting the carve-out
+    // without updating 114-CONTEXT.md's Deferred Ideas entry. ---
+
+    @Test
+    fun cardTagRow_bindsNoDoubleTapGesture_D02ScopeCarveOut() {
+        val src = stripComments(source("CardTagRow.kt"))
+
+        assertEquals(
+            "CardTagRow must bind no onDoubleClick gesture — this is a deliberate scope " +
+                "carve-out (D-02, 114-CONTEXT.md Deferred Ideas), not an oversight. If this " +
+                "carve-out is intentionally lifted, update the decision record before deleting " +
+                "this guard.",
+            0,
+            countOccurrences(src, "onDoubleClick")
+        )
+    }
 }

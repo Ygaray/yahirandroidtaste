@@ -85,6 +85,15 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  *                          `sortMode`/`onSortModeChange` are always forwarded to the launched
  *                          [TagPickerSheet] regardless of this flag — it never touches the
  *                          sort data plane, only whether the inline control node is emitted here.
+ *
+ * Double-tap-to-remove (TAG-03, Phase 114-03): applied-tag chips also respond to a double-tap,
+ * bound to the same undo-window [onRemoveTag] the long-press menu's "Remove from this card" item
+ * already fires — never the picker-only no-undo path, because the owner-resolved reveal-confirm
+ * carve-out (`[[reveal-confirm-destructive-gestures]]` exemption) depends entirely on the
+ * 4-second Undo Center snackbar as its safety net. The gesture reuses [AppChip]'s single
+ * `combinedClickable` (via [TagChipWithContextMenu]'s `onDoubleClick` passthrough) rather than
+ * any additional gesture detector. The read-only card-face `CardTagRow` is deliberately excluded
+ * from this binding (D-02) — a scope carve-out, deferred as a fast follow-up, not an oversight.
  */
 @Composable
 fun TagChipEditorContent(
