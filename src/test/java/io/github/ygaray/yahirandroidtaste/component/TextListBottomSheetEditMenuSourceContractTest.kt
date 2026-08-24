@@ -218,4 +218,26 @@ class TextListBottomSheetEditMenuSourceContractTest {
             src.contains("Text(\"Edit list\")")
         )
     }
+
+    // --- Cross-file backward-compatibility guard (Task 3) ---
+
+    @Test
+    fun `both bottom sheets retain the full null-hook fallback structurally intact`() {
+        for (file in listOf("TextCardBottomSheet.kt", "ListCardBottomSheet.kt")) {
+            val src = source(file)
+            assertTrue(
+                "$file must still declare showRenameDialog state — deleting it would silently " +
+                    "break every consumer that has not yet bound onEditRequest",
+                src.contains("showRenameDialog")
+            )
+            assertTrue(
+                "$file must still contain a local rename AlertDialog( block",
+                src.contains("AlertDialog(")
+            )
+            assertTrue(
+                "$file must still invoke onConfirmRename( from its local rename dialog",
+                src.contains("onConfirmRename(")
+            )
+        }
+    }
 }
