@@ -1,5 +1,6 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.theme.ExpressiveMotion
 import io.github.ygaray.yahirandroidtaste.theme.expressive
 
 /**
@@ -42,6 +44,8 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  *   contrast-safe default (`outline`-derived) rather than re-deriving it.
  * @param progressColor the filled-progress color. Defaults to [MaterialTheme.expressive]'s
  *   [io.github.ygaray.yahirandroidtaste.theme.ExpressiveTokens.onTrack].
+ * @param animationSpec the fill animation's spec. Defaults to
+ *   [ExpressiveMotion.emphasizedSpatialSpec] (the hub's plain-Kotlin motion-token set, DS-02).
  * @param content optional center content (e.g. a value label), laid out over the ring.
  */
 @Composable
@@ -51,10 +55,15 @@ fun ProgressRing(
     strokeWidth: Dp = 8.dp,
     trackColor: Color = MaterialTheme.expressive.ringTrack,
     progressColor: Color = MaterialTheme.expressive.onTrack,
+    animationSpec: FiniteAnimationSpec<Float> = ExpressiveMotion.emphasizedSpatialSpec,
     content: @Composable BoxScope.() -> Unit = {},
 ) {
     val clampedFraction = fraction.coerceIn(0f, 1f)
-    val animatedFraction by animateFloatAsState(targetValue = clampedFraction, label = "ProgressRing")
+    val animatedFraction by animateFloatAsState(
+        targetValue = clampedFraction,
+        animationSpec = animationSpec,
+        label = "ProgressRing"
+    )
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.matchParentSize()) {
             // animatedFraction read HERE (draw phase) — never hoisted above into composition.
