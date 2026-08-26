@@ -97,5 +97,13 @@ object Dimens {
 
         /** Secondary corner-radius value (AlbumTitleConfirmSheet, DrawToolPalette). */
         val Medium: Dp = 12.dp
+
+        /**
+         * Large corner-radius value for hero/feature card surfaces (Phase 44 DS-01,
+         * [ExpressiveTokens.cardShapeLarge]). Mirrors Material 3's own `Shapes.extraLarge` token,
+         * signaling "hero/feature surface, not a list row" per the v1.7 UI-SPEC's Spacing Scale
+         * section. Additive only — not yet swapped into any call site this phase.
+         */
+        val Large: Dp = 28.dp
     }
 }
