@@ -1,14 +1,14 @@
-# API.md — `yahirandroidtaste` public surface (the seven-family composable catalog)
+# API.md — `yahirandroidtaste` public surface (the eight-family composable catalog)
 
 Everything a consumer calls. Package root: `io.github.ygaray.yahirandroidtaste`. To wire the
 library, see `INTEGRATION.md`; for the reuse rules, `CLAUDE.md`.
 
 This is a **UI component library**, so its public surface is a **catalog of composables**, not a
-service seam. The composables are organized into the library's **seven families** — the same
+service seam. The composables are organized into the library's **eight families** — the same
 taxonomy the library ships in `explorer/ComponentRegistry.kt` (`cardsFamilyEntries +
 chipsFamilyEntries + sheetsFamilyEntries + buttonsFabFamilyEntries + pickersFamilyEntries +
-feedbackFamilyEntries + emptyStateFamilyEntries`), which is the single source of truth and the
-CATALOG drift guard.
+feedbackFamilyEntries + emptyStateFamilyEntries + progressFamilyEntries`), which is the single
+source of truth and the CATALOG drift guard.
 
 ## Surface at a glance
 
@@ -21,9 +21,10 @@ CATALOG drift guard.
 | 5. Pickers | 3 | Accent-color, icon, and crop pickers |
 | 6. Feedback | 2 | Confirmation dialog + the Undo Center |
 | 7. Empty-state | 1 | The shared empty-state surface |
+| 8. Progress / Metrics | 4 | Determinate ring / count-up / hero-card primitives for at-a-glance stat display |
 
-**41 registered public composables** across the seven families, plus **4 intentionally-unregistered**
-structural sub-parts (see the end of this doc) = **45 public composables total**. Every component
+**44 registered public composables** across the eight families, plus **4 intentionally-unregistered**
+structural sub-parts (see the end of this doc) = **48 public composables total**. Every component
 renders inside `YahirAndroidTasteTheme` (family 7's theme wrapper — see the tail note). Every
 `Modifier` parameter defaults to `Modifier`; only the load-bearing parameters are listed below.
 
