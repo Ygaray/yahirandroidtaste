@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.AnimatedStatValue
+import io.github.ygaray.yahirandroidtaste.component.HeroStatCard
 import io.github.ygaray.yahirandroidtaste.component.MetricBand
 import io.github.ygaray.yahirandroidtaste.component.MetricBar
 import io.github.ygaray.yahirandroidtaste.component.ProgressRing
@@ -99,6 +100,34 @@ internal val progressFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             ComponentRegistry.StateCell("Focused")
         ),
         content = { AnimatedStatValueVariants() }
+    ),
+    ComponentRegistry.Entry(
+        name = "HeroStatCard",
+        family = ExplorerFamilies.PROGRESS_METRICS,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = {
+                    HeroStatCard(label = "Total", value = "1,204")
+                }
+            ),
+            ComponentRegistry.StateCell(
+                "Pressed / Selected",
+                render = {
+                    HeroStatCard(label = "Total", value = "1,204", onClick = {})
+                }
+            ),
+            // HeroStatCard has no `enabled` param — a non-clickable card is just onClick = null,
+            // not a disabled clickable one — N/A.
+            ComponentRegistry.StateCell("Disabled"),
+            ComponentRegistry.StateCell(
+                "Focused",
+                render = {
+                    HeroStatCard(label = "Total", value = "1,204", onClick = {})
+                }
+            )
+        ),
+        content = { HeroStatCardVariants() }
     )
 )
 
@@ -202,6 +231,29 @@ private fun AnimatedStatValueVariants() {
         AnimatedStatValue(targetValue = 128f)
         AnimatedStatValue(targetValue = 12480f)
         AnimatedStatValue(targetValue = 12f)
+    }
+}
+
+/**
+ * A few sample `HeroStatCard`s: a deliberately long label/value pair (confirms Ellipsis
+ * truncation), one with `onClick` set, and one with a `content` slot filled by an embedded
+ * `ProgressRing` (demonstrating primitive composition).
+ */
+@Composable
+private fun HeroStatCardVariants() {
+    SectionLabel("HeroStatCard — sample cards")
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        HeroStatCard(
+            label = "A deliberately long supporting label that should truncate with an ellipsis",
+            value = "1,204,983 total"
+        )
+        HeroStatCard(label = "Tap me", value = "1,204", onClick = {})
+        HeroStatCard(label = "With embedded ring", value = "1,204") {
+            ProgressRing(fraction = 0.65f, modifier = Modifier.size(48.dp))
+        }
     }
 }
 
