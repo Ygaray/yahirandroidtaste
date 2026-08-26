@@ -5,9 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
@@ -60,9 +63,15 @@ fun HeroStatCard(
     accentBrush: Brush = MaterialTheme.expressive.heroGradient,
     content: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
-    Row(modifier = modifier) {
+    // Modifier.height(IntrinsicSize.Min) makes the Row measure its intrinsic content height first,
+    // so the accent Box's fillMaxHeight() resolves against that intrinsic height (matching the
+    // Surface's actual content-driven height) instead of an unbounded/unrelated ambient
+    // constraint. Without this, the stripe collapses to 0dp in unbounded-height parents (e.g. a
+    // LazyColumn) or overshoots the Surface's bounds in bounded-height parents.
+    Row(modifier = modifier.height(IntrinsicSize.Min)) {
         Box(
             modifier = Modifier
+                .testTag("hero_stat_card_accent_stripe")
                 .width(4.dp)
                 .fillMaxHeight()
                 .background(accentBrush)
@@ -71,7 +80,9 @@ fun HeroStatCard(
             shape = shape,
             color = containerColor,
             modifier = Modifier
+                .testTag("hero_stat_card_surface")
                 .weight(1f)
+                .fillMaxHeight()
                 .then(
                     if (onClick != null) {
                         Modifier
