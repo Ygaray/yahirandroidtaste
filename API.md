@@ -18,13 +18,13 @@ source of truth and the CATALOG drift guard.
 | 2. Chips | 5 | Tag/selection chips and the bars that lay them out (filter/sort) |
 | 3. Sheets | 18 | Bottom-sheet / editor / popup content surfaces and their scaffolding |
 | 4. Buttons / FAB | 3 | The expandable create-FAB and dynamic action buttons |
-| 5. Pickers | 3 | Accent-color, icon, and crop pickers |
-| 6. Feedback | 2 | Confirmation dialog + the Undo Center |
+| 5. Pickers | 4 | Accent-color, icon, crop, and segmented-option pickers |
+| 6. Feedback | 3 | Confirmation dialog, the Undo Center, and the attention-cue glyph |
 | 7. Empty-state | 1 | The shared empty-state surface |
 | 8. Progress / Metrics | 4 | Determinate ring / count-up / hero-card primitives for at-a-glance stat display |
 
-**44 registered public composables** across the eight families, plus **4 intentionally-unregistered**
-structural sub-parts (see the end of this doc) = **48 public composables total**. Every component
+**47 registered public composables** across the eight families, plus **5 intentionally-unregistered**
+structural sub-parts (see the end of this doc) = **52 public composables total**. Every component
 renders inside `YahirAndroidTasteTheme` (family 7's theme wrapper — see the tail note). Every
 `Modifier` parameter defaults to `Modifier`; only the load-bearing parameters are listed below.
 
@@ -110,6 +110,7 @@ these render its body) plus the shared scaffolding and editor rows.
 | `AccentColorPicker` | Accent-color swatch picker | `selectedColor: Long, onColorSelected: (Long) -> Unit` |
 | `IconPickerGrid` | Module/tag icon grid picker | `selectedIcon: String, onIconSelected: (String) -> Unit` — public parameters unchanged; the grid includes a built-in live case-insensitive name-substring search field with an empty-state when nothing matches |
 | `CropOverlay` | Crop-rectangle overlay for image editing | `bitmapWidth, bitmapHeight, aspectRatio: Float?, …` |
+| `SegmentedOptionSelector` | Two-option segmented toggle with an always-visible disabled+reason affordance | `selectedIndex: Int, options: List<String>, onSelect: (Int) -> Unit, enabled: Boolean, disabledReason: String?` |
 
 ## 6. Feedback
 
@@ -117,6 +118,7 @@ these render its body) plus the shared scaffolding and editor rows.
 |-----------|---------|----------------|
 | `ConfirmationDialog` | Standard confirm/cancel dialog | `title, body, onDismissRequest, …` confirm/dismiss callbacks |
 | `UndoCenterScreen` | The Undo Center — a history of undoable actions (backed by `UndoHistoryStore`, see `INTEGRATION.md`) | `entries: List<UndoHistoryEntry>, onNavigateBack, onUndo: (String) -> Unit` |
+| `AttentionCue` | Caution/verify signal glyph — never a failure signal | `text: String?, style: AttentionCueDefaults.Style, icon: ImageVector, tint: Color` |
 
 ## 7. Empty-state
 
@@ -126,7 +128,7 @@ these render its body) plus the shared scaffolding and editor rows.
 
 ---
 
-## Intentionally-unregistered sub-parts (4)
+## Intentionally-unregistered sub-parts (5)
 
 Public composables that are **not** standalone catalog tiles (structural sub-parts, exercised
 indirectly), tracked in `ComponentRegistry.INTENTIONALLY_UNREGISTERED`:
@@ -136,6 +138,7 @@ indirectly), tracked in `ComponentRegistry.INTENTIONALLY_UNREGISTERED`:
 | `CardBase` | Structural shell every card type wraps — exercised via `TextCard`/`ListCard`/`AlbumCard`/`VoiceCard`. |
 | `WaveformCanvas` | Sub-part rendered inside the voice-recording sheet / `VoiceCard` — exercised indirectly. |
 | `SwipeableActionRow` | The reveal-confirm swipe mechanics powering `CardBase` and `EditorItemRow` — infrastructure, not a visual archetype. |
+| `RevealActionRow` | Swipe-reveal mechanics for arbitrary 0-2 action slots — infrastructure, not an independent visual archetype; exercised indirectly via callers' own row demos. |
 | `YahirAndroidTasteTheme` | The theme wrapper every component (and every gallery screen) renders inside — it *is* the chrome, not a showcaseable tile. Wrap your UI in it: `YahirAndroidTasteTheme { … }`. |
 
 ## Adding / changing components (breaking-change note)
