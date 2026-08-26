@@ -2,9 +2,11 @@ package io.github.ygaray.yahirandroidtaste.explorer
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -20,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.MetricBand
 import io.github.ygaray.yahirandroidtaste.component.MetricBar
+import io.github.ygaray.yahirandroidtaste.component.ProgressRing
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
@@ -55,6 +58,26 @@ internal val progressFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             ComponentRegistry.StateCell("Focused")
         ),
         content = { MetricBarVariants() }
+    ),
+    ComponentRegistry.Entry(
+        name = "ProgressRing",
+        family = ExplorerFamilies.PROGRESS_METRICS,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = {
+                    ProgressRing(fraction = 0.65f, modifier = Modifier.size(96.dp))
+                }
+            ),
+            // ProgressRing is display-only, no pressable/selectable element — N/A (mirrors
+            // MetricBar's own N/A precedent above).
+            ComponentRegistry.StateCell("Pressed / Selected"),
+            // ProgressRing has no `enabled` param — N/A.
+            ComponentRegistry.StateCell("Disabled"),
+            // ProgressRing has no focus-visual override — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { ProgressRingVariants() }
     )
 )
 
@@ -126,6 +149,20 @@ private fun MetricBarVariants() {
             band = MetricBand.Over,
             remainingText = "20 pts over"
         )
+    }
+}
+
+/** A few sample `ProgressRing` fractions, demonstrating the ring at different fill levels. */
+@Composable
+private fun ProgressRingVariants() {
+    SectionLabel("ProgressRing — sample fractions")
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        ProgressRing(fraction = 0.2f, modifier = Modifier.size(72.dp))
+        ProgressRing(fraction = 0.65f, modifier = Modifier.size(72.dp))
+        ProgressRing(fraction = 1.0f, modifier = Modifier.size(72.dp))
     }
 }
 
