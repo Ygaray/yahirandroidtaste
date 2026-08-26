@@ -20,6 +20,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.component.AnimatedStatValue
 import io.github.ygaray.yahirandroidtaste.component.MetricBand
 import io.github.ygaray.yahirandroidtaste.component.MetricBar
 import io.github.ygaray.yahirandroidtaste.component.ProgressRing
@@ -78,6 +79,26 @@ internal val progressFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             ComponentRegistry.StateCell("Focused")
         ),
         content = { ProgressRingVariants() }
+    ),
+    ComponentRegistry.Entry(
+        name = "AnimatedStatValue",
+        family = ExplorerFamilies.PROGRESS_METRICS,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = {
+                    AnimatedStatValue(targetValue = 128f)
+                }
+            ),
+            // AnimatedStatValue is display-only, no pressable/selectable element — N/A (mirrors
+            // ProgressRing's own N/A precedent above).
+            ComponentRegistry.StateCell("Pressed / Selected"),
+            // AnimatedStatValue has no `enabled` param — N/A.
+            ComponentRegistry.StateCell("Disabled"),
+            // AnimatedStatValue has no focus-visual override — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { AnimatedStatValueVariants() }
     )
 )
 
@@ -163,6 +184,24 @@ private fun ProgressRingVariants() {
         ProgressRing(fraction = 0.2f, modifier = Modifier.size(72.dp))
         ProgressRing(fraction = 0.65f, modifier = Modifier.size(72.dp))
         ProgressRing(fraction = 1.0f, modifier = Modifier.size(72.dp))
+    }
+}
+
+/**
+ * A few sample `AnimatedStatValue` target values, including a 5+-digit long numeral (no
+ * truncation/clipping) and a decrease from the prior sample (demonstrating the tween runs in
+ * both directions, not just increase-only).
+ */
+@Composable
+private fun AnimatedStatValueVariants() {
+    SectionLabel("AnimatedStatValue — sample targets")
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        AnimatedStatValue(targetValue = 128f)
+        AnimatedStatValue(targetValue = 12480f)
+        AnimatedStatValue(targetValue = 12f)
     }
 }
 
