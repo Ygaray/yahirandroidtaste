@@ -146,9 +146,18 @@ doing so by force would violate this repo's own tag-immutability invariant). Pha
 is cut as `v1.6.0` instead — the next mechanically-correct minor version — with every version
 string in this plan's artifacts (`build.gradle.kts`, this record, the tag itself, the JitPack
 resolution URLs) substituted accordingly. See `123-05-SUMMARY.md` for the full deviation writeup.
-Verified resolvable via a real (non-cached-local) JitPack build
-(`com.github.Ygaray:yahirandroidtaste:v1.6.0`) — see `123-05-SUMMARY.md` /
-`123-TAG-CUT-RECORD.md` for the full evidence. **SecondBrain has NOT repinned** — it still pins
+
+**JitPack resolution evidence (Task 3, confirmed post-tag):** both
+`https://jitpack.io/com/github/Ygaray/yahirandroidtaste/v1.6.0/yahirandroidtaste-v1.6.0.pom` and
+`.../yahirandroidtaste-v1.6.0.aar` returned HTTP `200` (AAR `Content-Length: 1426287` bytes) on
+the first-ever request for this tag (a real, non-cached lazy JitPack build, not a
+`publishToMavenLocal` substitute). `https://jitpack.io/api/builds/com.github.Ygaray/yahirandroidtaste/v1.6.0`
+reports `"status":"ok"`, `"commit":"3e2ecbf1616b2adefd2de88f29272154505de39c"` (the exact release
+SHA) and `"isTag":true`. The build log
+(`https://jitpack.io/com/github/Ygaray/yahirandroidtaste/v1.6.0/build.log`) reports
+`BUILD SUCCESSFUL in 2m 18s`, `Build tool exit code: 0`, and
+`Found artifact: com.github.Ygaray:yahirandroidtaste:1.6.0`. Full evidence captured in
+`123-TAG-CUT-RECORD.md` and `123-05-SUMMARY.md`. **SecondBrain has NOT repinned** — it still pins
 `v1.4.0`; the repin, the `gradle/libs.versions.toml` bump, and the four-registry reconcile are
 **SecondBrain Phase 124's** job.
 
