@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
  * - [Icons]: icon sizes for the standard icon strip and inline controls
  * - [SwipeReveal]: dimension tokens for the SwipeableActionRow reveal slots
  * - [CornerRadius]: consolidated corner-radius tokens (D-01)
+ * - [Elevation]: shadow-elevation scale (Phase 123 DS-01)
  */
 object Dimens {
 
@@ -105,5 +106,35 @@ object Dimens {
          * section. Additive only — not yet swapped into any call site this phase.
          */
         val Large: Dp = 28.dp
+    }
+
+    /**
+     * Shadow-elevation scale (Phase 123 DS-01, Tactile Design System foundation) — six
+     * strictly-increasing `Dp` levels for real `shadowElevation` (via `Modifier.shadow(...)`),
+     * mirroring Material Design 3's own published elevation scale. Additive sibling to
+     * [CornerRadius] — not yet swapped into any call site this phase.
+     *
+     * ⚠ Values are a well-known Material 3 default, flagged in `123-UI-SPEC.md` as pending a
+     * design-canvas cross-check before the Phase 123 tag cut (not independently confirmed
+     * against the canvas as of this commit).
+     */
+    object Elevation {
+        /** Flush/flat surfaces — no depth cue (e.g. a full-bleed background). */
+        val Level0: Dp = 0.dp
+
+        /** Minimal separation — hairline-adjacent surfaces. */
+        val Level1: Dp = 1.dp
+
+        /** Standard list/card row rest state. */
+        val Level2: Dp = 3.dp
+
+        /** Raised depth card (the Tactile "white depth card" default). */
+        val Level3: Dp = 6.dp
+
+        /** Emphasized/hero surface at rest (e.g. Home's "All Cards" hero). */
+        val Level4: Dp = 8.dp
+
+        /** Pressed/active or highest-priority overlay surface. */
+        val Level5: Dp = 12.dp
     }
 }

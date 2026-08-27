@@ -80,7 +80,8 @@ object ComponentRegistry {
         pickersFamilyEntries +
         feedbackFamilyEntries +
         emptyStateFamilyEntries +
-        progressFamilyEntries
+        progressFamilyEntries +
+        tactileFoundationFamilyEntries
 
     /**
      * Sub-part composables intentionally excluded from a standalone tile (D-04), each with a
