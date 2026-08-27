@@ -10,13 +10,13 @@
 #
 # This is a durable, reusable check (Phase 123 DS-01, SecondBrain): run it again at any future
 # hub growth phase by passing a new baseline ref as $1, and optionally a list of paths as $2+ (it
-# defaults to the six pre-existing files Phase 123 appends to).
+# defaults to every file tracked at the baseline).
 #
 # Usage:
 #   ./tools/verify-additive-diff.sh <baseline-ref> [path...]
 #
 #   baseline-ref  Required. The git ref to diff HEAD against.
-#   path...       Optional. Defaults to the six Phase 123 append-only source files.
+#   path...       Optional. Defaults to every file tracked at the baseline.
 #
 # Exit codes:
 #   0  Every removed content line since baseline has an identical (modulo trailing continuation
@@ -48,7 +48,9 @@ if [ "$#" -gt 0 ]; then
 else
   # Default: every file tracked at the baseline. Closes the path-list gap (spec §5.1) —
   # a contributor cannot silently edit an unguarded pre-existing file.
-  mapfile -t PATHS < <(git ls-tree -r --name-only "$BASELINE_COMMIT")
+  # Use NUL-safe input (git ls-tree -z) to handle filenames with unusual characters (non-ASCII,
+  # backslash, quote) that would otherwise be C-quoted under core.quotepath=true.
+  mapfile -d '' -t PATHS < <(git ls-tree -z -r --name-only "$BASELINE_COMMIT")
   [ "${#PATHS[@]}" -gt 0 ] || { echo "DS-05 FAIL: baseline '$BASELINE_COMMIT' lists no tracked files." >&2; exit 1; }
 fi
 
