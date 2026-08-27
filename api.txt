@@ -1,0 +1,1100 @@
+// Signature format: 4.0
+package io.github.ygaray.yahirandroidtaste.component {
+
+  public final class AccentColor {
+    ctor public AccentColor(long light, long dark);
+    method public long component1();
+    method public long component2();
+    method public io.github.ygaray.yahirandroidtaste.component.AccentColor copy(optional long light, optional long dark);
+    method @InaccessibleFromKotlin public long getDark();
+    method @InaccessibleFromKotlin public long getLight();
+    property public long dark;
+    property public long light;
+  }
+
+  public final class AccentColorPickerKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void AccentColorPicker(long selectedColor, kotlin.jvm.functions.Function1<java.lang.Long,kotlin.Unit> onColorSelected, optional androidx.compose.ui.Modifier modifier, optional boolean showIndices);
+    method @InaccessibleFromKotlin public static java.util.List<io.github.ygaray.yahirandroidtaste.component.AccentColor> getACCENT_COLORS();
+    property public static java.util.List<io.github.ygaray.yahirandroidtaste.component.AccentColor> ACCENT_COLORS;
+  }
+
+  public final class ActionButtonDefaults {
+    method @KotlinOnly @androidx.compose.runtime.Composable public androidx.compose.material3.ButtonColors colors(io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role);
+    field public static final io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults INSTANCE;
+  }
+
+  public enum ActionButtonDefaults.ActionButtonRole {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole Destructive;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole Neutral;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole Save;
+  }
+
+  public final class AdaptiveMediaPreviewKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void AdaptiveMediaPreview(java.util.List<io.github.ygaray.yahirandroidtaste.component.MediaThumbnailCell> cells, kotlin.jvm.functions.Function1<java.lang.Integer,kotlin.Unit> onCellTap, kotlin.jvm.functions.Function0<kotlin.Unit> onOverflowTap, optional androidx.compose.ui.Modifier modifier, optional int totalImageCount);
+  }
+
+  public final class AlbumCardKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void AlbumCard(String id, String title, boolean isPinned, boolean isFavorite, java.util.List<io.github.ygaray.yahirandroidtaste.component.MediaThumbnailCell> thumbnailItems, kotlin.jvm.functions.Function0<kotlin.Unit> onTap, kotlin.jvm.functions.Function0<kotlin.Unit> onDelete, kotlin.jvm.functions.Function0<kotlin.Unit> onRename, kotlin.jvm.functions.Function0<kotlin.Unit> onTogglePin, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleFavorite, androidx.compose.runtime.MutableState<androidx.compose.foundation.gestures.AnchoredDraggableState<io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor>?> openRowState, optional androidx.compose.ui.Modifier modifier, optional int totalImageCount, optional String? categoryPath, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onEditTags, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onManageLinks, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> tags, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTagClick, optional kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCloseSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagEdit, optional kotlin.jvm.functions.Function2<java.lang.String,java.lang.String,kotlin.Unit>? onTagDelete, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagRemoveFromCard);
+  }
+
+  public final class AlbumSourcePickerSheetKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void AlbumSourcePickerSheet(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateToCamera, kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateToGallery, kotlin.jvm.functions.Function0<kotlin.Unit> onDismiss);
+  }
+
+  public final class AlbumTitleConfirmSheetKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void AlbumTitleConfirmSheet(java.util.List<java.lang.String> photoPaths, String defaultTitle, optional boolean isRenameMode, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onSave, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onDismiss, optional kotlin.jvm.functions.Function0<kotlin.Unit> onDiscard, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tagContent, optional boolean tagsDirty);
+    method public static java.io.File? previewImageFile(java.util.List<java.lang.String> photoPaths);
+  }
+
+  public final class AnimatedStatValueKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void AnimatedStatValue(float targetValue, optional androidx.compose.ui.Modifier modifier, optional androidx.compose.ui.text.TextStyle style, optional androidx.compose.ui.graphics.Color color, optional androidx.compose.animation.core.FiniteAnimationSpec<java.lang.Float> animationSpec, optional kotlin.jvm.functions.Function1<java.lang.Float,java.lang.String> format);
+  }
+
+  public final class AppChipKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void AppChip(String label, boolean isSelected, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingIcon, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingIcon, optional Float? relatednessStrength, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onLongClick, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onDoubleClick);
+  }
+
+  public final class AttentionCueDefaults {
+    field public static final io.github.ygaray.yahirandroidtaste.component.AttentionCueDefaults INSTANCE;
+  }
+
+  public enum AttentionCueDefaults.Style {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.AttentionCueDefaults.Style Dot;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.AttentionCueDefaults.Style Inline;
+  }
+
+  public final class AttentionCueKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void AttentionCue(String? text, optional androidx.compose.ui.Modifier modifier, optional io.github.ygaray.yahirandroidtaste.component.AttentionCueDefaults.Style style, optional androidx.compose.ui.graphics.vector.ImageVector icon, optional androidx.compose.ui.graphics.Color tint, optional String contentDescription);
+  }
+
+  public final class BulkCreatePopupKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void BulkCreatePopup(kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, String actionLabel, String actionAndMoreLabel, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onAction, optional kotlin.jvm.functions.Function1<java.lang.String,java.lang.String?> validate, optional androidx.compose.ui.Modifier modifier);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void BulkCreatePopupContent(String actionLabel, String actionAndMoreLabel, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onAction, kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, optional kotlin.jvm.functions.Function1<java.lang.String,java.lang.String?> validate, optional androidx.compose.ui.Modifier modifier);
+  }
+
+  public final class CardBaseKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void CardBase(androidx.compose.runtime.MutableState<androidx.compose.foundation.gestures.AnchoredDraggableState<io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor>?> openRowState, optional androidx.compose.ui.Modifier modifier, optional boolean showDragHandle, optional boolean showThreeDot, optional kotlin.jvm.functions.Function0<kotlin.Unit> onDeleteClick, optional kotlin.jvm.functions.Function0<kotlin.Unit> onEditClick, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional kotlin.jvm.functions.Function0<kotlin.Unit> onLongClick, optional kotlin.jvm.functions.Function2<androidx.compose.foundation.layout.ColumnScope,kotlin.jvm.functions.Function0<kotlin.Unit>,kotlin.Unit> dropdownMenuContent, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.RowScope,kotlin.Unit>? headerContent, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit>? bodyContent, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tagRowContent, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.RowScope,kotlin.Unit>? footerContent);
+  }
+
+  public final class CardEditorShellContentKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void CardEditorShellContent(Long? accentColor, kotlin.jvm.functions.Function0<kotlin.Unit> onSave, kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, optional boolean readOnly, optional String? title, optional boolean showSaveAction, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onRelatedClick, optional androidx.compose.ui.unit.Dp contentBottomPadding, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.RowScope,kotlin.Unit> trailingContent, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit> header, optional kotlin.jvm.functions.Function0<kotlin.Unit> floatingActionButton, kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit> content);
+  }
+
+  public final class CardFaceSlotsKt {
+    method public static boolean bodySlotVisible(String? body);
+    method public static boolean titleSlotVisible(String? title);
+  }
+
+  public final class CardQuickViewKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void CardQuickView(String title, long createdAt, long updatedAt, optional boolean isPinned, optional boolean isFavorite, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tagContent, optional androidx.compose.ui.Modifier modifier, kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit> body);
+  }
+
+  public final class CardTagRowKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void CardTagRow(java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> tags, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTagClick, kotlin.jvm.functions.Function0<kotlin.Unit> onSiblingsClick, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagEdit, optional kotlin.jvm.functions.Function2<java.lang.String,java.lang.String,kotlin.Unit>? onTagDelete, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagRemoveFromCard);
+  }
+
+  public final class ChipBarKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static <T> void ChipBar(java.util.List<T> items, kotlin.jvm.functions.Function1<T,java.lang.Object> key, kotlin.jvm.functions.Function1<T,kotlin.Unit> itemContent, optional androidx.compose.ui.Modifier modifier, optional String testTag, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingContent, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingContent);
+  }
+
+  public final class ClearableTextFieldKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ClearableTextField(String value, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onValueChange, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? label, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingIcon, optional boolean isError, optional kotlin.jvm.functions.Function0<kotlin.Unit>? supportingText, optional boolean singleLine, optional androidx.compose.foundation.text.KeyboardOptions keyboardOptions, optional androidx.compose.foundation.text.KeyboardActions keyboardActions);
+  }
+
+  public final class ColorUtilsKt {
+    method @KotlinOnly public static androidx.compose.ui.graphics.Brush accentGradient(androidx.compose.ui.graphics.Color accentColor, androidx.compose.material3.ColorScheme colorScheme);
+    method @KotlinOnly public static java.util.List<androidx.compose.ui.graphics.Color> accentGradientStops(androidx.compose.ui.graphics.Color accentColor, androidx.compose.material3.ColorScheme colorScheme);
+    method @KotlinOnly public static androidx.compose.ui.graphics.Color accentTint(androidx.compose.ui.graphics.Color accentColor, androidx.compose.material3.ColorScheme colorScheme, optional float alpha);
+    method @KotlinOnly public static androidx.compose.ui.graphics.Color contrastingForeground(androidx.compose.ui.graphics.Color background);
+  }
+
+  public final class ConfirmationDialogDefaults {
+    method @KotlinOnly @androidx.compose.runtime.Composable public androidx.compose.material3.ButtonColors confirmButtonColors(io.github.ygaray.yahirandroidtaste.component.ConfirmationDialogDefaults.ConfirmStyle style);
+    method @InaccessibleFromKotlin public String getConfirmLabel();
+    method @InaccessibleFromKotlin public String? getDismissLabel();
+    property public String confirmLabel;
+    property public String? dismissLabel;
+    field public static final io.github.ygaray.yahirandroidtaste.component.ConfirmationDialogDefaults INSTANCE;
+  }
+
+  public enum ConfirmationDialogDefaults.ConfirmStyle {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.ConfirmationDialogDefaults.ConfirmStyle Destructive;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.ConfirmationDialogDefaults.ConfirmStyle Neutral;
+  }
+
+  public final class ConfirmationDialogKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ConfirmationDialog(String title, String body, kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, kotlin.jvm.functions.Function0<kotlin.Unit> onConfirm, optional androidx.compose.ui.Modifier modifier, optional String confirmLabel, optional String? dismissLabel, optional io.github.ygaray.yahirandroidtaste.component.ConfirmationDialogDefaults.ConfirmStyle confirmStyle, optional androidx.compose.ui.window.DialogProperties properties);
+  }
+
+  public final class CountBadgeKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void CountBadge(int count, androidx.compose.ui.graphics.Color tileAccentColor, optional androidx.compose.ui.Modifier modifier);
+  }
+
+  public final class CropOverlayKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void CropOverlay(int bitmapWidth, int bitmapHeight, Float? aspectRatio, kotlin.jvm.functions.Function4<java.lang.Float,java.lang.Float,java.lang.Float,java.lang.Float,kotlin.Unit> onCropBoundsChanged, optional androidx.compose.ui.Modifier modifier, optional java.util.List<java.lang.Float>? initialCropBounds);
+  }
+
+  public final class CycleSubTypeButtonKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void CycleSubTypeButton(String currentSubType, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCycle, optional boolean enabled, optional androidx.compose.ui.Modifier modifier);
+  }
+
+  public final class DynamicActionButtonKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void DynamicActionButton(String label, io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional boolean enabled, optional androidx.compose.ui.Modifier modifier);
+  }
+
+  public final class EditorItemRowKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void EditorItemRow(sh.calvin.reorderable.ReorderableCollectionItemScope, io.github.ygaray.yahirandroidtaste.model.ListItemUiModel item, int itemIndex, boolean isDragging, boolean autoFocus, kotlin.jvm.functions.Function0<kotlin.Unit> onAutoFocused, androidx.compose.ui.Modifier dragHandleModifier, String subType, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleChecked, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTextChange, kotlin.jvm.functions.Function0<kotlin.Unit> onDelete, kotlin.jvm.functions.Function0<kotlin.Unit> onEnterPressed, optional androidx.compose.ui.Modifier modifier, optional boolean readOnly);
+  }
+
+  public final class EmptyStateKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void EmptyState(androidx.compose.ui.graphics.vector.ImageVector icon, String title, optional androidx.compose.ui.Modifier modifier, optional String? body, optional String? ctaLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onCta);
+  }
+
+  public final class ExpandableFabKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ExpandableFab(kotlin.jvm.functions.Function0<kotlin.Unit> onCreateTextCard, kotlin.jvm.functions.Function0<kotlin.Unit> onCreateListCard, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit> onCreateVoiceCard, optional kotlin.jvm.functions.Function0<kotlin.Unit> onAlbumCamera, optional kotlin.jvm.functions.Function0<kotlin.Unit> onAlbumGallery, optional kotlin.jvm.functions.Function0<kotlin.Unit> onQuickTake, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onNewTag, optional boolean isAlbumEnabled, optional boolean isVoiceEnabled, optional boolean isListEnabled, optional boolean isTextEnabled, optional boolean configLoaded);
+  }
+
+  public final class FilterBarKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static <T> void FilterBar(boolean expanded, kotlin.jvm.functions.Function0<kotlin.Unit> onExpand, kotlin.jvm.functions.Function0<kotlin.Unit> onCollapse, optional androidx.compose.ui.Modifier modifier, optional String filterContentDescription, kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.FlowRowScope,kotlin.Unit> content);
+  }
+
+  public final class GradientSwatchKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void GradientSwatch(androidx.compose.ui.graphics.Color accentColor, optional androidx.compose.ui.Modifier modifier);
+  }
+
+  public final class HeatSwatchKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void HeatSwatch(optional androidx.compose.ui.Modifier modifier);
+  }
+
+  public enum HeatTier {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.HeatTier COOL;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.HeatTier HOT;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.HeatTier MILD;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.HeatTier WARM;
+  }
+
+  public final class HeatVisual {
+    ctor @KotlinOnly public HeatVisual(androidx.compose.ui.graphics.Color nodeFillColor, androidx.compose.ui.graphics.Color edgeColor, androidx.compose.ui.unit.Dp edgeStrokeWidth, androidx.compose.ui.unit.Dp nodeRadius);
+    method @KotlinOnly public operator androidx.compose.ui.graphics.Color component1();
+    method @KotlinOnly public operator androidx.compose.ui.graphics.Color component2();
+    method @KotlinOnly public operator androidx.compose.ui.unit.Dp component3();
+    method @KotlinOnly public operator androidx.compose.ui.unit.Dp component4();
+    method @KotlinOnly public io.github.ygaray.yahirandroidtaste.component.HeatVisual copy(optional androidx.compose.ui.graphics.Color nodeFillColor, optional androidx.compose.ui.graphics.Color edgeColor, optional androidx.compose.ui.unit.Dp edgeStrokeWidth, optional androidx.compose.ui.unit.Dp nodeRadius);
+    property public androidx.compose.ui.graphics.Color edgeColor;
+    property public androidx.compose.ui.unit.Dp edgeStrokeWidth;
+    property public androidx.compose.ui.graphics.Color nodeFillColor;
+    property public androidx.compose.ui.unit.Dp nodeRadius;
+  }
+
+  public final class HeroStatCardKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void HeroStatCard(String label, String value, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onClick, optional androidx.compose.ui.graphics.Shape shape, optional androidx.compose.ui.graphics.Color containerColor, optional androidx.compose.ui.graphics.Brush accentBrush, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit>? content);
+  }
+
+  public final class IconPickerGridKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void IconPickerGrid(String selectedIcon, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onIconSelected, optional androidx.compose.ui.Modifier modifier, optional boolean showIndices);
+    method @InaccessibleFromKotlin public static java.util.Map<java.lang.String,androidx.compose.ui.graphics.vector.ImageVector> getICON_MAP();
+    property public static java.util.Map<java.lang.String,androidx.compose.ui.graphics.vector.ImageVector> ICON_MAP;
+  }
+
+  public final class ListCardBottomSheetKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ListCardBottomSheet(String title, java.util.List<io.github.ygaray.yahirandroidtaste.model.ListItemUiModel> items, String subType, String? categoryPath, long createdAt, long updatedAt, boolean isPinned, boolean isFavorite, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onToggleItem, kotlin.jvm.functions.Function0<kotlin.Unit> onEdit, kotlin.jvm.functions.Function0<kotlin.Unit> onDismiss, kotlin.jvm.functions.Function0<kotlin.Unit> onTogglePin, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleFavorite, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onConfirmRename, kotlin.jvm.functions.Function0<kotlin.Unit> onDelete, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tagContent, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onEditRequest, optional boolean readOnlyPreview, optional int previewOverflowCount);
+  }
+
+  public final class ListCardKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ListCard(String id, String title, String subType, java.util.List<io.github.ygaray.yahirandroidtaste.model.ListItemUiModel> items, String? categoryPath, long createdAt, long updatedAt, boolean isPinned, boolean isFavorite, kotlin.jvm.functions.Function0<kotlin.Unit> onEdit, kotlin.jvm.functions.Function0<kotlin.Unit> onDelete, kotlin.jvm.functions.Function0<kotlin.Unit> onTogglePin, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleFavorite, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onConfirmRename, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onToggleItem, androidx.compose.runtime.MutableState<androidx.compose.foundation.gestures.AnchoredDraggableState<io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor>?> openRowState, optional androidx.compose.ui.Modifier modifier, optional boolean showBottomSheet, optional kotlin.jvm.functions.Function0<kotlin.Unit> onShowBottomSheet, optional kotlin.jvm.functions.Function0<kotlin.Unit> onDismissBottomSheet, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tagContent, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> tags, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTagClick, optional kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCloseSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagEdit, optional kotlin.jvm.functions.Function2<java.lang.String,java.lang.String,kotlin.Unit>? onTagDelete, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagRemoveFromCard, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onEditRequest);
+  }
+
+  public final class MediaThumbnailCell {
+    ctor public MediaThumbnailCell(Object source, String memoryCacheKey, optional boolean isVideo, optional long durationMs);
+    method public Object component1();
+    method public String component2();
+    method public boolean component3();
+    method public long component4();
+    method public io.github.ygaray.yahirandroidtaste.component.MediaThumbnailCell copy(optional Object source, optional String memoryCacheKey, optional boolean isVideo, optional long durationMs);
+    method @InaccessibleFromKotlin public long getDurationMs();
+    method @InaccessibleFromKotlin public String getMemoryCacheKey();
+    method @InaccessibleFromKotlin public Object getSource();
+    method @InaccessibleFromKotlin public boolean isVideo();
+    property public long durationMs;
+    property public boolean isVideo;
+    property public String memoryCacheKey;
+    property public Object source;
+  }
+
+  public enum MetricBand {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.MetricBand Good;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.MetricBand OnTarget;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.MetricBand Over;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.MetricBand Under;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.MetricBand VeryUnder;
+  }
+
+  public final class MetricBarDefaults {
+    method @KotlinOnly public androidx.compose.ui.graphics.Color colorFor(io.github.ygaray.yahirandroidtaste.component.MetricBand band);
+    property public androidx.compose.ui.graphics.Color Good;
+    property public androidx.compose.ui.graphics.Color OnTarget;
+    property public androidx.compose.ui.graphics.Color Over;
+    property public androidx.compose.ui.graphics.Color Under;
+    property public androidx.compose.ui.graphics.Color VeryUnder;
+    field public static final io.github.ygaray.yahirandroidtaste.component.MetricBarDefaults INSTANCE;
+  }
+
+  public final class MetricBarKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void MetricBar(String label, String valueText, optional Float? fraction, optional io.github.ygaray.yahirandroidtaste.component.MetricBand? band, optional androidx.compose.ui.Modifier modifier, optional String? remainingText, optional androidx.compose.ui.graphics.Color barColor, optional androidx.compose.ui.graphics.Color trackColor);
+  }
+
+  public final class NameAndTagsEditorKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void NameAndTagsEditor(optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit> header, String name, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNameChange, String nameLabel, kotlin.jvm.functions.Function0<kotlin.Unit> tagsContent, kotlin.jvm.functions.Function0<kotlin.Unit> onSave, kotlin.jvm.functions.Function0<kotlin.Unit> onDismiss, String saveLabel, optional String dismissLabel, optional boolean dismissDestructive, optional boolean enabled, optional androidx.compose.ui.Modifier modifier);
+  }
+
+  public final class ProgressRingKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ProgressRing(float fraction, optional androidx.compose.ui.Modifier modifier, optional androidx.compose.ui.unit.Dp strokeWidth, optional androidx.compose.ui.graphics.Color trackColor, optional androidx.compose.ui.graphics.Color progressColor, optional androidx.compose.animation.core.FiniteAnimationSpec<java.lang.Float> animationSpec, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.BoxScope,kotlin.Unit> content);
+  }
+
+  public final class RecordingBottomSheetContentKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void RecordingBottomSheetContent(io.github.ygaray.yahirandroidtaste.component.RecordingSheetUiState uiState, long elapsedSeconds, java.util.List<java.lang.Float> amplitudeBars, String titleText, String defaultTitle, boolean permissionDenied, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTitleChange, kotlin.jvm.functions.Function0<kotlin.Unit> onPause, kotlin.jvm.functions.Function0<kotlin.Unit> onResume, kotlin.jvm.functions.Function0<kotlin.Unit> onStop, kotlin.jvm.functions.Function0<kotlin.Unit> onSave, kotlin.jvm.functions.Function0<kotlin.Unit> onDiscard, kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClosePermissionDenied, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> bufferedTags, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> allTags, optional kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onAddBufferedTags, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onRemoveBufferedTag, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCreateAndBufferTag, optional io.github.ygaray.yahirandroidtaste.model.TagSortMode sortMode, optional kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.model.TagSortMode,kotlin.Unit> onSortModeChange);
+  }
+
+  public enum RecordingSheetUiState {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.RecordingSheetUiState IDLE;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.RecordingSheetUiState PAUSED;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.RecordingSheetUiState RECORDING;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.RecordingSheetUiState TITLE;
+  }
+
+  public final class RelatednessEncodingKt {
+    method public static io.github.ygaray.yahirandroidtaste.component.HeatTier heatTier(float jaccard);
+    method public static io.github.ygaray.yahirandroidtaste.component.HeatVisual heatVisual(float jaccard, androidx.compose.material3.ColorScheme colorScheme);
+    method public static androidx.compose.foundation.BorderStroke hubNodeVisual(androidx.compose.material3.ColorScheme colorScheme);
+    method public static io.github.ygaray.yahirandroidtaste.component.RelatednessTier relatednessTier(float jaccard);
+    method public static io.github.ygaray.yahirandroidtaste.component.RelatednessVisual relatednessVisual(float jaccard, androidx.compose.material3.ColorScheme colorScheme);
+  }
+
+  public enum RelatednessTier {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.RelatednessTier MINIMAL;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.RelatednessTier RELATED;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.RelatednessTier STRONG;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.RelatednessTier WEAK;
+  }
+
+  public final class RelatednessVisual {
+    ctor @KotlinOnly public RelatednessVisual(androidx.compose.ui.graphics.Color containerColor, androidx.compose.ui.graphics.Color contentColor, androidx.compose.foundation.BorderStroke borderStroke, androidx.compose.ui.text.font.FontWeight fontWeight);
+    method @KotlinOnly public operator androidx.compose.ui.graphics.Color component1();
+    method @KotlinOnly public operator androidx.compose.ui.graphics.Color component2();
+    method public androidx.compose.foundation.BorderStroke component3();
+    method public androidx.compose.ui.text.font.FontWeight component4();
+    method @KotlinOnly public io.github.ygaray.yahirandroidtaste.component.RelatednessVisual copy(optional androidx.compose.ui.graphics.Color containerColor, optional androidx.compose.ui.graphics.Color contentColor, optional androidx.compose.foundation.BorderStroke borderStroke, optional androidx.compose.ui.text.font.FontWeight fontWeight);
+    method @InaccessibleFromKotlin public androidx.compose.foundation.BorderStroke getBorderStroke();
+    method @InaccessibleFromKotlin public androidx.compose.ui.text.font.FontWeight getFontWeight();
+    property public androidx.compose.foundation.BorderStroke borderStroke;
+    property public androidx.compose.ui.graphics.Color containerColor;
+    property public androidx.compose.ui.graphics.Color contentColor;
+    property public androidx.compose.ui.text.font.FontWeight fontWeight;
+  }
+
+  public final class SegmentedOptionSelectorKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void SegmentedOptionSelector(int selectedIndex, java.util.List<java.lang.String> options, kotlin.jvm.functions.Function1<java.lang.Integer,kotlin.Unit> onSelect, optional androidx.compose.ui.Modifier modifier, optional boolean enabled, optional String? disabledReason);
+  }
+
+  public final class SheetScaffoldKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void SheetScaffold(kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, optional androidx.compose.ui.Modifier modifier, optional androidx.compose.material3.SheetState sheetState, optional kotlin.jvm.functions.Function0<kotlin.Unit>? dragHandle, optional kotlin.jvm.functions.Function0<androidx.compose.foundation.layout.WindowInsets> contentWindowInsets, kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit> content);
+  }
+
+  public final class SortControlKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static <T> void SortControl(T sortMode, java.util.List<T> options, kotlin.jvm.functions.Function1<T,java.lang.String> optionLabel, kotlin.jvm.functions.Function1<T,kotlin.Unit> onSortModeChange, optional androidx.compose.ui.Modifier modifier, optional String sortContentDescription);
+  }
+
+  public final class TagChipEditorContentKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void TagChipEditorContent(java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> currentTags, boolean isLastTag, java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> allTags, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onRemoveTag, kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onAddTags, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onRemoveTagNoUndo, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCreateTag, optional androidx.compose.ui.Modifier modifier, optional io.github.ygaray.yahirandroidtaste.model.TagSortMode sortMode, optional kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.model.TagSortMode,kotlin.Unit> onSortModeChange, optional boolean showSortControl, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onEditTag, optional kotlin.jvm.functions.Function2<java.lang.String,java.lang.String,kotlin.Unit>? onDeleteTag);
+  }
+
+  public final class TagChipWithContextMenuKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void TagChipWithContextMenu(String label, boolean isSelected, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingIcon, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingIcon, optional Float? relatednessStrength, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onEdit, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onRemoveFromContext, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onDelete, optional String removeLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onDoubleClick);
+  }
+
+  public final class TagCreateSheetKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void TagCreateSheet(kotlin.jvm.functions.Function0<kotlin.Unit> onDismiss, kotlin.jvm.functions.Function4<java.lang.String,java.lang.Boolean,java.lang.String?,java.lang.Long?,kotlin.Unit> onConfirm, optional String? createTagError, optional boolean showAppearanceOption, optional boolean defaultAddToHome);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void TagCreateSheetContent(kotlin.jvm.functions.Function4<java.lang.String,java.lang.Boolean,java.lang.String?,java.lang.Long?,kotlin.Unit> onConfirm, optional String? createTagError, optional boolean showAppearanceOption, optional boolean defaultAddToHome);
+  }
+
+  public final class TagListItemKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void TagListItem(io.github.ygaray.yahirandroidtaste.model.TagManagementUiModel tag, kotlin.jvm.functions.Function0<kotlin.Unit> onClick);
+  }
+
+  public final class TagPickerSheetKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void TagPickerSheet(optional java.util.Set<java.lang.String> existingTagIds, java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> allTags, kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onDone, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCreate, kotlin.jvm.functions.Function0<kotlin.Unit> onDismiss, optional int maxSelections, optional io.github.ygaray.yahirandroidtaste.model.TagSortMode sortMode, optional kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.model.TagSortMode,kotlin.Unit> onSortModeChange);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void TagPickerSheetContent(optional java.util.Set<java.lang.String> existingTagIds, java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> allTags, kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onDone, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCreate, kotlin.jvm.functions.Function0<kotlin.Unit> onDismiss, optional int maxSelections, optional io.github.ygaray.yahirandroidtaste.model.TagSortMode sortMode, optional kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.model.TagSortMode,kotlin.Unit> onSortModeChange);
+    property public static int TAG_NAME_MAX_LENGTH;
+    field public static final int TAG_NAME_MAX_LENGTH = 50; // 0x32
+  }
+
+  public final class TextCardBottomSheetKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void TextCardBottomSheet(String title, String? content, String? categoryPath, long createdAt, long updatedAt, boolean isPinned, boolean isFavorite, kotlin.jvm.functions.Function0<kotlin.Unit> onEdit, kotlin.jvm.functions.Function0<kotlin.Unit> onDismiss, kotlin.jvm.functions.Function0<kotlin.Unit> onTogglePin, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleFavorite, kotlin.jvm.functions.Function0<kotlin.Unit> onDelete, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onConfirmRename, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tagContent, optional int imageCount, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onEditRequest);
+  }
+
+  public final class TextCardKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void TextCard(String id, String title, String? content, String? categoryPath, long createdAt, long updatedAt, boolean isPinned, boolean isFavorite, kotlin.jvm.functions.Function0<kotlin.Unit> onEdit, kotlin.jvm.functions.Function0<kotlin.Unit> onDelete, kotlin.jvm.functions.Function0<kotlin.Unit> onTogglePin, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleFavorite, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onConfirmRename, androidx.compose.runtime.MutableState<androidx.compose.foundation.gestures.AnchoredDraggableState<io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor>?> openRowState, optional androidx.compose.ui.Modifier modifier, optional boolean showBottomSheet, optional kotlin.jvm.functions.Function0<kotlin.Unit> onShowBottomSheet, optional kotlin.jvm.functions.Function0<kotlin.Unit> onDismissBottomSheet, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tagContent, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> tags, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTagClick, optional kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCloseSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagEdit, optional kotlin.jvm.functions.Function2<java.lang.String,java.lang.String,kotlin.Unit>? onTagDelete, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagRemoveFromCard, optional int imageCount, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onEditRequest);
+  }
+
+  public final class VoiceCardKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void VoiceCard(String id, String title, long durationMs, String? samplesPath, String? categoryPath, boolean isPinned, boolean isFavorite, kotlin.jvm.functions.Function0<kotlin.Unit> onTap, kotlin.jvm.functions.Function0<kotlin.Unit> onDelete, kotlin.jvm.functions.Function0<kotlin.Unit> onTogglePin, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleFavorite, kotlin.jvm.functions.Function0<kotlin.Unit> onRenameOrTagsRequest, androidx.compose.runtime.MutableState<androidx.compose.foundation.gestures.AnchoredDraggableState<io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor>?> openRowState, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onManageLinks, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> tags, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTagClick, optional kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCloseSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagEdit, optional kotlin.jvm.functions.Function2<java.lang.String,java.lang.String,kotlin.Unit>? onTagDelete, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagRemoveFromCard);
+  }
+
+  public final class VoiceRenameTagsSheetKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void VoiceRenameTagsSheet(String defaultTitle, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onSave, kotlin.jvm.functions.Function0<kotlin.Unit> onDismiss, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tagContent, optional boolean tagsDirty);
+  }
+
+  public final class WaveformCanvasKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void WaveformCanvas(java.util.List<java.lang.Float> bars, androidx.compose.ui.graphics.Color activeColor, androidx.compose.ui.graphics.Color inactiveColor, optional androidx.compose.ui.Modifier modifier, optional float progressFraction);
+  }
+
+  public final class WaveformUtilKt {
+    method public static java.util.List<java.lang.Float> downsample(java.util.List<java.lang.Float> samples, int targetBars);
+  }
+
+}
+
+package io.github.ygaray.yahirandroidtaste.explorer {
+
+  public final class ButtonsFabFamilyScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ButtonsFabFamilyScreen(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToDetail, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
+  }
+
+  public final class CardsFamilyScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void CardsFamilyScreen(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToDetail, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
+  }
+
+  public final class ChipsFamilyScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ChipsFamilyScreen(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToDetail, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
+  }
+
+  public final class ComponentDetailScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ComponentDetailScreen(io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Entry entry, kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void StatesMatrixSection(java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell> cells);
+  }
+
+  public final class ComponentRegistry {
+    method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Entry> getEntries();
+    method @InaccessibleFromKotlin public java.util.Map<java.lang.String,java.lang.String> getINTENTIONALLY_UNREGISTERED();
+    property public java.util.Map<java.lang.String,java.lang.String> INTENTIONALLY_UNREGISTERED;
+    property public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Entry> entries;
+    field public static final io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry INSTANCE;
+  }
+
+  public static final class ComponentRegistry.Entry {
+    ctor public ComponentRegistry.Entry(String name, String family, optional java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell> states, optional kotlin.jvm.functions.Function0<kotlin.Unit>? content, optional java.util.List<? extends io.github.ygaray.yahirandroidtaste.explorer.Control> controls, optional kotlin.jvm.functions.Function1<? super io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,kotlin.Unit>? preview);
+    method public String component1();
+    method public String component2();
+    method public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell> component3();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit>? component4();
+    method public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.Control> component5();
+    method public kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,kotlin.Unit>? component6();
+    method public io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Entry copy(optional String name, optional String family, optional java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell> states, optional kotlin.jvm.functions.Function0<kotlin.Unit>? content, optional java.util.List<? extends io.github.ygaray.yahirandroidtaste.explorer.Control> controls, optional kotlin.jvm.functions.Function1<? super io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,kotlin.Unit>? preview);
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getContent();
+    method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.Control> getControls();
+    method @InaccessibleFromKotlin public String getFamily();
+    method @InaccessibleFromKotlin public String getName();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,kotlin.Unit>? getPreview();
+    method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell> getStates();
+    property public kotlin.jvm.functions.Function0<kotlin.Unit>? content;
+    property public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.Control> controls;
+    property public String family;
+    property public String name;
+    property public kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,kotlin.Unit>? preview;
+    property public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell> states;
+  }
+
+  public static final class ComponentRegistry.StateCell {
+    ctor public ComponentRegistry.StateCell(String label, optional kotlin.jvm.functions.Function0<kotlin.Unit>? render);
+    method public String component1();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit>? component2();
+    method public io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell copy(optional String label, optional kotlin.jvm.functions.Function0<kotlin.Unit>? render);
+    method @InaccessibleFromKotlin public String getLabel();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getRender();
+    property public String label;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit>? render;
+  }
+
+  public final class ComponentSearch {
+    method public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Entry>? filter(String query, optional java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Entry> entries);
+    field public static final io.github.ygaray.yahirandroidtaste.explorer.ComponentSearch INSTANCE;
+  }
+
+  public sealed exhaustive interface Control {
+    method @InaccessibleFromKotlin public String getLabel();
+    property public abstract String label;
+  }
+
+  public static final class Control.Enum implements io.github.ygaray.yahirandroidtaste.explorer.Control {
+    ctor public Control.Enum(String label, java.util.List<java.lang.String> options, optional String default);
+    method public String component1();
+    method public java.util.List<java.lang.String> component2();
+    method public String component3();
+    method public io.github.ygaray.yahirandroidtaste.explorer.Control.Enum copy(optional String label, optional java.util.List<java.lang.String> options, optional String default);
+    method @InaccessibleFromKotlin public String getDefault();
+    method @InaccessibleFromKotlin public String getLabel();
+    method @InaccessibleFromKotlin public java.util.List<java.lang.String> getOptions();
+    property public String default;
+    property public String label;
+    property public java.util.List<java.lang.String> options;
+  }
+
+  public static final class Control.Toggle implements io.github.ygaray.yahirandroidtaste.explorer.Control {
+    ctor public Control.Toggle(String label, optional boolean default);
+    method public String component1();
+    method public boolean component2();
+    method public io.github.ygaray.yahirandroidtaste.explorer.Control.Toggle copy(optional String label, optional boolean default);
+    method @InaccessibleFromKotlin public boolean getDefault();
+    method @InaccessibleFromKotlin public String getLabel();
+    property public boolean default;
+    property public String label;
+  }
+
+  public final class DimensEntry {
+    ctor @KotlinOnly public DimensEntry(String name, androidx.compose.ui.unit.Dp value);
+    method public String component1();
+    method @KotlinOnly public operator androidx.compose.ui.unit.Dp component2();
+    method @KotlinOnly public io.github.ygaray.yahirandroidtaste.explorer.DimensEntry copy(optional String name, optional androidx.compose.ui.unit.Dp value);
+    method @InaccessibleFromKotlin public String getName();
+    property public String name;
+    property public androidx.compose.ui.unit.Dp value;
+  }
+
+  public final class EmptyStateFamilyScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void EmptyStateFamilyScreen(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToDetail, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
+  }
+
+  public final class ExplorerActivity extends androidx.activity.ComponentActivity {
+    ctor public ExplorerActivity();
+  }
+
+  public final class ExplorerEntryKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ExplorerEntry(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack);
+  }
+
+  public final class ExplorerFakeData {
+    method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.model.ListItemUiModel> getBulletedItems();
+    method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.model.ListItemUiModel> getChecklistItems();
+    method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.model.ListItemUiModel> getEmptyListItems();
+    method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.component.MediaThumbnailCell> getEmptyMediaThumbnails();
+    method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> getManyTagChips();
+    method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.component.MediaThumbnailCell> getMediaThumbnails();
+    method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> getTagChips();
+    method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry> getUndoHistoryEntries();
+    method @InaccessibleFromKotlin public java.util.List<java.lang.Float> getWaveformBars();
+    property public static long CREATED_AT;
+    property public static String LONG_TITLE;
+    property public static String NOTE_BODY;
+    property public static String SHORT_TITLE;
+    property public static long UPDATED_AT;
+    property public java.util.List<io.github.ygaray.yahirandroidtaste.model.ListItemUiModel> bulletedItems;
+    property public java.util.List<io.github.ygaray.yahirandroidtaste.model.ListItemUiModel> checklistItems;
+    property public java.util.List<io.github.ygaray.yahirandroidtaste.model.ListItemUiModel> emptyListItems;
+    property public java.util.List<io.github.ygaray.yahirandroidtaste.component.MediaThumbnailCell> emptyMediaThumbnails;
+    property public java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> manyTagChips;
+    property public java.util.List<io.github.ygaray.yahirandroidtaste.component.MediaThumbnailCell> mediaThumbnails;
+    property public java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> tagChips;
+    property public java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry> undoHistoryEntries;
+    property public java.util.List<java.lang.Float> waveformBars;
+    field public static final long CREATED_AT = 1700000000000L; // 0x18bcfe56800L
+    field public static final io.github.ygaray.yahirandroidtaste.explorer.ExplorerFakeData INSTANCE;
+    field public static final String LONG_TITLE = "A deliberately long card title used to exercise ellipsis and wrapping behavior across every card face and bottom sheet header in the showcase";
+    field public static final String NOTE_BODY = "Remember to check the pantry before heading to the store \u2014 we may already have flour and sugar. Pick up basil for the recipe this weekend.";
+    field public static final String SHORT_TITLE = "Grocery list";
+    field public static final long UPDATED_AT = 1700100000000L; // 0x18bd5db4900L
+  }
+
+  public final class ExplorerFamilies {
+    method @InaccessibleFromKotlin public java.util.List<kotlin.Pair<java.lang.String,java.lang.String>> getORDERED_KEYS();
+    property public static String BUTTONS_FAB;
+    property public static String CARDS;
+    property public static String CHIPS;
+    property public static String EMPTY_STATE;
+    property public static String FEEDBACK;
+    property public java.util.List<kotlin.Pair<java.lang.String,java.lang.String>> ORDERED_KEYS;
+    property public static String PICKERS;
+    property public static String PROGRESS_METRICS;
+    property public static String SHEETS;
+    property public static String TACTILE_FOUNDATION;
+    field public static final String BUTTONS_FAB = "buttons_fab";
+    field public static final String CARDS = "cards";
+    field public static final String CHIPS = "chips";
+    field public static final String EMPTY_STATE = "empty_state";
+    field public static final String FEEDBACK = "feedback";
+    field public static final io.github.ygaray.yahirandroidtaste.explorer.ExplorerFamilies INSTANCE;
+    field public static final String PICKERS = "pickers";
+    field public static final String PROGRESS_METRICS = "progress_metrics";
+    field public static final String SHEETS = "sheets";
+    field public static final String TACTILE_FOUNDATION = "tactile_foundation";
+  }
+
+  public final class ExplorerIndexScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ComponentRow(String name, optional String? supportingLabel, kotlin.jvm.functions.Function0<kotlin.Unit> onClick);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ExplorerIndexScreen(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToFamily, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToDetail, kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateToTokens, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ExplorerThemeToggleAction(io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
+    method @InaccessibleFromKotlin public static io.github.ygaray.yahirandroidtaste.feedback.FeedbackDispatcher getExplorerFeedbackStub();
+    property public static io.github.ygaray.yahirandroidtaste.feedback.FeedbackDispatcher ExplorerFeedbackStub;
+  }
+
+  public final class FeedbackFamilyScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void FeedbackFamilyScreen(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToDetail, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
+  }
+
+  public final class PickersFamilyScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void PickersFamilyScreen(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToDetail, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
+  }
+
+  public final class PlaygroundState {
+    method public boolean boolean(io.github.ygaray.yahirandroidtaste.explorer.Control.Toggle control);
+    method public String selected(io.github.ygaray.yahirandroidtaste.explorer.Control.Enum control);
+    method public void setBoolean(io.github.ygaray.yahirandroidtaste.explorer.Control.Toggle control, boolean value);
+    method public void setSelected(io.github.ygaray.yahirandroidtaste.explorer.Control.Enum control, String value);
+    field public static final io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState.Companion Companion;
+  }
+
+  public static final class PlaygroundState.Companion {
+    method @InaccessibleFromKotlin public androidx.compose.runtime.saveable.Saver<io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,java.lang.Object> getSaver();
+    method public io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState initial(java.util.List<? extends io.github.ygaray.yahirandroidtaste.explorer.Control> controls);
+    property public androidx.compose.runtime.saveable.Saver<io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,java.lang.Object> Saver;
+  }
+
+  public final class ProgressFamilyScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ProgressFamilyScreen(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToDetail, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
+  }
+
+  public final class ShapeEntry {
+    ctor public ShapeEntry(String name, androidx.compose.ui.graphics.Shape shape);
+    method public String component1();
+    method public androidx.compose.ui.graphics.Shape component2();
+    method public io.github.ygaray.yahirandroidtaste.explorer.ShapeEntry copy(optional String name, optional androidx.compose.ui.graphics.Shape shape);
+    method @InaccessibleFromKotlin public String getName();
+    method @InaccessibleFromKotlin public androidx.compose.ui.graphics.Shape getShape();
+    property public String name;
+    property public androidx.compose.ui.graphics.Shape shape;
+  }
+
+  public final class SheetsFamilyScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void SheetsFamilyScreen(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToDetail, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
+  }
+
+  public final class TactileFoundationFamilyScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void TactileFoundationFamilyScreen(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToDetail, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
+  }
+
+  public final class TokenBrowserScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void TokenBrowserScreen(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
+  }
+
+  public final class TokenSwatch {
+    ctor @KotlinOnly public TokenSwatch(String name, androidx.compose.ui.graphics.Color light, androidx.compose.ui.graphics.Color dark);
+    method public String component1();
+    method @KotlinOnly public operator androidx.compose.ui.graphics.Color component2();
+    method @KotlinOnly public operator androidx.compose.ui.graphics.Color component3();
+    method @KotlinOnly public io.github.ygaray.yahirandroidtaste.explorer.TokenSwatch copy(optional String name, optional androidx.compose.ui.graphics.Color light, optional androidx.compose.ui.graphics.Color dark);
+    method @InaccessibleFromKotlin public String getName();
+    property public androidx.compose.ui.graphics.Color dark;
+    property public androidx.compose.ui.graphics.Color light;
+    property public String name;
+  }
+
+  public final class TokenSwatchesKt {
+    method @InaccessibleFromKotlin public static java.util.List<io.github.ygaray.yahirandroidtaste.explorer.TokenSwatch> getColorSwatches();
+    method @InaccessibleFromKotlin public static java.util.List<io.github.ygaray.yahirandroidtaste.explorer.DimensEntry> getDimensEntries();
+    method @InaccessibleFromKotlin public static java.util.List<io.github.ygaray.yahirandroidtaste.explorer.TokenSwatch> getElevationLevels();
+    method @InaccessibleFromKotlin public static java.util.List<io.github.ygaray.yahirandroidtaste.explorer.TypeScaleEntry> getTypeScaleEntries();
+    method @KotlinOnly @androidx.compose.runtime.Composable public static java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ShapeEntry> shapeEntries();
+    property public static java.util.List<io.github.ygaray.yahirandroidtaste.explorer.TokenSwatch> colorSwatches;
+    property public static java.util.List<io.github.ygaray.yahirandroidtaste.explorer.DimensEntry> dimensEntries;
+    property public static java.util.List<io.github.ygaray.yahirandroidtaste.explorer.TokenSwatch> elevationLevels;
+    property public static java.util.List<io.github.ygaray.yahirandroidtaste.explorer.TypeScaleEntry> typeScaleEntries;
+  }
+
+  public final class TypeScaleEntry {
+    ctor public TypeScaleEntry(String name, androidx.compose.ui.text.TextStyle style);
+    method public String component1();
+    method public androidx.compose.ui.text.TextStyle component2();
+    method public io.github.ygaray.yahirandroidtaste.explorer.TypeScaleEntry copy(optional String name, optional androidx.compose.ui.text.TextStyle style);
+    method @InaccessibleFromKotlin public String getName();
+    method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getStyle();
+    property public String name;
+    property public androidx.compose.ui.text.TextStyle style;
+  }
+
+}
+
+package io.github.ygaray.yahirandroidtaste.feedback {
+
+  public interface FeedbackDispatcher {
+    method public suspend Object? emit(io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent event, kotlin.coroutines.Continuation<? super kotlin.Unit>);
+  }
+
+  public final class FeedbackDispatcherKt {
+    method @InaccessibleFromKotlin public static androidx.compose.runtime.ProvidableCompositionLocal<io.github.ygaray.yahirandroidtaste.feedback.FeedbackDispatcher> getLocalFeedbackController();
+    property public static androidx.compose.runtime.ProvidableCompositionLocal<io.github.ygaray.yahirandroidtaste.feedback.FeedbackDispatcher> LocalFeedbackController;
+  }
+
+  public sealed exhaustive interface FeedbackEvent {
+  }
+
+  public static final class FeedbackEvent.DismissScreen implements io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent {
+    ctor public FeedbackEvent.DismissScreen(String message);
+    method public String component1();
+    method public io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent.DismissScreen copy(optional String message);
+    method @InaccessibleFromKotlin public String getMessage();
+    property public String message;
+  }
+
+  public static final class FeedbackEvent.Notify implements io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent {
+    ctor public FeedbackEvent.Notify(String message, optional androidx.compose.material3.SnackbarDuration duration);
+    method public String component1();
+    method public androidx.compose.material3.SnackbarDuration component2();
+    method public io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent.Notify copy(optional String message, optional androidx.compose.material3.SnackbarDuration duration);
+    method @InaccessibleFromKotlin public androidx.compose.material3.SnackbarDuration getDuration();
+    method @InaccessibleFromKotlin public String getMessage();
+    property public androidx.compose.material3.SnackbarDuration duration;
+    property public String message;
+  }
+
+  public static final class FeedbackEvent.WithUndo implements io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent {
+    ctor public FeedbackEvent.WithUndo(String message, kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction, optional androidx.compose.material3.SnackbarDuration duration, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview);
+    method public String component1();
+    method public kotlin.jvm.functions.Function1<kotlin.coroutines.Continuation<? super kotlin.Unit>,java.lang.Object?> component2();
+    method public androidx.compose.material3.SnackbarDuration component3();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? component4();
+    method public io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent.WithUndo copy(optional String message, optional kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction, optional androidx.compose.material3.SnackbarDuration duration, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview);
+    method @InaccessibleFromKotlin public androidx.compose.material3.SnackbarDuration getDuration();
+    method @InaccessibleFromKotlin public String getMessage();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? getPreview();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function1<kotlin.coroutines.Continuation<? super kotlin.Unit>,java.lang.Object?> getUndoAction();
+    property public androidx.compose.material3.SnackbarDuration duration;
+    property public String message;
+    property public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview;
+    property public kotlin.jvm.functions.Function1<kotlin.coroutines.Continuation<? super kotlin.Unit>,?> undoAction;
+  }
+
+  public final class UndoCenterScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void UndoCenterScreen(java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry> entries, kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onUndo, kotlin.jvm.functions.Function0<kotlin.Unit> onClear);
+  }
+
+  public final class UndoHistoryEntry {
+    method public String component1();
+    method public String component2();
+    method public long component3();
+    method public kotlin.jvm.functions.Function1<kotlin.coroutines.Continuation<? super kotlin.Unit>,java.lang.Object?> component4();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? component5();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoStatus component6();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry copy(optional String id, optional String message, optional long timestamp, optional kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview, optional io.github.ygaray.yahirandroidtaste.feedback.UndoStatus status, optional java.util.concurrent.atomic.AtomicBoolean consumedGuard);
+    method @InaccessibleFromKotlin public String getId();
+    method @InaccessibleFromKotlin public String getMessage();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? getPreview();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.feedback.UndoStatus getStatus();
+    method @InaccessibleFromKotlin public long getTimestamp();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function1<kotlin.coroutines.Continuation<? super kotlin.Unit>,java.lang.Object?> getUndoAction();
+    method public boolean tryConsume();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry withStatus(io.github.ygaray.yahirandroidtaste.feedback.UndoStatus newStatus);
+    property public String id;
+    property public String message;
+    property public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview;
+    property public io.github.ygaray.yahirandroidtaste.feedback.UndoStatus status;
+    property public long timestamp;
+    property public kotlin.jvm.functions.Function1<kotlin.coroutines.Continuation<? super kotlin.Unit>,?> undoAction;
+  }
+
+  @javax.inject.Singleton public final class UndoHistoryStore {
+    ctor @javax.inject.Inject public UndoHistoryStore();
+    method public String append(String message, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview, kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction);
+    method public suspend Object? attemptUndo(String id, kotlin.coroutines.Continuation<? super kotlin.Unit>);
+    method public void clearSpent();
+    method @InaccessibleFromKotlin public kotlinx.coroutines.flow.StateFlow<java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry>> getEntries();
+    property public kotlinx.coroutines.flow.StateFlow<java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry>> entries;
+  }
+
+  @dagger.internal.DaggerGenerated @dagger.internal.QualifierMetadata @dagger.internal.ScopeMetadata("javax.inject.Singleton") @javax.annotation.processing.Generated(value="dagger.internal.codegen.ComponentProcessor", comments="https://dagger.dev") public final class UndoHistoryStore_Factory implements dagger.internal.Factory<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore!> {
+    ctor public UndoHistoryStore_Factory();
+    method public static io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore_Factory! create();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore! get();
+    method public static io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore! newInstance();
+  }
+
+  public sealed exhaustive interface UndoPreview {
+  }
+
+  public static final class UndoPreview.Card implements io.github.ygaray.yahirandroidtaste.feedback.UndoPreview {
+    ctor public UndoPreview.Card(String title, String cardType, optional String? thumbnailPath);
+    method public String component1();
+    method public String component2();
+    method public String? component3();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview.Card copy(optional String title, optional String cardType, optional String? thumbnailPath);
+    method @InaccessibleFromKotlin public String getCardType();
+    method @InaccessibleFromKotlin public String? getThumbnailPath();
+    method @InaccessibleFromKotlin public String getTitle();
+    property public String cardType;
+    property public String? thumbnailPath;
+    property public String title;
+  }
+
+  public static final class UndoPreview.Link implements io.github.ygaray.yahirandroidtaste.feedback.UndoPreview {
+    ctor public UndoPreview.Link(String cardATitle, String cardAType, String cardBTitle, String cardBType);
+    method public String component1();
+    method public String component2();
+    method public String component3();
+    method public String component4();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview.Link copy(optional String cardATitle, optional String cardAType, optional String cardBTitle, optional String cardBType);
+    method @InaccessibleFromKotlin public String getCardATitle();
+    method @InaccessibleFromKotlin public String getCardAType();
+    method @InaccessibleFromKotlin public String getCardBTitle();
+    method @InaccessibleFromKotlin public String getCardBType();
+    property public String cardATitle;
+    property public String cardAType;
+    property public String cardBTitle;
+    property public String cardBType;
+  }
+
+  public static final class UndoPreview.Photo implements io.github.ygaray.yahirandroidtaste.feedback.UndoPreview {
+    ctor public UndoPreview.Photo(String thumbnailPath, String albumTitle);
+    method public String component1();
+    method public String component2();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview.Photo copy(optional String thumbnailPath, optional String albumTitle);
+    method @InaccessibleFromKotlin public String getAlbumTitle();
+    method @InaccessibleFromKotlin public String getThumbnailPath();
+    property public String albumTitle;
+    property public String thumbnailPath;
+  }
+
+  public static final class UndoPreview.Tag implements io.github.ygaray.yahirandroidtaste.feedback.UndoPreview {
+    ctor public UndoPreview.Tag(String name);
+    method public String component1();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview.Tag copy(optional String name);
+    method @InaccessibleFromKotlin public String getName();
+    property public String name;
+  }
+
+  public static final class UndoPreview.TagOnCard implements io.github.ygaray.yahirandroidtaste.feedback.UndoPreview {
+    ctor public UndoPreview.TagOnCard(String tagName, String cardTitle, String cardType);
+    method public String component1();
+    method public String component2();
+    method public String component3();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview.TagOnCard copy(optional String tagName, optional String cardTitle, optional String cardType);
+    method @InaccessibleFromKotlin public String getCardTitle();
+    method @InaccessibleFromKotlin public String getCardType();
+    method @InaccessibleFromKotlin public String getTagName();
+    property public String cardTitle;
+    property public String cardType;
+    property public String tagName;
+  }
+
+  public enum UndoStatus {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.feedback.UndoStatus Available;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.feedback.UndoStatus Failed;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.feedback.UndoStatus Undone;
+  }
+
+  public final class UndoTrackingKt {
+    method public static suspend Object? emitTrackedWithUndo(androidx.compose.material3.SnackbarHostState, io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore store, io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent.WithUndo event, kotlin.coroutines.Continuation<? super kotlin.Unit>);
+  }
+
+}
+
+package io.github.ygaray.yahirandroidtaste.icon {
+
+  public final class CardTypeIconUtilKt {
+    method public static androidx.compose.ui.graphics.vector.ImageVector cardTypeIcon(String type);
+  }
+
+}
+
+package io.github.ygaray.yahirandroidtaste.model {
+
+  public final class BrowseSortPreference {
+    ctor public BrowseSortPreference(io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortOption option, io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortDirection direction);
+    method public io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortOption component1();
+    method public io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortDirection component2();
+    method public io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference copy(optional io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortOption option, optional io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortDirection direction);
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortDirection getDirection();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortOption getOption();
+    property public io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortDirection direction;
+    property public io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortOption option;
+    field public static final io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.Companion Companion;
+  }
+
+  public static final class BrowseSortPreference.Companion {
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference getDEFAULT();
+    property public io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference DEFAULT;
+  }
+
+  public enum BrowseSortPreference.SortDirection {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortDirection ASC;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortDirection DESC;
+  }
+
+  public enum BrowseSortPreference.SortOption {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortOption CARD_TYPE;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortOption CREATION_DATE;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortOption TITLE;
+  }
+
+  public enum BrowseTagSortMode {
+    method @InaccessibleFromKotlin public String getLabel();
+    property public String label;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.BrowseTagSortMode ALPHABETICAL;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.BrowseTagSortMode DATE_CREATED;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.BrowseTagSortMode FREQUENCY;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.BrowseTagSortMode RELATED;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.BrowseTagSortMode RELATED_ALL;
+    field public static final io.github.ygaray.yahirandroidtaste.model.BrowseTagSortMode.Companion Companion;
+  }
+
+  public static final class BrowseTagSortMode.Companion {
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.BrowseTagSortMode getDEFAULT();
+    property public io.github.ygaray.yahirandroidtaste.model.BrowseTagSortMode DEFAULT;
+  }
+
+  public final class ListItemUiModel {
+    ctor public ListItemUiModel(String id, String text, boolean isCompleted, int sortOrder, optional Long? completedAt);
+    method public String component1();
+    method public String component2();
+    method public boolean component3();
+    method public int component4();
+    method public Long? component5();
+    method public io.github.ygaray.yahirandroidtaste.model.ListItemUiModel copy(optional String id, optional String text, optional boolean isCompleted, optional int sortOrder, optional Long? completedAt);
+    method @InaccessibleFromKotlin public Long? getCompletedAt();
+    method @InaccessibleFromKotlin public String getId();
+    method @InaccessibleFromKotlin public int getSortOrder();
+    method @InaccessibleFromKotlin public String getText();
+    method @InaccessibleFromKotlin public boolean isCompleted();
+    property public Long? completedAt;
+    property public String id;
+    property public boolean isCompleted;
+    property public int sortOrder;
+    property public String text;
+  }
+
+  public final class TagChipUiModel {
+    ctor public TagChipUiModel(String id, String name, int occurrenceCount, optional long createdAt, optional Double? jaccard);
+    method public String component1();
+    method public String component2();
+    method public int component3();
+    method public long component4();
+    method public Double? component5();
+    method public io.github.ygaray.yahirandroidtaste.model.TagChipUiModel copy(optional String id, optional String name, optional int occurrenceCount, optional long createdAt, optional Double? jaccard);
+    method @InaccessibleFromKotlin public long getCreatedAt();
+    method @InaccessibleFromKotlin public String getId();
+    method @InaccessibleFromKotlin public Double? getJaccard();
+    method @InaccessibleFromKotlin public String getName();
+    method @InaccessibleFromKotlin public int getOccurrenceCount();
+    property public long createdAt;
+    property public String id;
+    property public Double? jaccard;
+    property public String name;
+    property public int occurrenceCount;
+  }
+
+  public final class TagManagementUiModel {
+    ctor public TagManagementUiModel(String id, String name, int cardCount, boolean isHome, String? iconName, Long? color);
+    method public String component1();
+    method public String component2();
+    method public int component3();
+    method public boolean component4();
+    method public String? component5();
+    method public Long? component6();
+    method public io.github.ygaray.yahirandroidtaste.model.TagManagementUiModel copy(optional String id, optional String name, optional int cardCount, optional boolean isHome, optional String? iconName, optional Long? color);
+    method @InaccessibleFromKotlin public int getCardCount();
+    method @InaccessibleFromKotlin public Long? getColor();
+    method @InaccessibleFromKotlin public String? getIconName();
+    method @InaccessibleFromKotlin public String getId();
+    method @InaccessibleFromKotlin public String getName();
+    method @InaccessibleFromKotlin public boolean isHome();
+    property public int cardCount;
+    property public Long? color;
+    property public String? iconName;
+    property public String id;
+    property public boolean isHome;
+    property public String name;
+  }
+
+  public enum TagSortMode {
+    method @InaccessibleFromKotlin public String getLabel();
+    property public String label;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.TagSortMode ALPHABETICAL;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.TagSortMode DATE_CREATED;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.TagSortMode FREQUENCY;
+    field public static final io.github.ygaray.yahirandroidtaste.model.TagSortMode.Companion Companion;
+  }
+
+  public static final class TagSortMode.Companion {
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.TagSortMode getDEFAULT();
+    property public io.github.ygaray.yahirandroidtaste.model.TagSortMode DEFAULT;
+  }
+
+}
+
+package io.github.ygaray.yahirandroidtaste.modifier {
+
+  public final class RevealActionRowKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void RevealActionRow(androidx.compose.foundation.gestures.AnchoredDraggableState<io.github.ygaray.yahirandroidtaste.modifier.RevealAnchor> state, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? startAction, optional kotlin.jvm.functions.Function0<kotlin.Unit>? endAction, optional androidx.compose.ui.unit.Dp actionWidth, optional androidx.compose.ui.graphics.Color contentBackground, optional boolean hapticsEnabled, kotlin.jvm.functions.Function0<kotlin.Unit> content);
+  }
+
+  public enum RevealAnchor {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.modifier.RevealAnchor EndRevealed;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.modifier.RevealAnchor Resting;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.modifier.RevealAnchor StartRevealed;
+  }
+
+  public enum SwipeAnchor {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor Resting;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor RevealedLeft;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor RevealedRight;
+  }
+
+  public final class SwipeableActionRowKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void SwipeableActionRow(kotlin.jvm.functions.Function0<kotlin.Unit> onDeleteClick, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onEditClick, androidx.compose.runtime.MutableState<androidx.compose.foundation.gestures.AnchoredDraggableState<io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor>?> openRowState, optional androidx.compose.ui.Modifier modifier, kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.BoxScope,kotlin.Unit> content);
+  }
+
+}
+
+package io.github.ygaray.yahirandroidtaste.theme {
+
+  public final class Dimens {
+    property public androidx.compose.ui.unit.Dp BottomPadding;
+    property public androidx.compose.ui.unit.Dp CompactPadding;
+    property public androidx.compose.ui.unit.Dp ContentSpacing;
+    property public androidx.compose.ui.unit.Dp HairlineBorder;
+    property public androidx.compose.ui.unit.Dp HairlineSpacing;
+    property public androidx.compose.ui.unit.Dp HorizontalPadding;
+    property public androidx.compose.ui.unit.Dp TopPadding;
+    property public androidx.compose.ui.unit.Dp TouchTarget;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens INSTANCE;
+  }
+
+  public static final class Dimens.CornerRadius {
+    property public androidx.compose.ui.unit.Dp Large;
+    property public androidx.compose.ui.unit.Dp Medium;
+    property public androidx.compose.ui.unit.Dp Small;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.CornerRadius INSTANCE;
+  }
+
+  public static final class Dimens.Elevation {
+    property public androidx.compose.ui.unit.Dp Level0;
+    property public androidx.compose.ui.unit.Dp Level1;
+    property public androidx.compose.ui.unit.Dp Level2;
+    property public androidx.compose.ui.unit.Dp Level3;
+    property public androidx.compose.ui.unit.Dp Level4;
+    property public androidx.compose.ui.unit.Dp Level5;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.Elevation INSTANCE;
+  }
+
+  public static final class Dimens.Icons {
+    property public androidx.compose.ui.unit.Dp DragHandle;
+    property public androidx.compose.ui.unit.Dp MenuButton;
+    property public androidx.compose.ui.unit.Dp MenuIcon;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.Icons INSTANCE;
+  }
+
+  public static final class Dimens.SwipeReveal {
+    property public androidx.compose.ui.unit.Dp ButtonWidth;
+    property public androidx.compose.ui.unit.Dp IconSize;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.SwipeReveal INSTANCE;
+  }
+
+  public final class ElevationLadderKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ElevationLadder(optional androidx.compose.ui.Modifier modifier);
+  }
+
+  public final class ExpressiveKt {
+    method public static io.github.ygaray.yahirandroidtaste.theme.ExpressiveTokens expressiveTokensFor(androidx.compose.material3.ColorScheme colorScheme);
+    method @InaccessibleFromKotlin public static androidx.compose.runtime.ProvidableCompositionLocal<io.github.ygaray.yahirandroidtaste.theme.ExpressiveTokens> getLocalExpressive();
+    property public static androidx.compose.runtime.ProvidableCompositionLocal<io.github.ygaray.yahirandroidtaste.theme.ExpressiveTokens> LocalExpressive;
+    property public static io.github.ygaray.yahirandroidtaste.theme.ExpressiveTokens androidx.compose.material3.MaterialTheme.expressive;
+  }
+
+  public final class ExpressiveMotion {
+    method @InaccessibleFromKotlin public androidx.compose.animation.core.FiniteAnimationSpec<java.lang.Float> getEmphasizedEffectsSpec();
+    method @InaccessibleFromKotlin public androidx.compose.animation.core.FiniteAnimationSpec<java.lang.Float> getEmphasizedSpatialSpec();
+    method @InaccessibleFromKotlin public androidx.compose.animation.EnterTransition getEnterFade();
+    method @InaccessibleFromKotlin public androidx.compose.animation.ExitTransition getExitFade();
+    method @InaccessibleFromKotlin public androidx.compose.animation.core.FiniteAnimationSpec<java.lang.Float> getFastSpatialSpec();
+    method @InaccessibleFromKotlin public int getStandardMillis();
+    property public androidx.compose.animation.core.FiniteAnimationSpec<java.lang.Float> emphasizedEffectsSpec;
+    property public androidx.compose.animation.core.FiniteAnimationSpec<java.lang.Float> emphasizedSpatialSpec;
+    property public androidx.compose.animation.EnterTransition enterFade;
+    property public androidx.compose.animation.ExitTransition exitFade;
+    property public androidx.compose.animation.core.FiniteAnimationSpec<java.lang.Float> fastSpatialSpec;
+    property public int standardMillis;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.ExpressiveMotion INSTANCE;
+  }
+
+  @androidx.compose.runtime.Immutable public final class ExpressiveTokens {
+    ctor @KotlinOnly public ExpressiveTokens(androidx.compose.ui.graphics.Color ringTrack, androidx.compose.ui.graphics.Color onTrack, androidx.compose.ui.graphics.Color overBudget, androidx.compose.ui.graphics.Color nearGoal, androidx.compose.ui.graphics.Brush heroGradient, androidx.compose.ui.text.TextStyle heroValueStyle, androidx.compose.ui.text.TextStyle heroLabelStyle, androidx.compose.ui.text.TextStyle statValueStyle, androidx.compose.ui.graphics.Shape cardShapeLarge);
+    method @KotlinOnly public operator androidx.compose.ui.graphics.Color component1();
+    method @KotlinOnly public operator androidx.compose.ui.graphics.Color component2();
+    method @KotlinOnly public operator androidx.compose.ui.graphics.Color component3();
+    method @KotlinOnly public operator androidx.compose.ui.graphics.Color component4();
+    method public androidx.compose.ui.graphics.Brush component5();
+    method public androidx.compose.ui.text.TextStyle component6();
+    method public androidx.compose.ui.text.TextStyle component7();
+    method public androidx.compose.ui.text.TextStyle component8();
+    method public androidx.compose.ui.graphics.Shape component9();
+    method @KotlinOnly public io.github.ygaray.yahirandroidtaste.theme.ExpressiveTokens copy(optional androidx.compose.ui.graphics.Color ringTrack, optional androidx.compose.ui.graphics.Color onTrack, optional androidx.compose.ui.graphics.Color overBudget, optional androidx.compose.ui.graphics.Color nearGoal, optional androidx.compose.ui.graphics.Brush heroGradient, optional androidx.compose.ui.text.TextStyle heroValueStyle, optional androidx.compose.ui.text.TextStyle heroLabelStyle, optional androidx.compose.ui.text.TextStyle statValueStyle, optional androidx.compose.ui.graphics.Shape cardShapeLarge);
+    method @InaccessibleFromKotlin public androidx.compose.ui.graphics.Shape getCardShapeLarge();
+    method @InaccessibleFromKotlin public androidx.compose.ui.graphics.Brush getHeroGradient();
+    method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getHeroLabelStyle();
+    method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getHeroValueStyle();
+    method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getStatValueStyle();
+    property public androidx.compose.ui.graphics.Shape cardShapeLarge;
+    property public androidx.compose.ui.graphics.Brush heroGradient;
+    property public androidx.compose.ui.text.TextStyle heroLabelStyle;
+    property public androidx.compose.ui.text.TextStyle heroValueStyle;
+    property public androidx.compose.ui.graphics.Color nearGoal;
+    property public androidx.compose.ui.graphics.Color onTrack;
+    property public androidx.compose.ui.graphics.Color overBudget;
+    property public androidx.compose.ui.graphics.Color ringTrack;
+    property public androidx.compose.ui.text.TextStyle statValueStyle;
+  }
+
+  public final class TactileType {
+    method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getDisplayLarge();
+    method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getDisplayMedium();
+    method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getDisplaySmall();
+    method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getDisplayXSmall();
+    property public androidx.compose.ui.text.TextStyle DisplayLarge;
+    property public androidx.compose.ui.text.TextStyle DisplayMedium;
+    property public androidx.compose.ui.text.TextStyle DisplaySmall;
+    property public androidx.compose.ui.text.TextStyle DisplayXSmall;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.TactileType INSTANCE;
+  }
+
+  public final class TactileTypeKt {
+    method @InaccessibleFromKotlin public static androidx.compose.ui.text.font.FontFamily getSpaceGroteskFamily();
+    property public static androidx.compose.ui.text.font.FontFamily SpaceGroteskFamily;
+  }
+
+  public final class TactileTypeShowcaseKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void TactileTypeShowcase(optional androidx.compose.ui.Modifier modifier);
+  }
+
+  public final class ThemeKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void YahirAndroidTasteTheme(optional io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, optional boolean dynamicColor, kotlin.jvm.functions.Function0<kotlin.Unit> content);
+    method @InaccessibleFromKotlin public static androidx.compose.material3.ColorScheme getDarkColorScheme();
+    method @InaccessibleFromKotlin public static androidx.compose.material3.ColorScheme getLightColorScheme();
+    property public static androidx.compose.material3.ColorScheme DarkColorScheme;
+    property public static androidx.compose.material3.ColorScheme LightColorScheme;
+  }
+
+  public enum ThemeMode {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.theme.ThemeMode DARK;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.theme.ThemeMode LIGHT;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.theme.ThemeMode SYSTEM;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.ThemeMode.Companion Companion;
+  }
+
+  public static final class ThemeMode.Companion {
+    method public io.github.ygaray.yahirandroidtaste.theme.ThemeMode fromString(String value);
+  }
+
+  public final class TypeKt {
+    method @InaccessibleFromKotlin public static androidx.compose.material3.Typography getTypography();
+    property public static androidx.compose.material3.Typography Typography;
+  }
+
+}
+
