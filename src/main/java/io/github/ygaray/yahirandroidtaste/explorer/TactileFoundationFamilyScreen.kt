@@ -1,6 +1,9 @@
 package io.github.ygaray.yahirandroidtaste.explorer
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,6 +17,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import io.github.ygaray.yahirandroidtaste.component.ACCENT_COLORS
+import io.github.ygaray.yahirandroidtaste.component.GradientSwatch
+import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import io.github.ygaray.yahirandroidtaste.theme.ElevationLadder
 import io.github.ygaray.yahirandroidtaste.theme.TactileTypeShowcase
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
@@ -60,6 +67,24 @@ internal val tactileFoundationFamilyEntries: List<ComponentRegistry.Entry> = lis
             ComponentRegistry.StateCell("Focused")
         ),
         content = { TactileTypeShowcaseVariants() }
+    ),
+    ComponentRegistry.Entry(
+        name = "GradientSwatch",
+        family = ExplorerFamilies.TACTILE_FOUNDATION,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = { GradientSwatch(accentColor = Color(ACCENT_COLORS[2].light)) }
+            ),
+            // GradientSwatch is a display-only token demo, no pressable/selectable element — N/A
+            // (mirrors TactileTypeShowcaseVariants' own N/A precedent).
+            ComponentRegistry.StateCell("Pressed / Selected"),
+            // GradientSwatch has no `enabled` param — N/A.
+            ComponentRegistry.StateCell("Disabled"),
+            // GradientSwatch has no focus-visual override — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { GradientSwatchVariants() }
     )
 )
 
@@ -100,6 +125,24 @@ private fun ElevationLadderVariants() {
 private fun TactileTypeShowcaseVariants() {
     SectionLabel("Space Grotesk Type Ramp — 4 tiers vs. the default face")
     TactileTypeShowcase()
+}
+
+/**
+ * Gradient & Tint Accents — four sample accent colors, each rendered via [GradientSwatch],
+ * sourced from the existing public `ACCENT_COLORS` palette rather than invented hex literals.
+ */
+@Composable
+private fun GradientSwatchVariants() {
+    SectionLabel("Gradient & Tint Accents — four sample accent colors")
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = Dimens.HorizontalPadding),
+        verticalArrangement = Arrangement.spacedBy(Dimens.CompactPadding)
+    ) {
+        GradientSwatch(accentColor = Color(ACCENT_COLORS[0].light)) // Red
+        GradientSwatch(accentColor = Color(ACCENT_COLORS[2].light)) // Purple
+        GradientSwatch(accentColor = Color(ACCENT_COLORS[5].light)) // Blue
+        GradientSwatch(accentColor = Color(ACCENT_COLORS[7].light)) // Green
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
