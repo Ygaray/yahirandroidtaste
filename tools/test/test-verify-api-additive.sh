@@ -28,4 +28,11 @@ rm "$API"
 set +e; "$SCRIPT" v0.0.0 >/dev/null 2>&1; rc=$?; set -e
 check "$rc" 1 "missing current .api file is usage error (exit 1, not 3)"
 
+# (d) baseline predates the .api file -> DEGRADE to exit 0 (not fail-closed 1); source-only still applies
+git checkout -q -- .; git clean -fdq
+git rm -q "$API"; git commit -qm "remove api file (pre-api baseline)"; git tag v-preapi
+mkdir -p api; printf 'public fun a(): Unit\n' > "$API"   # current file exists + readable
+set +e; "$SCRIPT" v-preapi >/dev/null 2>&1; rc=$?; set -e
+check "$rc" 0 "baseline lacking the .api file degrades to exit 0 (not fail-closed 1)"
+
 echo "PASS=$pass FAIL=$fail"; [ "$fail" -eq 0 ]

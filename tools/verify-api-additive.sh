@@ -9,7 +9,15 @@ API_FILE="${API_FILE:?set API_FILE to the committed public-API file path (see to
 [ "$#" -ge 1 ] || { echo "Usage: $0 <baseline-ref>" >&2; exit 1; }
 BASE="$1"
 [ -r "$API_FILE" ] || { echo "API-ADDITIVE FAIL: current $API_FILE is missing/unreadable" >&2; exit 1; }
-git show "$BASE:$API_FILE" >/dev/null 2>&1 || { echo "API-ADDITIVE FAIL: cannot read $API_FILE at $BASE" >&2; exit 1; }
+# Baseline may PREDATE the api file (the first release tag after this guard landed has no api.txt).
+# Distinguish an unresolvable ref (real usage error, exit 1) from a resolvable ref that simply lacks
+# the file yet (DEGRADE: skip the API-surface check, exit 0 — source-append-only still applies
+# upstream; the API-break check activates automatically once a tag includes the file).
+git rev-parse --verify --quiet "$BASE^{commit}" >/dev/null 2>&1 || { echo "API-ADDITIVE FAIL: baseline ref '$BASE' does not resolve" >&2; exit 1; }
+if ! git cat-file -e "$BASE:$API_FILE" 2>/dev/null; then
+  echo "API-ADDITIVE SKIP: baseline $BASE has no $API_FILE yet — API-surface check degraded to source-only until a tag includes it" >&2
+  exit 0
+fi
 
 # Every line present in the baseline .api must still be present now. A missing line = a removed
 # or renamed public symbol. (Ordering-independent: compare as sets, like DS-05 / DS-04.)

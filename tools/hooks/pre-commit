@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 ROOT="$(git rev-parse --show-toplevel)"
+# Tell the classifier where the committed public-API signature file lives (Task 1: repo-root api.txt).
+# The API-surface check degrades to source-only if the baseline tag predates api.txt (see
+# verify-api-additive.sh); a full apiDump-freshness build is NOT run per-commit (too heavy) — the
+# README apiDump discipline + CI (Plan B chokepoint #3) own freshness.
+export API_FILE="${API_FILE:-$ROOT/api.txt}"
 BASE="$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || true)"
 [ -n "$BASE" ] || exit 0   # no release tag yet -> nothing to diff against
 set +e
