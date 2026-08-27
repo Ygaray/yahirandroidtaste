@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+BASE="$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || true)"
+[ -n "$BASE" ] || exit 0   # no release tag yet -> nothing to diff against
+set +e
+"$ROOT/tools/classify-hub-change.sh" --baseline "$BASE" >/tmp/hublane.$$ 2>&1; lane=$?
+set -e
+cat /tmp/hublane.$$; rm -f /tmp/hublane.$$
+if [ "$lane" -ge 2 ]; then
+  if [ "${HUB_LANE_OVERRIDE:-}" = "$lane" ]; then
+    echo "pre-commit: lane $lane change explicitly declared (HUB_LANE_OVERRIDE=$lane) — allowed." >&2
+    exit 0
+  fi
+  echo "pre-commit: BLOCKED — lane $lane (non-additive) change on the fast path." >&2
+  echo "  A lane-2/3 change must be coordinated (hub mutex, SemVer bump). To land it deliberately," >&2
+  echo "  re-run with: HUB_LANE_OVERRIDE=$lane git commit …  (see tools/README-api-guard.md)." >&2
+  exit 1
+fi
+exit 0
