@@ -15,6 +15,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import io.github.ygaray.yahirandroidtaste.theme.ElevationLadder
+import io.github.ygaray.yahirandroidtaste.theme.TactileTypeShowcase
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
@@ -41,6 +42,24 @@ internal val tactileFoundationFamilyEntries: List<ComponentRegistry.Entry> = lis
             ComponentRegistry.StateCell("Focused")
         ),
         content = { ElevationLadderVariants() }
+    ),
+    ComponentRegistry.Entry(
+        name = "TactileTypeShowcase",
+        family = ExplorerFamilies.TACTILE_FOUNDATION,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = { TactileTypeShowcase() }
+            ),
+            // TactileTypeShowcase is a display-only token demo, no pressable/selectable element — N/A
+            // (mirrors ElevationLadderVariants' own N/A precedent).
+            ComponentRegistry.StateCell("Pressed / Selected"),
+            // TactileTypeShowcase has no `enabled` param — N/A.
+            ComponentRegistry.StateCell("Disabled"),
+            // TactileTypeShowcase has no focus-visual override — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { TactileTypeShowcaseVariants() }
     )
 )
 
@@ -74,6 +93,13 @@ fun TactileFoundationFamilyScreen(
 private fun ElevationLadderVariants() {
     SectionLabel("Elevation Scale — Level0 through Level5")
     ElevationLadder()
+}
+
+/** The Space Grotesk Type Ramp — 4 tiers vs. the default face, rendered live via [TactileTypeShowcase]. */
+@Composable
+private fun TactileTypeShowcaseVariants() {
+    SectionLabel("Space Grotesk Type Ramp — 4 tiers vs. the default face")
+    TactileTypeShowcase()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
