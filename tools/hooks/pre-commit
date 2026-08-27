@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+BASE="$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || true)"
+[ -n "$BASE" ] || exit 0   # no release tag yet -> nothing to diff against
+set +e
+TMP="$(mktemp)"
+"$ROOT/tools/classify-hub-change.sh" --baseline "$BASE" >"$TMP" 2>&1; lane=$?
+set -e
+cat "$TMP"; rm -f "$TMP"
+case "$lane" in
+  0) exit 0 ;;
+  2|3)
+    if [ "${HUB_LANE_OVERRIDE:-}" = "$lane" ]; then
+      echo "pre-commit: lane $lane change explicitly declared (HUB_LANE_OVERRIDE=$lane) — allowed." >&2
+      exit 0
+    fi
+    echo "pre-commit: BLOCKED — lane $lane (non-additive) change on the fast path." >&2
+    echo "  A lane-2/3 change must be coordinated. To land it deliberately: HUB_LANE_OVERRIDE=$lane git commit …" >&2
+    exit 1 ;;
+  *)
+    echo "pre-commit: BLOCKED (fail-closed) — additive-guard classifier returned unexpected exit $lane; cannot verify additivity, refusing commit." >&2
+    exit 1 ;;
+esac

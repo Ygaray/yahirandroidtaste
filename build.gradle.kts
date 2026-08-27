@@ -4,7 +4,29 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.metalava)
     `maven-publish`
+}
+
+// Mechanism 3 (Metalava, spike Task 1): mechanisms 1 (Kotlin built-in abiValidation) and 2
+// (classic org.jetbrains.kotlinx.binary-compatibility-validator) do not work on this AGP-9
+// built-in-Kotlin / Compose stack — see tools/README-api-guard.md for the full spike record.
+// Metalava's release-variant signature dump is emitted to $rootDir/api.txt (root-as-module).
+// apiDump/apiCheck below are the stable, tool-agnostic task names downstream guards depend on.
+metalava {
+    filename = "api.txt"
+}
+
+tasks.register("apiDump") {
+    group = "verification"
+    description = "Regenerates the committed public-API signature file (delegates to Metalava)."
+    dependsOn("metalavaGenerateSignatureRelease")
+}
+
+tasks.register("apiCheck") {
+    group = "verification"
+    description = "Checks the current public API against the committed signature file (delegates to Metalava)."
+    dependsOn("metalavaCheckCompatibilityRelease")
 }
 
 detekt {
