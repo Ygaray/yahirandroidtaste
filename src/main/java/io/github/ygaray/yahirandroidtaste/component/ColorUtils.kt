@@ -1,6 +1,9 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.material3.ColorScheme
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.luminance
 
 /**
@@ -9,3 +12,66 @@ import androidx.compose.ui.graphics.luminance
  */
 fun contrastingForeground(background: Color): Color =
     if (background.luminance() > 0.5f) Color.Black else Color.White
+
+/**
+ * Returns the two-stop color ramp behind [accentGradient] (Phase 123 DS-01, D-02) — exposed as
+ * its own pure function because a [Brush]'s color stops are not publicly readable, and the
+ * "sheen is never darker than the base" contract needs a directly assertable return value to be
+ * unit-testable.
+ *
+ * Stop 0 is [accentColor] unchanged, full strength. Stop 1 blends [accentColor] ~40% toward a
+ * `sheenTarget` role read live from [colorScheme] — never a hardcoded constant. The UI-SPEC's
+ * contract is "blend toward `colorScheme.surface` for a lightened sheen, never darkened," but in
+ * a dark theme `surface` is near-black, so blending toward it would darken the result. This
+ * function instead blends toward `colorScheme.onSurface` (a light color scheme role in dark
+ * theme) whenever `colorScheme.surface` is itself dark — determined with the same W3C relative-
+ * luminance threshold [contrastingForeground] already uses in this file — which keeps the mix
+ * partner a live theme role while still preserving the "always lighter" guarantee.
+ *
+ * ⚠ ASSUMED — the 0.4f blend ratio is marked `ASSUMED` in `123-UI-SPEC.md`, pending a
+ * design-canvas cross-check before the Phase 123 tag cut.
+ */
+fun accentGradientStops(accentColor: Color, colorScheme: ColorScheme): List<Color> {
+    val isDark = colorScheme.surface.luminance() < 0.5f
+    val sheenTarget = if (isDark) colorScheme.onSurface else colorScheme.surface
+    return listOf(accentColor, lerp(accentColor, sheenTarget, 0.4f))
+}
+
+/**
+ * Parametrized pure-function gradient helper (Phase 123 DS-01, D-02) — takes a runtime accent
+ * [Color] rather than a fixed `heroGradient`-style field, so per-tag-tinted surfaces (HOME-08)
+ * can drive it with any accent at call time. The stop math lives in [accentGradientStops] because
+ * a [Brush]'s color stops are not publicly readable, so exposing them separately is what keeps
+ * the never-darkened contract unit-testable — the same "assert on a pure function, not on a
+ * rendered artifact" discipline [io.github.ygaray.yahirandroidtaste.component.relatednessVisual]
+ * follows.
+ *
+ * `start`/`end` are left at [Brush.linearGradient]'s defaults, which run top-left to
+ * bottom-right — matching the UI-SPEC's 135-degree diagonal contract.
+ *
+ * Any text/icon drawn over this gradient MUST resolve its foreground via
+ * [contrastingForeground] in this same file, never a hardcoded black/white choice.
+ */
+fun accentGradient(accentColor: Color, colorScheme: ColorScheme): Brush =
+    Brush.linearGradient(accentGradientStops(accentColor, colorScheme))
+
+/**
+ * Flat-[Color] companion to [accentGradient] (Phase 123 DS-01, D-02) — a card's solid
+ * `CardDefaults.containerColor` needs a [Color], and a [Brush] cannot fill one. Returns
+ * [accentColor] composited over `colorScheme.surface` at [alpha] via [lerp].
+ *
+ * The default [alpha] is theme-aware: a dark surface needs a stronger tint to read, so it
+ * defaults to 0.16f when `colorScheme.surface` is dark (same luminance-threshold determination as
+ * [accentGradientStops]) and 0.08f otherwise. Both default alphas are marked `ASSUMED` in
+ * `123-UI-SPEC.md`, pending a design-canvas cross-check before the Phase 123 tag cut.
+ *
+ * [alpha] is coerced into `0f..1f` so an out-of-range input is clamped, never thrown.
+ *
+ * Any text/icon drawn over this result MUST resolve its foreground via [contrastingForeground]
+ * in this same file, never a hardcoded black/white choice.
+ */
+fun accentTint(
+    accentColor: Color,
+    colorScheme: ColorScheme,
+    alpha: Float = if (colorScheme.surface.luminance() < 0.5f) 0.16f else 0.08f
+): Color = lerp(colorScheme.surface, accentColor, alpha.coerceIn(0f, 1f))
