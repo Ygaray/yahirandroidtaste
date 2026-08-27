@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import io.github.ygaray.yahirandroidtaste.component.ACCENT_COLORS
 import io.github.ygaray.yahirandroidtaste.component.GradientSwatch
+import io.github.ygaray.yahirandroidtaste.component.HeatSwatch
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import io.github.ygaray.yahirandroidtaste.theme.ElevationLadder
 import io.github.ygaray.yahirandroidtaste.theme.TactileTypeShowcase
@@ -85,6 +86,24 @@ internal val tactileFoundationFamilyEntries: List<ComponentRegistry.Entry> = lis
             ComponentRegistry.StateCell("Focused")
         ),
         content = { GradientSwatchVariants() }
+    ),
+    ComponentRegistry.Entry(
+        name = "HeatSwatch",
+        family = ExplorerFamilies.TACTILE_FOUNDATION,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = { HeatSwatch() }
+            ),
+            // HeatSwatch is a display-only token demo, no pressable/selectable element — N/A
+            // (mirrors GradientSwatchVariants' own N/A precedent).
+            ComponentRegistry.StateCell("Pressed / Selected"),
+            // HeatSwatch has no `enabled` param — N/A.
+            ComponentRegistry.StateCell("Disabled"),
+            // HeatSwatch has no focus-visual override — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { HeatSwatchVariants() }
     )
 )
 
@@ -143,6 +162,13 @@ private fun GradientSwatchVariants() {
         GradientSwatch(accentColor = Color(ACCENT_COLORS[5].light)) // Blue
         GradientSwatch(accentColor = Color(ACCENT_COLORS[7].light)) // Green
     }
+}
+
+/** Heat Relatedness Ramp — 4 tiers plus the distinct hub node, rendered live via [HeatSwatch]. */
+@Composable
+private fun HeatSwatchVariants() {
+    SectionLabel("Heat Relatedness Ramp — 4 tiers plus the distinct hub node")
+    HeatSwatch()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
