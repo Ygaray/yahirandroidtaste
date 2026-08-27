@@ -30,20 +30,21 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.4.0`** (repinned, v1.23 Phase 118; LIST-04 `ListCardBottomSheet` read-only preview) — one tag behind latest (`v1.5.0`); repin is SecondBrain Phase 124's job | `gradle/libs.versions.toml` |
-  | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.2.0`** (repinned + Gate-1-confirmed, Phase 43 / GIVE-04) — one tag behind latest, repins on its own cadence | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.4.0`** (repinned, v1.23 Phase 118; LIST-04 `ListCardBottomSheet` read-only preview) — two tags behind latest (`v1.6.0`); repin is SecondBrain Phase 124's job | `gradle/libs.versions.toml` |
+  | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.2.0`** (repinned + Gate-1-confirmed, Phase 43 / GIVE-04) — four tags behind latest, repins on its own cadence | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
   No "Deploy host" column — Android apps are installed on devices, not daemon-deployed.)_
 
-**Current published tag:** **`v1.5.0`** — cut in **SecondBrain v2.0 Phase 123 Plan 05**, an
+**Current published tag:** **`v1.6.0`** — cut in **SecondBrain v2.0 Phase 123 Plan 05**, an
 autonomous minor bump shipping the Tactile design-system foundation (elevation scale, Space
-Grotesk display ramp, gradient/tint accent surfaces, Heat relatedness ramp — `DS-01`).
-**SecondBrain pins `v1.4.0`** — one tag behind latest; the repin plus the four-registry reconcile
-is **SecondBrain Phase 124's** job, not this phase's; **CalTracker
-pins `v1.2.0`** (repinned Phase 43, GIVE-04) — three tags behind latest, repins on
-its own cadence (a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
+Grotesk display ramp, gradient/tint accent surfaces, Heat relatedness ramp — `DS-01`), on top of
+the hub's own already-published **`v1.5.0`** (cut by the hub's internal Phase 44 additive-growth
+track — see the version-numbering note below). **SecondBrain pins `v1.4.0`** — two tags behind
+latest; the repin plus the four-registry reconcile is **SecondBrain Phase 124's** job, not this
+phase's; **CalTracker pins `v1.2.0`** (repinned Phase 43, GIVE-04) — four tags behind latest,
+repins on its own cadence (a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
 SM-S908U (Gate-1 all_pass: cold-start Hilt-across-AAR resolution, live undo + ExplorerActivity,
@@ -100,39 +101,53 @@ existing consumer keeps compiling and behaving unchanged. Verified resolvable vi
 `readOnlyPreview = true` / a 3-item prefix / the computed overflow count) — device confirmation is
 Gate-1's job (`verify_work_agentic_gate`), not this plan's; not yet recorded here.
 
-`v1.5.0` was cut in **SecondBrain v2.0 Phase 123 Plan 05** (`DS-01`), an autonomous minor bump —
+`v1.5.0` was cut by this hub repo's **own internal GSD project** (Phase 44, "additive growth" —
+plan-task tags `44-01`/`44-02`/`44-03` in the commit log), entirely independent of and prior to
+SecondBrain's Phase 123, on hub commit `759179b7369d0159613c1fd1a670052a676356bf` (annotated tag,
+already pushed to `origin` before this record was written). It carries the `ExpressiveTokens`/
+`ExpressiveMotion` expansion, `ProgressRing`, `AnimatedStatValue`, `HeroStatCard`, the
+`tools/verify-additive-surface.sh` DS-04 guard, and an `API.md` doc-parity count fix — see the tag
+message (`git show v1.5.0 --no-patch`) for its own evidence. This record is added retroactively
+by SecondBrain Phase 123 Plan 05, which discovered the tag already existed (see the `v1.6.0`
+version-numbering note directly below) — no consumer repin onto `v1.5.0` alone is recorded here.
+
+`v1.6.0` was cut in **SecondBrain v2.0 Phase 123 Plan 05** (`DS-01`), an autonomous minor bump —
 the owner's tag-cut checkpoint is waived for this personal-use hub ecosystem (2026-08-20,
 `[[personal-app-tag-cut-gate-waived]]`, Option C) — on this doc-update commit itself (its exact SHA
-is necessarily self-referential at write time; recorded verbatim in the Task 3 trailing amendment
-below, in `123-05-SUMMARY.md`, and in `123-TAG-CUT-RECORD.md`) — the code Task 1 verified green was
-hub commit `fe20ce863ad03f705a07cef36309443721388835`, and this commit re-runs that same green gate
-after only additive documentation/build-config edits (no source changes)
-(green-gate evidence: full `testDebugUnitTest`, `detekt` at zero baseline (`config/detekt-baseline.xml`
-still 5 lines), `build`, both `ComponentRegistryDriftGuardTest`/`ComponentStatesMatrixTest` registry
-gates proven non-vacuous via an `--info --rerun-tasks` re-run, and both `DS-04`/`DS-05` additive
-guards passing against `v1.4.0` and against the phase's own pre-phase HEAD
-`759179b7369d0159613c1fd1a670052a676356bf`). The tag carries four wholly additive Tactile
-primitive families, none modifying any existing public token/component/signature: `Dimens.Elevation`
-(a six-level `Level0`..`Level5` dp shadow scale) + `ElevationLadder`; `TactileType`/`SpaceGroteskFamily`
-(a four-tier Space Grotesk display-type ramp, additive sibling to the untouched Material3
-`Typography`) + `TactileTypeShowcase`; `accentGradientStops`/`accentGradient`/`accentTint`
-(parametrized accent-surface color helpers, `contrastingForeground` untouched) + `GradientSwatch`;
-and `HeatTier`/`HeatVisual`/`heatTier`/`heatVisual`/`hubNodeVisual` (an independent Heat relatedness
+is necessarily self-referential at write time; recorded verbatim in the Task 3 trailing amendment,
+in `123-05-SUMMARY.md`, and in `123-TAG-CUT-RECORD.md`) — the code Task 1 verified green was hub
+commit `fe20ce863ad03f705a07cef36309443721388835`, and this commit re-runs that same green gate
+after only additive documentation/build-config edits (no source changes) (green-gate evidence:
+full `testDebugUnitTest`, `detekt` at zero baseline (`config/detekt-baseline.xml` still 5 lines),
+`build`, both
+`ComponentRegistryDriftGuardTest`/`ComponentStatesMatrixTest` registry gates proven non-vacuous via
+an `--info --rerun-tasks` re-run, and both `DS-04`/`DS-05` additive guards passing against `v1.4.0`
+and against the phase's own pre-phase HEAD `759179b7369d0159613c1fd1a670052a676356bf`). The tag
+carries four wholly additive Tactile primitive families, none modifying any existing public
+token/component/signature: `Dimens.Elevation` (a six-level `Level0`..`Level5` dp shadow scale) +
+`ElevationLadder`; `TactileType`/`SpaceGroteskFamily` (a four-tier Space Grotesk display-type ramp,
+additive sibling to the untouched Material3 `Typography`) + `TactileTypeShowcase`;
+`accentGradientStops`/`accentGradient`/`accentTint` (parametrized accent-surface color helpers,
+`contrastingForeground` untouched) + `GradientSwatch`; and
+`HeatTier`/`HeatVisual`/`heatTier`/`heatVisual`/`hubNodeVisual` (an independent Heat relatedness
 ramp beside the untouched Jaccard `RelatednessTier` ramp) + `HeatSwatch` — all four registered as
 the ninth "Tactile Foundation" `ComponentRegistry` family (51 registered composables, up from 47).
 This is also the module's first-ever `res/` directory, bundling the canonical Space Grotesk
 variable font (`src/main/res/font/space_grotesk_variable.ttf`, SHA-256 `acad6de1...9f72`) with its
-verbatim OFL 1.1 license (`licenses/SpaceGrotesk-OFL.txt`). **This tag also publishes nine
-pre-existing unreleased ancestor commits that predate Phase 123** (a different consumer's
-upstreamed work: the Expressive tokens expansion, `ProgressRing`, `ExpressiveMotion`,
-`AnimatedStatValue`, `HeroStatCard`, the `tools/verify-additive-surface.sh` guard, an `API.md`
-count fix, and a `ListCardBottomSheet` read-only-preview source-contract test — corrected from the
-plan's stated "eight": the live `git log --oneline v1.4.0..HEAD` count is nine ancestor commits,
-not eight; see `123-05-SUMMARY.md` for the discrepancy note) — a consumer reading this record
-should not be surprised by those symbols appearing in the same tag; see `123-05-SUMMARY.md`'s
-`git log --oneline v1.4.0..HEAD` capture for the exact 19-commit inventory (10 from Phase 123 + 9
-ancestors). Verified resolvable via a real (non-cached-local) JitPack build
-(`com.github.Ygaray:yahirandroidtaste:v1.5.0`) — see `123-05-SUMMARY.md` /
+verbatim OFL 1.1 license (`licenses/SpaceGrotesk-OFL.txt`).
+
+**Version-numbering deviation (`v1.5.0` → `v1.6.0`):** the 123-05-PLAN.md text specified cutting
+`v1.5.0` (assuming it was the next available tag after `v1.4.0`, and describing the
+`v1.4.0..HEAD` ancestor commits as "unreleased"). Task 3 discovered `v1.5.0` was **already cut and
+already pushed to origin** by this hub's own Phase 44 track, at the exact commit the plan called
+"pre-phase HEAD" — so those ancestor commits are, in fact, already released. `v1.5.0` is
+immutable and cannot be re-cut or moved (git itself refuses `git tag -a v1.5.0` a second time, and
+doing so by force would violate this repo's own tag-immutability invariant). Phase 123's release
+is cut as `v1.6.0` instead — the next mechanically-correct minor version — with every version
+string in this plan's artifacts (`build.gradle.kts`, this record, the tag itself, the JitPack
+resolution URLs) substituted accordingly. See `123-05-SUMMARY.md` for the full deviation writeup.
+Verified resolvable via a real (non-cached-local) JitPack build
+(`com.github.Ygaray:yahirandroidtaste:v1.6.0`) — see `123-05-SUMMARY.md` /
 `123-TAG-CUT-RECORD.md` for the full evidence. **SecondBrain has NOT repinned** — it still pins
 `v1.4.0`; the repin, the `gradle/libs.versions.toml` bump, and the four-registry reconcile are
 **SecondBrain Phase 124's** job.
