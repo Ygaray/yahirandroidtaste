@@ -31,7 +31,7 @@ independent apps that consume it:
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
   | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.4.0`** (repinned, v1.23 Phase 118; LIST-04 `ListCardBottomSheet` read-only preview) — two tags behind latest (`v1.6.0`); repin is SecondBrain Phase 124's job | `gradle/libs.versions.toml` |
-  | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.5.0`** (repinned + Gate-1-confirmed, Phase 48 / REL-01) — matches latest | `gradle/libs.versions.toml` |
+  | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.5.0`** (repinned + Gate-1-confirmed, Phase 48 / REL-01) — the hub's Phase-44 additive-growth tag CalTracker was authorized to consume (hub's own latest tag has since moved to `v1.6.0` via an unrelated concurrent SecondBrain session — not a v1.7 CalTracker task) | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
@@ -43,8 +43,10 @@ Grotesk display ramp, gradient/tint accent surfaces, Heat relatedness ramp — `
 the hub's own already-published **`v1.5.0`** (cut by the hub's internal Phase 44 additive-growth
 track — see the version-numbering note below). **SecondBrain pins `v1.4.0`** — two tags behind
 latest; the repin plus the four-registry reconcile is **SecondBrain Phase 124's** job, not this
-phase's; **CalTracker pins `v1.5.0`** (repinned Phase 48, REL-01) — matches latest at the hub's
-own additive-growth tag (a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
+phase's; **CalTracker pins `v1.5.0`** (repinned Phase 48, REL-01) — the hub's own additive-growth
+tag it was authorized to consume (the hub's own latest tag has since moved to `v1.6.0` via
+SecondBrain's unrelated Phase 123, not a v1.7 CalTracker task; a hub change is inert until a
+consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
 SM-S908U (Gate-1 all_pass: cold-start Hilt-across-AAR resolution, live undo + ExplorerActivity,
