@@ -30,7 +30,7 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.6.0`** (repinned + build-green; Gate-1 device-verification pending — SB Phase 124) — at parity with latest, per **SB v2.0 Phase 124 (REPIN-06)** (Tactile Foundation consumption) | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.6.0`** (repinned + Gate-1 device-verified — SB Phase 124) — at parity with latest, per **SB v2.0 Phase 124 (REPIN-06)** (Tactile Foundation consumption) | `gradle/libs.versions.toml` |
   | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.5.0`** (repinned + Gate-1-confirmed, Phase 48 / REL-01) — the hub's Phase-44 additive-growth tag CalTracker was authorized to consume (hub's own latest tag has since moved to `v1.6.0` via an unrelated concurrent SecondBrain session — not a v1.7 CalTracker task) | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
@@ -41,8 +41,7 @@ independent apps that consume it:
 autonomous minor bump shipping the Tactile design-system foundation (elevation scale, Space
 Grotesk display ramp, gradient/tint accent surfaces, Heat relatedness ramp — `DS-01`), on top of
 the hub's own already-published **`v1.5.0`** (cut by the hub's internal Phase 44 additive-growth
-track — see the version-numbering note below). **SecondBrain pins `v1.6.0`** (repinned +
-build-green; Gate-1 device-verification pending — SB Phase 124) — at parity with latest, per **SB
+track — see the version-numbering note below). **SecondBrain pins `v1.6.0`** (repinned + Gate-1 device-verified — SB Phase 124) — at parity with latest, per **SB
 v2.0 Phase 124 (REPIN-06)**; **CalTracker pins `v1.5.0`** (repinned Phase 48, REL-01) — the hub's own additive-growth
 tag it was authorized to consume (the hub's own latest tag has since moved to `v1.6.0` via
 SecondBrain's unrelated Phase 123, not a v1.7 CalTracker task; a hub change is inert until a
@@ -174,7 +173,7 @@ SHA) and `"isTag":true`. The build log
 `Found artifact: com.github.Ygaray:yahirandroidtaste:1.6.0`. Full evidence captured in
 `123-TAG-CUT-RECORD.md` and `123-05-SUMMARY.md`. **SecondBrain repinned to `v1.6.0`** in **SB
 v2.0 Phase 124 (REPIN-06)** — the `gradle/libs.versions.toml` bump plus the four-registry
-reconcile — repinned + build-green; Gate-1 device-verification pending — SB Phase 124.
+reconcile — repinned + Gate-1 device-verified — SB Phase 124.
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
