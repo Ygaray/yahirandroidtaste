@@ -35,4 +35,15 @@ git add -A
 set +e; git commit -qm "behavior change"; check "$?" 1 "lane-2 commit blocked"; set -e
 set +e; HUB_LANE_OVERRIDE=2 git commit -qm "declared behavior change"; check "$?" 0 "declared lane-2 allowed"; set -e
 
+# classifier error: missing API_FILE -> hook fails closed (blocks commit)
+git reset --hard HEAD~1
+git checkout -q -- .; git clean -fdq
+rm api/hub.api
+printf 'val x = 888\n' > src/A.kt; git add -A
+set +e; git commit -qm "error state"; check "$?" 1 "classifier error => hook fails closed"; set -e
+# Restore for cleanup
+git checkout -q -- .; git clean -fdq
+mkdir -p api
+printf 'public fun a(): Unit\n' > api/hub.api
+
 echo "PASS=$pass FAIL=$fail"; [ "$fail" -eq 0 ]

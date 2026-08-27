@@ -20,6 +20,15 @@ bash "$DIR/verify-additive-diff.sh" "$BASE" >/dev/null 2>&1; src_rc=$?
 bash "$DIR/verify-api-additive.sh" "$BASE" >/dev/null 2>&1; api_rc=$?
 set -e
 
+if [ "$api_rc" -ne 0 ] && [ "$api_rc" -ne 3 ]; then
+  echo "classify: cannot classify — verify-api-additive.sh returned unexpected exit $api_rc (not 0/3)" >&2
+  exit 1
+fi
+if [ "$src_rc" -ne 0 ] && [ "$src_rc" -ne 1 ]; then
+  echo "classify: cannot classify — verify-additive-diff.sh returned unexpected exit $src_rc (not 0/1)" >&2
+  exit 1
+fi
+
 if   [ "$api_rc" -eq 3 ]; then lane=3
 elif [ "$src_rc" -ne 0 ]; then lane=2
 else lane=1

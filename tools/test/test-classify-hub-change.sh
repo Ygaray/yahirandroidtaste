@@ -26,4 +26,9 @@ set +e; "$SCRIPT" --baseline v0.0.0 >/dev/null 2>&1; check "$?" 3 "api removal =
 # lane 3 under --mode curation is permitted (exit 0)
 set +e; "$SCRIPT" --baseline v0.0.0 --mode curation >/dev/null 2>&1; check "$?" 0 "lane 3 permitted under curation"; set -e
 
+# sub-guard error: missing API_FILE -> classifier fails closed (exit 1)
+git checkout -q -- .; git clean -fdq
+rm api/hub.api
+set +e; "$SCRIPT" --baseline v0.0.0 >/dev/null 2>&1; check "$?" 1 "missing API_FILE => classifier fails closed exit 1"; set -e
+
 echo "PASS=$pass FAIL=$fail"; [ "$fail" -eq 0 ]
