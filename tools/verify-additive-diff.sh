@@ -46,14 +46,10 @@ fi
 if [ "$#" -gt 0 ]; then
   PATHS=("$@")
 else
-  PATHS=(
-    "src/main/java/io/github/ygaray/yahirandroidtaste/theme/Dimens.kt"
-    "src/main/java/io/github/ygaray/yahirandroidtaste/component/ColorUtils.kt"
-    "src/main/java/io/github/ygaray/yahirandroidtaste/component/RelatednessEncoding.kt"
-    "src/main/java/io/github/ygaray/yahirandroidtaste/explorer/ComponentRegistry.kt"
-    "src/main/java/io/github/ygaray/yahirandroidtaste/explorer/ExplorerIndexScreen.kt"
-    "src/main/java/io/github/ygaray/yahirandroidtaste/explorer/ExplorerEntry.kt"
-  )
+  # Default: every file tracked at the baseline. Closes the path-list gap (spec §5.1) —
+  # a contributor cannot silently edit an unguarded pre-existing file.
+  mapfile -t PATHS < <(git ls-tree -r --name-only "$BASELINE_COMMIT")
+  [ "${#PATHS[@]}" -gt 0 ] || { echo "DS-05 FAIL: baseline '$BASELINE_COMMIT' lists no tracked files." >&2; exit 1; }
 fi
 
 TMP_DIR="$(mktemp -d)"
