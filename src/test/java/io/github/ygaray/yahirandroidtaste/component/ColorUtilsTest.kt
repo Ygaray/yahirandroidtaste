@@ -21,13 +21,27 @@ class ColorUtilsTest {
 
     // Six-sample accent sweep drawn from the existing public ACCENT_COLORS palette
     // (component/AccentColorPicker.kt) rather than invented literals.
+    //
+    // Includes BOTH the `.light` and `.dark` hex variant of each sampled accent (123 code-review
+    // WR-01): the `.light` values alone gave zero regression signal for the "sheen is never
+    // darker than the base" contract in dark theme, because they were never the color values a
+    // real dark-themed consumer screen actually passes in — per AccentColorPicker.kt's
+    // `if (isDark) accentColor.dark else accentColor.light`, dark theme renders the `.dark` hex,
+    // not `.light`. The `.dark` variants (brighter, near-`onSurface`-luminance colors) are what
+    // actually stress the invariant's margin, which is thin for bright accents like Gold.
     private val accentSweep: List<Color> = listOf(
-        Color(ACCENT_COLORS[0].light),  // Red
-        Color(ACCENT_COLORS[2].light),  // Purple
-        Color(ACCENT_COLORS[5].light),  // Blue
-        Color(ACCENT_COLORS[7].light),  // Green
-        Color(ACCENT_COLORS[18].light), // Charcoal
-        Color(ACCENT_COLORS[19].light)  // Gold
+        Color(ACCENT_COLORS[0].light),  // Red (light)
+        Color(ACCENT_COLORS[0].dark),   // Red (dark)
+        Color(ACCENT_COLORS[2].light),  // Purple (light)
+        Color(ACCENT_COLORS[2].dark),   // Purple (dark)
+        Color(ACCENT_COLORS[5].light),  // Blue (light)
+        Color(ACCENT_COLORS[5].dark),   // Blue (dark)
+        Color(ACCENT_COLORS[7].light),  // Green (light)
+        Color(ACCENT_COLORS[7].dark),   // Green (dark)
+        Color(ACCENT_COLORS[18].light), // Charcoal (light)
+        Color(ACCENT_COLORS[18].dark),  // Charcoal (dark)
+        Color(ACCENT_COLORS[19].light), // Gold (light)
+        Color(ACCENT_COLORS[19].dark)   // Gold (dark)
     )
 
     private val schemes = listOf(LightColorScheme, DarkColorScheme)
