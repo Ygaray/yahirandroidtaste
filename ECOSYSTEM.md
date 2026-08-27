@@ -31,7 +31,7 @@ independent apps that consume it:
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
   | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.4.0`** (repinned, v1.23 Phase 118; LIST-04 `ListCardBottomSheet` read-only preview) — two tags behind latest (`v1.6.0`); repin is SecondBrain Phase 124's job | `gradle/libs.versions.toml` |
-  | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.2.0`** (repinned + Gate-1-confirmed, Phase 43 / GIVE-04) — four tags behind latest, repins on its own cadence | `gradle/libs.versions.toml` |
+  | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.5.0`** (repinned + Gate-1-confirmed, Phase 48 / REL-01) — matches latest | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
@@ -43,8 +43,8 @@ Grotesk display ramp, gradient/tint accent surfaces, Heat relatedness ramp — `
 the hub's own already-published **`v1.5.0`** (cut by the hub's internal Phase 44 additive-growth
 track — see the version-numbering note below). **SecondBrain pins `v1.4.0`** — two tags behind
 latest; the repin plus the four-registry reconcile is **SecondBrain Phase 124's** job, not this
-phase's; **CalTracker pins `v1.2.0`** (repinned Phase 43, GIVE-04) — four tags behind latest,
-repins on its own cadence (a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
+phase's; **CalTracker pins `v1.5.0`** (repinned Phase 48, REL-01) — matches latest at the hub's
+own additive-growth tag (a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
 SM-S908U (Gate-1 all_pass: cold-start Hilt-across-AAR resolution, live undo + ExplorerActivity,
@@ -67,6 +67,19 @@ byte-unchanged), **SegmentedOptionSelector**, and **AttentionCue** — plus the 
 `2026.04.01` alignment. The repin is **Gate-1 self-UAT confirmed** (`43-02-SELF-UAT.md`, `gsd-api35`
 emulator): live (non-cached) `--refresh-dependencies` resolution confirm, zero crashes across a full
 navigation smoke pass, and the `RevealActionRow`/`SwipeRevealRow` fold spot-checked live on-device.
+
+CalTracker cut and repinned onto **`v1.5.0`** in **Phase 48** (REL-01/REL-02), human-gated on hub
+commit `759179b7369d0159613c1fd1a670052a676356bf` (Phase 44's additive-growth tip; JitPack `BUILD
+SUCCESSFUL`, `.aar`/`.pom` HTTP 200 at the v-prefixed coordinate
+`com.github.Ygaray:yahirandroidtaste:v1.5.0`). Unlike Phase 43's give-leg upstream (CalTracker
+components landing IN the hub), this tag carries the hub's own Phase-44 additive
+expressive-token/primitive growth — the `LocalExpressive`/`ExpressiveMotion` token set,
+`ProgressRing`, `AnimatedStatValue`, `HeroStatCard`, `verify-additive-surface.sh`, and an API.md
+parity fix — a hub-first co-evolution this milestone, not an upstreamed CalTracker contribution.
+The repin is **Gate-1 self-UAT confirmed** (`48-02-SELF-UAT.md`, physical SM-S908U rig +
+`gsd-api35` emulator): `ContrastGuardrailTest` 12/12, Macrobenchmark frame-timing within budget on
+the physical rig, real rotate/kill/predictive-back-mid-animation all clean, and reduced-motion
+instant end-state clean — no regression versus Phase 47's baseline.
 
 `v1.3.0` was cut in **SecondBrain Phase 114** (`EDIT-04`, `ICON-01`, `TAG-03`), an autonomous
 minor bump — the owner's tag-cut checkpoint is waived for this personal-use hub ecosystem
