@@ -1,14 +1,14 @@
-# API.md — `yahirandroidtaste` public surface (the eight-family composable catalog)
+# API.md — `yahirandroidtaste` public surface (the nine-family composable catalog)
 
 Everything a consumer calls. Package root: `io.github.ygaray.yahirandroidtaste`. To wire the
 library, see `INTEGRATION.md`; for the reuse rules, `CLAUDE.md`.
 
 This is a **UI component library**, so its public surface is a **catalog of composables**, not a
-service seam. The composables are organized into the library's **eight families** — the same
+service seam. The composables are organized into the library's **nine families** — the same
 taxonomy the library ships in `explorer/ComponentRegistry.kt` (`cardsFamilyEntries +
 chipsFamilyEntries + sheetsFamilyEntries + buttonsFabFamilyEntries + pickersFamilyEntries +
-feedbackFamilyEntries + emptyStateFamilyEntries + progressFamilyEntries`), which is the single
-source of truth and the CATALOG drift guard.
+feedbackFamilyEntries + emptyStateFamilyEntries + progressFamilyEntries +
+tactileFoundationFamilyEntries`), which is the single source of truth and the CATALOG drift guard.
 
 ## Surface at a glance
 
@@ -22,9 +22,10 @@ source of truth and the CATALOG drift guard.
 | 6. Feedback | 3 | Confirmation dialog, the Undo Center, and the attention-cue glyph |
 | 7. Empty-state | 1 | The shared empty-state surface |
 | 8. Progress / Metrics | 4 | Determinate ring / count-up / hero-card primitives for at-a-glance stat display |
+| 9. Tactile Foundation | 4 | Elevation ladder, Space Grotesk display ramp, gradient/tint accent surfaces, and the Heat relatedness ramp |
 
-**47 registered public composables** across the eight families, plus **5 intentionally-unregistered**
-structural sub-parts (see the end of this doc) = **52 public composables total**. Every component
+**51 registered public composables** across the nine families, plus **5 intentionally-unregistered**
+structural sub-parts (see the end of this doc) = **56 public composables total**. Every component
 renders inside `YahirAndroidTasteTheme` (family 7's theme wrapper — see the tail note). Every
 `Modifier` parameter defaults to `Modifier`; only the load-bearing parameters are listed below.
 
@@ -125,6 +126,45 @@ these render its body) plus the shared scaffolding and editor rows.
 | Composable | Purpose | Key parameters |
 |-----------|---------|----------------|
 | `EmptyState` | Shared empty-state surface (icon + title + optional body/action) | `icon: ImageVector, title: String, …` |
+
+## 8. Progress / Metrics
+
+Determinate progress / count-up / hero-card primitives for at-a-glance stat display, originally
+upstreamed from CalTracker's give-leg (Phase 42/43, GIVE-04).
+
+| Composable | Purpose | Key parameters |
+|-----------|---------|----------------|
+| `MetricBar` | Labeled progress bar with an optional header-only mode | `label, valueText, fraction: Float?, band: MetricBand?, remainingText: String?` — `fraction`/`band` are required only when `remainingText` is non-null (IN-02) |
+| `ProgressRing` | Determinate animated ring, draw-phase-only fill read (perf discipline) | `fraction: Float, strokeWidth = 8.dp, trackColor, progressColor, animationSpec, content: @Composable BoxScope.() -> Unit = {}` |
+| `AnimatedStatValue` | Animated count-up/count-down numeral, caller-formatted | `targetValue: Float, style, color, animationSpec, format: (Float) -> String` |
+| `HeroStatCard` | Generic hero/stat card face with a thin leading-edge accent stripe | `label: String, value: String, onClick: (() -> Unit)?, shape, containerColor, accentBrush, content: (@Composable ColumnScope.() -> Unit)?` |
+
+## 9. Tactile Foundation
+
+Four foundational design-primitive families shipped as one cohesive drop (SecondBrain v2.0
+Phase 123, `DS-01`): an elevation/shadow scale, a Space Grotesk display-type ramp, gradient/tint
+accent-surface helpers, and an independent Heat relatedness color ramp. Each showcase demos its
+own primitive(s) live in the Explorer; none of the four existing shared surfaces they sit beside
+(`Dimens`, `theme/Type.kt`'s `Typography`, `ColorUtils.contrastingForeground`,
+`RelatednessEncoding`'s Jaccard ramp) was modified — every addition here is a wholly additive
+sibling.
+
+| Composable | Purpose | Key parameters |
+|-----------|---------|----------------|
+| `ElevationLadder` | Renders all six `Dimens.Elevation` levels (Level0–Level5) as real-shadow bands for a light/dark depth-scale comparison | `modifier: Modifier = Modifier` |
+| `TactileTypeShowcase` | Renders all four `TactileType` display tiers (real Space Grotesk weights) with a long-sample clipping check and a same-text `FontFamily.Default` comparison row | `modifier: Modifier = Modifier` |
+| `GradientSwatch` | Renders `accentGradient`'s hero band and `accentTint`'s flat card fill side by side for one caller-supplied accent | `accentColor: Color, modifier: Modifier = Modifier` |
+| `HeatSwatch` | Renders all four Heat tiers as sized/colored/stroked mindmap-node samples connected by edges, plus one distinct-hub-ring example | `modifier: Modifier = Modifier` |
+
+**Non-composable primitives (also part of the public surface, called directly rather than
+rendered):**
+- `Dimens.Elevation` (`Level0`..`Level5`) — the six dp shadow-elevation levels these showcases demo.
+- `TactileType` (`DisplayLarge/Medium/Small/XSmall`) + `SpaceGroteskFamily` — the Space Grotesk
+  `TextStyle` ramp and its backing `FontFamily`.
+- `accentGradientStops`, `accentGradient`, `accentTint` (`component/ColorUtils.kt`) — the
+  parametrized gradient/tint pure functions `GradientSwatch` demos.
+- `HeatTier`, `HeatVisual`, `heatTier`, `heatVisual`, `hubNodeVisual` (`component/RelatednessEncoding.kt`)
+  — the independent Heat ramp's types and pure functions `HeatSwatch` demos.
 
 ---
 

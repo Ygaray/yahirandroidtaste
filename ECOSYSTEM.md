@@ -30,18 +30,19 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.4.0`** (repinned, v1.23 Phase 118; LIST-04 `ListCardBottomSheet` read-only preview) — matches latest | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.4.0`** (repinned, v1.23 Phase 118; LIST-04 `ListCardBottomSheet` read-only preview) — one tag behind latest (`v1.5.0`); repin is SecondBrain Phase 124's job | `gradle/libs.versions.toml` |
   | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.2.0`** (repinned + Gate-1-confirmed, Phase 43 / GIVE-04) — one tag behind latest, repins on its own cadence | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
   No "Deploy host" column — Android apps are installed on devices, not daemon-deployed.)_
 
-**Current published tag:** **`v1.4.0`** — cut in **SecondBrain Phase 118 Plan 01**, an autonomous
-minor bump adding `readOnlyPreview`/`previewOverflowCount` to `ListCardBottomSheet` (`LIST-04`).
-**SecondBrain pins `v1.4.0`** (repinned — SecondBrain v1.23 Phase 118, agent-cut per the
-personal-app tag-cut waiver — matches latest); **CalTracker
-pins `v1.2.0`** (repinned Phase 43, GIVE-04) — two tags behind latest, repins on
+**Current published tag:** **`v1.5.0`** — cut in **SecondBrain v2.0 Phase 123 Plan 05**, an
+autonomous minor bump shipping the Tactile design-system foundation (elevation scale, Space
+Grotesk display ramp, gradient/tint accent surfaces, Heat relatedness ramp — `DS-01`).
+**SecondBrain pins `v1.4.0`** — one tag behind latest; the repin plus the four-registry reconcile
+is **SecondBrain Phase 124's** job, not this phase's; **CalTracker
+pins `v1.2.0`** (repinned Phase 43, GIVE-04) — three tags behind latest, repins on
 its own cadence (a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
@@ -98,6 +99,43 @@ existing consumer keeps compiling and behaving unchanged. Verified resolvable vi
 (`gradle/libs.versions.toml` → `v1.4.0`, `CardListSection.kt`'s List sheet call site wired to
 `readOnlyPreview = true` / a 3-item prefix / the computed overflow count) — device confirmation is
 Gate-1's job (`verify_work_agentic_gate`), not this plan's; not yet recorded here.
+
+`v1.5.0` was cut in **SecondBrain v2.0 Phase 123 Plan 05** (`DS-01`), an autonomous minor bump —
+the owner's tag-cut checkpoint is waived for this personal-use hub ecosystem (2026-08-20,
+`[[personal-app-tag-cut-gate-waived]]`, Option C) — on this doc-update commit itself (its exact SHA
+is necessarily self-referential at write time; recorded verbatim in the Task 3 trailing amendment
+below, in `123-05-SUMMARY.md`, and in `123-TAG-CUT-RECORD.md`) — the code Task 1 verified green was
+hub commit `fe20ce863ad03f705a07cef36309443721388835`, and this commit re-runs that same green gate
+after only additive documentation/build-config edits (no source changes)
+(green-gate evidence: full `testDebugUnitTest`, `detekt` at zero baseline (`config/detekt-baseline.xml`
+still 5 lines), `build`, both `ComponentRegistryDriftGuardTest`/`ComponentStatesMatrixTest` registry
+gates proven non-vacuous via an `--info --rerun-tasks` re-run, and both `DS-04`/`DS-05` additive
+guards passing against `v1.4.0` and against the phase's own pre-phase HEAD
+`759179b7369d0159613c1fd1a670052a676356bf`). The tag carries four wholly additive Tactile
+primitive families, none modifying any existing public token/component/signature: `Dimens.Elevation`
+(a six-level `Level0`..`Level5` dp shadow scale) + `ElevationLadder`; `TactileType`/`SpaceGroteskFamily`
+(a four-tier Space Grotesk display-type ramp, additive sibling to the untouched Material3
+`Typography`) + `TactileTypeShowcase`; `accentGradientStops`/`accentGradient`/`accentTint`
+(parametrized accent-surface color helpers, `contrastingForeground` untouched) + `GradientSwatch`;
+and `HeatTier`/`HeatVisual`/`heatTier`/`heatVisual`/`hubNodeVisual` (an independent Heat relatedness
+ramp beside the untouched Jaccard `RelatednessTier` ramp) + `HeatSwatch` — all four registered as
+the ninth "Tactile Foundation" `ComponentRegistry` family (51 registered composables, up from 47).
+This is also the module's first-ever `res/` directory, bundling the canonical Space Grotesk
+variable font (`src/main/res/font/space_grotesk_variable.ttf`, SHA-256 `acad6de1...9f72`) with its
+verbatim OFL 1.1 license (`licenses/SpaceGrotesk-OFL.txt`). **This tag also publishes nine
+pre-existing unreleased ancestor commits that predate Phase 123** (a different consumer's
+upstreamed work: the Expressive tokens expansion, `ProgressRing`, `ExpressiveMotion`,
+`AnimatedStatValue`, `HeroStatCard`, the `tools/verify-additive-surface.sh` guard, an `API.md`
+count fix, and a `ListCardBottomSheet` read-only-preview source-contract test — corrected from the
+plan's stated "eight": the live `git log --oneline v1.4.0..HEAD` count is nine ancestor commits,
+not eight; see `123-05-SUMMARY.md` for the discrepancy note) — a consumer reading this record
+should not be surprised by those symbols appearing in the same tag; see `123-05-SUMMARY.md`'s
+`git log --oneline v1.4.0..HEAD` capture for the exact 19-commit inventory (10 from Phase 123 + 9
+ancestors). Verified resolvable via a real (non-cached-local) JitPack build
+(`com.github.Ygaray:yahirandroidtaste:v1.5.0`) — see `123-05-SUMMARY.md` /
+`123-TAG-CUT-RECORD.md` for the full evidence. **SecondBrain has NOT repinned** — it still pins
+`v1.4.0`; the repin, the `gradle/libs.versions.toml` bump, and the four-registry reconcile are
+**SecondBrain Phase 124's** job.
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
