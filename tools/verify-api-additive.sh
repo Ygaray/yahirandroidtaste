@@ -8,6 +8,7 @@ REPO_ROOT="$(git rev-parse --show-toplevel)"; cd "$REPO_ROOT"
 API_FILE="${API_FILE:?set API_FILE to the committed public-API file path (see tools/README-api-guard.md)}"
 [ "$#" -ge 1 ] || { echo "Usage: $0 <baseline-ref>" >&2; exit 1; }
 BASE="$1"
+[ -r "$API_FILE" ] || { echo "API-ADDITIVE FAIL: current $API_FILE is missing/unreadable" >&2; exit 1; }
 git show "$BASE:$API_FILE" >/dev/null 2>&1 || { echo "API-ADDITIVE FAIL: cannot read $API_FILE at $BASE" >&2; exit 1; }
 
 # Every line present in the baseline .api must still be present now. A missing line = a removed

@@ -22,4 +22,10 @@ sed -i 's/public fun b(): Unit/public fun bb(): Unit/' "$API"   # rename b -> bb
 set +e; "$SCRIPT" v0.0.0 >/dev/null 2>&1; rc=$?; set -e
 check "$rc" 3 "renamed API symbol is a lane-3 break"
 
+# (c) missing current .api file -> usage error, exit 1 (not 3)
+git checkout -q -- .; git clean -fdq
+rm "$API"
+set +e; "$SCRIPT" v0.0.0 >/dev/null 2>&1; rc=$?; set -e
+check "$rc" 1 "missing current .api file is usage error (exit 1, not 3)"
+
 echo "PASS=$pass FAIL=$fail"; [ "$fail" -eq 0 ]
