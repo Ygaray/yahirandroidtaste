@@ -2,6 +2,7 @@ package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,11 +23,12 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
 
 /**
  * Showcase composable for [heatTier] / [heatVisual] / [hubNodeVisual] (Phase 123 DS-01, D-03,
- * `123-UI-SPEC.md` § "Primitive Family 4"). Renders a small mindmap fragment left to right for
- * four sample jaccard values — one per [HeatTier] — connected by sample edges that thicken
- * toward the hotter node, plus one distinct-hub example, so all four tiers and the hub ring are
+ * `135-UI-SPEC.md` § "Heat Tier Contract"). Renders a small mindmap fragment left to right for
+ * six sample jaccard values — one per [HeatTier] — connected by sample edges that thicken
+ * toward the hotter node, plus one distinct-hub example, so all six tiers and the hub ring are
  * visible in one glance. Reads [MaterialTheme.colorScheme] live so both theme variants of the
- * ramp render correctly in the Explorer's light and dark modes.
+ * ramp render correctly in the Explorer's light and dark modes. The sample row scrolls
+ * horizontally (Phase 135) since six nodes plus the hub example no longer fit a narrow viewport.
  *
  * A standalone registered composable (D-03) rather than an extension of an existing chip
  * showcase: [heatTier]/[heatVisual] are plain non-`@Composable` functions the drift guard cannot
@@ -34,18 +37,20 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
 @Composable
 fun HeatSwatch(modifier: Modifier = Modifier) {
     val colorScheme = MaterialTheme.colorScheme
-    val samples = listOf(0.04f, 0.12f, 0.2f, 0.5f, 0.8f)
+    val samples = listOf(0.04f, 0.12f, 0.24f, 0.37f, 0.55f, 0.80f)
     val visuals = samples.map { heatVisual(it, colorScheme) }
-    val hubVisual = visuals.last() // The HOT sample's node, per the distinct-hub example spec.
+    val hubVisual = visuals.last() // The BLAZING sample's node, per the distinct-hub example spec.
 
     Column(modifier = modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Dimens.HairlineSpacing),
-            modifier = Modifier.padding(
-                horizontal = Dimens.HorizontalPadding,
-                vertical = Dimens.TopPadding
-            )
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(
+                    horizontal = Dimens.HorizontalPadding,
+                    vertical = Dimens.TopPadding
+                )
         ) {
             visuals.forEachIndexed { index, visual ->
                 if (index > 0) {
@@ -93,7 +98,7 @@ fun HeatSwatch(modifier: Modifier = Modifier) {
                 )
             }
             Text(
-                text = "Hub — HOT fill + 2dp primary ring",
+                text = "Hub — BLAZING fill + 2dp primary ring",
                 style = MaterialTheme.typography.labelSmall,
                 color = colorScheme.onSurfaceVariant
             )

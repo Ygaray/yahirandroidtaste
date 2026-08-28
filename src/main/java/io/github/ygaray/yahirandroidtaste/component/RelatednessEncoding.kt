@@ -93,7 +93,7 @@ fun relatednessVisual(jaccard: Float, colorScheme: ColorScheme): RelatednessVisu
  * independent siblings is the locked decision; a `mode` parameter threaded through the existing
  * ramp is the named anti-pattern this shape avoids.
  */
-enum class HeatTier { COOL, BRISK, MILD, WARM, HOT }
+enum class HeatTier { COOL, BRISK, MILD, WARM, HOT, BLAZING }
 
 /**
  * The visual encoding for a [HeatTier] — node fill color, edge color, edge stroke width, and node
@@ -131,10 +131,11 @@ fun heatTier(jaccard: Float): HeatTier {
     val j = if (jaccard.isNaN()) 0f else jaccard.coerceIn(0f, 1f)
     return when {
         j < 0.08f -> HeatTier.COOL
-        j < 0.12f -> HeatTier.BRISK
-        j < 0.35f -> HeatTier.MILD
-        j < 0.65f -> HeatTier.WARM
-        else -> HeatTier.HOT
+        j < 0.18f -> HeatTier.BRISK
+        j < 0.30f -> HeatTier.MILD
+        j < 0.45f -> HeatTier.WARM
+        j < 0.65f -> HeatTier.HOT
+        else -> HeatTier.BLAZING
     }
 }
 
@@ -173,18 +174,24 @@ fun heatVisual(jaccard: Float, colorScheme: ColorScheme): HeatVisual {
         HeatTier.MILD -> HeatVisual(
             nodeFillColor = if (isDark) Color(0xFFF59E0B) else Color(0xFFFBBF24),
             edgeColor = if (isDark) Color(0xFFFBBF24) else Color(0xFFFDE68A),
-            edgeStrokeWidth = 1.5.dp,
-            nodeRadius = 12.dp
+            edgeStrokeWidth = 1.6.dp,
+            nodeRadius = 13.dp
         )
         HeatTier.WARM -> HeatVisual(
             nodeFillColor = if (isDark) Color(0xFFF97316) else Color(0xFFFB923C),
             edgeColor = if (isDark) Color(0xFFFB923C) else Color(0xFFFED7AA),
-            edgeStrokeWidth = 2.dp,
-            nodeRadius = 16.dp
+            edgeStrokeWidth = 1.9.dp,
+            nodeRadius = 15.dp
         )
         HeatTier.HOT -> HeatVisual(
             nodeFillColor = if (isDark) Color(0xFFDC2626) else Color(0xFFEF4444),
             edgeColor = if (isDark) Color(0xFFEF4444) else Color(0xFFFCA5A5),
+            edgeStrokeWidth = 2.2.dp,
+            nodeRadius = 18.dp
+        )
+        HeatTier.BLAZING -> HeatVisual(
+            nodeFillColor = if (isDark) Color(0xFFB91C1C) else Color(0xFFDC2626),
+            edgeColor = if (isDark) Color(0xFFDC2626) else Color(0xFFFECACA),
             edgeStrokeWidth = 2.5.dp,
             nodeRadius = 20.dp
         )
