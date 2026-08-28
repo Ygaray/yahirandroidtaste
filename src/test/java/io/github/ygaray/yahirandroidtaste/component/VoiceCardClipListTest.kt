@@ -61,8 +61,51 @@ class VoiceCardClipListTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private fun source(file: String = "VoiceCard.kt"): String =
-        File("src/main/java/io/github/ygaray/yahirandroidtaste/component/$file").readText()
+    private fun source(file: String = "VoiceCard.kt"): String {
+        val sourceRoot = resolveModuleSourceRoot()
+        val sourceFile = File(sourceRoot, "component/$file")
+        val text = sourceFile.readText()
+        assertTrue(
+            "Source scan found an empty/missing $file at $sourceFile — the working-directory/" +
+                "source-root assumption broke. Failing loudly instead of vacuously passing " +
+                "(mirrors ComponentRegistryDriftGuardTest's own vacuous-pass guard).",
+            text.isNotBlank()
+        )
+        return text
+    }
+
+    /**
+     * Resolves the `yahirandroidtaste` module's source root robustly (mirrors
+     * `CardBaseTest.resolveModuleSourceRoot`/`ComponentRegistryDriftGuardTest.resolveModuleSourceRoot`
+     * exactly, 129-REVIEW.md WR-01) — do not rely solely on the test process's current working
+     * directory, which the previous bare-relative-path `source()` implementation did.
+     */
+    private fun resolveModuleSourceRoot(): File {
+        val relativeSourceRoot = "src/main/java/io/github/ygaray/yahirandroidtaste"
+
+        var dir: File? = File(".").absoluteFile
+        var depth = 0
+        while (dir != null && depth < 8) {
+            if (dir.name == "yahirandroidtaste") {
+                val candidateBuildFile = File(dir, "build.gradle.kts")
+                val candidateSourceRoot = File(dir, relativeSourceRoot)
+                if (candidateBuildFile.isFile && candidateSourceRoot.isDirectory) {
+                    return candidateSourceRoot
+                }
+            }
+            dir = dir.parentFile
+            depth++
+        }
+
+        val fallback = File(relativeSourceRoot)
+        check(fallback.isDirectory) {
+            "Could not resolve the yahirandroidtaste source root by walking up from the process " +
+                "CWD (${File(".").absoluteFile}) looking for a yahirandroidtaste module " +
+                "directory, nor via the Gradle-default relative path " +
+                "($relativeSourceRoot, resolved absolute: ${fallback.absoluteFile})."
+        }
+        return fallback
+    }
 
     private fun countOccurrences(haystack: String, needle: String): Int =
         haystack.split(needle).size - 1
