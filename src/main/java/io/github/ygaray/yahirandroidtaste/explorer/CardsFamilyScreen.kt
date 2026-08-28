@@ -62,6 +62,7 @@ import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
  * `tagSortModeControl`), so the label string is a single source of truth and cannot drift between
  * the two call sites.
  */
+private val cardBaseTactileDepthControl = Control.Toggle(label = "Tactile depth")
 private val textCardPinnedControl = Control.Toggle(label = "Pinned")
 private val listCardPinnedControl = Control.Toggle(label = "Pinned")
 private val albumCardPinnedControl = Control.Toggle(label = "Pinned")
@@ -70,6 +71,40 @@ private val cardQuickViewPinnedControl = Control.Toggle(label = "Pinned")
 private val cardQuickViewFavoriteControl = Control.Toggle(label = "Favorite")
 
 internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
+    ComponentRegistry.Entry(
+        name = "CardBase",
+        family = ExplorerFamilies.CARDS,
+        states = listOf(
+            ComponentRegistry.StateCell("Default") { CardBasePreview(tactileDepth = true) },
+            // Pressed / Selected: CardBase exposes no selection flag — N/A.
+            ComponentRegistry.StateCell("Pressed / Selected"),
+            // Disabled: CardBase exposes no `enabled` flag — N/A.
+            ComponentRegistry.StateCell("Disabled"),
+            // Focused: no focus-visual param exposed on CardBase — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { CardBaseVariants() },
+        controls = listOf(cardBaseTactileDepthControl),
+        preview = { state ->
+            CardBasePreview(tactileDepth = state.boolean(cardBaseTactileDepthControl))
+        }
+    ),
+    ComponentRegistry.Entry(
+        name = "CardTypeChip",
+        family = ExplorerFamilies.CARDS,
+        states = listOf(
+            ComponentRegistry.StateCell("Default") {
+                CardTypeChipPreview(accent = Color(ACCENT_COLORS[7].light))
+            },
+            // Pressed / Selected: CardTypeChip exposes no selection flag — N/A.
+            ComponentRegistry.StateCell("Pressed / Selected"),
+            // Disabled: CardTypeChip exposes no `enabled` flag — N/A.
+            ComponentRegistry.StateCell("Disabled"),
+            // Focused: no focus-visual param exposed on CardTypeChip — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { CardTypeChipVariants() }
+    ),
     ComponentRegistry.Entry(
         name = "TextCard",
         family = ExplorerFamilies.CARDS,
@@ -530,11 +565,6 @@ private fun CardBaseContent(
     )
 }
 
-// Suppressed pending Task 3 (same plan, 129-01-PLAN.md), which wires this into
-// cardsFamilyEntries' new CardBase Entry (content = { CardBaseVariants() }, itself calling
-// this) — genuinely unreachable until that registration lands, not a permanent debt. Task 3
-// removes this suppression once the registry wiring makes it reachable.
-@Suppress("UnusedPrivateMember")
 @Composable
 private fun CardBaseSection(
     label: String,
@@ -546,6 +576,35 @@ private fun CardBaseSection(
     CardBaseContent(tactileDepth = tactileDepth, accent = accent, showChipHeader = showChipHeader)
 }
 
+@Composable
+private fun CardBasePreview(tactileDepth: Boolean) {
+    CardBaseContent(tactileDepth = tactileDepth, accent = Color(ACCENT_COLORS[7].light))
+}
+
+@Composable
+private fun CardBaseVariants() {
+    CardBaseSection(label = "CardBase — plain (both defaults)")
+    DividerRow()
+    CardBaseSection(
+        label = "CardBase — depth, neutral spine (null accent)",
+        tactileDepth = true,
+        accent = null
+    )
+    DividerRow()
+    CardBaseSection(
+        label = "CardBase — depth, accent spine",
+        tactileDepth = true,
+        accent = Color(ACCENT_COLORS[7].light)
+    )
+    DividerRow()
+    CardBaseSection(
+        label = "CardBase — depth, accent + CardTypeChip + TactileType.CardTitle title",
+        tactileDepth = true,
+        accent = Color(ACCENT_COLORS[7].light),
+        showChipHeader = true
+    )
+}
+
 // --- CardTypeChip fixture (Phase 129 DS-02 Task 2) -----------------------------------------
 
 @Composable
@@ -555,10 +614,6 @@ private fun CardTypeChipPreview(accent: Color?) {
     }
 }
 
-// Suppressed pending Task 3 (same plan), which wires this into cardsFamilyEntries' new
-// CardTypeChip Entry (content = { CardTypeChipVariants() }) — genuinely unreachable until that
-// registration lands, not a permanent debt. Task 3 removes this suppression once wired.
-@Suppress("UnusedPrivateMember")
 @Composable
 private fun CardTypeChipVariants() {
     SectionLabel("CardTypeChip — accent")

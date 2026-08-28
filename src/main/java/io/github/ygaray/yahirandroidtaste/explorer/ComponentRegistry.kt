@@ -15,15 +15,20 @@ import androidx.compose.runtime.Composable
  * `.content`) or in [INTENTIONALLY_UNREGISTERED] (a documented sub-part exclusion) — never
  * neither.
  *
- * Regenerated from a live source scan at Phase 87 Plan 01 execution time (2026-08-08):
- * `component/` (41), `feedback/` (1 — `UndoCenterScreen`; `UndoHistoryRow`/`UndoPreviewPeek`/
- * `RelativeTimestampText` are `private`), `modifier/` (1 — `SwipeableActionRow`), `theme/`
- * (1 — `YahirAndroidTasteTheme`) = 44 total public composables. 40 registered below; 4
- * intentionally unregistered. Phases 85-86 (`FilterBar`, `SortControl`, `CountBadge`,
- * `CropOverlay`, `TagListItem`) are the delta since the Phase-61 count (then: 34 registered,
- * total public composables numbered 38) — the CATALOG-04 completeness audit (87-01) confirmed
- * zero drift: every scanned composable is registered or allowlisted, and every
- * registered/allowlisted name matches a real scanned composable.
+ * Recomputed from the live `entries`/`INTENTIONALLY_UNREGISTERED` state at Phase 129 Plan 01
+ * Task 3 execution time (2026-08-28) — **53 registered, 4 intentionally unregistered = 57 total
+ * public composables** (`ComponentRegistry.entries.size` + `INTENTIONALLY_UNREGISTERED.size`,
+ * cross-checked against
+ * [io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistryDriftGuardTest]'s own live source
+ * scan, which stays green). This is a full recount, not an adjustment of the prior comment's
+ * numbers (40 registered / 4 unregistered = 44 total, dated Phase 87 Plan 01 2026-08-08) — this
+ * phase's own audit found that prior count already stale against the live maps before any Phase
+ * 129 edit landed, so the delta below is Phase 129's contribution only, not the full gap: Phase
+ * 129 adds `CardTypeChip` as a genuinely new public composable (+1 to the total), and moves
+ * `CardBase` from [INTENTIONALLY_UNREGISTERED] into `entries` (net zero on the total; +1
+ * registered, -1 unregistered) now that it carries its own opt-in Tactile depth-card states
+ * matrix (DS-02) instead of being exercised only indirectly through
+ * `TextCard`/`ListCard`/`AlbumCard`/`VoiceCard`.
  */
 object ComponentRegistry {
 
@@ -89,9 +94,6 @@ object ComponentRegistry {
      * list.
      */
     val INTENTIONALLY_UNREGISTERED: Map<String, String> = mapOf(
-        "CardBase" to
-            "Structural shell every card type wraps — already exercised indirectly via " +
-            "TextCard/ListCard/AlbumCard/VoiceCard in the Cards family.",
         "WaveformCanvas" to
             "Sub-part rendered inside RecordingBottomSheetContent/VoiceCard's private wrapper " +
             "(VoiceWaveformCanvas) — already exercised indirectly.",
