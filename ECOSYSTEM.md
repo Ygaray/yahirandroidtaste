@@ -30,7 +30,7 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.6.0`** (repinned + Gate-1 device-verified — SB Phase 124) — at parity with latest, per **SB v2.0 Phase 124 (REPIN-06)** (Tactile Foundation consumption) | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.7.0`** (repinned, resolve-confirmed + suite-green — Gate-1 device verification pending in-phase) — at parity with latest, per **SB v2.1 Phase 130 (REPIN-07)** (Tactile Card-Face Foundation consumption) | `gradle/libs.versions.toml` |
   | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.5.0`** (repinned + Gate-1-confirmed, Phase 48 / REL-01) — the hub's Phase-44 additive-growth tag CalTracker was authorized to consume (hub's own latest tag has since moved to `v1.6.0` via an unrelated concurrent SecondBrain session — not a v1.7 CalTracker task) | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
@@ -41,8 +41,9 @@ independent apps that consume it:
 autonomous minor bump on top of the hub's own **Phase 129** ("Tactile Card-Face Foundation") work:
 `CardBase` Tactile depth chrome + `CardTypeChip` + `TactileType.CardTitle` (`DS-02`), `VoiceCard`'s
 read-only clip list (`DS-03`), and the D-03 v2.1-canvas token tuning — see the `v1.7.0` release
-record below for the full evidence. **SecondBrain pins `v1.6.0`** — one tag behind latest; the
-repin is **SecondBrain Phase 130 Plan 02's** job, not this record's; **CalTracker pins `v1.5.0`**
+record below for the full evidence. **SecondBrain pins `v1.7.0`** — at parity with latest,
+repinned + resolve-confirmed + suite-green in **SecondBrain Phase 130 Plan 02 (REPIN-07)**, with
+Gate-1 device verification pending in-phase (not yet recorded here); **CalTracker pins `v1.5.0`**
 (repinned Phase 48, REL-01) — the hub's own additive-growth tag it was authorized to consume (the
 hub's own latest tag has since moved to `v1.7.0` via an unrelated SecondBrain session, not a
 CalTracker task; a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
@@ -196,6 +197,27 @@ signature is **additive/defaulted and source-compatible** with `v1.6.0` — no p
 removed or renamed, no parameter made required — as proven by the `apiCheck` lane passing clean.
 The first consumer repin (SecondBrain) is **pending** at write time and lands in **SB v2.1
 Phase 130 Plan 02**.
+
+**JitPack resolution evidence (Task 3, confirmed post-tag):** both
+`https://jitpack.io/com/github/Ygaray/yahirandroidtaste/v1.7.0/yahirandroidtaste-v1.7.0.pom` and
+`.../yahirandroidtaste-v1.7.0.aar` returned HTTP `200` (AAR `Content-Length: 1461483` bytes) on
+the first-ever request for this tag — the fastest lazy JitPack build observed across this repo's
+tag cuts (a real, non-cached lazy build, not a `publishToMavenLocal` substitute).
+`https://jitpack.io/api/builds/com.github.Ygaray/yahirandroidtaste/v1.7.0` reports
+`"status":"ok"`, `"commit":"44dc0cb7fe2003ff99b7779c0099a602b3fc08f1"` (the exact release SHA,
+equal to `git rev-list -n1 v1.7.0`) and `"isTag":true`. The build log
+(`https://jitpack.io/com/github/Ygaray/yahirandroidtaste/v1.7.0/build.log`) reports
+`BUILD SUCCESSFUL in 1m 20s`, `Build tool exit code: 0`, and
+`Found artifact: com.github.Ygaray:yahirandroidtaste:1.7.0`. Full evidence captured in
+`130-TAG-CUT-RECORD.md` and `130-01-SUMMARY.md`. **SecondBrain repinned to `v1.7.0`** in **SB
+v2.1 Phase 130 (REPIN-07)** — the `gradle/libs.versions.toml` bump (Plan 02) plus the
+four-registry reconcile (Plan 03). The repin is **resolve-confirmed and suite-green**
+(`--refresh-dependencies :app:dependencies` shows every resolved line at `v1.7.0`;
+`assembleDebug`/`testDebugUnitTest`/`detekt` all green; the resolved AAR's `classes.jar` was
+inspected directly and carries `VoiceClipUiModel`, `CardTypeChipKt`, and
+`explorer/CardsFamilyScreenKt*` — see `130-02-SUMMARY.md`) — **Gate-1 device verification is
+pending in this same phase** (dispatched by `/gsd-execute-phase` after code review) and is not yet
+recorded here; this record intentionally does not claim a completed device pass ahead of that gate.
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
