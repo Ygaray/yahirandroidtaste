@@ -9,11 +9,12 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Pure-JUnit tests for [TactileType]/[SpaceGroteskFamily] (Phase 123 Plan 02, DS-01).
+ * Pure-JUnit tests for [TactileType]/[SpaceGroteskFamily] (Phase 123 Plan 02, DS-01; extended by
+ * Phase 129 Plan 02, DS-02, D-03 to lock the additive fifth [TactileType.CardTitle] tier).
  *
- * Locks the four Space Grotesk display-ramp tiers' exact size/weight/lineHeight/letterSpacing
- * values, proves the ramp's distinct-weights and strictly-decreasing-sizes invariants, and — the
- * automated backstop for D-01 and the phase's additive-only success criterion 4 — proves
+ * Locks all five Space Grotesk ramp tiers' exact size/weight/lineHeight/letterSpacing values,
+ * proves the four Display tiers' distinct-weights and strictly-decreasing-sizes invariants, and —
+ * the automated backstop for D-01 and the phase's additive-only success criterion 4 — proves
  * `theme/Type.kt`'s shared Material3 [Typography] val still resolves to [FontFamily.Default] at
  * its original, unmodified scale.
  */
@@ -60,11 +61,22 @@ class TactileTypeTest {
     }
 
     @Test
-    fun `all four tiers share the same SpaceGroteskFamily instance`() {
+    fun `CardTitle matches the canvas-derived 18sp SemiBold ramp tier`() {
+        val style = TactileType.CardTitle
+
+        assertEquals(18.sp, style.fontSize)
+        assertEquals(FontWeight.SemiBold, style.fontWeight)
+        assertEquals(24.sp, style.lineHeight)
+        assertEquals(0.1.sp, style.letterSpacing)
+    }
+
+    @Test
+    fun `all five tiers share the same SpaceGroteskFamily instance`() {
         assertEquals(SpaceGroteskFamily, TactileType.DisplayLarge.fontFamily)
         assertEquals(SpaceGroteskFamily, TactileType.DisplayMedium.fontFamily)
         assertEquals(SpaceGroteskFamily, TactileType.DisplaySmall.fontFamily)
         assertEquals(SpaceGroteskFamily, TactileType.DisplayXSmall.fontFamily)
+        assertEquals(SpaceGroteskFamily, TactileType.CardTitle.fontFamily)
     }
 
     @Test

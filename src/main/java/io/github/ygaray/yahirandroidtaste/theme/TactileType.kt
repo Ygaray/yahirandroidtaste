@@ -66,9 +66,25 @@ val SpaceGroteskFamily: FontFamily = FontFamily(
  * hub precedent in [ExpressiveTokens]/[Typography] where display-tier scales already vary weight
  * per tier.
  *
- * ⚠ Sizes and weights are flagged in `123-UI-SPEC.md` as pending a design-canvas cross-check
- * before the Phase 123 tag cut — not independently confirmed against the canvas as of this
- * commit.
+ * **Per-tier ASSUMED accounting (Phase 129 DS-02, D-03 reconciliation)** — the prior blanket
+ * marker below declared all four Display tiers' sizes and weights unconfirmed; the v2.1
+ * card-faces canvas (`.planning/design/v2.1-card-faces/`) is a card-faces canvas, so it can only
+ * speak to some of them:
+ * - [CardTitle] — CONFIRMED. Canvas-derived from `VoiceFace.dc.html`'s (and every other face's)
+ *   card-title `div`: `font-weight: 600; font-size: 19px; letter-spacing: 0.1px`, snapped to 18sp
+ *   per `129-UI-SPEC.md`'s Spacing Scale rule. No `⚠ ASSUMED` marker remains on this tier.
+ * - [DisplayXSmall] — PARTIALLY confirmed. Its 18sp size and 24sp line height are corroborated by
+ *   that same title specimen at the snapped value. Its `FontWeight.Normal` weight and 0.15sp
+ *   letter spacing remain `⚠ ASSUMED`: this tier's documented role is a "compact accent-header
+ *   metadata line" (e.g. Voice's duration + clip count), a UI element this card-faces canvas does
+ *   not render — closing this would need a future canvas artboard showing that specific label.
+ * - [DisplayLarge], [DisplayMedium], [DisplaySmall] — `⚠ ASSUMED`, unchanged, uncheckable against
+ *   this canvas. The v2.1 card-faces canvas contains no hero/display heading, no
+ *   section/dashboard heading and no mindmap hub-node label — the three UI elements these tiers
+ *   respectively document — because it is a card-faces canvas, not a home/dashboard/mindmap
+ *   canvas. Closing these needs a future canvas covering those surfaces; guessing values with no
+ *   specimen would be strictly worse than the honest flag, so none of their numeric values, their
+ *   `fontFamily`, or their `fontWeight` are touched by this reconciliation.
  */
 object TactileType {
     /** Hero display tier — e.g. Home's "All Cards" hero. 34sp / Bold / 40sp / -0.25sp. */
