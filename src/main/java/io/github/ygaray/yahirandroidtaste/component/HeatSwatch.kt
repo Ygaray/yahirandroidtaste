@@ -70,9 +70,9 @@ fun HeatSwatch(modifier: Modifier = Modifier) {
                 )
             }
 
-            // Distinct-hub example — the HOT sample's node, additionally ringed. Orthogonal to
+            // Distinct-hub example — the BLAZING sample's node, additionally ringed. Orthogonal to
             // tier color: the hub keeps its tier fill and simply gains a ring, so this is not a
-            // fifth tier.
+            // seventh tier.
             Box(
                 modifier = Modifier
                     .size(hubVisual.nodeRadius * 2f)
