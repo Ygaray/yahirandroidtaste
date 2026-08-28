@@ -5,12 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.CompareArrows
@@ -102,6 +104,64 @@ private fun VoiceWaveformCanvas(
 }
 
 // ---------------------------------------------------------------------------
+// Amplitude decode helper (Phase 129 DS-03 D-02, T-129-07)
+// ---------------------------------------------------------------------------
+
+/** Bar target for the overview strip — unchanged from the pre-extraction inline call. */
+private const val OVERVIEW_STRIP_BAR_TARGET = 60
+
+/** Bar target for a compact per-clip mini-row (Phase 129 DS-03 D-02). */
+private const val CLIP_ROW_BAR_TARGET = 24
+
+/**
+ * Decodes a companion `.bin` amplitude-samples file into a downsampled bar list, extracted
+ * verbatim from the overview strip's former inline `LaunchedEffect` body (Phase 129 DS-03 D-02,
+ * task 2) so it is directly unit-testable against real bytes ([AmplitudeBarsDecodeTest]) — closing
+ * 129-REVIEWS.md's cycle-1 MEDIUM finding that the shared [WaveformCanvas] was otherwise never
+ * proven to paint real bars anywhere in this phase.
+ *
+ * File layout: a 4-byte big-endian `Int` sample count, followed by that many 4-byte `Float`
+ * amplitude values (each expected in `0f..1f`).
+ *
+ * [samplesPath] `null`, a nonexistent path, any read failure (truncated payload, IO error), or a
+ * header declaring a count the file's actual byte length cannot hold all degrade to an
+ * **empty list** rather than throwing — the caller renders a blank waveform track for that case,
+ * never a crash. The count-versus-file-length check in particular guards against a corrupt or
+ * hostile header driving a huge allocation (T-129-07): `count` is validated against `maxCount`
+ * (derived from the file's real length) **before** any `List(count) { ... }` allocation is made.
+ *
+ * `internal` rather than `private` is deliberate (Planner Decision 5, 129-03-PLAN.md): it makes
+ * this helper directly unit-testable from this module's own test source set, exactly as
+ * `thresholdSide`/`nextSubType`/`installedAnchors`/`filterIconEntries` already are — and Metalava
+ * excludes Kotlin `internal` from `api.txt`, so no published surface grows.
+ *
+ * @param samplesPath Path to the `.bin` file, or `null` for "no samples" (returns empty).
+ * @param targetBars Bar count [downsample] downsamples the raw decode to.
+ */
+internal fun readAmplitudeBars(samplesPath: String?, targetBars: Int): List<Float> {
+    if (samplesPath == null) return emptyList()
+    val file = File(samplesPath)
+    if (!file.exists()) return emptyList()
+    return try {
+        DataInputStream(file.inputStream().buffered()).use { dis ->
+            val count = dis.readInt()
+            // Validate against the actual payload before allocating: the file is a
+            // 4-byte count followed by `count` 4-byte floats. A corrupt/negative header
+            // would otherwise pre-allocate a huge List and throw OutOfMemoryError, which
+            // is an Error (not caught below). Cap to what the file can actually hold.
+            val maxCount = ((file.length() - 4) / 4).coerceAtLeast(0).toInt()
+            if (count < 0 || count > maxCount) {
+                emptyList()
+            } else {
+                List(count) { dis.readFloat() }
+            }
+        }
+    } catch (_: Exception) {
+        emptyList()
+    }.let { samples -> downsample(samples, targetBars) }
+}
+
+// ---------------------------------------------------------------------------
 // Duration formatting helper
 // ---------------------------------------------------------------------------
 
@@ -171,6 +231,112 @@ internal fun voiceClipPillCopy(clipCount: Int, totalDurationMs: Long): String =
     } else {
         "$clipCount clips · ${formatDuration(totalDurationMs)}"
     }
+
+// ---------------------------------------------------------------------------
+// Capped clip mini-rows + overflow line (Phase 129 DS-03 D-02, T-129-06)
+// ---------------------------------------------------------------------------
+
+/**
+ * Visible clip-row cap (129-UI-SPEC.md's overflow row; matches the shared canvas's own
+ * three-clips-shown-as-two worked example). Independent of whatever cap Phase 133's app-side face
+ * later applies at its own call site.
+ */
+private const val CLIP_ROW_CAP = 2
+
+/**
+ * Pure overflow-line copy builder (Phase 129 DS-03 D-02) — mirrors [voiceClipPillCopy]'s
+ * branch-per-literal pluralization discipline and the established List-card "+N more" overflow
+ * convention. `internal` for the same direct-unit-testability reason as [voiceClipPillCopy] and
+ * [readAmplitudeBars].
+ */
+internal fun voiceClipOverflowCopy(hiddenCount: Int): String =
+    if (hiddenCount == 1) "+1 more clip" else "+$hiddenCount more clips"
+
+/**
+ * One read-only per-clip mini-row (Phase 129 DS-03 D-02): a one-based index label (derived from
+ * [VoiceClipUiModel.sortOrder], never from list position), a mini waveform on the **shared**
+ * [WaveformCanvas] — not the file-private [VoiceWaveformCanvas] the overview strip uses — and a
+ * duration label. Owns its own amplitude-bars decode, keyed on this clip's own `samplesPath`,
+ * following the exact background-IO-decode-then-assign discipline the overview strip already
+ * uses (T-129-08): the read happens inside `withContext(Dispatchers.IO)` and the resulting state
+ * is assigned back on the composition dispatcher.
+ *
+ * Carries **no** `clickable`, `combinedClickable` or `pointerInput` modifier anywhere in this
+ * function or its children (D-02, T-129-09 — guards the SWIPE-02 defect class): every touch
+ * inside the card face still belongs to [CardBase]'s single `combinedClickable`.
+ *
+ * `internal` rather than `private` so it — like [VoiceClipRowsSection] — is directly
+ * Compose-testable in isolation from [VoiceCard]'s enclosing `CardBase`/`SwipeableActionRow`,
+ * which this hub's Robolectric harness cannot render at all (see `VoiceCardClipListTest`'s class
+ * KDoc). This is what lets the real-bytes waveform-renderability proof (129-REVIEWS.md cycle-1
+ * MEDIUM) actually compose and settle under test, not merely compile.
+ */
+@Composable
+internal fun VoiceClipRow(clip: VoiceClipUiModel, modifier: Modifier = Modifier) {
+    var amplitudeBars by remember(clip.samplesPath) { mutableStateOf<List<Float>>(emptyList()) }
+    LaunchedEffect(clip.samplesPath) {
+        val bars = withContext(Dispatchers.IO) {
+            readAmplitudeBars(clip.samplesPath, CLIP_ROW_BAR_TARGET)
+        }
+        amplitudeBars = bars
+    }
+    Row(
+        modifier = modifier.testTag("voice_clip_row"),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "${clip.sortOrder + 1}",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.widthIn(min = 16.dp)
+        )
+        WaveformCanvas(
+            bars = amplitudeBars,
+            activeColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            inactiveColor = MaterialTheme.colorScheme.surfaceVariant,
+            modifier = Modifier
+                .weight(1f)
+                .height(24.dp)
+        )
+        Text(
+            text = formatDuration(clip.durationMs),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+/**
+ * The clip-list body content (Phase 129 DS-03 D-02): up to [CLIP_ROW_CAP] read-only
+ * [VoiceClipRow]s in the caller's exact list order, followed by a pluralized overflow line when
+ * [clips] exceeds the cap. Applies `take(CLIP_ROW_CAP)` **before** composing any row, so a decode
+ * is never started for a hidden clip — the real mitigation for T-129-06, not a cosmetic trim.
+ * Never sorts, filters or dedupes [clips].
+ *
+ * `internal` rather than `private` so it is directly Compose-testable in isolation from
+ * [VoiceCard]'s enclosing `CardBase`/`SwipeableActionRow`, which this hub's Robolectric harness
+ * cannot render at all (see `VoiceCardClipListTest`'s class KDoc).
+ */
+@Composable
+internal fun VoiceClipRowsSection(clips: List<VoiceClipUiModel>, modifier: Modifier = Modifier) {
+    val hiddenCount = (clips.size - CLIP_ROW_CAP).coerceAtLeast(0)
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        // take() runs before any row composes — no decode starts for a clip past the cap.
+        clips.take(CLIP_ROW_CAP).forEach { clip ->
+            VoiceClipRow(clip = clip, modifier = Modifier.fillMaxWidth())
+        }
+        if (hiddenCount > 0) {
+            Text(
+                text = voiceClipOverflowCopy(hiddenCount),
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                // Indented to align under the waveform column (index label width + row gap).
+                modifier = Modifier.padding(start = 24.dp)
+            )
+        }
+    }
+}
 
 // ---------------------------------------------------------------------------
 // VoiceCard composable
@@ -264,31 +430,12 @@ fun VoiceCard(
     // Load amplitude samples from .bin file on IO dispatcher
     var amplitudeBars by remember(samplesPath) { mutableStateOf<List<Float>>(emptyList()) }
     LaunchedEffect(samplesPath) {
-        if (samplesPath == null) return@LaunchedEffect
         // UIBUG-05 (D-07): compute downsample inside withContext(IO) and return the result;
         // assign `amplitudeBars` on the composition dispatcher (the line after withContext
         // resumes). This matches TextCard / ListCard convention — never write Compose state
         // from Dispatchers.IO.
         val bars = withContext(Dispatchers.IO) {
-            val file = File(samplesPath)
-            if (!file.exists()) return@withContext emptyList()
-            try {
-                DataInputStream(file.inputStream().buffered()).use { dis ->
-                    val count = dis.readInt()
-                    // Validate against the actual payload before allocating: the file is a
-                    // 4-byte count followed by `count` 4-byte floats. A corrupt/negative header
-                    // would otherwise pre-allocate a huge List and throw OutOfMemoryError, which
-                    // is an Error (not caught below). Cap to what the file can actually hold.
-                    val maxCount = ((file.length() - 4) / 4).coerceAtLeast(0).toInt()
-                    if (count < 0 || count > maxCount) {
-                        emptyList()
-                    } else {
-                        List(count) { dis.readFloat() }
-                    }
-                }
-            } catch (_: Exception) {
-                emptyList()
-            }.let { samples -> downsample(samples, 60) }
+            readAmplitudeBars(samplesPath, OVERVIEW_STRIP_BAR_TARGET)
         }
         amplitudeBars = bars  // composition dispatcher — safe Compose state write
     }
@@ -432,21 +579,35 @@ fun VoiceCard(
             }
         },
         bodyContent = {
-            // COMPACT WAVEFORM STRIP — 48.dp height, downsampled to ~60 bars
-            VoiceWaveformCanvas(
-                bars = amplitudeBars,
-                progressFraction = 1f,
-                activeColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                inactiveColor = MaterialTheme.colorScheme.surfaceVariant,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .padding(horizontal = Dimens.HorizontalPadding)
-            )
+            if (clips.isEmpty()) {
+                // COMPACT WAVEFORM STRIP — 48.dp height, downsampled to ~60 bars
+                VoiceWaveformCanvas(
+                    bars = amplitudeBars,
+                    progressFraction = 1f,
+                    activeColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                    inactiveColor = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .padding(horizontal = Dimens.HorizontalPadding)
+                )
+            } else {
+                // Clip-list rows (Phase 129 DS-03 D-02) replace the overview strip when clips is
+                // non-empty — the aggregate total already lives in the header pill.
+                VoiceClipRowsSection(
+                    clips = clips,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Dimens.HorizontalPadding)
+                )
+            }
 
             Spacer(modifier = Modifier.height(Dimens.ContentSpacing))
 
-            // DURATION + CATEGORY PATH row
+            // DURATION + CATEGORY PATH row — the standalone duration text only renders when
+            // clips is empty (the clip-count header pill already carries the total when clips is
+            // present); when it is dropped, Arrangement.End keeps a lone category path pinned to
+            // the trailing edge instead of jumping to the leading edge.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -454,14 +615,16 @@ fun VoiceCard(
                         horizontal = Dimens.HorizontalPadding,
                         vertical = Dimens.BottomPadding
                     ),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = if (clips.isEmpty()) Arrangement.SpaceBetween else Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = formatDuration(durationMs),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                if (clips.isEmpty()) {
+                    Text(
+                        text = formatDuration(durationMs),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
                 if (categoryPath != null) {
                     Text(
                         text = categoryPath,

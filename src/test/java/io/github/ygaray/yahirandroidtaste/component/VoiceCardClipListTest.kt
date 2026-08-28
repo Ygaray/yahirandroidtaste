@@ -5,15 +5,23 @@ import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import io.github.ygaray.yahirandroidtaste.model.VoiceClipUiModel
 import io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
@@ -160,6 +168,273 @@ class VoiceCardClipListTest {
         val src = source()
         assertEquals(1, countOccurrences(src, "contentDescription = \"Pinned\""))
         assertEquals(1, countOccurrences(src, "contentDescription = \"Favourite\""))
+    }
+
+    // --- Active pure-function assertions: voiceClipOverflowCopy ---
+
+    @Test
+    fun `voiceClipOverflowCopy renders the singular form when exactly one clip is hidden`() {
+        assertEquals("+1 more clip", voiceClipOverflowCopy(hiddenCount = 1))
+    }
+
+    @Test
+    fun `voiceClipOverflowCopy renders the plural form when more than one clip is hidden`() {
+        assertEquals("+48 more clips", voiceClipOverflowCopy(hiddenCount = 48))
+    }
+
+    // --- Active direct-render assertions on VoiceClipRow / VoiceClipRowsSection ---
+    //
+    // Unlike the full VoiceCard, these two composables do NOT go through CardBase's
+    // SwipeableActionRow — they were deliberately made `internal` (not `private`) specifically so
+    // this real-bytes waveform-renderability proof (129-REVIEWS.md cycle-1 MEDIUM) could compose
+    // and settle under this harness, not merely compile. Verified by direct probe: composing
+    // VoiceClipRowsSection alone (no CardBase in the tree) does not throw.
+
+    private fun rowNodes() = composeTestRule.onAllNodesWithTag("voice_clip_row")
+
+    @Test
+    fun `one clip renders exactly one row and no overflow line`() {
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme {
+                VoiceClipRowsSection(
+                    clips = listOf(VoiceClipUiModel(id = "c1", sortOrder = 0, durationMs = 80_000L))
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        rowNodes().assertCountEquals(1)
+        composeTestRule.onNodeWithText("1", substring = false).assertExists()
+        composeTestRule.onNodeWithText("1:20").assertExists()
+        composeTestRule.onNode(hasText("more clip", substring = true)).assertDoesNotExist()
+    }
+
+    @Test
+    fun `two clips render exactly two rows and no overflow line`() {
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme {
+                VoiceClipRowsSection(
+                    clips = listOf(
+                        VoiceClipUiModel(id = "c1", sortOrder = 0, durationMs = 10_000L),
+                        VoiceClipUiModel(id = "c2", sortOrder = 1, durationMs = 20_000L)
+                    )
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        rowNodes().assertCountEquals(2)
+        composeTestRule.onNode(hasText("more clip", substring = true)).assertDoesNotExist()
+    }
+
+    @Test
+    fun `three clips render exactly two rows plus a singular overflow line`() {
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme {
+                VoiceClipRowsSection(
+                    clips = listOf(
+                        VoiceClipUiModel(id = "c1", sortOrder = 0, durationMs = 10_000L),
+                        VoiceClipUiModel(id = "c2", sortOrder = 1, durationMs = 20_000L),
+                        VoiceClipUiModel(id = "c3", sortOrder = 2, durationMs = 30_000L)
+                    )
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        rowNodes().assertCountEquals(2)
+        composeTestRule.onNodeWithText("+1 more clip").assertExists()
+    }
+
+    @Test
+    fun `fifty clips still render exactly two rows plus a plural overflow line for the remainder`() {
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme {
+                VoiceClipRowsSection(
+                    clips = List(50) { i -> VoiceClipUiModel(id = "c$i", sortOrder = i, durationMs = 5_000L) }
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        rowNodes().assertCountEquals(2)
+        composeTestRule.onNodeWithText("+48 more clips").assertExists()
+    }
+
+    @Test
+    fun `a clip with a null samplesPath still renders its own row with no exception`() {
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme {
+                VoiceClipRowsSection(
+                    clips = listOf(VoiceClipUiModel(id = "c1", sortOrder = 0, durationMs = 10_000L, samplesPath = null))
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        rowNodes().assertCountEquals(1)
+        composeTestRule.onNodeWithText("0:10").assertExists()
+    }
+
+    @Test
+    fun `a clip whose samplesPath points at a nonexistent file still renders with no exception`() {
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme {
+                VoiceClipRowsSection(
+                    clips = listOf(
+                        VoiceClipUiModel(
+                            id = "c1",
+                            sortOrder = 0,
+                            durationMs = 10_000L,
+                            samplesPath = "/tmp/does-not-exist-${System.nanoTime()}.bin"
+                        )
+                    )
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        rowNodes().assertCountEquals(1)
+        composeTestRule.onNodeWithText("0:10").assertExists()
+    }
+
+    @Test
+    fun `a clip pointing at a real well-formed bin file renders without exception`() {
+        // Real generated bytes through the identical production decode path — the closure of
+        // 129-REVIEWS.md cycle-1 MEDIUM: the shared WaveformCanvas actually receives non-empty
+        // bars for this row (proven directly against readAmplitudeBars in
+        // AmplitudeBarsDecodeTest; the paint itself is not semantics-queryable, which is exactly
+        // why the decode is asserted separately there).
+        val samplesFile = writeAmplitudeSamplesFile(List(120) { i -> (i % 10) / 10f })
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme {
+                VoiceClipRowsSection(
+                    clips = listOf(
+                        VoiceClipUiModel(
+                            id = "c1",
+                            sortOrder = 0,
+                            durationMs = 10_000L,
+                            samplesPath = samplesFile.absolutePath
+                        )
+                    )
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        rowNodes().assertCountEquals(1)
+        composeTestRule.onNodeWithText("0:10").assertExists()
+    }
+
+    @Test
+    fun `two clips with identical durations and sort orders still render as two distinct rows`() {
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme {
+                VoiceClipRowsSection(
+                    clips = listOf(
+                        VoiceClipUiModel(id = "c1", sortOrder = 0, durationMs = 10_000L),
+                        VoiceClipUiModel(id = "c2", sortOrder = 0, durationMs = 10_000L)
+                    )
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        rowNodes().assertCountEquals(2)
+    }
+
+    @Test
+    fun `no node in the clip-row subtree exposes a click or long-click semantics action`() {
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme {
+                VoiceClipRowsSection(
+                    clips = listOf(
+                        VoiceClipUiModel(id = "c1", sortOrder = 0, durationMs = 10_000L),
+                        VoiceClipUiModel(id = "c2", sortOrder = 1, durationMs = 20_000L),
+                        VoiceClipUiModel(id = "c3", sortOrder = 2, durationMs = 30_000L)
+                    )
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        assertNoClickActionsInSubtree(composeTestRule.onRoot().fetchSemanticsNode())
+    }
+
+    private fun assertNoClickActionsInSubtree(node: SemanticsNode) {
+        assertNull(
+            "Node (tags=${node.config.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.TestTag)}) " +
+                "must not expose an OnClick semantics action",
+            node.config.getOrNull(SemanticsActions.OnClick)
+        )
+        assertNull(
+            "Node (tags=${node.config.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.TestTag)}) " +
+                "must not expose an OnLongClick semantics action",
+            node.config.getOrNull(SemanticsActions.OnLongClick)
+        )
+        node.children.forEach { assertNoClickActionsInSubtree(it) }
+    }
+
+    // --- Active region-scoped source guard (backs up the semantics assertion above) ---
+
+    @Test
+    fun `the VoiceClipRow function body contains no gesture-modifier token`() {
+        val src = source()
+        assertTrue("Source read must be non-empty for the region scan to be meaningful", src.isNotEmpty())
+
+        val startMarker = "internal fun VoiceClipRow("
+        val startIndex = src.indexOf(startMarker)
+        assertTrue("VoiceClipRow declaration must be found in VoiceCard.kt", startIndex >= 0)
+
+        // Walk braces character-by-character from the function's opening brace to find its exact
+        // closing brace — a naive line-based/first-match scan would be ambiguous in a file this
+        // size (129-01's precedent: CardBaseTest's brace-depth-aware idiom).
+        val bodyStart = src.indexOf('{', startIndex)
+        assertTrue(bodyStart >= 0)
+        var depth = 0
+        var bodyEnd = -1
+        for (i in bodyStart until src.length) {
+            when (src[i]) {
+                '{' -> depth++
+                '}' -> {
+                    depth--
+                    if (depth == 0) {
+                        bodyEnd = i
+                        break
+                    }
+                }
+            }
+        }
+        assertTrue("VoiceClipRow's closing brace must be found", bodyEnd > bodyStart)
+
+        val functionBody = src.substring(bodyStart, bodyEnd + 1)
+        for (gestureToken in listOf("clickable(", "combinedClickable(", "pointerInput(", "detectTapGestures")) {
+            assertTrue(
+                "VoiceClipRow's body must not contain the gesture-modifier token '$gestureToken'",
+                !functionBody.contains(gestureToken)
+            )
+        }
+    }
+
+    // --- Active source-structural assertions: the cap is applied before any row composes ---
+
+    @Test
+    fun `clips are capped via take before any row is composed, and the total is never re-sorted or filtered`() {
+        val src = source()
+        assertEquals(
+            "VoiceClipRowsSection must apply clips.take(CLIP_ROW_CAP) before composing any row",
+            1,
+            countOccurrences(src, "clips.take(CLIP_ROW_CAP)")
+        )
+        assertEquals(
+            "CLIP_ROW_CAP must appear in its declaration, the take() call, and the overflow-count arithmetic",
+            true,
+            countOccurrences(src, "CLIP_ROW_CAP") >= 3
+        )
+        assertEquals(0, countOccurrences(src, ".sortedBy("))
+        assertEquals(0, countOccurrences(src, ".sortedWith("))
+        assertEquals(0, countOccurrences(src, ".filter("))
+        assertEquals(0, countOccurrences(src, ".distinct"))
     }
 
     // --- Shared fixture for the rendered-proof (quarantined) cases below ---
