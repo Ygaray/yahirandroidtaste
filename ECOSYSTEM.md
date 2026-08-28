@@ -30,7 +30,7 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.8.2`** (repinned, resolve-confirmed + suite-green) — at parity with latest, per **SB v2.1 Phase 132's gap-closure cycle** (SC2/IN-01 pale-accent pill-contrast fix; Gate-1 device re-verification pending) | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.10.0`** (repinned, resolve-confirmed + suite-green; Gate-1 device verification pending) — landed in **SB v2.1 Phase 135 Plan 03** (`MIND-10`, D-02, six-tier Heat ramp). This row was **stranded at `v1.8.2` through two cycles**: SB v2.1 Phases 132 and 133 each repinned (to `v1.9.0`) and cut a further tag without running this reconcile, so this edit closes `v1.8.2 → v1.9.0 → v1.10.0` in one step — recording the skipped-cycle gap rather than silently overwriting it | `gradle/libs.versions.toml` |
   | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.5.0`** (repinned + Gate-1-confirmed, Phase 48 / REL-01) — the hub's Phase-44 additive-growth tag CalTracker was authorized to consume (hub's own latest tag has since moved to `v1.6.0` via an unrelated concurrent SecondBrain session — not a v1.7 CalTracker task) | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
@@ -65,9 +65,10 @@ gain `accent`/`tactileDepth` pass-through, a leading `CardTypeChip`, and `Tactil
 titles (`FACE-01`), plus `ListCard`'s "N / M" completion pill and progress bar (`FACE-02`)) — see
 the `v1.8.0`, `v1.8.1`, `v1.8.2`, `v1.9.0`, and `v1.10.0` release records below for the full
 evidence.
-**SecondBrain pins `v1.8.2`** in this table's cached row (stale — the actual pin per
-`133-01-SUMMARY.md`/`133-02-SUMMARY.md` is `v1.9.0`, a pre-existing drift this plan does not fix);
-the `v1.10.0` repin is **pending** at write time and lands in **SecondBrain Phase 135 Plan 03**;
+**SecondBrain pins `v1.10.0`**, landed in **SecondBrain Phase 135 Plan 03** (resolve-confirmed +
+suite-green; Gate-1 device verification pending) — this table's cached row was stranded at
+`v1.8.2` through two skipped-reconcile cycles (the actual pin moved `v1.8.2 → v1.9.0` across SB
+Phases 132/133 with no registry update either time) and is now reconciled in one step by Plan 03;
 **CalTracker pins
 `v1.5.0`** (repinned
 Phase 48, REL-01) — the hub's own additive-growth tag it was authorized to consume (the hub's own
