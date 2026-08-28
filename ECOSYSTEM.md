@@ -37,16 +37,18 @@ independent apps that consume it:
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
   No "Deploy host" column — Android apps are installed on devices, not daemon-deployed.)_
 
-**Current published tag:** **`v1.8.0`** — cut in **SecondBrain v2.1 Phase 132 Plan 02**, an
-autonomous minor bump on top of the hub's own **Phase 132 Plan 01** ("Text & List Card Faces,
-Tactile") work: `TextCard`/`ListCard` gain `accent`/`tactileDepth` pass-through, a leading
-`CardTypeChip`, and `TactileType.CardTitle` titles (`FACE-01`), plus `ListCard`'s "N / M"
-completion pill and progress bar (`FACE-02`) — see the `v1.8.0` release record below for the full
-evidence. **SecondBrain pins `v1.7.0`** — not yet at parity with latest; the repin to `v1.8.0` is
-**pending**, lands in **SecondBrain Phase 132 Plan 03 (FACE-01/FACE-02)**; **CalTracker pins
-`v1.5.0`** (repinned Phase 48, REL-01) — the hub's own additive-growth tag it was authorized to
-consume (the hub's own latest tag has since moved to `v1.8.0` via an unrelated SecondBrain
-session, not a CalTracker task; a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
+**Current published tag:** **`v1.8.1`** — a patch cut in **SecondBrain v2.1 Phase 132's code-review
+fix cycle** (WR-01: `ListCompletionPill` leading-gap spacing fix) directly on top of `v1.8.0`
+(itself cut in **SecondBrain v2.1 Phase 132 Plan 02**, an autonomous minor bump on top of the hub's
+own **Phase 132 Plan 01** ("Text & List Card Faces, Tactile") work: `TextCard`/`ListCard` gain
+`accent`/`tactileDepth` pass-through, a leading `CardTypeChip`, and `TactileType.CardTitle` titles
+(`FACE-01`), plus `ListCard`'s "N / M" completion pill and progress bar (`FACE-02`)) — see the
+`v1.8.0` and `v1.8.1` release records below for the full evidence. **SecondBrain pins `v1.7.0`** —
+not yet at parity with latest; the repin to `v1.8.1` is **pending**, lands in **SecondBrain Phase
+132 Plan 03 (FACE-01/FACE-02) + its code-review fix cycle**; **CalTracker pins `v1.5.0`** (repinned
+Phase 48, REL-01) — the hub's own additive-growth tag it was authorized to consume (the hub's own
+latest tag has since moved to `v1.8.1` via an unrelated SecondBrain session, not a CalTracker task;
+a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
 SM-S908U (Gate-1 all_pass: cold-start Hilt-across-AAR resolution, live undo + ExplorerActivity,
@@ -239,6 +241,18 @@ renamed, no parameter made required — as proven by the `apiCheck` lane passing
 parameter removal was on a private function, `ListCardFooterContent`, invisible to `api.txt`). The
 first consumer repin (SecondBrain) is **pending** at write time and lands in **SB v2.1 Phase 132
 Plan 03**.
+
+`v1.8.1` was cut directly on top of `v1.8.0` (hub commit `61333b9`) as a **patch** fixing
+`132-REVIEW.md` finding **WR-01** — the tag-cut checkpoint remains waived per the same standing
+personal-app waiver used for `v1.8.0`. The fix is a single-line `Modifier.padding` change: the
+`ListCompletionPill` call inside `ListCardHeaderContent` gains a leading
+`Dimens.ContentSpacing` gap (in addition to its existing trailing `Dimens.HorizontalPadding`) so it
+no longer sits flush against the preceding Favorite icon on a pinned + favorited + non-empty
+CHECKBOX list card. No public composable signature changed — `apiCheck` passed with an empty diff
+against `v1.8.0`. Green-gate evidence: `testDebugUnitTest`, `detekt` (baseline unchanged),
+`apiCheck`, and `compileDebugKotlin` all re-run green on the exact commit being tagged. `v1.8.0`'s
+`IN-01` sibling finding (pale-accent pill-foreground contrast) required no code change per the
+review and is untouched.
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
