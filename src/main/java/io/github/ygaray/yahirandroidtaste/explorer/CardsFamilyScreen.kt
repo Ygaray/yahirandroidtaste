@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,10 +24,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.component.ACCENT_COLORS
 import io.github.ygaray.yahirandroidtaste.component.AdaptiveMediaPreview
 import io.github.ygaray.yahirandroidtaste.component.AlbumCard
+import io.github.ygaray.yahirandroidtaste.component.CardBase
 import io.github.ygaray.yahirandroidtaste.component.CardQuickView
 import io.github.ygaray.yahirandroidtaste.component.CardTagRow
+import io.github.ygaray.yahirandroidtaste.component.CardTypeChip
 import io.github.ygaray.yahirandroidtaste.component.CountBadge
 import io.github.ygaray.yahirandroidtaste.component.ListCard
 import io.github.ygaray.yahirandroidtaste.component.TagListItem
@@ -35,6 +39,8 @@ import io.github.ygaray.yahirandroidtaste.component.VoiceCard
 import io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
 import io.github.ygaray.yahirandroidtaste.model.TagManagementUiModel
+import io.github.ygaray.yahirandroidtaste.theme.Dimens
+import io.github.ygaray.yahirandroidtaste.theme.TactileType
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
@@ -468,6 +474,98 @@ private val TagListItemFixtureHomeTag = TagManagementUiModel(
 @Composable
 private fun TagListItemDefaultPreview() {
     TagListItem(tag = TagListItemFixturePlainTag, onClick = {})
+}
+
+// --- CardBase depth-card fixture (Phase 129 DS-02, Tasks 1-2) -----------------------------
+// Proves the new CardBase(accent, tactileDepth) params and the CardTypeChip + TactileType.
+// CardTitle pairing render end to end. Not yet registered in cardsFamilyEntries — task 3 wires
+// these into CardBaseVariants()/CardTypeChipVariants() and the registry.
+
+@Composable
+private fun CardBaseContent(
+    tactileDepth: Boolean = false,
+    accent: Color? = null,
+    showChipHeader: Boolean = false
+) {
+    val openRowState = remember { mutableStateOf<AnchoredDraggableState<SwipeAnchor>?>(null) }
+    CardBase(
+        openRowState = openRowState,
+        tactileDepth = tactileDepth,
+        accent = accent,
+        headerContent = {
+            if (showChipHeader) {
+                CardTypeChip(
+                    accent = accent,
+                    modifier = Modifier.padding(start = Dimens.HorizontalPadding, top = Dimens.TopPadding)
+                ) {
+                    Icon(imageVector = Icons.Default.Mic, contentDescription = "Voice")
+                }
+                Text(
+                    text = ExplorerFakeData.SHORT_TITLE,
+                    style = TactileType.CardTitle,
+                    modifier = Modifier.padding(
+                        start = Dimens.ContentSpacing,
+                        top = Dimens.TopPadding,
+                        bottom = Dimens.ContentSpacing
+                    )
+                )
+            } else {
+                Text(
+                    text = ExplorerFakeData.SHORT_TITLE,
+                    modifier = Modifier.padding(
+                        start = Dimens.HorizontalPadding,
+                        top = Dimens.TopPadding,
+                        bottom = Dimens.ContentSpacing
+                    )
+                )
+            }
+        },
+        bodyContent = {
+            Text(
+                text = ExplorerFakeData.NOTE_BODY,
+                modifier = Modifier.padding(horizontal = Dimens.HorizontalPadding)
+            )
+        },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+}
+
+// Suppressed pending Task 3 (same plan, 129-01-PLAN.md), which wires this into
+// cardsFamilyEntries' new CardBase Entry (content = { CardBaseVariants() }, itself calling
+// this) — genuinely unreachable until that registration lands, not a permanent debt. Task 3
+// removes this suppression once the registry wiring makes it reachable.
+@Suppress("UnusedPrivateMember")
+@Composable
+private fun CardBaseSection(
+    label: String,
+    tactileDepth: Boolean = false,
+    accent: Color? = null,
+    showChipHeader: Boolean = false
+) {
+    SectionLabel(label)
+    CardBaseContent(tactileDepth = tactileDepth, accent = accent, showChipHeader = showChipHeader)
+}
+
+// --- CardTypeChip fixture (Phase 129 DS-02 Task 2) -----------------------------------------
+
+@Composable
+private fun CardTypeChipPreview(accent: Color?) {
+    CardTypeChip(accent = accent) {
+        Icon(imageVector = Icons.Default.Mic, contentDescription = "Voice")
+    }
+}
+
+// Suppressed pending Task 3 (same plan), which wires this into cardsFamilyEntries' new
+// CardTypeChip Entry (content = { CardTypeChipVariants() }) — genuinely unreachable until that
+// registration lands, not a permanent debt. Task 3 removes this suppression once wired.
+@Suppress("UnusedPrivateMember")
+@Composable
+private fun CardTypeChipVariants() {
+    SectionLabel("CardTypeChip — accent")
+    CardTypeChipPreview(accent = Color(ACCENT_COLORS[7].light))
+    DividerRow()
+    SectionLabel("CardTypeChip — neutral (null accent)")
+    CardTypeChipPreview(accent = null)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

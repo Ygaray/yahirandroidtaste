@@ -93,6 +93,10 @@ package io.github.ygaray.yahirandroidtaste.component {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void CardTagRow(java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> tags, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTagClick, kotlin.jvm.functions.Function0<kotlin.Unit> onSiblingsClick, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagEdit, optional kotlin.jvm.functions.Function2<java.lang.String,java.lang.String,kotlin.Unit>? onTagDelete, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagRemoveFromCard);
   }
 
+  public final class CardTypeChipKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void CardTypeChip(androidx.compose.ui.graphics.Color? accent, optional androidx.compose.ui.Modifier modifier, kotlin.jvm.functions.Function0<kotlin.Unit> icon);
+  }
+
   public final class ChipBarKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static <T> void ChipBar(java.util.List<T> items, kotlin.jvm.functions.Function1<T,java.lang.Object> key, kotlin.jvm.functions.Function1<T,kotlin.Unit> itemContent, optional androidx.compose.ui.Modifier modifier, optional String testTag, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingContent, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingContent);
   }
@@ -1055,10 +1059,12 @@ package io.github.ygaray.yahirandroidtaste.theme {
   }
 
   public final class TactileType {
+    method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getCardTitle();
     method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getDisplayLarge();
     method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getDisplayMedium();
     method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getDisplaySmall();
     method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getDisplayXSmall();
+    property public androidx.compose.ui.text.TextStyle CardTitle;
     property public androidx.compose.ui.text.TextStyle DisplayLarge;
     property public androidx.compose.ui.text.TextStyle DisplayMedium;
     property public androidx.compose.ui.text.TextStyle DisplaySmall;

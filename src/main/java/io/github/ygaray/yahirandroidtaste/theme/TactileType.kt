@@ -106,4 +106,22 @@ object TactileType {
         lineHeight = 24.sp,
         letterSpacing = 0.15.sp
     )
+
+    /**
+     * Tactile card-face title tier (Phase 129 DS-02) — an ADDITIVE FIFTH tier, appended after
+     * [DisplayXSmall] without disturbing the existing four. Canvas-derived
+     * (`.planning/design/v2.1-card-faces/VoiceFace.dc.html`'s title `div`: `font-weight: 600;
+     * font-size: 19px; letter-spacing: 0.1px`), snapped to 18sp per 129-UI-SPEC.md's Spacing
+     * Scale (19px -> 18sp for design-system token conformance, mirroring the same snap already
+     * applied to [io.github.ygaray.yahirandroidtaste.theme.Dimens.Icons.ChipIcon]). 34sp/40sp
+     * lineHeight ratio pattern is not reused here; lineHeight is a distinct canvas-adjacent 24sp
+     * chosen for card-row density, matching [DisplayXSmall]'s own lineHeight.
+     */
+    val CardTitle: TextStyle = TextStyle(
+        fontFamily = SpaceGroteskFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 18.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.1.sp
+    )
 }
