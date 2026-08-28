@@ -30,24 +30,28 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.7.0`** (repinned, resolve-confirmed + suite-green — Gate-1 device verification pending in-phase) — at parity with latest, per **SB v2.1 Phase 130 (REPIN-07)** (Tactile Card-Face Foundation consumption) | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.8.2`** (repinned, resolve-confirmed + suite-green) — at parity with latest, per **SB v2.1 Phase 132's gap-closure cycle** (SC2/IN-01 pale-accent pill-contrast fix; Gate-1 device re-verification pending) | `gradle/libs.versions.toml` |
   | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.5.0`** (repinned + Gate-1-confirmed, Phase 48 / REL-01) — the hub's Phase-44 additive-growth tag CalTracker was authorized to consume (hub's own latest tag has since moved to `v1.6.0` via an unrelated concurrent SecondBrain session — not a v1.7 CalTracker task) | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
   No "Deploy host" column — Android apps are installed on devices, not daemon-deployed.)_
 
-**Current published tag:** **`v1.8.1`** — a patch cut in **SecondBrain v2.1 Phase 132's code-review
-fix cycle** (WR-01: `ListCompletionPill` leading-gap spacing fix) directly on top of `v1.8.0`
+**Current published tag:** **`v1.8.2`** — a patch cut in **SecondBrain v2.1 Phase 132's Gate-1
+gap-closure cycle** (SC2/IN-01: `ListCompletionPill`'s foreground now resolves via
+`contrastingForeground(backgroundColor)` instead of the raw accent, fixing a genuine on-device
+pale-accent text-legibility defect Gate-1 measured at ~1.01:1 WCAG contrast) directly on top of
+`v1.8.1` (itself a patch fixing WR-01's leading-gap spacing) and `v1.8.0`
 (itself cut in **SecondBrain v2.1 Phase 132 Plan 02**, an autonomous minor bump on top of the hub's
 own **Phase 132 Plan 01** ("Text & List Card Faces, Tactile") work: `TextCard`/`ListCard` gain
 `accent`/`tactileDepth` pass-through, a leading `CardTypeChip`, and `TactileType.CardTitle` titles
 (`FACE-01`), plus `ListCard`'s "N / M" completion pill and progress bar (`FACE-02`)) — see the
-`v1.8.0` and `v1.8.1` release records below for the full evidence. **SecondBrain pins `v1.7.0`** —
-not yet at parity with latest; the repin to `v1.8.1` is **pending**, lands in **SecondBrain Phase
-132 Plan 03 (FACE-01/FACE-02) + its code-review fix cycle**; **CalTracker pins `v1.5.0`** (repinned
+`v1.8.0`, `v1.8.1`, and `v1.8.2` release records below for the full evidence. **SecondBrain pins
+`v1.8.2`** — at parity with latest, repinned in **SecondBrain Phase 132's gap-closure cycle**
+(Gate-1 device re-verification of SC2 pending, a separate follow-up gate); **CalTracker pins
+`v1.5.0`** (repinned
 Phase 48, REL-01) — the hub's own additive-growth tag it was authorized to consume (the hub's own
-latest tag has since moved to `v1.8.1` via an unrelated SecondBrain session, not a CalTracker task;
+latest tag has since moved to `v1.8.2` via an unrelated SecondBrain session, not a CalTracker task;
 a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
@@ -253,6 +257,25 @@ against `v1.8.0`. Green-gate evidence: `testDebugUnitTest`, `detekt` (baseline u
 `apiCheck`, and `compileDebugKotlin` all re-run green on the exact commit being tagged. `v1.8.0`'s
 `IN-01` sibling finding (pale-accent pill-foreground contrast) required no code change per the
 review and is untouched.
+
+`v1.8.2` was cut directly on top of `v1.8.1` (hub commit `edfedc0`) as a **patch** resolving
+**SC2/IN-01** — the same finding `v1.8.1`'s paragraph above notes as "no code change required,"
+now superseded by **Gate-1 on-device evidence** (`132-01-SELF-UAT.md`): a genuinely pale seeded
+accent (`0xFFFFF9C4`) measured the prior full-accent-strength `ListCompletionPill` foreground at a
+WCAG contrast ratio of ~1.01:1 against its own `accentTint` background — effectively illegible, not
+a theoretical risk. The fix changes `ListCompletionPill`'s foreground to
+`contrastingForeground(backgroundColor)` (computing Black/White contrast against the pill's own
+actual rendered background) instead of the raw `accent` value, guaranteeing legible text against
+any accent lightness. The null/untagged branch (`colorScheme.onSurfaceVariant`) is untouched.
+`CardTypeChip`'s own full-accent-strength icon foreground is a separate, still-accepted deviation
+(icons are less contrast-sensitive than a 3-character numeric string) and was not touched. No
+public composable signature changed — `apiCheck` passed with an empty diff against `v1.8.1` (the
+change is entirely inside a `private` composable). Green-gate evidence: `testDebugUnitTest`
+(19/19, including a new source-structural assertion pinning the `contrastingForeground(...)`
+formula and forbidding regression to the old `foregroundColor = accent ?: ...` formula), `detekt`
+(baseline unchanged, 0 code smells), `apiCheck`, and `compileDebugKotlin` all re-run green on the
+exact commit being tagged. The tag-cut checkpoint remains waived per the same standing
+personal-app waiver used for `v1.8.0`/`v1.8.1`.
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
