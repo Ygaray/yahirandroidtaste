@@ -86,8 +86,9 @@ fun relatednessVisual(jaccard: Float, colorScheme: ColorScheme): RelatednessVisu
 }
 
 /**
- * The four discrete relatedness-heat tiers a normalized Jaccard score buckets into for mindmap
- * nodes and edges (Phase 123 DS-01, D-03). Wholly independent from [RelatednessTier] above — a
+ * The six discrete relatedness-heat tiers a normalized Jaccard score buckets into for mindmap
+ * nodes and edges (Phase 123 DS-01, D-03; widened 4→6 in Phase 135 MIND-10/D-02, per
+ * `135-UI-SPEC.md` § "Heat Tier Contract"). Wholly independent from [RelatednessTier] above — a
  * separate type deliberately not shared with the chip-facing Jaccard ramp, because the two serve
  * different consumer archetypes (mindmap nodes/edges here vs. [AppChip]'s chip bars there). Two
  * independent siblings is the locked decision; a `mode` parameter threaded through the existing
@@ -110,22 +111,27 @@ data class HeatVisual(
 )
 
 /**
- * Buckets a normalized Jaccard relatedness score into one of four [HeatTier] values for the
- * mindmap's node/edge heat ramp (Phase 123 DS-01, `123-UI-SPEC.md` § "Primitive Family 4"). A
- * wholly independent copy of [relatednessTier]'s guard shape above — never a shared helper — so a
- * future Heat-only retune can change these cut points without touching the Jaccard ramp.
+ * Buckets a normalized Jaccard relatedness score into one of six [HeatTier] values for the
+ * mindmap's node/edge heat ramp (Phase 123 DS-01; widened 4→6 in Phase 135 MIND-10/D-02, per
+ * `135-UI-SPEC.md` § "Heat Tier Contract"). A wholly independent copy of [relatednessTier]'s
+ * guard shape above — never a shared helper — so a future Heat-only retune can change these cut
+ * points without touching the Jaccard ramp.
  *
  * The input is clamped to `[0f, 1f]` first, so an out-of-range value is never thrown, only
  * coerced. `Float.NaN` is explicitly mapped to [HeatTier.COOL] (the "no signal" tier) — IEEE-754
  * NaN comparisons are always `false`, so `NaN.coerceIn(...)` alone would NOT clamp it — the
  * identical guard discipline [relatednessTier] documents above.
  *
- * Cut points (0.12 / 0.35 / 0.65) intentionally match the Jaccard ramp's own cut points for
- * cross-ramp consistency (both ramps bucket the same underlying jaccard distribution), while
- * remaining an independent copy a future Heat-only retune can change on its own.
+ * Cut points (0.08 / 0.18 / 0.30 / 0.45 / 0.65) deliberately DIVERGE from the Jaccard ramp's own
+ * cut points as of Phase 135 — the two ramps no longer coincide. The top cut point (0.65) is the
+ * one exception, unchanged from the pre-Phase-135 four-tier HOT boundary so the prior "strongly
+ * related" semantic threshold stays semantically identical; every cut point below it is
+ * deliberately skewed low (finer bands where real on-device jaccard distributions are expected to
+ * cluster, per `135-UI-SPEC.md` D-04).
  *
- * ⚠ ASSUMED — the cut points and per-tier colors ([heatVisual]) are flagged `ASSUMED` in
- * `123-UI-SPEC.md`, pending a design-canvas cross-check before the Phase 123 tag cut (Plan 05).
+ * Design-verified: the cut points and per-tier colors ([heatVisual]) are pinned by
+ * `135-UI-SPEC.md` § "Heat Tier Contract", checker-approved (`gsd-ui-checker`, 2026-08-28, 0
+ * blocking issues) — no longer pending a design-canvas cross-check.
  */
 fun heatTier(jaccard: Float): HeatTier {
     val j = if (jaccard.isNaN()) 0f else jaccard.coerceIn(0f, 1f)
@@ -141,18 +147,19 @@ fun heatTier(jaccard: Float): HeatTier {
 
 /**
  * Maps a normalized Jaccard relatedness score to the shared Heat visual encoding for mindmap
- * nodes/edges (Phase 123 DS-01, `123-UI-SPEC.md` § "Primitive Family 4"). Dispatches on
- * [heatTier] so the cut points stay single-sourced, exactly as [relatednessVisual] dispatches on
- * [relatednessTier] above. `colorScheme` is read live by the caller so the result is correct under
- * both static and Material You dynamic color.
+ * nodes/edges (Phase 123 DS-01; widened 4→6 in Phase 135 MIND-10/D-02, per `135-UI-SPEC.md` §
+ * "Heat Tier Contract"). Dispatches on [heatTier] so the cut points stay single-sourced, exactly
+ * as [relatednessVisual] dispatches on [relatednessTier] above. `colorScheme` is read live by the
+ * caller so the result is correct under both static and Material You dynamic color.
  *
  * Per-tier node fill / edge stroke width / node radius are pinned verbatim by
- * `123-UI-SPEC.md`'s Heat table.
+ * `135-UI-SPEC.md`'s Heat Tier Contract table.
  *
- * Dark-theme edge color derivation (Claude's Discretion, flagged for design-canvas cross-check):
- * `123-UI-SPEC.md`'s table pins no dark-theme edge column. Resolved as each tier's LIGHT node-fill
- * hex — one step brighter than its dark node fill, preserving the same "edge is a paler echo of
- * the node" relation the light table expresses. Theme is resolved via
+ * Dark-theme edge color derivation: each tier's dark edge resolves to that SAME tier's LIGHT
+ * node-fill hex — one step brighter than its own dark node fill, preserving the same "edge is a
+ * paler echo of the node" relation the light table expresses. This rule is unchanged since Phase
+ * 123 and carries forward unmodified for all six tiers (design-verified by `135-UI-SPEC.md`, no
+ * new dark-edge hex needed pinning). Theme is resolved via
  * `colorScheme.surface.luminance() < 0.5f`, the same W3C relative-luminance discipline
  * [contrastingForeground] uses.
  */

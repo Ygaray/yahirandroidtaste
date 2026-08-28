@@ -164,10 +164,10 @@ private fun GradientSwatchVariants() {
     }
 }
 
-/** Heat Relatedness Ramp — 4 tiers plus the distinct hub node, rendered live via [HeatSwatch]. */
+/** Heat Relatedness Ramp — 6 tiers plus the distinct hub node, rendered live via [HeatSwatch]. */
 @Composable
 private fun HeatSwatchVariants() {
-    SectionLabel("Heat Relatedness Ramp — 4 tiers plus the distinct hub node")
+    SectionLabel("Heat Relatedness Ramp — 6 tiers plus the distinct hub node")
     HeatSwatch()
 }
 

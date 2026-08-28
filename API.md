@@ -154,7 +154,7 @@ sibling.
 | `ElevationLadder` | Renders all six `Dimens.Elevation` levels (Level0–Level5) as real-shadow bands for a light/dark depth-scale comparison | `modifier: Modifier = Modifier` |
 | `TactileTypeShowcase` | Renders all four `TactileType` display tiers (real Space Grotesk weights) with a long-sample clipping check and a same-text `FontFamily.Default` comparison row | `modifier: Modifier = Modifier` |
 | `GradientSwatch` | Renders `accentGradient`'s hero band and `accentTint`'s flat card fill side by side for one caller-supplied accent | `accentColor: Color, modifier: Modifier = Modifier` |
-| `HeatSwatch` | Renders all four Heat tiers as sized/colored/stroked mindmap-node samples connected by edges, plus one distinct-hub-ring example | `modifier: Modifier = Modifier` |
+| `HeatSwatch` | Renders all six Heat tiers as sized/colored/stroked mindmap-node samples connected by edges (horizontally scrollable), plus one distinct-hub-ring example | `modifier: Modifier = Modifier` |
 
 **Non-composable primitives (also part of the public surface, called directly rather than
 rendered):**
