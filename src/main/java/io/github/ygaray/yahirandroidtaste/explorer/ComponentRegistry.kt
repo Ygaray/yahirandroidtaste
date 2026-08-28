@@ -95,8 +95,10 @@ object ComponentRegistry {
      */
     val INTENTIONALLY_UNREGISTERED: Map<String, String> = mapOf(
         "WaveformCanvas" to
-            "Sub-part rendered inside RecordingBottomSheetContent/VoiceCard's private wrapper " +
-            "(VoiceWaveformCanvas) — already exercised indirectly.",
+            "Sub-part rendered inside RecordingBottomSheetContent, and called directly by " +
+            "VoiceCard's clip mini-rows (Phase 129 DS-03 D-02, VoiceClipRow) — VoiceCard's " +
+            "own overview strip still uses its separate private wrapper (VoiceWaveformCanvas). " +
+            "No standalone showcase tile; already exercised indirectly through those callers.",
         "SwipeableActionRow" to
             "Swipe-reveal mechanics powering CardBase and EditorItemRow — infrastructure, not " +
             "an independent visual archetype; already exercised indirectly via every card " +

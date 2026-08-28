@@ -1,5 +1,6 @@
 package io.github.ygaray.yahirandroidtaste.explorer
 
+import android.content.Context
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,10 +20,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.ACCENT_COLORS
 import io.github.ygaray.yahirandroidtaste.component.AdaptiveMediaPreview
@@ -39,10 +44,15 @@ import io.github.ygaray.yahirandroidtaste.component.VoiceCard
 import io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
 import io.github.ygaray.yahirandroidtaste.model.TagManagementUiModel
+import io.github.ygaray.yahirandroidtaste.model.VoiceClipUiModel
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import io.github.ygaray.yahirandroidtaste.theme.TactileType
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.DataOutputStream
+import java.io.File
 
 /**
  * D-05: this family's slice of [ComponentRegistry.entries], declared here (not in
@@ -339,6 +349,33 @@ private fun AlbumCardVariants() {
     )
 }
 
+/**
+ * Writes a generated `.bin` amplitude-samples demo file into [context]'s cacheDir (Phase 129
+ * DS-03 D-02, 129-REVIEWS.md cycle-1 MEDIUM) — a deterministic decaying-sine synthetic envelope,
+ * so the Explorer gallery's clip-list states show one genuinely painted waveform (via the shared
+ * `WaveformCanvas`, through the exact same [io.github.ygaray.yahirandroidtaste.component.VoiceClipRow]
+ * decode path a real caller would use) alongside the deliberate blank-track null-`samplesPath`
+ * state. Same layout `readAmplitudeBars` consumes: a 4-byte count followed by that many 4-byte
+ * floats. Written only when absent — no binary asset is committed; generating the bytes exercises
+ * the identical production decode path and keeps the repo binary-free.
+ */
+private fun writeVoiceClipDemoSamplesFile(context: Context): String {
+    val file = File(context.cacheDir, "voice_card_explorer_demo_samples.bin")
+    if (!file.exists()) {
+        val sampleCount = 120
+        val values = FloatArray(sampleCount) { i ->
+            val decay = 1f - (i / sampleCount.toFloat())
+            val envelope = (kotlin.math.sin(i * 0.35) + 1.0).toFloat() / 2f
+            (decay * envelope).coerceIn(0f, 1f)
+        }
+        DataOutputStream(file.outputStream().buffered()).use { dos ->
+            dos.writeInt(sampleCount)
+            values.forEach { dos.writeFloat(it) }
+        }
+    }
+    return file.absolutePath
+}
+
 @Composable
 private fun VoiceCardVariants() {
     VoiceCardSection(label = "VoiceCard — pinned", title = ExplorerFakeData.SHORT_TITLE, isPinned = true)
@@ -350,6 +387,54 @@ private fun VoiceCardVariants() {
         title = ExplorerFakeData.SHORT_TITLE,
         isPinned = false,
         tags = emptyList()
+    )
+    DividerRow()
+
+    // Clip-list states (Phase 129 DS-03 D-02) — pre-satisfies Phase 130 success criterion 3
+    // (the on-device gallery must show these states rendering correctly). The demo samples file
+    // is generated off the main thread and only when absent; each row renders its documented
+    // blank track until its own decode resolves (129-REVIEWS.md cycle-1 MEDIUM).
+    val context = LocalContext.current
+    var demoSamplesPath by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(Unit) {
+        val path = withContext(Dispatchers.IO) { writeVoiceClipDemoSamplesFile(context) }
+        demoSamplesPath = path
+    }
+
+    SectionLabel("VoiceCard — 1 clip (singular pill copy, single row, no overflow)")
+    VoiceCardContent(
+        title = ExplorerFakeData.SHORT_TITLE,
+        isPinned = false,
+        clips = listOf(
+            VoiceClipUiModel(id = "clip-0", sortOrder = 0, durationMs = 42_000L, samplesPath = demoSamplesPath)
+        )
+    )
+    DividerRow()
+
+    SectionLabel("VoiceCard — 3 clips (plural pill copy, 2 rows + \"+1 more clip\" overflow)")
+    VoiceCardContent(
+        title = ExplorerFakeData.SHORT_TITLE,
+        isPinned = false,
+        clips = listOf(
+            VoiceClipUiModel(id = "clip-0", sortOrder = 0, durationMs = 42_000L, samplesPath = demoSamplesPath),
+            VoiceClipUiModel(id = "clip-1", sortOrder = 1, durationMs = 18_000L, samplesPath = null),
+            VoiceClipUiModel(id = "clip-2", sortOrder = 2, durationMs = 65_000L, samplesPath = null)
+        )
+    )
+    DividerRow()
+
+    SectionLabel("VoiceCard — 9 clips (cap holds at 2 rows, plural overflow remainder)")
+    VoiceCardContent(
+        title = ExplorerFakeData.SHORT_TITLE,
+        isPinned = false,
+        clips = List(9) { i ->
+            VoiceClipUiModel(
+                id = "clip-$i",
+                sortOrder = i,
+                durationMs = 20_000L + i * 5_000L,
+                samplesPath = if (i == 0) demoSamplesPath else null
+            )
+        }
     )
 }
 
@@ -761,7 +846,8 @@ private fun AlbumCardSection(
 private fun VoiceCardContent(
     title: String,
     isPinned: Boolean,
-    tags: List<TagChipUiModel> = emptyList()
+    tags: List<TagChipUiModel> = emptyList(),
+    clips: List<VoiceClipUiModel> = emptyList()
 ) {
     val openRowState = remember { mutableStateOf<AnchoredDraggableState<SwipeAnchor>?>(null) }
     VoiceCard(
@@ -781,7 +867,8 @@ private fun VoiceCardContent(
         tags = tags,
         onTagClick = {},
         onSiblingsClick = {},
-        modifier = Modifier.padding(horizontal = 16.dp)
+        modifier = Modifier.padding(horizontal = 16.dp),
+        clips = clips
     )
 }
 
@@ -790,8 +877,9 @@ private fun VoiceCardSection(
     label: String,
     title: String,
     isPinned: Boolean,
-    tags: List<TagChipUiModel> = emptyList()
+    tags: List<TagChipUiModel> = emptyList(),
+    clips: List<VoiceClipUiModel> = emptyList()
 ) {
     SectionLabel(label)
-    VoiceCardContent(title = title, isPinned = isPinned, tags = tags)
+    VoiceCardContent(title = title, isPinned = isPinned, tags = tags, clips = clips)
 }
