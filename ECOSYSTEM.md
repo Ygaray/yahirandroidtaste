@@ -37,15 +37,15 @@ independent apps that consume it:
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
   No "Deploy host" column — Android apps are installed on devices, not daemon-deployed.)_
 
-**Current published tag:** **`v1.6.0`** — cut in **SecondBrain v2.0 Phase 123 Plan 05**, an
-autonomous minor bump shipping the Tactile design-system foundation (elevation scale, Space
-Grotesk display ramp, gradient/tint accent surfaces, Heat relatedness ramp — `DS-01`), on top of
-the hub's own already-published **`v1.5.0`** (cut by the hub's internal Phase 44 additive-growth
-track — see the version-numbering note below). **SecondBrain pins `v1.6.0`** (repinned + Gate-1 device-verified — SB Phase 124) — at parity with latest, per **SB
-v2.0 Phase 124 (REPIN-06)**; **CalTracker pins `v1.5.0`** (repinned Phase 48, REL-01) — the hub's own additive-growth
-tag it was authorized to consume (the hub's own latest tag has since moved to `v1.6.0` via
-SecondBrain's unrelated Phase 123, not a v1.7 CalTracker task; a hub change is inert until a
-consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
+**Current published tag:** **`v1.7.0`** — cut in **SecondBrain v2.1 Phase 130 Plan 01**, an
+autonomous minor bump on top of the hub's own **Phase 129** ("Tactile Card-Face Foundation") work:
+`CardBase` Tactile depth chrome + `CardTypeChip` + `TactileType.CardTitle` (`DS-02`), `VoiceCard`'s
+read-only clip list (`DS-03`), and the D-03 v2.1-canvas token tuning — see the `v1.7.0` release
+record below for the full evidence. **SecondBrain pins `v1.6.0`** — one tag behind latest; the
+repin is **SecondBrain Phase 130 Plan 02's** job, not this record's; **CalTracker pins `v1.5.0`**
+(repinned Phase 48, REL-01) — the hub's own additive-growth tag it was authorized to consume (the
+hub's own latest tag has since moved to `v1.7.0` via an unrelated SecondBrain session, not a
+CalTracker task; a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
 SM-S908U (Gate-1 all_pass: cold-start Hilt-across-AAR resolution, live undo + ExplorerActivity,
@@ -174,6 +174,28 @@ SHA) and `"isTag":true`. The build log
 `123-TAG-CUT-RECORD.md` and `123-05-SUMMARY.md`. **SecondBrain repinned to `v1.6.0`** in **SB
 v2.0 Phase 124 (REPIN-06)** — the `gradle/libs.versions.toml` bump plus the four-registry
 reconcile — repinned + Gate-1 device-verified — SB Phase 124.
+
+`v1.7.0` was cut in **SecondBrain v2.1 Phase 130 Plan 01** (`DS-02`/`DS-03`), an autonomous minor
+bump — the owner's tag-cut checkpoint is waived for this personal-use hub ecosystem (2026-08-20,
+`[[personal-app-tag-cut-gate-waived]]`, Option C) — on top of the hub's own **Phase 129**
+("Tactile Card-Face Foundation") work, which this record's writing commit itself carries (its
+exact SHA is necessarily self-referential at write time; recorded verbatim in
+`130-01-SUMMARY.md` and in `130-TAG-CUT-RECORD.md`). Green-gate evidence: full
+`testDebugUnitTest`, `detekt` at its unchanged baseline (`config/detekt-baseline.xml` diff empty),
+and the **new Metalava `apiCheck` lane** (added in Phase 129, plugin
+`me.tylerbwong.gradle.metalava:0.5.0`) — all re-run green in Task 1 on the exact commit being
+tagged, independently of Phase 129's own recorded verification. The tag carries, by requirement
+id: **DS-02** — `CardBase` gains Tactile depth chrome (an opt-in accent spine,
+`Dimens.Elevation.Level3`, 16dp corner radius), plus the new `CardTypeChip` accent badge and the
+`TactileType.CardTitle` title tier, both registered in `ComponentRegistry`; **DS-03** — `VoiceCard`
+gains a read-only clip list (`VoiceClipUiModel`, a `clips` parameter, an aggregate clip-count
+header pill, capped mini-rows with an overflow line) with Explorer fixtures; and the **D-03 token
+tuning** — `accentTint` default alphas and the `accentGradientStops` blend ratio cross-checked
+against the approved v2.1 canvas, with `TactileType` ASSUMED markers reconciled. Every changed
+signature is **additive/defaulted and source-compatible** with `v1.6.0` — no public composable
+removed or renamed, no parameter made required — as proven by the `apiCheck` lane passing clean.
+The first consumer repin (SecondBrain) is **pending** at write time and lands in **SB v2.1
+Phase 130 Plan 02**.
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
