@@ -25,13 +25,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.CardBase
 import io.github.ygaray.yahirandroidtaste.component.titleSlotVisible
+import io.github.ygaray.yahirandroidtaste.icon.cardTypeIcon
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
 import io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
+import io.github.ygaray.yahirandroidtaste.theme.TactileType
+
+/**
+ * Outer height of the mosaic block at the [AdaptiveMediaPreview] call site (Phase 133 FACE-04,
+ * PD-2/D-03): `196.dp` (the pre-restyle edge-to-edge visible photo area, preserved unshrunk) plus
+ * two [Dimens.CompactPadding] (12dp) insets — one on each side of the block. The 12dp inset keeps
+ * [CardBase]'s new 4dp accent spine from cutting across the leftmost photo column. Applied as
+ * `.height(MOSAIC_BLOCK_HEIGHT).padding(Dimens.CompactPadding)` — height BEFORE padding, so this
+ * value is the outer node's height and the content measures 196dp; reversing that order would
+ * silently produce a 244dp block.
+ */
+private val MOSAIC_BLOCK_HEIGHT = 220.dp
 
 /**
  * Album card face for the module card list (list-context).
@@ -86,6 +100,13 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  * @param onTagRemoveFromCard Phase 93 (TMENU-01/04/05): forwarded verbatim to [CardTagRow]'s
  *   [CardTagRow.onTagRemoveFromCard]. Null (default) omits the menu's "Remove from this card"
  *   item.
+ * @param accent FACE-04: caller-supplied per-card colour, forwarded verbatim into [CardBase]'s
+ *   accent spine and into the header [CardTypeChip]. The hub performs zero tag-resolution of its
+ *   own — `:app`'s `CardAccentResolver` (Phase 131) resolves the actual value. `null` (default)
+ *   renders every accent-reading surface in its designed neutral state.
+ * @param tactileDepth FACE-04: opts this card into [CardBase]'s Tactile depth-card chrome —
+ *   elevation, corner radius, and the accent spine. Defaults to `false` so every pre-existing call
+ *   site renders exactly as before until the consumer app opts in (Phase 133 Plan 03).
  */
 @Composable
 fun AlbumCard(
@@ -111,7 +132,9 @@ fun AlbumCard(
     onCloseSiblingsClick: (cardId: String) -> Unit = {},
     onTagEdit: ((tagId: String) -> Unit)? = null,
     onTagDelete: ((tagId: String, name: String) -> Unit)? = null,
-    onTagRemoveFromCard: ((tagId: String) -> Unit)? = null
+    onTagRemoveFromCard: ((tagId: String) -> Unit)? = null,
+    accent: Color? = null,
+    tactileDepth: Boolean = false
 ) {
     CardBase(
         showThreeDot = true,
@@ -224,15 +247,26 @@ fun AlbumCard(
         },
         headerContent = if (!titleSlotVisible(title)) null else {
             {
+                // Type chip (FACE-04, Phase 132 pattern): leads the header, carries the 16dp
+                // leading inset the title used to own (PD-1). No explicit tint — the chip
+                // resolves the icon's size and colour itself. Album's header gate stays
+                // titleSlotVisible(title) alone — unlike Voice, there is no clip-count reason
+                // to widen it.
+                CardTypeChip(
+                    accent = accent,
+                    modifier = Modifier.padding(start = Dimens.HorizontalPadding, top = Dimens.TopPadding)
+                ) {
+                    Icon(imageVector = cardTypeIcon("ALBUM"), contentDescription = null)
+                }
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = TactileType.CardTitle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .weight(1f)
                         .padding(
-                            start = Dimens.HorizontalPadding,
+                            start = Dimens.ChipToTitleGap,
                             top = Dimens.TopPadding,
                             bottom = Dimens.ContentSpacing
                         )
@@ -263,9 +297,13 @@ fun AlbumCard(
                 totalImageCount = totalImageCount,
                 onCellTap = { onTap() },
                 onOverflowTap = onTap,
+                // MOSAIC_BLOCK_HEIGHT applied before the CompactPadding inset (PD-2/D-03): the
+                // 220dp height sizes the outer node, and the 12dp padding shrinks the measured
+                // content back down to the pre-restyle 196dp visible photo area.
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(196.dp)
+                    .height(MOSAIC_BLOCK_HEIGHT)
+                    .padding(Dimens.CompactPadding)
             )
         },
         // WR-01: caller owns "no tags → no slot" — pass null so CardBase composes no tag-row Box
@@ -309,6 +347,8 @@ fun AlbumCard(
                 )
             }
         },
+        accent = accent,
+        tactileDepth = tactileDepth,
         modifier = modifier
     )
 }

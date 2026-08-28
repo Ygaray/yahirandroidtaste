@@ -2,6 +2,7 @@ package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -24,6 +26,7 @@ import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import io.github.ygaray.yahirandroidtaste.theme.Dimens
 
 /**
  * Data class representing a single thumbnail cell in [AdaptiveMediaPreview].
@@ -38,6 +41,21 @@ data class MediaThumbnailCell(
     val memoryCacheKey: String,
     val isVideo: Boolean = false,
     val durationMs: Long = 0L
+)
+
+/**
+ * Per-cell Tactile depth framing for the mosaic (Phase 133 FACE-04, PD-2): a shadow-plus-clip
+ * primitive applying [Dimens.Elevation.Level2] elevation with a [Dimens.CornerRadius.Small]
+ * rounded shape. Applied inside [ThumbnailCell] itself so all six image-cell call sites across
+ * every tier inherit it structurally (no per-tier hand-enumeration), plus two explicit
+ * applications on the only non-[ThumbnailCell] cells: the tier-0 placeholder and the "+N"
+ * overflow cell. Uniform across every tier — D-03 requires the tier dispatch and overflow
+ * arithmetic themselves stay untouched; only this per-cell chrome is new.
+ */
+private fun Modifier.mosaicCellFraming(): Modifier = this.shadow(
+    elevation = Dimens.Elevation.Level2,
+    shape = RoundedCornerShape(Dimens.CornerRadius.Small),
+    clip = true
 )
 
 /**
@@ -83,6 +101,7 @@ fun AdaptiveMediaPreview(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .mosaicCellFraming()
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                 )
             }
@@ -98,7 +117,10 @@ fun AdaptiveMediaPreview(
             }
 
             2 -> {
-                Row(modifier = Modifier.fillMaxSize()) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.ContentSpacing)
+                ) {
                     cells.forEachIndexed { index, cell ->
                         ThumbnailCell(
                             cell = cell,
@@ -113,7 +135,10 @@ fun AdaptiveMediaPreview(
             }
 
             3 -> {
-                Row(modifier = Modifier.fillMaxSize()) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.ContentSpacing)
+                ) {
                     cells.forEachIndexed { index, cell ->
                         ThumbnailCell(
                             cell = cell,
@@ -129,9 +154,15 @@ fun AdaptiveMediaPreview(
 
             else -> {
                 // 4+ items: 2x2 grid
-                Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.ContentSpacing)
+                ) {
                     // Top row: cells[0] and cells[1]
-                    Row(modifier = Modifier.weight(1f)) {
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.spacedBy(Dimens.ContentSpacing)
+                    ) {
                         ThumbnailCell(
                             cell = cells[0],
                             context = context,
@@ -150,7 +181,10 @@ fun AdaptiveMediaPreview(
                         )
                     }
                     // Bottom row: cells[2] + "+N" overflow overlay
-                    Row(modifier = Modifier.weight(1f)) {
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.spacedBy(Dimens.ContentSpacing)
+                    ) {
                         ThumbnailCell(
                             cell = cells[2],
                             context = context,
@@ -165,6 +199,7 @@ fun AdaptiveMediaPreview(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight()
+                                .mosaicCellFraming()
                                 .background(Color.Black.copy(alpha = 0.5f))
                                 .clickable { onOverflowTap() },
                             contentAlignment = Alignment.Center
@@ -221,7 +256,7 @@ private fun ThumbnailCell(
     context: android.content.Context,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier) {
+    Box(modifier = modifier.mosaicCellFraming()) {
         AsyncImage(
             model = ImageRequest.Builder(context)
                 .data(cell.source)
