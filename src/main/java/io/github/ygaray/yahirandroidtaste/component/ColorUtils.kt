@@ -28,8 +28,16 @@ fun contrastingForeground(background: Color): Color =
  * luminance threshold [contrastingForeground] already uses in this file — which keeps the mix
  * partner a live theme role while still preserving the "always lighter" guarantee.
  *
- * ⚠ ASSUMED — the 0.4f blend ratio is marked `ASSUMED` in `123-UI-SPEC.md`, pending a
- * design-canvas cross-check before the Phase 123 tag cut.
+ * **Blend ratio cross-check (Phase 129 DS-02, D-03) — CONFIRMED, not retuned.** Five literal
+ * `linear-gradient(135deg, A, B)` specimens exist across
+ * `.planning/design/v2.1-card-faces/{Main,AlbumFace,AlbumAccent}.dc.html` (four decorative photo-
+ * mosaic tile gradients shared across those three files, plus the one genuine accent-band
+ * specimen in `AlbumAccent.dc.html` — `#8E4585` to `#BB8BB6`, explicitly labelled "accentGradient
+ * from the album tag colour"). Solving `B = lerp(A, white, t)` per RGB channel for each of the
+ * five and averaging gives t ≈ 0.42, 0.45, 0.42, 0.36 and 0.39 respectively — mean ≈ 0.41, which
+ * is within the ~0.05 confirmation band of the shipped 0.4f ratio. The value is therefore left
+ * unchanged; the prior `⚠ ASSUMED` marker is resolved by this confirmation, not cleared without
+ * one.
  */
 fun accentGradientStops(accentColor: Color, colorScheme: ColorScheme): List<Color> {
     val isDark = colorScheme.surface.luminance() < 0.5f

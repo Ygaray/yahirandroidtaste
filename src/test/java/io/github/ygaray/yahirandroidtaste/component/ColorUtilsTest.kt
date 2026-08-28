@@ -75,6 +75,34 @@ class ColorUtilsTest {
         }
     }
 
+    @Test
+    fun `accentGradientStops second stop matches the AlbumAccent canvas specimen within tolerance`() {
+        // Canvas specimen: .planning/design/v2.1-card-faces/AlbumAccent.dc.html line 54 —
+        // `background: linear-gradient(135deg, #8E4585 0%, #BB8BB6 100%);` — the one gradient on
+        // this canvas explicitly labelled "accentGradient from the album tag colour (plum)",
+        // rather than one of the decorative photo-mosaic tile gradients on the same page.
+        // Phase 129 DS-02, D-03 cross-check: this locks the confirmed 0.4f ratio against a real
+        // canvas value so a future retune that breaks the canvas match goes red.
+        val plumAccent = Color(0xFF8E4585)
+        val canvasSecondStop = Color(0xFFBB8BB6)
+
+        val stops = accentGradientStops(plumAccent, LightColorScheme)
+
+        val tolerance = 0.02f
+        assertTrue(
+            "red channel drifted from canvas specimen: ${stops[1].red} vs ${canvasSecondStop.red}",
+            kotlin.math.abs(stops[1].red - canvasSecondStop.red) <= tolerance
+        )
+        assertTrue(
+            "green channel drifted from canvas specimen: ${stops[1].green} vs ${canvasSecondStop.green}",
+            kotlin.math.abs(stops[1].green - canvasSecondStop.green) <= tolerance
+        )
+        assertTrue(
+            "blue channel drifted from canvas specimen: ${stops[1].blue} vs ${canvasSecondStop.blue}",
+            kotlin.math.abs(stops[1].blue - canvasSecondStop.blue) <= tolerance
+        )
+    }
+
     // -----------------------------------------------------------------------------------------
     // accentGradient
     // -----------------------------------------------------------------------------------------
