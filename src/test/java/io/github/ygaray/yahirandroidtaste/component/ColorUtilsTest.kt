@@ -111,17 +111,54 @@ class ColorUtilsTest {
     }
 
     @Test
-    fun `accentTint default alpha is 0_08 in light theme and 0_16 in dark theme`() {
+    fun `accentTint default alpha is 0_13 in light theme and 0_26 in dark theme`() {
         accentSweep.forEach { accent ->
             assertEquals(
-                accentTint(accent, LightColorScheme, 0.08f),
+                accentTint(accent, LightColorScheme, 0.13f),
                 accentTint(accent, LightColorScheme)
             )
             assertEquals(
-                accentTint(accent, DarkColorScheme, 0.16f),
+                accentTint(accent, DarkColorScheme, 0.26f),
                 accentTint(accent, DarkColorScheme)
             )
         }
+    }
+
+    @Test
+    fun `accentTint dark default alpha is strictly greater than the light default alpha`() {
+        // Locks the documented "a dark surface needs a stronger tint to read" relationship
+        // structurally, not just via the two magic numbers in the test above (Phase 129 DS-02,
+        // D-03): the default alpha actually baked into each scheme's result is derived back out
+        // of the returned Color by inverting the lerp, rather than re-asserting 0.26f > 0.13f.
+        accentSweep.forEach { accent ->
+            val lightAlpha = impliedDefaultAlpha(accent, LightColorScheme)
+            val darkAlpha = impliedDefaultAlpha(accent, DarkColorScheme)
+            assertTrue(
+                "dark default alpha ($darkAlpha) must exceed light default alpha ($lightAlpha) " +
+                    "for accent=$accent",
+                darkAlpha > lightAlpha
+            )
+        }
+    }
+
+    /**
+     * Inverts `accentTint`'s `lerp(surface, accent, alpha)` to recover the default [alpha] that
+     * was actually applied, using whichever RGB channel has the largest surface/accent
+     * separation (avoiding a near-zero denominator on any one channel).
+     */
+    private fun impliedDefaultAlpha(
+        accent: Color,
+        scheme: androidx.compose.material3.ColorScheme
+    ): Float {
+        val default = accentTint(accent, scheme)
+        val surface = scheme.surface
+        val channels = listOf(
+            Triple(default.red, accent.red, surface.red),
+            Triple(default.green, accent.green, surface.green),
+            Triple(default.blue, accent.blue, surface.blue)
+        )
+        val (result, accentC, surfaceC) = channels.maxByOrNull { (_, a, s) -> kotlin.math.abs(a - s) }!!
+        return (result - surfaceC) / (accentC - surfaceC)
     }
 
     @Test

@@ -61,9 +61,25 @@ fun accentGradient(accentColor: Color, colorScheme: ColorScheme): Brush =
  * [accentColor] composited over `colorScheme.surface` at [alpha] via [lerp].
  *
  * The default [alpha] is theme-aware: a dark surface needs a stronger tint to read, so it
- * defaults to 0.16f when `colorScheme.surface` is dark (same luminance-threshold determination as
- * [accentGradientStops]) and 0.08f otherwise. Both default alphas are marked `ASSUMED` in
- * `123-UI-SPEC.md`, pending a design-canvas cross-check before the Phase 123 tag cut.
+ * defaults to a stronger value when `colorScheme.surface` is dark (same luminance-threshold
+ * determination as [accentGradientStops]) than in light theme.
+ *
+ * **Light default (0.13f) — canvas-derived (Phase 129 DS-02, D-03).** Each of the four v2.1
+ * card-faces artboards (`.planning/design/v2.1-card-faces/{Text,List,Album,Voice}Face.dc.html`)
+ * renders its type-chip box as its accent tinted over the card's `#FFFFFF` surface, i.e. exactly
+ * `lerp(white, accent, alpha)`. Solving `alpha` per RGB channel and averaging per face gives:
+ * TextFace (`#4A6267` over `#E7ECEC`) ≈ 0.126, ListFace (`#006875` over `#DCEBED`) ≈ 0.133,
+ * AlbumFace (`#8E4585` over `#F0E7EF`) ≈ 0.131, VoiceFace (`#B4690E` over `#F5E9DA`) ≈ 0.145. The
+ * four faces agree to within ~0.02, and their mean (≈0.134) rounds to **0.13**, replacing the
+ * prior 0.08f placeholder.
+ *
+ * **Dark default (0.26f) — extrapolated, not canvas-derived.** The v2.1 card-faces canvas
+ * contains only light-theme artboards, so there is no dark-theme specimen to solve against. To
+ * preserve the documented "a dark surface needs a stronger tint to read" relationship, the dark
+ * default is scaled by the same factor the light default moved (0.13f / 0.08f ≈ 1.625×), applied
+ * to the prior 0.16f dark placeholder (0.16f × 1.625 ≈ 0.26f) and rounded to two decimals. This
+ * keeps the dark value strictly greater than the light value, but it is an extrapolation, not a
+ * measurement — ⚠ ASSUMED, pending a future dark-theme card-faces canvas to cross-check against.
  *
  * [alpha] is coerced into `0f..1f` so an out-of-range input is clamped, never thrown.
  *
@@ -73,5 +89,5 @@ fun accentGradient(accentColor: Color, colorScheme: ColorScheme): Brush =
 fun accentTint(
     accentColor: Color,
     colorScheme: ColorScheme,
-    alpha: Float = if (colorScheme.surface.luminance() < 0.5f) 0.16f else 0.08f
+    alpha: Float = if (colorScheme.surface.luminance() < 0.5f) 0.26f else 0.13f
 ): Color = lerp(colorScheme.surface, accentColor, alpha.coerceIn(0f, 1f))
