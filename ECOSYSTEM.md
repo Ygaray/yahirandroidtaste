@@ -37,16 +37,16 @@ independent apps that consume it:
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
   No "Deploy host" column — Android apps are installed on devices, not daemon-deployed.)_
 
-**Current published tag:** **`v1.7.0`** — cut in **SecondBrain v2.1 Phase 130 Plan 01**, an
-autonomous minor bump on top of the hub's own **Phase 129** ("Tactile Card-Face Foundation") work:
-`CardBase` Tactile depth chrome + `CardTypeChip` + `TactileType.CardTitle` (`DS-02`), `VoiceCard`'s
-read-only clip list (`DS-03`), and the D-03 v2.1-canvas token tuning — see the `v1.7.0` release
-record below for the full evidence. **SecondBrain pins `v1.7.0`** — at parity with latest,
-repinned + resolve-confirmed + suite-green in **SecondBrain Phase 130 Plan 02 (REPIN-07)**, with
-Gate-1 device verification pending in-phase (not yet recorded here); **CalTracker pins `v1.5.0`**
-(repinned Phase 48, REL-01) — the hub's own additive-growth tag it was authorized to consume (the
-hub's own latest tag has since moved to `v1.7.0` via an unrelated SecondBrain session, not a
-CalTracker task; a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
+**Current published tag:** **`v1.8.0`** — cut in **SecondBrain v2.1 Phase 132 Plan 02**, an
+autonomous minor bump on top of the hub's own **Phase 132 Plan 01** ("Text & List Card Faces,
+Tactile") work: `TextCard`/`ListCard` gain `accent`/`tactileDepth` pass-through, a leading
+`CardTypeChip`, and `TactileType.CardTitle` titles (`FACE-01`), plus `ListCard`'s "N / M"
+completion pill and progress bar (`FACE-02`) — see the `v1.8.0` release record below for the full
+evidence. **SecondBrain pins `v1.7.0`** — not yet at parity with latest; the repin to `v1.8.0` is
+**pending**, lands in **SecondBrain Phase 132 Plan 03 (FACE-01/FACE-02)**; **CalTracker pins
+`v1.5.0`** (repinned Phase 48, REL-01) — the hub's own additive-growth tag it was authorized to
+consume (the hub's own latest tag has since moved to `v1.8.0` via an unrelated SecondBrain
+session, not a CalTracker task; a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
 SM-S908U (Gate-1 all_pass: cold-start Hilt-across-AAR resolution, live undo + ExplorerActivity,
@@ -218,6 +218,27 @@ inspected directly and carries `VoiceClipUiModel`, `CardTypeChipKt`, and
 `explorer/CardsFamilyScreenKt*` — see `130-02-SUMMARY.md`) — **Gate-1 device verification is
 pending in this same phase** (dispatched by `/gsd-execute-phase` after code review) and is not yet
 recorded here; this record intentionally does not claim a completed device pass ahead of that gate.
+
+`v1.8.0` was cut in **SecondBrain v2.1 Phase 132 Plan 02**, an autonomous minor bump — the owner's
+tag-cut checkpoint is waived for this personal-use hub ecosystem (2026-08-20,
+`[[personal-app-tag-cut-gate-waived]]`, Option C) — on top of **Phase 132 Plan 01**'s verified hub
+work (commit `67cf734b3507f3f7275e93f5883de4188cb5f9e8`). Green-gate evidence: full
+`testDebugUnitTest`, `detekt` at its unchanged baseline (`config/detekt-baseline.xml` diff empty),
+Metalava `apiCheck`, and `compileDebugKotlin` — all re-run green in Task 1 on the exact commit
+being tagged, independently of Plan 01's own recorded verification. The tag carries, by
+requirement id: **FACE-01** — `TextCard` gains `accent`/`tactileDepth` pass-through params
+forwarded to `CardBase`'s Tactile depth chrome, plus a leading `CardTypeChip` badge and the
+`TactileType.CardTitle` title tier; **FACE-02** — `ListCard` gains the same pass-through params
+plus a checkbox-forward completion signal (an "N / M" header pill adapted from `CountBadge`'s
+shape with `CardTypeChip`'s colour pairing, and a thin `LinearProgressIndicator`), both driven by
+one shared gate, with the now-duplicate footer completion text retired. Also new:
+`Dimens.ChipToTitleGap` (8dp chip-to-title spacing token), and `CardTypeChip` — shipped unconsumed
+in `v1.7.0` — gains its first real consumers here. Every changed signature is
+**additive/defaulted and source-compatible** with `v1.7.0` — no public composable removed or
+renamed, no parameter made required — as proven by the `apiCheck` lane passing clean (the one
+parameter removal was on a private function, `ListCardFooterContent`, invisible to `api.txt`). The
+first consumer repin (SecondBrain) is **pending** at write time and lands in **SB v2.1 Phase 132
+Plan 03**.
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet

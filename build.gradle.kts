@@ -122,7 +122,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.Ygaray"
             artifactId = "yahirandroidtaste"
-            version = "1.7.0"
+            version = "1.8.0"
             afterEvaluate {
                 from(components["release"])
             }
