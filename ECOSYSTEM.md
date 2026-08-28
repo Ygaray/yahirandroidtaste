@@ -37,21 +37,28 @@ independent apps that consume it:
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
   No "Deploy host" column — Android apps are installed on devices, not daemon-deployed.)_
 
-**Current published tag:** **`v1.8.2`** — a patch cut in **SecondBrain v2.1 Phase 132's Gate-1
-gap-closure cycle** (SC2/IN-01: `ListCompletionPill`'s foreground now resolves via
-`contrastingForeground(backgroundColor)` instead of the raw accent, fixing a genuine on-device
-pale-accent text-legibility defect Gate-1 measured at ~1.01:1 WCAG contrast) directly on top of
-`v1.8.1` (itself a patch fixing WR-01's leading-gap spacing) and `v1.8.0`
-(itself cut in **SecondBrain v2.1 Phase 132 Plan 02**, an autonomous minor bump on top of the hub's
-own **Phase 132 Plan 01** ("Text & List Card Faces, Tactile") work: `TextCard`/`ListCard` gain
-`accent`/`tactileDepth` pass-through, a leading `CardTypeChip`, and `TactileType.CardTitle` titles
-(`FACE-01`), plus `ListCard`'s "N / M" completion pill and progress bar (`FACE-02`)) — see the
-`v1.8.0`, `v1.8.1`, and `v1.8.2` release records below for the full evidence. **SecondBrain pins
-`v1.8.2`** — at parity with latest, repinned in **SecondBrain Phase 132's gap-closure cycle**
-(Gate-1 device re-verification of SC2 pending, a separate follow-up gate); **CalTracker pins
+**Current published tag:** **`v1.9.0`** — an autonomous minor bump cut in **SecondBrain v2.1
+Phase 133 Plan 02** on top of the hub's own **Phase 133 Plan 01** ("Voice & Album Card Faces,
+Tactile") work: `VoiceCard`/`AlbumCard` gain `accent`/`tactileDepth` pass-through, a leading
+`CardTypeChip`, and `TactileType.CardTitle` titles, matching the Text/List treatment shipped in
+`v1.8.0` (`FACE-03`); `VoiceCard`'s clip-row cap raised from 2 to 3 per SecondBrain's D-02 decision
+(`FACE-03`); and `AdaptiveMediaPreview`'s mosaic gains per-cell shadow/corner-radius framing with
+its tier dispatch and overflow arithmetic byte-identical, per D-03 (`FACE-04`) — see the `v1.9.0`
+release record below for the full evidence. It in turn sits on top of `v1.8.2` — a patch cut in
+**SecondBrain v2.1 Phase 132's Gate-1 gap-closure cycle** (SC2/IN-01: `ListCompletionPill`'s
+foreground now resolves via `contrastingForeground(backgroundColor)` instead of the raw accent,
+fixing a genuine on-device pale-accent text-legibility defect Gate-1 measured at ~1.01:1 WCAG
+contrast) directly on top of `v1.8.1` (itself a patch fixing WR-01's leading-gap spacing) and
+`v1.8.0` (itself cut in **SecondBrain v2.1 Phase 132 Plan 02**, an autonomous minor bump on top of
+the hub's own **Phase 132 Plan 01** ("Text & List Card Faces, Tactile") work: `TextCard`/`ListCard`
+gain `accent`/`tactileDepth` pass-through, a leading `CardTypeChip`, and `TactileType.CardTitle`
+titles (`FACE-01`), plus `ListCard`'s "N / M" completion pill and progress bar (`FACE-02`)) — see
+the `v1.8.0`, `v1.8.1`, `v1.8.2`, and `v1.9.0` release records below for the full evidence.
+**SecondBrain pins `v1.8.2`** — the `v1.9.0` repin is **pending** at write time and lands in
+**SecondBrain Phase 133 Plan 03**; **CalTracker pins
 `v1.5.0`** (repinned
 Phase 48, REL-01) — the hub's own additive-growth tag it was authorized to consume (the hub's own
-latest tag has since moved to `v1.8.2` via an unrelated SecondBrain session, not a CalTracker task;
+latest tag has since moved to `v1.9.0` via an unrelated SecondBrain session, not a CalTracker task;
 a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
@@ -276,6 +283,28 @@ formula and forbidding regression to the old `foregroundColor = accent ?: ...` f
 (baseline unchanged, 0 code smells), `apiCheck`, and `compileDebugKotlin` all re-run green on the
 exact commit being tagged. The tag-cut checkpoint remains waived per the same standing
 personal-app waiver used for `v1.8.0`/`v1.8.1`.
+
+`v1.9.0` was cut in **SecondBrain v2.1 Phase 133 Plan 02**, an autonomous minor bump — the owner's
+tag-cut checkpoint is waived for this personal-use hub ecosystem (2026-08-20,
+`[[personal-app-tag-cut-gate-waived]]`, Option C) — on top of **Phase 133 Plan 01**'s verified hub
+work (commit `ed57bd8e4956234a6d5420c2d3981b8061875a4d`). Green-gate evidence: full
+`testDebugUnitTest`, `detekt` at its unchanged baseline (`config/detekt-baseline.xml` diff empty),
+Metalava `apiCheck`, and `compileDebugKotlin` — all re-run green in Task 1 on the exact commit
+being tagged, independently of Plan 01's own recorded verification. The tag carries, by
+requirement id: **FACE-03** — `VoiceCard` gains `accent`/`tactileDepth` pass-through params
+forwarded to `CardBase`'s Tactile depth chrome, plus a leading `CardTypeChip` badge and the
+`TactileType.CardTitle` title tier, matching the Text/List treatment shipped in `v1.8.0`; and
+`VoiceCard`'s clip-row cap raised from `2` to `3` (SecondBrain's D-02 decision, route (b) — a hub
+touch, matching `LIST_PREVIEW_ITEM_LIMIT` for cross-face consistency); **FACE-04** — `AlbumCard`
+gains the same pass-through params and header restyle, plus `AdaptiveMediaPreview`'s mosaic gains a
+private `Modifier.mosaicCellFraming()` (`Elevation.Level2` shadow + `CornerRadius.Small` clip)
+applied uniformly across every tier, with the tier-dispatch `when` expression and the `+N` overflow
+arithmetic held byte-identical (SecondBrain's D-03 decision, proven by a zero-line `git diff -U0`
+on the overflow-arithmetic substring). Every changed signature is **additive/defaulted and
+source-compatible** with `v1.8.2` — no public composable removed or renamed, no parameter made
+required — as proven by the `apiCheck` lane passing clean, confined to exactly the two intended
+`VoiceCardKt.VoiceCard`/`AlbumCardKt.AlbumCard` signature lines. The first consumer repin
+(SecondBrain) is **pending** at write time and lands in **SB v2.1 Phase 133 Plan 03**.
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
