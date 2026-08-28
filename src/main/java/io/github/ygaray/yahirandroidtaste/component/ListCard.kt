@@ -442,7 +442,7 @@ private fun RowScope.ListCardHeaderContent(
             completed = completed,
             total = total,
             accent = accent,
-            modifier = Modifier.padding(end = Dimens.HorizontalPadding)
+            modifier = Modifier.padding(start = Dimens.ContentSpacing, end = Dimens.HorizontalPadding)
         )
     }
 }
