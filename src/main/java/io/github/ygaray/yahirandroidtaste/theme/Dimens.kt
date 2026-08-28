@@ -40,6 +40,16 @@ object Dimens {
     val ContentSpacing: Dp = 4.dp
 
     /**
+     * Gap between a card face's leading [io.github.ygaray.yahirandroidtaste.component.CardTypeChip]
+     * and its title (Phase 132 FACE-01/FACE-02), locked at 8dp by 132-UI-SPEC.md's Spacing Scale.
+     * A distinct token rather than reusing [TopPadding] (also 8dp, but names a vertical inset) or
+     * [CornerRadius.Small] (also 8dp, but names a radius) — those name different concepts that
+     * merely happen to share this value, the same reasoning [CardTypeChip]'s own 32dp literal KDoc
+     * already records.
+     */
+    val ChipToTitleGap: Dp = 8.dp
+
+    /**
      * Hairline spacing — smallest spacing value in active use app-wide (D-01 consolidation;
      * `43-FINDINGS.md` § "Named clusters of repeated non-token values": 25 occurrences / 12 files,
      * no prior named token). Additive only — not yet swapped into any call site this phase.

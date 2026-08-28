@@ -37,14 +37,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.CardBase
 import io.github.ygaray.yahirandroidtaste.component.bodySlotVisible
 import io.github.ygaray.yahirandroidtaste.component.titleSlotVisible
+import io.github.ygaray.yahirandroidtaste.icon.cardTypeIcon
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
 import io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
+import io.github.ygaray.yahirandroidtaste.theme.TactileType
 
 /**
  * Text note card composable with two-stage expand, reveal-then-confirm swipe gestures, a
@@ -113,6 +116,13 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  *   sheet, mirroring Voice); when null (default), the row falls back to this card's local tag-less
  *   rename dialog, so every existing call site compiles and behaves as before. The consumer app
  *   wires it at Phase 113.
+ * @param accent FACE-01: caller-supplied per-card colour, forwarded verbatim into [CardBase]'s
+ *   accent spine and into the header [CardTypeChip]. The hub performs zero tag-resolution of its
+ *   own — `:app`'s `CardAccentResolver` (Phase 131) resolves the actual value. `null` (default)
+ *   renders every accent-reading surface in its designed neutral state.
+ * @param tactileDepth FACE-01: opts this card into [CardBase]'s Tactile depth-card chrome —
+ *   elevation, corner radius, and the accent spine. Defaults to `false` so every pre-existing call
+ *   site renders exactly as before until the consumer app opts in (Phase 132 Plan 03).
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -144,7 +154,9 @@ fun TextCard(
     onTagDelete: ((tagId: String, name: String) -> Unit)? = null,
     onTagRemoveFromCard: ((tagId: String) -> Unit)? = null,
     imageCount: Int = 0,
-    onEditRequest: (() -> Unit)? = null
+    onEditRequest: (() -> Unit)? = null,
+    accent: Color? = null,
+    tactileDepth: Boolean = false
 ) {
     // Rename dialog state (replaces inline BasicTextField rename — UX change: now dialog-based)
     var showRenameDialog by remember(id) { mutableStateOf(false) }
@@ -239,16 +251,25 @@ fun TextCard(
         },
         headerContent = if (!titleSlotVisible(title)) null else {
             {
+                // Type chip (FACE-01, Phase 132 DS-02): leads the header, carries the 16dp
+                // leading inset the title used to own (PD-1). No explicit tint — the chip
+                // resolves the icon's size and colour itself via LocalContentColor.
+                CardTypeChip(
+                    accent = accent,
+                    modifier = Modifier.padding(start = Dimens.HorizontalPadding, top = Dimens.TopPadding)
+                ) {
+                    Icon(imageVector = cardTypeIcon("TEXT"), contentDescription = null)
+                }
                 // Title
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = TactileType.CardTitle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .weight(1f)
                         .padding(
-                            start = Dimens.HorizontalPadding,
+                            start = Dimens.ChipToTitleGap,
                             top = Dimens.TopPadding,
                             bottom = Dimens.ContentSpacing
                         )
@@ -369,7 +390,9 @@ fun TextCard(
                 )
             }
         },
-        modifier = modifier
+        modifier = modifier,
+        accent = accent,
+        tactileDepth = tactileDepth
     )
 
     // Rename dialog (replaces inline BasicTextField — same result, modal instead of inline)
