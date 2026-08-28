@@ -37,14 +37,24 @@ independent apps that consume it:
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
   No "Deploy host" column — Android apps are installed on devices, not daemon-deployed.)_
 
-**Current published tag:** **`v1.9.0`** — an autonomous minor bump cut in **SecondBrain v2.1
-Phase 133 Plan 02** on top of the hub's own **Phase 133 Plan 01** ("Voice & Album Card Faces,
-Tactile") work: `VoiceCard`/`AlbumCard` gain `accent`/`tactileDepth` pass-through, a leading
-`CardTypeChip`, and `TactileType.CardTitle` titles, matching the Text/List treatment shipped in
-`v1.8.0` (`FACE-03`); `VoiceCard`'s clip-row cap raised from 2 to 3 per SecondBrain's D-02 decision
-(`FACE-03`); and `AdaptiveMediaPreview`'s mosaic gains per-cell shadow/corner-radius framing with
-its tier dispatch and overflow arithmetic byte-identical, per D-03 (`FACE-04`) — see the `v1.9.0`
-release record below for the full evidence. It in turn sits on top of `v1.8.2` — a patch cut in
+**Current published tag:** **`v1.10.0`** — an autonomous minor bump cut in **SecondBrain v2.1
+Phase 135 Plan 02** (`MIND-10`, Phase 135's D-02 decision) on top of the hub's own **Phase 135
+Plan 01** ("Mindmap Heat Ramp Widening") work: `HeatTier` widened from four to six discrete tiers
+(`COOL, BRISK, MILD, WARM, HOT, BLAZING`), adding `BRISK`/`BLAZING` to bridge the blue-to-amber gap
+and deepen the top band; `heatTier()`'s cut points retuned to `0.08/0.18/0.30/0.45/0.65`, with the
+top cut point deliberately unchanged so the prior "strongly related" threshold is preserved;
+`heatVisual()`'s stroke-width and radius scales widened to six stops, with the radius ceiling
+deliberately held at 20dp so consumers' fixed hub-node size needs no change; and `HeatSwatch` now
+renders six live samples — see the `v1.10.0` release record below for the full evidence. Every
+changed signature is **additive/source-compatible** with `v1.9.0` (two `enum_constant` lines added,
+zero removed, proven by `apiCheck`). It in turn sits on top of `v1.9.0` — an autonomous minor bump
+cut in **SecondBrain v2.1 Phase 133 Plan 02** on top of the hub's own **Phase 133 Plan 01** ("Voice
+& Album Card Faces, Tactile") work: `VoiceCard`/`AlbumCard` gain `accent`/`tactileDepth`
+pass-through, a leading `CardTypeChip`, and `TactileType.CardTitle` titles, matching the Text/List
+treatment shipped in `v1.8.0` (`FACE-03`); `VoiceCard`'s clip-row cap raised from 2 to 3 per
+SecondBrain's D-02 decision (`FACE-03`); and `AdaptiveMediaPreview`'s mosaic gains per-cell
+shadow/corner-radius framing with its tier dispatch and overflow arithmetic byte-identical, per D-03
+(`FACE-04`). It in turn sits on top of `v1.8.2` — a patch cut in
 **SecondBrain v2.1 Phase 132's Gate-1 gap-closure cycle** (SC2/IN-01: `ListCompletionPill`'s
 foreground now resolves via `contrastingForeground(backgroundColor)` instead of the raw accent,
 fixing a genuine on-device pale-accent text-legibility defect Gate-1 measured at ~1.01:1 WCAG
@@ -53,9 +63,12 @@ contrast) directly on top of `v1.8.1` (itself a patch fixing WR-01's leading-gap
 the hub's own **Phase 132 Plan 01** ("Text & List Card Faces, Tactile") work: `TextCard`/`ListCard`
 gain `accent`/`tactileDepth` pass-through, a leading `CardTypeChip`, and `TactileType.CardTitle`
 titles (`FACE-01`), plus `ListCard`'s "N / M" completion pill and progress bar (`FACE-02`)) — see
-the `v1.8.0`, `v1.8.1`, `v1.8.2`, and `v1.9.0` release records below for the full evidence.
-**SecondBrain pins `v1.8.2`** — the `v1.9.0` repin is **pending** at write time and lands in
-**SecondBrain Phase 133 Plan 03**; **CalTracker pins
+the `v1.8.0`, `v1.8.1`, `v1.8.2`, `v1.9.0`, and `v1.10.0` release records below for the full
+evidence.
+**SecondBrain pins `v1.8.2`** in this table's cached row (stale — the actual pin per
+`133-01-SUMMARY.md`/`133-02-SUMMARY.md` is `v1.9.0`, a pre-existing drift this plan does not fix);
+the `v1.10.0` repin is **pending** at write time and lands in **SecondBrain Phase 135 Plan 03**;
+**CalTracker pins
 `v1.5.0`** (repinned
 Phase 48, REL-01) — the hub's own additive-growth tag it was authorized to consume (the hub's own
 latest tag has since moved to `v1.9.0` via an unrelated SecondBrain session, not a CalTracker task;
@@ -305,6 +318,25 @@ source-compatible** with `v1.8.2` — no public composable removed or renamed, n
 required — as proven by the `apiCheck` lane passing clean, confined to exactly the two intended
 `VoiceCardKt.VoiceCard`/`AlbumCardKt.AlbumCard` signature lines. The first consumer repin
 (SecondBrain) is **pending** at write time and lands in **SB v2.1 Phase 133 Plan 03**.
+
+`v1.10.0` was cut in **SecondBrain v2.1 Phase 135 Plan 02**, an autonomous minor bump — the owner's
+tag-cut checkpoint is waived for this personal-use hub ecosystem (2026-08-20,
+`[[personal-app-tag-cut-gate-waived]]`, Option C) — on top of **Phase 135 Plan 01**'s verified hub
+work (commit `6ddc1f212c51ab4e6a5862aa5be386efe986d9b1`). Green-gate evidence: full
+`testDebugUnitTest`, `detekt` at its unchanged baseline (`config/detekt-baseline.xml` diff empty),
+Metalava `apiCheck`, and `compileDebugKotlin` — all re-run green in Task 1 on the exact commit
+being tagged, independently of Plan 01's own recorded verification. The tag carries, by requirement
+id: **MIND-10** (Phase 135's D-02 decision) — `HeatTier` widened from four to six discrete tiers
+(`COOL, BRISK, MILD, WARM, HOT, BLAZING`), with `BRISK` and `BLAZING` bridging the blue-to-amber gap
+and deepening the top band; `heatTier()`'s cut points retuned to `0.08/0.18/0.30/0.45/0.65`, with the
+top cut point (`0.65`) deliberately unchanged from the pre-phase HOT boundary so the prior "strongly
+related" semantic is preserved; `heatVisual()`'s stroke-width (`1.0–2.5dp`) and radius (`8–20dp`)
+scales widened to six stops, with the radius ceiling deliberately held at 20dp so consumers' fixed
+hub-node size needs no change; and `HeatSwatch` now renders six live samples. Every changed
+signature is **additive/source-compatible** with `v1.9.0` — no public composable removed or
+renamed, no parameter made required — as proven by the `apiCheck` lane passing clean with exactly
+two `enum_constant` lines added (`BRISK`, `BLAZING`) and zero removed. The first consumer repin
+(SecondBrain) is **pending** at write time and lands in **SB v2.1 Phase 135 Plan 03**.
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
