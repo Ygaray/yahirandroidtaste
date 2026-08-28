@@ -1,14 +1,18 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.filled.CheckBox
@@ -27,6 +31,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -39,16 +44,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.github.ygaray.yahirandroidtaste.component.CardBase
 import io.github.ygaray.yahirandroidtaste.component.titleSlotVisible
+import io.github.ygaray.yahirandroidtaste.icon.cardTypeIcon
 import io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor
 import io.github.ygaray.yahirandroidtaste.model.ListItemUiModel
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
+import io.github.ygaray.yahirandroidtaste.theme.TactileType
 
 /**
  * List card face component with expand/collapse, swipe gestures, three-dot menu, and bottom sheet.
@@ -59,7 +71,8 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  * - CHECKBOX: read-only CheckBox/CheckBoxOutlineBlank icons (D-06)
  *
  * Expand/collapse: collapsed shows ≤3 items, expanded shows ≤10 items.
- * Footer: progress badge for CHECKBOX sub-type, OpenInFull → opens bottom sheet, expand arrow.
+ * Footer: OpenInFull → opens bottom sheet, expand arrow. The CHECKBOX completion signal ("N / M"
+ * pill + a thin progress bar) lives in the header/body, not the footer (Phase 132 FACE-02).
  * Swipe: left=Delete (D-04), right=opens list content editor (D-05). Reveal-then-confirm via CardBase.
  *
  * @param id Stable ID for keyed remember state.
@@ -104,6 +117,14 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  *   Edit sheet. When non-null, the three-dot "Edit" row invokes it (mirroring Voice); when null
  *   (default), the row falls back to this card's local tag-less rename dialog, so every existing
  *   call site compiles and behaves as before. The consumer app wires it at Phase 113.
+ * @param accent FACE-02: caller-supplied per-card colour, forwarded verbatim into [CardBase]'s
+ *   accent spine, into the header [CardTypeChip], and into the completion pill/progress bar. The
+ *   hub performs zero tag-resolution of its own — `:app`'s `CardAccentResolver` (Phase 131)
+ *   resolves the actual value. `null` (default) renders every accent-reading surface in its
+ *   designed neutral state.
+ * @param tactileDepth FACE-02: opts this card into [CardBase]'s Tactile depth-card chrome —
+ *   elevation, corner radius, and the accent spine. Defaults to `false` so every pre-existing call
+ *   site renders exactly as before until the consumer app opts in (Phase 132 Plan 03).
  */
 @Composable
 fun ListCard(
@@ -135,7 +156,9 @@ fun ListCard(
     onTagEdit: ((tagId: String) -> Unit)? = null,
     onTagDelete: ((tagId: String, name: String) -> Unit)? = null,
     onTagRemoveFromCard: ((tagId: String) -> Unit)? = null,
-    onEditRequest: (() -> Unit)? = null
+    onEditRequest: (() -> Unit)? = null,
+    accent: Color? = null,
+    tactileDepth: Boolean = false
 ) {
     // Re-keyed by id so state resets correctly when a different card occupies this slot (UIQ-02).
     var isExpanded by remember(id) { mutableStateOf(false) }
@@ -175,8 +198,23 @@ fun ListCard(
                 }
             )
         },
-        headerContent = if (!titleSlotVisible(title)) null else {
-            { ListCardHeaderContent(title = title, isPinned = isPinned, isFavorite = isFavorite) }
+        // PD-3 (132-01-PLAN.md): widened from `if (!titleSlotVisible(title)) null else` — a
+        // titleless CHECKBOX list with completion items must still render the header row for its
+        // completion pill, mirroring VoiceCard.kt:542-546's identical shape.
+        headerContent = if (!titleSlotVisible(title) && !listCompletionVisible(subType, items.size)) {
+            null
+        } else {
+            {
+                ListCardHeaderContent(
+                    title = title,
+                    isPinned = isPinned,
+                    isFavorite = isFavorite,
+                    accent = accent,
+                    subType = subType,
+                    completed = items.count { it.isCompleted },
+                    total = items.size
+                )
+            }
         },
         bodyContent = {
             ListCardBodyContent(
@@ -184,7 +222,8 @@ fun ListCard(
                 subType = subType,
                 categoryPath = categoryPath,
                 isExpanded = isExpanded,
-                titleAbsent = titleAbsent
+                titleAbsent = titleAbsent,
+                accent = accent
             )
         },
         // WR-01: caller owns "no tags → no slot" — pass null so CardBase composes no tag-row Box
@@ -204,20 +243,20 @@ fun ListCard(
         // G2-01/D-05: emits ONLY the trailing icon cluster — no inner fillMaxWidth/SpaceBetween
         // wrapper — so it slots directly into CardBase's combined bottom row (tags leading,
         // footer + the single relocated MoreVert trailing, one Row, SpaceBetween owned by
-        // CardBase). The CHECKBOX progress badge is pre-existing card-face functionality kept
-        // alongside the icon cluster (not called out by 52-UI-SPEC §5's icon-only wording, but
-        // dropping it would be an unplanned regression — it self-suppresses for non-CHECKBOX
-        // sub-types / empty lists, same as before).
+        // CardBase). The CHECKBOX completion signal that used to live here (a plain-text "N/M
+        // done" footer label) moved to the header's ListCompletionPill in Phase 132 (FACE-02,
+        // RESEARCH Pitfall 4) — rendering it in both places would duplicate the same count.
         footerContent = {
             ListCardFooterContent(
-                subType = subType,
                 items = items,
                 isExpanded = isExpanded,
                 onExpandChange = { isExpanded = it },
                 onShowBottomSheet = onShowBottomSheet
             )
         },
-        modifier = modifier
+        modifier = modifier,
+        accent = accent,
+        tactileDepth = tactileDepth
     )
 
     // Bottom sheet — only composed when shown; state is lifted to CardListSection (WR-06)
@@ -339,28 +378,45 @@ private fun ListCardDropdownMenuContent(
 }
 
 /**
- * Header row content (title + pin/favorite indicators) — extracted from [ListCard] (DETEKT-02
- * pre-req refactor, 97-03).
+ * Header row content (type chip + title + pin/favorite indicators + completion pill) —
+ * extracted from [ListCard] (DETEKT-02 pre-req refactor, 97-03; restyled Phase 132 FACE-02).
  */
 @Composable
 private fun RowScope.ListCardHeaderContent(
     title: String,
     isPinned: Boolean,
-    isFavorite: Boolean
+    isFavorite: Boolean,
+    accent: Color?,
+    subType: String,
+    completed: Int,
+    total: Int
 ) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleMedium,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-        modifier = Modifier
-            .weight(1f)
-            .padding(
-                start = Dimens.HorizontalPadding,
-                top = Dimens.TopPadding,
-                bottom = Dimens.ContentSpacing
-            )
-    )
+    // Type chip (FACE-02, Phase 132 DS-02): leads the header, carries the 16dp leading inset
+    // the title used to own (PD-1). No explicit tint — the chip resolves the icon's size and
+    // colour itself via LocalContentColor.
+    CardTypeChip(
+        accent = accent,
+        modifier = Modifier.padding(start = Dimens.HorizontalPadding, top = Dimens.TopPadding)
+    ) {
+        Icon(imageVector = cardTypeIcon("LIST"), contentDescription = null)
+    }
+    // Title — independently conditional (PD-3) so a titleless CHECKBOX list with a completion
+    // pill still renders no title, while the header row itself stays composed for the pill.
+    if (titleSlotVisible(title)) {
+        Text(
+            text = title,
+            style = TactileType.CardTitle,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .weight(1f)
+                .padding(
+                    start = Dimens.ChipToTitleGap,
+                    top = Dimens.TopPadding,
+                    bottom = Dimens.ContentSpacing
+                )
+        )
+    }
     // Pin indicator
     if (isPinned) {
         Icon(
@@ -379,11 +435,134 @@ private fun RowScope.ListCardHeaderContent(
             tint = MaterialTheme.colorScheme.tertiary
         )
     }
+    // Completion pill (FACE-02) — trailing-most element, gated on the one shared
+    // listCompletionVisible predicate the body progress bar and this header gate also read.
+    if (listCompletionVisible(subType, total)) {
+        ListCompletionPill(
+            completed = completed,
+            total = total,
+            accent = accent,
+            modifier = Modifier.padding(end = Dimens.HorizontalPadding)
+        )
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Completion pill + progress bar (Phase 132 FACE-02 DS-02) — CHECKBOX-only signal
+// ---------------------------------------------------------------------------
+
+/**
+ * Single source of truth for whether a List card face shows any completion UI — the header
+ * pill, the body progress bar, and the widened [ListCard] header gate (PD-3, 132-01-PLAN.md) all
+ * read this one predicate so they can never drift apart or disagree. Reproduces the exact
+ * predicate the outgoing footer completion text already used (RESEARCH Pitfall 4): an equality
+ * check against the stored `"CHECKBOX"` token — case-sensitive, matching the pre-existing footer
+ * gate exactly, never silently widened to a case-insensitive match — ANDed with a non-empty item
+ * list so a zero-item list reserves no space (conditional-render-no-dead-space).
+ *
+ * `internal` rather than `private` for the same reason [voiceClipPillCopy] is: Metalava excludes
+ * Kotlin `internal` from `api.txt`, so this widens no published surface while making the
+ * predicate directly unit-testable without composing a card this module's Robolectric harness
+ * cannot render.
+ */
+internal fun listCompletionVisible(subType: String, itemCount: Int): Boolean =
+    subType == "CHECKBOX" && itemCount > 0
+
+/**
+ * Pure "N / M" completion pill copy builder (Phase 132 FACE-02) — a single fixed template with
+ * no singular/plural branch (unlike [voiceClipPillCopy], whose copy genuinely pluralizes a
+ * noun): renders identically at `0 / M` and `M / M`. `internal` for the same Metalava-exclusion
+ * reason as [listCompletionVisible].
+ */
+internal fun listCompletionPillCopy(completed: Int, total: Int): String = "$completed / $total"
+
+/**
+ * Pure, divide-by-zero-guarded completion fraction (Phase 132 FACE-02, T-132-01-02) — returns
+ * `0f` when [total] is not positive, otherwise `completed.toFloat() / total`. The guard is
+ * load-bearing: an unguarded division would produce `NaN` and feed it to
+ * [LinearProgressIndicator]. `internal` for the same Metalava-exclusion reason as
+ * [listCompletionVisible].
+ */
+internal fun listCompletionFraction(completed: Int, total: Int): Float =
+    if (total <= 0) 0f else completed.toFloat() / total
+
+/**
+ * "N / M" completion header pill (Phase 132 FACE-02 DS-02) — adapts [CountBadge]'s pill *shape*
+ * (D-02) but NOT its colour formula. [CountBadge] derives its foreground via
+ * [contrastingForeground] and its container as an 18%-alpha wash of that same foreground — a
+ * formula built for the Home dashboard tile where the tile itself IS the accent colour. Reused
+ * verbatim on a white card surface it resolves to white-on-white for any mid-to-dark accent —
+ * invisible.
+ *
+ * ⚠ Deliberate deviation, mirroring [CardTypeChip]'s own "deliberate deviation" note: this pill
+ * instead adopts [CardTypeChip]'s colour pairing — background via [accentTint] (or
+ * `colorScheme.surfaceVariant` when [accent] is null), foreground at full accent strength (or
+ * `colorScheme.onSurfaceVariant` when null) — so the two badges on the same untagged card render
+ * identically, and a mid-to-dark accent stays legible on the white card surface. Never
+ * force-unwraps [accent]; the null branch is a designed neutral state, not an error path
+ * (T-132-01-03).
+ */
+@Composable
+private fun ListCompletionPill(
+    completed: Int,
+    total: Int,
+    accent: Color?,
+    modifier: Modifier = Modifier
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    val backgroundColor = if (accent != null) {
+        accentTint(accent, colorScheme)
+    } else {
+        colorScheme.surfaceVariant
+    }
+    val foregroundColor = accent ?: colorScheme.onSurfaceVariant
+
+    Box(
+        modifier = modifier
+            .clip(CircleShape)
+            .background(backgroundColor)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+    ) {
+        Text(
+            text = listCompletionPillCopy(completed, total),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = foregroundColor
+        )
+    }
 }
 
 /**
- * Body content (item list preview + category path) — extracted from [ListCard] (DETEKT-02
- * pre-req refactor, 97-03).
+ * 4dp accent-tinted completion progress bar (Phase 132 FACE-02 DS-02) — a bare Material3
+ * [LinearProgressIndicator] call, mirroring [MetricBar]'s exact call shape (D-02: [MetricBar] is
+ * NOT used wholesale). Deliberately thinner than [MetricBar]'s 14dp — this is a compact
+ * card-face signal, not a hero metric widget. `trackColor = colorScheme.outline`, not
+ * `surfaceVariant`/`outlineVariant`: [MetricBar]'s own recorded finding is that on this fixed
+ * palette those alternatives collapse against `surfaceVariant`/`surface` in one theme or the
+ * other; only `outline` stays visibly distinct in BOTH color schemes. Never force-unwraps
+ * [accent] — `color = accent ?: onSurfaceVariant` is the designed neutral fallback, mirroring
+ * [ListCompletionPill]'s own null-safe colour pairing.
+ */
+@Composable
+private fun ListCompletionProgressBar(
+    fraction: Float,
+    accent: Color?,
+    modifier: Modifier = Modifier
+) {
+    LinearProgressIndicator(
+        progress = { fraction },
+        modifier = modifier
+            .fillMaxWidth()
+            .height(4.dp),
+        color = accent ?: MaterialTheme.colorScheme.onSurfaceVariant,
+        trackColor = MaterialTheme.colorScheme.outline,
+        strokeCap = StrokeCap.Round
+    )
+}
+
+/**
+ * Body content (completion progress bar + item list preview + category path) — extracted from
+ * [ListCard] (DETEKT-02 pre-req refactor, 97-03; extended Phase 132 FACE-02).
  */
 @Composable
 private fun ListCardBodyContent(
@@ -391,11 +570,27 @@ private fun ListCardBodyContent(
     subType: String,
     categoryPath: String?,
     isExpanded: Boolean,
-    titleAbsent: Boolean
+    titleAbsent: Boolean,
+    accent: Color?
 ) {
     val displayedItems = if (isExpanded) items.take(10) else items.take(3)
+    val completionVisible = listCompletionVisible(subType, items.size)
 
     Column(modifier = Modifier.fillMaxWidth().animateContentSize()) {
+        // COMPLETION PROGRESS BAR (FACE-02) — first child, ahead of the item rows; shares the
+        // one listCompletionVisible gate with the header pill so they can never drift apart.
+        if (completionVisible) {
+            ListCompletionProgressBar(
+                fraction = listCompletionFraction(items.count { it.isCompleted }, items.size),
+                accent = accent,
+                modifier = Modifier.padding(
+                    start = Dimens.HorizontalPadding,
+                    end = Dimens.HorizontalPadding,
+                    top = Dimens.CompactPadding
+                )
+            )
+        }
+
         // ITEM LIST — collapsed ≤3, expanded ≤10
         if (items.isEmpty()) {
             Text(
@@ -414,7 +609,9 @@ private fun ListCardBodyContent(
             Column(
                 modifier = Modifier.padding(
                     start = Dimens.HorizontalPadding,
-                    top = Dimens.ContentSpacing,
+                    // 12dp rhythm below the progress bar (FACE-02) when it's showing; the
+                    // standard 4dp ContentSpacing rhythm otherwise — unchanged from before.
+                    top = if (completionVisible) Dimens.CompactPadding else Dimens.ContentSpacing,
                     // D-04: 48dp end clearance so floating overlay doesn't occlude first line
                     end = if (titleAbsent) 48.dp else Dimens.HorizontalPadding,
                     bottom = Dimens.ContentSpacing
@@ -448,25 +645,18 @@ private fun ListCardBodyContent(
 }
 
 /**
- * Trailing icon cluster (progress badge, expand/collapse, open-in-editor) — extracted from
- * [ListCard] (DETEKT-02 pre-req refactor, 97-03).
+ * Trailing icon cluster (expand/collapse, open-in-editor) — extracted from [ListCard]
+ * (DETEKT-02 pre-req refactor, 97-03). The CHECKBOX completion signal that used to render here
+ * moved to the header's [ListCompletionPill] in Phase 132 (FACE-02, RESEARCH Pitfall 4) — this
+ * footer no longer reads `subType` or the completed-item count.
  */
 @Composable
 private fun ListCardFooterContent(
-    subType: String,
     items: List<ListItemUiModel>,
     isExpanded: Boolean,
     onExpandChange: (Boolean) -> Unit,
     onShowBottomSheet: () -> Unit
 ) {
-    if (subType == "CHECKBOX" && items.isNotEmpty()) {
-        Text(
-            text = "${items.count { it.isCompleted }}/${items.size} done",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(end = 4.dp)
-        )
-    }
     // Expand arrow: shown when content overflows at stage 0
     if (items.size > 3 && !isExpanded) {
         IconButton(onClick = { onExpandChange(true) }) {
