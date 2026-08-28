@@ -171,6 +171,7 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public enum HeatTier {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.HeatTier BRISK;
     enum_constant public static final io.github.ygaray.yahirandroidtaste.component.HeatTier COOL;
     enum_constant public static final io.github.ygaray.yahirandroidtaste.component.HeatTier HOT;
     enum_constant public static final io.github.ygaray.yahirandroidtaste.component.HeatTier MILD;

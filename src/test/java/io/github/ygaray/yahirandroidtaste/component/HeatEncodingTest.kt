@@ -30,7 +30,9 @@ class HeatEncodingTest {
     @Test
     fun `tier boundary sweep matches pinned cut points`() {
         assertEquals(HeatTier.COOL, heatTier(0.0f))
-        assertEquals(HeatTier.COOL, heatTier(0.119f))
+        assertEquals(HeatTier.COOL, heatTier(0.079f))
+        assertEquals(HeatTier.BRISK, heatTier(0.08f))
+        assertEquals(HeatTier.BRISK, heatTier(0.119f))
         assertEquals(HeatTier.MILD, heatTier(0.12f))
         assertEquals(HeatTier.MILD, heatTier(0.349f))
         assertEquals(HeatTier.WARM, heatTier(0.35f))
@@ -57,11 +59,26 @@ class HeatEncodingTest {
     }
 
     @Test
-    fun `HeatTier entries has exactly four values in declaration order`() {
+    fun `HeatTier entries has exactly five values in declaration order`() {
         assertEquals(
-            listOf(HeatTier.COOL, HeatTier.MILD, HeatTier.WARM, HeatTier.HOT),
+            listOf(HeatTier.COOL, HeatTier.BRISK, HeatTier.MILD, HeatTier.WARM, HeatTier.HOT),
             HeatTier.entries
         )
+    }
+
+    @Test
+    fun `heatVisual BRISK sample matches the pinned hex, stroke and radius per theme`() {
+        // 0.10f, not 0.12f: this task's cut point is `j < 0.12f -> BRISK`, so 0.12f itself lands
+        // on the boundary and falls through to MILD (MILD's cut point is untouched this task).
+        // 0.10f is comfortably inside BRISK's actual 0.08-0.12 band, consistent with the boundary
+        // sweep test's own `heatTier(0.119f)` BRISK assertion above.
+        assertEquals(Color(0xFF38BDF8), heatVisual(0.10f, light).nodeFillColor)
+        assertEquals(Color(0xFF0EA5E9), heatVisual(0.10f, dark).nodeFillColor)
+        assertEquals(Color(0xFFBAE6FD), heatVisual(0.10f, light).edgeColor)
+        // BRISK's dark edge derives from BRISK's own LIGHT node fill (the hub's documented rule).
+        assertEquals(Color(0xFF38BDF8), heatVisual(0.10f, dark).edgeColor)
+        assertEquals(1.3.dp, heatVisual(0.10f, light).edgeStrokeWidth)
+        assertEquals(10.dp, heatVisual(0.10f, light).nodeRadius)
     }
 
     // -----------------------------------------------------------------------------------------

@@ -34,7 +34,7 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
 @Composable
 fun HeatSwatch(modifier: Modifier = Modifier) {
     val colorScheme = MaterialTheme.colorScheme
-    val samples = listOf(0.05f, 0.2f, 0.5f, 0.8f)
+    val samples = listOf(0.04f, 0.12f, 0.2f, 0.5f, 0.8f)
     val visuals = samples.map { heatVisual(it, colorScheme) }
     val hubVisual = visuals.last() // The HOT sample's node, per the distinct-hub example spec.
 

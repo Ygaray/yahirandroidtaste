@@ -93,7 +93,7 @@ fun relatednessVisual(jaccard: Float, colorScheme: ColorScheme): RelatednessVisu
  * independent siblings is the locked decision; a `mode` parameter threaded through the existing
  * ramp is the named anti-pattern this shape avoids.
  */
-enum class HeatTier { COOL, MILD, WARM, HOT }
+enum class HeatTier { COOL, BRISK, MILD, WARM, HOT }
 
 /**
  * The visual encoding for a [HeatTier] — node fill color, edge color, edge stroke width, and node
@@ -130,7 +130,8 @@ data class HeatVisual(
 fun heatTier(jaccard: Float): HeatTier {
     val j = if (jaccard.isNaN()) 0f else jaccard.coerceIn(0f, 1f)
     return when {
-        j < 0.12f -> HeatTier.COOL
+        j < 0.08f -> HeatTier.COOL
+        j < 0.12f -> HeatTier.BRISK
         j < 0.35f -> HeatTier.MILD
         j < 0.65f -> HeatTier.WARM
         else -> HeatTier.HOT
@@ -162,6 +163,12 @@ fun heatVisual(jaccard: Float, colorScheme: ColorScheme): HeatVisual {
             edgeColor = if (isDark) Color(0xFF60A5FA) else Color(0xFFBFDBFE),
             edgeStrokeWidth = 1.dp,
             nodeRadius = 8.dp
+        )
+        HeatTier.BRISK -> HeatVisual(
+            nodeFillColor = if (isDark) Color(0xFF0EA5E9) else Color(0xFF38BDF8),
+            edgeColor = if (isDark) Color(0xFF38BDF8) else Color(0xFFBAE6FD),
+            edgeStrokeWidth = 1.3.dp,
+            nodeRadius = 10.dp
         )
         HeatTier.MILD -> HeatVisual(
             nodeFillColor = if (isDark) Color(0xFFF59E0B) else Color(0xFFFBBF24),
