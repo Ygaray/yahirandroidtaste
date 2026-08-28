@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
@@ -28,8 +30,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor
 import io.github.ygaray.yahirandroidtaste.modifier.SwipeableActionRow
@@ -90,6 +98,21 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  * @param footerContent Optional bottom row slot — now the TRAILING element of the combined bottom
  *   row (see above), alongside the [showThreeDot] `MoreVert` trigger.
  * @param modifier Modifier applied to the outermost [SwipeableActionRow].
+ * @param accent Optional per-card accent [Color] supplied by the caller (Phase 129 DS-02 D-01).
+ *   The hub performs no tag-resolution logic — Phase 131's app-side resolver supplies the actual
+ *   value; this param only renders whatever [Color] it is handed. Drives the depth-card accent
+ *   spine when [tactileDepth] is true. `null` renders the neutral
+ *   `MaterialTheme.colorScheme.outlineVariant` spine fallback (UI-SPEC E2 empty) rather than a
+ *   transparent or unpainted region — a designed state, not an omission.
+ * @param tactileDepth Gates the whole Tactile depth-card chrome bundle — [Dimens.Elevation.Level3]
+ *   elevation, a [Dimens.CornerRadius.Card]-radius shape, and the [accent] spine — behind a single
+ *   opt-in flag (Phase 129 D-03, 129-01-PLAN.md Planner Decision 1). Defaults to `false` so every
+ *   pre-existing call site (`TextCard`/`ListCard`/`AlbumCard`/`VoiceCard`) renders byte-identically
+ *   and composes a structurally identical node tree — no wrapper node is emitted at all on the
+ *   default path — until a face explicitly opts in (Phases 132/133). Because the `true`/`false`
+ *   branches are distinct call sites, flipping this flag at runtime re-keys the subtree: any
+ *   `remember` a caller holds inside its content slots resets on the flip. No production consumer
+ *   flips it after first composition — only the Explorer Playground toggle does.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -111,10 +134,83 @@ fun CardBase(
     headerContent: (@Composable RowScope.() -> Unit)? = null,
     bodyContent: (@Composable ColumnScope.() -> Unit)? = null,
     tagRowContent: (@Composable () -> Unit)? = null,
-    footerContent: (@Composable RowScope.() -> Unit)? = null
+    footerContent: (@Composable RowScope.() -> Unit)? = null,
+    // Tactile depth chrome (Phase 129 DS-02 D-01/D-03) — both default to inert so every
+    // pre-existing call site renders byte-identically and composes an unchanged node tree.
+    accent: Color? = null,
+    tactileDepth: Boolean = false
 ) {
     val hapticFeedback = LocalHapticFeedback.current
     var showMenu by remember { mutableStateOf(false) }
+    val neutralSpineColor = MaterialTheme.colorScheme.outlineVariant
+
+    // Hoisted out of the Card so both tactileDepth branches invoke the exact same content —
+    // a pure hoist, no behavioral delta (129-REVIEWS.md cycle-1 MEDIUM, Planner Decision 7).
+    val cardColumnContent: @Composable ColumnScope.() -> Unit = {
+        // Header slot — renders only headerContent; no overflow trigger here anymore
+        // (the single MoreVert trigger now lives in the combined bottom row below).
+        if (headerContent != null) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                headerContent()
+            }
+        }
+
+        // Body slot — unchanged
+        if (bodyContent != null) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Column { bodyContent() }
+            }
+        }
+
+        // Combined bottom row (G2-01/D-05/D-06): tag cluster leading, footer content +
+        // the single relocated MoreVert trigger trailing, one Row, SpaceBetween. Renders
+        // whenever any of {tagRowContent, footerContent, showThreeDot} is present; the
+        // leading Box is always emitted as a layout node (even when empty) so
+        // SpaceBetween still right-aligns the trailing cluster on an untagged card.
+        if (tagRowContent != null || footerContent != null || showThreeDot) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = Dimens.HorizontalPadding,
+                        vertical = Dimens.BottomPadding
+                    ),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(modifier = Modifier.weight(1f, fill = false)) {
+                    if (tagRowContent != null) {
+                        tagRowContent()
+                    }
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (footerContent != null) {
+                        footerContent()
+                    }
+                    if (showThreeDot) {
+                        Box {
+                            IconButton(
+                                onClick = { showMenu = true }
+                                // No Modifier.size() — M3 default 48dp touch target (UIQ-01)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = "More options",
+                                    modifier = Modifier.size(Dimens.Icons.MenuIcon),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            DropdownMenu(
+                                expanded = showMenu,
+                                onDismissRequest = { showMenu = false },
+                                content = { dropdownMenuContent { showMenu = false } }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     SwipeableActionRow(
         onDeleteClick = onDeleteClick,
@@ -135,72 +231,44 @@ fun CardBase(
                         onLongClick()
                     }
                 ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            shape = if (tactileDepth) RoundedCornerShape(Dimens.CornerRadius.Card) else CardDefaults.shape,
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = if (tactileDepth) {
+                    Dimens.Elevation.Level3
+                } else {
+                    // Deliberately NOT tokenized: the nearest Elevation ladder level is Level2
+                    // (3dp), and swapping this literal for it would be a visual regression for
+                    // every pre-repin consumer (D-03 forbids restructuring the ladder itself, and
+                    // this legacy branch must not silently drift either).
+                    2.dp
+                }
+            )
         ) {
-            Column {
-                // Header slot — renders only headerContent; no overflow trigger here anymore
-                // (the single MoreVert trigger now lives in the combined bottom row below).
-                if (headerContent != null) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        headerContent()
-                    }
-                }
-
-                // Body slot — unchanged
-                if (bodyContent != null) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Column { bodyContent() }
-                    }
-                }
-
-                // Combined bottom row (G2-01/D-05/D-06): tag cluster leading, footer content +
-                // the single relocated MoreVert trigger trailing, one Row, SpaceBetween. Renders
-                // whenever any of {tagRowContent, footerContent, showThreeDot} is present; the
-                // leading Box is always emitted as a layout node (even when empty) so
-                // SpaceBetween still right-aligns the trailing cluster on an untagged card.
-                if (tagRowContent != null || footerContent != null || showThreeDot) {
-                    Row(
+            if (tactileDepth) {
+                Box(modifier = Modifier.testTag("card_depth_container")) {
+                    Column(content = cardColumnContent)
+                    Spacer(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = Dimens.HorizontalPadding,
-                                vertical = Dimens.BottomPadding
-                            ),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(modifier = Modifier.weight(1f, fill = false)) {
-                            if (tagRowContent != null) {
-                                tagRowContent()
-                            }
-                        }
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            if (footerContent != null) {
-                                footerContent()
-                            }
-                            if (showThreeDot) {
-                                Box {
-                                    IconButton(
-                                        onClick = { showMenu = true }
-                                        // No Modifier.size() — M3 default 48dp touch target (UIQ-01)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.MoreVert,
-                                            contentDescription = "More options",
-                                            modifier = Modifier.size(Dimens.Icons.MenuIcon),
-                                            tint = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    }
-                                    DropdownMenu(
-                                        expanded = showMenu,
-                                        onDismissRequest = { showMenu = false },
-                                        content = { dropdownMenuContent { showMenu = false } }
-                                    )
+                            .matchParentSize()
+                            .testTag("card_accent_spine")
+                            .drawBehind {
+                                val spineColor = accent ?: neutralSpineColor
+                                val spineWidthPx = Dimens.AccentSpineWidth.toPx()
+                                val leadingEdgeX = if (layoutDirection == LayoutDirection.Rtl) {
+                                    size.width - spineWidthPx
+                                } else {
+                                    0f
                                 }
+                                drawRect(
+                                    color = spineColor,
+                                    topLeft = Offset(x = leadingEdgeX, y = 0f),
+                                    size = Size(width = spineWidthPx, height = size.height)
+                                )
                             }
-                        }
-                    }
+                    )
                 }
+            } else {
+                Column(content = cardColumnContent)
             }
         }
     }

@@ -73,7 +73,7 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public final class CardBaseKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void CardBase(androidx.compose.runtime.MutableState<androidx.compose.foundation.gestures.AnchoredDraggableState<io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor>?> openRowState, optional androidx.compose.ui.Modifier modifier, optional boolean showDragHandle, optional boolean showThreeDot, optional kotlin.jvm.functions.Function0<kotlin.Unit> onDeleteClick, optional kotlin.jvm.functions.Function0<kotlin.Unit> onEditClick, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional kotlin.jvm.functions.Function0<kotlin.Unit> onLongClick, optional kotlin.jvm.functions.Function2<androidx.compose.foundation.layout.ColumnScope,kotlin.jvm.functions.Function0<kotlin.Unit>,kotlin.Unit> dropdownMenuContent, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.RowScope,kotlin.Unit>? headerContent, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit>? bodyContent, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tagRowContent, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.RowScope,kotlin.Unit>? footerContent);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void CardBase(androidx.compose.runtime.MutableState<androidx.compose.foundation.gestures.AnchoredDraggableState<io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor>?> openRowState, optional androidx.compose.ui.Modifier modifier, optional boolean showDragHandle, optional boolean showThreeDot, optional kotlin.jvm.functions.Function0<kotlin.Unit> onDeleteClick, optional kotlin.jvm.functions.Function0<kotlin.Unit> onEditClick, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional kotlin.jvm.functions.Function0<kotlin.Unit> onLongClick, optional kotlin.jvm.functions.Function2<androidx.compose.foundation.layout.ColumnScope,kotlin.jvm.functions.Function0<kotlin.Unit>,kotlin.Unit> dropdownMenuContent, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.RowScope,kotlin.Unit>? headerContent, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit>? bodyContent, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tagRowContent, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.RowScope,kotlin.Unit>? footerContent, optional androidx.compose.ui.graphics.Color? accent, optional boolean tactileDepth);
   }
 
   public final class CardEditorShellContentKt {
@@ -955,6 +955,7 @@ package io.github.ygaray.yahirandroidtaste.modifier {
 package io.github.ygaray.yahirandroidtaste.theme {
 
   public final class Dimens {
+    property public androidx.compose.ui.unit.Dp AccentSpineWidth;
     property public androidx.compose.ui.unit.Dp BottomPadding;
     property public androidx.compose.ui.unit.Dp CompactPadding;
     property public androidx.compose.ui.unit.Dp ContentSpacing;
@@ -967,6 +968,7 @@ package io.github.ygaray.yahirandroidtaste.theme {
   }
 
   public static final class Dimens.CornerRadius {
+    property public androidx.compose.ui.unit.Dp Card;
     property public androidx.compose.ui.unit.Dp Large;
     property public androidx.compose.ui.unit.Dp Medium;
     property public androidx.compose.ui.unit.Dp Small;
@@ -984,6 +986,7 @@ package io.github.ygaray.yahirandroidtaste.theme {
   }
 
   public static final class Dimens.Icons {
+    property public androidx.compose.ui.unit.Dp ChipIcon;
     property public androidx.compose.ui.unit.Dp DragHandle;
     property public androidx.compose.ui.unit.Dp MenuButton;
     property public androidx.compose.ui.unit.Dp MenuIcon;

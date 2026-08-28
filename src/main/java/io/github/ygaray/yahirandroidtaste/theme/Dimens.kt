@@ -66,6 +66,13 @@ object Dimens {
      */
     val HairlineBorder: Dp = 1.dp
 
+    /**
+     * Width of [CardBase]'s opt-in Tactile depth-card accent spine (Phase 129 DS-02 D-03) — the
+     * full-height leading-edge stripe rendered only when `tactileDepth = true`. Canvas-derived:
+     * `.planning/design/v2.1-card-faces/VoiceFace.dc.html`'s spine div is `width: 4px`.
+     */
+    val AccentSpineWidth: Dp = 4.dp
+
     /** Icon sizes shared across the standard icon strip and inline card controls. */
     object Icons {
         /** MoreVert IconButton container size. Also used for inline rename confirm/cancel buttons. */
@@ -76,6 +83,13 @@ object Dimens {
 
         /** DragHandle icon size. */
         val DragHandle: Dp = 24.dp
+
+        /**
+         * [CardTypeChip]'s icon slot size (Phase 129 DS-02 D-01). Canvas shows a 19px icon; this
+         * plan's 129-UI-SPEC.md snaps it to 18dp for design-system token conformance (see
+         * 129-01-PLAN.md Planner Decision 6).
+         */
+        val ChipIcon: Dp = 18.dp
     }
 
     /** Dimension tokens for the SwipeableActionRow reveal slots (D-07). */
@@ -106,6 +120,14 @@ object Dimens {
          * section. Additive only — not yet swapped into any call site this phase.
          */
         val Large: Dp = 28.dp
+
+        /**
+         * [CardBase]'s opt-in Tactile depth-card corner radius (Phase 129 DS-02 D-03),
+         * canvas-derived: `.planning/design/v2.1-card-faces/VoiceFace.dc.html`'s card container
+         * is `border-radius: 16px`. Applied only when `tactileDepth = true`; the default path
+         * keeps [CardDefaults.shape].
+         */
+        val Card: Dp = 16.dp
     }
 
     /**
