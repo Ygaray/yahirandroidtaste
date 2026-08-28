@@ -341,7 +341,7 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public final class VoiceCardKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void VoiceCard(String id, String title, long durationMs, String? samplesPath, String? categoryPath, boolean isPinned, boolean isFavorite, kotlin.jvm.functions.Function0<kotlin.Unit> onTap, kotlin.jvm.functions.Function0<kotlin.Unit> onDelete, kotlin.jvm.functions.Function0<kotlin.Unit> onTogglePin, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleFavorite, kotlin.jvm.functions.Function0<kotlin.Unit> onRenameOrTagsRequest, androidx.compose.runtime.MutableState<androidx.compose.foundation.gestures.AnchoredDraggableState<io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor>?> openRowState, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onManageLinks, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> tags, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTagClick, optional kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCloseSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagEdit, optional kotlin.jvm.functions.Function2<java.lang.String,java.lang.String,kotlin.Unit>? onTagDelete, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagRemoveFromCard);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void VoiceCard(String id, String title, long durationMs, String? samplesPath, String? categoryPath, boolean isPinned, boolean isFavorite, kotlin.jvm.functions.Function0<kotlin.Unit> onTap, kotlin.jvm.functions.Function0<kotlin.Unit> onDelete, kotlin.jvm.functions.Function0<kotlin.Unit> onTogglePin, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleFavorite, kotlin.jvm.functions.Function0<kotlin.Unit> onRenameOrTagsRequest, androidx.compose.runtime.MutableState<androidx.compose.foundation.gestures.AnchoredDraggableState<io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor>?> openRowState, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onManageLinks, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> tags, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTagClick, optional kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCloseSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagEdit, optional kotlin.jvm.functions.Function2<java.lang.String,java.lang.String,kotlin.Unit>? onTagDelete, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagRemoveFromCard, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.VoiceClipUiModel> clips);
   }
 
   public final class VoiceRenameTagsSheetKt {
@@ -928,6 +928,23 @@ package io.github.ygaray.yahirandroidtaste.model {
   public static final class TagSortMode.Companion {
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.TagSortMode getDEFAULT();
     property public io.github.ygaray.yahirandroidtaste.model.TagSortMode DEFAULT;
+  }
+
+  public final class VoiceClipUiModel {
+    ctor public VoiceClipUiModel(String id, int sortOrder, long durationMs, optional String? samplesPath);
+    method public String component1();
+    method public int component2();
+    method public long component3();
+    method public String? component4();
+    method public io.github.ygaray.yahirandroidtaste.model.VoiceClipUiModel copy(optional String id, optional int sortOrder, optional long durationMs, optional String? samplesPath);
+    method @InaccessibleFromKotlin public long getDurationMs();
+    method @InaccessibleFromKotlin public String getId();
+    method @InaccessibleFromKotlin public String? getSamplesPath();
+    method @InaccessibleFromKotlin public int getSortOrder();
+    property public long durationMs;
+    property public String id;
+    property public String? samplesPath;
+    property public int sortOrder;
   }
 
 }

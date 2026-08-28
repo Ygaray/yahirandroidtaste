@@ -1,14 +1,17 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.filled.Delete
@@ -34,17 +37,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.github.ygaray.yahirandroidtaste.component.CardBase
 import io.github.ygaray.yahirandroidtaste.component.WaveformCanvas
 import io.github.ygaray.yahirandroidtaste.component.downsample
 import io.github.ygaray.yahirandroidtaste.component.titleSlotVisible
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
+import io.github.ygaray.yahirandroidtaste.model.VoiceClipUiModel
 import io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import kotlinx.coroutines.Dispatchers
@@ -107,6 +115,64 @@ private fun formatDuration(ms: Long): String {
 }
 
 // ---------------------------------------------------------------------------
+// Clip-count header pill (Phase 129 DS-03 D-02)
+// ---------------------------------------------------------------------------
+
+/**
+ * Aggregate clip-count-and-total-duration header pill for [VoiceCard]'s clip-list header
+ * (Phase 129 DS-03 D-02). Renders in the neutral accent-fallback roles
+ * (`colorScheme.surfaceVariant` background / `onSurfaceVariant` text) rather than an accent
+ * tint: `VoiceCard` has no `accent` parameter of its own in this phase — D-01 scopes `accent` to
+ * [CardBase] only, and threading it through the individual card faces is Phase 132/133's job
+ * (129-03-PLAN.md Planner Decision 1). This is the specified null-accent fallback rendering, not
+ * a reduced version of the pill — the pill itself ships complete.
+ *
+ * @param clipCount Total number of clips, including any hidden/overflowed ones — not just the
+ *   visible/capped rows.
+ * @param totalDurationMs Sum of every clip's duration, including hidden/overflowed clips.
+ */
+@Composable
+private fun VoiceClipCountPill(
+    clipCount: Int,
+    totalDurationMs: Long,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(percent = 50))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+    ) {
+        Text(
+            text = voiceClipPillCopy(clipCount, totalDurationMs),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+/**
+ * Pure clip-count-and-total-duration pill copy builder (Phase 129 DS-03 D-02), extracted out of
+ * [VoiceClipCountPill] so it is directly unit-testable without composing the full [VoiceCard] —
+ * this hub's Robolectric harness cannot render any `CardBase`-based card at all (`CardBase`'s
+ * unconditional `SwipeableActionRow` throws `IllegalStateException` on the first frame; see
+ * `VoiceCardClipListTest`'s class KDoc for the full, already-documented precedent). `internal`
+ * rather than `private` for the same reason `readAmplitudeBars` is `internal` (task 2, Planner
+ * Decision 5): Metalava excludes Kotlin `internal` from `api.txt`, so this widens no published
+ * surface while making the copy logic testable from this module's own test source set.
+ *
+ * Branches on [clipCount] so the singular and plural forms are each a complete, readable literal
+ * — never a raw plural-suffix concatenation.
+ */
+internal fun voiceClipPillCopy(clipCount: Int, totalDurationMs: Long): String =
+    if (clipCount == 1) {
+        "$clipCount clip · ${formatDuration(totalDurationMs)}"
+    } else {
+        "$clipCount clips · ${formatDuration(totalDurationMs)}"
+    }
+
+// ---------------------------------------------------------------------------
 // VoiceCard composable
 // ---------------------------------------------------------------------------
 
@@ -162,6 +228,12 @@ private fun formatDuration(ms: Long): String {
  * @param onTagRemoveFromCard Phase 93 (TMENU-01/04/05): forwarded verbatim to [CardTagRow]'s
  *   [CardTagRow.onTagRemoveFromCard]. Null (default) omits the menu's "Remove from this card"
  *   item.
+ * @param clips Read-only clip list (Phase 129 DS-03 D-02). An empty default (the current state
+ *   of every existing call site) keeps the card's rendering exactly as it is today — the compact
+ *   overview waveform strip plus a standalone duration text. A non-empty list replaces those with
+ *   an aggregate clip-count-and-total-duration header pill and a capped set of read-only per-clip
+ *   mini-rows, each carrying no gesture of its own. The hub preserves the caller's list order and
+ *   never sorts, filters or dedupes it.
  */
 @Composable
 fun VoiceCard(
@@ -186,7 +258,8 @@ fun VoiceCard(
     onCloseSiblingsClick: (cardId: String) -> Unit = {},
     onTagEdit: ((tagId: String) -> Unit)? = null,
     onTagDelete: ((tagId: String, name: String) -> Unit)? = null,
-    onTagRemoveFromCard: ((tagId: String) -> Unit)? = null
+    onTagRemoveFromCard: ((tagId: String) -> Unit)? = null,
+    clips: List<VoiceClipUiModel> = emptyList()
 ) {
     // Load amplitude samples from .bin file on IO dispatcher
     var amplitudeBars by remember(samplesPath) { mutableStateOf<List<Float>>(emptyList()) }
@@ -308,21 +381,28 @@ fun VoiceCard(
                 }
             )
         },
-        headerContent = if (!titleSlotVisible(title)) null else {
+        // Planner Decision 4 (129-03-PLAN.md): the header slot must survive a blank title when
+        // clips are present, so it renders whenever the title is visible OR clips is non-empty —
+        // and the title Text inside it stays independently conditional so a blank title still
+        // renders nothing (conditional-render-no-dead-space).
+        headerContent = if (!titleSlotVisible(title) && clips.isEmpty()) null else {
             {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(
-                            start = Dimens.HorizontalPadding,
-                            top = Dimens.TopPadding,
-                            bottom = Dimens.ContentSpacing
-                        )
-                )
+                if (titleSlotVisible(title)) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("voice_card_title")
+                            .padding(
+                                start = Dimens.HorizontalPadding,
+                                top = Dimens.TopPadding,
+                                bottom = Dimens.ContentSpacing
+                            )
+                    )
+                }
                 // Pin / favourite indicators
                 if (isPinned) {
                     Icon(
@@ -338,6 +418,15 @@ fun VoiceCard(
                         contentDescription = "Favourite",
                         modifier = Modifier.size(16.dp),
                         tint = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+                // Clip-count header pill (Phase 129 DS-03 D-02) — trailing element, only when
+                // clips is non-empty. Total sums every clip, not just the visible/capped rows.
+                if (clips.isNotEmpty()) {
+                    VoiceClipCountPill(
+                        clipCount = clips.size,
+                        totalDurationMs = clips.sumOf { it.durationMs },
+                        modifier = Modifier.padding(end = Dimens.HorizontalPadding)
                     )
                 }
             }
