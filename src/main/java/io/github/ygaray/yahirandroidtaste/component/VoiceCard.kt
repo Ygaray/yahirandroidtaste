@@ -153,7 +153,14 @@ internal fun readAmplitudeBars(samplesPath: String?, targetBars: Int): List<Floa
             if (count < 0 || count > maxCount) {
                 emptyList()
             } else {
-                List(count) { dis.readFloat() }
+                // Clamp each decoded float (Phase 129 REVIEWS.md WR-01): a well-formed header
+                // with a corrupted/garbage float bit pattern can decode to NaN or Infinity. NaN
+                // in particular "wins" downsample()'s max() under IEEE total ordering (NaN
+                // compares greater than every other value, including +Infinity), so an
+                // unclamped NaN sample would flow into a Canvas drawRoundRect paint call as a
+                // NaN-sized rect. Clamp at the decode boundary so every returned bar is finite
+                // and within the documented 0f..1f range, regardless of what the bytes decoded to.
+                List(count) { dis.readFloat().let { if (it.isNaN()) 0f else it.coerceIn(0f, 1f) } }
             }
         }
     } catch (_: Exception) {

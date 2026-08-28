@@ -105,4 +105,23 @@ class AmplitudeBarsDecodeTest {
 
         assertEquals(emptyList<Float>(), bars)
     }
+
+    @Test
+    fun `a well-formed header with a NaN or Infinite payload value decodes to all-finite bars in 0f to 1f`() {
+        // 129-REVIEWS.md WR-01: the header count-vs-file-length guard only proves the DECLARED
+        // COUNT is trustworthy — it says nothing about the actual float bit patterns that follow.
+        // A corrupted/garbage float must still degrade to a finite, in-range value, never
+        // propagate as NaN/Infinity into the caller's Canvas paint call.
+        val samples = listOf(0.2f, Float.NaN, 0.6f, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY)
+        val file = writeAmplitudeSamplesFile(samples)
+
+        val bars = readAmplitudeBars(file.absolutePath, targetBars = 24)
+
+        assertTrue("Expected a non-empty bar list", bars.isNotEmpty())
+        assertTrue(
+            "Every decoded bar must be finite and within 0f..1f, even when the source bytes " +
+                "decoded to NaN/Infinity",
+            bars.all { it.isFinite() && it in 0f..1f }
+        )
+    }
 }
