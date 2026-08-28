@@ -494,13 +494,19 @@ internal fun listCompletionFraction(completed: Int, total: Int): Float =
  * verbatim on a white card surface it resolves to white-on-white for any mid-to-dark accent —
  * invisible.
  *
- * ⚠ Deliberate deviation, mirroring [CardTypeChip]'s own "deliberate deviation" note: this pill
- * instead adopts [CardTypeChip]'s colour pairing — background via [accentTint] (or
- * `colorScheme.surfaceVariant` when [accent] is null), foreground at full accent strength (or
- * `colorScheme.onSurfaceVariant` when null) — so the two badges on the same untagged card render
- * identically, and a mid-to-dark accent stays legible on the white card surface. Never
- * force-unwraps [accent]; the null branch is a designed neutral state, not an error path
- * (T-132-01-03).
+ * Background still adopts [CardTypeChip]'s colour pairing — [accentTint] (or
+ * `colorScheme.surfaceVariant` when [accent] is null). **Foreground is a deliberate departure
+ * from [CardTypeChip], not a copy of it (Gate-1 gap-closure, SC2/IN-01):** [CardTypeChip] draws a
+ * single glyph at full accent strength, which the original review accepted as "close enough" for
+ * an icon. This pill draws a 3-character numeric string a user must actually *read* — text is far
+ * more contrast-sensitive than an icon glyph — and on-device Gate-1 verification with a genuinely
+ * pale seeded accent (`0xFFFFF9C4`) measured the full-accent-strength formula at a WCAG contrast
+ * ratio of ≈1.01:1 against its own [accentTint] background (needs ≥4.5:1): both foreground and
+ * background converge toward the same pale hue, and the text becomes illegible. The foreground
+ * therefore resolves via [contrastingForeground] against the pill's own actual
+ * [backgroundColor] — never the raw [accent] — guaranteeing a readable Black/White pairing
+ * against *any* accent lightness (pale or dark). Never force-unwraps [accent]; the null branch is
+ * a designed neutral state, not an error path (T-132-01-03).
  */
 @Composable
 private fun ListCompletionPill(
@@ -515,7 +521,11 @@ private fun ListCompletionPill(
     } else {
         colorScheme.surfaceVariant
     }
-    val foregroundColor = accent ?: colorScheme.onSurfaceVariant
+    val foregroundColor = if (accent != null) {
+        contrastingForeground(backgroundColor)
+    } else {
+        colorScheme.onSurfaceVariant
+    }
 
     Box(
         modifier = modifier

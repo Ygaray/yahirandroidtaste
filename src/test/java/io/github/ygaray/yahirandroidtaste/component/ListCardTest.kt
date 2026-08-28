@@ -256,6 +256,45 @@ class ListCardTest {
     }
 
     @Test
+    fun `the pill foreground resolves through contrastingForeground against its own background, not the raw accent`() {
+        // Gate-1 gap-closure (SC2/IN-01): a pale seeded accent (0xFFFFF9C4) measured a WCAG
+        // contrast ratio of ~1.01:1 when the foreground was 'accent' at full strength drawn on
+        // 'accentTint(accent, colorScheme)' — both converge toward the same pale hue. The fix
+        // must derive the foreground from contrastingForeground(backgroundColor) so it always
+        // resolves to a readable Black/White pairing, regardless of accent lightness.
+        val src = readListCardSource()
+        val pillRegionStart = src.indexOf("private fun ListCompletionPill")
+        assertTrue(
+            "Could not locate 'private fun ListCompletionPill' in ListCard.kt",
+            pillRegionStart >= 0
+        )
+        val nextPrivateFun = src.indexOf(
+            "private fun ",
+            pillRegionStart + "private fun ".length
+        )
+        val pillRegion = if (nextPrivateFun >= 0) {
+            src.substring(pillRegionStart, nextPrivateFun)
+        } else {
+            src.substring(pillRegionStart)
+        }
+
+        assertTrue(
+            "ListCompletionPill's foreground must resolve via " +
+                "'contrastingForeground(backgroundColor)' when accent is non-null — computing " +
+                "contrast against the pill's own actual rendered background, not a hardcoded " +
+                "colour and not the raw accent value, so it stays legible against any accent " +
+                "lightness (pale or dark).",
+            pillRegion.contains("contrastingForeground(backgroundColor)")
+        )
+        assertTrue(
+            "ListCompletionPill must no longer assign 'foregroundColor = accent ?: ...' — that " +
+                "was the exact formula Gate-1 measured at ~1.01:1 contrast for a pale accent " +
+                "(SC2/IN-01), and reintroducing it would regress the fix.",
+            !pillRegion.contains("foregroundColor = accent ?:")
+        )
+    }
+
+    @Test
     fun `the progress bar track resolves through colorScheme_outline, not surfaceVariant or outlineVariant`() {
         val src = readListCardSource()
         assertEquals(
