@@ -271,7 +271,9 @@ class VoiceCardClipListTest {
     }
 
     @Test
-    fun `three clips render exactly two rows plus a singular overflow line`() {
+    fun `three clips render exactly three rows and no overflow line`() {
+        // D-02: cap raised to 3 (was 2) for cross-face consistency with LIST_PREVIEW_ITEM_LIMIT.
+        // At the new cap, 3 clips is exactly at the boundary — all three rows render, no overflow.
         composeTestRule.setContent {
             YahirAndroidTasteTheme {
                 VoiceClipRowsSection(
@@ -285,12 +287,56 @@ class VoiceCardClipListTest {
         }
         composeTestRule.waitForIdle()
 
-        rowNodes().assertCountEquals(2)
+        rowNodes().assertCountEquals(3)
+        composeTestRule.onNode(hasText("more clip", substring = true)).assertDoesNotExist()
+    }
+
+    @Test
+    fun `four clips render exactly three rows plus a singular overflow line`() {
+        // D-02 cap boundary case (`[[overflow-affordance-reserves-width]]`): the first clip past
+        // the raised cap of 3 must produce the singular "+1 more clip" branch, not the plural.
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme {
+                VoiceClipRowsSection(
+                    clips = listOf(
+                        VoiceClipUiModel(id = "c1", sortOrder = 0, durationMs = 10_000L),
+                        VoiceClipUiModel(id = "c2", sortOrder = 1, durationMs = 20_000L),
+                        VoiceClipUiModel(id = "c3", sortOrder = 2, durationMs = 30_000L),
+                        VoiceClipUiModel(id = "c4", sortOrder = 3, durationMs = 15_000L)
+                    )
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        rowNodes().assertCountEquals(3)
         composeTestRule.onNodeWithText("+1 more clip").assertExists()
     }
 
     @Test
-    fun `fifty clips still render exactly two rows plus a plural overflow line for the remainder`() {
+    fun `five clips render exactly three rows plus a plural overflow line`() {
+        // Proves the plural branch at the new cap of 3 (two hidden clips).
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme {
+                VoiceClipRowsSection(
+                    clips = listOf(
+                        VoiceClipUiModel(id = "c1", sortOrder = 0, durationMs = 10_000L),
+                        VoiceClipUiModel(id = "c2", sortOrder = 1, durationMs = 20_000L),
+                        VoiceClipUiModel(id = "c3", sortOrder = 2, durationMs = 30_000L),
+                        VoiceClipUiModel(id = "c4", sortOrder = 3, durationMs = 15_000L),
+                        VoiceClipUiModel(id = "c5", sortOrder = 4, durationMs = 25_000L)
+                    )
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        rowNodes().assertCountEquals(3)
+        composeTestRule.onNodeWithText("+2 more clips").assertExists()
+    }
+
+    @Test
+    fun `fifty clips still render exactly three rows plus a plural overflow line for the remainder`() {
         composeTestRule.setContent {
             YahirAndroidTasteTheme {
                 VoiceClipRowsSection(
@@ -300,8 +346,8 @@ class VoiceCardClipListTest {
         }
         composeTestRule.waitForIdle()
 
-        rowNodes().assertCountEquals(2)
-        composeTestRule.onNodeWithText("+48 more clips").assertExists()
+        rowNodes().assertCountEquals(3)
+        composeTestRule.onNodeWithText("+47 more clips").assertExists()
     }
 
     @Test
@@ -478,6 +524,172 @@ class VoiceCardClipListTest {
         assertEquals(0, countOccurrences(src, ".sortedWith("))
         assertEquals(0, countOccurrences(src, ".filter("))
         assertEquals(0, countOccurrences(src, ".distinct"))
+    }
+
+    // --- Active source-structural assertions: accent / tactileDepth (FACE-03, Phase 133) ------
+    //
+    // Full CardBase-based card composables are unrenderable under this module's Robolectric
+    // harness (see class KDoc) — these lock every FACE-03 <behavior> bullet against the real,
+    // committed VoiceCard.kt, mirroring TextCardTest's exact precedent for the Phase 132 tracer.
+
+    @Test
+    fun `VoiceCard declares a nullable defaulted accent param`() {
+        val src = source()
+        assertEquals(
+            "VoiceCard must declare 'accent: Color? = null' exactly once — a nullable, defaulted " +
+                "param, so no existing call site breaks and the untagged-card neutral case is " +
+                "representable (FACE-03).",
+            1,
+            countOccurrences(src, "accent: Color? = null")
+        )
+    }
+
+    @Test
+    fun `VoiceCard declares a defaulted-off tactileDepth param`() {
+        val src = source()
+        assertEquals(
+            "VoiceCard must declare 'tactileDepth: Boolean = false' exactly once, defaulted to " +
+                "today's behavior so every pre-existing call site renders byte-identically until " +
+                "a consumer opts in (FACE-03).",
+            1,
+            countOccurrences(src, "tactileDepth: Boolean = false")
+        )
+    }
+
+    @Test
+    fun `VoiceCard still contains exactly one CardBase call — no wrapper introduced`() {
+        val src = source()
+        assertEquals(
+            "VoiceCard must contain exactly one 'CardBase(' call. A second card container or a " +
+                "wrapper around CardBase would shadow its single combinedClickable, silently " +
+                "killing tap-to-open and swipe-to-edit/delete — the shipped SWIPE-02 defect class.",
+            1,
+            countOccurrences(src, "CardBase(")
+        )
+    }
+
+    @Test
+    fun `both accent and tactileDepth are forwarded verbatim inside the CardBase call region`() {
+        val src = source()
+        val cardBaseRegionStart = src.indexOf("CardBase(")
+        assertTrue("Could not locate 'CardBase(' in VoiceCard.kt", cardBaseRegionStart >= 0)
+        val cardBaseRegion = src.substring(cardBaseRegionStart)
+
+        assertTrue(
+            "'accent = accent' must appear inside the CardBase(...) call region — a forward must " +
+                "be verbatim (no coalesced fallback colour) so CardBase's designed null-accent " +
+                "branch receives a genuine null, not a hub-side default.",
+            cardBaseRegion.contains("accent = accent")
+        )
+        assertTrue(
+            "'tactileDepth = tactileDepth' must appear inside the CardBase(...) call region — " +
+                "never hardcoded to true, so the param genuinely controls the depth chrome.",
+            cardBaseRegion.contains("tactileDepth = tactileDepth")
+        )
+    }
+
+    @Test
+    fun `VoiceCard never applies the not-null assertion operator to accent`() {
+        val src = source()
+        assertEquals(
+            "VoiceCard.kt must never force-unwrap 'accent' — an untagged card must reach " +
+                "CardBase/CardTypeChip as a genuine null, never a crash risk.",
+            0,
+            countOccurrences(src, "accent!!")
+        )
+    }
+
+    // --- header chip / title restyle (FACE-03) -------------------------------------------------
+
+    @Test
+    fun `VoiceCard composes exactly one CardTypeChip`() {
+        val src = source()
+        assertEquals(
+            "VoiceCard must compose exactly one 'CardTypeChip(' — the 32dp accent badge FACE-03 " +
+                "leads the header with.",
+            1,
+            countOccurrences(src, "CardTypeChip(")
+        )
+    }
+
+    @Test
+    fun `the CardTypeChip icon resolves through cardTypeIcon(VOICE), never a hand-picked literal`() {
+        val src = source()
+        assertEquals(
+            "VoiceCard's chip icon must resolve via 'cardTypeIcon(\"VOICE\")' — the app-wide " +
+                "single source of truth for card-type glyphs — never a hand-picked Icons.Default.* " +
+                "literal at this call site, or Text/List/Voice/Album glyphs would drift apart.",
+            1,
+            countOccurrences(src, "cardTypeIcon(\"VOICE\")")
+        )
+    }
+
+    @Test
+    fun `the CardTypeChip is composed ahead of the header's title sub-gate, on the combined gate`() {
+        val src = source()
+        val chipIndex = src.indexOf("CardTypeChip(")
+        val titleGateIndex = src.indexOf("if (titleSlotVisible(title)) {")
+        assertTrue("Could not locate 'CardTypeChip(' in VoiceCard.kt", chipIndex >= 0)
+        assertTrue(
+            "Could not locate the header's 'if (titleSlotVisible(title)) {' sub-gate in VoiceCard.kt",
+            titleGateIndex >= 0
+        )
+        assertTrue(
+            "The type chip must sit textually ahead of the header's own title sub-gate — proving " +
+                "the chip renders whenever the header Row renders (the combined title-OR-clips " +
+                "gate), never only when a title exists.",
+            chipIndex < titleGateIndex
+        )
+    }
+
+    @Test
+    fun `the title uses TactileType_CardTitle and no longer the general titleMedium tier`() {
+        val commentStrippedSrc = SourceContractTestSupport.stripComments(source())
+        assertEquals(
+            "VoiceCard's title Text must use 'TactileType.CardTitle' exactly once — the Space " +
+                "Grotesk card-title tier FACE-03 locks in.",
+            1,
+            countOccurrences(commentStrippedSrc, "TactileType.CardTitle")
+        )
+        assertEquals(
+            "VoiceCard.kt must no longer reference the Material3 'titleMedium' typography token " +
+                "anywhere (comment-stripped scan, so KDoc prose cannot pollute this assertion) — " +
+                "the general tier the new TactileType.CardTitle tier replaces for this card face.",
+            0,
+            countOccurrences(commentStrippedSrc, "titleMedium")
+        )
+    }
+
+    @Test
+    fun `VoiceCard source never calls the accent-tint helper — no new accent-tinted foreground`() {
+        // UI-SPEC locked Color decision: Voice introduces ZERO new accent-tinted foreground this
+        // phase (RESEARCH Pitfall 4; the exact defect class Phase 132's Gate-1 caught on-device).
+        // Comment-stripped so KDoc prose mentioning the helper by name cannot invalidate this.
+        val commentStrippedSrc = SourceContractTestSupport.stripComments(source())
+        assertEquals(
+            "VoiceCard.kt must contain zero calls to the accent-tint helper — the pill, clip " +
+                "rows, and overflow line stay in their neutral surfaceVariant/onSurfaceVariant " +
+                "roles.",
+            0,
+            countOccurrences(commentStrippedSrc, "accentTint(")
+        )
+    }
+
+    @Test
+    fun `VoiceClipCountPill still renders in its neutral surfaceVariant onSurfaceVariant roles`() {
+        val src = source()
+        assertTrue(
+            "VoiceClipCountPill's background must still be driven by " +
+                "MaterialTheme.colorScheme.surfaceVariant (neutral role preserved) — asserted at " +
+                "least twice: once for the pill background and once for the clip-row waveform's " +
+                "inactive colour.",
+            countOccurrences(src, "MaterialTheme.colorScheme.surfaceVariant") >= 2
+        )
+        assertTrue(
+            "VoiceClipCountPill's text colour must still be driven by " +
+                "MaterialTheme.colorScheme.onSurfaceVariant.",
+            src.contains("color = MaterialTheme.colorScheme.onSurfaceVariant")
+        )
     }
 
     // --- Shared fixture for the rendered-proof (quarantined) cases below ---

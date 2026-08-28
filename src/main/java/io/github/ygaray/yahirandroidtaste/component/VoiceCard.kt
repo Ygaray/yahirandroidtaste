@@ -53,10 +53,12 @@ import io.github.ygaray.yahirandroidtaste.component.CardBase
 import io.github.ygaray.yahirandroidtaste.component.WaveformCanvas
 import io.github.ygaray.yahirandroidtaste.component.downsample
 import io.github.ygaray.yahirandroidtaste.component.titleSlotVisible
+import io.github.ygaray.yahirandroidtaste.icon.cardTypeIcon
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceClipUiModel
 import io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
+import io.github.ygaray.yahirandroidtaste.theme.TactileType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.DataInputStream
@@ -244,11 +246,12 @@ internal fun voiceClipPillCopy(clipCount: Int, totalDurationMs: Long): String =
 // ---------------------------------------------------------------------------
 
 /**
- * Visible clip-row cap (129-UI-SPEC.md's overflow row; matches the shared canvas's own
- * three-clips-shown-as-two worked example). Independent of whatever cap Phase 133's app-side face
- * later applies at its own call site.
+ * Visible clip-row cap (Phase 133 D-02): raised from the Phase 129 value of `2` to `3` to match
+ * `LIST_PREVIEW_ITEM_LIMIT`, keeping the clip-row cap consistent with the List face's own preview
+ * cap. The cap-agnostic `take`/hidden-count mechanism below is unchanged — only this constant's
+ * value moved.
  */
-private const val CLIP_ROW_CAP = 2
+private const val CLIP_ROW_CAP = 3
 
 /**
  * Pure overflow-line copy builder (Phase 129 DS-03 D-02) — mirrors [voiceClipPillCopy]'s
@@ -407,6 +410,13 @@ internal fun VoiceClipRowsSection(clips: List<VoiceClipUiModel>, modifier: Modif
  *   an aggregate clip-count-and-total-duration header pill and a capped set of read-only per-clip
  *   mini-rows, each carrying no gesture of its own. The hub preserves the caller's list order and
  *   never sorts, filters or dedupes it.
+ * @param accent FACE-03: caller-supplied per-card colour, forwarded verbatim into [CardBase]'s
+ *   accent spine and into the header [CardTypeChip]. The hub performs zero tag-resolution of its
+ *   own — `:app`'s `CardAccentResolver` (Phase 131) resolves the actual value. `null` (default)
+ *   renders every accent-reading surface in its designed neutral state.
+ * @param tactileDepth FACE-03: opts this card into [CardBase]'s Tactile depth-card chrome —
+ *   elevation, corner radius, and the accent spine. Defaults to `false` so every pre-existing call
+ *   site renders exactly as before until the consumer app opts in (Phase 133 Plan 03).
  */
 @Composable
 fun VoiceCard(
@@ -432,7 +442,9 @@ fun VoiceCard(
     onTagEdit: ((tagId: String) -> Unit)? = null,
     onTagDelete: ((tagId: String, name: String) -> Unit)? = null,
     onTagRemoveFromCard: ((tagId: String) -> Unit)? = null,
-    clips: List<VoiceClipUiModel> = emptyList()
+    clips: List<VoiceClipUiModel> = emptyList(),
+    accent: Color? = null,
+    tactileDepth: Boolean = false
 ) {
     // Load amplitude samples from .bin file on IO dispatcher
     var amplitudeBars by remember(samplesPath) { mutableStateOf<List<Float>>(emptyList()) }
@@ -541,17 +553,27 @@ fun VoiceCard(
         // renders nothing (conditional-render-no-dead-space).
         headerContent = if (!titleSlotVisible(title) && clips.isEmpty()) null else {
             {
+                // Type chip (FACE-03, Phase 132 pattern): leads the header on the combined gate
+                // above (title visible OR clips non-empty), never only when a title exists — a
+                // blank title with non-empty clips must still show the Voice type identity. No
+                // explicit tint — the chip resolves the icon's size and colour itself.
+                CardTypeChip(
+                    accent = accent,
+                    modifier = Modifier.padding(start = Dimens.HorizontalPadding, top = Dimens.TopPadding)
+                ) {
+                    Icon(imageVector = cardTypeIcon("VOICE"), contentDescription = null)
+                }
                 if (titleSlotVisible(title)) {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = TactileType.CardTitle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .weight(1f)
                             .testTag("voice_card_title")
                             .padding(
-                                start = Dimens.HorizontalPadding,
+                                start = Dimens.ChipToTitleGap,
                                 top = Dimens.TopPadding,
                                 bottom = Dimens.ContentSpacing
                             )
@@ -671,6 +693,8 @@ fun VoiceCard(
                 )
             }
         },
+        accent = accent,
+        tactileDepth = tactileDepth,
         modifier = modifier
     )
 }
