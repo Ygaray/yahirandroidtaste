@@ -64,23 +64,22 @@ Tracked, not in this milestone.
 
 ## Traceability
 
-Populated during roadmap creation.
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LEG-01 | — | Pending |
-| LEG-02 | — | Pending |
-| AUD-01 | — | Pending |
-| GARD-01 | — | Pending |
-| GARD-02 | — | Pending |
-| GOV-01 | — | Pending |
-| GOV-02 | — | Pending |
-| GOV-03 | — | Pending |
-| REPIN-01 | — | Pending |
+| LEG-01 | Phase 1 | Pending |
+| LEG-02 | Phase 1 | Pending |
+| AUD-01 | Phase 2 | Pending |
+| GOV-01 | Phase 3 | Pending |
+| GOV-02 | Phase 3 | Pending |
+| GOV-03 | Phase 3 | Pending |
+| REPIN-01 | Phase 4 | Pending |
+| GARD-01 | Phase 5 | Pending |
+| GARD-02 | Phase 5 | Pending |
 
 **Coverage:**
 - Requirements: 9 total
-- Mapped to phases: 0 (pending roadmap)
+- Mapped to phases: 9/9 ✓
 
 ---
 *Requirements defined: 2026-08-28*
+*Traceability mapped: 2026-08-28 (ROADMAP.md created — 5 phases)*
