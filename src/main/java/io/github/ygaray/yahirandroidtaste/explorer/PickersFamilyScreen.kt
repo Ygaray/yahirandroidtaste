@@ -167,7 +167,7 @@ fun PickersFamilyScreen(
                     ComponentRegistry.entries.filter { it.family == ExplorerFamilies.PICKERS },
                     key = { it.name }
                 ) { entry ->
-                    ComponentRow(name = entry.name, onClick = { onNavigateToDetail(entry.name) })
+                    ComponentRow(name = entry.name, tier = entry.tier, onClick = { onNavigateToDetail(entry.name) })
                 }
             }
         }

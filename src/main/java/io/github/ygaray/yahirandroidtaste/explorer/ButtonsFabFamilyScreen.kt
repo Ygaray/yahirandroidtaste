@@ -132,7 +132,7 @@ fun ButtonsFabFamilyScreen(
                     ComponentRegistry.entries.filter { it.family == ExplorerFamilies.BUTTONS_FAB },
                     key = { it.name }
                 ) { entry ->
-                    ComponentRow(name = entry.name, onClick = { onNavigateToDetail(entry.name) })
+                    ComponentRow(name = entry.name, tier = entry.tier, onClick = { onNavigateToDetail(entry.name) })
                 }
             }
         }
