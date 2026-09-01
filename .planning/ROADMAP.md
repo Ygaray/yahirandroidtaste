@@ -42,7 +42,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. A design-intent doc, distinct from the registry-of-what-exists, states what the hub means to be **per tier** — the primitives contract and the patterns contract.
   4. That design-intent doc states the litmus each tier must pass (what qualifies a component as primitive vs. pattern).
 
-**Plans**: 2/5 plans executed
+**Plans**: 4/5 plans executed
 
 Plans:
 **Wave 1**
@@ -52,8 +52,8 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-03-PLAN.md — Tier all 18 Sheets-family entries
-- [ ] 01-04-PLAN.md — Tier remaining 19 entries (ButtonsFab/Pickers/Feedback/EmptyState/Progress/TactileFoundation)
+- [x] 01-03-PLAN.md — Tier all 18 Sheets-family entries
+- [x] 01-04-PLAN.md — Tier remaining 19 entries (ButtonsFab/Pickers/Feedback/EmptyState/Progress/TactileFoundation)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -123,7 +123,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Tier Legibility | 2/5 | In Progress|  |
+| 1. Tier Legibility | 4/5 | In Progress|  |
 | 2. Coherence Audit | 0/TBD | Not started | - |
 | 3. Governance Gates | 0/TBD | Not started | - |
 | 4. Repin Bookkeeping Hardening | 0/TBD | Not started | - |
