@@ -94,7 +94,13 @@ internal val chipsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
                 onClick = {}
             )
         },
-        tier = ComponentRegistry.Tier.PRIMITIVE
+        // WR-01 fix: PATTERN, not PRIMITIVE. Fails both litmus conditions —
+        // `relatednessStrength` names the hub's own "Relatedness" domain vocabulary
+        // (RelatednessTier/RelatednessVisual), and when non-null it bakes in a specific,
+        // internally-computed container/content-color + border + font-weight encoding via
+        // `relatednessVisual(...)`, not caller-supplied content. Same reasoning that earned
+        // `HeatSwatch` PATTERN in docs/DESIGN-INTENT.md's worked examples.
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "TagChipWithContextMenu",
