@@ -1,0 +1,1 @@
+No external API integration: the detector's "api" signal matched this phase's Metalava *public API surface* governance (`api.txt`/`apiDump`/`apiCheck` for the library's own Kotlin symbols), not an external API/SDK/service integration — Phase 1 adds a `tier` field to `ComponentRegistry.Entry` and a gallery badge; it makes no outbound calls to any external API.
