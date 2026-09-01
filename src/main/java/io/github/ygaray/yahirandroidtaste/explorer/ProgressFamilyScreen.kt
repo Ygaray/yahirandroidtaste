@@ -59,7 +59,8 @@ internal val progressFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // MetricBar has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { MetricBarVariants() }
+        content = { MetricBarVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "ProgressRing",
@@ -79,7 +80,8 @@ internal val progressFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // ProgressRing has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { ProgressRingVariants() }
+        content = { ProgressRingVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "AnimatedStatValue",
@@ -99,7 +101,8 @@ internal val progressFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // AnimatedStatValue has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { AnimatedStatValueVariants() }
+        content = { AnimatedStatValueVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     ),
     ComponentRegistry.Entry(
         name = "HeroStatCard",
@@ -127,7 +130,8 @@ internal val progressFamilyEntries: List<ComponentRegistry.Entry> = listOf(
                 }
             )
         ),
-        content = { HeroStatCardVariants() }
+        content = { HeroStatCardVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     )
 )
 
