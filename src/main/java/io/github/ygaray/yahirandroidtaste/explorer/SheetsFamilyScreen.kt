@@ -90,7 +90,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: modal sheet has no focus-visual param -- N/A
             StateCell("Focused")
         ),
-        content = { AlbumSourcePickerSheetVariants() }
+        content = { AlbumSourcePickerSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "AlbumTitleConfirmSheet",
@@ -108,7 +109,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: modal sheet has no focus-visual param -- N/A
             StateCell("Focused")
         ),
-        content = { AlbumTitleConfirmSheetVariants() }
+        content = { AlbumTitleConfirmSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "CardEditorShellContent",
@@ -128,7 +130,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed -- N/A
             StateCell("Focused")
         ),
-        content = { CardEditorShellContentVariants() }
+        content = { CardEditorShellContentVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "ListCardBottomSheet",
@@ -146,7 +149,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: modal sheet has no focus-visual param -- N/A
             StateCell("Focused")
         ),
-        content = { ListCardBottomSheetVariants() }
+        content = { ListCardBottomSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "RecordingBottomSheetContent",
@@ -167,7 +171,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed -- N/A
             StateCell("Focused")
         ),
-        content = { RecordingBottomSheetContentVariants() }
+        content = { RecordingBottomSheetContentVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "SheetScaffold",
@@ -186,7 +191,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: modal sheet chrome has no focus-visual param -- N/A
             StateCell("Focused")
         ),
-        content = { SheetScaffoldVariants() }
+        content = { SheetScaffoldVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     ),
     ComponentRegistry.Entry(
         "TagChipEditorContent",
@@ -222,7 +228,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed -- N/A
             StateCell("Focused")
         ),
-        content = { TagChipEditorContentVariants() }
+        content = { TagChipEditorContentVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "TagPickerSheetContent",
@@ -242,7 +249,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed -- N/A
             StateCell("Focused")
         ),
-        content = { TagPickerSheetContentVariants() }
+        content = { TagPickerSheetContentVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "TextCardBottomSheet",
@@ -260,7 +268,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: modal sheet has no focus-visual param -- N/A
             StateCell("Focused")
         ),
-        content = { TextCardBottomSheetVariants() }
+        content = { TextCardBottomSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     // TagPickerSheet (the ModalBottomSheet wrapper around TagPickerSheetContent, above) was
     // NOT in RESEARCH.md's/UI-SPEC.md's gap tables — found only by this plan's live source
@@ -283,7 +292,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: modal sheet has no focus-visual param -- N/A
             StateCell("Focused")
         ),
-        content = { TagPickerSheetVariants() }
+        content = { TagPickerSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     // BulkCreatePopup wraps BulkCreatePopupContent (Dialog chrome + IME padding only,
     // mirrors the TagPickerSheet/TagPickerSheetContent split above) — Task 2 renders one
@@ -307,7 +317,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed -- N/A
             StateCell("Focused")
         ),
-        content = { BulkCreatePopupVariants() }
+        content = { BulkCreatePopupVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     // Registered because both BulkCreatePopup and BulkCreatePopupContent are public exports
     // (Pattern B) -- BulkCreatePopupVariants' demo composes BulkCreatePopupContent for real on
@@ -326,7 +337,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             StateCell("Disabled"), // same reasoning as BulkCreatePopup above -- N/A
             StateCell("Focused") // same reasoning as BulkCreatePopup above -- N/A
         ),
-        content = { BulkCreatePopupVariants() }
+        content = { BulkCreatePopupVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "NameAndTagsEditor",
@@ -345,7 +357,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed -- N/A
             StateCell("Focused")
         ),
-        content = { NameAndTagsEditorVariants() }
+        content = { NameAndTagsEditorVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     // TagCreateSheet/TagCreateSheetContent — same wrapper/body split as above; one Pattern B
     // section for TagCreateSheet exercises both for real.
@@ -367,7 +380,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed -- N/A
             StateCell("Focused")
         ),
-        content = { TagCreateSheetVariants() }
+        content = { TagCreateSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     // Registered because both TagCreateSheet and TagCreateSheetContent are public exports
     // (Pattern B) -- TagCreateSheetVariants' demo composes TagCreateSheetContent for real on
@@ -386,7 +400,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             StateCell("Disabled"), // same reasoning as TagCreateSheet above -- N/A
             StateCell("Focused") // same reasoning as TagCreateSheet above -- N/A
         ),
-        content = { TagCreateSheetVariants() }
+        content = { TagCreateSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "VoiceRenameTagsSheet",
@@ -404,7 +419,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: modal sheet has no focus-visual param -- N/A
             StateCell("Focused")
         ),
-        content = { VoiceRenameTagsSheetVariants() }
+        content = { VoiceRenameTagsSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "ClearableTextField",
@@ -434,7 +450,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no caller-facing focus param exposed (no FocusRequester slot) -- N/A
             StateCell("Focused")
         ),
-        content = { ClearableTextFieldVariants() }
+        content = { ClearableTextFieldVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     ),
     // EditorItemRow: registered as its own standalone entry per the UI-SPEC default
     // recommendation (not allowlisted) — demonstrates the reorderable list-item row inside a
@@ -455,7 +472,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // -- a genuine, caller-facing param.
             StateCell("Focused") { EditorItemRowStatePreview(autoFocus = true) }
         ),
-        content = { EditorItemRowVariants() }
+        content = { EditorItemRowVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     )
 )
 
