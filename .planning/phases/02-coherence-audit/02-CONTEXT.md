@@ -70,5 +70,19 @@ Call-site *editing* / actual unification is deferred to Phase 5 — this phase o
 
 ---
 
+## Runtime Decisions
+
+*Refreshed during milestone execution as upstream phases produced real output.*
+
+- **tier-source** (provisional guess confirmed, source: ai-auto, 2026-09-01): The audit **consumes
+  Phase 1's ratified per-entry `tier` labels** (all 53 `ComponentRegistry.Entry` sites) **and
+  `docs/DESIGN-INTENT.md`'s decidable D-03 litmus** to name "altitude mismatch" — it does **not**
+  re-derive tier judgements. Grounded in Phase 1's real output (HEAD 464af01): all 53 entries carry
+  an explicit `tier`, and `docs/DESIGN-INTENT.md` states the primitives/patterns contracts plus the
+  two-question D-03 litmus verbatim. Re-deriving would rest findings on an unratified taxonomy that
+  can contradict the shipped gallery badge.
+
+---
+
 *Phase: 2-Coherence Audit*
 *Context gathered: 2026-09-01*
