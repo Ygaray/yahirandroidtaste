@@ -93,7 +93,8 @@ internal val chipsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
                 isSelected = state.boolean(appChipSelectedControl),
                 onClick = {}
             )
-        }
+        },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     ),
     ComponentRegistry.Entry(
         name = "TagChipWithContextMenu",
@@ -134,7 +135,8 @@ internal val chipsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // TagChipWithContextMenu has no focus-visual override — N/A (mirrors AppChip).
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { TagChipWithContextMenuVariants() }
+        content = { TagChipWithContextMenuVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "ChipBar",
@@ -159,7 +161,8 @@ internal val chipsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // ChipBar has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { ChipBarVariants() }
+        content = { ChipBarVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     ),
     ComponentRegistry.Entry(
         name = "SortControl",
@@ -198,7 +201,8 @@ internal val chipsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
                 optionLabel = { it.label },
                 onSortModeChange = { state.setSelected(tagSortModeControl, it.label) }
             )
-        }
+        },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "FilterBar",
@@ -241,7 +245,8 @@ internal val chipsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // FilterBar has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { FilterBarVariants() }
+        content = { FilterBarVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     )
 )
 

@@ -41,6 +41,15 @@ object ComponentRegistry {
     data class StateCell(val label: String, val render: (@Composable () -> Unit)? = null)
 
     /**
+     * D-01/D-03 (Phase 1, tier-legibility): the two-value altitude classification every
+     * showcaseable component must carry — PRIMITIVE (fully generic, zero domain nouns in name or
+     * params, no baked-in interaction/composition convention) or PATTERN (a domain noun in its
+     * name/params OR a baked-in interaction/composition convention). Assigned by applying the
+     * D-03 litmus per-component; never a default/convenience assignment (see 01-CONTEXT.md D-03).
+     */
+    enum class Tier { PRIMITIVE, PATTERN }
+
+    /**
      * @param states The detail page's States matrix (D-03 axis), authored in fixed cell order
      *   (Default -> Pressed / Selected -> Disabled -> Focused). Defaults to `emptyList()` so the
      *   34 pre-Phase-62 two-argument `Entry(name, family)` call sites below keep compiling
@@ -56,6 +65,9 @@ object ComponentRegistry {
      *   [PlaygroundState] so it can read the live knob values (EXPLORE-04, D-03). Defaults to
      *   `null` for the same pre-Phase-63 compilation reason as [controls]; must be non-null
      *   whenever [controls] is non-empty (enforced by `ComponentPlaygroundIntegrityTest`).
+     * @param tier The component's PRIMITIVE/PATTERN altitude classification (D-01, Phase 1).
+     *   Required, no default — the whole module will not compile again until every `Entry(...)`
+     *   call site across all 9 family files supplies an explicit value (see 01-01-PLAN.md).
      */
     data class Entry(
         val name: String,
@@ -63,7 +75,8 @@ object ComponentRegistry {
         val states: List<StateCell> = emptyList(),
         val content: (@Composable () -> Unit)? = null,
         val controls: List<Control> = emptyList(),
-        val preview: (@Composable (PlaygroundState) -> Unit)? = null
+        val preview: (@Composable (PlaygroundState) -> Unit)? = null,
+        val tier: Tier
     )
 
     /**
