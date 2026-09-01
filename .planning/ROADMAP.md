@@ -73,7 +73,16 @@ Plans:
   3. Every flagged finding carries a documented disposition: unify, keep-with-rationale, or prune.
   4. The "unify" dispositions form a concrete, actionable list that Phase 5 (Gardening) executes against.
 
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — Skeleton (tracer) + audit Cards/Chips/Sheets/Tactile Foundation (38 of 53 entries)
+
+**Wave 2** *(blocked on Wave 1 completion — same file)*
+
+- [ ] 02-02-PLAN.md — Audit Buttons-FAB/Pickers/Feedback/Empty-State/Progress-Metrics (15 entries) + assemble Unify Work-Order
 
 ### Phase 3: Governance Gates
 
@@ -124,7 +133,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Tier Legibility | 5/5 | Complete    | 2026-09-01 |
-| 2. Coherence Audit | 0/TBD | Not started | - |
+| 2. Coherence Audit | 0/2 | Not started | - |
 | 3. Governance Gates | 0/TBD | Not started | - |
 | 4. Repin Bookkeeping Hardening | 0/TBD | Not started | - |
 | 5. Gardening — Unify & Coordinated Repin | 0/TBD | Not started | - |
