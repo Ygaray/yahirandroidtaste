@@ -97,7 +97,8 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
         controls = listOf(cardBaseTactileDepthControl),
         preview = { state ->
             CardBasePreview(tactileDepth = state.boolean(cardBaseTactileDepthControl))
-        }
+        },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "CardTypeChip",
@@ -113,7 +114,8 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed on CardTypeChip — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { CardTypeChipVariants() }
+        content = { CardTypeChipVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "TextCard",
@@ -130,7 +132,8 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
         controls = listOf(textCardPinnedControl),
         preview = { state ->
             TextCardPreview(isPinned = state.boolean(textCardPinnedControl))
-        }
+        },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "ListCard",
@@ -147,7 +150,8 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
         controls = listOf(listCardPinnedControl),
         preview = { state ->
             ListCardPreview(isPinned = state.boolean(listCardPinnedControl))
-        }
+        },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "AlbumCard",
@@ -164,7 +168,8 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
         controls = listOf(albumCardPinnedControl),
         preview = { state ->
             AlbumCardPreview(isPinned = state.boolean(albumCardPinnedControl))
-        }
+        },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "VoiceCard",
@@ -181,7 +186,8 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
         controls = listOf(voiceCardPinnedControl),
         preview = { state ->
             VoiceCardPreview(isPinned = state.boolean(voiceCardPinnedControl))
-        }
+        },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "AdaptiveMediaPreview",
@@ -196,7 +202,8 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { AdaptiveMediaPreviewVariants() }
+        content = { AdaptiveMediaPreviewVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "CardTagRow",
@@ -211,7 +218,8 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { CardTagRowVariants() }
+        content = { CardTagRowVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "CardQuickView",
@@ -238,7 +246,8 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
                 isPinned = state.boolean(cardQuickViewPinnedControl),
                 isFavorite = state.boolean(cardQuickViewFavoriteControl)
             )
-        }
+        },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "CountBadge",
@@ -253,7 +262,8 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { CountBadgeVariants() }
+        content = { CountBadgeVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     ),
     ComponentRegistry.Entry(
         name = "TagListItem",
@@ -268,7 +278,8 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { TagListItemVariants() }
+        content = { TagListItemVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     )
 )
 
