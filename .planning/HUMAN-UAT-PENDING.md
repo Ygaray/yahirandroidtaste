@@ -1,0 +1,20 @@
+# Human UAT Pending
+
+## Entries
+
+### Phase 1 — tier-legibility (v1.0)
+
+- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Milestone:** v1.0 (Hub Stewardship — Tier Legibility → Coherence Audit → Governance → Repin
+  Bookkeeping → Gardening)
+
+- **Gate 1 self-UAT log:** [`.planning/phases/01-tier-legibility/01-05-SELF-UAT.md`](phases/01-tier-legibility/01-05-SELF-UAT.md) — Verdict: **ALL 1 outstanding criteria PASS** (device Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN), library AAR md5 `18e493e666f8bcaeed23b2c22953fadb` @ `87561ff`, 2026-09-02). All 4 ROADMAP success criteria are now backed by live evidence: 3 (LEG-01 code/wiring + LEG-02 doc) were already `VERIFIED` by `01-VERIFICATION.md`'s static/compile/test evidence; the 1 remaining `human_verification` item (on-device visual confirmation of the Primitive/Pattern `TierBadge` on both gallery surfaces) is closed by this Gate-1 self-UAT run on real hardware.
+- **Items covered (1 outstanding ROADMAP success criterion / human_verification item):**
+  - **SC2 — `ExplorerActivity` gallery displays each component's tier on its detail/list view (the on-device visual sub-claim).** Confirmed on real hardware, both `ComponentRow` (family lists + index search results) and `ComponentDetailScreen`'s `TopAppBar`, both light and dark theme, for the longest registered names (`RecordingBottomSheetContent` 28 ch, `SegmentedOptionSelector` 23 ch) and a short name (`AppChip`). The badge never clips/pushes off-row on the list surface; on the detail `TopAppBar` the **component name truncates with an ellipsis, never the badge**, when the two don't fit; Primitive (`secondaryContainer`) vs. Pattern (`tertiaryContainer`) badge colors are visually distinguishable in both themes. Note: the `uiautomator` accessibility-tree dump reported the full un-truncated name string even where the rendered pixels showed a real ellipsis-truncation — only the screenshot (rung 5) caught this; a structure-tree-only check would have been a false pass on this exact criterion.
+- **Owner how-to-verify (run at milestone completion):**
+  1. Read `01-05-SELF-UAT.md` above for the full per-surface/per-theme evidence trail (screenshot descriptions + `uiautomator` bounds cross-checks).
+  2. Repro on-device: since `yahirandroidtaste` is a pure library with no installable APK of its own, either (a) sideload SecondBrain/CalTracker once each has repinned to a tag containing this phase's tier wiring and open their in-app gallery entry point, or (b) build the same throwaway same-package-Intent harness described in the SELF-UAT log's "Driver-mechanism note" (`publishReleasePublicationToMavenLocal` + a 5-line `MainActivity` that Intents into `ExplorerActivity`). Browse to the Sheets family (has the 28-char longest name) and toggle dark theme via the detail screen's theme-toggle action.
+- **Note:** No schema/DB involved (phase is UI-only). This phase's Gate-1 run also surfaced a
+  reusable gap: no project-local `AGENT-DEVICE-TESTING.md` exists yet for this library-only repo
+  (global template assumes an installable app). Recommend authoring one in a later phase so future
+  Gate-1 runs don't re-derive the harness pattern from scratch — not a blocker for this sign-off.
