@@ -28,6 +28,11 @@ catalog legible and prunable.
 - Additive-only + consumer-driven ⇒ the hub can only accrete, never prune; unification is always a
   breaking change, so it never happens in the consumer channel. **This project is the sanctioned
   home for the breaking "gardening" work, batched with coordinated consumer repins.**
+- **Phase 1 (Tier Legibility) complete** (2026-09-01): the latent two-tier structure is now
+  legible — not just diagnosed. All 53 registered components carry an explicit `Tier`, the
+  design-intent doc states both contracts + a decidable litmus, and the gallery surfaces it
+  on-device (confirmed via Gate-1 self-UAT). Phase 2 (Coherence Audit) can now use tier as a
+  first-class signal when dispositioning overlap/near-duplicate siblings.
 
 ## Constraints
 
@@ -51,13 +56,15 @@ catalog legible and prunable.
 - ✓ One-way-dependency + bindings-only-Hilt invariants — existing
 - ✓ Immutable-tag JitPack publishing + human-gated repin ritual — existing
 - ✓ ExplorerActivity in-AAR gallery — existing
+- ✓ Primitives/patterns **altitude legibility** — every `ComponentRegistry.Entry` carries an
+  explicit, compile-time-enforced `Tier`; `docs/DESIGN-INTENT.md` states the primitives/patterns
+  contracts and a decidable litmus; both gallery surfaces (`ComponentRow`, `ComponentDetailScreen`)
+  display the tier — validated Phase 1 (Tier Legibility)
 
 ### Active
 
 <!-- This project's charter. Hypotheses until shipped. -->
 
-- [ ] Make the primitives/patterns **altitude legible** — tag every registered component's tier
-- [ ] A design-**intent** doc distinct from the registry (what the hub means to be, per tier)
 - [ ] **Coherence audit** of the 9 families — surface overlap, near-duplicate siblings, incoherence
 - [ ] **Prune/unify** the additive-duplicate accretion (`v1.2→v1.10`) under a coordinated breaking
   "gardening" tag
@@ -77,7 +84,7 @@ catalog legible and prunable.
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
 | Hub gets its own GSD project for stewardship; consumers stay main editors | Coherence is a global property no single consumer's litmus can enforce; additive-only can't prune | — Pending |
-| Treat the hub as a two-tier system (primitives + patterns); make it legible before formalizing | Enough evidence (one contribution each way) that the tiering is real, not yet forced | — Pending |
+| Treat the hub as a two-tier system (primitives + patterns); make it legible before formalizing | Enough evidence (one contribution each way) that the tiering is real, not yet forced | Validated — Phase 1 shipped `Tier` enum, `DESIGN-INTENT.md`, and gallery-visible badges on both surfaces |
 
 ## Evolution
 
@@ -97,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-28 after initialization*
+*Last updated: 2026-09-01 — Phase 1 (Tier Legibility) complete*
