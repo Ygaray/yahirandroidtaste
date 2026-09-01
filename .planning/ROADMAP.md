@@ -42,7 +42,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. A design-intent doc, distinct from the registry-of-what-exists, states what the hub means to be **per tier** — the primitives contract and the patterns contract.
   4. That design-intent doc states the litmus each tier must pass (what qualifies a component as primitive vs. pattern).
 
-**Plans**: 4/5 plans executed
+**Plans**: 5/5 plans executed
 
 Plans:
 **Wave 1**
@@ -57,7 +57,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-05-PLAN.md — Wire tier badge into ComponentRow + ComponentDetailScreen; apiDump/apiCheck/detekt; tier-queryability test
+- [x] 01-05-PLAN.md — Wire tier badge into ComponentRow + ComponentDetailScreen; apiDump/apiCheck/detekt; tier-queryability test
 
 **UI hint**: yes
 
@@ -123,7 +123,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Tier Legibility | 4/5 | In Progress|  |
+| 1. Tier Legibility | 5/5 | In Progress|  |
 | 2. Coherence Audit | 0/TBD | Not started | - |
 | 3. Governance Gates | 0/TBD | Not started | - |
 | 4. Repin Bookkeeping Hardening | 0/TBD | Not started | - |
