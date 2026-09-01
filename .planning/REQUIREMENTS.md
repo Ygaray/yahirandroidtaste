@@ -11,10 +11,11 @@ give-legs; these requirements are the hub-owned coherence / gardening / governan
 
 ### Legibility — make the two-tier structure visible
 
-- [ ] **LEG-01**: Every component registered in `ComponentRegistry` carries an explicit **tier**
+- [x] **LEG-01**: Every component registered in `ComponentRegistry` carries an explicit **tier**
   label (`primitive` | `pattern`), queryable in the registry and shown in the `ExplorerActivity`
   gallery.
-- [ ] **LEG-02**: A design-**intent** doc (distinct from the registry-of-what-exists) states what
+
+- [x] **LEG-02**: A design-**intent** doc (distinct from the registry-of-what-exists) states what
   the hub is *per tier* — the primitives contract and the patterns contract — and the litmus each
   tier must pass.
 
@@ -28,6 +29,7 @@ give-legs; these requirements are the hub-owned coherence / gardening / governan
 
 - [ ] **GARD-01**: Additive-duplicate siblings identified by AUD-01 are **unified** into single
   components (removing/renaming where needed — the breaking work the consumer channel can't do).
+
 - [ ] **GARD-02**: The gardening changes land via the **human-gated coordinated repin** ritual —
   new immutable tag → both consumers (SecondBrain + CalTracker) repinned and Gate-1 re-verified —
   with no consumer left stranded.
@@ -36,8 +38,10 @@ give-legs; these requirements are the hub-owned coherence / gardening / governan
 
 - [ ] **GOV-01**: A **tier-aware contribution litmus** is documented (and enforced where feasible) —
   primitives get the strict no-domain-vocabulary gate; patterns get the looser opinion-allowed gate.
+
 - [ ] **GOV-02**: A **domain-vocabulary drift guard** *flags* (not forbids) when a public component
   name introduces a domain noun, surfacing coupling for review.
+
 - [ ] **GOV-03**: The additive-guard pre-commit hook stops false-flagging non-AAR paths (`.planning/`,
   docs) as lane-2, so planning/doc commits land without `HUB_LANE_OVERRIDE`.
 
@@ -52,6 +56,7 @@ Tracked, not in this milestone.
 
 - **GOV-04**: Automate tier-labeling enforcement in the drift-guard test (fail the build if a new
   public composable ships without a tier).
+
 - **ECO-02**: Auto-repin tooling across all consumers (the ecosystem's stated end goal).
 
 ## Out of Scope
@@ -66,8 +71,8 @@ Tracked, not in this milestone.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LEG-01 | Phase 1 | Pending |
-| LEG-02 | Phase 1 | Pending |
+| LEG-01 | Phase 1 | Complete |
+| LEG-02 | Phase 1 | Complete |
 | AUD-01 | Phase 2 | Pending |
 | GOV-01 | Phase 3 | Pending |
 | GOV-02 | Phase 3 | Pending |
@@ -77,6 +82,7 @@ Tracked, not in this milestone.
 | GARD-02 | Phase 5 | Pending |
 
 **Coverage:**
+
 - Requirements: 9 total
 - Mapped to phases: 9/9 ✓
 
