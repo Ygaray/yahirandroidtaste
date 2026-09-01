@@ -380,7 +380,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed -- N/A
             StateCell("Focused")
         ),
-        content = { TagCreateSheetVariants() }
+        content = { TagCreateSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     // Registered because both TagCreateSheet and TagCreateSheetContent are public exports
     // (Pattern B) -- TagCreateSheetVariants' demo composes TagCreateSheetContent for real on
@@ -399,7 +400,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             StateCell("Disabled"), // same reasoning as TagCreateSheet above -- N/A
             StateCell("Focused") // same reasoning as TagCreateSheet above -- N/A
         ),
-        content = { TagCreateSheetVariants() }
+        content = { TagCreateSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "VoiceRenameTagsSheet",
@@ -417,7 +419,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: modal sheet has no focus-visual param -- N/A
             StateCell("Focused")
         ),
-        content = { VoiceRenameTagsSheetVariants() }
+        content = { VoiceRenameTagsSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "ClearableTextField",
@@ -447,7 +450,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no caller-facing focus param exposed (no FocusRequester slot) -- N/A
             StateCell("Focused")
         ),
-        content = { ClearableTextFieldVariants() }
+        content = { ClearableTextFieldVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     ),
     // EditorItemRow: registered as its own standalone entry per the UI-SPEC default
     // recommendation (not allowlisted) — demonstrates the reorderable list-item row inside a
@@ -468,7 +472,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // -- a genuine, caller-facing param.
             StateCell("Focused") { EditorItemRowStatePreview(autoFocus = true) }
         ),
-        content = { EditorItemRowVariants() }
+        content = { EditorItemRowVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     )
 )
 
