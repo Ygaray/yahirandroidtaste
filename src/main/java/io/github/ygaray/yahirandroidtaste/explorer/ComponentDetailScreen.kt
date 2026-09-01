@@ -33,6 +33,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
@@ -60,7 +61,17 @@ fun ComponentDetailScreen(
                 TopAppBar(
                     title = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(entry.name, fontWeight = FontWeight.Medium)
+                            // WR-02 fix: weight + single-line ellipsis — this title sits between
+                            // the back arrow and the theme-toggle action, even less room than a
+                            // full-width list row, so a long component name must yield to the
+                            // trailing TierBadge instead of squeezing it out.
+                            Text(
+                                entry.name,
+                                fontWeight = FontWeight.Medium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f, fill = false)
+                            )
                             Spacer(Modifier.width(8.dp))
                             TierBadge(entry.tier)
                         }

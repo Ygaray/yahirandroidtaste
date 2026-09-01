@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.EmptyState
 import io.github.ygaray.yahirandroidtaste.feedback.FeedbackDispatcher
@@ -292,7 +293,14 @@ fun ComponentRow(name: String, tier: ComponentRegistry.Tier, supportingLabel: St
     ListItem(
         headlineContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(name)
+                // WR-02 fix: weight + single-line ellipsis so a long component name yields
+                // to the trailing TierBadge instead of pushing/clipping it off the row.
+                Text(
+                    name,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
                 Spacer(Modifier.width(8.dp))
                 TierBadge(tier)
             }
