@@ -38,7 +38,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. The `ExplorerActivity` gallery displays each component's tier on its detail/list view, so a developer browsing the catalog can see tiering without reading source.
   3. A design-intent doc, distinct from the registry-of-what-exists, states what the hub means to be **per tier** — the primitives contract and the patterns contract.
   4. That design-intent doc states the litmus each tier must pass (what qualifies a component as primitive vs. pattern).
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Add Tier enum + Entry.tier field; tier Cards (11) + Chips (5) entries (tracer)
+- [ ] 01-02-PLAN.md — Write docs/DESIGN-INTENT.md (primitives/patterns contracts + litmus)
+- [ ] 01-03-PLAN.md — Tier all 18 Sheets-family entries
+- [ ] 01-04-PLAN.md — Tier remaining 19 entries (ButtonsFab/Pickers/Feedback/EmptyState/Progress/TactileFoundation)
+- [ ] 01-05-PLAN.md — Wire tier badge into ComponentRow + ComponentDetailScreen; apiDump/apiCheck/detekt; tier-queryability test
 **UI hint**: yes
 
 ### Phase 2: Coherence Audit
