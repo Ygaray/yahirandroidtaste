@@ -49,7 +49,8 @@ internal val tactileFoundationFamilyEntries: List<ComponentRegistry.Entry> = lis
             // ElevationLadder has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { ElevationLadderVariants() }
+        content = { ElevationLadderVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "TactileTypeShowcase",
@@ -67,7 +68,8 @@ internal val tactileFoundationFamilyEntries: List<ComponentRegistry.Entry> = lis
             // TactileTypeShowcase has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { TactileTypeShowcaseVariants() }
+        content = { TactileTypeShowcaseVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "GradientSwatch",
@@ -85,7 +87,8 @@ internal val tactileFoundationFamilyEntries: List<ComponentRegistry.Entry> = lis
             // GradientSwatch has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { GradientSwatchVariants() }
+        content = { GradientSwatchVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "HeatSwatch",
@@ -103,7 +106,8 @@ internal val tactileFoundationFamilyEntries: List<ComponentRegistry.Entry> = lis
             // HeatSwatch has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { HeatSwatchVariants() }
+        content = { HeatSwatchVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     )
 )
 

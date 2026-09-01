@@ -55,7 +55,8 @@ internal val buttonsFabFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // ExpandableFab has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { ExpandableFabVariants() }
+        content = { ExpandableFabVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "CycleSubTypeButton",
@@ -74,7 +75,8 @@ internal val buttonsFabFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // No focus-visual override beyond the default IconButton ripple — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { CycleSubTypeButtonVariants() }
+        content = { CycleSubTypeButtonVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "DynamicActionButton",
@@ -102,7 +104,8 @@ internal val buttonsFabFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // No focus-visual override beyond the default Button/TextButton focus ring — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { DynamicActionButtonVariants() }
+        content = { DynamicActionButtonVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     )
 )
 

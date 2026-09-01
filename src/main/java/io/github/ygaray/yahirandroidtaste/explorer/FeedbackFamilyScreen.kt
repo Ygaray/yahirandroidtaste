@@ -68,7 +68,8 @@ internal val feedbackFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // ConfirmationDialog has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { ConfirmationDialogVariants() }
+        content = { ConfirmationDialogVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     ),
     ComponentRegistry.Entry(
         name = "UndoCenterScreen",
@@ -95,7 +96,8 @@ internal val feedbackFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // UndoCenterScreen has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { UndoCenterScreenVariants() }
+        content = { UndoCenterScreenVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "AttentionCue",
@@ -118,7 +120,8 @@ internal val feedbackFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // AttentionCue has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { AttentionCueVariants() }
+        content = { AttentionCueVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     )
 )
 
