@@ -2,10 +2,13 @@ package io.github.ygaray.yahirandroidtaste.explorer
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -16,6 +19,7 @@ import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Badge
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -32,6 +36,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
@@ -160,6 +165,7 @@ fun ExplorerIndexScreen(
                     results.forEach { entry ->
                         ComponentRow(
                             name = entry.name,
+                            tier = entry.tier,
                             supportingLabel = familyLabelFor(entry.family),
                             onClick = { onNavigateToDetail(entry.name) }
                         )
@@ -250,6 +256,31 @@ private fun FamilyRow(
 }
 
 /**
+ * Renders the tier chip (Primitive / Pattern labels) shared by [ComponentRow]'s list surface and
+ * [ComponentDetailScreen]'s detail-header surface (D-02) — a single shared helper so the
+ * label/color mapping lives in exactly one place and cannot drift between the two surfaces. Not a
+ * showcaseable component (not registered in [ComponentRegistry], not added to `component/`) —
+ * mirrors the existing `internal fun SectionLabel`/`internal fun DividerRow` precedent.
+ */
+@Composable
+internal fun TierBadge(tier: ComponentRegistry.Tier) {
+    val (containerColor, contentColor) = when (tier) {
+        ComponentRegistry.Tier.PRIMITIVE ->
+            MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
+        ComponentRegistry.Tier.PATTERN ->
+            MaterialTheme.colorScheme.tertiaryContainer to MaterialTheme.colorScheme.onTertiaryContainer
+    }
+    Badge(containerColor = containerColor, contentColor = contentColor) {
+        Text(
+            when (tier) {
+                ComponentRegistry.Tier.PRIMITIVE -> "Primitive"
+                ComponentRegistry.Tier.PATTERN -> "Pattern"
+            }
+        )
+    }
+}
+
+/**
  * Shared tappable component row (mirrors [FamilyRow]'s `ListItem` shape) — used both by the
  * index screen's search-result list (with a family [supportingLabel]) and, from Plans 03-05, by
  * each family screen's own row-list picker body (with `supportingLabel = null`, per the Family
@@ -257,9 +288,15 @@ private fun FamilyRow(
  * Non-private so the 7 family-screen files can reuse it directly.
  */
 @Composable
-fun ComponentRow(name: String, supportingLabel: String? = null, onClick: () -> Unit) {
+fun ComponentRow(name: String, tier: ComponentRegistry.Tier, supportingLabel: String? = null, onClick: () -> Unit) {
     ListItem(
-        headlineContent = { Text(name) },
+        headlineContent = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(name)
+                Spacer(Modifier.width(8.dp))
+                TierBadge(tier)
+            }
+        },
         supportingContent = supportingLabel?.let {
             {
                 Text(
