@@ -388,26 +388,29 @@ package io.github.ygaray.yahirandroidtaste.explorer {
   }
 
   public static final class ComponentRegistry.Entry {
-    ctor public ComponentRegistry.Entry(String name, String family, optional java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell> states, optional kotlin.jvm.functions.Function0<kotlin.Unit>? content, optional java.util.List<? extends io.github.ygaray.yahirandroidtaste.explorer.Control> controls, optional kotlin.jvm.functions.Function1<? super io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,kotlin.Unit>? preview);
+    ctor public ComponentRegistry.Entry(String name, String family, optional java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell> states, optional kotlin.jvm.functions.Function0<kotlin.Unit>? content, optional java.util.List<? extends io.github.ygaray.yahirandroidtaste.explorer.Control> controls, optional kotlin.jvm.functions.Function1<? super io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,kotlin.Unit>? preview, io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Tier tier);
     method public String component1();
     method public String component2();
     method public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell> component3();
     method public kotlin.jvm.functions.Function0<kotlin.Unit>? component4();
     method public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.Control> component5();
     method public kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,kotlin.Unit>? component6();
-    method public io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Entry copy(optional String name, optional String family, optional java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell> states, optional kotlin.jvm.functions.Function0<kotlin.Unit>? content, optional java.util.List<? extends io.github.ygaray.yahirandroidtaste.explorer.Control> controls, optional kotlin.jvm.functions.Function1<? super io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,kotlin.Unit>? preview);
+    method public io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Tier component7();
+    method public io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Entry copy(optional String name, optional String family, optional java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell> states, optional kotlin.jvm.functions.Function0<kotlin.Unit>? content, optional java.util.List<? extends io.github.ygaray.yahirandroidtaste.explorer.Control> controls, optional kotlin.jvm.functions.Function1<? super io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,kotlin.Unit>? preview, optional io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Tier tier);
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getContent();
     method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.Control> getControls();
     method @InaccessibleFromKotlin public String getFamily();
     method @InaccessibleFromKotlin public String getName();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,kotlin.Unit>? getPreview();
     method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell> getStates();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Tier getTier();
     property public kotlin.jvm.functions.Function0<kotlin.Unit>? content;
     property public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.Control> controls;
     property public String family;
     property public String name;
     property public kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.explorer.PlaygroundState,kotlin.Unit>? preview;
     property public java.util.List<io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell> states;
+    property public io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Tier tier;
   }
 
   public static final class ComponentRegistry.StateCell {
@@ -419,6 +422,11 @@ package io.github.ygaray.yahirandroidtaste.explorer {
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getRender();
     property public String label;
     property public kotlin.jvm.functions.Function0<kotlin.Unit>? render;
+  }
+
+  public enum ComponentRegistry.Tier {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Tier PATTERN;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Tier PRIMITIVE;
   }
 
   public final class ComponentSearch {
@@ -535,7 +543,7 @@ package io.github.ygaray.yahirandroidtaste.explorer {
   }
 
   public final class ExplorerIndexScreenKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void ComponentRow(String name, optional String? supportingLabel, kotlin.jvm.functions.Function0<kotlin.Unit> onClick);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ComponentRow(String name, io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.Tier tier, optional String? supportingLabel, kotlin.jvm.functions.Function0<kotlin.Unit> onClick);
     method @KotlinOnly @androidx.compose.runtime.Composable public static void ExplorerIndexScreen(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToFamily, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToDetail, kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateToTokens, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
     method @KotlinOnly @androidx.compose.runtime.Composable public static void ExplorerThemeToggleAction(io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
     method @InaccessibleFromKotlin public static io.github.ygaray.yahirandroidtaste.feedback.FeedbackDispatcher getExplorerFeedbackStub();
