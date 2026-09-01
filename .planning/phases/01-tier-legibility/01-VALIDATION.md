@@ -3,9 +3,9 @@ phase: 1
 slug: tier-legibility
 # status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6)
 # audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117)
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-09-01
 ---
 
@@ -49,15 +49,15 @@ required-field design (D-01), not a gap in sampling discipline.
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 01-01-T1 | 01-01 | 1 | LEG-01 | T-01-01 | N/A — compile-time enum field | source-assertion | grep `enum class Tier` + `tier:` in `ComponentRegistry.kt`; `./gradlew compileDebugKotlin` will fail until Wave 3 (expected) | ✅ ComponentRegistry.kt exists | ⬜ pending |
-| 01-01-T2 | 01-01 | 1 | LEG-01 | T-01-01 | N/A | source-assertion | grep all `Entry(` call sites in `CardsFamilyScreen.kt`/`ChipsFamilyScreen.kt` carry `tier = ` | ✅ both files exist | ⬜ pending |
-| 01-02-T1 | 01-02 | 1 | LEG-02 | T-01-02 | N/A — doc-only | manual (doc content review) | N/A — plan-checker / human review of `docs/DESIGN-INTENT.md` content | ❌ new file, created by this task | ⬜ pending |
-| 01-02-T2 | 01-02 | 1 | LEG-02 | T-01-02 | N/A | manual (doc content review) | N/A — verify 3 worked examples (CardBase/ChipBar/HeatSwatch) match RESEARCH.md/CONTEXT.md tiering | ❌ same file as T1 | ⬜ pending |
-| 01-03-T1..T3 | 01-03 | 2 | LEG-01 | T-01-01 | N/A | source-assertion | grep all 18 `Entry(` call sites in `SheetsFamilyScreen.kt` carry `tier = ` | ✅ SheetsFamilyScreen.kt exists | ⬜ pending |
-| 01-04-T1..T3 | 01-04 | 2 | LEG-01 | T-01-01 | N/A | source-assertion | grep all 19 remaining `Entry(` call sites (ButtonsFab/Pickers/Feedback/EmptyState/Progress/TactileFoundation) carry `tier = ` | ✅ all 6 files exist | ⬜ pending |
-| 01-05-T1 | 01-05 | 3 | LEG-01 | T-01-01 | N/A | unit | `./gradlew compileDebugKotlin` — first full-module compile with all 53 sites populated | ✅ | ⬜ pending |
-| 01-05-T2 | 01-05 | 3 | LEG-01 / LEG-02 (D-02) | T-01-01 | N/A — badge is non-interactive, text-only, no user input | unit + manual | `ComponentRow`/`ComponentDetailScreen` render badge — `./gradlew testDebugUnitTest --tests "*ComponentRegistrySearchTest*" --tests "*ComponentRegistryDriftGuardTest*"`; visual confirmation via running the gallery (manual, per this module's own established UAT convention — no Compose-UI badge-render test exists) | ✅ | ⬜ pending |
-| 01-05-T3 | 01-05 | 3 | LEG-01 | T-01-01 | N/A | unit | `./gradlew testDebugUnitTest --tests "*ComponentRegistryTierTest*"` — new test proving `tier` is queryable and cross-checking DESIGN-INTENT.md's 3 worked examples against real registry values; `./gradlew apiDump && ./gradlew apiCheck`; `./gradlew detekt` | ❌ `ComponentRegistryTierTest.kt` — new file, created by this task | ⬜ pending |
+| 01-01-T1 | 01-01 | 1 | LEG-01 | T-01-01-01 | N/A — compile-time enum field | source-assertion | grep `enum class Tier` + `tier:` in `ComponentRegistry.kt`; confirmed present, `./gradlew compileDebugKotlin` green at Wave 3 | ✅ ComponentRegistry.kt | ✅ green |
+| 01-01-T2 | 01-01 | 1 | LEG-01 | T-01-01-01 | N/A | source-assertion | grep confirms all 11 `Entry(` sites in `CardsFamilyScreen.kt` + all 5 in `ChipsFamilyScreen.kt` carry `tier = ` | ✅ both files | ✅ green |
+| 01-02-T1 | 01-02 | 1 | LEG-02 | T-01-02-01 | N/A — doc-only | manual (doc content review) | Reviewed by `01-VERIFICATION.md` (goal-backward check) — `docs/DESIGN-INTENT.md` contains Primitives Contract + Patterns Contract, no consumer names | ✅ docs/DESIGN-INTENT.md | ✅ green |
+| 01-02-T2 | 01-02 | 1 | LEG-02 | T-01-02-01 | N/A | manual (doc content review) | Reviewed by `01-VERIFICATION.md` — 3 worked examples (CardBase→PATTERN, ChipBar→PRIMITIVE, HeatSwatch→PATTERN) cross-checked against live registry by `ComponentRegistryTierTest` | ✅ same file as T1 | ✅ green |
+| 01-03-T1..T3 | 01-03 | 2 | LEG-01 | T-01-03-01 | N/A | source-assertion | grep confirms all 18 `Entry(` sites in `SheetsFamilyScreen.kt` carry `tier = ` | ✅ SheetsFamilyScreen.kt | ✅ green |
+| 01-04-T1..T3 | 01-04 | 2 | LEG-01 | T-01-04-01 | N/A | source-assertion | grep confirms all 19 remaining `Entry(` sites (ButtonsFab/Pickers/Feedback/EmptyState/Progress/TactileFoundation) carry `tier = ` | ✅ all 6 files | ✅ green |
+| 01-05-T1 | 01-05 | 3 | LEG-01 | T-01-05-01 | N/A | unit | `./gradlew compileDebugKotlin` — first full-module compile with all 53 sites populated — BUILD SUCCESSFUL (re-run live at finalization) | ✅ | ✅ green |
+| 01-05-T2 | 01-05 | 3 | LEG-01 / LEG-02 (D-02) | T-01-05-01 | N/A — badge is non-interactive, text-only, no user input | unit + manual | Automated: `ComponentRegistrySearchTest`, `ComponentRegistryDriftGuardTest` — re-run live, all green (`testDebugUnitTest --tests "io.github.ygaray.yahirandroidtaste.explorer.*"`, exit 0). Manual: on-device visual confirmation — **closed by Gate-1 self-UAT** (`01-05-SELF-UAT.md`, result `all_pass`, real device Samsung SM-S908U, 2026-09-02): badge never clipped/pushed off-row, name truncates with ellipsis not the badge, colors distinguishable in both themes | ✅ | ✅ green |
+| 01-05-T3 | 01-05 | 3 | LEG-01 | T-01-05-02 | N/A | unit | `ComponentRegistryTierTest` — 4/4 passed, re-run live; `apiDump`/`apiCheck` — BUILD SUCCESSFUL; `detekt` — BUILD SUCCESSFUL (zero-baseline maintained) | ✅ ComponentRegistryTierTest.kt | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -67,31 +67,44 @@ required-field design (D-01), not a gap in sampling discipline.
 
 Existing infrastructure covers all phase requirements — `ComponentRegistry.entries` IS the fixture
 data; `ComponentRegistrySearchTest.kt` and `ComponentRegistryDriftGuardTest.kt` already exist and
-already exercise the registry. No new test framework, config, or fixture scaffolding is required
-before Wave 1 starts. The one new test file (`ComponentRegistryTierTest.kt`) is authored directly
+already exercise the registry. No new test framework, config, or fixture scaffolding was required
+before Wave 1 started. The one new test file (`ComponentRegistryTierTest.kt`) was authored directly
 in `01-05-PLAN.md` (Wave 3), not as a Wave 0 stub, because it asserts on the fully-populated
-53-entry registry that only exists once Waves 1-2 land.
+53-entry registry that only exists once Waves 1-2 landed. `wave_0_complete: true` — confirmed at
+finalization, no gaps found.
 
 ---
 
 ## Manual-Only Verifications
 
-| Behavior | Requirement | Why Manual | Test Instructions |
-|----------|-------------|------------|-------------------|
-| Gallery displays the tier badge on `ComponentRow` (list/search) and `ComponentDetailScreen` (detail header) | LEG-01 (D-02) | No Robolectric Compose-UI test asserts the badge's rendered text node today (Wave 0 gap noted as optional in RESEARCH.md); this module's own precedent (`GalleryDemoInteractionTest` KDoc) treats some visual states as "confirmed visually by running the gallery — NOT by a rendered test" | Launch `ExplorerActivity`, open any family list, confirm each row shows a "Primitive"/"Pattern" badge beside the name; tap into a detail screen, confirm the same badge appears in the `TopAppBar` title row |
-| `docs/DESIGN-INTENT.md` content quality (litmus is decidable, 3 worked examples correctly reasoned, no consumer-app naming) | LEG-02 | Doc-content correctness is not code-testable — it is a prose/reasoning quality check | Read `docs/DESIGN-INTENT.md`; confirm it states the primitives contract, the patterns contract, and a litmus anchored to the one-way-dependency/no-domain-assumption invariant; confirm CardBase/ChipBar/HeatSwatch are each assigned a tier with the litmus applied, not asserted by fiat |
+| Behavior | Requirement | Why Manual | Resolution |
+|----------|-------------|------------|------------|
+| Gallery displays the tier badge on `ComponentRow` (list/search) and `ComponentDetailScreen` (detail header) | LEG-01 (D-02) | No Robolectric Compose-UI test asserts the badge's rendered text node (pixel-level clipping/truncation/color-contrast is not code-testable) | **Confirmed 2026-09-02 via Gate-1 self-UAT** (`01-05-SELF-UAT.md`, `result: all_pass`) on real hardware (Samsung SM-S908U / yahirs-s22-ultra-2, Android 15) — badge renders fully on both `ComponentRow` and `ComponentDetailScreen` `TopAppBar`, name truncates with ellipsis (not the badge) for the longest registered names, colors visually distinguishable between tiers in both light and dark theme |
+| `docs/DESIGN-INTENT.md` content quality (litmus is decidable, 3 worked examples correctly reasoned, no consumer-app naming) | LEG-02 | Doc-content correctness is not code-testable — it is a prose/reasoning quality check | **Confirmed via `01-VERIFICATION.md`** goal-backward review — primitives/patterns contracts present, litmus applied to CardBase/ChipBar/HeatSwatch, cross-checked against live registry by `ComponentRegistryTierTest` (all 3 assertions pass); zero consumer-app names present |
+
+---
+
+## Validation Audit 2026-09-02
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+All 12 tasks across 5 plans have automated verification (source-assertion grep, compile, or unit
+test) that was actually re-run live at finalization and confirmed green — not merely claimed in
+SUMMARY.md. The two Manual-Only items are inherently non-automatable (visual pixel-level rendering,
+prose content quality) but both were independently closed with evidence this run: the visual item
+via Gate-1's on-device self-UAT, the doc-quality item via the goal-backward verifier. Zero
+automatable gaps remain — `nyquist_compliant: true`.
 
 ---
 
 ## Validation Sign-Off
 
-> **Plan-time state is a DRAFT.** Leave frontmatter `status: draft` and `nyquist_compliant: false`.
-> These are finalized ONLY post-execution by the Nyquist finalizer (the `verify:post` →
-> `validate-phase` hook, invoked by execute-phase `finalize_nyquist_validation` after Gate-1). Never
-> set `nyquist_compliant: true` — or otherwise "sign off" compliance — at plan time, and do not let
-> the plan-checker do so (INC-2026-07-27-01: a premature plan-time flip is what caused inconsistent
-> COMPLIANT/PARTIAL milestone-audit states).
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies (Waves 1-2: source-level grep verification, correct given the required-field compiler constraint; Wave 3: full automated compile/test/apiCheck/detekt — all re-run live and green)
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify (every task above has at minimum a grep/source-assertion or a compiler/test command)
+- [x] Wave 0 covers all MISSING references (none — existing registry/test infrastructure was sufficient)
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies (Waves 1-2: source-level grep verification, documented above as the correct sampling method given the required-field compiler constraint; Wave 3: full automated compile/test/apiCheck/detekt)
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify (every task above has at minimum a grep/source-assertion or a compiler/test command)
-- [ ] Wave 0 covers all MISSING references (none — existing registry/test infrastructure is sufficient, see Wave 0 Requirements above)
+**Finalized:** 2026-09-02 by auto-mode `validate-phase` finalizer (execute-phase `finalize_nyquist_gate`, post-Gate-1).
