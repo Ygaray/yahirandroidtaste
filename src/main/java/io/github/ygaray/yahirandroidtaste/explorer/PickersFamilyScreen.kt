@@ -59,7 +59,8 @@ internal val pickersFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // AccentColorPicker has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { AccentColorPickerVariants() }
+        content = { AccentColorPickerVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "IconPickerGrid",
@@ -84,7 +85,8 @@ internal val pickersFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // IconPickerGrid has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { IconPickerGridVariants() }
+        content = { IconPickerGridVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "CropOverlay",
@@ -104,7 +106,8 @@ internal val pickersFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { CropOverlayVariants() }
+        content = { CropOverlayVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         name = "SegmentedOptionSelector",
@@ -141,7 +144,8 @@ internal val pickersFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // SegmentedButton has no custom focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { SegmentedOptionSelectorVariants() }
+        content = { SegmentedOptionSelectorVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     )
 )
 
