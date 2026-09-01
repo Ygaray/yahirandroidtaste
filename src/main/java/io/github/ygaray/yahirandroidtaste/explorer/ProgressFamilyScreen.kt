@@ -123,12 +123,10 @@ internal val progressFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // HeroStatCard has no `enabled` param — a non-clickable card is just onClick = null,
             // not a disabled clickable one — N/A.
             ComponentRegistry.StateCell("Disabled"),
-            ComponentRegistry.StateCell(
-                "Focused",
-                render = {
-                    HeroStatCard(label = "Total", value = "1,204", onClick = {})
-                }
-            )
+            // IN-01 fix: HeroStatCard has no focus-visual override param, so a static preview
+            // cannot render a distinguishing focused state — N/A (mirrors the Disabled cell's own
+            // N/A precedent above; the previous render was byte-identical to "Pressed / Selected").
+            ComponentRegistry.StateCell("Focused")
         ),
         content = { HeroStatCardVariants() },
         tier = ComponentRegistry.Tier.PATTERN
