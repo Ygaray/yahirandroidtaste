@@ -50,7 +50,8 @@ internal val emptyStateFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // EmptyState has no focus-visual override — N/A.
             ComponentRegistry.StateCell("Focused")
         ),
-        content = { EmptyStateVariants() }
+        content = { EmptyStateVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     )
 )
 
