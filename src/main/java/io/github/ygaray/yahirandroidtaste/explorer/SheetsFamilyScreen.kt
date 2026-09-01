@@ -90,7 +90,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: modal sheet has no focus-visual param -- N/A
             StateCell("Focused")
         ),
-        content = { AlbumSourcePickerSheetVariants() }
+        content = { AlbumSourcePickerSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "AlbumTitleConfirmSheet",
@@ -108,7 +109,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: modal sheet has no focus-visual param -- N/A
             StateCell("Focused")
         ),
-        content = { AlbumTitleConfirmSheetVariants() }
+        content = { AlbumTitleConfirmSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "CardEditorShellContent",
@@ -146,7 +148,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: modal sheet has no focus-visual param -- N/A
             StateCell("Focused")
         ),
-        content = { ListCardBottomSheetVariants() }
+        content = { ListCardBottomSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "RecordingBottomSheetContent",
@@ -242,7 +245,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: no focus-visual param exposed -- N/A
             StateCell("Focused")
         ),
-        content = { TagPickerSheetContentVariants() }
+        content = { TagPickerSheetContentVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
         "TextCardBottomSheet",
@@ -260,7 +264,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: modal sheet has no focus-visual param -- N/A
             StateCell("Focused")
         ),
-        content = { TextCardBottomSheetVariants() }
+        content = { TextCardBottomSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     // TagPickerSheet (the ModalBottomSheet wrapper around TagPickerSheetContent, above) was
     // NOT in RESEARCH.md's/UI-SPEC.md's gap tables — found only by this plan's live source
@@ -283,7 +288,8 @@ internal val sheetsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             // Focused: modal sheet has no focus-visual param -- N/A
             StateCell("Focused")
         ),
-        content = { TagPickerSheetVariants() }
+        content = { TagPickerSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     ),
     // BulkCreatePopup wraps BulkCreatePopupContent (Dialog chrome + IME padding only,
     // mirrors the TagPickerSheet/TagPickerSheetContent split above) — Task 2 renders one
