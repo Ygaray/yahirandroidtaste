@@ -73,7 +73,7 @@ fun EmptyStateFamilyScreen(
                     ComponentRegistry.entries.filter { it.family == ExplorerFamilies.EMPTY_STATE },
                     key = { it.name }
                 ) { entry ->
-                    ComponentRow(name = entry.name, onClick = { onNavigateToDetail(entry.name) })
+                    ComponentRow(name = entry.name, tier = entry.tier, onClick = { onNavigateToDetail(entry.name) })
                 }
             }
         }
