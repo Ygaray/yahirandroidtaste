@@ -517,4 +517,61 @@ condition (2) of the D-03 litmus regardless of domain-noun status, consistent wi
 
 ### Unify Work-Order
 
-_(PENDING - filled by a later task)_
+This section aggregates every **unify** disposition raised across all 9 family sections above
+(Cards, Chips, Sheets, Buttons / FAB, Pickers, Feedback, Empty State, Progress / Metrics, Tactile
+Foundation) into a single, self-contained checklist. Phase 5 (Gardening) can execute against this
+section alone, without re-reading the rest of the document. Of the 9 families, exactly 2 raised a
+**unify** disposition — both in 02-01's four families (Chips, Sheets); the 5 families this plan
+(02-02) audited (Buttons / FAB, Pickers, Feedback, Empty State, Progress / Metrics) raised zero
+unify dispositions — every finding in those 5 resolved keep-with-rationale or "no finding," never
+unify.
+
+**WO-1 — Fold `FilterBar` into `ChipBar` as an optional expandable mode.**
+- **Components:** `FilterBar` (retire as a standalone registered entry) → `ChipBar` (gains a new
+  optional mode).
+- **Family:** Chips.
+- **Why (Finding CH-1, Chips §):** Both are generic `<T>`/slot-based `FlowRow`-container
+  PRIMITIVEs holding the same core chip-wrapping-row shape. `FilterBar`'s only real differentiator
+  — an `expanded`/`onExpand`/`onCollapse` chevron affordance plus `Surface`/height-cap chrome on
+  top of that same `FlowRow` — is a genuine, reusable mode `ChipBar` does not currently offer, not
+  a fundamentally different container. Recommended shape: add a nullable `expandable:
+  ExpandableConfig?` (or equivalent) parameter to `ChipBar` carrying `FilterBar`'s
+  expand/collapse + chrome behavior, and give `ChipBar` a raw-content slot alongside its existing
+  typed `items`/`key`/`itemContent` shape to also carry `FilterBar`'s freeform
+  `content: @Composable FlowRowScope.() -> Unit` callers — real Phase-5 design work, not a
+  mechanical merge.
+- **Blast radius (D-02, read-only grep, pre-computed by 02-01):**
+  - `FilterBar`: SecondBrain 5 files, CalTracker_Android 0 files.
+  - `ChipBar`: SecondBrain 5 files, CalTracker_Android 0 files.
+  - Both consumer-pin-skew-consistent (see each component's own Phase-provenance KDoc note in the
+    Chips § — likely newer than CalTracker's `v1.5.0` pin, not rejected by that consumer).
+
+**WO-2 — Extract `TextCardBottomSheet`/`ListCardBottomSheet`'s shared header-row + menu + rename
+dialog into a new shared composable.**
+- **Components:** `TextCardBottomSheet` + `ListCardBottomSheet` (both retained; a new shared
+  composable is extracted and composed by both).
+- **Family:** Sheets.
+- **Why (Finding S-1, Sheets §):** Both already delegate their shared body region to
+  `CardQuickView` (D-04 precedent), but both still duplicate real, non-trivial chrome verbatim:
+  an identical header `Row` (title + pin/favorite indicators), an identical three-dot
+  `DropdownMenu` (Edit → Pin/Unpin → Favorite/Unfavorite → Delete, same error-tinted Delete row),
+  and an identical local rename `AlertDialog` + `ClearableTextField` block. Recommended shape:
+  extract that header-Row + three-dot-menu + rename-`AlertDialog` block into a new shared
+  composable (mirroring `CardQuickView`'s own D-04 precedent for the body region), parameterized
+  by each sheet's differing body slot (`content` + `imageCount` for `TextCardBottomSheet` vs.
+  `items` + `onToggleItem` + `readOnlyPreview` + `previewOverflowCount` for
+  `ListCardBottomSheet`).
+- **Blast radius (D-02, read-only grep, pre-computed by 02-01):**
+  - `TextCardBottomSheet`: SecondBrain 2 files, CalTracker_Android 0 files.
+  - `ListCardBottomSheet`: SecondBrain 2 files, CalTracker_Android 0 files.
+  - Both grep to zero on CalTracker; per RESEARCH.md's Pitfall 4, CalTracker's entire hub surface
+    excludes the Sheets family, so this reads as "not on that consumer's pin at all," not
+    "rejected."
+
+**No other unify dispositions exist.** Every other finding across all 9 families (Finding C-1,
+C-2, CH-2 in Cards/Chips; Finding S-2 in Sheets; Finding T-1 in Tactile Foundation; Finding PK-1
+in Pickers; the explicit no-finding statements in Buttons / FAB, Feedback, Empty State, Progress /
+Metrics, and Sheets' 10 remaining non-paired entries) resolved keep-with-rationale or had no
+finding at all — confirmed by a direct re-read of all 9 family sections above, not re-derived
+from memory. Neither work-order item above lacks a corresponding "unify" finding earlier in this
+document.
