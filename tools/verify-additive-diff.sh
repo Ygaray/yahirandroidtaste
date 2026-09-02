@@ -70,12 +70,14 @@ ADDED_NORM="$TMP_DIR/added.norm"
 : > "$REMOVED_RAW"
 : > "$ADDED_RAW"
 
-# Single-ref form (BASELINE, not BASELINE..HEAD): diffs the baseline commit against the current
-# WORKING TREE, not just the last commit — so an uncommitted regression is caught too (this is
-# what makes the negative-control demonstration below meaningful, and lets Plans 02-05 run this
-# as a pre-commit check on their own working tree). `-- <paths>` filters to only the paths that
-# matter to this guard.
-git diff -U0 "$BASELINE_COMMIT" -- "${PATHS[@]}" > "$TMP_DIR/full.diff" || true
+# Staged-vs-HEAD form (D-01, GOV-03 fix): diffs the INDEX (what THIS commit is about to add)
+# against HEAD, NOT a stale baseline tag against the whole working tree. This makes classification
+# per-commit rather than cumulative-since-the-tag: a commit that stages nothing under `${PATHS[@]}`
+# is unconditionally clean, with no dependency on how long ago the last tag was cut or on any
+# pre-existing rewrite that landed (with or without override) in prior history. `BASELINE_COMMIT`
+# is used ONLY above, for the default `PATHS` enumeration and the ref-resolution fail-loudly check —
+# never as a diff endpoint. `-- <paths>` filters to only the paths that matter to this guard.
+git diff --cached -U0 -- "${PATHS[@]}" > "$TMP_DIR/full.diff" || true
 
 # REMOVED content lines: start with a single '-', excluding the '---' file header.
 grep -E '^-[^-]' "$TMP_DIR/full.diff" > "$REMOVED_RAW" || true

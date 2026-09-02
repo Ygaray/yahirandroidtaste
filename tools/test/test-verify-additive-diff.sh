@@ -16,19 +16,27 @@ pass=0; fail=0
 check() { if [ "$1" = "$2" ]; then pass=$((pass+1)); else echo "FAIL: $3 (got $1 want $2)"; fail=$((fail+1)); fi; }
 
 # (a) pure append to an existing file, and a brand-new file -> append-only PASS (exit 0)
+# Staged (git add -A): under the new staged-vs-HEAD basis (D-01), an unstaged working-tree edit
+# produces an empty `git diff --cached` and would trivially (and wrongly) pass — stage it to
+# actually exercise the invariant.
 printf 'line three\n' >> src/main/A.kt
 printf 'brand new\n' > src/main/C.kt
+git add -A
 set +e; "$SCRIPT" v0.0.0 >/dev/null 2>&1; rc=$?; set -e
 check "$rc" 0 "additive append + new file should pass with NO path args (all-files default)"
 
 # (b) a REWRITE of a pre-existing SOURCE line (any file under src/) -> FAIL (exit 1)
-git checkout -q -- .; git clean -fdq
+# `git reset --hard` (not just `git checkout -- .`): case (a) staged its edits via `git add -A`,
+# so the INDEX — not just the working tree — must be reset back to HEAD, or the prior case's
+# staged rewrite would still leak into this case's `git diff --cached`.
+git reset -q --hard; git clean -fdq
 sed -i 's/old = 1/old = 2/' src/main/B.kt
+git add -A
 set +e; "$SCRIPT" v0.0.0 >/dev/null 2>&1; rc=$?; set -e
 check "$rc" 1 "rewrite of a pre-existing source file under src/ must be caught by the src-scoped default"
 
 # (c) a REWRITE of a DOC file OUTSIDE src/ -> NOT a lane-2 change; excluded from the src-scoped guard (exit 0)
-git checkout -q -- .; git clean -fdq
+git reset -q --hard; git clean -fdq
 sed -i 's/doc line/doc line edited/' NOTES.md
 set +e; "$SCRIPT" v0.0.0 >/dev/null 2>&1; rc=$?; set -e
 check "$rc" 0 "a doc-file rewrite outside src/ is NOT flagged (docs are not the consumable surface)"
