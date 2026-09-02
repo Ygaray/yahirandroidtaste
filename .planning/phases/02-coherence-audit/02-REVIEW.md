@@ -10,7 +10,7 @@ findings:
   warning: 1
   info: 0
   total: 3
-status: issues_found
+status: resolved
 ---
 
 # Phase 2: Code Review Report
