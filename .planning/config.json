@@ -50,7 +50,9 @@
     "security_block_on": "high",
     "tdd_mode": false,
     "ui_review": true,
-    "use_worktrees": true
+    "use_worktrees": true,
+    "_milestone_run_active": false,
+    "_auto_chain_active": true
   },
   "ship": {
     "pr_body_sections": [
