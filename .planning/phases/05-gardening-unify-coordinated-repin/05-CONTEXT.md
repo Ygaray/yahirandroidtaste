@@ -82,5 +82,35 @@ None — this is the terminal phase; unify scope is bounded to Phase 2's disposi
 
 ---
 
+## Runtime Decisions
+
+*Refreshed during milestone execution as upstream phases produced real output. Both grounded in
+Phase 2's shipped `docs/COHERENCE-AUDIT.md` (Unify Work-Order section).*
+
+- **unify-scope** (provisional guess confirmed + made concrete, source: ai-auto, 2026-09-01):
+  Implement exactly Phase 2's unify tuples **1:1**. The Unify Work-Order contains **exactly two**
+  unify dispositions:
+  - **WO-1** — Fold `FilterBar` into `ChipBar` as an optional expandable mode; retire `FilterBar`
+    as a standalone registered entry. Family: Chips. Blast radius: SecondBrain 5 files each,
+    CalTracker 0.
+  - **WO-2** — Extract the shared header-`Row` + three-dot `DropdownMenu` + rename `AlertDialog`
+    from `TextCardBottomSheet`/`ListCardBottomSheet` into a new shared composable; both sheets
+    retained. Family: Sheets. Blast radius: SecondBrain 2 files each, CalTracker 0.
+  - No other unify dispositions exist. Do **not** re-analyze — re-deriving desyncs the count from
+    the audit and breaks the `api.txt` rebaseline 1:1 diff review.
+
+- **fold-mechanism** (provisional guess confirmed, source: ai-auto, 2026-09-01): Decide per fold
+  from Phase 2's disposition wording, keeping registered-XOR-allowlisted true.
+  - **WO-1** folds `FilterBar`'s behavior INTO `ChipBar` (nullable expandable config + raw-content
+    slot), then removes or demotes `FilterBar`'s registry cell to `INTENTIONALLY_UNREGISTERED` with
+    a one-line reason (per-fold Phase-5 design call; SecondBrain uses `FilterBar` in 5 files, so
+    preserve source-compat / deprecation as needed).
+  - **WO-2** retains both sheets and only **adds** a new shared composable (private sub-part) —
+    nothing is removed from any family list, so no demote/delete.
+  - Settled general mechanic: update registry cell → `./gradlew apiDump` rebaseline with
+    line-by-line review → commit via curation lane `HUB_LANE_OVERRIDE=3`.
+
+---
+
 *Phase: 5-Gardening — Unify & Coordinated Repin*
 *Context gathered: 2026-09-01*
