@@ -1,5 +1,6 @@
 package io.github.ygaray.yahirandroidtaste.explorer
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
@@ -106,6 +107,22 @@ class DomainVocabularyDriftGuardTest {
                     "token belongs in PRIMITIVE_NOUN_ALLOWLIST (D-02/D-03)."
             )
         }
+    }
+
+    /**
+     * WR-02 regression: [headToken] must extract the leading all-caps acronym run as a single
+     * token (not just its first letter) when a composable name's leading word is an acronym like
+     * `URL`/`UI`/`API`, and must leave ordinary leading-word extraction unaffected. Verified
+     * against the exact cases the finding reproduced live.
+     */
+    @Test
+    fun headTokenExtractsLeadingAcronymRunAsASingleToken() {
+        assertEquals("URL", headToken("URLPreviewCard"))
+        assertEquals("UI", headToken("UIStateBadge"))
+        assertEquals("API", headToken("APIKeyField"))
+        // Ordinary (non-acronym) leading words are unaffected by the acronym branch.
+        assertEquals("Card", headToken("CardBase"))
+        assertEquals("Voice", headToken("VoiceCard"))
     }
 
     /**
@@ -239,8 +256,20 @@ class DomainVocabularyDriftGuardTest {
             """^(?:public\s+)?fun\s+(?:<[^>]*>\s+)?(?:[A-Za-z_][\w.]*\.)?(\w+)\s*\("""
         )
 
-        /** Matches the leading PascalCase word of a composable name (the "head token"). */
-        val HEAD_TOKEN_REGEX = Regex("[A-Z][a-z0-9]*")
+        /**
+         * Matches the leading PascalCase word of a composable name (the "head token"). Tries a
+         * leading all-caps acronym run first (`[A-Z]+`, only when followed by another capital +
+         * lowercase — i.e. the next word starting — or by end-of-string), falling back to the
+         * ordinary single-capital-plus-lowercase-run word. Without the acronym branch,
+         * `[A-Z][a-z0-9]*` alone extracts only a single letter from a name with a leading
+         * acronym (`URLPreviewCard` -> "U", `UIStateBadge` -> "U", `APIKeyField` -> "A") because
+         * `[a-z0-9]*` can match zero characters — a latent correctness bug (WR-02) that would
+         * force a future generic composable with an acronym prefix into DOMAIN_VOCABULARY with a
+         * false "consumer-domain noun" rationale. With the acronym branch: `URLPreviewCard` ->
+         * "URL", `UIStateBadge` -> "UI", `APIKeyField` -> "API"; ordinary names are unaffected
+         * (`CardBase` -> "Card", `VoiceCard` -> "Voice").
+         */
+        val HEAD_TOKEN_REGEX = Regex("[A-Z]+(?=[A-Z][a-z]|$)|[A-Z][a-z0-9]*")
 
         /**
          * Bound on how many lines [findDeclarationLineIndex] will scan forward past an
