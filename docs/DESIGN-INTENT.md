@@ -72,3 +72,26 @@ either yes/no lands you in PATTERN, stop — you don't need to weigh the two con
 each other, either one is sufficient. Read the component's actual public signature (not just how
 a caller happens to use it) before deciding — usage patterns can be a proxy but the true test is
 the signature and body, not the call site.
+
+## The Tier-Aware Contribution Litmus
+
+Contribution review applies the tier litmus above asymmetrically by tier (GOV-01, 03-CONTEXT.md
+D-04). Primitives get the **strict no-domain-vocabulary gate**: any net-new domain noun in a
+primitive's name disqualifies it from PRIMITIVE status per `## The Litmus` condition 1. Patterns
+get the **looser, opinion-allowed gate**: a pattern may introduce hub-level vocabulary like "card"
+or "tag" by design, per `## The Patterns Contract`.
+
+## Enforcement
+
+The strict-primitives half is mechanically enforced by
+`DomainVocabularyDriftGuardTest`
+(`src/test/java/io/github/ygaray/yahirandroidtaste/explorer/DomainVocabularyDriftGuardTest.kt`) —
+a fail-until-allowlisted JUnit test run via `./gradlew testDebugUnitTest` that flags any public
+top-level `@Composable` whose leading name token is not an established UI-primitive noun,
+requiring an explicit, rationale-carrying entry in its `DOMAIN_VOCABULARY` allowlist to clear
+(D-02's audit-trail requirement — never a silent/always-green pass).
+
+The patterns-loose half has **no enforcement surface today** — no `.github/` PR-template, no
+CI-review checklist — and stays prose-only; a human reviewer applies `## The Litmus` by reading
+the component's signature at review time. This scoping matches D-04's "enforced where feasible"
+text exactly: feasible = the strict half only.
