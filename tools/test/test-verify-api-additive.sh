@@ -41,6 +41,11 @@ check "$rc" 0 "baseline lacking the .api file degrades to exit 0 (not fail-close
 # api.txt. D-01 scopes this phase's fix literally to src/main; this case proves live -- not just
 # asserts -- that the identical bug shape is latent here, tracked as a residual risk for Phase 5's
 # first tag-cut that includes api.txt, rather than fixed this phase.
+# NOTE (IN-01, 03-REVIEW.md): verify-additive-diff.sh's SIBLING instance of this exact bug shape --
+# its default PATHS enumeration pinned to the baseline tag instead of HEAD (CR-01) -- WAS fixed in
+# this phase (commit dc5bf6f). This guard's own default-scope bug (case (e), above) is a related
+# but DISTINCT, still-open issue -- do not assume it shares CR-01's remaining risk profile now that
+# CR-01 has landed; verify-api-additive.sh's fix remains tracked for Phase 5.
 # `git reset --hard` (not `git checkout -- .`): case (d)'s last commit removed the ONLY tracked
 # file, leaving an empty tree — `git checkout -- .` errors on an empty index ("pathspec '.' did
 # not match any file(s) known to git"); `git reset --hard` handles the empty-tree case cleanly.
