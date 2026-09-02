@@ -163,7 +163,105 @@ is an overlap/near-duplicate finding, not an altitude question — neither intro
 
 ### Sheets
 
-_(PENDING - filled by a later task)_
+**All 18 entries** (name + shipped tier, transcribed verbatim from `SheetsFamilyScreen.kt`'s
+`sheetsFamilyEntries`, D-01):
+
+| Component | Tier |
+|-----------|------|
+| `AlbumSourcePickerSheet` | PATTERN |
+| `AlbumTitleConfirmSheet` | PATTERN |
+| `CardEditorShellContent` | PATTERN |
+| `ListCardBottomSheet` | PATTERN |
+| `RecordingBottomSheetContent` | PATTERN |
+| `SheetScaffold` | PRIMITIVE |
+| `TagChipEditorContent` | PATTERN |
+| `TagPickerSheetContent` | PATTERN |
+| `TextCardBottomSheet` | PATTERN |
+| `TagPickerSheet` | PATTERN |
+| `BulkCreatePopup` | PATTERN |
+| `BulkCreatePopupContent` | PATTERN |
+| `NameAndTagsEditor` | PATTERN |
+| `TagCreateSheet` | PATTERN |
+| `TagCreateSheetContent` | PATTERN |
+| `VoiceRenameTagsSheet` | PATTERN |
+| `ClearableTextField` | PRIMITIVE |
+| `EditorItemRow` | PATTERN |
+
+**Finding S-1 — `TextCardBottomSheet` vs. `ListCardBottomSheet` near-duplicate-sibling.** Both
+read in full. Substantial, real duplication beyond the already-known `CardQuickView`-body sharing
+(Cards §, Finding C-2): both ride `SheetScaffold`, both build a byte-for-byte-identical header
+`Row` (title + `PushPin`/`Star` pin/favorite indicators, same padding/sizing/tint) with an
+identical three-dot `DropdownMenu` (Edit → Pin/Unpin → Favorite/Unfavorite → Delete, same icons,
+same `colorScheme.error`-tinted Delete row, same `region:edit-menu-item` `onEditRequest`-vs-local-
+rename-dialog fallback logic), and both render the *exact same* local rename `AlertDialog` +
+`ClearableTextField` block verbatim. The only genuine differences: `TextCardBottomSheet` renders
+its body via `content: String?` plus an `ImageCountIndicator` in the header (`imageCount: Int`,
+IMG-02) that `ListCardBottomSheet` lacks; `ListCardBottomSheet` renders `items: List<ListItemUiModel>`
+via `ListPreviewItemRow` plus `readOnlyPreview`/`previewOverflowCount` (LIST-04) that
+`TextCardBottomSheet` lacks. Both already delegate their shared body region to `CardQuickView`
+with a blank `title` (per each file's own D-04 KDoc) — the *remaining* unshared duplication is the
+header Row + three-dot menu + rename dialog, none of which is currently factored out.
+
+**Disposition: unify.** Unlike Finding C-1 (Cards' `CardBase`-sharing siblings, which are already
+correctly deduplicated down to the shell), this pair still duplicates real, non-trivial chrome
+(header row, menu, rename dialog) verbatim across two files. Recommended unify shape for Phase 5:
+extract the shared header-Row + three-dot-menu (Edit/Pin/Favorite/Delete) + rename-`AlertDialog`
+block into a new shared composable (mirroring the precedent `CardQuickView` itself set for the
+body region, D-04) that both `TextCardBottomSheet` and `ListCardBottomSheet` compose, parameterized
+by their differing body slot (`content` + `imageCount` vs. `items` + `onToggleItem` +
+`readOnlyPreview` + `previewOverflowCount`).
+
+Blast radius (D-02, read-only grep):
+- `TextCardBottomSheet`: SecondBrain 2 files, CalTracker_Android 0 files.
+- `ListCardBottomSheet`: SecondBrain 2 files, CalTracker_Android 0 files.
+
+Both grep to zero on CalTracker; per RESEARCH.md's Pitfall 4 finding, CalTracker's entire hub
+surface excludes the Sheets family, so this reads as "not on that consumer's pin at all" rather
+than "rejected."
+
+**Finding S-2 — the 3 Sheet+Content shell/body pairs, confirmed as the intentional precedent
+(not a duplicate).** All 3 pairs' actual signatures were read in full:
+- `TagPickerSheet`/`TagPickerSheetContent` (`TagPickerSheet.kt:88-115` / `:152-161`):
+  `TagPickerSheet` wraps `SheetScaffold` and calls `TagPickerSheetContent(...)` forwarding every
+  one of its 8 params unchanged.
+- `BulkCreatePopup`/`BulkCreatePopupContent` (`BulkCreatePopup.kt:59-86` / `:102-109`):
+  `BulkCreatePopup` wraps a `Dialog` + one shared `.imePadding()` layer and calls
+  `BulkCreatePopupContent(...)` forwarding all 5 of its params unchanged.
+- `TagCreateSheet`/`TagCreateSheetContent` (`TagCreateSheet.kt:60-80` / `:90-95`):
+  `TagCreateSheet` wraps `SheetScaffold` and calls `TagCreateSheetContent(...)` forwarding all 4
+  of its params unchanged.
+
+Each `*Content` composable's own KDoc states the same reason for the split: extracted as a public
+composable purely so a cross-module Robolectric test can render the body directly without
+popup-window node-tree complications (`:designsystem` has no Compose-test infra of its own) — an
+infrastructure reason, not a design duplication. This confirms RESEARCH.md's Pitfall 3 reading.
+
+**Disposition: keep-with-rationale**, for all 3 pairs — each `*Content` composable is the modal
+body without its chrome wrapper, both independently registered because both are real public
+exports (the wrapper composes the content directly, with no logic duplicated between the two).
+No blast-radius grep needed (not a unify finding).
+
+**Remaining non-paired entries.** Of the 12 Sheets entries not part of Finding S-2's 3 pairs
+(`AlbumSourcePickerSheet`, `AlbumTitleConfirmSheet`, `CardEditorShellContent`,
+`ListCardBottomSheet`, `RecordingBottomSheetContent`, `SheetScaffold`, `TagChipEditorContent`,
+`TextCardBottomSheet`, `NameAndTagsEditor`, `VoiceRenameTagsSheet`, `ClearableTextField`,
+`EditorItemRow`): `TextCardBottomSheet` and `ListCardBottomSheet` are addressed above (Finding
+S-1). The remaining 10 — `AlbumSourcePickerSheet` (camera/gallery source picker),
+`AlbumTitleConfirmSheet` (title-confirm dialog), `CardEditorShellContent` (full-screen editor
+shell), `RecordingBottomSheetContent` (voice-recording state machine sheet), `SheetScaffold`
+(generic chrome-only `ModalBottomSheet` wrapper, the PRIMITIVE every other Sheets entry rides),
+`TagChipEditorContent` (tag add/remove editor body), `NameAndTagsEditor` (name field + tags slot
+editor), `VoiceRenameTagsSheet` (voice-clip rename + tags sheet), `ClearableTextField` (the
+generic PRIMITIVE text-field every sheet's rename/create flow reuses), and `EditorItemRow`
+(reorderable list-item row) — each serves a genuinely distinct purpose per its own signature and
+KDoc; no further overlap, near-duplicate-sibling, or altitude-mismatch candidate was found among
+them. Explicitly stated rather than left unaddressed, per this task's own requirement.
+
+**Altitude check.** No new cross-entry altitude-mismatch candidate surfaced in Sheets beyond tier
+values already ratified by Phase 1 — `SheetScaffold` (no domain noun, renders only caller-supplied
+`content` inside generic chrome) and `ClearableTextField` (no domain noun, a generic text-field
+primitive) correctly earn PRIMITIVE; every other entry's domain-noun-bearing name (Tag/Card/Album/
+Voice/List) and/or baked-in modal-chrome/menu/editor composition opinion correctly earns PATTERN.
 
 ### Buttons / FAB
 
@@ -187,7 +285,46 @@ _(PENDING - filled by a later task)_
 
 ### Tactile Foundation
 
-_(PENDING - filled by a later task)_
+**All 4 entries** (name + shipped tier, transcribed verbatim from
+`TactileFoundationFamilyScreen.kt`'s `tactileFoundationFamilyEntries`, D-01):
+
+| Component | Tier |
+|-----------|------|
+| `ElevationLadder` | PATTERN |
+| `TactileTypeShowcase` | PATTERN |
+| `GradientSwatch` | PATTERN |
+| `HeatSwatch` | PATTERN |
+
+**Finding T-1 — `GradientSwatch` vs. `HeatSwatch`, confirmed as genuinely different purposes
+(not a duplicate).** Both read in full. Per `docs/DESIGN-INTENT.md`'s own worked example,
+`HeatSwatch` takes **no caller-supplied content** (`HeatSwatch(modifier: Modifier = Modifier)`
+only) — it hardcodes its own 6-sample jaccard array and renders a specific mindmap-relatedness
+visual convention (connected nodes/edges that thicken toward the hotter sample, plus a
+ring-bordered "distinct hub" node example), per `HeatSwatch.kt:37-42`'s own KDoc: "Heat targets
+mindmap nodes/edges — a different consumer archetype than a chip." `GradientSwatch`
+(`GradientSwatch.kt:32`) takes a **caller-supplied `accentColor: Color`** and renders two generic
+accent bands (`accentGradient` hero band + `accentTint` flat-fill band) for whatever color the
+caller passes — a reusable accent-ramp preview, not a hardcoded domain-specific visual. Same
+family, same PATTERN tier, same `*Swatch` naming convention, genuinely different purposes —
+confirmed by reading both signatures/bodies rather than assumed from the registry listing alone
+(RESEARCH.md Pitfall 3).
+
+**Disposition: keep-with-rationale.** No blast-radius grep needed (not a unify finding).
+
+**Remaining entries.** `ElevationLadder` (the Elevation Scale token demo, Level0–Level5) and
+`TactileTypeShowcase` (the Space Grotesk type-ramp token demo) were checked for any further
+finding: both are display-only, parameterless token showcases imported from the `theme` package
+(not `component/`), each demonstrating a distinct token domain (shadow-elevation scale vs.
+typography ramp) with no shape or purpose overlap with each other, with the `*Swatch` pair, or
+with any other family. No finding surfaced for either — stated explicitly rather than left
+unaddressed.
+
+**Altitude check.** No new cross-entry altitude-mismatch candidate surfaced in Tactile Foundation
+beyond tier values already ratified by Phase 1. All 4 entries correctly earn PATTERN: none renders
+only caller-passed content with zero composition opinion — each hardcodes a specific visual
+convention or (for `GradientSwatch`) at minimum a fixed two-band composition — so all fail
+condition (2) of the D-03 litmus regardless of domain-noun status, consistent with
+`docs/DESIGN-INTENT.md`'s own `HeatSwatch` worked example.
 
 ### Unify Work-Order
 
