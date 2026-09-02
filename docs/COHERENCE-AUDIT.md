@@ -454,8 +454,11 @@ genuinely imported from the hub (`import io.github.ygaray.yahirandroidtaste.comp
 false positive (a KDoc comment mentioning all three, not an import or call site) — confirmed by
 direct read, not counted. This is exactly the single-name-grep-lower-bound caveat this audit's
 own Scope & Method section already flags, made concrete: CalTracker's real hub-Progress/Metrics
-exposure is 1 file (`RemainingBudgetHero.kt`, importing `AnimatedStatValue`/`HeroStatCard`/
-`ProgressRing`), and `MetricBar` has zero genuine hub-import exposure in CalTracker today (its
+exposure is 2 files — `RemainingBudgetHero.kt` (importing `AnimatedStatValue`/`HeroStatCard`/
+`ProgressRing`) and `CollapsingDayHeader.kt` (`import
+io.github.ygaray.yahirandroidtaste.component.ProgressRing` at `CollapsingDayHeader.kt:37`, calling
+`ProgressRing(...)` at `CollapsingDayHeader.kt:183` for its compact 32dp mini progress indicator) —
+and `MetricBar` has zero genuine hub-import exposure in CalTracker today (its
 own local `MetricBar` predates or parallels the hub's generalized version — per `MetricBar.kt`'s
 own KDoc, the hub's `MetricBar` was itself "generalized from CalTracker's own device-verified
 `MetricBar`," so this is a not-yet-migrated consumer, not a rejected one). No blast-radius grep
