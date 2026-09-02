@@ -265,19 +265,150 @@ Voice/List) and/or baked-in modal-chrome/menu/editor composition opinion correct
 
 ### Buttons / FAB
 
-_(PENDING - filled by a later task)_
+**All 3 entries** (name + shipped tier, transcribed verbatim from `ButtonsFabFamilyScreen.kt`'s
+`buttonsFabFamilyEntries`, D-01):
+
+| Component | Tier |
+|-----------|------|
+| `ExpandableFab` | PATTERN |
+| `CycleSubTypeButton` | PATTERN |
+| `DynamicActionButton` | PATTERN |
+
+**Overlap/near-duplicate-sibling check.** All 3 read in full (`ExpandableFab.kt`,
+`CycleSubTypeButton.kt`, `DynamicActionButton.kt`). No candidate surfaced: `ExpandableFab` is a
+Google-Keep-style expand/collapse fan of `SmallFloatingActionButton`s with a nested tier-2
+sub-fan, `CycleSubTypeButton` is a single predictive-icon `IconButton` that cycles a fixed
+3-value string enum, and `DynamicActionButton` is a role-driven filled-`Button`/`TextButton`
+switch. Each renders a structurally distinct widget shape (FAB fan vs. single icon toggle vs.
+role-colored button) with no shared internal composition and no overlapping parameter surface —
+not a naming/family/tier coincidence like Finding T-1's `*Swatch` pair, genuinely three different
+shapes. RESEARCH.md's own skim did not surface a seed here; this task's direct read confirms the
+family is clean rather than leaving it unaddressed, per this task's own requirement.
+
+**Disposition: no overlap/near-duplicate finding for this family.**
+
+**Altitude check.** No cross-entry altitude-mismatch candidate surfaced beyond tier values already
+ratified by Phase 1. `ExpandableFab` bakes in domain vocabulary directly into its own callback
+names (`onCreateTextCard`/`onCreateListCard`/`onCreateVoiceCard`/`onAlbumCamera`/`onAlbumGallery`)
+plus a fixed multi-tier fan/scrim/back-gesture interaction convention — correctly PATTERN twice
+over (fails both litmus conditions). `CycleSubTypeButton` hardcodes the List card's own sub-type
+vocabulary (`"BULLETED"`/`"ORDERED"`/`"CHECKBOX"`, `internal fun nextSubType`) and a fixed
+predictive-icon cycle convention rather than rendering only caller-passed content — correctly
+PATTERN. `DynamicActionButton` bakes in a fixed `role -> widget/color` mapping
+(`ActionButtonDefaults.ActionButtonRole`) as a deliberate, non-overridable composition opinion
+(per its own KDoc: "There is deliberately no caller-supplied widget override") — correctly
+PATTERN. No restated findings.
 
 ### Pickers
 
-_(PENDING - filled by a later task)_
+**All 4 entries** (name + shipped tier, transcribed verbatim from `PickersFamilyScreen.kt`'s
+`pickersFamilyEntries`, D-01):
+
+| Component | Tier |
+|-----------|------|
+| `AccentColorPicker` | PATTERN |
+| `IconPickerGrid` | PATTERN |
+| `CropOverlay` | PATTERN |
+| `SegmentedOptionSelector` | PRIMITIVE |
+
+**Finding PK-1 — `AccentColorPicker` vs. `IconPickerGrid` shape echo, confirmed as genuinely
+different implementations (not a duplicate).** Both read in full (`AccentColorPicker.kt`,
+`IconPickerGrid.kt`). Both share a superficial "grid/flow selection picker" shape: a single
+`selected*`/`on*Selected` callback pair, a caller-facing `showIndices: Boolean = false`
+gallery-debug flag that overlays a numeric badge on each cell, and tap-to-select semantics with a
+highlighted selected cell. Per RESEARCH.md Pitfall 3, read both actual bodies rather than
+disposition from this naming/param echo alone: `AccentColorPicker` lays out a fixed, hardcoded
+32-entry `ACCENT_COLORS` palette in a `FlowRow` of 40dp circular swatches (light/dark-aware);
+`IconPickerGrid` lays out a hardcoded ~2,038-entry `ICON_MAP` in a `LazyVerticalGrid` with a live,
+case-insensitive substring-search `ClearableTextField` above the grid (`filterIconEntries`) — a
+materially more complex, independently-filterable widget with no live-search equivalent in
+`AccentColorPicker`. The two hardcoded content sources (32 static colors vs. ~2,038 searchable
+icons), the two layout primitives (`FlowRow` vs. `LazyVerticalGrid`), and the two cell shapes
+(circle swatch vs. square `IconButton`) are genuinely distinct implementations — `showIndices` is
+a shared gallery-only debug convention (present for this task's own state-matrix authoring, per
+each file's own Variants usage), not evidence of a shared production primitive underneath.
+
+**Disposition: keep-with-rationale.** The picker "shape echo" is coincidental convergence on the
+same debug-affordance convention (`showIndices`), not implementation duplication — extracting a
+shared `GridPicker<T>` primitive would need to abstract over a fixed-cardinality circular-swatch
+grid and a filterable, ~2,038-entry searchable icon grid, which is a materially different problem
+than either component solves today; no net legibility win identified. No blast-radius grep needed
+(not a unify finding).
+
+**Altitude check.** No new cross-entry altitude-mismatch candidate surfaced beyond tier values
+already ratified by Phase 1. `AccentColorPicker`, `IconPickerGrid`, and `CropOverlay` each fail
+condition (2) of the D-03 litmus the same way `HeatSwatch` does — each hardcodes its own content
+source (a fixed color list, a fixed icon map, or a bespoke 8-handle drag-crop interaction
+convention) rather than rendering only caller-passed content — correctly PATTERN. `CropOverlay`
+additionally bakes in a whole gesture-driven interaction convention (`detectDragGestures` across 8
+handles, aspect-ratio clamping), reinforcing PATTERN. `SegmentedOptionSelector` introduces no
+domain noun and renders only the two caller-supplied `options` labels through a generic M3
+`SingleChoiceSegmentedButtonRow` wrapper with no interaction convention beyond the toggle itself —
+correctly PRIMITIVE, the same shape `ChipBar`'s own worked-example precedent covers (fully
+generic, "holds no \[X\]-rendering opinions" in spirit). No restated findings.
 
 ### Feedback
 
-_(PENDING - filled by a later task)_
+**All 3 entries** (name + shipped tier, transcribed verbatim from `FeedbackFamilyScreen.kt`'s
+`feedbackFamilyEntries`, D-01):
+
+| Component | Tier |
+|-----------|------|
+| `ConfirmationDialog` | PRIMITIVE |
+| `UndoCenterScreen` | PATTERN |
+| `AttentionCue` | PRIMITIVE |
+
+This family is consumed by CalTracker_Android (`ConfirmationDialog`, `ConfirmationDialogDefaults`)
+as well as SecondBrain (per RESEARCH.md Pitfall 4) — given real attention below, not a rubber
+stamp.
+
+**Overlap/near-duplicate-sibling check.** All 3 read in full (`ConfirmationDialog.kt`,
+`UndoCenterScreen.kt`, `AttentionCue.kt`). No candidate surfaced: `ConfirmationDialog` is a
+title/body/confirm/dismiss `AlertDialog` wrapper, `UndoCenterScreen` is a full-screen scaffold
+(`TopAppBar` + `LazyColumn` of undo entries + hold-to-peek gesture + `EmptyState` fallback), and
+`AttentionCue` is a small inline caution glyph (`Inline`/`Dot` style). Three non-overlapping
+widget classes (modal dialog / full screen / inline glyph) with no shared parameter surface or
+internal composition.
+
+**Disposition: no overlap/near-duplicate finding for this family.**
+
+**Altitude check.** `ConfirmationDialog`'s PRIMITIVE tier was explicitly re-examined against the
+D-03 litmus, since its own KDoc calls it "the single shared implementation for all
+confirm-before-acting prompts app-wide" — language that could suggest a baked-in "modal-chrome
+pattern" the litmus's own condition-2 parenthetical calls out. Confirmed after reading the body:
+it renders a bare Material3 `AlertDialog` with caller-supplied `title`/`body` strings and a fixed
+confirm/dismiss button pair — no domain noun in its name or parameters, and (per its own KDoc)
+"DI/Nav-free," referencing no ViewModel/Nav/FeedbackController type. Its "canonical shared
+implementation" framing describes *why* the hub ships it (avoiding N hand-rolled duplicates
+downstream), not a baked-in interaction convention beyond what Material3's own `AlertDialog`
+primitive already provides — the same "fully generic, pure presentation" shape `ChipBar`'s own
+worked example sets the PRIMITIVE bar at. Shipped tier stands; no new finding. `UndoCenterScreen`
+correctly earns PATTERN (bakes in a full scaffold + hold-to-peek gesture + relative-timestamp
+ticking, well past "caller content only"). `AttentionCue` correctly earns PRIMITIVE (no domain
+noun, renders only caller-passed `text`/`icon`/`tint` through one of two minimal, non-interactive
+layout variants). No restated findings.
 
 ### Empty State
 
-_(PENDING - filled by a later task)_
+**The single entry** (name + shipped tier, transcribed verbatim from
+`EmptyStateFamilyScreen.kt`'s `emptyStateFamilyEntries`, D-01):
+
+| Component | Tier |
+|-----------|------|
+| `EmptyState` | PRIMITIVE |
+
+**No overlap/near-duplicate-sibling finding possible** — a 1-entry family cannot have an
+intra-family overlap or near-duplicate-sibling finding by definition; no cross-family comparison
+is invented in its place, per this task's own instruction.
+
+**Altitude check.** `EmptyState.kt` was read in full: its signature
+(`icon: ImageVector, title: String, modifier, body: String? = null, ctaLabel: String? = null,
+onCta: (() -> Unit)? = null`) introduces no domain noun and renders only caller-passed content
+through a fixed icon/title/body/CTA vertical arrangement — the same "fixed presentational
+arrangement of purely caller-supplied content" shape `ChipBar`'s own PRIMITIVE precedent covers
+(a fixed layout convention alone does not fail condition 2; hardcoding *content*, as `HeatSwatch`
+does, is what fails it). Nothing about the actual signature looks domain-coupled. Shipped tier
+stands; no new finding.
 
 ### Progress / Metrics
 
