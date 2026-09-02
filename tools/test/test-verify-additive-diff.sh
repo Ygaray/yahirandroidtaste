@@ -41,4 +41,16 @@ sed -i 's/doc line/doc line edited/' NOTES.md
 set +e; "$SCRIPT" v0.0.0 >/dev/null 2>&1; rc=$?; set -e
 check "$rc" 0 "a doc-file rewrite outside src/ is NOT flagged (docs are not the consumable surface)"
 
+# (d) CR-01 regression: a file created AFTER the baseline tag (commit N), then a REWRITE of one of
+# its lines in a later commit (N+1) -> FAIL (exit 1). The default PATHS enumeration must be drawn
+# from HEAD, not the baseline ref, or a post-tag file is invisible to the guard for the rest of
+# that tag's lifetime (the bug fixed in this phase).
+git reset -q --hard; git clean -fdq
+printf 'val d = 1\n' > src/main/D.kt
+git add -A; git commit -qm "add D.kt (post-tag)"
+sed -i 's/val d = 1/val d = 999/' src/main/D.kt
+git add -A
+set +e; "$SCRIPT" v0.0.0 >/dev/null 2>&1; rc=$?; set -e
+check "$rc" 1 "rewrite of a line in a file created after the baseline tag must be caught (CR-01 regression)"
+
 echo "PASS=$pass FAIL=$fail"; [ "$fail" -eq 0 ]

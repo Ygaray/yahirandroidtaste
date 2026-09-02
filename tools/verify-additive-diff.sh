@@ -46,17 +46,22 @@ fi
 if [ "$#" -gt 0 ]; then
   PATHS=("$@")
 else
-  # Default: every file tracked at the baseline. Closes the path-list gap (spec §5.1) —
+  # Default: every file tracked as of HEAD. Closes the path-list gap (spec §5.1) —
   # a contributor cannot silently edit an unguarded pre-existing file.
   # Use NUL-safe input (git ls-tree -z) to handle filenames with unusual characters (non-ASCII,
   # backslash, quote) that would otherwise be C-quoted under core.quotepath=true.
-  # Default: every SOURCE file tracked at the baseline (under src/). The additive invariant protects
-  # the CONSUMABLE surface (public API / behavior) — docs, .planning/, and build files are not
-  # consumed by pinning apps and their edits are not breaking changes, so they are excluded to avoid
-  # false blocks (a doc reword is not a lane-2 change). Pass explicit [path...] to override for other
-  # layouts. Source additivity for a genuinely different tree is the caller's responsibility.
-  mapfile -d '' -t PATHS < <(git ls-tree -z -r --name-only "$BASELINE_COMMIT" -- src/main)
-  [ "${#PATHS[@]}" -gt 0 ] || { echo "DS-05 FAIL: baseline '$BASELINE_COMMIT' has no tracked production source under src/main." >&2; exit 1; }
+  # Default: every SOURCE file tracked as of HEAD (under src/). The diff basis is staged-vs-HEAD
+  # (D-01, GOV-03 fix), so "pre-existing" now means "tracked in HEAD" — a file created after the
+  # last baseline tag but before this commit is still pre-existing from this commit's point of
+  # view and must be protected. Enumerating from $BASELINE_COMMIT instead would leave every file
+  # created since the last tag permanently invisible to this guard until the next tag is cut
+  # (CR-01). The additive invariant protects the CONSUMABLE surface (public API / behavior) — docs,
+  # .planning/, and build files are not consumed by pinning apps and their edits are not breaking
+  # changes, so they are excluded to avoid false blocks (a doc reword is not a lane-2 change). Pass
+  # explicit [path...] to override for other layouts. Source additivity for a genuinely different
+  # tree is the caller's responsibility.
+  mapfile -d '' -t PATHS < <(git ls-tree -z -r --name-only HEAD -- src/main)
+  [ "${#PATHS[@]}" -gt 0 ] || { echo "DS-05 FAIL: HEAD has no tracked production source under src/main." >&2; exit 1; }
 fi
 
 TMP_DIR="$(mktemp -d)"
