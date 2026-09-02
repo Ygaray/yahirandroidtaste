@@ -21,7 +21,7 @@ give-legs; these requirements are the hub-owned coherence / gardening / governan
 
 ### Coherence Audit — surface the incoherence
 
-- [ ] **AUD-01**: A coherence audit enumerates the 9 families and flags overlaps, near-duplicate
+- [x] **AUD-01**: A coherence audit enumerates the 9 families and flags overlaps, near-duplicate
   sibling components, and altitude mismatches, with a documented disposition
   (unify / keep-with-rationale / prune) for each finding.
 
@@ -73,7 +73,7 @@ Tracked, not in this milestone.
 |-------------|-------|--------|
 | LEG-01 | Phase 1 | Complete |
 | LEG-02 | Phase 1 | Complete |
-| AUD-01 | Phase 2 | Pending |
+| AUD-01 | Phase 2 | Complete |
 | GOV-01 | Phase 3 | Pending |
 | GOV-02 | Phase 3 | Pending |
 | GOV-03 | Phase 3 | Pending |
