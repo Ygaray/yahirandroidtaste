@@ -1,11 +1,12 @@
 ---
 phase: 01-tier-legibility
 verified: 2026-09-01T23:04:03Z
-status: human_needed
+status: passed
 score: 4/4 must-haves verified
 behavior_unverified: 0
 overrides_applied: 0
 human_verification:
+
   - test: "Open ExplorerActivity gallery on-device (or emulator): (1) browse the component list on any family screen and the index search results, (2) open a component detail page — for both short names (e.g. AppChip) and the longest registered names (RecordingBottomSheetContent, 28 chars; TagChipWithContextMenu, 23; SegmentedOptionSelector, 23)."
     expected: "The Primitive/Pattern badge is visible, legible, and never clipped or pushed off-row on the list surface (ComponentRow); on the detail screen's TopAppBar title, the component name truncates with an ellipsis (not the badge) when the two don't fit between the back arrow and the theme-toggle action. Badge color is visually distinct between Primitive (secondaryContainer) and Pattern (tertiaryContainer) in both light and dark theme."
     why_human: "WR-02 (01-REVIEW.md) flagged exactly this truncation/overflow risk; the fix (Modifier.weight + maxLines=1 + TextOverflow.Ellipsis) is confirmed present and compiling in both ExplorerIndexScreen.kt and ComponentDetailScreen.kt, but the review's own fix report explicitly notes on-device confirmation is 'still worth doing... before considering the visual result fully closed' — grep/compile evidence cannot see actual pixel-level clipping, color contrast, or dark-theme rendering."
@@ -98,11 +99,14 @@ None. Scanned all 14 files touched by this phase (9 `*FamilyScreen.kt`, `Compone
 
 `01-REVIEW.md` found 2 warnings + 2 info findings (0 critical). `01-REVIEW-FIX.md` confirms all 4
 fixed and independently re-verified in this pass:
+
 - **WR-01** (AppChip mistiered PRIMITIVE) — confirmed fixed: `ChipsFamilyScreen.kt:97-103` now
   reads `tier = ComponentRegistry.Tier.PATTERN` with a justification comment.
+
 - **WR-02** (badge truncation/overflow) — confirmed fixed: both `ExplorerIndexScreen.kt` and
   `ComponentDetailScreen.kt` now apply `Modifier.weight(1f, fill=false)` + `maxLines=1` +
   `TextOverflow.Ellipsis` to the name `Text`, ahead of the badge.
+
 - **IN-01** (HeroStatCard duplicate state cell) — confirmed fixed in `ProgressFamilyScreen.kt`.
 - **IN-02** (unused import) — confirmed fixed in `FeedbackFamilyScreen.kt`.
 
