@@ -47,7 +47,7 @@ give-legs; these requirements are the hub-owned coherence / gardening / governan
 
 ### Repin Bookkeeping — harden reconciliation
 
-- [ ] **REPIN-01**: The hub's `ECOSYSTEM.md` carries the `repin-matrix` markers so
+- [x] **REPIN-01**: The hub's `ECOSYSTEM.md` carries the `repin-matrix` markers so
   `repin_status.py reconcile` operates without hand edits — closes `INC-2026-08-28-03`.
 
 ## v2 / Future Requirements
@@ -77,7 +77,7 @@ Tracked, not in this milestone.
 | GOV-01 | Phase 3 | Complete |
 | GOV-02 | Phase 3 | Complete |
 | GOV-03 | Phase 3 | Complete |
-| REPIN-01 | Phase 4 | Pending |
+| REPIN-01 | Phase 4 | Complete |
 | GARD-01 | Phase 5 | Pending |
 | GARD-02 | Phase 5 | Pending |
 
