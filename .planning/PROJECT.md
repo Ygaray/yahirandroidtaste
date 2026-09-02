@@ -33,6 +33,12 @@ catalog legible and prunable.
   design-intent doc states both contracts + a decidable litmus, and the gallery surfaces it
   on-device (confirmed via Gate-1 self-UAT). Phase 2 (Coherence Audit) can now use tier as a
   first-class signal when dispositioning overlap/near-duplicate siblings.
+- **Phase 2 (Coherence Audit) complete** (2026-09-02): `docs/COHERENCE-AUDIT.md` enumerates all
+  9 registered families (53 entries), flags overlap/near-duplicate-sibling/altitude-mismatch
+  findings, and dispositions each as unify/keep-with-rationale/prune. Two "unify" findings
+  (`ChipBar`/`FilterBar`; `TextCardBottomSheet`/`ListCardBottomSheet`) are aggregated into a
+  concrete Unify Work-Order with pre-computed SecondBrain + CalTracker_Android blast-radius
+  counts, ready for Phase 5 (Gardening) to execute against.
 
 ## Constraints
 
@@ -60,12 +66,15 @@ catalog legible and prunable.
   explicit, compile-time-enforced `Tier`; `docs/DESIGN-INTENT.md` states the primitives/patterns
   contracts and a decidable litmus; both gallery surfaces (`ComponentRow`, `ComponentDetailScreen`)
   display the tier — validated Phase 1 (Tier Legibility)
+- ✓ **Coherence audit** of the 9 families — `docs/COHERENCE-AUDIT.md` enumerates all 53 entries,
+  flags overlaps/near-duplicate siblings/altitude mismatches, dispositions each (unify /
+  keep-with-rationale / prune), and aggregates "unify" findings into an actionable Unify
+  Work-Order with per-consumer blast-radius counts — validated Phase 2 (Coherence Audit)
 
 ### Active
 
 <!-- This project's charter. Hypotheses until shipped. -->
 
-- [ ] **Coherence audit** of the 9 families — surface overlap, near-duplicate siblings, incoherence
 - [ ] **Prune/unify** the additive-duplicate accretion (`v1.2→v1.10`) under a coordinated breaking
   "gardening" tag
 - [ ] **Tier-aware contribution litmus** + a domain-vocabulary drift guard (flag, not forbid)
@@ -104,4 +113,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-01 — Phase 1 (Tier Legibility) complete*
+*Last updated: 2026-09-02 — Phase 2 (Coherence Audit) complete*
