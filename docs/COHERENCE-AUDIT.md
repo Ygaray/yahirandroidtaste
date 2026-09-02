@@ -265,23 +265,212 @@ Voice/List) and/or baked-in modal-chrome/menu/editor composition opinion correct
 
 ### Buttons / FAB
 
-_(PENDING - filled by a later task)_
+**All 3 entries** (name + shipped tier, transcribed verbatim from `ButtonsFabFamilyScreen.kt`'s
+`buttonsFabFamilyEntries`, D-01):
+
+| Component | Tier |
+|-----------|------|
+| `ExpandableFab` | PATTERN |
+| `CycleSubTypeButton` | PATTERN |
+| `DynamicActionButton` | PATTERN |
+
+**Overlap/near-duplicate-sibling check.** All 3 read in full (`ExpandableFab.kt`,
+`CycleSubTypeButton.kt`, `DynamicActionButton.kt`). No candidate surfaced: `ExpandableFab` is a
+Google-Keep-style expand/collapse fan of `SmallFloatingActionButton`s with a nested tier-2
+sub-fan, `CycleSubTypeButton` is a single predictive-icon `IconButton` that cycles a fixed
+3-value string enum, and `DynamicActionButton` is a role-driven filled-`Button`/`TextButton`
+switch. Each renders a structurally distinct widget shape (FAB fan vs. single icon toggle vs.
+role-colored button) with no shared internal composition and no overlapping parameter surface —
+not a naming/family/tier coincidence like Finding T-1's `*Swatch` pair, genuinely three different
+shapes. RESEARCH.md's own skim did not surface a seed here; this task's direct read confirms the
+family is clean rather than leaving it unaddressed, per this task's own requirement.
+
+**Disposition: no overlap/near-duplicate finding for this family.**
+
+**Altitude check.** No cross-entry altitude-mismatch candidate surfaced beyond tier values already
+ratified by Phase 1. `ExpandableFab` bakes in domain vocabulary directly into its own callback
+names (`onCreateTextCard`/`onCreateListCard`/`onCreateVoiceCard`/`onAlbumCamera`/`onAlbumGallery`)
+plus a fixed multi-tier fan/scrim/back-gesture interaction convention — correctly PATTERN twice
+over (fails both litmus conditions). `CycleSubTypeButton` hardcodes the List card's own sub-type
+vocabulary (`"BULLETED"`/`"ORDERED"`/`"CHECKBOX"`, `internal fun nextSubType`) and a fixed
+predictive-icon cycle convention rather than rendering only caller-passed content — correctly
+PATTERN. `DynamicActionButton` bakes in a fixed `role -> widget/color` mapping
+(`ActionButtonDefaults.ActionButtonRole`) as a deliberate, non-overridable composition opinion
+(per its own KDoc: "There is deliberately no caller-supplied widget override") — correctly
+PATTERN. No restated findings.
 
 ### Pickers
 
-_(PENDING - filled by a later task)_
+**All 4 entries** (name + shipped tier, transcribed verbatim from `PickersFamilyScreen.kt`'s
+`pickersFamilyEntries`, D-01):
+
+| Component | Tier |
+|-----------|------|
+| `AccentColorPicker` | PATTERN |
+| `IconPickerGrid` | PATTERN |
+| `CropOverlay` | PATTERN |
+| `SegmentedOptionSelector` | PRIMITIVE |
+
+**Finding PK-1 — `AccentColorPicker` vs. `IconPickerGrid` shape echo, confirmed as genuinely
+different implementations (not a duplicate).** Both read in full (`AccentColorPicker.kt`,
+`IconPickerGrid.kt`). Both share a superficial "grid/flow selection picker" shape: a single
+`selected*`/`on*Selected` callback pair, a caller-facing `showIndices: Boolean = false`
+gallery-debug flag that overlays a numeric badge on each cell, and tap-to-select semantics with a
+highlighted selected cell. Per RESEARCH.md Pitfall 3, read both actual bodies rather than
+disposition from this naming/param echo alone: `AccentColorPicker` lays out a fixed, hardcoded
+32-entry `ACCENT_COLORS` palette in a `FlowRow` of 40dp circular swatches (light/dark-aware);
+`IconPickerGrid` lays out a hardcoded ~2,038-entry `ICON_MAP` in a `LazyVerticalGrid` with a live,
+case-insensitive substring-search `ClearableTextField` above the grid (`filterIconEntries`) — a
+materially more complex, independently-filterable widget with no live-search equivalent in
+`AccentColorPicker`. The two hardcoded content sources (32 static colors vs. ~2,038 searchable
+icons), the two layout primitives (`FlowRow` vs. `LazyVerticalGrid`), and the two cell shapes
+(circle swatch vs. square `IconButton`) are genuinely distinct implementations — `showIndices` is
+a shared gallery-only debug convention (present for this task's own state-matrix authoring, per
+each file's own Variants usage), not evidence of a shared production primitive underneath.
+
+**Disposition: keep-with-rationale.** The picker "shape echo" is coincidental convergence on the
+same debug-affordance convention (`showIndices`), not implementation duplication — extracting a
+shared `GridPicker<T>` primitive would need to abstract over a fixed-cardinality circular-swatch
+grid and a filterable, ~2,038-entry searchable icon grid, which is a materially different problem
+than either component solves today; no net legibility win identified. No blast-radius grep needed
+(not a unify finding).
+
+**Altitude check.** No new cross-entry altitude-mismatch candidate surfaced beyond tier values
+already ratified by Phase 1. `AccentColorPicker`, `IconPickerGrid`, and `CropOverlay` each fail
+condition (2) of the D-03 litmus the same way `HeatSwatch` does — each hardcodes its own content
+source (a fixed color list, a fixed icon map, or a bespoke 8-handle drag-crop interaction
+convention) rather than rendering only caller-passed content — correctly PATTERN. `CropOverlay`
+additionally bakes in a whole gesture-driven interaction convention (`detectDragGestures` across 8
+handles, aspect-ratio clamping), reinforcing PATTERN. `SegmentedOptionSelector` introduces no
+domain noun and renders only the two caller-supplied `options` labels through a generic M3
+`SingleChoiceSegmentedButtonRow` wrapper with no interaction convention beyond the toggle itself —
+correctly PRIMITIVE, the same shape `ChipBar`'s own worked-example precedent covers (fully
+generic, "holds no \[X\]-rendering opinions" in spirit). No restated findings.
 
 ### Feedback
 
-_(PENDING - filled by a later task)_
+**All 3 entries** (name + shipped tier, transcribed verbatim from `FeedbackFamilyScreen.kt`'s
+`feedbackFamilyEntries`, D-01):
+
+| Component | Tier |
+|-----------|------|
+| `ConfirmationDialog` | PRIMITIVE |
+| `UndoCenterScreen` | PATTERN |
+| `AttentionCue` | PRIMITIVE |
+
+This family is consumed by CalTracker_Android (`ConfirmationDialog`, `ConfirmationDialogDefaults`)
+as well as SecondBrain (per RESEARCH.md Pitfall 4) — given real attention below, not a rubber
+stamp.
+
+**Overlap/near-duplicate-sibling check.** All 3 read in full (`ConfirmationDialog.kt`,
+`UndoCenterScreen.kt`, `AttentionCue.kt`). No candidate surfaced: `ConfirmationDialog` is a
+title/body/confirm/dismiss `AlertDialog` wrapper, `UndoCenterScreen` is a full-screen scaffold
+(`TopAppBar` + `LazyColumn` of undo entries + hold-to-peek gesture + `EmptyState` fallback), and
+`AttentionCue` is a small inline caution glyph (`Inline`/`Dot` style). Three non-overlapping
+widget classes (modal dialog / full screen / inline glyph) with no shared parameter surface or
+internal composition.
+
+**Disposition: no overlap/near-duplicate finding for this family.**
+
+**Altitude check.** `ConfirmationDialog`'s PRIMITIVE tier was explicitly re-examined against the
+D-03 litmus, since its own KDoc calls it "the single shared implementation for all
+confirm-before-acting prompts app-wide" — language that could suggest a baked-in "modal-chrome
+pattern" the litmus's own condition-2 parenthetical calls out. Confirmed after reading the body:
+it renders a bare Material3 `AlertDialog` with caller-supplied `title`/`body` strings and a fixed
+confirm/dismiss button pair — no domain noun in its name or parameters, and (per its own KDoc)
+"DI/Nav-free," referencing no ViewModel/Nav/FeedbackController type. Its "canonical shared
+implementation" framing describes *why* the hub ships it (avoiding N hand-rolled duplicates
+downstream), not a baked-in interaction convention beyond what Material3's own `AlertDialog`
+primitive already provides — the same "fully generic, pure presentation" shape `ChipBar`'s own
+worked example sets the PRIMITIVE bar at. Shipped tier stands; no new finding. `UndoCenterScreen`
+correctly earns PATTERN (bakes in a full scaffold + hold-to-peek gesture + relative-timestamp
+ticking, well past "caller content only"). `AttentionCue` correctly earns PRIMITIVE (no domain
+noun, renders only caller-passed `text`/`icon`/`tint` through one of two minimal, non-interactive
+layout variants). No restated findings.
 
 ### Empty State
 
-_(PENDING - filled by a later task)_
+**The single entry** (name + shipped tier, transcribed verbatim from
+`EmptyStateFamilyScreen.kt`'s `emptyStateFamilyEntries`, D-01):
+
+| Component | Tier |
+|-----------|------|
+| `EmptyState` | PRIMITIVE |
+
+**No overlap/near-duplicate-sibling finding possible** — a 1-entry family cannot have an
+intra-family overlap or near-duplicate-sibling finding by definition; no cross-family comparison
+is invented in its place, per this task's own instruction.
+
+**Altitude check.** `EmptyState.kt` was read in full: its signature
+(`icon: ImageVector, title: String, modifier, body: String? = null, ctaLabel: String? = null,
+onCta: (() -> Unit)? = null`) introduces no domain noun and renders only caller-passed content
+through a fixed icon/title/body/CTA vertical arrangement — the same "fixed presentational
+arrangement of purely caller-supplied content" shape `ChipBar`'s own PRIMITIVE precedent covers
+(a fixed layout convention alone does not fail condition 2; hardcoding *content*, as `HeatSwatch`
+does, is what fails it). Nothing about the actual signature looks domain-coupled. Shipped tier
+stands; no new finding.
 
 ### Progress / Metrics
 
-_(PENDING - filled by a later task)_
+**All 4 entries** (name + shipped tier, transcribed verbatim from `ProgressFamilyScreen.kt`'s
+`progressFamilyEntries`, D-01):
+
+| Component | Tier |
+|-----------|------|
+| `MetricBar` | PATTERN |
+| `ProgressRing` | PATTERN |
+| `AnimatedStatValue` | PRIMITIVE |
+| `HeroStatCard` | PATTERN |
+
+Per RESEARCH.md's Pitfall 4, this family (along with Feedback) is one of only two families both
+SecondBrain and CalTracker_Android draw from.
+
+**Overlap/near-duplicate-sibling check.** All 4 read in full (`MetricBar.kt`, `ProgressRing.kt`,
+`AnimatedStatValue.kt`, `HeroStatCard.kt`). No candidate surfaced: each is a distinct,
+*complementary* primitive/pattern by design, not a competing implementation of the same shape —
+`MetricBar` (linear 5-band bar + header row), `ProgressRing` (circular determinate arc),
+`AnimatedStatValue` (tweened count-up/count-down numeral), `HeroStatCard` (accent-striped card
+face). `HeroStatCard`'s own `content` slot and KDoc explicitly demonstrate composing an embedded
+`ProgressRing` or `AnimatedStatValue` inside it — these components are documented to compose
+*with* each other, the opposite of duplication. Each file's KDoc also cross-references the others'
+"zero primitive-authored copy" litmus (caller-supplied strings/fractions only, no internal
+formatting) as a shared *convention*, not shared *implementation*.
+
+**Disposition: no overlap/near-duplicate finding for this family.**
+
+**Consumer exposure note (D-02 verification, not a unify finding).** Per this task's own
+instruction, `MetricBar`'s CalTracker exposure was verified independently rather than assumed to
+match `AnimatedStatValue`/`HeroStatCard`/`ProgressRing`'s. Read-only grep
+(`grep -rl "MetricBar" ~/Projects/CalTracker_Android/app/src`) returns 15 files, but direct
+inspection shows this is a **false positive for hub exposure**: CalTracker_Android maintains its
+own, separately-implemented `com.caltracker.app.ui.common.MetricBar` (confirmed via
+`~/Projects/CalTracker_Android/app/src/main/java/com/caltracker/app/ui/common/MetricBar.kt`,
+package `com.caltracker.app.ui.common`, importing CalTracker's own `ProgressState`/`Band*` theme
+tokens) — not an import of the hub's `io.github.ygaray.yahirandroidtaste.component.MetricBar`.
+No `import io.github.ygaray.yahirandroidtaste.component.MetricBar` line exists anywhere in
+CalTracker's tree. `AnimatedStatValue`/`HeroStatCard`/`ProgressRing`, by contrast, are confirmed
+genuinely imported from the hub (`import io.github.ygaray.yahirandroidtaste.component.*` lines in
+`RemainingBudgetHero.kt`); a second grep hit in `HomeScreen.kt` for the same 3 names is itself a
+false positive (a KDoc comment mentioning all three, not an import or call site) — confirmed by
+direct read, not counted. This is exactly the single-name-grep-lower-bound caveat this audit's
+own Scope & Method section already flags, made concrete: CalTracker's real hub-Progress/Metrics
+exposure is 1 file (`RemainingBudgetHero.kt`, importing `AnimatedStatValue`/`HeroStatCard`/
+`ProgressRing`), and `MetricBar` has zero genuine hub-import exposure in CalTracker today (its
+own local `MetricBar` predates or parallels the hub's generalized version — per `MetricBar.kt`'s
+own KDoc, the hub's `MetricBar` was itself "generalized from CalTracker's own device-verified
+`MetricBar`," so this is a not-yet-migrated consumer, not a rejected one). No blast-radius grep
+required beyond this verification (no unify finding in this family).
+
+**Altitude check.** No cross-entry altitude-mismatch candidate surfaced beyond tier values already
+ratified by Phase 1. `MetricBar` and `ProgressRing` both fail condition (2) — each bakes in a
+specific visual/composition convention (a fixed header-row + 5-band linear bar; a canvas-drawn
+circular arc with a specific default motion spec) beyond bare caller content — correctly PATTERN.
+`AnimatedStatValue` introduces no domain noun and applies only a caller-parameterized tween to a
+caller-supplied numeral with no invented content or interaction convention of its own — correctly
+PRIMITIVE, consistent with `docs/DESIGN-INTENT.md`'s own litmus reasoning. `HeroStatCard`'s name
+itself carries the domain noun "Card" (one of the litmus's own cited examples) and additionally
+bakes in a fixed accent-stripe + surface + column composition — correctly PATTERN on both
+independent grounds. No restated findings.
 
 ### Tactile Foundation
 
@@ -328,4 +517,61 @@ condition (2) of the D-03 litmus regardless of domain-noun status, consistent wi
 
 ### Unify Work-Order
 
-_(PENDING - filled by a later task)_
+This section aggregates every **unify** disposition raised across all 9 family sections above
+(Cards, Chips, Sheets, Buttons / FAB, Pickers, Feedback, Empty State, Progress / Metrics, Tactile
+Foundation) into a single, self-contained checklist. Phase 5 (Gardening) can execute against this
+section alone, without re-reading the rest of the document. Of the 9 families, exactly 2 raised a
+**unify** disposition — both in 02-01's four families (Chips, Sheets); the 5 families this plan
+(02-02) audited (Buttons / FAB, Pickers, Feedback, Empty State, Progress / Metrics) raised zero
+unify dispositions — every finding in those 5 resolved keep-with-rationale or "no finding," never
+unify.
+
+**WO-1 — Fold `FilterBar` into `ChipBar` as an optional expandable mode.**
+- **Components:** `FilterBar` (retire as a standalone registered entry) → `ChipBar` (gains a new
+  optional mode).
+- **Family:** Chips.
+- **Why (Finding CH-1, Chips §):** Both are generic `<T>`/slot-based `FlowRow`-container
+  PRIMITIVEs holding the same core chip-wrapping-row shape. `FilterBar`'s only real differentiator
+  — an `expanded`/`onExpand`/`onCollapse` chevron affordance plus `Surface`/height-cap chrome on
+  top of that same `FlowRow` — is a genuine, reusable mode `ChipBar` does not currently offer, not
+  a fundamentally different container. Recommended shape: add a nullable `expandable:
+  ExpandableConfig?` (or equivalent) parameter to `ChipBar` carrying `FilterBar`'s
+  expand/collapse + chrome behavior, and give `ChipBar` a raw-content slot alongside its existing
+  typed `items`/`key`/`itemContent` shape to also carry `FilterBar`'s freeform
+  `content: @Composable FlowRowScope.() -> Unit` callers — real Phase-5 design work, not a
+  mechanical merge.
+- **Blast radius (D-02, read-only grep, pre-computed by 02-01):**
+  - `FilterBar`: SecondBrain 5 files, CalTracker_Android 0 files.
+  - `ChipBar`: SecondBrain 5 files, CalTracker_Android 0 files.
+  - Both consumer-pin-skew-consistent (see each component's own Phase-provenance KDoc note in the
+    Chips § — likely newer than CalTracker's `v1.5.0` pin, not rejected by that consumer).
+
+**WO-2 — Extract `TextCardBottomSheet`/`ListCardBottomSheet`'s shared header-row + menu + rename
+dialog into a new shared composable.**
+- **Components:** `TextCardBottomSheet` + `ListCardBottomSheet` (both retained; a new shared
+  composable is extracted and composed by both).
+- **Family:** Sheets.
+- **Why (Finding S-1, Sheets §):** Both already delegate their shared body region to
+  `CardQuickView` (D-04 precedent), but both still duplicate real, non-trivial chrome verbatim:
+  an identical header `Row` (title + pin/favorite indicators), an identical three-dot
+  `DropdownMenu` (Edit → Pin/Unpin → Favorite/Unfavorite → Delete, same error-tinted Delete row),
+  and an identical local rename `AlertDialog` + `ClearableTextField` block. Recommended shape:
+  extract that header-Row + three-dot-menu + rename-`AlertDialog` block into a new shared
+  composable (mirroring `CardQuickView`'s own D-04 precedent for the body region), parameterized
+  by each sheet's differing body slot (`content` + `imageCount` for `TextCardBottomSheet` vs.
+  `items` + `onToggleItem` + `readOnlyPreview` + `previewOverflowCount` for
+  `ListCardBottomSheet`).
+- **Blast radius (D-02, read-only grep, pre-computed by 02-01):**
+  - `TextCardBottomSheet`: SecondBrain 2 files, CalTracker_Android 0 files.
+  - `ListCardBottomSheet`: SecondBrain 2 files, CalTracker_Android 0 files.
+  - Both grep to zero on CalTracker; per RESEARCH.md's Pitfall 4, CalTracker's entire hub surface
+    excludes the Sheets family, so this reads as "not on that consumer's pin at all," not
+    "rejected."
+
+**No other unify dispositions exist.** Every other finding across all 9 families (Finding C-1,
+C-2, CH-2 in Cards/Chips; Finding S-2 in Sheets; Finding T-1 in Tactile Foundation; Finding PK-1
+in Pickers; the explicit no-finding statements in Buttons / FAB, Feedback, Empty State, Progress /
+Metrics, and Sheets' 10 remaining non-paired entries) resolved keep-with-rationale or had no
+finding at all — confirmed by a direct re-read of all 9 family sections above, not re-derived
+from memory. Neither work-order item above lacks a corresponding "unify" finding earlier in this
+document.
