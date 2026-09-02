@@ -78,5 +78,18 @@ None — discussion stayed within phase scope.
 
 ---
 
+## Runtime Decisions
+
+*Refreshed during milestone execution as upstream phases produced real output.*
+
+- **litmus-location** (provisional guess confirmed, source: ai-auto, 2026-09-01): The tier-aware
+  contribution litmus **extends Phase 1's `docs/DESIGN-INTENT.md`** (which already carries `## The
+  Litmus` and `## Applying the Litmus`) — **not** a new `CONTRIBUTING.md`. Verified against real
+  repo state: `docs/DESIGN-INTENT.md` exists, no `CONTRIBUTING.md` exists, and no `.github/`
+  PR-template or CI-review surface exists to wire a checklist into. The GOV-02 guard enforces the
+  strict-primitives half of the litmus; the patterns-loose half stays prose.
+
+---
+
 *Phase: 3-Governance Gates*
 *Context gathered: 2026-09-01*
