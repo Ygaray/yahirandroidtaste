@@ -5,10 +5,10 @@ milestone_name: milestone
 current_phase: 05
 current_phase_name: Gardening — Unify & Coordinated Repin
 status: blocked
-stopped_at: All 3 plans (05-01/05-02/05-03) executed; hub-side gates (code review, security, Nyquist) green; blocked at 05-03 Task 2 checkpoint:decision (v2.0.0 tag cut + coordinated repin) — awaiting human go/hold
-last_updated: "2026-09-02T05:00:00.000Z"
+stopped_at: All 3 plans executed; hub-side gates green; operator authorized the tag cut — v2.0.0 CUT + pushed to origin (SC-3 done). Remaining: coordinated consumer repin (SC-4), a human-gated consumer-side obligation, deferred to each consumer's own channel — NOT executed from this hub run.
+last_updated: "2026-09-02T18:00:00.000Z"
 last_activity: 2026-09-02
-last_activity_desc: Phase 05 waves 1-3 executed; tail gates (code review, security, nyquist) run; blocked on human-gated tag-cut checkpoint
+last_activity_desc: v2.0.0 immutable tag cut on main HEAD (c0a2ef0) + pushed to origin; main fast-forwarded (5b01532..c0a2ef0). JitPack publishReleasePublicationToMavenLocal verified green pre-tag. Coordinated repin (SecondBrain single-hop v1.10.0->v2.0.0; CalTracker two-hop v1.5.0->v1.10.0->v2.0.0 per D-05) registered as a pending human-gated obligation, surfaced to operator, not executed.
 progress:
   total_phases: 5
   completed_phases: 4
@@ -28,11 +28,19 @@ See: .planning/PROJECT.md (updated 2026-08-28)
 ## Current Position
 
 Phase: 05 — Gardening — Unify & Coordinated Repin
-Plan: 05-01, 05-02, 05-03 all executed (3/3) — phase NOT complete, blocked on human checkpoint
-Status: Blocked — human decision required (v2.0.0 tag cut + coordinated SecondBrain/CalTracker repin)
-Last activity: 2026-09-02 — WO-1 (FilterBar->ChipBar fold) and WO-2 (SheetHeaderMenu extraction) landed on main; 05-03 Task 1 (full hub-side gate verification) green; 05-03 Task 2 checkpoint:decision correctly left unresolved per CLAUDE.md's human-gated-shipping rule. Tail gates run: code review (issues_found, 0 critical/2 warning/1 info, non-blocking), security (threats_open: 0), Gate-1 self-UAT (n/a — no UAT criteria, hub-only library phase), nyquist (nyquist_compliant: true).
+Plan: 05-01, 05-02, 05-03 all executed (3/3) — hub-side complete + tag cut; consumer repin (SC-4) deferred human-gated obligation
+Status: Tag cut (SC-3 ✓). Blocked only on the consumer-side coordinated repin (SC-4), which must run in each consumer's own channel per the cross-repo-hub convention — not from this hub run.
+Last activity: 2026-09-02 — Operator authorized "cut v2.0.0 now" at the 05-03 Task 2 checkpoint. v2.0.0 immutable annotated tag cut on main HEAD (c0a2ef0) and pushed to origin (tag object 9d38966); main fast-forwarded to origin. Pre-tag release gates re-verified green with --rerun-tasks: testDebugUnitTest, detekt, apiCheck, and the exact JitPack command publishReleasePublicationToMavenLocal. WO-1 (FilterBar->ChipBar fold) and WO-2 (SheetHeaderMenu extraction) are the breaking changes (FilterBar removed from public API; Entry.tier required ctor param) that make this the first true major bump.
 
-Progress: [██████████] 100% of automatable phase work — blocked on human decision for the rest
+Progress: [██████████] Hub-side 100% + v2.0.0 shipped — remaining: coordinated consumer repin (human-gated, consumer-side)
+
+## Pending Human-Gated Obligation — Coordinated Repin (SC-4)
+
+**v2.0.0 is published** (`com.github.Ygaray:yahirandroidtaste:v2.0.0`). A hub change is inert until each consumer repins. Run in EACH consumer's own channel (Mechanism B, Android/Gradle/JitPack per ~/.claude/context/workflows/repin.md), NOT from this hub run:
+
+- **SecondBrain** — single-hop `v1.10.0 -> v2.0.0`. Breaking: `FilterBar` removed (migrate to `ChipBar(expandable = ExpandableConfig(...), rawContent = { ... })`); any `ComponentRegistry.Entry(...)` / `ComponentRow(...)` call sites must supply the now-required `tier`. Edit `gradle/libs.versions.toml`, `./gradlew --refresh-dependencies :app:dependencies | grep yahirandroidtaste` (must show v2.0.0), `assembleDebug`, reinstall + Gate-1 device re-verify.
+- **CalTracker** — two-hop `v1.5.0 -> v1.10.0` (catch-up) `-> v2.0.0` (gardening) per D-05. Same Mechanism B; note CalTracker's hub surface excludes the Sheets family and does not use FilterBar (blast-radius grep = 0 files), so the break may be inert there — verify at compile.
+- After both land: `repin_status.py reconcile` (Phase 4 tooling) to update the ECOSYSTEM.md repin matrix, then `/gsd-verify-milestone` (Gate-2) to drain UAT and close v1.0.
 
 ## Performance Metrics
 

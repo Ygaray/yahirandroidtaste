@@ -110,6 +110,15 @@ Phase 2's shipped `docs/COHERENCE-AUDIT.md` (Unify Work-Order section).*
   - Settled general mechanic: update registry cell → `./gradlew apiDump` rebaseline with
     line-by-line review → commit via curation lane `HUB_LANE_OVERRIDE=3`.
 
+- **tag-cut checkpoint** (operator decision, 2026-09-02): At the wave-3 human-gated shipping
+  checkpoint, the operator chose **"Cut tag v2.0.0 now"** — authorizing the immutable `v2.0.0` tag
+  on hub `main` (major bump justified by WO-1 retiring `FilterBar` as a standalone registered
+  entry — a breaking API change). Consumer repins (SecondBrain, CalTracker) remain separately
+  confirmed before their repos are touched. **Blocked on discovery:** local `main` is 133 commits
+  ahead of `origin/main` and local tags stop at `v1.9.0` while ECOSYSTEM.md §7 records `v1.10.0` as
+  the published tag — a cross-clone divergence that must be reconciled (fetch/compare) before any
+  push, surfaced back to the operator.
+
 ---
 
 *Phase: 5-Gardening — Unify & Coordinated Repin*
