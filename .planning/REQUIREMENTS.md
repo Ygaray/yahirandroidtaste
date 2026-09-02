@@ -36,13 +36,13 @@ give-legs; these requirements are the hub-owned coherence / gardening / governan
 
 ### Governance — prevent future drift
 
-- [ ] **GOV-01**: A **tier-aware contribution litmus** is documented (and enforced where feasible) —
+- [x] **GOV-01**: A **tier-aware contribution litmus** is documented (and enforced where feasible) —
   primitives get the strict no-domain-vocabulary gate; patterns get the looser opinion-allowed gate.
 
-- [ ] **GOV-02**: A **domain-vocabulary drift guard** *flags* (not forbids) when a public component
+- [x] **GOV-02**: A **domain-vocabulary drift guard** *flags* (not forbids) when a public component
   name introduces a domain noun, surfacing coupling for review.
 
-- [ ] **GOV-03**: The additive-guard pre-commit hook stops false-flagging non-AAR paths (`.planning/`,
+- [x] **GOV-03**: The additive-guard pre-commit hook stops false-flagging non-AAR paths (`.planning/`,
   docs) as lane-2, so planning/doc commits land without `HUB_LANE_OVERRIDE`.
 
 ### Repin Bookkeeping — harden reconciliation
@@ -74,9 +74,9 @@ Tracked, not in this milestone.
 | LEG-01 | Phase 1 | Complete |
 | LEG-02 | Phase 1 | Complete |
 | AUD-01 | Phase 2 | Complete |
-| GOV-01 | Phase 3 | Pending |
-| GOV-02 | Phase 3 | Pending |
-| GOV-03 | Phase 3 | Pending |
+| GOV-01 | Phase 3 | Complete |
+| GOV-02 | Phase 3 | Complete |
+| GOV-03 | Phase 3 | Complete |
 | REPIN-01 | Phase 4 | Pending |
 | GARD-01 | Phase 5 | Pending |
 | GARD-02 | Phase 5 | Pending |

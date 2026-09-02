@@ -24,7 +24,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Tier Legibility** - Every registered component gets an explicit tier, and a design-intent doc states each tier's contract and litmus (completed 2026-09-01)
 - [x] **Phase 2: Coherence Audit** - The 9 families get a documented audit of overlaps, near-duplicate siblings, and altitude mismatches, each with a disposition (completed 2026-09-01)
-- [ ] **Phase 3: Governance Gates** - A tier-aware contribution litmus, a domain-vocabulary drift guard, and a pre-commit false-flag fix prevent future drift
+- [x] **Phase 3: Governance Gates** - A tier-aware contribution litmus, a domain-vocabulary drift guard, and a pre-commit false-flag fix prevent future drift (completed 2026-09-01)
 - [ ] **Phase 4: Repin Bookkeeping Hardening** - ECOSYSTEM.md carries the repin-matrix markers so reconciliation isn't hand-done
 - [ ] **Phase 5: Gardening — Unify & Coordinated Repin** - Audit-dispositioned duplicate siblings are unified and landed via a coordinated, Gate-1-reverified repin of both consumers
 
@@ -140,6 +140,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Tier Legibility | 5/5 | Complete    | 2026-09-01 |
 | 2. Coherence Audit | 2/2 | Complete    | 2026-09-01 |
-| 3. Governance Gates | 2/2 | In Progress|  |
+| 3. Governance Gates | 2/2 | Complete    | 2026-09-01 |
 | 4. Repin Bookkeeping Hardening | 0/TBD | Not started | - |
 | 5. Gardening — Unify & Coordinated Repin | 0/TBD | Not started | - |
