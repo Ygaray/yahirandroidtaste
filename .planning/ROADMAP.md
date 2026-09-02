@@ -134,7 +134,20 @@ Plans:
   3. A new immutable tag is cut containing the gardening changes.
   4. Both SecondBrain and CalTracker are repinned to the new tag, each re-verified at Gate-1, with neither consumer left stranded.
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 05-01-PLAN.md — Fold FilterBar into ChipBar's expandable mode (WO-1), rebaseline api.txt/API.md
+
+**Wave 2** *(blocked on Wave 1 — shares api.txt)*
+
+- [ ] 05-02-PLAN.md — Extract SheetHeaderMenu from TextCardBottomSheet/ListCardBottomSheet (WO-2), retarget test, rebaseline api.txt/API.md
+
+**Wave 3** *(blocked on Wave 1+2)*
+
+- [ ] 05-03-PLAN.md — Full hub-side gate verification + human-gated surfacing checkpoint for the v2.0.0 tag cut and coordinated repin
 
 ## Progress
 
@@ -147,4 +160,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Coherence Audit | 2/2 | Complete    | 2026-09-01 |
 | 3. Governance Gates | 2/2 | Complete    | 2026-09-01 |
 | 4. Repin Bookkeeping Hardening | 1/1 | Complete    | 2026-09-01 |
-| 5. Gardening — Unify & Coordinated Repin | 0/TBD | Not started | - |
+| 5. Gardening — Unify & Coordinated Repin | 0/3 | Not started | - |
