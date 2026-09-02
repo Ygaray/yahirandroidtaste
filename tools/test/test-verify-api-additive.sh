@@ -35,4 +35,26 @@ mkdir -p api; printf 'public fun a(): Unit\n' > "$API"   # current file exists +
 set +e; "$SCRIPT" v-preapi >/dev/null 2>&1; rc=$?; set -e
 check "$rc" 0 "baseline lacking the .api file degrades to exit 0 (not fail-closed 1)"
 
+# (e) KNOWN RESIDUAL RISK (GOV-03 Pitfall 2 / RESEARCH.md Open Question 1): verify-api-additive.sh
+# shares verify-additive-diff.sh's PRE-FIX architecture (stale, cumulative baseline-tag-vs-current
+# comparison, not a per-commit staged delta) -- currently dormant only because v1.10.0 predates
+# api.txt. D-01 scopes this phase's fix literally to src/main; this case proves live -- not just
+# asserts -- that the identical bug shape is latent here, tracked as a residual risk for Phase 5's
+# first tag-cut that includes api.txt, rather than fixed this phase.
+# `git reset --hard` (not `git checkout -- .`): case (d)'s last commit removed the ONLY tracked
+# file, leaving an empty tree — `git checkout -- .` errors on an empty index ("pathspec '.' did
+# not match any file(s) known to git"); `git reset --hard` handles the empty-tree case cleanly.
+git reset -q --hard; git clean -fdq
+mkdir -p api; printf 'public fun a(): Unit\npublic fun b(): Unit\n' > "$API"   # restore v0.0.0's original 2-fn baseline content
+# Simulate a legitimate, already-landed API break (mirrors case (b)): rename b -> bb, land it as
+# already-committed history -- no new tag, the baseline stays v0.0.0, exactly as it would in
+# reality until the NEXT tag is cut.
+sed -i 's/public fun b(): Unit/public fun bb(): Unit/' "$API"
+git add -A; git commit -qm "declared API break (rename b -> bb, already landed)"
+# Simulate a LATER, completely unrelated commit that never touches api.txt at all -- no further
+# edit to $API_FILE.
+printf 'unrelated\n' > unrelated.txt; git add -A; git commit -qm "unrelated later commit"
+set +e; "$SCRIPT" v0.0.0 >/dev/null 2>&1; rc=$?; set -e
+check "$rc" 3 "KNOWN RESIDUAL RISK (GOV-03 Pitfall 2, tracked not fixed this phase): once a baseline tag includes api.txt, an unrelated later commit after an earlier declared API-break stays permanently lane-3-flagged — same architecture bug DS-05 had; verify-api-additive.sh is currently dormant only because v1.10.0 predates api.txt. Revisit before/at Phase 5's first tag-cut that includes api.txt."
+
 echo "PASS=$pass FAIL=$fail"; [ "$fail" -eq 0 ]
