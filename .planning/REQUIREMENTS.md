@@ -27,7 +27,7 @@ give-legs; these requirements are the hub-owned coherence / gardening / governan
 
 ### Gardening — the breaking unification work
 
-- [ ] **GARD-01**: Additive-duplicate siblings identified by AUD-01 are **unified** into single
+- [x] **GARD-01**: Additive-duplicate siblings identified by AUD-01 are **unified** into single
   components (removing/renaming where needed — the breaking work the consumer channel can't do).
 
 - [ ] **GARD-02**: The gardening changes land via the **human-gated coordinated repin** ritual —
@@ -78,7 +78,7 @@ Tracked, not in this milestone.
 | GOV-02 | Phase 3 | Complete |
 | GOV-03 | Phase 3 | Complete |
 | REPIN-01 | Phase 4 | Complete |
-| GARD-01 | Phase 5 | Pending |
+| GARD-01 | Phase 5 | Complete |
 | GARD-02 | Phase 5 | Pending |
 
 **Coverage:**
