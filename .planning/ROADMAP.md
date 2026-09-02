@@ -96,7 +96,13 @@ Plans:
   3. A domain-vocabulary drift guard flags (does not forbid) when a new public component name introduces a domain noun, surfacing the coupling for human review.
   4. The additive-guard pre-commit hook no longer false-flags non-AAR paths (`.planning/`, docs) as lane-2 — planning/doc commits land without needing `HUB_LANE_OVERRIDE`.
 
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Fix pre-commit false-flag: staged-delta diff basis (GOV-03) + regression tests + tracked residual-risk proof for the API-line sibling bug
+- [ ] 03-02-PLAN.md — Domain-vocabulary drift guard (GOV-02) + tier-aware contribution litmus doc (GOV-01)
 
 ### Phase 4: Repin Bookkeeping Hardening
 
@@ -134,6 +140,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Tier Legibility | 5/5 | Complete    | 2026-09-01 |
 | 2. Coherence Audit | 2/2 | Complete    | 2026-09-01 |
-| 3. Governance Gates | 0/TBD | Not started | - |
+| 3. Governance Gates | 0/2 | Not started | - |
 | 4. Repin Bookkeeping Hardening | 0/TBD | Not started | - |
 | 5. Gardening — Unify & Coordinated Repin | 0/TBD | Not started | - |
