@@ -81,12 +81,45 @@ the read-only quick-view body composed inside `TextCardBottomSheet`/`ListCardBot
 Sheets §, Finding S-1) — from the swipeable, `CardBase`-based row items in Finding C-1. Not folded
 into that group. No blast-radius grep needed (not a unify finding).
 
+**Remaining entries.** `CardTypeChip`, `AdaptiveMediaPreview`, `CardTagRow`, and `TagListItem` were
+each read in full and checked for both an overlap/near-duplicate-sibling finding (beyond Findings
+C-1/C-2) and an altitude-mismatch candidate, per this task's own requirement that every entry be
+explicitly accounted for:
+
+- `CardTypeChip` (`CardTypeChip.kt`) — a 32dp accent-tinted icon badge with a caller-supplied
+  `accent: Color?` and `icon` slot. No overlap: shares no shape or purpose with `CountBadge`'s
+  numeric-count badge (the only other small card-face badge in this family) or with any
+  `CardBase`-composing sibling. Altitude: its name carries the domain noun "Card" and its own KDoc
+  bakes in a deliberate composition opinion (a reviewed exception to the module's general
+  `contrastingForeground` contrast contract, full-accent-strength icon tinting) — correctly PATTERN.
+- `AdaptiveMediaPreview` (`AdaptiveMediaPreview.kt`) — the adaptive 0/1/2/3/4+-cell thumbnail mosaic
+  `AlbumCard` composes internally. No overlap: a distinct, single-purpose layout primitive with no
+  competing shape elsewhere in Cards. Altitude: no domain noun in its name, but it hardcodes a fixed
+  cell-count-driven layout convention (mosaic depth framing, "+N" overflow arithmetic, count-badge
+  overlay) well past caller-content-only — fails condition (2), correctly PATTERN.
+- `CardTagRow` (`CardTagRow.kt`) — the card-face tag row that composes `AppChip`/
+  `TagChipWithContextMenu` (already dispositioned in Chips, Finding CH-2). No overlap within Cards
+  itself: no other Cards entry renders a tag-chip row. Altitude: name carries the domain nouns "Card"
+  and "Tag" and it bakes in fixed two-visible-plus-"+N"-overflow tag-row composition logic —
+  correctly PATTERN.
+- `TagListItem` (`TagListItem.kt`) — a `ListItem`-based tag-management row (icon + title +
+  card-count subtitle + chevron), extracted verbatim from a settings screen (Phase 86 GADGET-03). No
+  overlap: structurally unrelated to any `CardBase`-composing sibling or `CardQuickView` — no shared
+  shape. Altitude: name carries the domain noun "Tag" and it hardcodes a fixed
+  icon/title/subtitle/chevron `ListItem` composition around a `TagManagementUiModel` — correctly
+  PATTERN.
+
+No further overlap/near-duplicate-sibling or altitude-mismatch candidate was found among these 4.
+Explicitly stated rather than left unaddressed, per this task's own requirement.
+
 **Altitude check.** No new cross-entry altitude-mismatch candidate surfaced in Cards beyond
 tier values already ratified by Phase 1 — every entry's domain-noun-bearing name (Card/Text/List/
 Album/Voice/Tag) and/or baked-in composition opinion (swipe convention, adaptive-grid layout,
-siblings-band overflow) correctly earns PATTERN per the D-03 litmus; `CountBadge` (no domain noun,
-renders only a caller-supplied `count`/`tileAccentColor`, no interaction convention of its own)
-correctly earns PRIMITIVE. No restated findings.
+siblings-band overflow) correctly earns PATTERN per the D-03 litmus (the 4 entries not previously
+addressed here — `CardTypeChip`, `AdaptiveMediaPreview`, `CardTagRow`, `TagListItem` — are now
+demonstrated per-entry above); `CountBadge` (no domain noun, renders only a caller-supplied
+`count`/`tileAccentColor`, no interaction convention of its own) correctly earns PRIMITIVE. No
+restated findings.
 
 ### Chips
 
@@ -153,6 +186,24 @@ not two independent implementations of the same chip-rendering logic.
 unification needed, the existing decorator shape is the right one. No blast-radius grep needed
 (not a unify finding).
 
+**Finding CH-3 — `SortControl`, evaluated separately.** `SortControl.kt` was read in full: a
+generic `<T>` icon-plus-`DropdownMenu` sort affordance — caller supplies `sortMode`, `options`,
+`optionLabel`, and `onSortModeChange`; the component owns only its local `expanded` toggle state
+and performs no sorting itself, forwarding the caller's own choice via `onSortModeChange`. It
+shares no shape, parameter surface, or internal composition with `AppChip`/`TagChipWithContextMenu`
+(chip-rendering, Finding CH-2) or `ChipBar`/`FilterBar` (FlowRow chip containers, Finding CH-1) — a
+stateless icon-plus-dropdown-menu affordance is a structurally distinct widget class from either. No
+overlap/near-duplicate-sibling candidate found.
+
+**Disposition: no overlap/near-duplicate finding for `SortControl`.** Altitude: its shipped PATTERN
+tier is consistent with the D-03 litmus — while every functional parameter (`sortMode`, `options`,
+`optionLabel`, `onSortModeChange`) is generic caller-supplied content, its
+`sortContentDescription: String = "Sort tags"` default bakes in tag-domain accessibility copy (the
+same class of domain-vocabulary default the `AppChip`/`relatednessStrength` correction below cites),
+so it correctly fails condition (2) rather than qualifying as a fully generic PRIMITIVE like
+`ChipBar`/`FilterBar`. No new altitude-mismatch finding. No blast-radius grep needed (not a unify
+finding).
+
 **Altitude check.** No new cross-entry altitude-mismatch candidate surfaced in Chips beyond the
 tier values already ratified by Phase 1. `AppChip`'s own PRIMITIVE-to-PATTERN correction is a
 resolved, cited precedent — not a new finding (`ChipsFamilyScreen.kt:97-102`, WR-01 fix:
@@ -160,6 +211,7 @@ resolved, cited precedent — not a new finding (`ChipsFamilyScreen.kt:97-102`, 
 encoding, same reasoning `docs/DESIGN-INTENT.md`'s `HeatSwatch` worked example uses). `ChipBar`
 and `FilterBar` remain correctly tiered PRIMITIVE per the litmus (Finding CH-1's chrome difference
 is an overlap/near-duplicate finding, not an altitude question — neither introduces a domain noun).
+`SortControl`'s altitude was separately confirmed in Finding CH-3 above.
 
 ### Sheets
 
