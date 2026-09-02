@@ -183,6 +183,14 @@ None - no external service configuration required (docs-only phase, no code/depe
 - No blockers. AUD-01 remains partially complete until 02-02-PLAN.md dispositions the remaining
   families and assembles the Unify Work-Order.
 
+## Self-Check: PASSED
+
+- FOUND: `docs/COHERENCE-AUDIT.md`
+- FOUND: `.planning/phases/02-coherence-audit/02-01-SUMMARY.md`
+- FOUND: commit `6ce389d` (Task 1)
+- FOUND: commit `6f8e4bd` (Task 2)
+- FOUND: commit `2c71ce2` (Task 3)
+
 ---
 *Phase: 02-coherence-audit*
 *Completed: 2026-09-01*
