@@ -412,7 +412,65 @@ stands; no new finding.
 
 ### Progress / Metrics
 
-_(PENDING - filled by a later task)_
+**All 4 entries** (name + shipped tier, transcribed verbatim from `ProgressFamilyScreen.kt`'s
+`progressFamilyEntries`, D-01):
+
+| Component | Tier |
+|-----------|------|
+| `MetricBar` | PATTERN |
+| `ProgressRing` | PATTERN |
+| `AnimatedStatValue` | PRIMITIVE |
+| `HeroStatCard` | PATTERN |
+
+Per RESEARCH.md's Pitfall 4, this family (along with Feedback) is one of only two families both
+SecondBrain and CalTracker_Android draw from.
+
+**Overlap/near-duplicate-sibling check.** All 4 read in full (`MetricBar.kt`, `ProgressRing.kt`,
+`AnimatedStatValue.kt`, `HeroStatCard.kt`). No candidate surfaced: each is a distinct,
+*complementary* primitive/pattern by design, not a competing implementation of the same shape —
+`MetricBar` (linear 5-band bar + header row), `ProgressRing` (circular determinate arc),
+`AnimatedStatValue` (tweened count-up/count-down numeral), `HeroStatCard` (accent-striped card
+face). `HeroStatCard`'s own `content` slot and KDoc explicitly demonstrate composing an embedded
+`ProgressRing` or `AnimatedStatValue` inside it — these components are documented to compose
+*with* each other, the opposite of duplication. Each file's KDoc also cross-references the others'
+"zero primitive-authored copy" litmus (caller-supplied strings/fractions only, no internal
+formatting) as a shared *convention*, not shared *implementation*.
+
+**Disposition: no overlap/near-duplicate finding for this family.**
+
+**Consumer exposure note (D-02 verification, not a unify finding).** Per this task's own
+instruction, `MetricBar`'s CalTracker exposure was verified independently rather than assumed to
+match `AnimatedStatValue`/`HeroStatCard`/`ProgressRing`'s. Read-only grep
+(`grep -rl "MetricBar" ~/Projects/CalTracker_Android/app/src`) returns 15 files, but direct
+inspection shows this is a **false positive for hub exposure**: CalTracker_Android maintains its
+own, separately-implemented `com.caltracker.app.ui.common.MetricBar` (confirmed via
+`~/Projects/CalTracker_Android/app/src/main/java/com/caltracker/app/ui/common/MetricBar.kt`,
+package `com.caltracker.app.ui.common`, importing CalTracker's own `ProgressState`/`Band*` theme
+tokens) — not an import of the hub's `io.github.ygaray.yahirandroidtaste.component.MetricBar`.
+No `import io.github.ygaray.yahirandroidtaste.component.MetricBar` line exists anywhere in
+CalTracker's tree. `AnimatedStatValue`/`HeroStatCard`/`ProgressRing`, by contrast, are confirmed
+genuinely imported from the hub (`import io.github.ygaray.yahirandroidtaste.component.*` lines in
+`RemainingBudgetHero.kt`); a second grep hit in `HomeScreen.kt` for the same 3 names is itself a
+false positive (a KDoc comment mentioning all three, not an import or call site) — confirmed by
+direct read, not counted. This is exactly the single-name-grep-lower-bound caveat this audit's
+own Scope & Method section already flags, made concrete: CalTracker's real hub-Progress/Metrics
+exposure is 1 file (`RemainingBudgetHero.kt`, importing `AnimatedStatValue`/`HeroStatCard`/
+`ProgressRing`), and `MetricBar` has zero genuine hub-import exposure in CalTracker today (its
+own local `MetricBar` predates or parallels the hub's generalized version — per `MetricBar.kt`'s
+own KDoc, the hub's `MetricBar` was itself "generalized from CalTracker's own device-verified
+`MetricBar`," so this is a not-yet-migrated consumer, not a rejected one). No blast-radius grep
+required beyond this verification (no unify finding in this family).
+
+**Altitude check.** No cross-entry altitude-mismatch candidate surfaced beyond tier values already
+ratified by Phase 1. `MetricBar` and `ProgressRing` both fail condition (2) — each bakes in a
+specific visual/composition convention (a fixed header-row + 5-band linear bar; a canvas-drawn
+circular arc with a specific default motion spec) beyond bare caller content — correctly PATTERN.
+`AnimatedStatValue` introduces no domain noun and applies only a caller-parameterized tween to a
+caller-supplied numeral with no invented content or interaction convention of its own — correctly
+PRIMITIVE, consistent with `docs/DESIGN-INTENT.md`'s own litmus reasoning. `HeroStatCard`'s name
+itself carries the domain noun "Card" (one of the litmus's own cited examples) and additionally
+bakes in a fixed accent-stripe + surface + column composition — correctly PATTERN on both
+independent grounds. No restated findings.
 
 ### Tactile Foundation
 
