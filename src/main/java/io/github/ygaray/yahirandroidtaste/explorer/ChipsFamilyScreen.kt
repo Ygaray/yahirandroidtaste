@@ -25,10 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.AppChip
 import io.github.ygaray.yahirandroidtaste.component.ChipBar
-import io.github.ygaray.yahirandroidtaste.component.FilterBar
+import io.github.ygaray.yahirandroidtaste.component.ExpandableConfig
 import io.github.ygaray.yahirandroidtaste.component.SortControl
 import io.github.ygaray.yahirandroidtaste.component.TagChipWithContextMenu
-import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
 import io.github.ygaray.yahirandroidtaste.model.TagSortMode
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
@@ -209,50 +208,6 @@ internal val chipsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             )
         },
         tier = ComponentRegistry.Tier.PATTERN
-    ),
-    ComponentRegistry.Entry(
-        name = "FilterBar",
-        family = ExplorerFamilies.CHIPS,
-        states = listOf(
-            ComponentRegistry.StateCell(
-                "Default",
-                render = {
-                    FilterBar<TagChipUiModel>(
-                        expanded = false,
-                        onExpand = {},
-                        onCollapse = {}
-                    ) {
-                        ExplorerFakeData.tagChips.forEach { tag ->
-                            AppChip(label = tag.name, isSelected = false, onClick = {})
-                        }
-                    }
-                }
-            ),
-            // FilterBar has no discrete pressed/selected visual — repurposed to showcase the
-            // expanded (wrapped, height-capped, scrollable) state instead of a second collapsed
-            // rendering.
-            ComponentRegistry.StateCell(
-                "Pressed / Selected",
-                render = {
-                    var expanded by remember { mutableStateOf(true) }
-                    FilterBar<TagChipUiModel>(
-                        expanded = expanded,
-                        onExpand = { expanded = true },
-                        onCollapse = { expanded = false }
-                    ) {
-                        ExplorerFakeData.manyTagChips.forEach { tag ->
-                            AppChip(label = tag.name, isSelected = false, onClick = {})
-                        }
-                    }
-                }
-            ),
-            // FilterBar has no disabled param — N/A.
-            ComponentRegistry.StateCell("Disabled"),
-            // FilterBar has no focus-visual override — N/A.
-            ComponentRegistry.StateCell("Focused")
-        ),
-        content = { FilterBarVariants() },
-        tier = ComponentRegistry.Tier.PRIMITIVE
     )
 )
 
@@ -338,6 +293,11 @@ private fun TagChipWithContextMenuVariants() {
  * unselected assembled example AND the with-selection + sort-control example that embeds
  * [SortControl] as `leadingContent`. The combined demo belongs here (Pitfall 2) because it
  * demonstrates ChipBar's own `leadingContent` slot, not SortControl's standalone API.
+ *
+ * WO-1 (`docs/COHERENCE-AUDIT.md` Finding CH-1): also showcases the `expandable` mode folded in
+ * from the former standalone retired sibling — a collapsed section (short chip set) and an
+ * expanded, live-toggling section (`ExplorerFakeData.manyTagChips`), mirroring the retired
+ * sibling's own demo so the fold-in behavior stays showcased in the gallery.
  */
 @Composable
 private fun ChipBarVariants() {
@@ -378,6 +338,33 @@ private fun ChipBarVariants() {
         },
         modifier = Modifier.padding(horizontal = 16.dp)
     )
+
+    SectionLabel("ChipBar — expandable mode, collapsed")
+    ChipBar(
+        items = ExplorerFakeData.tagChips,
+        key = { it.id },
+        itemContent = { tag -> AppChip(label = tag.name, isSelected = false, onClick = {}) },
+        expandable = ExpandableConfig(
+            expanded = false,
+            onExpand = {},
+            onCollapse = {}
+        ),
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+
+    var expandableExpanded by remember { mutableStateOf(false) }
+    SectionLabel("ChipBar — expandable mode, expanded (wraps + scrolls, height-capped)")
+    ChipBar(
+        items = ExplorerFakeData.manyTagChips,
+        key = { it.id },
+        itemContent = { tag -> AppChip(label = tag.name, isSelected = false, onClick = {}) },
+        expandable = ExpandableConfig(
+            expanded = expandableExpanded,
+            onExpand = { expandableExpanded = true },
+            onCollapse = { expandableExpanded = false }
+        ),
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
 }
 
 /**
@@ -396,37 +383,6 @@ private fun SortControlVariants() {
         onSortModeChange = { standaloneSortMode = it },
         modifier = Modifier.padding(horizontal = 16.dp)
     )
-}
-
-/**
- * FilterBar's showcase — a domain-free `content` slot supplying a few [AppChip] fixtures
- * (D-01: this is a shell-only extraction, so no [SortControl] is embedded here; that assembled
- * demo belongs to [ChipBarVariants]/[SortControlVariants] instead — Pitfall 2, no duplication).
- */
-@Composable
-private fun FilterBarVariants() {
-    SectionLabel("FilterBar — collapsed")
-    FilterBar<TagChipUiModel>(
-        expanded = false,
-        onExpand = {},
-        onCollapse = {}
-    ) {
-        ExplorerFakeData.tagChips.forEach { tag ->
-            AppChip(label = tag.name, isSelected = false, onClick = {})
-        }
-    }
-
-    var expanded by remember { mutableStateOf(false) }
-    SectionLabel("FilterBar — expanded (wraps + scrolls, height-capped)")
-    FilterBar<TagChipUiModel>(
-        expanded = expanded,
-        onExpand = { expanded = true },
-        onCollapse = { expanded = false }
-    ) {
-        ExplorerFakeData.manyTagChips.forEach { tag ->
-            AppChip(label = tag.name, isSelected = false, onClick = {})
-        }
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

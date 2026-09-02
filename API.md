@@ -15,7 +15,7 @@ tactileFoundationFamilyEntries`), which is the single source of truth and the CA
 | Family | Registered composables | What it is |
 |--------|-----------------------|------------|
 | 1. Cards | 9 | Card faces + card-face sub-rows for the five card archetypes |
-| 2. Chips | 5 | Tag/selection chips and the bars that lay them out (filter/sort) |
+| 2. Chips | 4 | Tag/selection chips and the bar that lays them out (with an optional filter/sort chrome mode) |
 | 3. Sheets | 18 | Bottom-sheet / editor / popup content surfaces and their scaffolding |
 | 4. Buttons / FAB | 3 | The expandable create-FAB and dynamic action buttons |
 | 5. Pickers | 4 | Accent-color, icon, crop, and segmented-option pickers |
@@ -62,9 +62,8 @@ a consumer supplies its own item type.
 |-----------|---------|----------------|
 | `AppChip` | The base selectable chip | `label, isSelected, onClick` |
 | `TagChipWithContextMenu` | A tag chip carrying a long-press context menu | `label, isSelected, onClick, …` menu callbacks |
-| `ChipBar` | Generic horizontally-scrolling chip row | `items: List<T>, key: (T)->Any, itemContent: @Composable (T)->Unit`, optional `leading/trailingContent` |
+| `ChipBar` | Generic horizontally-scrolling chip row, with an optional expand/collapse chrome mode (WO-1) | `items: List<T>, key: (T)->Any, itemContent: @Composable (T)->Unit`, optional `leading/trailingContent`, optional `expandable: ExpandableConfig? = null` — non-null wraps the row in expand/collapse chrome (chevron + tonal `Surface`, single-line-clip collapsed / height-capped-scroll expanded), null (default) renders the bare row unchanged; same two-state opt-in-mode contract as `TextCardBottomSheet`'s `onEditRequest`. Optional `rawContent: (@Composable FlowRowScope.() -> Unit)? = null` carries freeform body content in place of `items`/`itemContent` |
 | `SortControl` | Generic sort-mode selector | `sortMode: T, options: List<T>, optionLabel: (T)->String, onSortModeChange` |
-| `FilterBar` | Expand/collapse filter surface hosting chips in a `FlowRow` | `expanded, onExpand, onCollapse, content: @Composable FlowRowScope.() -> Unit` |
 
 ## 3. Sheets
 

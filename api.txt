@@ -98,7 +98,7 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public final class ChipBarKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static <T> void ChipBar(java.util.List<T> items, kotlin.jvm.functions.Function1<T,java.lang.Object> key, kotlin.jvm.functions.Function1<T,kotlin.Unit> itemContent, optional androidx.compose.ui.Modifier modifier, optional String testTag, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingContent, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingContent);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static <T> void ChipBar(java.util.List<T> items, kotlin.jvm.functions.Function1<T,java.lang.Object> key, kotlin.jvm.functions.Function1<T,kotlin.Unit> itemContent, optional androidx.compose.ui.Modifier modifier, optional String testTag, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingContent, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingContent, optional io.github.ygaray.yahirandroidtaste.component.ExpandableConfig? expandable, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.FlowRowScope,kotlin.Unit>? rawContent);
   }
 
   public final class ClearableTextFieldKt {
@@ -154,12 +154,25 @@ package io.github.ygaray.yahirandroidtaste.component {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void EmptyState(androidx.compose.ui.graphics.vector.ImageVector icon, String title, optional androidx.compose.ui.Modifier modifier, optional String? body, optional String? ctaLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onCta);
   }
 
-  public final class ExpandableFabKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void ExpandableFab(kotlin.jvm.functions.Function0<kotlin.Unit> onCreateTextCard, kotlin.jvm.functions.Function0<kotlin.Unit> onCreateListCard, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit> onCreateVoiceCard, optional kotlin.jvm.functions.Function0<kotlin.Unit> onAlbumCamera, optional kotlin.jvm.functions.Function0<kotlin.Unit> onAlbumGallery, optional kotlin.jvm.functions.Function0<kotlin.Unit> onQuickTake, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onNewTag, optional boolean isAlbumEnabled, optional boolean isVoiceEnabled, optional boolean isListEnabled, optional boolean isTextEnabled, optional boolean configLoaded);
+  public final class ExpandableConfig {
+    ctor public ExpandableConfig(boolean expanded, kotlin.jvm.functions.Function0<kotlin.Unit> onExpand, kotlin.jvm.functions.Function0<kotlin.Unit> onCollapse, optional String contentDescription);
+    method public boolean component1();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit> component2();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit> component3();
+    method public String component4();
+    method public io.github.ygaray.yahirandroidtaste.component.ExpandableConfig copy(optional boolean expanded, optional kotlin.jvm.functions.Function0<kotlin.Unit> onExpand, optional kotlin.jvm.functions.Function0<kotlin.Unit> onCollapse, optional String contentDescription);
+    method @InaccessibleFromKotlin public String getContentDescription();
+    method @InaccessibleFromKotlin public boolean getExpanded();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnCollapse();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnExpand();
+    property public String contentDescription;
+    property public boolean expanded;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit> onCollapse;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit> onExpand;
   }
 
-  public final class FilterBarKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static <T> void FilterBar(boolean expanded, kotlin.jvm.functions.Function0<kotlin.Unit> onExpand, kotlin.jvm.functions.Function0<kotlin.Unit> onCollapse, optional androidx.compose.ui.Modifier modifier, optional String filterContentDescription, kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.FlowRowScope,kotlin.Unit> content);
+  public final class ExpandableFabKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ExpandableFab(kotlin.jvm.functions.Function0<kotlin.Unit> onCreateTextCard, kotlin.jvm.functions.Function0<kotlin.Unit> onCreateListCard, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit> onCreateVoiceCard, optional kotlin.jvm.functions.Function0<kotlin.Unit> onAlbumCamera, optional kotlin.jvm.functions.Function0<kotlin.Unit> onAlbumGallery, optional kotlin.jvm.functions.Function0<kotlin.Unit> onQuickTake, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onNewTag, optional boolean isAlbumEnabled, optional boolean isVoiceEnabled, optional boolean isListEnabled, optional boolean isTextEnabled, optional boolean configLoaded);
   }
 
   public final class GradientSwatchKt {
