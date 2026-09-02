@@ -115,7 +115,12 @@ Plans:
   2. Running `repin_status.py reconcile` against the hub's current SecondBrain/CalTracker pins succeeds without any hand edits to `ECOSYSTEM.md`.
   3. `INC-2026-08-28-03` is verifiably closed — the reconcile output reflects the true pin state for both consumers.
 
-**Plans**: TBD
+**Plans**: 0/1 plans executed
+
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Seed ECOSYSTEM.md repin-matrix block, verify reconcile, close INC-2026-08-28-03
 
 ### Phase 5: Gardening — Unify & Coordinated Repin
 
