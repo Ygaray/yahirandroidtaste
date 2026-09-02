@@ -163,3 +163,21 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 5. Gardening — Unify & Coordinated Repin | 3/3 | In Progress — blocked on human tag-cut decision | - |
 
 **Phase 5 status note:** All 3 plans executed and hub-side gates (code review, security, Nyquist) are green. Phase 5 success criteria 1-2 are met; criteria 3-4 (v2.0.0 tag cut + coordinated SecondBrain/CalTracker repin) are intentionally NOT auto-executed — a blocking `checkpoint:decision` in 05-03-PLAN.md was reached and correctly left unresolved, per this repo's CLAUDE.md human-gated-shipping rule. See `.planning/phases/05-gardening-unify-coordinated-repin/05-03-SUMMARY.md` for the pending go/hold decision. The phase checkbox above stays unchecked until the human acts and the coordinated repin completes.
+
+## Backlog
+
+### Phase 999.1: Formalize reusable Gate-2 visualization harness APK (BACKLOG)
+
+**Goal:** Promote the throwaway same-package-Intent harness — which every Gate-1 agent currently re-derives from scratch — into a committed, launchable Gate-2 visualization app for this library-only repo.
+
+**Requirements:** TBD
+
+**Plans:** 0 plans
+
+Context:
+- `yahirandroidtaste` is a pure `com.android.library` (no `applicationId`), so it ships **no installable APK**. Human Gate-2 on-device review therefore has nothing to open. Every Gate-1 self-UAT run rebuilds the same throwaway harness (a 1-Activity app that depends on the mavenLocal AAR and `startActivity(Intent(this, ExplorerActivity::class.java))`) just to see the gallery — documented in `01-05-SELF-UAT.md`'s "Driver-mechanism note" and re-derived by this milestone's verify session too.
+- Deliverables to scope when promoted: (a) a committed harness — a dedicated app module or a gradle task that assembles an installable debug APK opening `ExplorerActivity`; (b) a project-local `AGENT-DEVICE-TESTING.md` documenting the same-package-harness driver pattern (the SELF-UAT logs explicitly recommend authoring one so future Gate-1 runs don't re-derive it).
+- **Invariant guard:** harness → library only, never the reverse (one-way dependency). The harness is host/consumer-side tooling; it must name no library-internal concepts and must not become something the library depends on.
+
+Plans:
+- [ ] TBD (promote with /gsd-review-backlog when ready)
