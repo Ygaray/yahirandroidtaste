@@ -53,4 +53,16 @@ git add -A
 set +e; "$SCRIPT" v0.0.0 >/dev/null 2>&1; rc=$?; set -e
 check "$rc" 1 "rewrite of a line in a file created after the baseline tag must be caught (CR-01 regression)"
 
+# (e) WR-01 regression: removing a blank line (no replacement) from a pre-existing source file
+# must be caught -- a bare '-'/'+' diff marker (no second character) must not be silently dropped
+# by the extraction regexes, and a lone offender that normalizes to EMPTY must not be swallowed by
+# a `$(...)`-captured string test (trailing-newline stripping).
+git reset -q --hard; git clean -fdq
+printf 'line one\n\nline three\n' > src/main/A.kt
+git add -A; git commit -qm "A.kt gains a blank line"
+printf 'line one\nline three\n' > src/main/A.kt
+git add -A
+set +e; "$SCRIPT" HEAD~1 src/main/A.kt >/dev/null 2>&1; rc=$?; set -e
+check "$rc" 1 "removing a blank line with no replacement must be caught (WR-01 regression)"
+
 echo "PASS=$pass FAIL=$fail"; [ "$fail" -eq 0 ]

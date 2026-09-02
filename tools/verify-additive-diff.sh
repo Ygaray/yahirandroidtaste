@@ -84,10 +84,12 @@ ADDED_NORM="$TMP_DIR/added.norm"
 # never as a diff endpoint. `-- <paths>` filters to only the paths that matter to this guard.
 git diff --cached -U0 -- "${PATHS[@]}" > "$TMP_DIR/full.diff" || true
 
-# REMOVED content lines: start with a single '-', excluding the '---' file header.
-grep -E '^-[^-]' "$TMP_DIR/full.diff" > "$REMOVED_RAW" || true
-# ADDED content lines: start with a single '+', excluding the '+++' file header.
-grep -E '^\+[^+]' "$TMP_DIR/full.diff" > "$ADDED_RAW" || true
+# REMOVED content lines: start with '-' (including a bare '-' for a removed blank line), excluding
+# the '---' file header (which is always followed by a space, never end-of-line).
+grep -E '^-' "$TMP_DIR/full.diff" | grep -v -E '^--- ' > "$REMOVED_RAW" || true
+# ADDED content lines: start with '+' (including a bare '+' for an added blank line), excluding
+# the '+++' file header (which is always followed by a space, never end-of-line).
+grep -E '^\+' "$TMP_DIR/full.diff" | grep -v -E '^\+\+\+ ' > "$ADDED_RAW" || true
 
 # Normalize identically: strip leading diff marker, strip trailing whitespace, strip one
 # trailing '+' or ',' if present (the only legitimate rewrites this codebase's appends produce —
@@ -105,12 +107,18 @@ normalize() {
 normalize "$REMOVED_RAW" > "$REMOVED_NORM"
 normalize "$ADDED_RAW" > "$ADDED_NORM"
 
-OFFENDERS="$(comm -23 "$REMOVED_NORM" "$ADDED_NORM" || true)"
+OFFENDERS_FILE="$TMP_DIR/offenders"
+comm -23 "$REMOVED_NORM" "$ADDED_NORM" > "$OFFENDERS_FILE" || true
 
-if [ -n "$OFFENDERS" ]; then
+# Use `[ -s ]` (file has bytes), not a `$(...)`-captured string test: a lone offending line that
+# normalizes to EMPTY (a removed blank line, WR-01) is itself a single newline byte in the file,
+# but command substitution unconditionally strips trailing newlines, which would collapse that
+# one-byte file down to an empty string and make `[ -n "$OFFENDERS" ]` false — silently swallowing
+# exactly the blank-line-removal case this guard exists to catch.
+if [ -s "$OFFENDERS_FILE" ]; then
   while IFS= read -r line; do
     echo "DS-05 FAIL: line rewritten/removed in a pre-existing file: $line" >&2
-  done <<< "$OFFENDERS"
+  done < "$OFFENDERS_FILE"
   exit 1
 fi
 
