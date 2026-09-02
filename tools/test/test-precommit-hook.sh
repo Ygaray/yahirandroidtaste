@@ -35,8 +35,20 @@ git add -A
 set +e; git commit -qm "behavior change"; check "$?" 1 "lane-2 commit blocked"; set -e
 set +e; HUB_LANE_OVERRIDE=2 git commit -qm "declared behavior change"; check "$?" 0 "declared lane-2 allowed"; set -e
 
+# GOV-03 regression: the exact reproduced-bug shape. Right after a legitimate, override-landed
+# src/main rewrite (the lane-2 commit above — poisoned history since the tag, mirroring the real
+# 5b01532 HeatSwatch.kt reword), commit an UNRELATED, non-src/main file with NO HUB_LANE_OVERRIDE
+# set. Pre-fix, the stale-tag-vs-working-tree comparison basis would inherit the earlier rewrite
+# forever and wrongly block this; post-fix (D-01: staged-vs-HEAD), it must be unconditionally
+# lane 1 because this commit's own staged delta touches nothing under src/main.
+printf 'notes\n' > NOTES.md; git add -A
+set +e; git commit -qm "unrelated docs-only change"; check "$?" 0 "post-lane-2 unrelated commit unblocked (GOV-03 fix)"; set -e
+
 # classifier error: missing API_FILE -> hook fails closed (blocks commit)
-git reset --hard HEAD~1
+# HEAD~2 (not ~1): the GOV-03 regression case above added one more commit ("unrelated docs-only
+# change") on top of "declared behavior change" — reset past both to reach the pre-lane-2 "additive"
+# state this block expects.
+git reset --hard HEAD~2
 git checkout -q -- .; git clean -fdq
 rm api/hub.api
 printf 'val x = 888\n' > src/main/A.kt; git add -A
