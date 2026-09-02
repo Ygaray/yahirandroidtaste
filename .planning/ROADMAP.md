@@ -134,20 +134,20 @@ Plans:
   3. A new immutable tag is cut containing the gardening changes.
   4. Both SecondBrain and CalTracker are repinned to the new tag, each re-verified at Gate-1, with neither consumer left stranded.
 
-**Plans**: 3 plans
+**Plans**: 3/3 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 05-01-PLAN.md — Fold FilterBar into ChipBar's expandable mode (WO-1), rebaseline api.txt/API.md
+- [x] 05-01-PLAN.md — Fold FilterBar into ChipBar's expandable mode (WO-1), rebaseline api.txt/API.md
 
 **Wave 2** *(blocked on Wave 1 — shares api.txt)*
 
-- [ ] 05-02-PLAN.md — Extract SheetHeaderMenu from TextCardBottomSheet/ListCardBottomSheet (WO-2), retarget test, rebaseline api.txt/API.md
+- [x] 05-02-PLAN.md — Extract SheetHeaderMenu from TextCardBottomSheet/ListCardBottomSheet (WO-2), retarget test, rebaseline api.txt/API.md
 
 **Wave 3** *(blocked on Wave 1+2)*
 
-- [ ] 05-03-PLAN.md — Full hub-side gate verification + human-gated surfacing checkpoint for the v2.0.0 tag cut and coordinated repin
+- [x] 05-03-PLAN.md — Full hub-side gate verification + human-gated surfacing checkpoint for the v2.0.0 tag cut and coordinated repin
 
 ## Progress
 
@@ -160,4 +160,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Coherence Audit | 2/2 | Complete    | 2026-09-01 |
 | 3. Governance Gates | 2/2 | Complete    | 2026-09-01 |
 | 4. Repin Bookkeeping Hardening | 1/1 | Complete    | 2026-09-01 |
-| 5. Gardening — Unify & Coordinated Repin | 0/3 | Not started | - |
+| 5. Gardening — Unify & Coordinated Repin | 3/3 | In Progress — blocked on human tag-cut decision | - |
+
+**Phase 5 status note:** All 3 plans executed and hub-side gates (code review, security, Nyquist) are green. Phase 5 success criteria 1-2 are met; criteria 3-4 (v2.0.0 tag cut + coordinated SecondBrain/CalTracker repin) are intentionally NOT auto-executed — a blocking `checkpoint:decision` in 05-03-PLAN.md was reached and correctly left unresolved, per this repo's CLAUDE.md human-gated-shipping rule. See `.planning/phases/05-gardening-unify-coordinated-repin/05-03-SUMMARY.md` for the pending go/hold decision. The phase checkbox above stays unchecked until the human acts and the coordinated repin completes.

@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 04
-current_phase_name: Repin Bookkeeping Hardening
-status: executing
-stopped_at: Completed 04-01-PLAN.md — ECOSYSTEM.md repin-matrix seeded, reconcile proven idempotent, INC-2026-08-28-03 closed
-last_updated: "2026-09-02T04:02:42.666Z"
-last_activity: 2026-09-01
-last_activity_desc: Phase 04 Plan 01 complete
+current_phase: 05
+current_phase_name: Gardening — Unify & Coordinated Repin
+status: blocked
+stopped_at: All 3 plans (05-01/05-02/05-03) executed; hub-side gates (code review, security, Nyquist) green; blocked at 05-03 Task 2 checkpoint:decision (v2.0.0 tag cut + coordinated repin) — awaiting human go/hold
+last_updated: "2026-09-02T05:00:00.000Z"
+last_activity: 2026-09-02
+last_activity_desc: Phase 05 waves 1-3 executed; tail gates (code review, security, nyquist) run; blocked on human-gated tag-cut checkpoint
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 13
-  completed_plans: 10
+  total_plans: 16
+  completed_plans: 13
 ---
 
 # Project State
@@ -27,12 +27,12 @@ See: .planning/PROJECT.md (updated 2026-08-28)
 
 ## Current Position
 
-Phase: 04 — Repin Bookkeeping Hardening
-Plan: 04-01 complete (1/1)
-Status: Ready to execute
-Last activity: 2026-09-01 — Phase 04 Plan 01 complete: ECOSYSTEM.md repin-matrix seeded, reconcile idempotent, INC-2026-08-28-03 closed
+Phase: 05 — Gardening — Unify & Coordinated Repin
+Plan: 05-01, 05-02, 05-03 all executed (3/3) — phase NOT complete, blocked on human checkpoint
+Status: Blocked — human decision required (v2.0.0 tag cut + coordinated SecondBrain/CalTracker repin)
+Last activity: 2026-09-02 — WO-1 (FilterBar->ChipBar fold) and WO-2 (SheetHeaderMenu extraction) landed on main; 05-03 Task 1 (full hub-side gate verification) green; 05-03 Task 2 checkpoint:decision correctly left unresolved per CLAUDE.md's human-gated-shipping rule. Tail gates run: code review (issues_found, 0 critical/2 warning/1 info, non-blocking), security (threats_open: 0), Gate-1 self-UAT (n/a — no UAT criteria, hub-only library phase), nyquist (nyquist_compliant: true).
 
-Progress: [██████████] 100%
+Progress: [██████████] 100% of automatable phase work — blocked on human decision for the rest
 
 ## Performance Metrics
 
@@ -74,7 +74,7 @@ None yet.
 
 ### Blockers/Concerns
 
-- Phase 5 (Gardening) is a human-gated coordinated repin of both consumers (SecondBrain + CalTracker) — do not tag or repin without the owner's explicit go-ahead (per CLAUDE.md).
+- **ACTIVE, awaiting decision:** Phase 5 (Gardening) is a human-gated coordinated repin of both consumers (SecondBrain + CalTracker) — do not tag or repin without the owner's explicit go-ahead (per CLAUDE.md). As of 2026-09-02, all 3 plans executed and hub-side gates are green; the phase is parked at 05-03-PLAN.md's Task 2 `checkpoint:decision` — cut `v2.0.0` and begin the coordinated repin, or hold. See `.planning/phases/05-gardening-unify-coordinated-repin/05-03-SUMMARY.md`.
 - GOV-03 residual risk (tracked, not fixed): `verify-api-additive.sh` shares
   `verify-additive-diff.sh`'s pre-fix architecture (stale cumulative baseline-vs-current
   comparison), proven live in `tools/test/test-verify-api-additive.sh` case (e) — but the
