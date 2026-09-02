@@ -3,10 +3,10 @@ set -euo pipefail
 DIR="$(cd "$(dirname "$0")/.." && pwd)"
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 cd "$TMP"; git init -q -b main; git config user.email t@t; git config user.name t
-mkdir -p tools/hooks tools/explorer src/main api
+mkdir -p tools/hooks src/main api
 cp "$DIR"/verify-additive-diff.sh "$DIR"/verify-api-additive.sh "$DIR"/verify-additive-surface.sh \
-   "$DIR"/classify-hub-change.sh tools/ 2>/dev/null || true
-cp "$DIR"/hooks/pre-commit tools/hooks/pre-commit 2>/dev/null || true
+   "$DIR"/classify-hub-change.sh tools/
+cp "$DIR"/hooks/pre-commit tools/hooks/pre-commit
 printf 'val x = 1\n' > src/main/A.kt; printf 'public fun a(): Unit\n' > api/hub.api
 git add -A; git commit -qm base; git tag v1.0.0
 export API_FILE="api/hub.api"
