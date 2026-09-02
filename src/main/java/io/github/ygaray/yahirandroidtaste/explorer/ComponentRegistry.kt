@@ -124,7 +124,11 @@ object ComponentRegistry {
         "YahirAndroidTasteTheme" to
             "Theme-level wrapper every explorer screen (including this registry's own family " +
             "screens) already composes around itself — not an independently showcaseable " +
-            "component, it IS the chrome every other entry renders inside."
+            "component, it IS the chrome every other entry renders inside.",
+        "SheetHeaderMenu" to
+            "Header/menu/rename chrome extracted from TextCardBottomSheet/ListCardBottomSheet " +
+            "(WO-2) — infrastructure, not an independently showcase-able archetype; already " +
+            "exercised indirectly via every sheet entry's own header/menu/rename interaction."
     )
 
     init {

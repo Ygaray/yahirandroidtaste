@@ -24,9 +24,19 @@ import org.junit.Test
  * `onEditRequest()` and then `onDismiss()` at runtime. That rendered proof is an outstanding
  * obligation discharged at Phase 115's SecondBrain Gate-1, on-device, across the repin boundary.
  *
- * `TextCardBottomSheet.kt` coverage lands in this task (Task 1 of 114-01-PLAN.md);
- * `ListCardBottomSheet.kt` coverage is added by Task 2, and the cross-file backward-compatibility
- * guard by Task 3.
+ * ## File boundary (post-WO-2, 05-02-PLAN.md)
+ * `TextCardBottomSheet.kt` and `ListCardBottomSheet.kt` originally carried this coverage's
+ * assertions directly (`114-01-PLAN.md` Task 1/Task 2, cross-file guard Task 3). WO-2 extracted
+ * the shared header `Row` + three-dot `DropdownMenu` + rename `AlertDialog` triad — everything
+ * this class asserts on, other than each sheet's own trailing `onEditRequest` param declaration
+ * and `ListCardBottomSheet`'s unrelated "Edit list" button copy — into a new shared composable,
+ * `SheetHeaderMenu.kt`. This class is retargeted accordingly: the moved structural assertions
+ * (Edit-row branching, region-marker Edit/Rename copy count, rename-dialog structural presence,
+ * `onConfirmRename(` invocation) now check `source("SheetHeaderMenu.kt")` **once**, since both
+ * sheets share one implementation, rather than duplicating the same check per host file. Each
+ * host sheet's own `onEditRequest` param declaration and its wiring into the shared composable's
+ * call site are still checked per-file, proving the extraction did not silently drop either
+ * sheet's forwarding.
  */
 class TextListBottomSheetEditMenuSourceContractTest {
 
@@ -39,23 +49,24 @@ class TextListBottomSheetEditMenuSourceContractTest {
 
     /**
      * Isolates the substring between the `// region:edit-menu-item` /
-     * `// endregion:edit-menu-item` marker comments added in this plan. Located on the RAW
-     * source first (the markers are themselves comments), before [stripComments] is applied by
-     * the caller — that ordering matters, since stripping first would destroy the anchors.
+     * `// endregion:edit-menu-item` marker comments — moved into `SheetHeaderMenu.kt` verbatim by
+     * WO-2's extraction. Located on the RAW source first (the markers are themselves comments),
+     * before [stripComments] is applied by the caller — that ordering matters, since stripping
+     * first would destroy the anchors.
      */
     private fun editMenuItemRegion(src: String): String {
         val start = src.indexOf("// region:edit-menu-item")
         val end = src.indexOf("// endregion:edit-menu-item")
         require(start >= 0 && end > start) {
-            "114-01: could not locate the // region:edit-menu-item / // endregion:edit-menu-item " +
-                "markers — they are load-bearing anchors for " +
+            "114-01/05-02: could not locate the // region:edit-menu-item / " +
+                "// endregion:edit-menu-item markers — they are load-bearing anchors for " +
                 "TextListBottomSheetEditMenuSourceContractTest, not decorative comments. Restore " +
-                "them around the first DropdownMenuItem."
+                "them around the first DropdownMenuItem in SheetHeaderMenu.kt."
         }
         return src.substring(start, end)
     }
 
-    // --- TextCardBottomSheet (Task 1) ---
+    // --- Each host sheet's own onEditRequest param declaration (unmoved by WO-2) ---
 
     @Test
     fun `TextCardBottomSheet declares a trailing nullable defaulted onEditRequest param`() {
@@ -67,59 +78,6 @@ class TextListBottomSheetEditMenuSourceContractTest {
     }
 
     @Test
-    fun `TextCardBottomSheet Edit row branches non-null onEditRequest, null local dialog, not inverted`() {
-        val src = source("TextCardBottomSheet.kt")
-        assertTrue(
-            "TextCardBottomSheet's Edit row must branch on `if (onEditRequest != null)` " +
-                "(not inverted)",
-            src.contains("if (onEditRequest != null)")
-        )
-        assertTrue(
-            "TextCardBottomSheet must retain its showRenameDialog fallback",
-            src.contains("showRenameDialog = true")
-        )
-        assertTrue(
-            "TextCardBottomSheet must retain its local rename AlertDialog",
-            src.contains("AlertDialog(")
-        )
-    }
-
-    @Test
-    fun `TextCardBottomSheet menu row reads Edit exactly once and Rename zero times`() {
-        val src = source("TextCardBottomSheet.kt")
-        val region = stripComments(editMenuItemRegion(src))
-        assertEquals(
-            "TextCardBottomSheet menu-item region must have exactly one Text(\"Edit\") row",
-            1,
-            countOccurrences(region, "Text(\"Edit\")")
-        )
-        assertEquals(
-            "TextCardBottomSheet menu-item region must have no Text(\"Rename\") row",
-            0,
-            countOccurrences(region, "Text(\"Rename\")")
-        )
-    }
-
-    @Test
-    fun `TextCardBottomSheet retains showRenameDialog and onConfirmRename local dialog fallback`() {
-        val src = source("TextCardBottomSheet.kt")
-        assertTrue(
-            "TextCardBottomSheet must retain showRenameDialog state (null-hook fallback)",
-            src.contains("showRenameDialog")
-        )
-        assertTrue(
-            "TextCardBottomSheet must retain its local rename AlertDialog block",
-            src.contains("AlertDialog(")
-        )
-        assertTrue(
-            "TextCardBottomSheet must still invoke onConfirmRename(",
-            src.contains("onConfirmRename(")
-        )
-    }
-
-    // --- ListCardBottomSheet (Task 2) ---
-
-    @Test
     fun `ListCardBottomSheet declares a trailing nullable defaulted onEditRequest param`() {
         val src = source("ListCardBottomSheet.kt")
         assertTrue(
@@ -128,75 +86,113 @@ class TextListBottomSheetEditMenuSourceContractTest {
         )
     }
 
-    @Test
-    fun `ListCardBottomSheet Edit row branches non-null onEditRequest, null local dialog, not inverted`() {
-        val src = source("ListCardBottomSheet.kt")
-        assertTrue(
-            "ListCardBottomSheet's Edit row must branch on `if (onEditRequest != null)` " +
-                "(not inverted)",
-            src.contains("if (onEditRequest != null)")
-        )
-        assertTrue(
-            "ListCardBottomSheet must retain its showRenameDialog fallback",
-            src.contains("showRenameDialog = true")
-        )
-        assertTrue(
-            "ListCardBottomSheet must retain its local rename AlertDialog",
-            src.contains("AlertDialog(")
-        )
-    }
+    // --- Each host sheet forwards onEditRequest into the shared SheetHeaderMenu call ---
 
     @Test
-    fun `ListCardBottomSheet menu row reads Edit exactly once and Rename zero times`() {
-        val src = source("ListCardBottomSheet.kt")
-        val region = stripComments(editMenuItemRegion(src))
-        assertEquals(
-            "ListCardBottomSheet menu-item region must have exactly one Text(\"Edit\") row",
-            1,
-            countOccurrences(region, "Text(\"Edit\")")
-        )
-        assertEquals(
-            "ListCardBottomSheet menu-item region must have no Text(\"Rename\") row",
-            0,
-            countOccurrences(region, "Text(\"Rename\")")
-        )
+    fun `both bottom sheets wire onEditRequest into their SheetHeaderMenu call site`() {
+        for (file in listOf("TextCardBottomSheet.kt", "ListCardBottomSheet.kt")) {
+            val src = source(file)
+            assertTrue(
+                "$file must call the shared SheetHeaderMenu composable",
+                src.contains("SheetHeaderMenu(")
+            )
+            assertTrue(
+                "$file must forward its own onEditRequest into SheetHeaderMenu",
+                src.contains("onEditRequest = onEditRequest")
+            )
+        }
     }
 
+    // --- ListCardBottomSheet's own unrelated button copy (unmoved by WO-2) ---
+
     @Test
-    fun `ListCardBottomSheet retains showRenameDialog local dialog fallback and unchanged Edit list button`() {
+    fun `ListCardBottomSheet's Edit list button copy is unchanged`() {
         val src = source("ListCardBottomSheet.kt")
-        assertTrue(
-            "ListCardBottomSheet must retain showRenameDialog state (null-hook fallback)",
-            src.contains("showRenameDialog")
-        )
-        assertTrue(
-            "ListCardBottomSheet must retain its local rename AlertDialog block",
-            src.contains("AlertDialog(")
-        )
         assertTrue(
             "ListCardBottomSheet's bottom content-editor Button copy must be unchanged",
             src.contains("Text(\"Edit list\")")
         )
     }
 
-    // --- Cross-file backward-compatibility guard (Task 3) ---
+    // --- Shared SheetHeaderMenu.kt (WO-2's extraction target — the moved assertions) ---
+
+    @Test
+    fun `SheetHeaderMenu Edit row branches non-null onEditRequest, null local dialog, not inverted`() {
+        val src = source("SheetHeaderMenu.kt")
+        assertTrue(
+            "SheetHeaderMenu's Edit row must branch on `if (onEditRequest != null)` (not inverted)",
+            src.contains("if (onEditRequest != null)")
+        )
+        assertTrue(
+            "SheetHeaderMenu must retain the showRenameDialog fallback",
+            src.contains("showRenameDialog = true")
+        )
+        assertTrue(
+            "SheetHeaderMenu must retain the local rename AlertDialog",
+            src.contains("AlertDialog(")
+        )
+    }
+
+    @Test
+    fun `SheetHeaderMenu menu row reads Edit exactly once and Rename zero times`() {
+        val src = source("SheetHeaderMenu.kt")
+        val region = stripComments(editMenuItemRegion(src))
+        assertEquals(
+            "SheetHeaderMenu menu-item region must have exactly one Text(\"Edit\") row",
+            1,
+            countOccurrences(region, "Text(\"Edit\")")
+        )
+        assertEquals(
+            "SheetHeaderMenu menu-item region must have no Text(\"Rename\") row",
+            0,
+            countOccurrences(region, "Text(\"Rename\")")
+        )
+    }
+
+    @Test
+    fun `SheetHeaderMenu retains showRenameDialog and onConfirmRename local dialog fallback`() {
+        val src = source("SheetHeaderMenu.kt")
+        assertTrue(
+            "SheetHeaderMenu must retain showRenameDialog state (null-hook fallback)",
+            src.contains("showRenameDialog")
+        )
+        assertTrue(
+            "SheetHeaderMenu must retain the local rename AlertDialog block",
+            src.contains("AlertDialog(")
+        )
+        assertTrue(
+            "SheetHeaderMenu must still invoke onConfirmRename(",
+            src.contains("onConfirmRename(")
+        )
+    }
+
+    // --- Cross-file backward-compatibility guard ---
 
     @Test
     fun `both bottom sheets retain the full null-hook fallback structurally intact`() {
+        val sharedSrc = source("SheetHeaderMenu.kt")
+        assertTrue(
+            "SheetHeaderMenu.kt must still declare showRenameDialog state — deleting it would " +
+                "silently break every consumer that has not yet bound onEditRequest",
+            sharedSrc.contains("showRenameDialog")
+        )
+        assertTrue(
+            "SheetHeaderMenu.kt must still contain a local rename AlertDialog( block",
+            sharedSrc.contains("AlertDialog(")
+        )
+        assertTrue(
+            "SheetHeaderMenu.kt must still invoke onConfirmRename( from its local rename dialog",
+            sharedSrc.contains("onConfirmRename(")
+        )
         for (file in listOf("TextCardBottomSheet.kt", "ListCardBottomSheet.kt")) {
             val src = source(file)
             assertTrue(
-                "$file must still declare showRenameDialog state — deleting it would silently " +
-                    "break every consumer that has not yet bound onEditRequest",
-                src.contains("showRenameDialog")
+                "$file must still declare its own onEditRequest param",
+                src.contains("onEditRequest: (() -> Unit)? = null")
             )
             assertTrue(
-                "$file must still contain a local rename AlertDialog( block",
-                src.contains("AlertDialog(")
-            )
-            assertTrue(
-                "$file must still invoke onConfirmRename( from its local rename dialog",
-                src.contains("onConfirmRename(")
+                "$file must still call the shared SheetHeaderMenu composable",
+                src.contains("SheetHeaderMenu(")
             )
         }
     }

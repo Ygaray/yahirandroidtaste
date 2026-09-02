@@ -167,7 +167,7 @@ rendered):**
 
 ---
 
-## Intentionally-unregistered sub-parts (5)
+## Intentionally-unregistered sub-parts (6)
 
 Public composables that are **not** standalone catalog tiles (structural sub-parts, exercised
 indirectly), tracked in `ComponentRegistry.INTENTIONALLY_UNREGISTERED`:
@@ -179,6 +179,7 @@ indirectly), tracked in `ComponentRegistry.INTENTIONALLY_UNREGISTERED`:
 | `SwipeableActionRow` | The reveal-confirm swipe mechanics powering `CardBase` and `EditorItemRow` — infrastructure, not a visual archetype. |
 | `RevealActionRow` | Swipe-reveal mechanics for arbitrary 0-2 action slots — infrastructure, not an independent visual archetype; exercised indirectly via callers' own row demos. |
 | `YahirAndroidTasteTheme` | The theme wrapper every component (and every gallery screen) renders inside — it *is* the chrome, not a showcaseable tile. Wrap your UI in it: `YahirAndroidTasteTheme { … }`. |
+| `SheetHeaderMenu` | Header/menu/rename chrome extracted from `TextCardBottomSheet`/`ListCardBottomSheet` (WO-2) — infrastructure, not an independently showcase-able archetype; already exercised indirectly via every sheet entry's own header/menu/rename interaction. |
 
 ## Adding / changing components (breaking-change note)
 

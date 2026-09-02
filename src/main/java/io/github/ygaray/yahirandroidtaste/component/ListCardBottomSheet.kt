@@ -1,6 +1,5 @@
 package io.github.ygaray.yahirandroidtaste.component
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,30 +13,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PushPin
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.PushPin
-import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
@@ -48,8 +31,9 @@ import io.github.ygaray.yahirandroidtaste.model.ListItemUiModel
  * Bottom sheet for list cards — shows full scrollable item list with interactive checkboxes.
  *
  * Rides [SheetScaffold] (D-01 chrome canon) and renders its body via the shared [CardQuickView]
- * display archetype (D-04) — the sheet keeps its own title/pin/favorite/three-dot-menu header row
- * and category-path line (chrome [CardQuickView] deliberately omits, per Plan 02), then hands
+ * display archetype (D-04) — the sheet delegates its title/pin/favorite/three-dot-menu header row
+ * to the shared [SheetHeaderMenu] archetype (WO-2) and keeps its own category-path line (chrome
+ * neither [CardQuickView] nor [SheetHeaderMenu] own, per Plan 02 / WO-2), then hands
  * [CardQuickView] a blank `title` (suppressing its internal duplicate header) so it owns the
  * tag row, item-list body, and Created/Updated timestamps.
  *
@@ -82,7 +66,8 @@ import io.github.ygaray.yahirandroidtaste.model.ListItemUiModel
  *   sheet. When non-null, the three-dot "Edit" row invokes it (the host opens the tag-inclusive
  *   sheet, mirroring the already-shipped card-face [ListCard] pattern); when null (default), the
  *   row falls back to this sheet's local tag-less rename dialog, so every existing call site
- *   compiles and behaves as before. The consumer app wires it at Phase 115.
+ *   compiles and behaves as before. The consumer app wires it at Phase 115. Forwarded to
+ *   [SheetHeaderMenu].
  * @param readOnlyPreview LIST-04: when true, the CHECKBOX item-row branch renders a static,
  *   non-interactive check icon instead of a live [Checkbox] — the toggle callback ([onToggleItem])
  *   is never wired into this branch. Used by callers presenting a read-only truncated preview
@@ -117,9 +102,6 @@ fun ListCardBottomSheet(
     previewOverflowCount: Int = 0
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var showMenu by remember { mutableStateOf(false) }
-    var showRenameDialog by remember { mutableStateOf(false) }
-    var renameText by remember(title) { mutableStateOf(title) }
 
     SheetScaffold(
         onDismissRequest = onDismiss,
@@ -132,115 +114,17 @@ fun ListCardBottomSheet(
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
         ) {
-            // Header row: title + pin/fav indicators + three-dot menu
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.Top
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    if (title.isNotBlank()) {
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                }
-
-                // Pin / favourite indicators
-                if (isPinned) {
-                    Icon(
-                        imageVector = Icons.Filled.PushPin,
-                        contentDescription = "Pinned",
-                        modifier = Modifier
-                            .padding(top = 4.dp, end = 4.dp)
-                            .size(16.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-                if (isFavorite) {
-                    Icon(
-                        imageVector = Icons.Filled.Star,
-                        contentDescription = "Favourite",
-                        modifier = Modifier
-                            .padding(top = 4.dp, end = 4.dp)
-                            .size(16.dp),
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
-                }
-
-                // Three-dot menu
-                Box {
-                    IconButton(onClick = { showMenu = true }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "More options",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = showMenu,
-                        onDismissRequest = { showMenu = false }
-                    ) {
-                        // region:edit-menu-item
-                        // Edit (EDIT-04) — external trigger to the host-owned shared
-                        // name-and-tags sheet when wired; otherwise falls back to the local
-                        // tag-less rename AlertDialog. TextListBottomSheetEditMenuSourceContractTest
-                        // anchors on the region markers below — they are load-bearing, not decorative.
-                        DropdownMenuItem(
-                            text = { Text("Edit") },
-                            onClick = {
-                                showMenu = false
-                                if (onEditRequest != null) {
-                                    onEditRequest()
-                                    onDismiss()
-                                } else {
-                                    renameText = title
-                                    showRenameDialog = true
-                                }
-                            },
-                            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) }
-                        )
-                        // endregion:edit-menu-item
-                        // Pin/Unpin
-                        DropdownMenuItem(
-                            text = { Text(if (isPinned) "Unpin" else "Pin") },
-                            onClick = { showMenu = false; onTogglePin() },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
-                                    contentDescription = null
-                                )
-                            }
-                        )
-                        // Favorite/Unfavorite
-                        DropdownMenuItem(
-                            text = { Text(if (isFavorite) "Unfavorite" else "Favorite") },
-                            onClick = { showMenu = false; onToggleFavorite() },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = if (isFavorite) Icons.Filled.Star else Icons.Outlined.Star,
-                                    contentDescription = null
-                                )
-                            }
-                        )
-                        // Delete — error color
-                        DropdownMenuItem(
-                            text = { Text("Delete", color = MaterialTheme.colorScheme.error) },
-                            onClick = { showMenu = false; onDelete(); onDismiss() },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.error
-                                )
-                            }
-                        )
-                    }
-                }
-            }
+            SheetHeaderMenu(
+                title = title,
+                isPinned = isPinned,
+                isFavorite = isFavorite,
+                onTogglePin = onTogglePin,
+                onToggleFavorite = onToggleFavorite,
+                onDelete = onDelete,
+                onDismiss = onDismiss,
+                onConfirmRename = onConfirmRename,
+                onEditRequest = onEditRequest
+            )
 
             // Category path
             if (categoryPath != null) {
@@ -296,37 +180,6 @@ fun ListCardBottomSheet(
 
             Spacer(modifier = Modifier.height(16.dp))
         }
-    }
-
-    // Rename dialog
-    if (showRenameDialog) {
-        AlertDialog(
-            onDismissRequest = { showRenameDialog = false },
-            title = { Text("Rename") },
-            text = {
-                ClearableTextField(
-                    value = renameText,
-                    onValueChange = { renameText = it },
-                    singleLine = true,
-                    label = { Text("Title") }
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        val trimmed = renameText.trim()
-                        if (trimmed.isNotEmpty()) {
-                            onConfirmRename(trimmed)
-                        }
-                        showRenameDialog = false
-                        onDismiss()
-                    }
-                ) { Text("Rename") }
-            },
-            dismissButton = {
-                TextButton(onClick = { showRenameDialog = false }) { Text("Cancel") }
-            }
-        )
     }
 }
 
@@ -391,7 +244,7 @@ private fun ListPreviewItemRow(
             }
             "BULLETED" -> {
                 Text(
-                    text = "\u2022",
+                    text = "•",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.width(24.dp)
