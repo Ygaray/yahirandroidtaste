@@ -1,8 +1,9 @@
 ### Phase 3 — governance-gates (v1.0)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir, 2026-09-02`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v1.0 (Hub Stewardship — Tier Legibility → Coherence Audit → Governance → Repin
   Bookkeeping → Gardening)
+
 - **Gate 1 self-UAT log:** [`.planning/phases/03-governance-gates/03-02-SELF-UAT.md`](phases/03-governance-gates/03-02-SELF-UAT.md) — Verdict: **ALL 4 criteria PASS** (tooling-behavior verification against the real, production-wired pre-commit hook and the real JVM test runner; no mobile-device/UI surface in scope — this phase shipped zero `src/main`/Activity changes, confirmed via `git log --stat` across both phase plans, only `tools/`, a `src/test/` JUnit file, and `docs/DESIGN-INTENT.md`, 2026-09-01).
 - **Items covered (4 ROADMAP success criteria, GOV-01/GOV-02/GOV-03):**
   - **SC1 — Tier-aware contribution litmus documented.** Confirmed: `docs/DESIGN-INTENT.md`'s new `## The Tier-Aware Contribution Litmus` section states the asymmetric strict-primitives/loose-patterns gate, cross-referencing D-04.

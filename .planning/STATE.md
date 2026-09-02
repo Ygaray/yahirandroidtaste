@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 05
 current_phase_name: Gardening — Unify & Coordinated Repin
-status: blocked
-stopped_at: All 3 plans executed; hub-side gates green; operator authorized the tag cut — v2.0.0 CUT + pushed to origin (SC-3 done). Remaining: coordinated consumer repin (SC-4), a human-gated consumer-side obligation, deferred to each consumer's own channel — NOT executed from this hub run.
-last_updated: "2026-09-02T18:00:00.000Z"
+status: complete
+stopped_at: Milestone v1.0 SHIPPED (2026-09-02, library v2.0.0). Gate-2 human UAT signed off for Phases 1–3 (drained HUMAN-UAT-PENDING.md, 0 pending); milestone audited (tech_debt, 0 blockers) and archived. GARD-02 coordinated consumer repin deferred as a downstream human-gated obligation.
+last_updated: "2026-09-02T18:35:00.000Z"
 last_activity: 2026-09-02
-last_activity_desc: v2.0.0 immutable tag cut on main HEAD (c0a2ef0) + pushed to origin; main fast-forwarded (5b01532..c0a2ef0). JitPack publishReleasePublicationToMavenLocal verified green pre-tag. Coordinated repin (SecondBrain single-hop v1.10.0->v2.0.0; CalTracker two-hop v1.5.0->v1.10.0->v2.0.0 per D-05) registered as a pending human-gated obligation, surfaced to operator, not executed.
+last_activity_desc: /gsd-verify-milestone closed v1.0 — Phase 1 tier-badge criterion re-verified on-device (tester yahirs-s22-ultra-2 via throwaway harness), Phases 1–3 Gate-2 signed off (Yahir), ledger drained to 0 pending, milestone audit written (tech_debt), and v1.0 archived (ROADMAP/REQUIREMENTS → milestones/, MILESTONES.md, PROJECT.md). No v1.0 git tag cut — the library release is v2.0.0. Deferred: GARD-02 coordinated repin (SecondBrain + CalTracker onto v2.0.0) + repin_status.py reconcile (clears W-1).
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 16
   completed_plans: 13
 ---

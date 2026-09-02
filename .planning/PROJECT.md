@@ -16,6 +16,19 @@ The hub stays a **coherent** design system — not merely a safe, ever-growing p
 domain-agnostic components — as more consumers contribute. If all else fails, this must keep the
 catalog legible and prunable.
 
+## Current State
+
+**Shipped: milestone v1.0 — Hub Stewardship (2026-09-02) → library `v2.0.0`.** The hub is now a
+legible, audited, governed two-tier (primitives/patterns) design system: explicit compile-enforced
+tiers + gallery badges, a full coherence audit, tier-aware governance gates + a domain-vocabulary
+drift guard, hardened repin bookkeeping, and the first breaking "gardening" unification (FilterBar→
+ChipBar, SheetHeaderMenu) cut as `v2.0.0`. 8/9 requirements satisfied.
+
+**One thing deliberately deferred (human-gated):** the **GARD-02 coordinated consumer repin** —
+SecondBrain + CalTracker onto `v2.0.0`, each Gate-1 re-verified, then `repin_status.py reconcile`
+(which also clears tech-debt W-1, the stale ECOSYSTEM.md matrix). That is the next concrete
+follow-on. See `.planning/MILESTONES.md` and `.planning/milestones/v1.0-*`.
+
 ## Context
 
 - Extracted from SecondBrain; now a two-consumer ecosystem (SB pins `v1.10.0`, CalTracker pins
@@ -71,14 +84,19 @@ catalog legible and prunable.
   keep-with-rationale / prune), and aggregates "unify" findings into an actionable Unify
   Work-Order with per-consumer blast-radius counts — validated Phase 2 (Coherence Audit)
 
+- ✓ **Prune/unify** the additive-duplicate accretion under a coordinated breaking "gardening" tag —
+  unify shipped as `v2.0.0` (P5, GARD-01); coordinated consumer repin (GARD-02) deferred (human-gated)
+- ✓ **Tier-aware contribution litmus** + a domain-vocabulary drift guard (flag, not forbid) —
+  validated Phase 3 (GOV-01/02/03)
+- ✓ Harden **repin bookkeeping** so reconciliation isn't hand-done — validated Phase 4 (REPIN-01),
+  `INC-2026-08-28-03` closed
+
 ### Active
 
 <!-- This project's charter. Hypotheses until shipped. -->
 
-- [ ] **Prune/unify** the additive-duplicate accretion (`v1.2→v1.10`) under a coordinated breaking
-  "gardening" tag
-- [ ] **Tier-aware contribution litmus** + a domain-vocabulary drift guard (flag, not forbid)
-- [ ] Harden **repin bookkeeping** (tracked as `INC-2026-08-28-03`) so reconciliation isn't hand-done
+- [ ] **GARD-02 coordinated repin** (deferred out of v1.0): repin both consumers onto `v2.0.0`,
+  each Gate-1 re-verified, then `repin_status.py reconcile` — human-gated
 
 ### Out of Scope
 
@@ -113,4 +131,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-02 — Phase 2 (Coherence Audit) complete*
+*Last updated: 2026-09-02 — milestone v1.0 (Hub Stewardship) shipped → library v2.0.0; GARD-02 coordinated repin deferred (human-gated)*

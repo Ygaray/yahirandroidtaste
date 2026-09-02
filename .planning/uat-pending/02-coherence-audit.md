@@ -1,8 +1,9 @@
 ### Phase 2 — coherence-audit (v1.0)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir, 2026-09-02`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v1.0 (Hub Stewardship — Tier Legibility → Coherence Audit → Governance → Repin
   Bookkeeping → Gardening)
+
 - **Gate 1 self-UAT log:** [`.planning/phases/02-coherence-audit/02-02-SELF-UAT.md`](phases/02-coherence-audit/02-02-SELF-UAT.md) — Verdict: **ALL 4 criteria PASS** (documentation-content verification; no device/app surface in scope — this phase shipped zero `.kt` changes, confirmed via `git diff` across the full phase commit range, only `docs/COHERENCE-AUDIT.md`, 2026-09-02).
 - **Items covered (4 ROADMAP success criteria, AUD-01):**
   - **SC1 — All 9 registered families enumerated.** Confirmed: `docs/COHERENCE-AUDIT.md` has one section per family (Cards, Chips, Sheets, Buttons/FAB, Pickers, Feedback, Empty State, Progress/Metrics, Tactile Foundation), matching `ComponentRegistry.kt`.
