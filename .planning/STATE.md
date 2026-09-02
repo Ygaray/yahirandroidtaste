@@ -75,11 +75,21 @@ None yet.
 - Phase 5 (Gardening) is a human-gated coordinated repin of both consumers (SecondBrain + CalTracker) — do not tag or repin without the owner's explicit go-ahead (per CLAUDE.md).
 - GOV-03 residual risk (tracked, not fixed): `verify-api-additive.sh` shares
   `verify-additive-diff.sh`'s pre-fix architecture (stale cumulative baseline-vs-current
-  comparison) — currently dormant because `v1.10.0` predates `api.txt`, but will reproduce the
-  identical false-flag bug the moment Phase 5 cuts a tag that includes `api.txt`. Proven live in
-  `tools/test/test-verify-api-additive.sh` case (e). Phase 5 must apply the same staged-delta fix
-  (`git show ":$API_FILE"` vs `git show "HEAD:$API_FILE"`, per 03-RESEARCH.md's Pattern-2 code
-  excerpt) before or at its first tag-cut.
+  comparison), proven live in `tools/test/test-verify-api-additive.sh` case (e) — but the
+  Phase-3 VERIFICATION.md audit (2026-09-01) found the true root cause of why it's dormant
+  TODAY is different and more severe than first recorded: `tools/hooks/pre-commit` exports
+  `API_FILE` as an **absolute** path (`export API_FILE="${API_FILE:-$ROOT/api.txt}"`), and
+  `verify-api-additive.sh`'s `git cat-file -e "$BASE:$API_FILE"` check cannot resolve an
+  absolute path as a git object path — so the lane-3 API-break check silently no-ops on
+  every real commit regardless of tag content (reproduced directly: `git cat-file -e
+  "v1.10.0:$(pwd)/api.txt"` fails while the relative form `git cat-file -e "v1.10.0:api.txt"`
+  succeeds — `v1.10.0` DOES already carry `api.txt`, contradicting the original "predates
+  api.txt" theory). Pre-existing since commit `534ec10`, before Phase 3. Phase 5 must fix
+  BOTH: (1) the absolute-vs-relative path bug in `tools/hooks/pre-commit`/
+  `verify-api-additive.sh` so the check actually runs, AND (2) the same staged-delta
+  comparison-basis fix `verify-additive-diff.sh` got this phase (`git show ":$API_FILE"` vs
+  `git show "HEAD:$API_FILE"`, per 03-RESEARCH.md's Pattern-2 code excerpt) — fixing only one
+  leaves the check either non-functional or freshly false-flagging.
 - Pre-existing, unrelated to Phase 3: `./gradlew build`'s `metalavaCheckCompatibilityDebug` task
   fails (`Removed class ...UndoHistoryStore_Factory`, worker process exit 255) at the phase-03
   base commit (5c2ed5c) as well as post-merge — confirmed NOT introduced by 03-01 or 03-02 (neither
