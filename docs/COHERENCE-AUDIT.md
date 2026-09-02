@@ -241,8 +241,9 @@ is an overlap/near-duplicate finding, not an altitude question — neither intro
 
 **Finding S-1 — `TextCardBottomSheet` vs. `ListCardBottomSheet` near-duplicate-sibling.** Both
 read in full. Substantial, real duplication beyond the already-known `CardQuickView`-body sharing
-(Cards §, Finding C-2): both ride `SheetScaffold`, both build a byte-for-byte-identical header
-`Row` (title + `PushPin`/`Star` pin/favorite indicators, same padding/sizing/tint) with an
+(Cards §, Finding C-2): both ride `SheetScaffold`, both build a near-identical header
+`Row` (title + `PushPin`/`Star` pin/favorite indicators, same padding/sizing/tint, differing only by
+`TextCardBottomSheet`'s additional `ImageCountIndicator` element) with an
 identical three-dot `DropdownMenu` (Edit → Pin/Unpin → Favorite/Unfavorite → Delete, same icons,
 same `colorScheme.error`-tinted Delete row, same `region:edit-menu-item` `onEditRequest`-vs-local-
 rename-dialog fallback logic), and both render the *exact same* local rename `AlertDialog` +
