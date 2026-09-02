@@ -82,7 +82,8 @@ None yet.
 
 ### Blockers/Concerns
 
-- **ACTIVE, awaiting decision:** Phase 5 (Gardening) is a human-gated coordinated repin of both consumers (SecondBrain + CalTracker) — do not tag or repin without the owner's explicit go-ahead (per CLAUDE.md). As of 2026-09-02, all 3 plans executed and hub-side gates are green; the phase is parked at 05-03-PLAN.md's Task 2 `checkpoint:decision` — cut `v2.0.0` and begin the coordinated repin, or hold. See `.planning/phases/05-gardening-unify-coordinated-repin/05-03-SUMMARY.md`.
+- **ACTIVE, awaiting decision:** Phase 5 (Gardening) is a human-gated coordinated repin of both consumers (SecondBrain + CalTracker) — do not tag or repin without the owner's explicit go-ahead (per CLAUDE.md). As of 2026-09-02, all 3 plans executed and hub-side gates are green; **v2.0.0 was cut + pushed** (operator-authorized 2026-09-02); the remaining consumer repin (SC-4) is deferred to each consumer's own channel. See the "Pending Human-Gated Obligation — Coordinated Repin" section above.
+- **KNOWN ISSUE (project-local, tracked):** `metalavaCheckCompatibilityDebug` fails under `./gradlew build` — a Dagger-generated `UndoHistoryStore_Factory` leaked into the `api.txt` baseline (false "Removed class"). Does NOT affect the JitPack publish path (verified green pre-v2.0.0). Full write-up + reproduction + proposed fix: `.planning/KNOWN-ISSUES.md` (KI-2026-09-02-01). Routed here (this repo's own build config), not the control-plane log.
 - GOV-03 residual risk (tracked, not fixed): `verify-api-additive.sh` shares
   `verify-additive-diff.sh`'s pre-fix architecture (stale cumulative baseline-vs-current
   comparison), proven live in `tools/test/test-verify-api-additive.sh` case (e) — but the
