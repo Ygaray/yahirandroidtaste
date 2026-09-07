@@ -1,10 +1,12 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.filled.Delete
@@ -100,6 +102,9 @@ private val MOSAIC_BLOCK_HEIGHT = 220.dp
  * @param onTagRemoveFromCard Phase 93 (TMENU-01/04/05): forwarded verbatim to [CardTagRow]'s
  *   [CardTagRow.onTagRemoveFromCard]. Null (default) omits the menu's "Remove from this card"
  *   item.
+ * @param reminderCount REMIND-09: caller-supplied number of active reminders attached to this
+ *   card. Defaulted to zero so every existing call site compiles and shows nothing. The consumer
+ *   app computes the real value and binds it at Phase 155.
  * @param accent FACE-04: caller-supplied per-card colour, forwarded verbatim into [CardBase]'s
  *   accent spine and into the header [CardTypeChip]. The hub performs zero tag-resolution of its
  *   own — `:app`'s `CardAccentResolver` (Phase 131) resolves the actual value. `null` (default)
@@ -134,7 +139,8 @@ fun AlbumCard(
     onTagDelete: ((tagId: String, name: String) -> Unit)? = null,
     onTagRemoveFromCard: ((tagId: String) -> Unit)? = null,
     accent: Color? = null,
-    tactileDepth: Boolean = false
+    tactileDepth: Boolean = false,
+    reminderCount: Int = 0
 ) {
     CardBase(
         showThreeDot = true,
@@ -288,6 +294,14 @@ fun AlbumCard(
                         modifier = Modifier.size(16.dp),
                         tint = MaterialTheme.colorScheme.tertiary
                     )
+                }
+                // Reminder presence indicator (REMIND-09) — same gated-cluster shape TextCard's
+                // image-count indicator uses. Both the spacer and the indicator are gated on a
+                // positive count so nothing at all composes and no space is reserved at zero
+                // (conditional-render-no-dead-space).
+                if (reminderCount > 0) {
+                    Spacer(modifier = Modifier.width(Dimens.ContentSpacing))
+                    ReminderIndicator(reminderCount = reminderCount)
                 }
             }
         },

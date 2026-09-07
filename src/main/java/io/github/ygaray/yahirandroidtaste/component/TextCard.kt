@@ -111,6 +111,9 @@ import io.github.ygaray.yahirandroidtaste.theme.TactileType
  *   Defaulted to zero so every existing call site compiles and shows nothing. Forwarded unchanged
  *   to the hosted [TextCardBottomSheet]. The consumer app computes the real value and binds it at
  *   Phase 109.
+ * @param reminderCount REMIND-09: caller-supplied number of active reminders attached to this
+ *   card. Defaulted to zero so every existing call site compiles and shows nothing. The consumer
+ *   app computes the real value and binds it at Phase 155.
  * @param onEditRequest EDIT-01/EDIT-03: external trigger for the host-owned shared name-and-tags
  *   Edit sheet. When non-null, the three-dot "Edit" row invokes it (the host opens the tag-inclusive
  *   sheet, mirroring Voice); when null (default), the row falls back to this card's local tag-less
@@ -154,6 +157,7 @@ fun TextCard(
     onTagDelete: ((tagId: String, name: String) -> Unit)? = null,
     onTagRemoveFromCard: ((tagId: String) -> Unit)? = null,
     imageCount: Int = 0,
+    reminderCount: Int = 0,
     onEditRequest: (() -> Unit)? = null,
     accent: Color? = null,
     tactileDepth: Boolean = false
@@ -299,6 +303,14 @@ fun TextCard(
                 if (imageCount > 0) {
                     Spacer(modifier = Modifier.width(Dimens.ContentSpacing))
                     ImageCountIndicator(imageCount = imageCount)
+                }
+                // Reminder presence indicator (REMIND-09) — same gated-cluster shape as the
+                // image-count indicator above, so the two read left to right in a stable order.
+                // Both the spacer and the indicator are gated on a positive count so nothing at
+                // all composes and no space is reserved at zero (conditional-render-no-dead-space).
+                if (reminderCount > 0) {
+                    Spacer(modifier = Modifier.width(Dimens.ContentSpacing))
+                    ReminderIndicator(reminderCount = reminderCount)
                 }
             }
         },
