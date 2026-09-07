@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -117,6 +118,9 @@ import io.github.ygaray.yahirandroidtaste.theme.TactileType
  *   Edit sheet. When non-null, the three-dot "Edit" row invokes it (mirroring Voice); when null
  *   (default), the row falls back to this card's local tag-less rename dialog, so every existing
  *   call site compiles and behaves as before. The consumer app wires it at Phase 113.
+ * @param reminderCount REMIND-09: caller-supplied number of active reminders attached to this
+ *   card. Defaulted to zero so every existing call site compiles and shows nothing. The consumer
+ *   app computes the real value and binds it at Phase 155.
  * @param accent FACE-02: caller-supplied per-card colour, forwarded verbatim into [CardBase]'s
  *   accent spine, into the header [CardTypeChip], and into the completion pill/progress bar. The
  *   hub performs zero tag-resolution of its own — `:app`'s `CardAccentResolver` (Phase 131)
@@ -158,7 +162,8 @@ fun ListCard(
     onTagRemoveFromCard: ((tagId: String) -> Unit)? = null,
     onEditRequest: (() -> Unit)? = null,
     accent: Color? = null,
-    tactileDepth: Boolean = false
+    tactileDepth: Boolean = false,
+    reminderCount: Int = 0
 ) {
     // Re-keyed by id so state resets correctly when a different card occupies this slot (UIQ-02).
     var isExpanded by remember(id) { mutableStateOf(false) }
@@ -212,7 +217,8 @@ fun ListCard(
                     accent = accent,
                     subType = subType,
                     completed = items.count { it.isCompleted },
-                    total = items.size
+                    total = items.size,
+                    reminderCount = reminderCount
                 )
             }
         },
@@ -389,7 +395,8 @@ private fun RowScope.ListCardHeaderContent(
     accent: Color?,
     subType: String,
     completed: Int,
-    total: Int
+    total: Int,
+    reminderCount: Int
 ) {
     // Type chip (FACE-02, Phase 132 DS-02): leads the header, carries the 16dp leading inset
     // the title used to own (PD-1). No explicit tint — the chip resolves the icon's size and
@@ -434,6 +441,14 @@ private fun RowScope.ListCardHeaderContent(
             modifier = Modifier.size(16.dp),
             tint = MaterialTheme.colorScheme.tertiary
         )
+    }
+    // Reminder presence indicator (REMIND-09) — same gated-cluster shape TextCard's
+    // image-count indicator uses. Both the spacer and the indicator are gated on a positive
+    // count so nothing at all composes and no space is reserved at zero
+    // (conditional-render-no-dead-space).
+    if (reminderCount > 0) {
+        Spacer(modifier = Modifier.width(Dimens.ContentSpacing))
+        ReminderIndicator(reminderCount = reminderCount)
     }
     // Completion pill (FACE-02) — trailing-most element, gated on the one shared
     // listCompletionVisible predicate the body progress bar and this header gate also read.
