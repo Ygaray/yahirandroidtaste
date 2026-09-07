@@ -30,7 +30,7 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.10.0`** (repinned, resolve-confirmed + suite-green; Gate-1 device verification pending) — landed in **SB v2.1 Phase 135 Plan 03** (`MIND-10`, D-02, six-tier Heat ramp). This row was **stranded at `v1.8.2` through two cycles**: SB v2.1 Phases 132 and 133 each repinned (to `v1.9.0`) and cut a further tag without running this reconcile, so this edit closes `v1.8.2 → v1.9.0 → v1.10.0` in one step — recording the skipped-cycle gap rather than silently overwriting it | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.11.0`** (repinned in **v4.0 Phase 155 Plan 04**, `REMIND-09`) — cut on a branch forked from `v1.10.0` (NOT this hub's `main` tip), deliberately bypassing this hub's own concurrent `v2.0.0` ("v1.0 Hub Stewardship") milestone, which removed the public `FilterBar` composable (folded into `ChipBar`'s expandable mode) — a breaking change SecondBrain's `BrowseScreen.kt` depends on directly and has not yet migrated for. See §"Version-numbering / branch-topology deviation (`v1.10.0` → `v1.11.0`, bypassing `v2.0.0`)" below | `gradle/libs.versions.toml` |
   | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.5.0`** (repinned + Gate-1-confirmed, Phase 48 / REL-01) — the hub's Phase-44 additive-growth tag CalTracker was authorized to consume (hub's own latest tag has since moved to `v1.6.0` via an unrelated concurrent SecondBrain session — not a v1.7 CalTracker task) | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
@@ -45,8 +45,8 @@ independent apps that consume it:
 <!-- repin-matrix:begin -->
 | Consumer | Pinned | Latest | Status |
 |---|---|---|---|
-| CalTracker_Android | v1.5.0 | v1.10.0 | behind |
-| SecondBrain | v1.10.0 | v1.10.0 | current |
+| CalTracker_Android | v1.5.0 | v2.0.0 | behind |
+| SecondBrain | v1.11.0 | v2.0.0 | behind (v1.11.0 is a deliberate branch off v1.10.0, not a descendant of v2.0.0 — see release note below) |
 <!-- repin-matrix:end -->
 
 **Current published tag:** **`v1.10.0`** — an autonomous minor bump cut in **SecondBrain v2.1
@@ -350,6 +350,55 @@ signature is **additive/source-compatible** with `v1.9.0` — no public composab
 renamed, no parameter made required — as proven by the `apiCheck` lane passing clean with exactly
 two `enum_constant` lines added (`BRISK`, `BLAZING`) and zero removed. The first consumer repin
 (SecondBrain) is **pending** at write time and lands in **SB v2.1 Phase 135 Plan 03**.
+
+`v1.11.0` was cut in **SecondBrain v4.0 Phase 155 Plan 04** (`REMIND-09`), an autonomous minor
+bump — the owner's tag-cut checkpoint is waived for this personal-use hub ecosystem
+(2026-08-20, `[[personal-app-tag-cut-gate-waived]]`, Option C). The tag carries a new internal
+`ReminderIndicator` composable (mirrors `ImageCountIndicator`'s contract: positive-count guard,
+singular/plural a11y description, neutral `onSurfaceVariant` tint, uncapped exact-integer count)
+and a defaulted `reminderCount: Int = 0` parameter wired into `TextCard`/`ListCard`/`VoiceCard`/
+`AlbumCard`'s header content. Every existing call site keeps compiling unchanged. Green-gate
+evidence: full `testDebugUnitTest` (`ReminderIndicatorTest` proves the composable's own render
+contract directly; `ReminderIndicatorCardWiringTest` proves per-card wiring via source-structural
+assertions, since full `CardBase`-based cards are unrenderable under this module's Robolectric
+harness — the same pre-existing blocker documented by `TextCardImageIndicatorTest`/
+`VoiceCardClipListTest`).
+
+**Version-numbering / branch-topology deviation (`v1.10.0` → `v1.11.0`, bypassing `v2.0.0`):**
+Plan 04's action text specified "cut the next patch/minor tag after the currently-pinned `v1.10.0`"
+on top of the hub's default branch, assuming `v1.10.0` was still the latest tag. By the time this
+plan executed, this hub's own **independent, internal GSD project** had already shipped its **v1.0
+milestone ("Hub Stewardship")** on `main` — tier legibility, a coherence audit, governance gates,
+and (Finding CH-1/WO-1) **folding the standalone `FilterBar` composable into `ChipBar`'s new
+`expandable` mode**, retiring `FilterBar` entirely — and tagged it `v2.0.0` (a real ancestor of
+`main`'s tip, ahead of `v1.10.0`). `FilterBar<TagEntity>` is called directly at two sites in
+SecondBrain's `BrowseScreen.kt` (outside this plan's declared file scope), so repinning onto
+anything built on top of `v2.0.0` would break SecondBrain's `:app:compileDebugKotlin` — a
+migration to `ChipBar`'s `expandable`/`rawContent` shape that is a legitimate, separate,
+UX-sensitive piece of work (this app's owner treats interaction-state/component-reuse changes as
+first-class, not something to bundle silently into an unrelated reminder-indicator plan).
+
+Rather than pull that unrelated migration into this plan's scope (Rule 4 / scope-boundary), the
+Task 1 commit was **also** merged into `main` on top of `v2.0.0` (so `main`'s lineage stays linear
+and future consumers of "latest" get `ReminderIndicator` too — no orphaned work), but the
+**tag consumers actually pin was cut from a separate branch
+(`feat/reminder-indicator-repin-base`) forked from the `v1.10.0` tag**, with the Task 1 commit
+cherry-picked onto it cleanly (the four touched card files were byte-identical between `v1.10.0`
+and `main`'s pre-merge tip, confirmed via `git diff v1.10.0 <main-tip> -- <4 files>` producing zero
+output). `v1.11.0` is therefore **not** an ancestor of `v2.0.0` — a deliberate, documented fork,
+the mirror-image precedent of the `v1.5.0`→`v1.6.0` "already cut, cut the next mechanically-correct
+version instead" deviation recorded below, except here the correction is a branch-topology choice,
+not a version-number bump. **Follow-up owed:** a future SecondBrain phase should deliberately
+migrate `BrowseScreen.kt`'s `FilterBar` call sites to `ChipBar`'s `expandable`/`rawContent` shape,
+after which SecondBrain can repin straight onto `v2.0.0`'s (or later's) lineage and this fork can be
+abandoned.
+
+**JitPack resolution evidence:** `https://jitpack.io/com/github/Ygaray/yahirandroidtaste/v1.11.0/yahirandroidtaste-v1.11.0.pom`
+and `.../yahirandroidtaste-v1.11.0.aar` were requested to trigger the lazy JitPack build; if
+either has not finished building by the time a consumer's Gradle sync runs, retry the build rather
+than falling back to a commit-hash pin (this project pins tags, not hashes, per §7 below).
+
+---
 
 **The load-bearing invariant (one-way dependency):** consumers import the hub; **no hub file ever
 imports a consumer.** Everything app-specific — the data a card renders, the callbacks a sheet
