@@ -251,32 +251,44 @@ fun AlbumCard(
                 }
             )
         },
-        headerContent = if (!titleSlotVisible(title)) null else {
+        // G-155-3/REMIND-09: widened from `if (!titleSlotVisible(title)) null else` — a
+        // title-less Album card that is pinned/favorited/has a reminder must still render the
+        // header row for those indicators (Album has no image-count header indicator — its
+        // image count lives in the body's AdaptiveMediaPreview), mirroring TextCard.kt's
+        // identical OR-guard shape.
+        headerContent = if (
+            !titleSlotVisible(title) && !isPinned && !isFavorite && reminderCount <= 0
+        ) {
+            null
+        } else {
             {
                 // Type chip (FACE-04, Phase 132 pattern): leads the header, carries the 16dp
                 // leading inset the title used to own (PD-1). No explicit tint — the chip
-                // resolves the icon's size and colour itself. Album's header gate stays
-                // titleSlotVisible(title) alone — unlike Voice, there is no clip-count reason
-                // to widen it.
+                // resolves the icon's size and colour itself.
                 CardTypeChip(
                     accent = accent,
                     modifier = Modifier.padding(start = Dimens.HorizontalPadding, top = Dimens.TopPadding)
                 ) {
                     Icon(imageVector = cardTypeIcon("ALBUM"), contentDescription = null)
                 }
-                Text(
-                    text = title,
-                    style = TactileType.CardTitle,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(
-                            start = Dimens.ChipToTitleGap,
-                            top = Dimens.TopPadding,
-                            bottom = Dimens.ContentSpacing
-                        )
-                )
+                // Title — independently conditional (G-155-3) so a title-less card still
+                // renders no title text while the header row itself stays composed for the
+                // pin/favorite/reminder indicators (conditional-render-no-dead-space).
+                if (titleSlotVisible(title)) {
+                    Text(
+                        text = title,
+                        style = TactileType.CardTitle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(
+                                start = Dimens.ChipToTitleGap,
+                                top = Dimens.TopPadding,
+                                bottom = Dimens.ContentSpacing
+                            )
+                    )
+                }
                 // Pin indicator
                 if (isPinned) {
                     Icon(

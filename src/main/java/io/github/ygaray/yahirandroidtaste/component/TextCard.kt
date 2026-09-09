@@ -253,7 +253,15 @@ fun TextCard(
                 }
             )
         },
-        headerContent = if (!titleSlotVisible(title)) null else {
+        // G-155-3/REMIND-09: widened from `if (!titleSlotVisible(title)) null else` — a
+        // title-less Text card that is pinned/favorited/has images/has a reminder must still
+        // render the header row for those indicators, mirroring ListCard.kt:209 / VoiceCard.kt's
+        // identical OR-guard shape.
+        headerContent = if (
+            !titleSlotVisible(title) && !isPinned && !isFavorite && imageCount <= 0 && reminderCount <= 0
+        ) {
+            null
+        } else {
             {
                 // Type chip (FACE-01, Phase 132 DS-02): leads the header, carries the 16dp
                 // leading inset the title used to own (PD-1). No explicit tint — the chip
@@ -264,20 +272,24 @@ fun TextCard(
                 ) {
                     Icon(imageVector = cardTypeIcon("TEXT"), contentDescription = null)
                 }
-                // Title
-                Text(
-                    text = title,
-                    style = TactileType.CardTitle,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(
-                            start = Dimens.ChipToTitleGap,
-                            top = Dimens.TopPadding,
-                            bottom = Dimens.ContentSpacing
-                        )
-                )
+                // Title — independently conditional (G-155-3) so a title-less card still
+                // renders no title text while the header row itself stays composed for the
+                // pin/favorite/image-count/reminder indicators (conditional-render-no-dead-space).
+                if (titleSlotVisible(title)) {
+                    Text(
+                        text = title,
+                        style = TactileType.CardTitle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(
+                                start = Dimens.ChipToTitleGap,
+                                top = Dimens.TopPadding,
+                                bottom = Dimens.ContentSpacing
+                            )
+                    )
+                }
                 // Pin indicator
                 if (isPinned) {
                     Icon(

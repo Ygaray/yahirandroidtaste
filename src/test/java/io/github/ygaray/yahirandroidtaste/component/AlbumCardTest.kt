@@ -164,6 +164,58 @@ class AlbumCardTest {
         )
     }
 
+    // --- G-155-3/REMIND-09: title-less headerContent guard widening --------------------------
+
+    @Test
+    fun `headerContent guard is widened to survive a title-less card with a header indicator`() {
+        val src = readAlbumCardSource()
+        // Negated-guard idiom (mirrors TextCard.kt / ListCard.kt:209 / VoiceCard.kt): the header
+        // nulls out ONLY when title, pin, favorite, AND reminder-count are all absent (Album has
+        // no image-count header indicator) — so a title-less card with a reminder still renders
+        // the header (and its ReminderIndicator).
+        assertEquals(
+            "AlbumCard's headerContent guard must combine all four negated conditions exactly " +
+                "once — title absent AND not pinned AND not favorite AND no reminders — so any " +
+                "single header indicator keeps the header alive for a title-less card (G-155-3).",
+            1,
+            countOccurrences(src, "!titleSlotVisible(title) && !isPinned && !isFavorite && reminderCount <= 0")
+        )
+    }
+
+    @Test
+    fun `the title Text is independently conditional inside the widened header`() {
+        val src = readAlbumCardSource()
+        assertEquals(
+            "The title Text must be wrapped in its own 'if (titleSlotVisible(title))' guard " +
+                "now that the outer headerContent gate is widened — otherwise a title-less " +
+                "card with e.g. a reminder would render a blank title Text taking layout space " +
+                "(conditional-render-no-dead-space, G-155-3).",
+            1,
+            countOccurrences(src, "if (titleSlotVisible(title)) {")
+        )
+    }
+
+    @Test
+    fun `a title-less card's ReminderIndicator remains reachable — the guard never gates it out`() {
+        val src = readAlbumCardSource()
+        val headerRegionStart = src.indexOf("headerContent = if (")
+        val headerRegionEnd = src.indexOf("bodyContent = {")
+        assertTrue("Could not locate the headerContent region in AlbumCard.kt", headerRegionStart in 0 until headerRegionEnd)
+        val headerRegion = src.substring(headerRegionStart, headerRegionEnd)
+
+        // The widened negated-guard condition means: a title-less card with reminderCount > 0
+        // does NOT satisfy the all-absent null condition, so control flow reaches the lambda
+        // body below, where the ReminderIndicator call is gated only on reminderCount > 0 (not
+        // on title visibility) — proving a title-less+reminder card renders it.
+        assertTrue(
+            "AlbumCard's headerContent lambda must still call ReminderIndicator(reminderCount " +
+                "= reminderCount) gated only on 'if (reminderCount > 0)', independent of title " +
+                "visibility, so a title-less card with a reminder renders the indicator.",
+            headerRegion.contains("if (reminderCount > 0) {") &&
+                headerRegion.contains("ReminderIndicator(reminderCount = reminderCount)")
+        )
+    }
+
     // --- mosaic block height + inset (AlbumCard.kt call site) ---------------------------------
 
     @Test
