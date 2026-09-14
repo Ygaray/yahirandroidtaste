@@ -46,7 +46,7 @@ independent apps that consume it:
 | Consumer | Pinned | Latest | Status |
 |---|---|---|---|
 | CalTracker_Android | v1.5.0 | v2.0.0 | behind |
-| SecondBrain | v1.12.0 | v2.0.0 | behind (v1.12.0 is a deliberate patch on the v1.11.0/v1.10.0 branch, not a descendant of v2.0.0 — see release note below) |
+| SecondBrain | v1.12.1 | v2.0.0 | behind (v1.12.1 is a deliberate patch on the v1.11.0/v1.10.0 branch, not a descendant of v2.0.0 — see release note below) |
 <!-- repin-matrix:end -->
 
 **Current published tag:** **`v1.12.1`** — cut in **SecondBrain 163-REVIEW-FIX (phase 163 code-review fix pass)** under the personal-app tag-cut waiver. A behavior-only patch on `v1.12.0`: `DateTimePicker`'s date/time panel now rekeys its Material3 picker state on `selectedDate`/`selectedTime` so an external change to either value while the panel stays open (e.g. a Quick-pick chip tapped elsewhere on the same screen) is honored instead of silently overwritten on the panel's next tap (review 163 WR-01). No public signature changed. Cut on `feat/v1.12-scheduling-pickers`, forked from `v1.12.0` — the semver-highest tag remains `v2.0.0` on `main`; see the release note below for the full `v1.12.1` evidence.
