@@ -30,7 +30,7 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.11.1`** (repinned in **v4.0 Phase 155 Plan 12**, `REMIND-09` / `G-155-3`) — a patch cut directly on top of `v1.11.0`, itself cut on a branch forked from `v1.10.0` (NOT this hub's `main` tip), deliberately bypassing this hub's own concurrent `v2.0.0` ("v1.0 Hub Stewardship") milestone, which removed the public `FilterBar` composable (folded into `ChipBar`'s expandable mode) — a breaking change SecondBrain's `BrowseScreen.kt` depends on directly and has not yet migrated for. See §"Version-numbering / branch-topology deviation (`v1.10.0` → `v1.11.0`, bypassing `v2.0.0`)" below | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.12.0`** (repinned in **v4.1 Phase 163 Plan 01**, `HUBW-01`/`SCHED-01`/`SCHED-02`/`SCHED-03`) — adds `PresetChip` and `DateTimePicker`, cut on `feat/v1.12-scheduling-pickers` forked from `v1.11.1` (still on the `v1.10.0`-forked branch line, deliberately bypassing this hub's own concurrent `v2.0.0` ("v1.0 Hub Stewardship") milestone, which removed the public `FilterBar` composable (folded into `ChipBar`'s expandable mode) — a breaking change SecondBrain's `BrowseScreen.kt` depends on directly and has not yet migrated for). See §"Version-numbering / branch-topology deviation (`v1.10.0` → `v1.11.0`, bypassing `v2.0.0`)" below and the `v1.12.0` release note further down | `gradle/libs.versions.toml` |
   | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.5.0`** (repinned + Gate-1-confirmed, Phase 48 / REL-01) — the hub's Phase-44 additive-growth tag CalTracker was authorized to consume (hub's own latest tag has since moved to `v1.6.0` via an unrelated concurrent SecondBrain session — not a v1.7 CalTracker task) | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
@@ -46,10 +46,12 @@ independent apps that consume it:
 | Consumer | Pinned | Latest | Status |
 |---|---|---|---|
 | CalTracker_Android | v1.5.0 | v2.0.0 | behind |
-| SecondBrain | v1.11.1 | v2.0.0 | behind (v1.11.1 is a deliberate patch on the v1.11.0/v1.10.0 branch, not a descendant of v2.0.0 — see release note below) |
+| SecondBrain | v1.12.0 | v2.0.0 | behind (v1.12.0 is a deliberate patch on the v1.11.0/v1.10.0 branch, not a descendant of v2.0.0 — see release note below) |
 <!-- repin-matrix:end -->
 
-**Current published tag:** **`v1.10.0`** — an autonomous minor bump cut in **SecondBrain v2.1
+**Current published tag:** **`v1.12.0`** — cut in **SecondBrain v4.1 Phase 163 Plan 01** (`HUBW-01`, `SCHED-01`/`SCHED-02`/`SCHED-03`) under the personal-app tag-cut waiver. Adds the public `PresetChip` (the `ChipBar` `itemContent` chip for one-tap preset rows, D-03, min-height/wrapping content) and `DateTimePicker` (a `java.time.LocalDate`/`LocalTime`-contract date and time picker, HUBW-01); additive only. Cut on `feat/v1.12-scheduling-pickers`, forked from `v1.11.1` — the semver-highest tag remains `v2.0.0` on `main`; see the release note below for the full `v1.12.0` evidence.
+
+Previously: `v1.10.0` — an autonomous minor bump cut in **SecondBrain v2.1
 Phase 135 Plan 02** (`MIND-10`, Phase 135's D-02 decision) on top of the hub's own **Phase 135
 Plan 01** ("Mindmap Heat Ramp Widening") work: `HeatTier` widened from four to six discrete tiers
 (`COOL, BRISK, MILD, WARM, HOT, BLAZING`), adding `BRISK`/`BLAZING` to bridge the blue-to-amber gap
@@ -424,6 +426,31 @@ hub-side gate.
 and `.../yahirandroidtaste-v1.11.1.aar` were requested to trigger the lazy JitPack build; if either
 has not finished building by the time a consumer's Gradle sync runs, retry the build rather than
 falling back to a commit-hash pin (this project pins tags, not hashes, per §7 below).
+
+`v1.12.0` was cut in **SecondBrain v4.1 Phase 163 Plan 01** (`HUBW-01`, `SCHED-01`/
+`SCHED-02`/`SCHED-03`) under the personal-app tag-cut waiver (`[[personal-app-tag-cut-gate-waived]]`,
+the standing 2026-08-20 Option-C decision — the owner's tag-cut checkpoint is waived for this
+personal-use hub ecosystem). The tag adds two public composables: `PresetChip` (the `ChipBar`
+`itemContent` chip for one-tap preset rows, D-03 — a minimum-height, wrapping-`FlowRow` deviation
+from `AppChip`'s fixed 32dp/ellipsis shape so large font scales and narrow `ChipBar`s grow the chip
+instead of clipping its text) and `DateTimePicker` (a `java.time.LocalDate`/`LocalTime`-contract
+date and time picker, HUBW-01, with in-tree/non-popup expandable Material3 `DatePicker`/`TimePicker`
+panels, day-shift-proof UTC conversion, and explicit locale-independent 12h/24h formatting). Both
+are additive only — no existing public signature changed — proven by `apiCheck` passing clean with
+only new symbols appended, `ComponentRegistryDriftGuardTest`/`ComponentStatesMatrixTest` staying
+green with both components registered, and (per the review 163-01 HIGH/MEDIUM fixes) full
+`testDebugUnitTest` plus `detekt` passing at this hub's zero-baseline policy.
+
+Cut on `feat/v1.12-scheduling-pickers`, forked from `v1.11.1` — the branch-topology deviation
+documented above is unchanged, not re-litigated: this branch still deliberately bypasses `v2.0.0`
+because SecondBrain's `BrowseScreen.kt` still calls the public `FilterBar` composable `v2.0.0`
+removed. Forward-porting `PresetChip` and `DateTimePicker` onto `main` (`v2.0.0`'s lineage) is owed
+together with the existing `FilterBar`-migration follow-up noted above, not before it.
+
+**JitPack resolution evidence:** `https://jitpack.io/com/github/Ygaray/yahirandroidtaste/v1.12.0/yahirandroidtaste-v1.12.0.pom`
+and `.../yahirandroidtaste-v1.12.0.aar` were requested to trigger the lazy JitPack build; if
+either has not finished building by the time a consumer's Gradle sync runs, retry the build rather
+than falling back to a commit-hash pin (this project pins tags, not hashes, per §7 below).
 
 ---
 
