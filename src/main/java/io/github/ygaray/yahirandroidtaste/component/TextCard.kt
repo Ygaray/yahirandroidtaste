@@ -4,6 +4,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -185,72 +186,19 @@ fun TextCard(
         openRowState = openRowState,
         onClick = onShowBottomSheet,
         dropdownMenuContent = { dismissMenu ->
-            // Edit (EDIT-01/EDIT-03) — external trigger to the host-owned shared name-and-tags
-            // sheet when wired; otherwise falls back to the local tag-less rename AlertDialog.
-            DropdownMenuItem(
-                text = { Text("Edit") },
-                onClick = {
-                    dismissMenu()
-                    if (onEditRequest != null) {
-                        onEditRequest()
-                    } else {
-                        renameText = title
-                        showRenameDialog = true
-                    }
-                },
-                leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) }
-            )
-            // Pin/Unpin
-            DropdownMenuItem(
-                text = { Text(if (isPinned) "Unpin" else "Pin") },
-                onClick = { dismissMenu(); onTogglePin() },
-                leadingIcon = {
-                    Icon(
-                        imageVector = if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
-                        contentDescription = null
-                    )
-                }
-            )
-            // Favorite/Unfavorite
-            DropdownMenuItem(
-                text = { Text(if (isFavorite) "Unfavorite" else "Favorite") },
-                onClick = { dismissMenu(); onToggleFavorite() },
-                leadingIcon = {
-                    Icon(
-                        imageVector = if (isFavorite) Icons.Filled.Star else Icons.Outlined.Star,
-                        contentDescription = null
-                    )
-                }
-            )
-            // See exact siblings — discoverable backup to the tag-row band gesture (D-07/D-08)
-            if (tags.size >= 2) {
-                DropdownMenuItem(
-                    text = { Text("See exact siblings") },
-                    onClick = { dismissMenu(); onSiblingsClick(tags.map { it.id }) },
-                    leadingIcon = { Icon(Icons.Default.Group, contentDescription = null) }
-                )
-            }
-            // Close siblings (BROWSE-10 / D-04) — a distinct, labeled near-match discovery
-            // action (symmetric-diff <=2) adjacent to "See exact siblings"; visibility-gated on
-            // tags.isNotEmpty() (D-10, broader than the exact-siblings tags.size >= 2 guard).
-            if (tags.isNotEmpty()) {
-                DropdownMenuItem(
-                    text = { Text("Close siblings") },
-                    onClick = { dismissMenu(); onCloseSiblingsClick(id) },
-                    leadingIcon = { Icon(Icons.AutoMirrored.Filled.CompareArrows, contentDescription = null) }
-                )
-            }
-            // Delete — last, error color (D-11)
-            DropdownMenuItem(
-                text = { Text("Delete", color = MaterialTheme.colorScheme.error) },
-                onClick = { dismissMenu(); onDelete() },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                }
+            TextCardMenuContent(
+                dismissMenu = dismissMenu,
+                id = id,
+                isPinned = isPinned,
+                isFavorite = isFavorite,
+                tags = tags,
+                onEditRequest = onEditRequest,
+                onRequestRename = { renameText = title; showRenameDialog = true },
+                onTogglePin = onTogglePin,
+                onToggleFavorite = onToggleFavorite,
+                onSiblingsClick = onSiblingsClick,
+                onCloseSiblingsClick = onCloseSiblingsClick,
+                onDelete = onDelete
             )
         },
         // G-155-3/REMIND-09: widened from `if (!titleSlotVisible(title)) null else` — a
@@ -465,4 +413,95 @@ fun TextCard(
             imageCount = imageCount
         )
     }
+}
+
+/**
+ * [TextCard]'s three-dot overflow menu content, extracted as a mechanical refactor (no behavior
+ * change) to keep [TextCard] itself under the hub's LongMethod / CyclomaticComplexMethod detekt
+ * thresholds — confirmed pre-existing at `v1.11.1` (git diff against that tag is empty for this
+ * file before this extraction), not introduced by Phase 163. [onRequestRename] replaces the
+ * original inline `renameText = title; showRenameDialog = true` writes to the caller's local
+ * `remember` state.
+ */
+@Composable
+private fun ColumnScope.TextCardMenuContent(
+    dismissMenu: () -> Unit,
+    id: String,
+    isPinned: Boolean,
+    isFavorite: Boolean,
+    tags: List<TagChipUiModel>,
+    onEditRequest: (() -> Unit)?,
+    onRequestRename: () -> Unit,
+    onTogglePin: () -> Unit,
+    onToggleFavorite: () -> Unit,
+    onSiblingsClick: (allTagIds: List<String>) -> Unit,
+    onCloseSiblingsClick: (cardId: String) -> Unit,
+    onDelete: () -> Unit
+) {
+    // Edit (EDIT-01/EDIT-03) — external trigger to the host-owned shared name-and-tags
+    // sheet when wired; otherwise falls back to the local tag-less rename AlertDialog.
+    DropdownMenuItem(
+        text = { Text("Edit") },
+        onClick = {
+            dismissMenu()
+            if (onEditRequest != null) {
+                onEditRequest()
+            } else {
+                onRequestRename()
+            }
+        },
+        leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) }
+    )
+    // Pin/Unpin
+    DropdownMenuItem(
+        text = { Text(if (isPinned) "Unpin" else "Pin") },
+        onClick = { dismissMenu(); onTogglePin() },
+        leadingIcon = {
+            Icon(
+                imageVector = if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
+                contentDescription = null
+            )
+        }
+    )
+    // Favorite/Unfavorite
+    DropdownMenuItem(
+        text = { Text(if (isFavorite) "Unfavorite" else "Favorite") },
+        onClick = { dismissMenu(); onToggleFavorite() },
+        leadingIcon = {
+            Icon(
+                imageVector = if (isFavorite) Icons.Filled.Star else Icons.Outlined.Star,
+                contentDescription = null
+            )
+        }
+    )
+    // See exact siblings — discoverable backup to the tag-row band gesture (D-07/D-08)
+    if (tags.size >= 2) {
+        DropdownMenuItem(
+            text = { Text("See exact siblings") },
+            onClick = { dismissMenu(); onSiblingsClick(tags.map { it.id }) },
+            leadingIcon = { Icon(Icons.Default.Group, contentDescription = null) }
+        )
+    }
+    // Close siblings (BROWSE-10 / D-04) — a distinct, labeled near-match discovery
+    // action (symmetric-diff <=2) adjacent to "See exact siblings"; visibility-gated on
+    // tags.isNotEmpty() (D-10, broader than the exact-siblings tags.size >= 2 guard).
+    if (tags.isNotEmpty()) {
+        DropdownMenuItem(
+            text = { Text("Close siblings") },
+            onClick = { dismissMenu(); onCloseSiblingsClick(id) },
+            leadingIcon = { Icon(Icons.AutoMirrored.Filled.CompareArrows, contentDescription = null) }
+        )
+    }
+    // Delete — last, error color (D-11)
+    DropdownMenuItem(
+        text = { Text("Delete", color = MaterialTheme.colorScheme.error) },
+        onClick = { dismissMenu(); onDelete() },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+        }
+    )
 }
