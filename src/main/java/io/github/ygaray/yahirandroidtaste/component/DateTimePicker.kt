@@ -21,6 +21,7 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.rememberUpdatedState
@@ -54,6 +55,11 @@ import java.util.Locale
  * exclusivity is scoped to this instance -- a consumer that needs date/time panel exclusivity
  * across two logically-related pickers renders both fields from one `DateTimePicker` and toggles
  * [showDate] / [showTime] (review round 2 MEDIUM, Plan 05's editor does exactly this).
+ *
+ * An open panel resyncs to [selectedDate] / [selectedTime] if the caller changes either value out
+ * from under it (e.g. a Quick-pick chip elsewhere on the same screen while the calendar/clock
+ * stays open) -- the panel's Material3 picker state is rekeyed on that value, not created once
+ * and left stale (review 163 WR-01).
  *
  * @param selectedDate The currently selected date, or `null` for "not yet picked".
  * @param onDateSelected Invoked with a real user pick, always through the most recently passed
@@ -195,28 +201,39 @@ private fun DateTimePickerDatePanel(
     onDateSelected: (LocalDate) -> Unit,
     onCollapse: () -> Unit
 ) {
-    val state = rememberDatePickerState(
-        initialSelectedDateMillis = selectedDate?.toUtcStartOfDayMillis(),
-        initialDisplayedMonthMillis = (selectedDate ?: minDate ?: LocalDate.now()).toUtcStartOfDayMillis(),
-        selectableDates = minDateSelectableDates(minDate)
-    )
-    // Freshness guarantee (T-163-24 / review 163-01 MEDIUM): always read the LATEST value and
-    // callback at collection time, never the ones captured when this panel first composed.
-    val currentDate by rememberUpdatedState(selectedDate)
-    val currentOnDateSelected by rememberUpdatedState(onDateSelected)
+    // Re-key on selectedDate (review 163 WR-01): rememberDatePickerState only reads its
+    // initial* args on first composition, so without this key an external change to
+    // selectedDate while the panel stays open (e.g. a Quick-pick chip tapped elsewhere on the
+    // same screen while the calendar is still expanded) never reaches the already-created
+    // DatePickerState -- the panel keeps showing a stale selection until the user taps inside
+    // it, silently overwriting the external change. key() forces this whole subtree (and its
+    // DatePickerState) to be recreated whenever selectedDate changes, so the panel always
+    // reflects the latest external value the next time it renders.
+    key(selectedDate) {
+        val state = rememberDatePickerState(
+            initialSelectedDateMillis = selectedDate?.toUtcStartOfDayMillis(),
+            initialDisplayedMonthMillis = (selectedDate ?: minDate ?: LocalDate.now()).toUtcStartOfDayMillis(),
+            selectableDates = minDateSelectableDates(minDate)
+        )
+        // Freshness guarantee (T-163-24 / review 163-01 MEDIUM): always read the LATEST value
+        // and callback at collection time, never the ones captured when this panel first
+        // composed.
+        val currentDate by rememberUpdatedState(selectedDate)
+        val currentOnDateSelected by rememberUpdatedState(onDateSelected)
 
-    LaunchedEffect(state) {
-        snapshotFlow { state.selectedDateMillis }
-            .drop(1)
-            .collect { millis ->
-                if (emitPickedDate(millis, currentDate, currentOnDateSelected)) {
-                    onCollapse()
+        LaunchedEffect(state) {
+            snapshotFlow { state.selectedDateMillis }
+                .drop(1)
+                .collect { millis ->
+                    if (emitPickedDate(millis, currentDate, currentOnDateSelected)) {
+                        onCollapse()
+                    }
                 }
-            }
-    }
+        }
 
-    Column(modifier = Modifier.testTag(testTag)) {
-        DatePicker(state = state, title = null, headline = null, showModeToggle = false)
+        Column(modifier = Modifier.testTag(testTag)) {
+            DatePicker(state = state, title = null, headline = null, showModeToggle = false)
+        }
     }
 }
 
@@ -229,27 +246,32 @@ private fun DateTimePickerTimePanel(
     onTimeSelected: (LocalTime) -> Unit,
     onCollapse: () -> Unit
 ) {
-    val state = rememberTimePickerState(
-        initialHour = selectedTime?.hour ?: 9,
-        initialMinute = selectedTime?.minute ?: 0,
-        is24Hour = is24Hour
-    )
-    // Same freshness guarantee as the date panel above.
-    val currentTime by rememberUpdatedState(selectedTime)
-    val currentOnTimeSelected by rememberUpdatedState(onTimeSelected)
+    // Re-key on selectedTime -- same rationale as the date panel's key(selectedDate) above
+    // (review 163 WR-01): without it, an external change to selectedTime while the panel stays
+    // open never reaches the already-created TimePickerState.
+    key(selectedTime) {
+        val state = rememberTimePickerState(
+            initialHour = selectedTime?.hour ?: 9,
+            initialMinute = selectedTime?.minute ?: 0,
+            is24Hour = is24Hour
+        )
+        // Same freshness guarantee as the date panel above.
+        val currentTime by rememberUpdatedState(selectedTime)
+        val currentOnTimeSelected by rememberUpdatedState(onTimeSelected)
 
-    LaunchedEffect(state) {
-        snapshotFlow { state.hour to state.minute }
-            .drop(1)
-            .collect { (hour, minute) ->
-                emitPickedTime(hour, minute, currentTime, currentOnTimeSelected)
+        LaunchedEffect(state) {
+            snapshotFlow { state.hour to state.minute }
+                .drop(1)
+                .collect { (hour, minute) ->
+                    emitPickedTime(hour, minute, currentTime, currentOnTimeSelected)
+                }
+        }
+
+        Column(modifier = Modifier.testTag(testTag)) {
+            TimePicker(state = state)
+            TextButton(onClick = onCollapse) {
+                Text("Done")
             }
-    }
-
-    Column(modifier = Modifier.testTag(testTag)) {
-        TimePicker(state = state)
-        TextButton(onClick = onCollapse) {
-            Text("Done")
         }
     }
 }
