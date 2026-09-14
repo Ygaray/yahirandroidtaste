@@ -110,6 +110,7 @@ these render its body) plus the shared scaffolding and editor rows.
 | Composable | Purpose | Key parameters |
 |-----------|---------|----------------|
 | `AccentColorPicker` | Accent-color swatch picker | `selectedColor: Long, onColorSelected: (Long) -> Unit` |
+| `DateTimePicker` | HUBW-01 date and time picker with an in-tree (non-popup) expandable Material3 panel per field | `selectedDate: LocalDate?, onDateSelected: (LocalDate) -> Unit, selectedTime: LocalTime?, onTimeSelected: (LocalTime) -> Unit, showDate, showTime, minDate: LocalDate?, is24Hour: Boolean?, enabled` |
 | `IconPickerGrid` | Module/tag icon grid picker | `selectedIcon: String, onIconSelected: (String) -> Unit` — public parameters unchanged; the grid includes a built-in live case-insensitive name-substring search field with an empty-state when nothing matches |
 | `CropOverlay` | Crop-rectangle overlay for image editing | `bitmapWidth, bitmapHeight, aspectRatio: Float?, …` |
 | `SegmentedOptionSelector` | Two-option segmented toggle with an always-visible disabled+reason affordance | `selectedIndex: Int, options: List<String>, onSelect: (Int) -> Unit, enabled: Boolean, disabledReason: String?` |

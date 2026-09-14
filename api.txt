@@ -142,6 +142,10 @@ package io.github.ygaray.yahirandroidtaste.component {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void CycleSubTypeButton(String currentSubType, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCycle, optional boolean enabled, optional androidx.compose.ui.Modifier modifier);
   }
 
+  public final class DateTimePickerKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void DateTimePicker(java.time.LocalDate? selectedDate, kotlin.jvm.functions.Function1<java.time.LocalDate,kotlin.Unit> onDateSelected, java.time.LocalTime? selectedTime, kotlin.jvm.functions.Function1<java.time.LocalTime,kotlin.Unit> onTimeSelected, optional androidx.compose.ui.Modifier modifier, optional boolean showDate, optional boolean showTime, optional java.time.LocalDate? minDate, optional Boolean? is24Hour, optional boolean enabled, optional String testTag);
+  }
+
   public final class DynamicActionButtonKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void DynamicActionButton(String label, io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional boolean enabled, optional androidx.compose.ui.Modifier modifier);
   }

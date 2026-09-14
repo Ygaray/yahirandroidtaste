@@ -38,27 +38,27 @@ import kotlinx.coroutines.flow.drop
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /**
  * HUBW-01: the reusable date and time picker. Value contract is `java.time.LocalDate` /
- * `java.time.LocalTime` in and out only — no app type, no Material3 picker-state type, ever
- * appears in this public signature. See [PickerExpansionTest]'s sibling conventions and this
- * file's own [DateTimePickerTest] for the full behavior contract.
+ * `java.time.LocalTime` in and out only -- no app type, no Material3 picker-state type, ever
+ * appears in this public signature. See this file's own [DateTimePickerTest] for the full
+ * behavior contract.
  *
  * Renders nothing (reserves no space) when neither [showDate] nor [showTime] is true. Within one
  * `DateTimePicker` instance only one panel (date or time) is expanded at a time; a panel whose
  * field stops being shown collapses rather than silently reopening when the field returns. Panel
- * exclusivity is scoped to this instance — a consumer that needs date/time panel exclusivity
+ * exclusivity is scoped to this instance -- a consumer that needs date/time panel exclusivity
  * across two logically-related pickers renders both fields from one `DateTimePicker` and toggles
  * [showDate] / [showTime] (review round 2 MEDIUM, Plan 05's editor does exactly this).
  *
  * @param selectedDate The currently selected date, or `null` for "not yet picked".
  * @param onDateSelected Invoked with a real user pick, always through the most recently passed
- *   lambda (never a stale one captured at panel-open time).
+ *   lambda (never a stale one captured at panel-open time -- both the current value and the
+ *   current callback are read via [rememberUpdatedState] inside the date panel's collector).
  * @param selectedTime The currently selected time, or `null` for "not yet picked".
  * @param onTimeSelected Invoked with a real user pick, same freshness guarantee as
  *   [onDateSelected].
@@ -200,11 +200,10 @@ private fun DateTimePickerDatePanel(
         initialDisplayedMonthMillis = (selectedDate ?: minDate ?: LocalDate.now()).toUtcStartOfDayMillis(),
         selectableDates = minDateSelectableDates(minDate)
     )
-    // RED phase (Task 2, intentional): captured directly instead of via rememberUpdatedState —
-    // reproduces the exact stale-callback pitfall the plan's must_haves and T-163-24 exist to
-    // catch. Swapped in GREEN.
-    val currentDate = selectedDate
-    val currentOnDateSelected = onDateSelected
+    // Freshness guarantee (T-163-24 / review 163-01 MEDIUM): always read the LATEST value and
+    // callback at collection time, never the ones captured when this panel first composed.
+    val currentDate by rememberUpdatedState(selectedDate)
+    val currentOnDateSelected by rememberUpdatedState(onDateSelected)
 
     LaunchedEffect(state) {
         snapshotFlow { state.selectedDateMillis }
@@ -235,10 +234,9 @@ private fun DateTimePickerTimePanel(
         initialMinute = selectedTime?.minute ?: 0,
         is24Hour = is24Hour
     )
-    // RED phase (Task 2, intentional): same direct-capture stale-callback pitfall as the date
-    // panel above. Swapped for rememberUpdatedState in GREEN.
-    val currentTime = selectedTime
-    val currentOnTimeSelected = onTimeSelected
+    // Same freshness guarantee as the date panel above.
+    val currentTime by rememberUpdatedState(selectedTime)
+    val currentOnTimeSelected by rememberUpdatedState(onTimeSelected)
 
     LaunchedEffect(state) {
         snapshotFlow { state.hour to state.minute }
@@ -261,11 +259,11 @@ private fun DateTimePickerTimePanel(
 internal fun LocalDate.toUtcStartOfDayMillis(): Long =
     atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
 
-// RED phase (Task 2, intentional bug — day-shift pitfall the plan's must_haves call out):
-// converts through the JVM default zone instead of UTC, so this fails the multi-timezone
-// round-trip test outside UTC. Fixed to ZoneOffset.UTC in GREEN.
+// Day-shift pitfall fix: Material3's DatePicker reports UTC-midnight millis, so this converts
+// back through ZoneOffset.UTC (never the JVM default zone) to avoid moving the day backward in
+// negative-offset zones.
 internal fun utcStartOfDayMillisToLocalDate(utcMillis: Long): LocalDate =
-    Instant.ofEpochMilli(utcMillis).atZone(ZoneId.systemDefault()).toLocalDate()
+    Instant.ofEpochMilli(utcMillis).atZone(ZoneOffset.UTC).toLocalDate()
 
 internal fun minDateSelectableDates(minDate: LocalDate?): SelectableDates = object : SelectableDates {
     override fun isSelectableDate(utcTimeMillis: Long): Boolean {
@@ -279,24 +277,34 @@ internal fun minDateSelectableDates(minDate: LocalDate?): SelectableDates = obje
     }
 }
 
-// RED phase (Task 2, intentional bug): always returns false and never invokes the callback, so
-// every emitPickedDate-driven test (pure-function and real-interaction) fails. Fixed in GREEN.
 internal fun emitPickedDate(
     utcMillis: Long?,
     current: LocalDate?,
     onDateSelected: (LocalDate) -> Unit
-): Boolean = false
+): Boolean {
+    if (utcMillis == null) return false
+    val picked = utcStartOfDayMillisToLocalDate(utcMillis)
+    if (picked == current) return false
+    onDateSelected(picked)
+    return true
+}
 
-// RED phase (Task 2, intentional bug): same always-false stub as emitPickedDate above.
 internal fun emitPickedTime(
     hour: Int,
     minute: Int,
     current: LocalTime?,
     onTimeSelected: (LocalTime) -> Unit
-): Boolean = false
+): Boolean {
+    val picked = LocalTime.of(hour, minute)
+    if (picked == current) return false
+    onTimeSelected(picked)
+    return true
+}
 
-// RED phase (Task 2, intentional bug — forced-locale-formatter pitfall the plan's must_haves call
-// out): ignores is24Hour and always renders the locale's own SHORT time form, so the true-flag /
-// cross-locale assertions fail. Fixed to the explicit h:mm a / HH:mm patterns in GREEN.
-internal fun formatPickerTime(time: LocalTime, is24Hour: Boolean, locale: Locale): String =
-    DateTimeFormatter.ofLocalizedTime(java.time.format.FormatStyle.SHORT).withLocale(locale).format(time)
+// Forced-locale-formatter pitfall fix: explicit h:mm a / HH:mm patterns, never a localized SHORT
+// formatter -- a localized formatter follows the LOCALE's own clock convention and would render
+// 24-hour text under a 24-hour locale even when the caller explicitly asked for 12-hour display.
+internal fun formatPickerTime(time: LocalTime, is24Hour: Boolean, locale: Locale): String {
+    val pattern = if (is24Hour) "HH:mm" else "h:mm a"
+    return DateTimeFormatter.ofPattern(pattern, locale).format(time)
+}
