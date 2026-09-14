@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.AppChip
 import io.github.ygaray.yahirandroidtaste.component.ChipBar
 import io.github.ygaray.yahirandroidtaste.component.FilterBar
+import io.github.ygaray.yahirandroidtaste.component.PresetChip
 import io.github.ygaray.yahirandroidtaste.component.SortControl
 import io.github.ygaray.yahirandroidtaste.component.TagChipWithContextMenu
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
@@ -160,6 +161,33 @@ internal val chipsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             ComponentRegistry.StateCell("Focused")
         ),
         content = { ChipBarVariants() }
+    ),
+    ComponentRegistry.Entry(
+        name = "PresetChip",
+        family = ExplorerFamilies.CHIPS,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = {
+                    PresetChip(label = "30 min", onClick = {})
+                }
+            ),
+            ComponentRegistry.StateCell(
+                "Pressed / Selected",
+                render = {
+                    PresetChip(label = "30 min", onClick = {}, isSelected = true)
+                }
+            ),
+            ComponentRegistry.StateCell(
+                "Disabled",
+                render = {
+                    PresetChip(label = "30 min", onClick = {}, enabled = false)
+                }
+            ),
+            // PresetChip has no focus-visual override — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { PresetChipVariants() }
     ),
     ComponentRegistry.Entry(
         name = "SortControl",
@@ -364,6 +392,32 @@ private fun ChipBarVariants() {
                     }
                 }
             )
+        },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+}
+
+/**
+ * PresetChip's demo (D-03) — the ChipBar itemContent shape this component exists for: a plain
+ * label-only preset row, and a row of chips carrying supporting labels (e.g. a resolved
+ * timestamp alongside a relative-date preset name).
+ */
+@Composable
+private fun PresetChipVariants() {
+    SectionLabel("PresetChip - ChipBar itemContent, label only")
+    ChipBar(
+        items = listOf("5 min", "10 min", "30 min", "1 h", "5 h", "10 h", "24 h"),
+        key = { it },
+        itemContent = { PresetChip(label = it, onClick = {}) },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+
+    SectionLabel("PresetChip - with supporting labels")
+    ChipBar(
+        items = listOf("Later today" to "7:40 PM", "Until tomorrow" to "Tue 9:00 AM"),
+        key = { it.first },
+        itemContent = { (label, supportingLabel) ->
+            PresetChip(label = label, onClick = {}, supportingLabel = supportingLabel)
         },
         modifier = Modifier.padding(horizontal = 16.dp)
     )

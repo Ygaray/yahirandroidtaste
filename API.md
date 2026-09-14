@@ -61,6 +61,7 @@ a consumer supplies its own item type.
 | Composable | Purpose | Key parameters |
 |-----------|---------|----------------|
 | `AppChip` | The base selectable chip | `label, isSelected, onClick` |
+| `PresetChip` | The `ChipBar` `itemContent` chip for one-tap preset rows (D-03), with a min-height wrapping layout that grows instead of clipping at large font scales | `label, onClick, supportingLabel, enabled, isSelected` |
 | `TagChipWithContextMenu` | A tag chip carrying a long-press context menu | `label, isSelected, onClick, …` menu callbacks |
 | `ChipBar` | Generic horizontally-scrolling chip row | `items: List<T>, key: (T)->Any, itemContent: @Composable (T)->Unit`, optional `leading/trailingContent` |
 | `SortControl` | Generic sort-mode selector | `sortMode: T, options: List<T>, optionLabel: (T)->String, onSortModeChange` |
