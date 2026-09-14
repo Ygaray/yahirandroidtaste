@@ -30,7 +30,7 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.12.0`** (repinned in **v4.1 Phase 163 Plan 01**, `HUBW-01`/`SCHED-01`/`SCHED-02`/`SCHED-03`) — adds `PresetChip` and `DateTimePicker`, cut on `feat/v1.12-scheduling-pickers` forked from `v1.11.1` (still on the `v1.10.0`-forked branch line, deliberately bypassing this hub's own concurrent `v2.0.0` ("v1.0 Hub Stewardship") milestone, which removed the public `FilterBar` composable (folded into `ChipBar`'s expandable mode) — a breaking change SecondBrain's `BrowseScreen.kt` depends on directly and has not yet migrated for). See §"Version-numbering / branch-topology deviation (`v1.10.0` → `v1.11.0`, bypassing `v2.0.0`)" below and the `v1.12.0` release note further down | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.12.1`** (repinned in the **phase-163 code-review fix pass**, `163-REVIEW-FIX.md` WR-01) — a behavior-only patch fixing `DateTimePicker`'s stale open-panel resync, cut on `feat/v1.12-scheduling-pickers` forked from `v1.12.0` (still on the `v1.10.0`-forked branch line, deliberately bypassing this hub's own concurrent `v2.0.0` ("v1.0 Hub Stewardship") milestone, which removed the public `FilterBar` composable (folded into `ChipBar`'s expandable mode) — a breaking change SecondBrain's `BrowseScreen.kt` depends on directly and has not yet migrated for). See §"Version-numbering / branch-topology deviation (`v1.10.0` → `v1.11.0`, bypassing `v2.0.0`)" below and the `v1.12.1` release note further down | `gradle/libs.versions.toml` |
   | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.5.0`** (repinned + Gate-1-confirmed, Phase 48 / REL-01) — the hub's Phase-44 additive-growth tag CalTracker was authorized to consume (hub's own latest tag has since moved to `v1.6.0` via an unrelated concurrent SecondBrain session — not a v1.7 CalTracker task) | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
@@ -49,7 +49,9 @@ independent apps that consume it:
 | SecondBrain | v1.12.0 | v2.0.0 | behind (v1.12.0 is a deliberate patch on the v1.11.0/v1.10.0 branch, not a descendant of v2.0.0 — see release note below) |
 <!-- repin-matrix:end -->
 
-**Current published tag:** **`v1.12.0`** — cut in **SecondBrain v4.1 Phase 163 Plan 01** (`HUBW-01`, `SCHED-01`/`SCHED-02`/`SCHED-03`) under the personal-app tag-cut waiver. Adds the public `PresetChip` (the `ChipBar` `itemContent` chip for one-tap preset rows, D-03, min-height/wrapping content) and `DateTimePicker` (a `java.time.LocalDate`/`LocalTime`-contract date and time picker, HUBW-01); additive only. Cut on `feat/v1.12-scheduling-pickers`, forked from `v1.11.1` — the semver-highest tag remains `v2.0.0` on `main`; see the release note below for the full `v1.12.0` evidence.
+**Current published tag:** **`v1.12.1`** — cut in **SecondBrain 163-REVIEW-FIX (phase 163 code-review fix pass)** under the personal-app tag-cut waiver. A behavior-only patch on `v1.12.0`: `DateTimePicker`'s date/time panel now rekeys its Material3 picker state on `selectedDate`/`selectedTime` so an external change to either value while the panel stays open (e.g. a Quick-pick chip tapped elsewhere on the same screen) is honored instead of silently overwritten on the panel's next tap (review 163 WR-01). No public signature changed. Cut on `feat/v1.12-scheduling-pickers`, forked from `v1.12.0` — the semver-highest tag remains `v2.0.0` on `main`; see the release note below for the full `v1.12.1` evidence.
+
+Previously: `v1.12.0` — cut in **SecondBrain v4.1 Phase 163 Plan 01** (`HUBW-01`, `SCHED-01`/`SCHED-02`/`SCHED-03`) under the personal-app tag-cut waiver. Adds the public `PresetChip` (the `ChipBar` `itemContent` chip for one-tap preset rows, D-03, min-height/wrapping content) and `DateTimePicker` (a `java.time.LocalDate`/`LocalTime`-contract date and time picker, HUBW-01); additive only. Cut on `feat/v1.12-scheduling-pickers`, forked from `v1.11.1` — see the release note below for the full `v1.12.0` evidence.
 
 Previously: `v1.10.0` — an autonomous minor bump cut in **SecondBrain v2.1
 Phase 135 Plan 02** (`MIND-10`, Phase 135's D-02 decision) on top of the hub's own **Phase 135
@@ -449,6 +451,31 @@ together with the existing `FilterBar`-migration follow-up noted above, not befo
 
 **JitPack resolution evidence:** `https://jitpack.io/com/github/Ygaray/yahirandroidtaste/v1.12.0/yahirandroidtaste-v1.12.0.pom`
 and `.../yahirandroidtaste-v1.12.0.aar` were requested to trigger the lazy JitPack build; if
+either has not finished building by the time a consumer's Gradle sync runs, retry the build rather
+than falling back to a commit-hash pin (this project pins tags, not hashes, per §7 below).
+
+`v1.12.1` was cut in **SecondBrain's phase-163 code-review fix pass** (`163-REVIEW-FIX.md`, WR-01)
+under the same personal-app tag-cut waiver. It is a **behavior-only patch** on `v1.12.0`, not a new
+component: `DateTimePickerDatePanel`/`DateTimePickerTimePanel` (both private to this file) now wrap
+their `rememberDatePickerState`/`rememberTimePickerState` construction in
+`key(selectedDate)`/`key(selectedTime)`. Previously, those `rememberXState` helpers only read their
+`initial*` arguments on first composition — an external change to `selectedDate`/`selectedTime`
+while the panel stayed open (e.g. a Quick-pick chip tapped elsewhere on the same screen while the
+calendar/clock panel was still expanded) never reached the already-created picker state, so the
+panel kept showing a stale selection and silently overwrote the external change on the next tap
+inside it. `key(...)` forces the whole panel subtree (and its Material3 picker state) to be
+recreated whenever the external value changes, keeping an open panel in sync. No public signature
+changed — `DateTimePicker`'s own parameters are untouched — proven by `apiCheck` passing clean and
+all 20 pre-existing `DateTimePickerTest` cases passing unchanged (no test needed to change to prove
+the fix; the bug was only reachable via a live external-mutation sequence the existing suite did
+not drive).
+
+Cut on `feat/v1.12-scheduling-pickers`, forked from `v1.12.0` (same branch line as `v1.12.0`,
+continuing to deliberately bypass `v2.0.0` for the unresolved `FilterBar` dependency documented
+above).
+
+**JitPack resolution evidence:** `https://jitpack.io/com/github/Ygaray/yahirandroidtaste/v1.12.1/yahirandroidtaste-v1.12.1.pom`
+and `.../yahirandroidtaste-v1.12.1.aar` were requested to trigger the lazy JitPack build; if
 either has not finished building by the time a consumer's Gradle sync runs, retry the build rather
 than falling back to a commit-hash pin (this project pins tags, not hashes, per §7 below).
 
