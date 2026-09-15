@@ -50,6 +50,8 @@ fix + tests autonomously here, then **surface the tag + consumer-bump for confir
 tag or repin a consumer without the owner's go-ahead. The full ritual is `ECOSYSTEM.md` §7 +
 `~/.claude/context/workflows/repin.md`.
 
+One exception: personal-app consumers (SecondBrain) cut tags under the owner's standing tag-cut waiver (`[[personal-app-tag-cut-gate-waived]]`, recorded in ECOSYSTEM.md's release notes) — still only on green gates, and never by moving an already-cut tag.
+
 - **Tags are immutable.** Consumers pin an immutable tag (or a commit-SHA); **never `main-SNAPSHOT`**
   and never a moving branch ref (supply-chain integrity).
 - JitPack builds from GitHub, not any local clone — so this repo's directory location is irrelevant
@@ -61,6 +63,8 @@ When a SecondBrain (or other consumer) phase lands code **here** in the hub: run
 hub** — **no consumer worktrees.** Commit here on `main`; the consumer's orchestrator owns its own
 STATE/ROADMAP tracking. Do not modify consumer files from a hub-scoped task. (This is the
 cross-repo-hub-phase convention.)
+
+While SecondBrain still consumes `FilterBar` (removed in `v2.0.0`), SecondBrain hub cycles commit on a feature branch forked from the latest `v1.x` tag instead of `main`, per ECOSYSTEM.md's "Version-numbering / branch-topology deviation". A SecondBrain phase touching both repositories does so in repository-scoped tasks: hub-scoped tasks edit and commit only hub files first, and consumer-scoped tasks edit only consumer files afterward.
 
 ## Toolchain
 
