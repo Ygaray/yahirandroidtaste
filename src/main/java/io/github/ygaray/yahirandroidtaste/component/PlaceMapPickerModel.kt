@@ -2,10 +2,14 @@ package io.github.ygaray.yahirandroidtaste.component
 
 import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.pow
 import kotlin.math.round
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 /**
  * HUBW-02 D-04/D-05: pure-Kotlin state math for [PlaceMapPicker] -- radius sanitization, pin
@@ -116,13 +120,10 @@ internal class RadiusSpec(
 
     /**
      * The distance from [center] to [handle] ([haversineMeters]), sanitized through this spec --
-     * what a radius-handle drag on the map circle resolves to.
-     *
-     * RED (164-02 Task 2): intentionally returns [minMeters] unconditionally, ignoring [center]
-     * and [handle] entirely, so every radiusFromHandle model test fails on its own assertion
-     * (not a compile error) before GREEN wires the real haversine distance through.
+     * what a radius-handle drag on the map circle resolves to (GREEN).
      */
-    fun radiusFromHandle(center: PinKey, handle: PinKey): Float = minMeters
+    fun radiusFromHandle(center: PinKey, handle: PinKey): Float =
+        sanitize(haversineMeters(center.latitude, center.longitude, handle.latitude, handle.longitude).toFloat())
 }
 
 /** A validated pin: both coordinates present, finite, and within their valid geographic ranges. */
@@ -236,28 +237,45 @@ internal fun formatMeters(value: Float): String = "${round(value).toInt()} m"
 internal const val EARTH_RADIUS_METERS = 6_371_008.8
 
 /**
- * Great-circle distance in meters between ([lat1], [lng1]) and ([lat2], [lng2]) on a sphere of
- * radius [EARTH_RADIUS_METERS].
- *
- * RED (164-02 Task 2): intentionally returns `0.0` unconditionally so every haversineMeters
- * model test that checks a real magnitude fails on its own assertion (not a compile error)
- * before GREEN wires the real formula through.
+ * Meters per degree of longitude at the equator on [EARTH_RADIUS_METERS]'s sphere -- the same
+ * spherical model [haversineMeters] measures distance on. [handlePoint] uses this (not
+ * [METERS_PER_DEGREE_LATITUDE], a separate, deliberately different constant the camera-box math
+ * in [radiusBounds] uses) so a handle it places and a distance [haversineMeters] measures back
+ * always agree to sub-meter precision -- mixing the two constants here would put the handle
+ * roughly 0.1% off its true radius (about 1.1m at 1000m), which is exactly the round-trip
+ * [PlaceMapPickerModelTest] locks down.
  */
-internal fun haversineMeters(lat1: Double, lng1: Double, lat2: Double, lng2: Double): Double = 0.0
+private val METERS_PER_DEGREE_AT_EQUATOR = EARTH_RADIUS_METERS * PI / 180.0
+
+/**
+ * Great-circle distance in meters between ([lat1], [lng1]) and ([lat2], [lng2]) on a sphere of
+ * radius [EARTH_RADIUS_METERS] (the standard haversine formula).
+ */
+internal fun haversineMeters(lat1: Double, lng1: Double, lat2: Double, lng2: Double): Double {
+    val phi1 = lat1 * PI / 180.0
+    val phi2 = lat2 * PI / 180.0
+    val deltaPhi = (lat2 - lat1) * PI / 180.0
+    val deltaLambda = (lng2 - lng1) * PI / 180.0
+    val a = sin(deltaPhi / 2.0).pow(2) + cos(phi1) * cos(phi2) * sin(deltaLambda / 2.0).pow(2)
+    val c = 2.0 * atan2(sqrt(a), sqrt(1.0 - a))
+    return EARTH_RADIUS_METERS * c
+}
 
 /**
  * The point [radiusMeters] due east of ([latitude], [longitude]), on the same spherical model
- * [haversineMeters] uses (see that function's KDoc when it lands) -- so a handle placed here and
- * measured back through [haversineMeters] round-trips to [radiusMeters]. Longitude is wrapped
- * through [normalizeLongitude] (a `Marker` position may cross the antimeridian; only the camera
- * box in [radiusBounds] must not).
- *
- * RED (164-02 Task 2): intentionally returns the input coordinate unchanged (no offset at all),
- * so every handlePoint model test that checks the handle actually moved east fails on its own
- * assertion (not a compile error) before GREEN wires the real offset math through.
+ * [haversineMeters] uses ([METERS_PER_DEGREE_AT_EQUATOR]) -- so a handle placed here and
+ * measured back through [haversineMeters] round-trips to [radiusMeters] to sub-meter precision.
+ * Longitude is wrapped through [normalizeLongitude] (a `Marker` position may cross the
+ * antimeridian; only the camera box in [radiusBounds] must not). The cosine denominator is
+ * floored at `0.01`, the same floor [radiusBounds] uses, so a handle near a pole never explodes
+ * toward the opposite side of the globe.
  */
-internal fun handlePoint(latitude: Double, longitude: Double, radiusMeters: Float): PinKey =
-    PinKey(latitude, longitude)
+internal fun handlePoint(latitude: Double, longitude: Double, radiusMeters: Float): PinKey {
+    val cosLatitude = cos(latitude * PI / 180.0)
+    val degreesPerMeter = 1.0 / (METERS_PER_DEGREE_AT_EQUATOR * max(cosLatitude, 0.01))
+    val handleLongitude = normalizeLongitude(longitude + radiusMeters * degreesPerMeter)
+    return PinKey(latitude, handleLongitude)
+}
 
 /**
  * Makes [org.osmdroid.views.MapView.onResume]/`onPause` idempotent per `MapView` (164-02 review
@@ -266,20 +284,26 @@ internal fun handlePoint(latitude: Double, longitude: Double, radiusMeters: Floa
  * `AndroidView` factory may run before or after that replay -- without this gate, both paths
  * could call `onResume()` on the same `MapView`. One gate per `MapView`, main thread only.
  *
- * RED (164-02 Task 2): `resume`/`pause` intentionally always run [block] and never track the
- * resumed flag, so every idempotency assertion (a second resume/pause is a no-op) fails (not a
- * compile error) before GREEN wires the real state tracking through.
+ * (GREEN) `resume` runs [block] and marks this gate resumed only when it was not already
+ * resumed; `pause` runs its block and clears the flag only when it was resumed. Each returns
+ * whether its block ran, so a caller can tell a real transition from a no-op.
  */
 internal class MapLifecycleGate {
-    /** Runs [block] unconditionally (RED stub) and reports whether it ran. */
+    private var resumed = false
+
+    /** Runs [block] and marks this gate resumed only when it was not already resumed. */
     fun resume(block: () -> Unit): Boolean {
+        if (resumed) return false
         block()
+        resumed = true
         return true
     }
 
-    /** Runs [block] unconditionally (RED stub) and reports whether it ran. */
+    /** Runs [block] and clears the resumed flag only when this gate was resumed. */
     fun pause(block: () -> Unit): Boolean {
+        if (!resumed) return false
         block()
+        resumed = false
         return true
     }
 }

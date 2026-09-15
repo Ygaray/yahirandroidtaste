@@ -1,7 +1,9 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
+import android.view.MotionEvent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -38,6 +41,10 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -56,6 +63,12 @@ private val PIN_DIAMETER: Dp = 28.dp
 
 /** Stroke width of the pin marker's icon border. */
 private val PIN_STROKE_WIDTH: Dp = 2.dp
+
+/** Diameter of the radius handle's drawn icon. */
+private val HANDLE_DIAMETER: Dp = 24.dp
+
+/** Stroke width of the radius handle's icon border. */
+private val HANDLE_STROKE_WIDTH: Dp = 2.dp
 
 /** Stroke width of the radius circle's outline. */
 private val CIRCLE_OUTLINE_WIDTH: Dp = 2.dp
@@ -183,6 +196,7 @@ private fun PlaceMapArea(
     testTag: String
 ) {
     val inspectionMode = LocalInspectionMode.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val density = LocalDensity.current
     val colorScheme = MaterialTheme.colorScheme
     val colors = remember(colorScheme, density) { resolvePlaceMapOverlayColors(colorScheme, density) }
@@ -214,9 +228,10 @@ private fun PlaceMapArea(
             )
         } else {
             AndroidView(
-                factory = { context -> createPlaceMapView(context, userAgent, holder) },
+                factory = { context -> createPlaceMapView(context, userAgent, holder, lifecycleOwner) },
                 update = { mapView -> syncPlaceMapOverlays(mapView, holder, pin, radius, colors, cameraFitBorderPx) },
                 onRelease = { mapView ->
+                    holder.lifecycleGate.pause { mapView.onPause() }
                     mapView.onDetach()
                     holder.mapView = null
                 },
@@ -225,6 +240,25 @@ private fun PlaceMapArea(
                     .testTag("${testTag}_map")
                     .semantics { placeMapSemantics(dropPinAtCenter) }
             )
+
+            // Balanced lifecycle binding (164-02 review round 2 MEDIUM): addObserver replays
+            // ON_CREATE/ON_START/ON_RESUME to catch this observer up to the host's current state,
+            // and the AndroidView factory above may run before or after that replay -- the
+            // holder's MapLifecycleGate (created fresh per MapView in createPlaceMapView) makes
+            // whichever path runs second a no-op, so each MapView gets exactly one onResume per
+            // resumed period and one onPause per exit.
+            DisposableEffect(lifecycleOwner) {
+                val observer = LifecycleEventObserver { _, event ->
+                    val mapView = holder.mapView ?: return@LifecycleEventObserver
+                    when (event) {
+                        Lifecycle.Event.ON_RESUME -> holder.lifecycleGate.resume { mapView.onResume() }
+                        Lifecycle.Event.ON_PAUSE -> holder.lifecycleGate.pause { mapView.onPause() }
+                        else -> Unit
+                    }
+                }
+                lifecycleOwner.lifecycle.addObserver(observer)
+                onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+            }
         }
 
         if (pin == null) {
@@ -327,10 +361,13 @@ private class PlaceMapPickerHolder {
     var mapView: MapView? = null
     var circle: Polygon? = null
     var pinMarker: Marker? = null
+    var radiusHandle: Marker? = null
     var lastFittedCamera: CameraKey? = null
     var lastEmittedRadiusMeters: Float? = null
     var pin: PinKey? = null
     var spec: RadiusSpec? = null
+    var radius: Float = 0f
+    var lifecycleGate: MapLifecycleGate = MapLifecycleGate()
     var onPinChange: (Double, Double) -> Unit = { _, _ -> }
     var onRadiusChange: (Float) -> Unit = {}
 }
@@ -342,7 +379,9 @@ private data class PlaceMapOverlayColors(
     val pinFillColor: Int,
     val pinBorderColor: Int,
     val pinStrokeWidthPx: Int,
-    val pinDiameterPx: Int
+    val pinDiameterPx: Int,
+    val handleStrokeWidthPx: Int,
+    val handleDiameterPx: Int
 )
 
 private fun resolvePlaceMapOverlayColors(colorScheme: ColorScheme, density: Density): PlaceMapOverlayColors =
@@ -354,18 +393,33 @@ private fun resolvePlaceMapOverlayColors(colorScheme: ColorScheme, density: Dens
             pinFillColor = colorScheme.primary.toArgb(),
             pinBorderColor = colorScheme.surface.toArgb(),
             pinStrokeWidthPx = PIN_STROKE_WIDTH.roundToPx(),
-            pinDiameterPx = PIN_DIAMETER.roundToPx()
+            pinDiameterPx = PIN_DIAMETER.roundToPx(),
+            handleStrokeWidthPx = HANDLE_STROKE_WIDTH.roundToPx(),
+            handleDiameterPx = HANDLE_DIAMETER.roundToPx()
         )
     }
 
-private fun buildPinIcon(colors: PlaceMapOverlayColors): GradientDrawable {
+private fun buildPinIcon(colors: PlaceMapOverlayColors): GradientDrawable =
+    buildOvalIcon(colors.pinFillColor, colors.pinBorderColor, colors.pinStrokeWidthPx, colors.pinDiameterPx)
+
+/** The draggable radius-handle marker's icon -- same fill/border colors as the pin, smaller. */
+private fun buildHandleIcon(colors: PlaceMapOverlayColors): GradientDrawable =
+    buildOvalIcon(colors.pinFillColor, colors.pinBorderColor, colors.handleStrokeWidthPx, colors.handleDiameterPx)
+
+private fun buildOvalIcon(fillColor: Int, borderColor: Int, strokeWidthPx: Int, diameterPx: Int): GradientDrawable {
     val drawable = GradientDrawable()
     drawable.shape = GradientDrawable.OVAL
-    drawable.setColor(colors.pinFillColor)
-    drawable.setStroke(colors.pinStrokeWidthPx, colors.pinBorderColor)
-    drawable.setSize(colors.pinDiameterPx, colors.pinDiameterPx)
-    drawable.setBounds(0, 0, colors.pinDiameterPx, colors.pinDiameterPx)
+    drawable.setColor(fillColor)
+    drawable.setStroke(strokeWidthPx, borderColor)
+    drawable.setSize(diameterPx, diameterPx)
+    drawable.setBounds(0, 0, diameterPx, diameterPx)
     return drawable
+}
+
+/** The point [radiusMeters] due east of [center] ([handlePoint]), as an osmdroid [GeoPoint]. */
+private fun handlePointGeoPoint(center: GeoPoint, radiusMeters: Float): GeoPoint {
+    val handle = handlePoint(center.latitude, center.longitude, radiusMeters)
+    return GeoPoint(handle.latitude, handle.longitude)
 }
 
 /**
@@ -374,8 +428,27 @@ private fun buildPinIcon(colors: PlaceMapOverlayColors): GradientDrawable {
  * compliant by default. The single [MapEventsOverlay] added here is the map's tap-to-drop-pin
  * catch-all: it always reads the *current* [PlaceMapPickerHolder.onPinChange] through [holder],
  * never one captured at this factory's single invocation.
+ *
+ * Gesture containment: a touch listener requests the parent (the scrolling container the picker
+ * sits inside, e.g. the reminder editor's bottom sheet) never intercept a pan or pinch that starts
+ * on the map, and releases that request once the gesture ends -- so panning the map never scrolls
+ * or dismisses its host. The listener always returns `false` (never consumes the event) so
+ * osmdroid's own gesture handling still runs; suppressed only because it never affects behavior.
+ *
+ * Lifecycle: a fresh [MapLifecycleGate] is created for this `MapView` (one gate per `MapView`,
+ * 164-02 review round 2 MEDIUM), and `onResume()` is called here only when [lifecycleOwner] is
+ * already at least `RESUMED` -- the composable's own `DisposableEffect`-registered observer
+ * handles every *subsequent* resume/pause. Whichever of these two paths (this eager call, or the
+ * observer's replay of `ON_RESUME` on registration) runs second is a no-op through the gate, so
+ * this `MapView` gets exactly one `onResume()` for the current resumed period.
  */
-private fun createPlaceMapView(context: Context, userAgent: String, holder: PlaceMapPickerHolder): MapView {
+@SuppressLint("ClickableViewAccessibility") // the touch listener below never consumes an event
+private fun createPlaceMapView(
+    context: Context,
+    userAgent: String,
+    holder: PlaceMapPickerHolder,
+    lifecycleOwner: LifecycleOwner
+): MapView {
     configureOsmdroid(context, userAgent)
     val mapView = MapView(context)
     mapView.setTileSource(TileSourceFactory.MAPNIK)
@@ -396,16 +469,30 @@ private fun createPlaceMapView(context: Context, userAgent: String, holder: Plac
             }
         )
     )
+    mapView.setOnTouchListener { view, event ->
+        when (event.action) {
+            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE ->
+                view.parent?.requestDisallowInterceptTouchEvent(true)
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL ->
+                view.parent?.requestDisallowInterceptTouchEvent(false)
+        }
+        false
+    }
     holder.mapView = mapView
+    holder.lifecycleGate = MapLifecycleGate()
+    if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+        holder.lifecycleGate.resume { mapView.onResume() }
+    }
     return mapView
 }
 
 /**
  * The `AndroidView` `update` pass: with no [pin], clears every pin-owned overlay
- * ([clearPinOverlays]); with a pin, lazily creates the circle and the pin marker, re-applies their
- * theme colors on every pass (so a theme change while the picker is open recolors the overlays),
- * and refits the camera through [shouldRefitCamera] when the pin or an externally-supplied radius
- * changed.
+ * ([clearPinOverlays]); with a pin, lazily creates the circle, the pin marker and the radius
+ * handle, re-applies their theme colors on every pass (so a theme change while the picker is open
+ * recolors the overlays), snaps the handle back to [handlePointGeoPoint] of the sanitized
+ * [radius], and refits the camera through [shouldRefitCamera] when the pin or an
+ * externally-supplied radius changed.
  */
 private fun syncPlaceMapOverlays(
     mapView: MapView,
@@ -421,6 +508,7 @@ private fun syncPlaceMapOverlays(
         return
     }
 
+    holder.radius = radius
     val center = GeoPoint(pin.latitude, pin.longitude)
 
     val circle = holder.circle ?: Polygon(mapView).also {
@@ -435,17 +523,82 @@ private fun syncPlaceMapOverlays(
     val marker = holder.pinMarker ?: Marker(mapView).also {
         it.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
         it.setInfoWindow(null)
+        it.setDraggable(true)
+        it.setOnMarkerDragListener(PlaceMapPinDragListener(mapView, holder))
         mapView.overlays.add(it)
         holder.pinMarker = it
     }
     marker.position = center
     marker.icon = buildPinIcon(colors)
 
+    val handle = holder.radiusHandle ?: Marker(mapView).also {
+        it.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+        it.setInfoWindow(null)
+        it.setDraggable(true)
+        it.setOnMarkerDragListener(PlaceMapHandleDragListener(mapView, holder))
+        mapView.overlays.add(it)
+        holder.radiusHandle = it
+    }
+    handle.position = handlePointGeoPoint(center, radius)
+    handle.icon = buildHandleIcon(colors)
+
     if (shouldRefitCamera(holder.lastFittedCamera, CameraKey(pin, radius), holder.lastEmittedRadiusMeters)) {
         fitPlaceMapCamera(mapView, holder, pin, radius, cameraFitBorderPx)
     }
 
     mapView.invalidate()
+}
+
+/**
+ * Dragging the pin: moves the circle and the radius handle locally to follow the finger (drag
+ * callbacks never call [PlaceMapPickerHolder.onPinChange], so nothing else would move them until
+ * drag-end), then commits the new coordinate on drag end -- reading [holder]'s latest radius/pin
+ * on every callback, never a value captured when this listener was created.
+ */
+private class PlaceMapPinDragListener(
+    private val mapView: MapView,
+    private val holder: PlaceMapPickerHolder
+) : Marker.OnMarkerDragListener {
+    override fun onMarkerDrag(marker: Marker) {
+        val position = marker.position
+        val currentRadius = holder.radius
+        holder.circle?.setPoints(Polygon.pointsAsCircle(position, currentRadius.toDouble()))
+        holder.radiusHandle?.position = handlePointGeoPoint(position, currentRadius)
+        mapView.invalidate()
+    }
+
+    override fun onMarkerDragEnd(marker: Marker) {
+        holder.onPinChange(marker.position.latitude, marker.position.longitude)
+    }
+
+    override fun onMarkerDragStart(marker: Marker) = Unit
+}
+
+/**
+ * Dragging the radius handle: every drag step (and drag end) resolves the new radius through
+ * [RadiusSpec.radiusFromHandle], records it in [PlaceMapPickerHolder.lastEmittedRadiusMeters] (so
+ * the camera-refit sync pass this emission triggers treats it as an echo, not an external change),
+ * and reports it through [PlaceMapPickerHolder.onRadiusChange] -- the resulting state change and
+ * recomposition redraw the circle and snap the handle back to the sanitized radius on the next
+ * `update` pass.
+ */
+private class PlaceMapHandleDragListener(
+    private val mapView: MapView,
+    private val holder: PlaceMapPickerHolder
+) : Marker.OnMarkerDragListener {
+    override fun onMarkerDrag(marker: Marker) = emitHandleRadius(marker)
+    override fun onMarkerDragEnd(marker: Marker) = emitHandleRadius(marker)
+    override fun onMarkerDragStart(marker: Marker) = Unit
+
+    private fun emitHandleRadius(marker: Marker) {
+        val spec = holder.spec ?: return
+        val pin = holder.pin ?: return
+        val handlePosition = PinKey(marker.position.latitude, marker.position.longitude)
+        val sanitized = spec.radiusFromHandle(pin, handlePosition)
+        holder.lastEmittedRadiusMeters = sanitized
+        mapView.invalidate()
+        holder.onRadiusChange(sanitized)
+    }
 }
 
 private fun fitPlaceMapCamera(
@@ -470,15 +623,20 @@ private fun fitPlaceMapCamera(
 }
 
 /**
- * Removes every pin-owned overlay (the circle and the pin marker) from [holder]'s `MapView` and
- * clears each holder reference, so no stale overlay remains when the caller's pin becomes invalid
- * (e.g. the place is cleared).
+ * Removes every pin-owned overlay (the circle, the pin marker and the radius handle) from
+ * [holder]'s `MapView` and clears each holder reference, so no stale overlay remains when the
+ * caller's pin becomes invalid (e.g. the place is cleared) -- 164-02 review round 2 MEDIUM: the
+ * radius handle Task 2 adds must be cleared here too, not just the circle and the pin marker.
  */
 private fun clearPinOverlays(holder: PlaceMapPickerHolder) {
     val mapView = holder.mapView
-    holder.circle?.let { mapView?.overlays?.remove(it) }
-    holder.pinMarker?.let { mapView?.overlays?.remove(it) }
+    if (mapView != null) {
+        holder.circle?.let { mapView.overlays.remove(it) }
+        holder.pinMarker?.let { mapView.overlays.remove(it) }
+        holder.radiusHandle?.let { mapView.overlays.remove(it) }
+    }
     holder.circle = null
     holder.pinMarker = null
+    holder.radiusHandle = null
     holder.lastFittedCamera = null
 }
