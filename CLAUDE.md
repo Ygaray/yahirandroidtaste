@@ -21,8 +21,11 @@ how this library relates to its consumers:
 - **One-way dependency.** The library imports **no host code** (no consumer package), holds **no
   secrets**, and makes **no domain assumptions** — a component renders whatever content + callbacks
   the caller passes. This is exactly what makes it drop-in. Anything you add must keep this litmus
-  clean: library → (Android SDK, AndroidX/Compose, Hilt, Coil, navigation-compose, reorderable)
-  only, never → a consumer.
+  clean: library → (Android SDK, AndroidX/Compose, Hilt, Coil, navigation-compose, reorderable,
+  osmdroid) only, never → a consumer. osmdroid (`org.osmdroid:osmdroid-android`) is confined to
+  the PlaceMapPicker map surface as an `implementation` dependency with no osmdroid type in
+  `api.txt`, is archived upstream, and is human-approved with that maintenance risk accepted in
+  `.planning/APPROVED-DEPS.md` (SecondBrain Phase 164, D-01).
 - **Bindings-only Hilt, no application host.** The library provides `@Singleton` state holders (e.g.
   `UndoHistoryStore`, `@Inject constructor()`) but declares **no `@HiltAndroidApp` and no
   `@AndroidEntryPoint`**. The consuming app owns the Hilt `Application`; its `SingletonComponent`

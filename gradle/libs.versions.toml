@@ -17,6 +17,7 @@ coil = "3.0.4"
 coroutinesTest = "1.11.0"
 junit = "4.13.2"
 robolectric = "4.16.1"
+osmdroid = "6.1.20"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -36,6 +37,8 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+osmdroid-android = { group = "org.osmdroid", name = "osmdroid-android", version.ref = "osmdroid" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version = "2.9.4" }
 
 [plugins]
 android-library = { id = "com.android.library", version.ref = "agp" }
