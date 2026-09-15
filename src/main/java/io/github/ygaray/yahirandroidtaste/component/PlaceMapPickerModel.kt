@@ -113,6 +113,16 @@ internal class RadiusSpec(
 
     private fun snapToStep(value: Float): Float =
         minMeters + round((value - minMeters) / stepMeters) * stepMeters
+
+    /**
+     * The distance from [center] to [handle] ([haversineMeters]), sanitized through this spec --
+     * what a radius-handle drag on the map circle resolves to.
+     *
+     * RED (164-02 Task 2): intentionally returns [minMeters] unconditionally, ignoring [center]
+     * and [handle] entirely, so every radiusFromHandle model test fails on its own assertion
+     * (not a compile error) before GREEN wires the real haversine distance through.
+     */
+    fun radiusFromHandle(center: PinKey, handle: PinKey): Float = minMeters
 }
 
 /** A validated pin: both coordinates present, finite, and within their valid geographic ranges. */
@@ -221,3 +231,55 @@ internal fun radiusBounds(latitude: Double, longitude: Double, radiusMeters: Flo
 
 /** Formats [value] as rounded whole meters followed by `" m"` (e.g. `"300 m"`). */
 internal fun formatMeters(value: Float): String = "${round(value).toInt()} m"
+
+/** Mean earth radius in meters (IUGG), used by [haversineMeters] and [handlePoint]'s round-trip. */
+internal const val EARTH_RADIUS_METERS = 6_371_008.8
+
+/**
+ * Great-circle distance in meters between ([lat1], [lng1]) and ([lat2], [lng2]) on a sphere of
+ * radius [EARTH_RADIUS_METERS].
+ *
+ * RED (164-02 Task 2): intentionally returns `0.0` unconditionally so every haversineMeters
+ * model test that checks a real magnitude fails on its own assertion (not a compile error)
+ * before GREEN wires the real formula through.
+ */
+internal fun haversineMeters(lat1: Double, lng1: Double, lat2: Double, lng2: Double): Double = 0.0
+
+/**
+ * The point [radiusMeters] due east of ([latitude], [longitude]), on the same spherical model
+ * [haversineMeters] uses (see that function's KDoc when it lands) -- so a handle placed here and
+ * measured back through [haversineMeters] round-trips to [radiusMeters]. Longitude is wrapped
+ * through [normalizeLongitude] (a `Marker` position may cross the antimeridian; only the camera
+ * box in [radiusBounds] must not).
+ *
+ * RED (164-02 Task 2): intentionally returns the input coordinate unchanged (no offset at all),
+ * so every handlePoint model test that checks the handle actually moved east fails on its own
+ * assertion (not a compile error) before GREEN wires the real offset math through.
+ */
+internal fun handlePoint(latitude: Double, longitude: Double, radiusMeters: Float): PinKey =
+    PinKey(latitude, longitude)
+
+/**
+ * Makes [org.osmdroid.views.MapView.onResume]/`onPause` idempotent per `MapView` (164-02 review
+ * round 2 MEDIUM): androidx.lifecycle's `addObserver` replays `ON_CREATE`/`ON_START`/`ON_RESUME`
+ * to catch a newly-registered observer up to the host's current state, and [PlaceMapPicker]'s
+ * `AndroidView` factory may run before or after that replay -- without this gate, both paths
+ * could call `onResume()` on the same `MapView`. One gate per `MapView`, main thread only.
+ *
+ * RED (164-02 Task 2): `resume`/`pause` intentionally always run [block] and never track the
+ * resumed flag, so every idempotency assertion (a second resume/pause is a no-op) fails (not a
+ * compile error) before GREEN wires the real state tracking through.
+ */
+internal class MapLifecycleGate {
+    /** Runs [block] unconditionally (RED stub) and reports whether it ran. */
+    fun resume(block: () -> Unit): Boolean {
+        block()
+        return true
+    }
+
+    /** Runs [block] unconditionally (RED stub) and reports whether it ran. */
+    fun pause(block: () -> Unit): Boolean {
+        block()
+        return true
+    }
+}

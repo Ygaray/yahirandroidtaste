@@ -33,6 +33,13 @@ import org.osmdroid.util.TileSystemWebMercator
 private const val TEST_TAG = "place_map_picker"
 private const val TEST_USER_AGENT = "test.agent"
 
+/** Fixture for [PlaceMapPickerTest]'s `functionBody` sanity cases (164-02 Task 2). */
+private const val FUNCTION_BODY_FIXTURE = """fun a(x: () -> Unit = {}) {
+    b("}")
+}
+fun c() { }
+"""
+
 /**
  * Tests for [PlaceMapPicker] (HUBW-02) -- render behavior under [LocalInspectionMode] (D-05; the
  * live osmdroid `MapView` surface is device-only verified) -- and, in the same file per this
@@ -461,6 +468,144 @@ class PlaceMapPickerTest {
         assertEquals(180.0, normalizeLongitude(180.0), 1e-9)
         assertEquals(180.0, normalizeLongitude(540.0), 1e-9)
     }
+
+    // ---- Source-contract tests (164-02 Task 2): touch containment, lifecycle, drag, no logging ----
+
+    @Test
+    fun `map gestures are contained via requestDisallowInterceptTouchEvent`() {
+        val source = strippedPlaceMapPickerSource()
+        assertTrue(source.contains("requestDisallowInterceptTouchEvent(true)"))
+        assertTrue(source.contains("requestDisallowInterceptTouchEvent(false)"))
+    }
+
+    @Test
+    fun `the MapView lifecycle is bound to onResume, onPause and onDetach`() {
+        val source = strippedPlaceMapPickerSource()
+        assertTrue(source.contains(".onResume()"))
+        assertTrue(source.contains(".onPause()"))
+        assertTrue(source.contains(".onDetach()"))
+    }
+
+    @Test
+    fun `both the pin marker and the radius handle are draggable`() {
+        val source = strippedPlaceMapPickerSource()
+        assertTrue(SourceContractTestSupport.countOccurrences(source, "setDraggable(true)") >= 2)
+    }
+
+    @Test
+    fun `both the slider and the handle record lastEmittedRadiusMeters`() {
+        val source = strippedPlaceMapPickerSource()
+        assertTrue(SourceContractTestSupport.countOccurrences(source, "lastEmittedRadiusMeters =") >= 2)
+    }
+
+    @Test
+    fun `LocalLifecycleOwner is imported only from androidx-lifecycle-compose`() {
+        val source = strippedPlaceMapPickerSource()
+        assertTrue(source.contains("import androidx.lifecycle.compose.LocalLifecycleOwner"))
+        val offendingImports = source.lineSequence()
+            .filter { it.trim().endsWith(".LocalLifecycleOwner") }
+            .filterNot { it.trim() == "import androidx.lifecycle.compose.LocalLifecycleOwner" }
+            .toList()
+        assertTrue("Unexpected LocalLifecycleOwner import(s): $offendingImports", offendingImports.isEmpty())
+    }
+
+    @Test
+    fun `configureOsmdroid runs before the first MapView is constructed`() {
+        val source = strippedPlaceMapPickerSource()
+        val configureIndex = source.indexOf("configureOsmdroid(")
+        // "= MapView(", not bare "MapView(" -- the latter also matches inside the
+        // createPlaceMapView( function declaration itself, which always precedes its own body.
+        val mapViewIndex = source.indexOf("= MapView(")
+        assertTrue("configureOsmdroid( not found", configureIndex >= 0)
+        assertTrue("= MapView( not found", mapViewIndex >= 0)
+        assertTrue(configureIndex < mapViewIndex)
+    }
+
+    @Test
+    fun `no logging call or bulk tile download API appears in PlaceMapPicker`() {
+        val source = strippedPlaceMapPickerSource()
+        assertFalse(source.contains("android.util.Log"))
+        assertFalse(source.contains("Log.d("))
+        assertFalse(source.contains("Log.i("))
+        assertFalse(source.contains("CacheManager"))
+    }
+
+    @Test
+    fun `PlaceMapOsmdroidConfig never overrides osmdroid's tile expiration`() {
+        val source = SourceContractTestSupport.stripComments(
+            SourceContractTestSupport.source("PlaceMapOsmdroidConfig.kt")
+        )
+        assertFalse(source.contains("expirationOverrideDuration"))
+        assertFalse(source.contains("setExpirationOverrideDuration"))
+    }
+
+    @Test
+    fun `clearPinOverlays removes the circle, pin marker and radius handle, and nulls all three`() {
+        val source = strippedPlaceMapPickerSource()
+        val body = SourceContractTestSupport.functionBody(source, "fun clearPinOverlays(")
+        assertTrue(body.contains("circle"))
+        assertTrue(body.contains("pinMarker"))
+        assertTrue(body.contains("radiusHandle"))
+        assertTrue(body.contains("overlays.remove"))
+        assertTrue(SourceContractTestSupport.countOccurrences(body, "= null") >= 3)
+    }
+
+    @Test
+    fun `every onResume and onPause call sits on the same line as its MapLifecycleGate call`() {
+        val source = strippedPlaceMapPickerSource()
+        val resumeLines = source.lineSequence().filter { it.contains(".onResume()") }.toList()
+        val pauseLines = source.lineSequence().filter { it.contains(".onPause()") }.toList()
+        assertTrue("No .onResume() call found", resumeLines.isNotEmpty())
+        assertTrue("No .onPause() call found", pauseLines.isNotEmpty())
+        resumeLines.forEach { line ->
+            assertTrue("Line missing lifecycleGate.resume: $line", line.contains("lifecycleGate.resume"))
+        }
+        pauseLines.forEach { line ->
+            assertTrue("Line missing lifecycleGate.pause: $line", line.contains("lifecycleGate.pause"))
+        }
+    }
+
+    // ---- SourceContractTestSupport.functionBody sanity ----
+
+    @Test
+    fun `functionBody extracts one function's full body, string-literal aware`() {
+        val result = SourceContractTestSupport.functionBody(FUNCTION_BODY_FIXTURE, "fun a(")
+        assertTrue(result.startsWith("fun a("))
+        assertTrue(result.endsWith("}"))
+        assertTrue(result.contains("b("))
+        assertFalse(result.contains("fun c"))
+    }
+
+    @Test
+    fun `functionBody occurrence selects the matching declaration`() {
+        val fixture = "$FUNCTION_BODY_FIXTURE\nfun a(x: () -> Unit = {}) {\n    b(\"second\")\n}\n"
+        val result = SourceContractTestSupport.functionBody(fixture, "fun a(", occurrence = 2)
+        assertTrue(result.contains("second"))
+    }
+
+    @Test
+    fun `functionBody throws for a missing declaration`() {
+        assertThrows(IllegalStateException::class.java) {
+            SourceContractTestSupport.functionBody(FUNCTION_BODY_FIXTURE, "fun missing(")
+        }
+    }
+
+    @Test
+    fun `functionBody throws for an expression-bodied function`() {
+        assertThrows(IllegalStateException::class.java) {
+            SourceContractTestSupport.functionBody("fun a() = 1", "fun a(")
+        }
+    }
+
+    @Test
+    fun `functionBody throws when the body braces never balance`() {
+        assertThrows(IllegalStateException::class.java) {
+            SourceContractTestSupport.functionBody("fun a() {\n    b()\n", "fun a(")
+        }
+    }
+
+    private fun strippedPlaceMapPickerSource(): String =
+        SourceContractTestSupport.stripComments(SourceContractTestSupport.source("PlaceMapPicker.kt"))
 
     // ---- Helpers ----
 
