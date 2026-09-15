@@ -1,6 +1,8 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.CompositionLocalProvider
@@ -8,11 +10,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodes
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -21,6 +31,11 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.model.SavedPlaceUiModel
+import io.github.ygaray.yahirandroidtaste.model.occurrenceIndices
+import io.github.ygaray.yahirandroidtaste.model.savedPlaceChipLabels
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThrows
@@ -28,9 +43,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.osmdroid.util.TileSystemWebMercator
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import org.osmdroid.util.TileSystemWebMercator
 
 private const val TEST_TAG = "place_map_picker"
 private const val TEST_USER_AGENT = "test.agent"
@@ -403,6 +418,346 @@ class PlaceMapPickerTest {
         composeTestRule.onNodeWithTag("${TEST_TAG}_radius").assertExists()
     }
 
+    // ---- Current location, saved places and chip accessibility tests (164-03 Task 2) ----
+
+    @Test
+    fun `onUseCurrentLocation null hides the current-location button`() {
+        setPlaceMapPickerContent(pinLatitude = null, pinLongitude = null, onUseCurrentLocation = null)
+        composeTestRule.onNodeWithText("Use current location").assertDoesNotExist()
+    }
+
+    @Test
+    fun `onUseCurrentLocation non-null renders the button and a click invokes it exactly once`() {
+        var count = 0
+        setPlaceMapPickerContent(pinLatitude = null, pinLongitude = null, onUseCurrentLocation = { count++ })
+
+        composeTestRule.onNodeWithText("Use current location").assertExists()
+        composeTestRule.onNodeWithContentDescription("Use current location").assertExists()
+        composeTestRule.onNodeWithContentDescription("Use current location").performClick()
+
+        assertEquals(1, count)
+    }
+
+    @Test
+    fun `isResolving true disables the current-location button and a click does not invoke it`() {
+        var count = 0
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            onUseCurrentLocation = { count++ },
+            isResolving = true
+        )
+
+        composeTestRule.onNodeWithContentDescription("Use current location").assertIsNotEnabled()
+        composeTestRule.onNodeWithContentDescription("Use current location").performClick()
+
+        assertEquals(0, count)
+    }
+
+    @Test
+    fun `busy policy keeps saved-place chips and drop-pin-at-center enabled while isResolving`() {
+        val selected = mutableListOf<SavedPlaceUiModel>()
+        val dropped = mutableListOf<Pair<Double, Double>>()
+        val work = SavedPlaceUiModel("Work", 3.0, 4.0, 200f)
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalInspectionMode provides true) {
+                PlaceMapPicker(
+                    pinLatitude = null,
+                    pinLongitude = null,
+                    onPinChange = { lat, lng -> dropped.add(lat to lng) },
+                    radiusMeters = 150f,
+                    onRadiusChange = {},
+                    minRadiusMeters = 50f,
+                    maxRadiusMeters = 1000f,
+                    defaultRadiusMeters = 150f,
+                    userAgent = TEST_USER_AGENT,
+                    savedPlaces = listOf(SavedPlaceUiModel("Home", 1.0, 2.0, 150f), work),
+                    onSavedPlaceSelected = { selected.add(it) },
+                    isResolving = true
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithContentDescription("Saved places Work").assertIsEnabled()
+        composeTestRule.onNodeWithContentDescription("Saved places Work").performClick()
+        assertEquals(listOf(work), selected)
+
+        invokeDropPinAtCenter("${TEST_TAG}_map_placeholder")
+        assertEquals(listOf(0.0 to 0.0), dropped)
+    }
+
+    @Test
+    fun `currentLocationErrorText renders only when non-null`() {
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            onUseCurrentLocation = {},
+            currentLocationErrorText = "Couldn't get your current location"
+        )
+        composeTestRule.onNodeWithText("Couldn't get your current location").assertExists()
+    }
+
+    @Test
+    fun `currentLocationErrorText null renders no error text`() {
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            onUseCurrentLocation = {},
+            currentLocationErrorText = null
+        )
+        composeTestRule.onNodeWithText("Couldn't get your current location").assertDoesNotExist()
+    }
+
+    @Test
+    fun `or text exists only when both current location and search are present`() {
+        setPlaceMapPickerContent(pinLatitude = null, pinLongitude = null, onUseCurrentLocation = {}, onSearch = {})
+        composeTestRule.onNodeWithText("or").assertExists()
+    }
+
+    @Test
+    fun `or text does not exist with only current location`() {
+        setPlaceMapPickerContent(pinLatitude = null, pinLongitude = null, onUseCurrentLocation = {}, onSearch = null)
+        composeTestRule.onNodeWithText("or").assertDoesNotExist()
+    }
+
+    @Test
+    fun `or text does not exist with only search`() {
+        setPlaceMapPickerContent(pinLatitude = null, pinLongitude = null, onUseCurrentLocation = null, onSearch = {})
+        composeTestRule.onNodeWithText("or").assertDoesNotExist()
+    }
+
+    @Test
+    fun `or text does not exist with neither source`() {
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            onUseCurrentLocation = null,
+            onSearch = null
+        )
+        composeTestRule.onNodeWithText("or").assertDoesNotExist()
+    }
+
+    @Test
+    fun `savedPlaces empty renders no Saved places section`() {
+        setPlaceMapPickerContent(pinLatitude = null, pinLongitude = null, savedPlaces = emptyList())
+        composeTestRule.onNodeWithText("Saved places").assertDoesNotExist()
+    }
+
+    @Test
+    fun `savedPlaces with one unique-labelled entry renders its content description`() {
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            savedPlaces = listOf(SavedPlaceUiModel("Home", 1.0, 2.0, 150f))
+        )
+        composeTestRule.onNodeWithContentDescription("Saved places Home").assertExists()
+    }
+
+    @Test
+    fun `savedPlaces with three unique-labelled entries renders all three content descriptions`() {
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            savedPlaces = listOf(
+                SavedPlaceUiModel("Home", 1.0, 2.0, 150f),
+                SavedPlaceUiModel("Work", 3.0, 4.0, 200f),
+                SavedPlaceUiModel("Gym", 5.0, 6.0, 250f)
+            )
+        )
+        composeTestRule.onNodeWithContentDescription("Saved places Home").assertExists()
+        composeTestRule.onNodeWithContentDescription("Saved places Work").assertExists()
+        composeTestRule.onNodeWithContentDescription("Saved places Gym").assertExists()
+    }
+
+    @Test
+    fun `a saved-place chip exposes exactly one clickable node and both action paths invoke onSavedPlaceSelected once`() {
+        val selected = mutableListOf<SavedPlaceUiModel>()
+        val work = SavedPlaceUiModel("Work", 3.0, 4.0, 200f)
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            savedPlaces = listOf(SavedPlaceUiModel("Home", 1.0, 2.0, 150f), work),
+            onSavedPlaceSelected = { selected.add(it) }
+        )
+
+        composeTestRule.onAllNodesWithContentDescription("Saved places Work").assertCountEquals(1)
+        val node = composeTestRule.onNodeWithContentDescription("Saved places Work")
+        node.assert(SemanticsMatcher.keyIsDefined(SemanticsActions.OnClick))
+
+        node.performSemanticsAction(SemanticsActions.OnClick)
+        assertEquals(listOf(work), selected)
+
+        selected.clear()
+        node.performClick()
+        assertEquals(listOf(work), selected)
+    }
+
+    @Test
+    fun `duplicate labels are disambiguated with radius and ordinal, and no ambiguous node remains`() {
+        val selected = mutableListOf<SavedPlaceUiModel>()
+        val second = SavedPlaceUiModel("Home", 5.0, 6.0, 300f)
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            savedPlaces = listOf(SavedPlaceUiModel("Home", 1.0, 2.0, 150f), second),
+            onSavedPlaceSelected = { selected.add(it) }
+        )
+
+        composeTestRule.onNodeWithContentDescription("Saved places Home, 150 m radius, 1 of 2").assertExists()
+        composeTestRule.onNodeWithContentDescription("Saved places Home, 300 m radius, 2 of 2").assertExists()
+        composeTestRule.onAllNodesWithContentDescription("Saved places Home").assertCountEquals(0)
+        composeTestRule.onNodeWithText("150 m, 1 of 2").assertExists()
+        composeTestRule.onNodeWithText("300 m, 2 of 2").assertExists()
+
+        composeTestRule.onNodeWithContentDescription("Saved places Home, 300 m radius, 2 of 2").performClick()
+        assertEquals(listOf(second), selected)
+    }
+
+    @Test
+    fun `ordinal follows the caller's list order, never reordered by the hub`() {
+        val first = SavedPlaceUiModel("Home", 5.0, 6.0, 300f)
+        val second = SavedPlaceUiModel("Home", 1.0, 2.0, 150f)
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            savedPlaces = listOf(first, second)
+        )
+
+        composeTestRule.onNodeWithContentDescription("Saved places Home, 300 m radius, 1 of 2").assertExists()
+        composeTestRule.onNodeWithContentDescription("Saved places Home, 150 m radius, 2 of 2").assertExists()
+    }
+
+    @Test
+    fun `identical duplicate entries render two distinct chip nodes without an exception`() {
+        val gym = SavedPlaceUiModel("Gym", 7.0, 8.0, 150f)
+        setPlaceMapPickerContent(pinLatitude = null, pinLongitude = null, savedPlaces = listOf(gym, gym))
+
+        composeTestRule.onNodeWithContentDescription("Saved places Gym, 150 m radius, 1 of 2").assertExists()
+        composeTestRule.onNodeWithContentDescription("Saved places Gym, 150 m radius, 2 of 2").assertExists()
+    }
+
+    @Test
+    fun `saved-place chip texts never render a coordinate`() {
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            savedPlaces = listOf(SavedPlaceUiModel("Office", 37.4, -122.1, 150f))
+        )
+
+        composeTestRule.onAllNodesWithText("37.4", substring = true).assertCountEquals(0)
+        composeTestRule.onAllNodesWithText("122.1", substring = true).assertCountEquals(0)
+    }
+
+    @Test
+    fun `PresetChip's additive contentDescription overload puts the label on the single clickable node`() {
+        var clicks = 0
+        composeTestRule.setContent {
+            PresetChip(label = "30 min", onClick = { clicks++ }, contentDescription = "Snooze thirty minutes")
+        }
+
+        composeTestRule.onAllNodesWithContentDescription("Snooze thirty minutes").assertCountEquals(1)
+        composeTestRule.onNodeWithContentDescription("Snooze thirty minutes")
+            .assert(SemanticsMatcher.keyIsDefined(SemanticsActions.OnClick))
+        composeTestRule.onNodeWithContentDescription("Snooze thirty minutes").performClick()
+        assertEquals(1, clicks)
+    }
+
+    @Test
+    fun `PresetChip's legacy overload still renders the label text unchanged`() {
+        composeTestRule.setContent {
+            PresetChip(label = "30 min", onClick = {})
+        }
+        composeTestRule.onNodeWithText("30 min").assertExists()
+    }
+
+    @Test
+    fun `all sources render in the documented visual order`() {
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalInspectionMode provides true) {
+                PlaceMapPicker(
+                    pinLatitude = 40.0,
+                    pinLongitude = -74.0,
+                    onPinChange = { _, _ -> },
+                    radiusMeters = 150f,
+                    onRadiusChange = {},
+                    minRadiusMeters = 50f,
+                    maxRadiusMeters = 1000f,
+                    defaultRadiusMeters = 150f,
+                    userAgent = TEST_USER_AGENT,
+                    onUseCurrentLocation = {},
+                    searchQuery = "",
+                    onSearchQueryChange = {},
+                    onSearch = {},
+                    savedPlaces = listOf(SavedPlaceUiModel("Home", 1.0, 2.0, 150f))
+                )
+            }
+        }
+
+        val currentLocationTop = composeTestRule.onNodeWithTag("${TEST_TAG}_current_location")
+            .getUnclippedBoundsInRoot().top
+        val searchTop = composeTestRule.onNodeWithTag("${TEST_TAG}_search").getUnclippedBoundsInRoot().top
+        val savedPlacesTop = composeTestRule.onNodeWithTag("${TEST_TAG}_saved_places").getUnclippedBoundsInRoot().top
+        val mapTop = composeTestRule.onNodeWithTag("${TEST_TAG}_map_placeholder").getUnclippedBoundsInRoot().top
+        val radiusTop = composeTestRule.onNodeWithTag("${TEST_TAG}_radius").getUnclippedBoundsInRoot().top
+
+        assertTrue("current location must be above search", currentLocationTop < searchTop)
+        assertTrue("search must be above saved places", searchTop < savedPlacesTop)
+        assertTrue("saved places must be above the map", savedPlacesTop < mapTop)
+        assertTrue("the map must be above the radius row", mapTop < radiusTop)
+    }
+
+    @Test
+    fun `at fontScale 2 every saved-place chip stays within the widget's width`() {
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalInspectionMode provides true) {
+                val baseDensity = LocalDensity.current
+                CompositionLocalProvider(LocalDensity provides Density(baseDensity.density, fontScale = 2f)) {
+                    Box(modifier = Modifier.width(320.dp)) {
+                        PlaceMapPicker(
+                            pinLatitude = null,
+                            pinLongitude = null,
+                            onPinChange = { _, _ -> },
+                            radiusMeters = 150f,
+                            onRadiusChange = {},
+                            minRadiusMeters = 50f,
+                            maxRadiusMeters = 1000f,
+                            defaultRadiusMeters = 150f,
+                            userAgent = TEST_USER_AGENT,
+                            savedPlaces = listOf(
+                                SavedPlaceUiModel("Home", 1.0, 2.0, 150f),
+                                SavedPlaceUiModel("Work", 3.0, 4.0, 200f),
+                                SavedPlaceUiModel("Gym", 5.0, 6.0, 250f),
+                                SavedPlaceUiModel("School", 7.0, 8.0, 300f),
+                                SavedPlaceUiModel("Library", 9.0, 10.0, 350f)
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
+        val widgetRight = composeTestRule.onNodeWithTag(TEST_TAG).getUnclippedBoundsInRoot().right
+        val chipNodes = composeTestRule.onAllNodes(hasContentDescription("Saved places", substring = true))
+        val chipCount = chipNodes.fetchSemanticsNodes().size
+        assertTrue("expected at least one saved-place chip node", chipCount > 0)
+        for (index in 0 until chipCount) {
+            val chipRight = chipNodes[index].getUnclippedBoundsInRoot().right
+            assertTrue(
+                "chip $index right edge ($chipRight) must stay within the widget's right edge ($widgetRight)",
+                chipRight <= widgetRight
+            )
+        }
+    }
+
+    @Test
+    fun `PlaceMapPicker source never imports or calls device location, geocoding or SharedPreferences APIs`() {
+        val source = strippedPlaceMapPickerSource()
+        assertFalse(source.contains("android.location"))
+        assertFalse(source.contains("Geocoder"))
+        assertFalse(source.contains("ACCESS_FINE_LOCATION"))
+        assertFalse(source.contains("getSharedPreferences"))
+    }
+
     // ---- Model tests: canSubmitSearch ----
 
     @Test
@@ -411,6 +766,48 @@ class PlaceMapPickerTest {
         assertFalse(canSubmitSearch("", false))
         assertFalse(canSubmitSearch("   ", false))
         assertFalse(canSubmitSearch("42 Main St", true))
+    }
+
+    // ---- Model tests: SavedPlaceUiModel helpers (164-03 Task 2) ----
+
+    @Test
+    fun `occurrenceIndices assigns a 0-based occurrence within each equal-value group`() {
+        assertEquals(listOf(0, 0, 1, 2), occurrenceIndices(listOf("a", "b", "a", "a")))
+    }
+
+    @Test
+    fun `savedPlaceChipLabels disambiguates duplicate labels with radius and ordinal`() {
+        val result = savedPlaceChipLabels(
+            listOf("Home", "Work", "Home"),
+            listOf("150 m", "300 m", "500 m")
+        )
+        assertEquals(
+            listOf(
+                "Saved places Home, 150 m radius, 1 of 2",
+                "Saved places Work",
+                "Saved places Home, 500 m radius, 2 of 2"
+            ),
+            result.map { it.contentDescription }
+        )
+        assertEquals(
+            listOf("150 m, 1 of 2", null, "500 m, 2 of 2"),
+            result.map { it.supportingLabel }
+        )
+    }
+
+    @Test
+    fun `savedPlaceChipLabels throws for mismatched list sizes`() {
+        assertThrows(IllegalArgumentException::class.java) {
+            savedPlaceChipLabels(listOf("Home"), listOf("150 m", "300 m"))
+        }
+    }
+
+    @Test
+    fun `SavedPlaceUiModel has value equality`() {
+        assertEquals(
+            SavedPlaceUiModel("Home", 1.0, 2.0, 150f),
+            SavedPlaceUiModel("Home", 1.0, 2.0, 150f)
+        )
     }
 
     // ---- Model tests: RadiusSpec ----
@@ -791,7 +1188,11 @@ class PlaceMapPickerTest {
         searchQuery: String = "",
         onSearch: ((query: String) -> Unit)? = null,
         searchErrorText: String? = null,
-        isResolving: Boolean = false
+        isResolving: Boolean = false,
+        onUseCurrentLocation: (() -> Unit)? = null,
+        currentLocationErrorText: String? = null,
+        savedPlaces: List<SavedPlaceUiModel> = emptyList(),
+        onSavedPlaceSelected: (SavedPlaceUiModel) -> Unit = {}
     ) {
         composeTestRule.setContent {
             CompositionLocalProvider(LocalInspectionMode provides true) {
@@ -806,10 +1207,14 @@ class PlaceMapPickerTest {
                     defaultRadiusMeters = 150f,
                     userAgent = TEST_USER_AGENT,
                     radiusStepMeters = 50f,
+                    onUseCurrentLocation = onUseCurrentLocation,
+                    currentLocationErrorText = currentLocationErrorText,
                     searchQuery = searchQuery,
                     onSearchQueryChange = {},
                     onSearch = onSearch,
                     searchErrorText = searchErrorText,
+                    savedPlaces = savedPlaces,
+                    onSavedPlaceSelected = onSavedPlaceSelected,
                     isResolving = isResolving
                 )
             }
