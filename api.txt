@@ -258,7 +258,7 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public final class PlaceMapPickerKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void PlaceMapPicker(Double? pinLatitude, Double? pinLongitude, kotlin.jvm.functions.Function2<java.lang.Double,java.lang.Double,kotlin.Unit> onPinChange, float radiusMeters, kotlin.jvm.functions.Function1<java.lang.Float,kotlin.Unit> onRadiusChange, float minRadiusMeters, float maxRadiusMeters, float defaultRadiusMeters, String userAgent, optional androidx.compose.ui.Modifier modifier, optional float radiusStepMeters, optional String testTag);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void PlaceMapPicker(Double? pinLatitude, Double? pinLongitude, kotlin.jvm.functions.Function2<java.lang.Double,java.lang.Double,kotlin.Unit> onPinChange, float radiusMeters, kotlin.jvm.functions.Function1<java.lang.Float,kotlin.Unit> onRadiusChange, float minRadiusMeters, float maxRadiusMeters, float defaultRadiusMeters, String userAgent, optional androidx.compose.ui.Modifier modifier, optional float radiusStepMeters, optional String searchQuery, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onSearchQueryChange, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onSearch, optional String? searchErrorText, optional boolean isResolving, optional String testTag);
   }
 
   public final class PresetChipKt {

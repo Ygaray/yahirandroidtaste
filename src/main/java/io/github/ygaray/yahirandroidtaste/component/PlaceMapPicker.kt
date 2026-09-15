@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -37,6 +39,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -115,9 +118,15 @@ private val CAMERA_FIT_BORDER: Dp = 32.dp
  * `MapView` is constructed so every consumer is OSM tile-policy compliant by default, including
  * the host's own `INTERNET` permission requirement.
  *
- * **Parameter order contract:** a later plan inserts search/current-location/saved-place
- * parameters between [radiusStepMeters] and [testTag] -- this signature's relative order of the
- * parameters before [radiusStepMeters] does not change.
+ * **Parameter order contract:** a later plan inserts current-location/saved-place parameters
+ * between [radiusStepMeters] and [testTag] -- this signature's relative order of the parameters
+ * before [radiusStepMeters] does not change.
+ *
+ * [onSearch] is the address-search source (D-05): the caller resolves [searchQuery] itself (the
+ * hub never geocodes) and reports the pin through [onPinChange] on success. A lookup fires on at
+ * most one explicit commit -- the field's IME Search action -- never on typing and never while
+ * [isResolving] is `true`; the delivered query is [searchQuery] trimmed of surrounding
+ * whitespace. `onSearch = null` hides the search field entirely.
  *
  * @param pinLatitude The pin's latitude, or `null` when no pin is set.
  * @param pinLongitude The pin's longitude, or `null` when no pin is set.
@@ -136,9 +145,23 @@ private val CAMERA_FIT_BORDER: Dp = 32.dp
  *   host application's id.
  * @param modifier Applied to the outer [Column].
  * @param radiusStepMeters The radius grid step in meters, or `0f` for whole-meter granularity.
- * @param testTag Root testTag; the map area, hint, attribution and radius row derive
- *   `"${testTag}_map"` / `"${testTag}_map_placeholder"`, `"${testTag}_hint"`,
- *   `"${testTag}_attribution"`, `"${testTag}_radius"`.
+ * @param onSearch Invoked with the trimmed, non-blank [searchQuery] on an explicit IME Search
+ *   action, only when [isResolving] is `false`. Hides the search field when `null`. The hub never
+ *   geocodes; the caller resolves the query and calls [onPinChange] itself.
+ * @param searchQuery The search field's current text; the hub renders it but never geocodes it.
+ * @param onSearchQueryChange Invoked on every keystroke in the search field with the raw
+ *   (untrimmed) text; never triggers a lookup by itself.
+ * @param searchErrorText Caller-supplied error text rendered under the search field, or `null`
+ *   to render none. The hub holds no copy of its own about why a lookup failed.
+ * @param isResolving `true` while a caller-owned lookup (search or current location) is in
+ *   flight. Disables only the controls that start a new lookup (the search field's IME Search
+ *   action and, when this plan lands, "Use current location"); saved places and map placement
+ *   stay interactive so a slow geocoder never blocks the user. The consumer must treat every
+ *   [onSearch]/[onPinChange] (and, later, current-location/saved-place) call as a new source and
+ *   discard an in-flight lookup result from an older one.
+ * @param testTag Root testTag; the map area, hint, attribution, radius row and search field
+ *   derive `"${testTag}_map"` / `"${testTag}_map_placeholder"`, `"${testTag}_hint"`,
+ *   `"${testTag}_attribution"`, `"${testTag}_radius"`, `"${testTag}_search"`.
  */
 @Composable
 fun PlaceMapPicker(
@@ -153,6 +176,11 @@ fun PlaceMapPicker(
     userAgent: String,
     modifier: Modifier = Modifier,
     radiusStepMeters: Float = 0f,
+    searchQuery: String = "",
+    onSearchQueryChange: (String) -> Unit = {},
+    onSearch: ((query: String) -> Unit)? = null,
+    searchErrorText: String? = null,
+    isResolving: Boolean = false,
     testTag: String = "place_map_picker"
 ) {
     val spec = remember(minRadiusMeters, maxRadiusMeters, defaultRadiusMeters, radiusStepMeters) {
@@ -162,6 +190,8 @@ fun PlaceMapPicker(
     val radius = spec.sanitize(radiusMeters)
     val currentOnPinChange by rememberUpdatedState(onPinChange)
     val currentOnRadiusChange by rememberUpdatedState(onRadiusChange)
+    val currentOnSearchQueryChange by rememberUpdatedState(onSearchQueryChange)
+    val currentOnSearch by rememberUpdatedState(onSearch)
 
     // Shared across the map area and the radius row (below) so a slider or handle emission can
     // record holder.lastEmittedRadiusMeters and suppress the camera-refit echo the map area's
@@ -173,6 +203,17 @@ fun PlaceMapPicker(
     holder.onRadiusChange = currentOnRadiusChange
 
     Column(modifier = modifier.fillMaxWidth().testTag(testTag)) {
+        if (currentOnSearch != null) {
+            PlaceMapSearchSection(
+                searchQuery = searchQuery,
+                onSearchQueryChange = currentOnSearchQueryChange,
+                onSearch = currentOnSearch,
+                searchErrorText = searchErrorText,
+                isResolving = isResolving,
+                testTag = testTag
+            )
+            Spacer(modifier = Modifier.height(Dimens.CompactPadding))
+        }
         PlaceMapArea(holder = holder, pin = pin, radius = radius, userAgent = userAgent, testTag = testTag)
         if (pin != null) {
             Spacer(modifier = Modifier.height(Dimens.CompactPadding))
@@ -184,6 +225,47 @@ fun PlaceMapPicker(
                 onRadiusChange = currentOnRadiusChange
             )
         }
+    }
+}
+
+/**
+ * The address-search source (D-05): a [ClearableTextField] whose `onValueChange` only forwards
+ * [onSearchQueryChange] (never a lookup) and whose IME Search action calls [onSearch] with the
+ * trimmed query, gated through [canSubmitSearch] so a blank query or a lookup already in flight
+ * never fires. [searchErrorText] renders directly under the field only when non-null; the hub
+ * never invents its own error copy.
+ */
+@Composable
+private fun PlaceMapSearchSection(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    onSearch: ((query: String) -> Unit)?,
+    searchErrorText: String?,
+    isResolving: Boolean,
+    testTag: String
+) {
+    ClearableTextField(
+        value = searchQuery,
+        onValueChange = onSearchQueryChange,
+        label = { Text("Search for an address") },
+        singleLine = true,
+        isError = searchErrorText != null,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                if (canSubmitSearch(searchQuery, isResolving)) {
+                    onSearch?.invoke(searchQuery.trim())
+                }
+            }
+        ),
+        modifier = Modifier.fillMaxWidth().testTag("${testTag}_search")
+    )
+    if (searchErrorText != null) {
+        Text(
+            text = searchErrorText,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.error
+        )
     }
 }
 

@@ -18,7 +18,9 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.test.performTextInput
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThrows
@@ -236,6 +238,179 @@ class PlaceMapPickerTest {
 
         assertTrue("The pre-swap callback must never fire after the swap", first.isEmpty())
         assertEquals(600f, second.last())
+    }
+
+    // ---- Search tests (164-03 Task 1) ----
+
+    @Test
+    fun `onSearch null hides the search field`() {
+        setPlaceMapPickerContent(pinLatitude = null, pinLongitude = null, onSearch = null)
+        composeTestRule.onNodeWithText("Search for an address").assertDoesNotExist()
+    }
+
+    @Test
+    fun `typing in the search field only forwards onSearchQueryChange, never onSearch`() {
+        val queries = mutableListOf<String>()
+        val submitted = mutableListOf<String>()
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalInspectionMode provides true) {
+                var query by remember { mutableStateOf("") }
+                PlaceMapPicker(
+                    pinLatitude = null,
+                    pinLongitude = null,
+                    onPinChange = { _, _ -> },
+                    radiusMeters = 150f,
+                    onRadiusChange = {},
+                    minRadiusMeters = 50f,
+                    maxRadiusMeters = 1000f,
+                    defaultRadiusMeters = 150f,
+                    userAgent = TEST_USER_AGENT,
+                    searchQuery = query,
+                    onSearchQueryChange = {
+                        query = it
+                        queries.add(it)
+                    },
+                    onSearch = { submitted.add(it) }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("${TEST_TAG}_search").performTextInput("42 Main")
+
+        assertTrue("onSearchQueryChange must fire at least once", queries.isNotEmpty())
+        assertTrue("onSearch must never fire from typing", submitted.isEmpty())
+    }
+
+    @Test
+    fun `IME Search delivers the query exactly once`() {
+        val submitted = mutableListOf<String>()
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            searchQuery = "42 Main St",
+            onSearch = { submitted.add(it) }
+        )
+
+        composeTestRule.onNodeWithTag("${TEST_TAG}_search").performImeAction()
+
+        assertEquals(listOf("42 Main St"), submitted)
+    }
+
+    @Test
+    fun `IME Search trims surrounding whitespace before delivering the query`() {
+        val submitted = mutableListOf<String>()
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            searchQuery = "  42 Main St  ",
+            onSearch = { submitted.add(it) }
+        )
+
+        composeTestRule.onNodeWithTag("${TEST_TAG}_search").performImeAction()
+
+        assertEquals(listOf("42 Main St"), submitted)
+    }
+
+    @Test
+    fun `IME Search on a blank query never calls onSearch`() {
+        val submitted = mutableListOf<String>()
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            searchQuery = "   ",
+            onSearch = { submitted.add(it) }
+        )
+
+        composeTestRule.onNodeWithTag("${TEST_TAG}_search").performImeAction()
+
+        assertTrue(submitted.isEmpty())
+    }
+
+    @Test
+    fun `IME Search while isResolving never calls onSearch`() {
+        val submitted = mutableListOf<String>()
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            searchQuery = "42 Main St",
+            onSearch = { submitted.add(it) },
+            isResolving = true
+        )
+
+        composeTestRule.onNodeWithTag("${TEST_TAG}_search").performImeAction()
+
+        assertTrue(submitted.isEmpty())
+    }
+
+    @Test
+    fun `searchErrorText renders only when non-null`() {
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            onSearch = {},
+            searchErrorText = "No address found"
+        )
+        composeTestRule.onNodeWithText("No address found").assertExists()
+    }
+
+    @Test
+    fun `searchErrorText null renders no error text`() {
+        setPlaceMapPickerContent(
+            pinLatitude = null,
+            pinLongitude = null,
+            onSearch = {},
+            searchErrorText = null
+        )
+        composeTestRule.onNodeWithText("No address found").assertDoesNotExist()
+    }
+
+    @Test
+    fun `end to end search sets the pin which the widget then renders with its radius row`() {
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalInspectionMode provides true) {
+                var pinLatitude by remember { mutableStateOf<Double?>(null) }
+                var pinLongitude by remember { mutableStateOf<Double?>(null) }
+                var query by remember { mutableStateOf("") }
+                PlaceMapPicker(
+                    pinLatitude = pinLatitude,
+                    pinLongitude = pinLongitude,
+                    onPinChange = { lat, lng ->
+                        pinLatitude = lat
+                        pinLongitude = lng
+                    },
+                    radiusMeters = 150f,
+                    onRadiusChange = {},
+                    minRadiusMeters = 50f,
+                    maxRadiusMeters = 1000f,
+                    defaultRadiusMeters = 150f,
+                    userAgent = TEST_USER_AGENT,
+                    searchQuery = query,
+                    onSearchQueryChange = { query = it },
+                    onSearch = {
+                        pinLatitude = 51.5
+                        pinLongitude = -0.12
+                    }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Tap the map to drop a pin").assertExists()
+
+        composeTestRule.onNodeWithTag("${TEST_TAG}_search").performTextInput("London")
+        composeTestRule.onNodeWithTag("${TEST_TAG}_search").performImeAction()
+
+        composeTestRule.onNodeWithText("Tap the map to drop a pin").assertDoesNotExist()
+        composeTestRule.onNodeWithTag("${TEST_TAG}_radius").assertExists()
+    }
+
+    // ---- Model tests: canSubmitSearch ----
+
+    @Test
+    fun `canSubmitSearch requires a non-blank query and no lookup in flight`() {
+        assertTrue(canSubmitSearch("42 Main St", false))
+        assertFalse(canSubmitSearch("", false))
+        assertFalse(canSubmitSearch("   ", false))
+        assertFalse(canSubmitSearch("42 Main St", true))
     }
 
     // ---- Model tests: RadiusSpec ----
@@ -612,7 +787,11 @@ class PlaceMapPickerTest {
     private fun setPlaceMapPickerContent(
         pinLatitude: Double?,
         pinLongitude: Double?,
-        radiusMeters: Float = 150f
+        radiusMeters: Float = 150f,
+        searchQuery: String = "",
+        onSearch: ((query: String) -> Unit)? = null,
+        searchErrorText: String? = null,
+        isResolving: Boolean = false
     ) {
         composeTestRule.setContent {
             CompositionLocalProvider(LocalInspectionMode provides true) {
@@ -626,7 +805,12 @@ class PlaceMapPickerTest {
                     maxRadiusMeters = 1000f,
                     defaultRadiusMeters = 150f,
                     userAgent = TEST_USER_AGENT,
-                    radiusStepMeters = 50f
+                    radiusStepMeters = 50f,
+                    searchQuery = searchQuery,
+                    onSearchQueryChange = {},
+                    onSearch = onSearch,
+                    searchErrorText = searchErrorText,
+                    isResolving = isResolving
                 )
             }
         }

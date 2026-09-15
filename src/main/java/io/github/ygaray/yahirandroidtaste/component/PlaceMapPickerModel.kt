@@ -233,6 +233,16 @@ internal fun radiusBounds(latitude: Double, longitude: Double, radiusMeters: Flo
 /** Formats [value] as rounded whole meters followed by `" m"` (e.g. `"300 m"`). */
 internal fun formatMeters(value: Float): String = "${round(value).toInt()} m"
 
+/**
+ * HUBW-02 D-05: gates PlaceMapPicker's address-search IME Search action -- `true` only when
+ * [query] is not blank and [isResolving] is `false`, so a lookup fires on at most one explicit,
+ * non-concurrent commit and never on a blank/whitespace-only query. The caller applies this to
+ * the *trimmed* query; this function itself does not trim (blank-checking already treats
+ * whitespace-only input as blank via [String.isBlank]).
+ */
+internal fun canSubmitSearch(query: String, isResolving: Boolean): Boolean =
+    query.isNotBlank() && !isResolving
+
 /** Mean earth radius in meters (IUGG), used by [haversineMeters] and [handlePoint]'s round-trip. */
 internal const val EARTH_RADIUS_METERS = 6_371_008.8
 
