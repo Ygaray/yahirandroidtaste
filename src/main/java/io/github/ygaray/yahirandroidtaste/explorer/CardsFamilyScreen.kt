@@ -38,6 +38,7 @@ import io.github.ygaray.yahirandroidtaste.component.CardTagRow
 import io.github.ygaray.yahirandroidtaste.component.CardTypeChip
 import io.github.ygaray.yahirandroidtaste.component.CountBadge
 import io.github.ygaray.yahirandroidtaste.component.ListCard
+import io.github.ygaray.yahirandroidtaste.component.ReminderIndicator
 import io.github.ygaray.yahirandroidtaste.component.TagListItem
 import io.github.ygaray.yahirandroidtaste.component.TextCard
 import io.github.ygaray.yahirandroidtaste.component.VoiceCard
@@ -319,6 +320,21 @@ private fun TextCardVariants() {
         isPinned = false,
         tags = ExplorerFakeData.tagChips
     )
+    DividerRow()
+    TextCardSection(
+        label = "TextCard — 4 tags + 2 reminders (status row, +N and ⋮ reachable)",
+        title = ExplorerFakeData.SHORT_TITLE,
+        isPinned = false,
+        tags = ExplorerFakeData.tagChips,
+        reminderCount = 2
+    )
+    DividerRow()
+    TextCardSection(
+        label = "TextCard — title-less + 1 reminder",
+        title = "",
+        isPinned = false,
+        reminderCount = 1
+    )
 }
 
 @Composable
@@ -333,6 +349,21 @@ private fun ListCardVariants() {
         isPinned = false,
         tags = ExplorerFakeData.tagChips.take(3)
     )
+    DividerRow()
+    ListCardSection(
+        label = "ListCard — 4 tags + 2 reminders (status row, +N and ⋮ reachable)",
+        title = ExplorerFakeData.SHORT_TITLE,
+        isPinned = false,
+        tags = ExplorerFakeData.tagChips,
+        reminderCount = 2
+    )
+    DividerRow()
+    ListCardSection(
+        label = "ListCard — title-less + 1 reminder",
+        title = "",
+        isPinned = false,
+        reminderCount = 1
+    )
 }
 
 @Composable
@@ -346,6 +377,21 @@ private fun AlbumCardVariants() {
         title = ExplorerFakeData.SHORT_TITLE,
         isPinned = false,
         tags = ExplorerFakeData.tagChips.take(1)
+    )
+    DividerRow()
+    AlbumCardSection(
+        label = "AlbumCard — 4 tags + 2 reminders (status row, +N and ⋮ reachable)",
+        title = ExplorerFakeData.SHORT_TITLE,
+        isPinned = false,
+        tags = ExplorerFakeData.tagChips,
+        reminderCount = 2
+    )
+    DividerRow()
+    AlbumCardSection(
+        label = "AlbumCard — title-less + 1 reminder",
+        title = "",
+        isPinned = false,
+        reminderCount = 1
     )
 }
 
@@ -435,6 +481,22 @@ private fun VoiceCardVariants() {
                 samplesPath = if (i == 0) demoSamplesPath else null
             )
         }
+    )
+    DividerRow()
+
+    VoiceCardSection(
+        label = "VoiceCard — 4 tags + 2 reminders (status row, +N and ⋮ reachable)",
+        title = ExplorerFakeData.SHORT_TITLE,
+        isPinned = false,
+        tags = ExplorerFakeData.tagChips,
+        reminderCount = 2
+    )
+    DividerRow()
+    VoiceCardSection(
+        label = "VoiceCard — title-less + 1 reminder",
+        title = "",
+        isPinned = false,
+        reminderCount = 1
     )
 }
 
@@ -605,13 +667,19 @@ private fun TagListItemDefaultPreview() {
 private fun CardBaseContent(
     tactileDepth: Boolean = false,
     accent: Color? = null,
-    showChipHeader: Boolean = false
+    showChipHeader: Boolean = false,
+    showStatus: Boolean = false
 ) {
     val openRowState = remember { mutableStateOf<AnchoredDraggableState<SwipeAnchor>?>(null) }
     CardBase(
         openRowState = openRowState,
         tactileDepth = tactileDepth,
         accent = accent,
+        // CARD-01/D-07 (164-04): demonstrates the statusContent overload directly (naming it
+        // selects the new overload over the legacy v1.12.x one).
+        statusContent = if (showStatus) {
+            { ReminderIndicator(reminderCount = 2) }
+        } else null,
         headerContent = {
             if (showChipHeader) {
                 CardTypeChip(
@@ -655,10 +723,16 @@ private fun CardBaseSection(
     label: String,
     tactileDepth: Boolean = false,
     accent: Color? = null,
-    showChipHeader: Boolean = false
+    showChipHeader: Boolean = false,
+    showStatus: Boolean = false
 ) {
     SectionLabel(label)
-    CardBaseContent(tactileDepth = tactileDepth, accent = accent, showChipHeader = showChipHeader)
+    CardBaseContent(
+        tactileDepth = tactileDepth,
+        accent = accent,
+        showChipHeader = showChipHeader,
+        showStatus = showStatus
+    )
 }
 
 @Composable
@@ -687,6 +761,14 @@ private fun CardBaseVariants() {
         tactileDepth = true,
         accent = Color(ACCENT_COLORS[7].light),
         showChipHeader = true
+    )
+    DividerRow()
+    CardBaseSection(
+        label = "CardBase — depth + statusContent (reminder indicator)",
+        tactileDepth = true,
+        accent = Color(ACCENT_COLORS[7].light),
+        showChipHeader = true,
+        showStatus = true
     )
 }
 
@@ -726,7 +808,8 @@ private fun CardsFamilyTopBar(onNavigateBack: () -> Unit, themeMode: ThemeMode, 
 private fun TextCardContent(
     title: String,
     isPinned: Boolean,
-    tags: List<TagChipUiModel> = emptyList()
+    tags: List<TagChipUiModel> = emptyList(),
+    reminderCount: Int = 0
 ) {
     val openRowState = remember { mutableStateOf<AnchoredDraggableState<SwipeAnchor>?>(null) }
     TextCard(
@@ -747,6 +830,7 @@ private fun TextCardContent(
         tags = tags,
         onTagClick = {},
         onSiblingsClick = {},
+        reminderCount = reminderCount,
         modifier = Modifier.padding(horizontal = 16.dp)
     )
 }
@@ -756,17 +840,19 @@ private fun TextCardSection(
     label: String,
     title: String,
     isPinned: Boolean,
-    tags: List<TagChipUiModel> = emptyList()
+    tags: List<TagChipUiModel> = emptyList(),
+    reminderCount: Int = 0
 ) {
     SectionLabel(label)
-    TextCardContent(title = title, isPinned = isPinned, tags = tags)
+    TextCardContent(title = title, isPinned = isPinned, tags = tags, reminderCount = reminderCount)
 }
 
 @Composable
 private fun ListCardContent(
     title: String,
     isPinned: Boolean,
-    tags: List<TagChipUiModel> = emptyList()
+    tags: List<TagChipUiModel> = emptyList(),
+    reminderCount: Int = 0
 ) {
     val openRowState = remember { mutableStateOf<AnchoredDraggableState<SwipeAnchor>?>(null) }
     ListCard(
@@ -789,6 +875,7 @@ private fun ListCardContent(
         tags = tags,
         onTagClick = {},
         onSiblingsClick = {},
+        reminderCount = reminderCount,
         modifier = Modifier.padding(horizontal = 16.dp)
     )
 }
@@ -798,17 +885,19 @@ private fun ListCardSection(
     label: String,
     title: String,
     isPinned: Boolean,
-    tags: List<TagChipUiModel> = emptyList()
+    tags: List<TagChipUiModel> = emptyList(),
+    reminderCount: Int = 0
 ) {
     SectionLabel(label)
-    ListCardContent(title = title, isPinned = isPinned, tags = tags)
+    ListCardContent(title = title, isPinned = isPinned, tags = tags, reminderCount = reminderCount)
 }
 
 @Composable
 private fun AlbumCardContent(
     title: String,
     isPinned: Boolean,
-    tags: List<TagChipUiModel> = emptyList()
+    tags: List<TagChipUiModel> = emptyList(),
+    reminderCount: Int = 0
 ) {
     val openRowState = remember { mutableStateOf<AnchoredDraggableState<SwipeAnchor>?>(null) }
     val thumbnails = if (isPinned) ExplorerFakeData.mediaThumbnails else ExplorerFakeData.emptyMediaThumbnails
@@ -827,6 +916,7 @@ private fun AlbumCardContent(
         tags = tags,
         onTagClick = {},
         onSiblingsClick = {},
+        reminderCount = reminderCount,
         modifier = Modifier.padding(horizontal = 16.dp)
     )
 }
@@ -836,10 +926,11 @@ private fun AlbumCardSection(
     label: String,
     title: String,
     isPinned: Boolean,
-    tags: List<TagChipUiModel> = emptyList()
+    tags: List<TagChipUiModel> = emptyList(),
+    reminderCount: Int = 0
 ) {
     SectionLabel(label)
-    AlbumCardContent(title = title, isPinned = isPinned, tags = tags)
+    AlbumCardContent(title = title, isPinned = isPinned, tags = tags, reminderCount = reminderCount)
 }
 
 @Composable
@@ -847,7 +938,8 @@ private fun VoiceCardContent(
     title: String,
     isPinned: Boolean,
     tags: List<TagChipUiModel> = emptyList(),
-    clips: List<VoiceClipUiModel> = emptyList()
+    clips: List<VoiceClipUiModel> = emptyList(),
+    reminderCount: Int = 0
 ) {
     val openRowState = remember { mutableStateOf<AnchoredDraggableState<SwipeAnchor>?>(null) }
     VoiceCard(
@@ -867,6 +959,7 @@ private fun VoiceCardContent(
         tags = tags,
         onTagClick = {},
         onSiblingsClick = {},
+        reminderCount = reminderCount,
         modifier = Modifier.padding(horizontal = 16.dp),
         clips = clips
     )
@@ -878,8 +971,15 @@ private fun VoiceCardSection(
     title: String,
     isPinned: Boolean,
     tags: List<TagChipUiModel> = emptyList(),
-    clips: List<VoiceClipUiModel> = emptyList()
+    clips: List<VoiceClipUiModel> = emptyList(),
+    reminderCount: Int = 0
 ) {
     SectionLabel(label)
-    VoiceCardContent(title = title, isPinned = isPinned, tags = tags, clips = clips)
+    VoiceCardContent(
+        title = title,
+        isPinned = isPinned,
+        tags = tags,
+        clips = clips,
+        reminderCount = reminderCount
+    )
 }

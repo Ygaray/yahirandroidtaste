@@ -39,14 +39,18 @@ renders inside `YahirAndroidTasteTheme` (family 7's theme wrapper — see the ta
 
 Card faces for the five archetypes (Text, List, Album, Voice) plus shared card-face sub-rows. All
 card faces support the library's reveal-confirm swipe convention (left→delete, right→edit) via the
-underlying `CardBase` shell.
+underlying `CardBase` shell. `CardBase` also has a `statusContent` overload (164-04, CARD-01) — an
+optional status row between the body and the bottom tag/actions row that renders nothing and
+reserves no space when null; the v1.12.x signature remains available as a second overload, so
+every existing call site is unchanged. `TextCard`, `ListCard`, `AlbumCard` and `VoiceCard` all
+render their `reminderCount` indicator through that row rather than in the header.
 
 | Composable | Purpose | Key parameters |
 |-----------|---------|----------------|
-| `TextCard` | Text-note card face | `id, title, content: String?`, tap/swipe callbacks |
-| `ListCard` | List card face (bulleted / ordered / checkbox `subType`) | `id, title, subType, …` list preview + callbacks |
-| `AlbumCard` | Photo-album card face | `id, title, isPinned, …` thumbnails + callbacks |
-| `VoiceCard` | Voice-note card face | `id, title, durationMs, …` play/rename callbacks |
+| `TextCard` | Text-note card face | `id, title, content: String?, reminderCount`, tap/swipe callbacks |
+| `ListCard` | List card face (bulleted / ordered / checkbox `subType`) | `id, title, subType, reminderCount, …` list preview + callbacks |
+| `AlbumCard` | Photo-album card face | `id, title, isPinned, reminderCount, …` thumbnails + callbacks |
+| `VoiceCard` | Voice-note card face | `id, title, durationMs, reminderCount, …` play/rename callbacks |
 | `AdaptiveMediaPreview` | Adaptive thumbnail grid used inside media card faces | `cells: List<MediaThumbnailCell>, onCellTap(index), onOverflowTap` |
 | `CardTagRow` | Capped tag-chip row on a card face (with `+N` overflow) | `tags: List<TagChipUiModel>, onTagClick(tagId), onSiblingsClick` |
 | `CardQuickView` | Read-only quick-view of a card's metadata | `title, createdAt, updatedAt, …` |
