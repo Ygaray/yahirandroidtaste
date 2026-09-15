@@ -21,11 +21,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.AccentColorPicker
 import io.github.ygaray.yahirandroidtaste.component.CropOverlay
 import io.github.ygaray.yahirandroidtaste.component.DateTimePicker
 import io.github.ygaray.yahirandroidtaste.component.IconPickerGrid
+import io.github.ygaray.yahirandroidtaste.component.PlaceMapPicker
 import io.github.ygaray.yahirandroidtaste.component.SegmentedOptionSelector
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
@@ -113,6 +115,60 @@ internal val pickersFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             ComponentRegistry.StateCell("Focused")
         ),
         content = { DateTimePickerVariants() }
+    ),
+    ComponentRegistry.Entry(
+        name = "PlaceMapPicker",
+        family = ExplorerFamilies.PICKERS,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = {
+                    var latitude by remember { mutableStateOf<Double?>(null) }
+                    var longitude by remember { mutableStateOf<Double?>(null) }
+                    var radius by remember { mutableStateOf(150f) }
+                    PlaceMapPicker(
+                        pinLatitude = latitude,
+                        pinLongitude = longitude,
+                        onPinChange = { lat, lng -> latitude = lat; longitude = lng },
+                        radiusMeters = radius,
+                        onRadiusChange = { radius = it },
+                        minRadiusMeters = 50f,
+                        maxRadiusMeters = 1000f,
+                        defaultRadiusMeters = 150f,
+                        radiusStepMeters = 50f,
+                        userAgent = LocalContext.current.packageName,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+            ),
+            ComponentRegistry.StateCell(
+                "Pressed / Selected",
+                render = {
+                    // A fixture coordinate in code only — never shown as text (T-164-04).
+                    var latitude by remember { mutableStateOf<Double?>(40.0) }
+                    var longitude by remember { mutableStateOf<Double?>(-74.0) }
+                    var radius by remember { mutableStateOf(300f) }
+                    PlaceMapPicker(
+                        pinLatitude = latitude,
+                        pinLongitude = longitude,
+                        onPinChange = { lat, lng -> latitude = lat; longitude = lng },
+                        radiusMeters = radius,
+                        onRadiusChange = { radius = it },
+                        minRadiusMeters = 50f,
+                        maxRadiusMeters = 1000f,
+                        defaultRadiusMeters = 150f,
+                        radiusStepMeters = 50f,
+                        userAgent = LocalContext.current.packageName,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+            ),
+            // PlaceMapPicker has no enabled param — N/A.
+            ComponentRegistry.StateCell("Disabled"),
+            // PlaceMapPicker has no focus-visual override — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { PlaceMapPickerVariants() }
     ),
     ComponentRegistry.Entry(
         name = "IconPickerGrid",
@@ -293,6 +349,28 @@ private fun DateTimePickerVariants() {
     )
 }
 
+/** PlaceMapPicker's demo (HUBW-02) -- tap to drop a pin, drag the handle, or slide to resize. */
+@Composable
+private fun PlaceMapPickerVariants() {
+    SectionLabel("PlaceMapPicker - tap to drop a pin, drag the handle or slide to resize")
+    var latitude by remember { mutableStateOf<Double?>(null) }
+    var longitude by remember { mutableStateOf<Double?>(null) }
+    var radius by remember { mutableStateOf(150f) }
+    PlaceMapPicker(
+        pinLatitude = latitude,
+        pinLongitude = longitude,
+        onPinChange = { lat, lng -> latitude = lat; longitude = lng },
+        radiusMeters = radius,
+        onRadiusChange = { radius = it },
+        minRadiusMeters = 50f,
+        maxRadiusMeters = 1000f,
+        defaultRadiusMeters = 150f,
+        radiusStepMeters = 50f,
+        userAgent = LocalContext.current.packageName,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
+}
+
 /** CropOverlay free-crop fixture — small bitmap dims, no aspect-ratio lock, no prior selection. */
 @Composable
 private fun CropOverlayFreeCropPreview() {
@@ -357,4 +435,3 @@ private fun PickersFamilyTopBar(onNavigateBack: () -> Unit, themeMode: ThemeMode
         actions = { ExplorerThemeToggleAction(themeMode = themeMode, onToggleTheme = onToggleTheme) }
     )
 }
-
