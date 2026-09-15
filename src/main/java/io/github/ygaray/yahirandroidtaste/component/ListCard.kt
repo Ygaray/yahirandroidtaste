@@ -119,8 +119,9 @@ import io.github.ygaray.yahirandroidtaste.theme.TactileType
  *   (default), the row falls back to this card's local tag-less rename dialog, so every existing
  *   call site compiles and behaves as before. The consumer app wires it at Phase 113.
  * @param reminderCount REMIND-09: caller-supplied number of active reminders attached to this
- *   card. Defaulted to zero so every existing call site compiles and shows nothing. The consumer
- *   app computes the real value and binds it at Phase 155.
+ *   card. Defaulted to zero so every existing call site compiles and shows nothing. Rendered
+ *   through [CardBase]'s `statusContent` row (CARD-01), not the header. The consumer app
+ *   computes the real value and binds it at Phase 155.
  * @param accent FACE-02: caller-supplied per-card colour, forwarded verbatim into [CardBase]'s
  *   accent spine, into the header [CardTypeChip], and into the completion pill/progress bar. The
  *   hub performs zero tag-resolution of its own — `:app`'s `CardAccentResolver` (Phase 131)
@@ -217,8 +218,7 @@ fun ListCard(
                     accent = accent,
                     subType = subType,
                     completed = items.count { it.isCompleted },
-                    total = items.size,
-                    reminderCount = reminderCount
+                    total = items.size
                 )
             }
         },
@@ -232,6 +232,12 @@ fun ListCard(
                 accent = accent
             )
         },
+        // CARD-01/D-07: caller owns "no reminders, no slot" (mirrors WR-01 for tags) — pass
+        // null so CardBase composes no status row when there is nothing to show. Naming
+        // statusContent selects CardBase's statusContent-accepting overload.
+        statusContent = if (reminderCount > 0) {
+            { ReminderIndicator(reminderCount = reminderCount) }
+        } else null,
         // WR-01: caller owns "no tags → no slot" — pass null so CardBase composes no tag-row Box
         // for an untagged card, honoring the same optional-slot contract as header/body/footer.
         tagRowContent = if (tags.isNotEmpty()) {
@@ -395,8 +401,7 @@ private fun RowScope.ListCardHeaderContent(
     accent: Color?,
     subType: String,
     completed: Int,
-    total: Int,
-    reminderCount: Int
+    total: Int
 ) {
     // Type chip (FACE-02, Phase 132 DS-02): leads the header, carries the 16dp leading inset
     // the title used to own (PD-1). No explicit tint — the chip resolves the icon's size and
@@ -441,14 +446,6 @@ private fun RowScope.ListCardHeaderContent(
             modifier = Modifier.size(16.dp),
             tint = MaterialTheme.colorScheme.tertiary
         )
-    }
-    // Reminder presence indicator (REMIND-09) — same gated-cluster shape TextCard's
-    // image-count indicator uses. Both the spacer and the indicator are gated on a positive
-    // count so nothing at all composes and no space is reserved at zero
-    // (conditional-render-no-dead-space).
-    if (reminderCount > 0) {
-        Spacer(modifier = Modifier.width(Dimens.ContentSpacing))
-        ReminderIndicator(reminderCount = reminderCount)
     }
     // Completion pill (FACE-02) — trailing-most element, gated on the one shared
     // listCompletionVisible predicate the body progress bar and this header gate also read.

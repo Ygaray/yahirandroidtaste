@@ -412,8 +412,9 @@ internal fun VoiceClipRowsSection(clips: List<VoiceClipUiModel>, modifier: Modif
  *   mini-rows, each carrying no gesture of its own. The hub preserves the caller's list order and
  *   never sorts, filters or dedupes it.
  * @param reminderCount REMIND-09: caller-supplied number of active reminders attached to this
- *   card. Defaulted to zero so every existing call site compiles and shows nothing. The consumer
- *   app computes the real value and binds it at Phase 155.
+ *   card. Defaulted to zero so every existing call site compiles and shows nothing. Rendered
+ *   through [CardBase]'s `statusContent` row (CARD-01), not the header. The consumer app
+ *   computes the real value and binds it at Phase 155.
  * @param accent FACE-03: caller-supplied per-card colour, forwarded verbatim into [CardBase]'s
  *   accent spine and into the header [CardTypeChip]. The hub performs zero tag-resolution of its
  *   own — `:app`'s `CardAccentResolver` (Phase 131) resolves the actual value. `null` (default)
@@ -601,14 +602,6 @@ fun VoiceCard(
                         tint = MaterialTheme.colorScheme.tertiary
                     )
                 }
-                // Reminder presence indicator (REMIND-09) — same gated-cluster shape TextCard's
-                // image-count indicator uses. Both the spacer and the indicator are gated on a
-                // positive count so nothing at all composes and no space is reserved at zero
-                // (conditional-render-no-dead-space).
-                if (reminderCount > 0) {
-                    Spacer(modifier = Modifier.width(Dimens.ContentSpacing))
-                    ReminderIndicator(reminderCount = reminderCount)
-                }
                 // Clip-count header pill (Phase 129 DS-03 D-02) — trailing element, only when
                 // clips is non-empty. Total sums every clip, not just the visible/capped rows.
                 if (clips.isNotEmpty()) {
@@ -678,6 +671,12 @@ fun VoiceCard(
                 }
             }
         },
+        // CARD-01/D-07: caller owns "no reminders, no slot" (mirrors WR-01 for tags) — pass
+        // null so CardBase composes no status row when there is nothing to show. Naming
+        // statusContent selects CardBase's statusContent-accepting overload.
+        statusContent = if (reminderCount > 0) {
+            { ReminderIndicator(reminderCount = reminderCount) }
+        } else null,
         // WR-01: caller owns "no tags → no slot" — pass null so CardBase composes no tag-row Box
         // for an untagged card, honoring the same optional-slot contract as header/body/footer.
         tagRowContent = if (tags.isNotEmpty()) {

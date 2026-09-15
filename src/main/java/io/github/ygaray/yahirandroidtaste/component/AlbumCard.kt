@@ -103,8 +103,9 @@ private val MOSAIC_BLOCK_HEIGHT = 220.dp
  *   [CardTagRow.onTagRemoveFromCard]. Null (default) omits the menu's "Remove from this card"
  *   item.
  * @param reminderCount REMIND-09: caller-supplied number of active reminders attached to this
- *   card. Defaulted to zero so every existing call site compiles and shows nothing. The consumer
- *   app computes the real value and binds it at Phase 155.
+ *   card. Defaulted to zero so every existing call site compiles and shows nothing. Rendered
+ *   through [CardBase]'s `statusContent` row (CARD-01), not the header. The consumer app
+ *   computes the real value and binds it at Phase 155.
  * @param accent FACE-04: caller-supplied per-card colour, forwarded verbatim into [CardBase]'s
  *   accent spine and into the header [CardTypeChip]. The hub performs zero tag-resolution of its
  *   own — `:app`'s `CardAccentResolver` (Phase 131) resolves the actual value. `null` (default)
@@ -251,13 +252,16 @@ fun AlbumCard(
                 }
             )
         },
-        // G-155-3/REMIND-09: widened from `if (!titleSlotVisible(title)) null else` — a
-        // title-less Album card that is pinned/favorited/has a reminder must still render the
-        // header row for those indicators (Album has no image-count header indicator — its
-        // image count lives in the body's AdaptiveMediaPreview), mirroring TextCard.kt's
-        // identical OR-guard shape.
+        // G-155-3: widened from `if (!titleSlotVisible(title)) null else` — a title-less
+        // Album card that is pinned/favorited must still render the header row for those
+        // indicators (Album has no image-count header indicator — its image count lives in
+        // the body's AdaptiveMediaPreview), mirroring TextCard.kt's identical OR-guard shape.
+        // CARD-01/D-07: the reminder count no longer participates in this guard — the reminder
+        // indicator moved to CardBase's statusContent row, which composes independently of the
+        // header (see the `statusContent` argument below), so a title-less/unpinned/unfavorited
+        // card with only a reminder now shows no header, same as without a reminder.
         headerContent = if (
-            !titleSlotVisible(title) && !isPinned && !isFavorite && reminderCount <= 0
+            !titleSlotVisible(title) && !isPinned && !isFavorite
         ) {
             null
         } else {
@@ -273,7 +277,7 @@ fun AlbumCard(
                 }
                 // Title — independently conditional (G-155-3) so a title-less card still
                 // renders no title text while the header row itself stays composed for the
-                // pin/favorite/reminder indicators (conditional-render-no-dead-space).
+                // pin/favorite indicators (conditional-render-no-dead-space).
                 if (titleSlotVisible(title)) {
                     Text(
                         text = title,
@@ -307,14 +311,6 @@ fun AlbumCard(
                         tint = MaterialTheme.colorScheme.tertiary
                     )
                 }
-                // Reminder presence indicator (REMIND-09) — same gated-cluster shape TextCard's
-                // image-count indicator uses. Both the spacer and the indicator are gated on a
-                // positive count so nothing at all composes and no space is reserved at zero
-                // (conditional-render-no-dead-space).
-                if (reminderCount > 0) {
-                    Spacer(modifier = Modifier.width(Dimens.ContentSpacing))
-                    ReminderIndicator(reminderCount = reminderCount)
-                }
             }
         },
         bodyContent = {
@@ -332,6 +328,12 @@ fun AlbumCard(
                     .padding(Dimens.CompactPadding)
             )
         },
+        // CARD-01/D-07: caller owns "no reminders, no slot" (mirrors WR-01 for tags) — pass
+        // null so CardBase composes no status row when there is nothing to show. Naming
+        // statusContent selects CardBase's statusContent-accepting overload.
+        statusContent = if (reminderCount > 0) {
+            { ReminderIndicator(reminderCount = reminderCount) }
+        } else null,
         // WR-01: caller owns "no tags → no slot" — pass null so CardBase composes no tag-row Box
         // for an untagged card, honoring the same optional-slot contract as header/body/footer.
         tagRowContent = if (tags.isNotEmpty()) {
