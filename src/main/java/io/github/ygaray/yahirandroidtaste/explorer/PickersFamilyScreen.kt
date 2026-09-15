@@ -29,6 +29,7 @@ import io.github.ygaray.yahirandroidtaste.component.DateTimePicker
 import io.github.ygaray.yahirandroidtaste.component.IconPickerGrid
 import io.github.ygaray.yahirandroidtaste.component.PlaceMapPicker
 import io.github.ygaray.yahirandroidtaste.component.SegmentedOptionSelector
+import io.github.ygaray.yahirandroidtaste.model.SavedPlaceUiModel
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import java.time.LocalDate
@@ -122,45 +123,13 @@ internal val pickersFamilyEntries: List<ComponentRegistry.Entry> = listOf(
         states = listOf(
             ComponentRegistry.StateCell(
                 "Default",
-                render = {
-                    var latitude by remember { mutableStateOf<Double?>(null) }
-                    var longitude by remember { mutableStateOf<Double?>(null) }
-                    var radius by remember { mutableStateOf(150f) }
-                    PlaceMapPicker(
-                        pinLatitude = latitude,
-                        pinLongitude = longitude,
-                        onPinChange = { lat, lng -> latitude = lat; longitude = lng },
-                        radiusMeters = radius,
-                        onRadiusChange = { radius = it },
-                        minRadiusMeters = 50f,
-                        maxRadiusMeters = 1000f,
-                        defaultRadiusMeters = 150f,
-                        radiusStepMeters = 50f,
-                        userAgent = LocalContext.current.packageName,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-                }
+                render = { PlaceMapPickerDemo() }
             ),
             ComponentRegistry.StateCell(
                 "Pressed / Selected",
+                // A fixture coordinate in code only — never shown as text (T-164-04).
                 render = {
-                    // A fixture coordinate in code only — never shown as text (T-164-04).
-                    var latitude by remember { mutableStateOf<Double?>(40.0) }
-                    var longitude by remember { mutableStateOf<Double?>(-74.0) }
-                    var radius by remember { mutableStateOf(300f) }
-                    PlaceMapPicker(
-                        pinLatitude = latitude,
-                        pinLongitude = longitude,
-                        onPinChange = { lat, lng -> latitude = lat; longitude = lng },
-                        radiusMeters = radius,
-                        onRadiusChange = { radius = it },
-                        minRadiusMeters = 50f,
-                        maxRadiusMeters = 1000f,
-                        defaultRadiusMeters = 150f,
-                        radiusStepMeters = 50f,
-                        userAgent = LocalContext.current.packageName,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
+                    PlaceMapPickerDemo(initialLatitude = 40.0, initialLongitude = -74.0, initialRadius = 300f)
                 }
             ),
             // PlaceMapPicker has no enabled param — N/A.
@@ -349,13 +318,22 @@ private fun DateTimePickerVariants() {
     )
 }
 
-/** PlaceMapPicker's demo (HUBW-02) -- tap to drop a pin, drag the handle, or slide to resize. */
+/**
+ * PlaceMapPicker's demo (HUBW-02) -- every source wired to explorer fixtures: "Use current
+ * location" and search each set the pin to their own fixture coordinate (never shown as text,
+ * T-164-04); the fourth saved place repeats the "Home" label at a different fixture coordinate
+ * and radius so the duplicate-label ordinal is visible (164-03).
+ */
 @Composable
-private fun PlaceMapPickerVariants() {
-    SectionLabel("PlaceMapPicker - tap to drop a pin, drag the handle or slide to resize")
-    var latitude by remember { mutableStateOf<Double?>(null) }
-    var longitude by remember { mutableStateOf<Double?>(null) }
-    var radius by remember { mutableStateOf(150f) }
+private fun PlaceMapPickerDemo(
+    initialLatitude: Double? = null,
+    initialLongitude: Double? = null,
+    initialRadius: Float = 150f
+) {
+    var latitude by remember { mutableStateOf(initialLatitude) }
+    var longitude by remember { mutableStateOf(initialLongitude) }
+    var radius by remember { mutableStateOf(initialRadius) }
+    var searchQuery by remember { mutableStateOf("") }
     PlaceMapPicker(
         pinLatitude = latitude,
         pinLongitude = longitude,
@@ -367,7 +345,60 @@ private fun PlaceMapPickerVariants() {
         defaultRadiusMeters = 150f,
         radiusStepMeters = 50f,
         userAgent = LocalContext.current.packageName,
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        onUseCurrentLocation = {
+            // Explorer fixture coordinate -- never shown as text (T-164-04).
+            latitude = 47.6
+            longitude = -122.3
+        },
+        searchQuery = searchQuery,
+        onSearchQueryChange = { searchQuery = it },
+        onSearch = { query ->
+            if (query.isNotBlank()) {
+                // A second explorer fixture coordinate for any non-blank search query.
+                latitude = 51.5
+                longitude = -0.12
+            }
+        },
+        savedPlaces = listOf(
+            SavedPlaceUiModel("Home", 40.0, -74.0, 150f),
+            SavedPlaceUiModel("Work", 40.7, -73.9, 300f),
+            SavedPlaceUiModel("Gym", 40.8, -74.1, 500f),
+            SavedPlaceUiModel("Home", 41.0, -74.2, 300f)
+        ),
+        onSavedPlaceSelected = { place ->
+            latitude = place.latitude
+            longitude = place.longitude
+            radius = place.radiusMeters
+        }
+    )
+}
+
+@Composable
+private fun PlaceMapPickerVariants() {
+    SectionLabel("PlaceMapPicker - tap to drop a pin, drag the handle or slide to resize")
+    PlaceMapPickerDemo()
+
+    SectionLabel("PlaceMapPicker - errors and resolving")
+    PlaceMapPicker(
+        pinLatitude = null,
+        pinLongitude = null,
+        onPinChange = { _, _ -> },
+        radiusMeters = 150f,
+        onRadiusChange = {},
+        minRadiusMeters = 50f,
+        maxRadiusMeters = 1000f,
+        defaultRadiusMeters = 150f,
+        radiusStepMeters = 50f,
+        userAgent = LocalContext.current.packageName,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        onUseCurrentLocation = {},
+        currentLocationErrorText = "Couldn't get your current location",
+        searchQuery = "",
+        onSearchQueryChange = {},
+        onSearch = {},
+        searchErrorText = "No address found for that search",
+        isResolving = true
     )
 }
 

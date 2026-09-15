@@ -137,3 +137,30 @@ it explicitly (`Intent` to `…explorer.ExplorerActivity`) if you want the galle
 - **The package is `io.github.ygaray.yahirandroidtaste`.** Import composables from that root.
 - **Bumping to a new library version is human-gated** (see `CLAUDE.md` / `ECOSYSTEM.md` §7): change the
   coordinate, `--refresh-dependencies` + resolve-confirm, rebuild, re-verify on-device before shipping.
+- **`PlaceMapPicker` (HUBW-02) depends on `osmdroid-android` 6.1.20** (archived upstream; accepted
+  by the owner, see `.planning/APPROVED-DEPS.md`), delivered transitively at runtime — no consumer
+  dependency line is needed.
+- **Declare `android.permission.INTERNET`** in your consuming app's manifest; `PlaceMapPicker`'s
+  `MapView` fetches OpenStreetMap tiles over the network and will not render without it.
+- **Pass an app-identifying `userAgent`** (e.g. your application id) to `PlaceMapPicker` — the
+  OpenStreetMap tile usage policy blocks generic/default user agents. The widget draws the required
+  attribution itself and never bulk-downloads tiles.
+- **Under `LocalInspectionMode`** (Compose previews, Robolectric tests) `PlaceMapPicker` renders a
+  same-size, same-tagged placeholder instead of constructing a live `MapView`, so Compose UI tests
+  should wrap their content in `CompositionLocalProvider(LocalInspectionMode provides true)`.
+- **`PlaceMapPicker` requests no location permission itself.** Current location and address search
+  are consumer callbacks (`onUseCurrentLocation`, `onSearch`) — the hub never touches
+  `android.location` or a geocoder; the consumer resolves the coordinate and calls `onPinChange`.
+- **Source arbitration is the consumer's duty.** `isResolving` disables only the controls that
+  *start* a lookup ("Use current location" and the search field's IME Search action) — saved-place
+  chips and map placement (a tap, or the "Drop pin at map center" accessibility action) stay
+  interactive throughout, so a slow geocoder never blocks the user. Because of this, the consumer
+  must treat every `onUseCurrentLocation`, `onSearch`, `onSavedPlaceSelected` and `onPinChange` call
+  as starting a new source, and apply an in-flight lookup's result only if no newer source has been
+  chosen since it started (e.g. a generation counter incremented on every source call and checked
+  before the result is applied).
+- **Saved-place chip labels are caller-supplied and need not be unique.** A repeated label is
+  disambiguated with its radius and a 1-based ordinal among same-labelled entries — e.g. `"Saved
+  places Home, 150 m radius, 1 of 2"`. `PlaceMapPicker` never reorders `savedPlaces`, so the ordinal
+  follows your list's own order: pass a **deterministic** order (e.g. sort by label, then radius,
+  latitude and longitude) or the same place can change ordinal between emissions.

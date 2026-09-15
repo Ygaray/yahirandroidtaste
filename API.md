@@ -14,24 +14,24 @@ tactileFoundationFamilyEntries`), which is the single source of truth and the CA
 
 | Family | Registered composables | What it is |
 |--------|-----------------------|------------|
-| 1. Cards | 9 | Card faces + card-face sub-rows for the five card archetypes |
-| 2. Chips | 5 | Tag/selection chips and the bars that lay them out (filter/sort) |
+| 1. Cards | 11 | Card faces + card-face sub-rows for the five card archetypes |
+| 2. Chips | 6 | Tag/selection chips and the bars that lay them out (filter/sort) |
 | 3. Sheets | 18 | Bottom-sheet / editor / popup content surfaces and their scaffolding |
 | 4. Buttons / FAB | 3 | The expandable create-FAB and dynamic action buttons |
-| 5. Pickers | 4 | Accent-color, icon, crop, and segmented-option pickers |
+| 5. Pickers | 6 | Accent-color, date/time, map/place, icon, crop, and segmented-option pickers |
 | 6. Feedback | 3 | Confirmation dialog, the Undo Center, and the attention-cue glyph |
 | 7. Empty-state | 1 | The shared empty-state surface |
 | 8. Progress / Metrics | 4 | Determinate ring / count-up / hero-card primitives for at-a-glance stat display |
 | 9. Tactile Foundation | 4 | Elevation ladder, Space Grotesk display ramp, gradient/tint accent surfaces, and the Heat relatedness ramp |
 
-**51 registered public composables** across the nine families, plus **5 intentionally-unregistered**
-structural sub-parts (see the end of this doc) = **56 public composables total**. Every component
+**56 registered public composables** across the nine families, plus **4 intentionally-unregistered**
+structural sub-parts (see the end of this doc) = **60 public composables total**. Every component
 renders inside `YahirAndroidTasteTheme` (family 7's theme wrapper — see the tail note). Every
 `Modifier` parameter defaults to `Modifier`; only the load-bearing parameters are listed below.
 
 > Model types referenced below (e.g. `TagChipUiModel`, `ListItemUiModel`, `MediaThumbnailCell`,
-> `UndoHistoryEntry`) live in the library's `model/` package and are part of the public surface —
-> the consumer maps its domain data into them at the call site.
+> `UndoHistoryEntry`, `SavedPlaceUiModel`) live in the library's `model/` package and are part of
+> the public surface — the consumer maps its domain data into them at the call site.
 
 ---
 
@@ -61,7 +61,7 @@ a consumer supplies its own item type.
 | Composable | Purpose | Key parameters |
 |-----------|---------|----------------|
 | `AppChip` | The base selectable chip | `label, isSelected, onClick` |
-| `PresetChip` | The `ChipBar` `itemContent` chip for one-tap preset rows (D-03), with a min-height wrapping layout that grows instead of clipping at large font scales | `label, onClick, supportingLabel, enabled, isSelected` |
+| `PresetChip` | The `ChipBar` `itemContent` chip for one-tap preset rows (D-03), with a min-height wrapping layout that grows instead of clipping at large font scales | `label, onClick, supportingLabel, enabled, isSelected`; an additive overload also takes `contentDescription: String?` (164-03), applied to the chip's single clickable node — the legacy 6-parameter signature keeps compiling unchanged |
 | `TagChipWithContextMenu` | A tag chip carrying a long-press context menu | `label, isSelected, onClick, …` menu callbacks |
 | `ChipBar` | Generic horizontally-scrolling chip row | `items: List<T>, key: (T)->Any, itemContent: @Composable (T)->Unit`, optional `leading/trailingContent` |
 | `SortControl` | Generic sort-mode selector | `sortMode: T, options: List<T>, optionLabel: (T)->String, onSortModeChange` |
@@ -111,6 +111,7 @@ these render its body) plus the shared scaffolding and editor rows.
 |-----------|---------|----------------|
 | `AccentColorPicker` | Accent-color swatch picker | `selectedColor: Long, onColorSelected: (Long) -> Unit` |
 | `DateTimePicker` | HUBW-01 date and time picker with an in-tree (non-popup) expandable Material3 panel per field | `selectedDate: LocalDate?, onDateSelected: (LocalDate) -> Unit, selectedTime: LocalTime?, onTimeSelected: (LocalTime) -> Unit, showDate, showTime, minDate: LocalDate?, is24Hour: Boolean?, enabled` |
+| `PlaceMapPicker` | HUBW-02 map place picker (osmdroid / OpenStreetMap): search, current location, saved places, draggable pin and radius circle with slider | `pinLatitude: Double?, pinLongitude: Double?, onPinChange, radiusMeters: Float, onRadiusChange, minRadiusMeters, maxRadiusMeters, defaultRadiusMeters, userAgent: String, radiusStepMeters, onUseCurrentLocation?, searchQuery, onSearch?, savedPlaces: List<SavedPlaceUiModel>, onSavedPlaceSelected, isResolving` |
 | `IconPickerGrid` | Module/tag icon grid picker | `selectedIcon: String, onIconSelected: (String) -> Unit` — public parameters unchanged; the grid includes a built-in live case-insensitive name-substring search field with an empty-state when nothing matches |
 | `CropOverlay` | Crop-rectangle overlay for image editing | `bitmapWidth, bitmapHeight, aspectRatio: Float?, …` |
 | `SegmentedOptionSelector` | Two-option segmented toggle with an always-visible disabled+reason affordance | `selectedIndex: Int, options: List<String>, onSelect: (Int) -> Unit, enabled: Boolean, disabledReason: String?` |
