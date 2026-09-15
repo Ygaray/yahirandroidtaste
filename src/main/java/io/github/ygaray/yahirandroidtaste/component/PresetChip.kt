@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -57,6 +58,12 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  *   renders its content at 38% alpha (Material disabled-content emphasis).
  * @param isSelected When `true`, the chip fills with `colorScheme.secondaryContainer` and drops
  *   its outline border; the semantics node reports `selected = true`.
+ * @param contentDescription Accessibility label applied to this chip's single clickable node
+ *   (the inner [Surface], the same node that carries [onClick] and the merged `selected`
+ *   semantics) -- `null` keeps the visible [label] text as the accessible name. Do not apply a
+ *   content description through [modifier], which targets the outer 48dp touch-target [Box]: that
+ *   would create a second, non-clickable accessibility node instead of labelling the clickable one
+ *   (164-03 review round 1 HIGH).
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -66,7 +73,8 @@ fun PresetChip(
     modifier: Modifier = Modifier,
     supportingLabel: String? = null,
     enabled: Boolean = true,
-    isSelected: Boolean = false
+    isSelected: Boolean = false,
+    contentDescription: String?
 ) {
     val shape = RoundedCornerShape(8.dp)
     val containerColor = if (isSelected) {
@@ -90,6 +98,7 @@ fun PresetChip(
             modifier = Modifier
                 .heightIn(min = 32.dp)
                 .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+                .semantics { if (contentDescription != null) this.contentDescription = contentDescription }
                 .semantics(mergeDescendants = true) { selected = isSelected },
             shape = shape,
             color = containerColor,
@@ -118,4 +127,32 @@ fun PresetChip(
             }
         }
     }
+}
+
+/**
+ * Preserves [PresetChip]'s v1.12.x signature (164-03, D-03): every existing caller that does not
+ * pass [contentDescription] keeps compiling and behaving unchanged, resolving here rather than to
+ * the extended overload above (whose [contentDescription] parameter has no default and is
+ * therefore required). Delegates to the full overload with `contentDescription = null`, which
+ * keeps the visible [label] text as the chip's accessible name -- exactly this function's
+ * pre-164-03 behavior.
+ */
+@Composable
+fun PresetChip(
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    supportingLabel: String? = null,
+    enabled: Boolean = true,
+    isSelected: Boolean = false
+) {
+    PresetChip(
+        label = label,
+        onClick = onClick,
+        modifier = modifier,
+        supportingLabel = supportingLabel,
+        enabled = enabled,
+        isSelected = isSelected,
+        contentDescription = null
+    )
 }

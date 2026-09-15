@@ -258,11 +258,12 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public final class PlaceMapPickerKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void PlaceMapPicker(Double? pinLatitude, Double? pinLongitude, kotlin.jvm.functions.Function2<java.lang.Double,java.lang.Double,kotlin.Unit> onPinChange, float radiusMeters, kotlin.jvm.functions.Function1<java.lang.Float,kotlin.Unit> onRadiusChange, float minRadiusMeters, float maxRadiusMeters, float defaultRadiusMeters, String userAgent, optional androidx.compose.ui.Modifier modifier, optional float radiusStepMeters, optional String searchQuery, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onSearchQueryChange, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onSearch, optional String? searchErrorText, optional boolean isResolving, optional String testTag);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void PlaceMapPicker(Double? pinLatitude, Double? pinLongitude, kotlin.jvm.functions.Function2<java.lang.Double,java.lang.Double,kotlin.Unit> onPinChange, float radiusMeters, kotlin.jvm.functions.Function1<java.lang.Float,kotlin.Unit> onRadiusChange, float minRadiusMeters, float maxRadiusMeters, float defaultRadiusMeters, String userAgent, optional androidx.compose.ui.Modifier modifier, optional float radiusStepMeters, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onUseCurrentLocation, optional String? currentLocationErrorText, optional String searchQuery, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onSearchQueryChange, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onSearch, optional String? searchErrorText, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.SavedPlaceUiModel> savedPlaces, optional kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.model.SavedPlaceUiModel,kotlin.Unit> onSavedPlaceSelected, optional boolean isResolving, optional String testTag);
   }
 
   public final class PresetChipKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void PresetChip(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional androidx.compose.ui.Modifier modifier, optional String? supportingLabel, optional boolean enabled, optional boolean isSelected);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void PresetChip(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional androidx.compose.ui.Modifier modifier, optional String? supportingLabel, optional boolean enabled, optional boolean isSelected, String? contentDescription);
   }
 
   public final class ProgressRingKt {
@@ -885,6 +886,23 @@ package io.github.ygaray.yahirandroidtaste.model {
     property public boolean isCompleted;
     property public int sortOrder;
     property public String text;
+  }
+
+  public final class SavedPlaceUiModel {
+    ctor public SavedPlaceUiModel(String label, double latitude, double longitude, float radiusMeters);
+    method public String component1();
+    method public double component2();
+    method public double component3();
+    method public float component4();
+    method public io.github.ygaray.yahirandroidtaste.model.SavedPlaceUiModel copy(optional String label, optional double latitude, optional double longitude, optional float radiusMeters);
+    method @InaccessibleFromKotlin public String getLabel();
+    method @InaccessibleFromKotlin public double getLatitude();
+    method @InaccessibleFromKotlin public double getLongitude();
+    method @InaccessibleFromKotlin public float getRadiusMeters();
+    property public String label;
+    property public double latitude;
+    property public double longitude;
+    property public float radiusMeters;
   }
 
   public final class TagChipUiModel {

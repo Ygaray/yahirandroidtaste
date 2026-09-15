@@ -13,14 +13,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -40,6 +46,7 @@ import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -48,6 +55,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import io.github.ygaray.yahirandroidtaste.model.SavedPlaceChipLabel
+import io.github.ygaray.yahirandroidtaste.model.SavedPlaceUiModel
+import io.github.ygaray.yahirandroidtaste.model.occurrenceIndices
+import io.github.ygaray.yahirandroidtaste.model.savedPlaceChipLabels
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -118,15 +129,40 @@ private val CAMERA_FIT_BORDER: Dp = 32.dp
  * `MapView` is constructed so every consumer is OSM tile-policy compliant by default, including
  * the host's own `INTERNET` permission requirement.
  *
- * **Parameter order contract:** a later plan inserts current-location/saved-place parameters
- * between [radiusStepMeters] and [testTag] -- this signature's relative order of the parameters
- * before [radiusStepMeters] does not change.
+ * **Final signature (HUBW-02 complete):** [pinLatitude] through [radiusStepMeters] are the
+ * core pin/radius/map contract from the first slice of this widget; every parameter after
+ * [radiusStepMeters] is one of the widget's three place *sources* (current location, address
+ * search, saved places) or the shared [isResolving]/[testTag] tail. Visual order top to bottom:
+ * "Use current location" ([onUseCurrentLocation]), an "or" divider (only when both
+ * [onUseCurrentLocation] and [onSearch] are non-null), the search field, the saved-place chips,
+ * the map, then the radius row.
  *
  * [onSearch] is the address-search source (D-05): the caller resolves [searchQuery] itself (the
  * hub never geocodes) and reports the pin through [onPinChange] on success. A lookup fires on at
  * most one explicit commit -- the field's IME Search action -- never on typing and never while
  * [isResolving] is `true`; the delivered query is [searchQuery] trimmed of surrounding
  * whitespace. `onSearch = null` hides the search field entirely.
+ *
+ * [onUseCurrentLocation] is the current-location source: `null` hides the "Use current location"
+ * button entirely; non-null renders it, disabled while [isResolving]. The hub never reads device
+ * location itself -- the caller resolves it and calls [onPinChange] on success.
+ *
+ * [savedPlaces] is the saved/named-place source (D-03): primitives in, intent out. Each entry
+ * renders as one [PresetChip] via [ChipBar]; tapping one calls [onSavedPlaceSelected] with that
+ * exact entry. A repeated [SavedPlaceUiModel.label] is disambiguated with its radius and an
+ * ordinal that follows [savedPlaces]' own list order (never reordered by the hub) -- pass a
+ * deterministic order or the same place can change ordinal between emissions.
+ *
+ * **Busy policy (explicit, 164-03 review round 1 HIGH):** [isResolving] disables only the
+ * controls that *start* a lookup -- "Use current location" and the search field's IME Search
+ * action. Saved-place chips and map placement (a tap or the "Drop pin at map center"
+ * accessibility action) stay interactive while [isResolving] is `true`, so a slow geocoder never
+ * blocks the user. Because of this, **the consumer must treat every [onUseCurrentLocation],
+ * [onSearch], [onSavedPlaceSelected] and [onPinChange] call as starting a new source** and apply
+ * an in-flight lookup's result only if no newer source has been chosen since it started (for
+ * example, with a generation counter incremented on every source call and checked before the
+ * lookup's result is applied). See INTEGRATION.md for the full contract; the reference
+ * implementation is this hub's own consumer, SecondBrain's location editor.
  *
  * @param pinLatitude The pin's latitude, or `null` when no pin is set.
  * @param pinLongitude The pin's longitude, or `null` when no pin is set.
@@ -145,6 +181,11 @@ private val CAMERA_FIT_BORDER: Dp = 32.dp
  *   host application's id.
  * @param modifier Applied to the outer [Column].
  * @param radiusStepMeters The radius grid step in meters, or `0f` for whole-meter granularity.
+ * @param onUseCurrentLocation Invoked on a tap of "Use current location", only while
+ *   [isResolving] is `false`. Hides the button when `null`. The hub requests no permission and
+ *   reads no device location; the caller resolves it and calls [onPinChange] itself.
+ * @param currentLocationErrorText Caller-supplied error text rendered under the current-location
+ *   button, or `null` to render none.
  * @param onSearch Invoked with the trimmed, non-blank [searchQuery] on an explicit IME Search
  *   action, only when [isResolving] is `false`. Hides the search field when `null`. The hub never
  *   geocodes; the caller resolves the query and calls [onPinChange] itself.
@@ -153,15 +194,22 @@ private val CAMERA_FIT_BORDER: Dp = 32.dp
  *   (untrimmed) text; never triggers a lookup by itself.
  * @param searchErrorText Caller-supplied error text rendered under the search field, or `null`
  *   to render none. The hub holds no copy of its own about why a lookup failed.
- * @param isResolving `true` while a caller-owned lookup (search or current location) is in
- *   flight. Disables only the controls that start a new lookup (the search field's IME Search
- *   action and, when this plan lands, "Use current location"); saved places and map placement
- *   stay interactive so a slow geocoder never blocks the user. The consumer must treat every
- *   [onSearch]/[onPinChange] (and, later, current-location/saved-place) call as a new source and
- *   discard an in-flight lookup result from an older one.
- * @param testTag Root testTag; the map area, hint, attribution, radius row and search field
- *   derive `"${testTag}_map"` / `"${testTag}_map_placeholder"`, `"${testTag}_hint"`,
- *   `"${testTag}_attribution"`, `"${testTag}_radius"`, `"${testTag}_search"`.
+ * @param savedPlaces Caller-owned saved/named places (D-03), rendered in the given order as one
+ *   chip each; empty renders no "Saved places" section at all. Duplicate-label ordinals follow
+ *   this list's order, so pass a deterministic one.
+ * @param onSavedPlaceSelected Invoked with the tapped entry's exact [SavedPlaceUiModel]; stays
+ *   enabled while [isResolving] is `true` (the busy policy below).
+ * @param isResolving `true` while a caller-owned lookup (current location or search) is in
+ *   flight. Disables only the controls that start a new lookup ("Use current location" and the
+ *   search field's IME Search action); saved-place chips and map placement stay interactive so a
+ *   slow geocoder never blocks the user. The consumer must treat every [onUseCurrentLocation],
+ *   [onSearch], [onSavedPlaceSelected] and [onPinChange] call as a new source and discard an
+ *   in-flight lookup result from an older one (see this KDoc's busy-policy section above).
+ * @param testTag Root testTag; the map area, hint, attribution, radius row, search field,
+ *   current-location button and saved places derive `"${testTag}_map"` /
+ *   `"${testTag}_map_placeholder"`, `"${testTag}_hint"`, `"${testTag}_attribution"`,
+ *   `"${testTag}_radius"`, `"${testTag}_search"`, `"${testTag}_current_location"`,
+ *   `"${testTag}_saved_places"`, `"${testTag}_saved_places_chips"`.
  */
 @Composable
 fun PlaceMapPicker(
@@ -176,10 +224,14 @@ fun PlaceMapPicker(
     userAgent: String,
     modifier: Modifier = Modifier,
     radiusStepMeters: Float = 0f,
+    onUseCurrentLocation: (() -> Unit)? = null,
+    currentLocationErrorText: String? = null,
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {},
     onSearch: ((query: String) -> Unit)? = null,
     searchErrorText: String? = null,
+    savedPlaces: List<SavedPlaceUiModel> = emptyList(),
+    onSavedPlaceSelected: (SavedPlaceUiModel) -> Unit = {},
     isResolving: Boolean = false,
     testTag: String = "place_map_picker"
 ) {
@@ -192,6 +244,8 @@ fun PlaceMapPicker(
     val currentOnRadiusChange by rememberUpdatedState(onRadiusChange)
     val currentOnSearchQueryChange by rememberUpdatedState(onSearchQueryChange)
     val currentOnSearch by rememberUpdatedState(onSearch)
+    val currentOnUseCurrentLocation by rememberUpdatedState(onUseCurrentLocation)
+    val currentOnSavedPlaceSelected by rememberUpdatedState(onSavedPlaceSelected)
 
     // Shared across the map area and the radius row (below) so a slider or handle emission can
     // record holder.lastEmittedRadiusMeters and suppress the camera-refit echo the map area's
@@ -203,6 +257,26 @@ fun PlaceMapPicker(
     holder.onRadiusChange = currentOnRadiusChange
 
     Column(modifier = modifier.fillMaxWidth().testTag(testTag)) {
+        val useCurrentLocation = currentOnUseCurrentLocation
+        if (useCurrentLocation != null) {
+            PlaceMapCurrentLocationSection(
+                onUseCurrentLocation = useCurrentLocation,
+                currentLocationErrorText = currentLocationErrorText,
+                isResolving = isResolving,
+                testTag = testTag
+            )
+            Spacer(modifier = Modifier.height(Dimens.CompactPadding))
+        }
+        if (currentOnUseCurrentLocation != null && currentOnSearch != null) {
+            Text(
+                text = "or",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(Dimens.CompactPadding))
+        }
         if (currentOnSearch != null) {
             PlaceMapSearchSection(
                 searchQuery = searchQuery,
@@ -210,6 +284,14 @@ fun PlaceMapPicker(
                 onSearch = currentOnSearch,
                 searchErrorText = searchErrorText,
                 isResolving = isResolving,
+                testTag = testTag
+            )
+            Spacer(modifier = Modifier.height(Dimens.CompactPadding))
+        }
+        if (savedPlaces.isNotEmpty()) {
+            PlaceMapSavedPlacesSection(
+                savedPlaces = savedPlaces,
+                onSavedPlaceSelected = currentOnSavedPlaceSelected,
                 testTag = testTag
             )
             Spacer(modifier = Modifier.height(Dimens.CompactPadding))
@@ -227,6 +309,100 @@ fun PlaceMapPicker(
         }
     }
 }
+
+/**
+ * The current-location source: a full-width [TextButton] labelled "Use current location",
+ * disabled while [isResolving] (the busy policy documented on [PlaceMapPicker]'s own KDoc). The
+ * hub reads no device location itself -- a tap only invokes [onUseCurrentLocation]; the caller
+ * resolves the coordinate and calls [PlaceMapPicker.onPinChange] on success.
+ */
+@Composable
+private fun PlaceMapCurrentLocationSection(
+    onUseCurrentLocation: () -> Unit,
+    currentLocationErrorText: String?,
+    isResolving: Boolean,
+    testTag: String
+) {
+    TextButton(
+        onClick = onUseCurrentLocation,
+        enabled = !isResolving,
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = Dimens.TouchTarget)
+            .semantics { contentDescription = "Use current location" }
+            .testTag("${testTag}_current_location")
+    ) {
+        Icon(
+            imageVector = Icons.Default.MyLocation,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.width(Dimens.ContentSpacing))
+        Text(text = "Use current location")
+    }
+    if (currentLocationErrorText != null) {
+        Text(
+            text = currentLocationErrorText,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.error
+        )
+    }
+}
+
+/**
+ * The saved/named-place source (D-03): a "Saved places" label followed by a [ChipBar] of
+ * [PresetChip]s, one per [savedPlaces] entry, in that list's own order (never reordered by the
+ * hub -- see [PlaceMapPicker]'s KDoc on why the caller must pass a deterministic order). A
+ * duplicate [SavedPlaceUiModel.label] is disambiguated with its radius and a 1-based ordinal
+ * among same-labelled entries ([savedPlaceChipLabels]); [occurrenceIndices] gives every entry
+ * (including two fully identical ones) a distinct `ChipBar` composition key. Chips take no
+ * `enabled` argument, so they stay interactive during [PlaceMapPicker]'s busy policy.
+ */
+@Composable
+private fun PlaceMapSavedPlacesSection(
+    savedPlaces: List<SavedPlaceUiModel>,
+    onSavedPlaceSelected: (SavedPlaceUiModel) -> Unit,
+    testTag: String
+) {
+    Column(modifier = Modifier.fillMaxWidth().testTag("${testTag}_saved_places")) {
+        Text(
+            text = "Saved places",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.height(Dimens.ContentSpacing))
+        val chipItems = remember(savedPlaces) {
+            val occurrences = occurrenceIndices(savedPlaces)
+            val chipLabels = savedPlaceChipLabels(
+                savedPlaces.map { it.label },
+                savedPlaces.map { formatMeters(it.radiusMeters) }
+            )
+            savedPlaces.mapIndexed { index, place ->
+                SavedPlaceChipItem(place = place, occurrence = occurrences[index], labels = chipLabels[index])
+            }
+        }
+        ChipBar(
+            items = chipItems,
+            key = { it.place to it.occurrence },
+            itemContent = { item ->
+                PresetChip(
+                    label = item.place.label,
+                    onClick = { onSavedPlaceSelected(item.place) },
+                    supportingLabel = item.labels.supportingLabel,
+                    contentDescription = item.labels.contentDescription
+                )
+            },
+            testTag = "${testTag}_saved_places_chips"
+        )
+    }
+}
+
+/** One [ChipBar] item for [PlaceMapSavedPlacesSection]: a place plus its disambiguation data. */
+private data class SavedPlaceChipItem(
+    val place: SavedPlaceUiModel,
+    val occurrence: Int,
+    val labels: SavedPlaceChipLabel
+)
 
 /**
  * The address-search source (D-05): a [ClearableTextField] whose `onValueChange` only forwards
