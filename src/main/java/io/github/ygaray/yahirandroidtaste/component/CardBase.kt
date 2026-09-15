@@ -79,6 +79,12 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  * padded Row — this is now the single place that insets both the leading tag cluster and the
  * trailing icon cluster.
  *
+ * ## Status row (CARD-01/D-07/RD-01)
+ * An optional [statusContent] row renders between the body slot and the combined bottom row
+ * above, in its own full-width [Row] — hosting per-card-type status indicators (the reminder
+ * indicator, Phase 164) out of the crowded header row. Renders nothing and reserves no space
+ * when null; never shares a row with the header, tag cluster, footer or `MoreVert` trigger.
+ *
  * @param showDragHandle Whether to render a drag handle icon (defaults false; reserved for future use).
  * @param showThreeDot Whether to render the MoreVert (three-dot) trigger in the combined bottom row's
  *   trailing icon cluster.
@@ -97,6 +103,13 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  *   [CardBase]'s outer gesture handling is unaffected.
  * @param footerContent Optional bottom row slot — now the TRAILING element of the combined bottom
  *   row (see above), alongside the [showThreeDot] `MoreVert` trigger.
+ * @param statusContent CARD-01/D-07/RD-01: an optional cross-card-type status row composed after
+ *   the body and before the combined bottom row, hosting per-card-type status indicators (the
+ *   reminder indicator today) out of the header row. `null` composes nothing and reserves no
+ *   space; callers that do not need the slot use the v1.12.x overload, which passes `null`. It
+ *   never shares a row with the header, tag cluster, footer or `MoreVert` trigger, so their width
+ *   budget is unchanged. Items lay out left to right in emission order, [Dimens.ContentSpacing]
+ *   apart, inset by [Dimens.HorizontalPadding].
  * @param modifier Modifier applied to the outermost [SwipeableActionRow].
  * @param accent Optional per-card accent [Color] supplied by the caller (Phase 129 DS-02 D-01).
  *   The hub performs no tag-resolution logic — Phase 131's app-side resolver supplies the actual
@@ -138,7 +151,12 @@ fun CardBase(
     // Tactile depth chrome (Phase 129 DS-02 D-01/D-03) — both default to inert so every
     // pre-existing call site renders byte-identically and composes an unchanged node tree.
     accent: Color? = null,
-    tactileDepth: Boolean = false
+    tactileDepth: Boolean = false,
+    // Status row (CARD-01/D-07/RD-01): required, no default — a default would make every call
+    // that omits it ambiguous between this overload and the legacy v1.12.x overload below.
+    // From a CONSUMER's point of view the slot is still optional: a caller that does not need it
+    // uses the legacy overload, which passes null on the caller's behalf.
+    statusContent: (@Composable RowScope.() -> Unit)?
 ) {
     val hapticFeedback = LocalHapticFeedback.current
     var showMenu by remember { mutableStateOf(false) }
@@ -161,6 +179,10 @@ fun CardBase(
                 Column { bodyContent() }
             }
         }
+
+        // Status row (CARD-01/D-07/RD-01): its own row between the body and the combined bottom
+        // row, never sharing a row with the header, tag cluster, footer or MoreVert trigger.
+        CardStatusRow(statusContent = statusContent)
 
         // Combined bottom row (G2-01/D-05/D-06): tag cluster leading, footer content +
         // the single relocated MoreVert trigger trailing, one Row, SpaceBetween. Renders
@@ -271,5 +293,90 @@ fun CardBase(
                 Column(content = cardColumnContent)
             }
         }
+    }
+}
+
+/**
+ * Preserves the v1.12.x [CardBase] signature so existing consumers compile and render unchanged
+ * (CARD-01, D-07, review round 1 HIGH). Identical to the [statusContent]-accepting overload above
+ * with no status row: delegates every argument by name plus `statusContent = null`. Exists so
+ * `api.txt` stays append-only — an appended defaulted `statusContent` on the single pre-existing
+ * signature would instead rewrite that api.txt line, which `tools/verify-api-additive.sh` treats
+ * as a removed public symbol (lane 3); this overload keeps the v1.12.1 line byte-identical and
+ * adds one new api.txt line instead.
+ */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun CardBase(
+    openRowState: MutableState<AnchoredDraggableState<SwipeAnchor>?>,
+    modifier: Modifier = Modifier,
+    showDragHandle: Boolean = false,
+    showThreeDot: Boolean = false,
+    onDeleteClick: () -> Unit = {},
+    onEditClick: () -> Unit = {},
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
+    dropdownMenuContent: @Composable ColumnScope.(dismissMenu: () -> Unit) -> Unit = {},
+    headerContent: (@Composable RowScope.() -> Unit)? = null,
+    bodyContent: (@Composable ColumnScope.() -> Unit)? = null,
+    tagRowContent: (@Composable () -> Unit)? = null,
+    footerContent: (@Composable RowScope.() -> Unit)? = null,
+    accent: Color? = null,
+    tactileDepth: Boolean = false
+) {
+    CardBase(
+        openRowState = openRowState,
+        modifier = modifier,
+        showDragHandle = showDragHandle,
+        showThreeDot = showThreeDot,
+        onDeleteClick = onDeleteClick,
+        onEditClick = onEditClick,
+        onClick = onClick,
+        onLongClick = onLongClick,
+        dropdownMenuContent = dropdownMenuContent,
+        headerContent = headerContent,
+        bodyContent = bodyContent,
+        tagRowContent = tagRowContent,
+        footerContent = footerContent,
+        accent = accent,
+        tactileDepth = tactileDepth,
+        statusContent = null
+    )
+}
+
+/**
+ * Extracted status row (CARD-01/D-07/RD-01): renders [statusContent] in its own full-width row
+ * between the body slot and the combined bottom row, inset [Dimens.HorizontalPadding] and padded
+ * [Dimens.ContentSpacing] vertically, laying items out left to right [Dimens.ContentSpacing]
+ * apart in emission order. Renders nothing and reserves no space when [statusContent] is null
+ * (conditional-render-no-dead-space).
+ *
+ * `internal`, not `public` — the registry drift guard's public-top-level scan exempts internal
+ * composables (the [ReminderIndicator] precedent), so no `ComponentRegistry` entry is required.
+ *
+ * Extracted (rather than inlined into [CardBase]'s `cardColumnContent`) because a full CardBase-
+ * based card cannot render under this module's Robolectric harness ([CardBaseTest] documents
+ * why — [SwipeableActionRow] throws on its first frame); this composable renders on its own, so
+ * it gets a real render test ([CardStatusRowTest]) instead of only a source-structural one.
+ *
+ * The `testTag("card_status_row")` sits BEFORE `.padding(...)` in the modifier chain (review
+ * round 1 LOW) so the tagged node's bounds are the full row, not the inset content — the 16dp
+ * inset is then measurable as the gap between the row's bounds and its children's bounds.
+ *
+ * @param statusContent Optional row content lambda; see [CardBase]'s `@param statusContent`.
+ */
+@Composable
+internal fun CardStatusRow(statusContent: (@Composable RowScope.() -> Unit)?) {
+    if (statusContent == null) return
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("card_status_row")
+            .padding(horizontal = Dimens.HorizontalPadding, vertical = Dimens.ContentSpacing),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.ContentSpacing),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        statusContent()
     }
 }

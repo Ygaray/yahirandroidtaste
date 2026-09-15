@@ -112,8 +112,9 @@ import io.github.ygaray.yahirandroidtaste.theme.TactileType
  *   to the hosted [TextCardBottomSheet]. The consumer app computes the real value and binds it at
  *   Phase 109.
  * @param reminderCount REMIND-09: caller-supplied number of active reminders attached to this
- *   card. Defaulted to zero so every existing call site compiles and shows nothing. The consumer
- *   app computes the real value and binds it at Phase 155.
+ *   card. Defaulted to zero so every existing call site compiles and shows nothing. Rendered
+ *   through [CardBase]'s `statusContent` row (CARD-01), not the header. The consumer app
+ *   computes the real value and binds it at Phase 155.
  * @param onEditRequest EDIT-01/EDIT-03: external trigger for the host-owned shared name-and-tags
  *   Edit sheet. When non-null, the three-dot "Edit" row invokes it (the host opens the tag-inclusive
  *   sheet, mirroring Voice); when null (default), the row falls back to this card's local tag-less
@@ -268,12 +269,15 @@ fun TextCard(
                 }
             )
         },
-        // G-155-3/REMIND-09: widened from `if (!titleSlotVisible(title)) null else` — a
-        // title-less Text card that is pinned/favorited/has images/has a reminder must still
-        // render the header row for those indicators, mirroring ListCard.kt:209 / VoiceCard.kt's
-        // identical OR-guard shape.
+        // G-155-3: widened from `if (!titleSlotVisible(title)) null else` — a title-less
+        // Text card that is pinned/favorited/has images must still render the header row for
+        // those indicators, mirroring ListCard.kt:209 / VoiceCard.kt's identical OR-guard shape.
+        // CARD-01/D-07: the reminder count no longer participates in this guard — the reminder
+        // indicator moved to CardBase's statusContent row, which composes independently of the
+        // header (see the `statusContent` argument below), so a title-less/unpinned/unfavorited/
+        // imageless card with only a reminder now shows no header, same as without a reminder.
         headerContent = if (
-            !titleSlotVisible(title) && !isPinned && !isFavorite && imageCount <= 0 && reminderCount <= 0
+            !titleSlotVisible(title) && !isPinned && !isFavorite && imageCount <= 0
         ) {
             null
         } else {
@@ -331,14 +335,6 @@ fun TextCard(
                     Spacer(modifier = Modifier.width(Dimens.ContentSpacing))
                     ImageCountIndicator(imageCount = imageCount)
                 }
-                // Reminder presence indicator (REMIND-09) — same gated-cluster shape as the
-                // image-count indicator above, so the two read left to right in a stable order.
-                // Both the spacer and the indicator are gated on a positive count so nothing at
-                // all composes and no space is reserved at zero (conditional-render-no-dead-space).
-                if (reminderCount > 0) {
-                    Spacer(modifier = Modifier.width(Dimens.ContentSpacing))
-                    ReminderIndicator(reminderCount = reminderCount)
-                }
             }
         },
         bodyContent = if (!bodySlotVisible(content)) null else {
@@ -381,6 +377,12 @@ fun TextCard(
             }
             }
         },
+        // CARD-01/D-07: caller owns "no reminders, no slot" (mirrors WR-01 for tags) — pass
+        // null so CardBase composes no status row when there is nothing to show. Naming
+        // statusContent selects CardBase's statusContent-accepting overload.
+        statusContent = if (reminderCount > 0) {
+            { ReminderIndicator(reminderCount = reminderCount) }
+        } else null,
         // WR-01: caller owns "no tags → no slot" — pass null so CardBase composes no tag-row Box
         // for an untagged card, honoring the same optional-slot contract as header/body/footer.
         tagRowContent = if (tags.isNotEmpty()) {

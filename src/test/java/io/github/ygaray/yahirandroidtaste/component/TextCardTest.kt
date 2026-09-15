@@ -1,6 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -151,59 +152,93 @@ class TextCardTest {
         )
     }
 
-    // --- G-155-3/REMIND-09: title-less headerContent guard widening --------------------------
+    // --- G-155-3: title-less headerContent guard (pin/favorite/image-count only) ------------
 
     @Test
-    fun `headerContent guard is widened to survive a title-less card with a header indicator`() {
+    fun `headerContent guard no longer depends on reminderCount — the reminder moved to statusContent`() {
         val src = readTextCardSource()
-        // Negated-guard idiom (mirrors ListCard.kt:209 / VoiceCard.kt): the header nulls out
-        // ONLY when title, pin, favorite, image-count, AND reminder-count are all absent — so a
-        // title-less card with a reminder still renders the header (and its ReminderIndicator).
+        // CARD-01/D-07 (164-04): the header nulls out when title, pin, favorite, AND image-count
+        // are all absent — reminderCount no longer participates, because the reminder indicator
+        // now renders through CardBase's statusContent row, which composes independently of the
+        // header. A title-less/unpinned/unfavorited/imageless card with only a reminder therefore
+        // shows no header, same as the same card without a reminder.
         assertEquals(
-            "TextCard's headerContent guard must combine all five negated conditions exactly " +
-                "once — title absent AND not pinned AND not favorite AND no images AND no " +
-                "reminders — so any single header indicator keeps the header alive for a " +
-                "title-less card (G-155-3).",
+            "TextCard's headerContent guard must combine exactly the four negated conditions " +
+                "— title absent AND not pinned AND not favorite AND no images — with no " +
+                "reminderCount clause (CARD-01/D-07).",
             1,
-            countOccurrences(src, "!titleSlotVisible(title) && !isPinned && !isFavorite")
+            countOccurrences(src, "!titleSlotVisible(title) && !isPinned && !isFavorite && imageCount <= 0")
         )
-        assertEquals(
-            1,
-            countOccurrences(src, "imageCount <= 0 && reminderCount <= 0")
+
+        val headerConditionStart = src.indexOf("headerContent = if (")
+        val headerConditionEnd = src.indexOf(") {", headerConditionStart)
+        assertTrue(
+            "Could not locate the headerContent condition in TextCard.kt",
+            headerConditionStart in 0 until headerConditionEnd
+        )
+        val headerCondition = src.substring(headerConditionStart, headerConditionEnd)
+        assertFalse(
+            "The headerContent guard condition must not reference reminderCount at all " +
+                "(CARD-01/D-07 removed it from the header entirely).",
+            headerCondition.contains("reminderCount")
         )
     }
 
     @Test
-    fun `the title Text is independently conditional inside the widened header`() {
+    fun `the title Text is independently conditional inside the header`() {
         val src = readTextCardSource()
         assertEquals(
             "The title Text must be wrapped in its own 'if (titleSlotVisible(title))' guard " +
-                "now that the outer headerContent gate is widened — otherwise a title-less " +
-                "card with e.g. a reminder would render a blank title Text taking layout space " +
-                "(conditional-render-no-dead-space, G-155-3).",
+                "so a title-less card with e.g. a pin/favorite/image indicator does not render " +
+                "a blank title Text taking layout space (conditional-render-no-dead-space, " +
+                "G-155-3).",
             1,
             countOccurrences(src, "if (titleSlotVisible(title)) {")
         )
     }
 
     @Test
-    fun `a title-less card's ReminderIndicator remains reachable — the guard never gates it out`() {
+    fun `the header region contains no ReminderIndicator call — it moved out of the header entirely`() {
         val src = readTextCardSource()
         val headerRegionStart = src.indexOf("headerContent = if (")
         val headerRegionEnd = src.indexOf("bodyContent = if")
-        assertTrue("Could not locate the headerContent region in TextCard.kt", headerRegionStart in 0 until headerRegionEnd)
+        assertTrue(
+            "Could not locate the headerContent region in TextCard.kt",
+            headerRegionStart in 0 until headerRegionEnd
+        )
         val headerRegion = src.substring(headerRegionStart, headerRegionEnd)
 
-        // The widened negated-guard condition means: a title-less card with reminderCount > 0
-        // does NOT satisfy the all-absent null condition, so control flow reaches the lambda
-        // body below, where the ReminderIndicator call is gated only on reminderCount > 0 (not
-        // on title visibility) — proving a title-less+reminder card renders it.
+        assertFalse(
+            "TextCard's headerContent region must no longer call ReminderIndicator(...) — " +
+                "CARD-01/D-07 relocated it to CardBase's statusContent row.",
+            headerRegion.contains("ReminderIndicator(")
+        )
+    }
+
+    @Test
+    fun `a title-less card's ReminderIndicator is reachable through statusContent, gated only on reminderCount`() {
+        val src = readTextCardSource()
+        assertEquals(
+            "TextCard must pass a 'statusContent = if (reminderCount > 0) { ... } else null' " +
+                "argument to CardBase exactly once (CARD-01/D-07) — the caller owns \"no " +
+                "reminders, no slot\" independent of title/pin/favorite/image visibility, so a " +
+                "title-less card with a reminder still shows the indicator.",
+            1,
+            countOccurrences(src, "statusContent = if (reminderCount > 0) {")
+        )
+
+        val statusGateStart = src.indexOf("statusContent = if (reminderCount > 0) {")
+        val statusRegionEnd = src.indexOf("} else null", statusGateStart)
         assertTrue(
-            "TextCard's headerContent lambda must still call ReminderIndicator(reminderCount " +
-                "= reminderCount) gated only on 'if (reminderCount > 0)', independent of title " +
-                "visibility, so a title-less card with a reminder renders the indicator.",
-            headerRegion.contains("if (reminderCount > 0) {") &&
-                headerRegion.contains("ReminderIndicator(reminderCount = reminderCount)")
+            "Could not locate the statusContent argument's else-null branch in TextCard.kt",
+            statusGateStart in 0 until statusRegionEnd
+        )
+        val statusRegion = src.substring(statusGateStart, statusRegionEnd)
+        assertTrue(
+            "TextCard's statusContent argument must call ReminderIndicator(reminderCount = " +
+                "reminderCount) between the 'if (reminderCount > 0) {' gate and the '} else " +
+                "null' branch.",
+            statusRegion.contains("ReminderIndicator(reminderCount = reminderCount)")
         )
     }
 
