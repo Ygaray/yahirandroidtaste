@@ -25,6 +25,7 @@ import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
 import io.github.ygaray.yahirandroidtaste.component.CycleSubTypeButton
 import io.github.ygaray.yahirandroidtaste.component.DynamicActionButton
 import io.github.ygaray.yahirandroidtaste.component.ExpandableFab
+import io.github.ygaray.yahirandroidtaste.component.MicButton
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
@@ -105,6 +106,30 @@ internal val buttonsFabFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             ComponentRegistry.StateCell("Focused")
         ),
         content = { DynamicActionButtonVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
+    ),
+    ComponentRegistry.Entry(
+        name = "MicButton",
+        family = ExplorerFamilies.BUTTONS_FAB,
+        states = listOf(
+            // Default: enabled, not listening — the "Tap to talk" mic icon.
+            ComponentRegistry.StateCell("Default") {
+                MicButton(isListening = false, enabled = true, onTap = {}, onDisabledTap = {})
+            },
+            // Pressed/Selected: listening — the crossfaded Stop icon.
+            ComponentRegistry.StateCell("Pressed / Selected") {
+                MicButton(isListening = true, enabled = true, onTap = {}, onDisabledTap = {})
+            },
+            // Disabled: the muted mic-off icon; a tap resolves to onDisabledTap, never onTap.
+            ComponentRegistry.StateCell("Disabled") {
+                MicButton(isListening = false, enabled = false, onTap = {}, onDisabledTap = {})
+            },
+            // MicButton has no custom focus-visual override — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { MicButtonVariants() },
+        // PATTERN: bakes in one specific interaction convention (the single-pointerInput
+        // press/release gesture discipline) — the same litmus ExpandableFab already satisfies.
         tier = ComponentRegistry.Tier.PATTERN
     )
 )
@@ -210,6 +235,27 @@ private fun DynamicActionButtonVariants() {
             role = ActionButtonDefaults.ActionButtonRole.Save,
             onClick = {}
         )
+    }
+}
+
+/**
+ * MicButton's Variants — Default (Tap to talk), Listening (Stop), and Disabled (mic-off) side by
+ * side. Every argument here is a plain Boolean/lambda — no CalTracker types reachable from this
+ * composable's import graph — this IS the hub-side non-CalTracker preview proving MicButton's
+ * genericity (MIC-01/MIC-03) without building or repinning SecondBrain this milestone.
+ */
+@Composable
+private fun MicButtonVariants() {
+    SectionLabel("MicButton — Default / Listening / Disabled")
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        MicButton(isListening = false, enabled = true, onTap = {}, onDisabledTap = {})
+        MicButton(isListening = true, enabled = true, onTap = {}, onDisabledTap = {})
+        MicButton(isListening = false, enabled = false, onTap = {}, onDisabledTap = {})
     }
 }
 

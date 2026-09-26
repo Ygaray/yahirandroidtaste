@@ -383,7 +383,14 @@ class DomainVocabularyDriftGuardTest {
                 "Head token 'Reveal' reads as a generic UI-interaction descriptor rather than " +
                 "a true consumer-domain noun, but is grandfathered here (not added to " +
                 "PRIMITIVE_NOUN_ALLOWLIST) so a genuinely domain-coupled future name sharing a " +
-                "similar shape still gets flagged for review."
+                "similar shape still gets flagged for review.",
+            "MicButton" to
+                "Head token 'Mic' reads as a generic voice-input-affordance descriptor (the " +
+                "hub's own component takes only Boolean/lambda params and names no consumer " +
+                "business object, per Phase 64 D-01) rather than a true consumer-domain noun, " +
+                "but is grandfathered here (not added to PRIMITIVE_NOUN_ALLOWLIST) so a " +
+                "genuinely domain-coupled future name sharing a similar shape still gets " +
+                "flagged for review."
         )
     }
 }
