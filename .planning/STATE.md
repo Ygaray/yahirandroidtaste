@@ -1,19 +1,16 @@
 ---
-gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-current_phase: 05
-current_phase_name: Gardening — Unify & Coordinated Repin
-status: complete
-stopped_at: Milestone v1.0 SHIPPED (2026-09-02, library v2.0.0). Gate-2 human UAT signed off for Phases 1–3 (drained HUMAN-UAT-PENDING.md, 0 pending); milestone audited (tech_debt, 0 blockers) and archived. GARD-02 coordinated consumer repin deferred as a downstream human-gated obligation.
-last_updated: "2026-09-02T18:35:00.000Z"
-last_activity: 2026-09-02
-last_activity_desc: /gsd-verify-milestone closed v1.0 — Phase 1 tier-badge criterion re-verified on-device (tester yahirs-s22-ultra-2 via throwaway harness), Phases 1–3 Gate-2 signed off (Yahir), ledger drained to 0 pending, milestone audit written (tech_debt), and v1.0 archived (ROADMAP/REQUIREMENTS → milestones/, MILESTONES.md, PROJECT.md). No v1.0 git tag cut — the library release is v2.0.0. Deferred: GARD-02 coordinated repin (SecondBrain + CalTracker onto v2.0.0) + repin_status.py reconcile (clears W-1).
+gsd_state_version: "1.0"
+milestone: v2.0
+milestone_name: Line Reunification
+status: planning
+last_updated: "2026-09-27T05:08:17.834Z"
+last_activity: 2026-09-26
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 16
-  completed_plans: 13
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -27,12 +24,10 @@ See: .planning/PROJECT.md (updated 2026-08-28)
 
 ## Current Position
 
-Phase: 05 — Gardening — Unify & Coordinated Repin
-Plan: 05-01, 05-02, 05-03 all executed (3/3) — hub-side complete + tag cut; consumer repin (SC-4) deferred human-gated obligation
-Status: Tag cut (SC-3 ✓). Blocked only on the consumer-side coordinated repin (SC-4), which must run in each consumer's own channel per the cross-repo-hub convention — not from this hub run.
-Last activity: 2026-09-02 — Operator authorized "cut v2.0.0 now" at the 05-03 Task 2 checkpoint. v2.0.0 immutable annotated tag cut on main HEAD (c0a2ef0) and pushed to origin (tag object 9d38966); main fast-forwarded to origin. Pre-tag release gates re-verified green with --rerun-tasks: testDebugUnitTest, detekt, apiCheck, and the exact JitPack command publishReleasePublicationToMavenLocal. WO-1 (FilterBar->ChipBar fold) and WO-2 (SheetHeaderMenu extraction) are the breaking changes (FilterBar removed from public API; Entry.tier required ctor param) that make this the first true major bump.
-
-Progress: [██████████] Hub-side 100% + v2.0.0 shipped — remaining: coordinated consumer repin (human-gated, consumer-side)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-09-26 — Milestone v2.0 started
 
 ## Pending Human-Gated Obligation — Coordinated Repin (SC-4)
 

@@ -29,6 +29,28 @@ SecondBrain + CalTracker onto `v2.0.0`, each Gate-1 re-verified, then `repin_sta
 (which also clears tech-debt W-1, the stale ECOSYSTEM.md matrix). That is the next concrete
 follow-on. See `.planning/MILESTONES.md` and `.planning/milestones/v1.0-*`.
 
+## Current Milestone: v2.0 Line Reunification
+
+**Goal:** Collapse the divergent v1.x (SecondBrain `v1.13.0`) and v2.x/`main` (CalTracker `v2.1.0`)
+release lines into one forward line on `main`, cut as library `v2.2.0`, so all consumers converge on
+one tag and v1.x retires — completing v1.0's deferred **GARD-02** coordinated repin (now onto
+`v2.2.0`) and clearing tech-debt **W-1**.
+
+**Target features:**
+- **Reunification** — forward-port the six v1.x-only components (`DateTimePicker`, the `PlaceMap*`
+  cluster, `PresetChip`) onto `main` (net-additive); admit `osmdroid`; keep every v2.x improvement
+  (MicButton, SheetHeaderMenu, tier legibility, governance gates).
+- **Per-tag chip color** — a consumer-requested additive capability (SB Phase 165): opt-in
+  `containerColorOverride` on `AppChip`/`TagChipWithContextMenu` + `color` on `TagChipUiModel`,
+  auto-threaded at `CardTagRow`. *(Feature authorship, normally the consumers' channel — admitted
+  here by explicit owner decision to keep it one tag / one SB repin.)*
+- **MicButton hardening** — reusability + correctness fixes surfaced by CalTracker's review
+  (parameterize microcopy, `rememberUpdatedState` callbacks, KDoc/ergonomics).
+- **Ship & converge** — cut `v2.2.0` (human-gated), coordinated consumer repin, `reconcile`.
+
+Full design: `docs/superpowers/specs/2026-09-26-hub-line-reunification-design.md`; scope brief:
+`docs/superpowers/specs/2026-09-26-milestone-v2.0-scope.md`.
+
 ## Context
 
 - Extracted from SecondBrain; now a two-consumer ecosystem (SB pins `v1.10.0`, CalTracker pins
@@ -93,10 +115,16 @@ follow-on. See `.planning/MILESTONES.md` and `.planning/milestones/v1.0-*`.
 
 ### Active
 
-<!-- This project's charter. Hypotheses until shipped. -->
+<!-- Milestone v2.0 (Line Reunification) scope. Hypotheses until shipped. -->
 
-- [ ] **GARD-02 coordinated repin** (deferred out of v1.0): repin both consumers onto `v2.0.0`,
-  each Gate-1 re-verified, then `repin_status.py reconcile` — human-gated
+- [ ] **REUNI** — forward-port the 6 v1.x-only components (`DateTimePicker`, `PlaceMap*`,
+  `PresetChip`) onto `main` + admit `osmdroid` + domain-vocab head-token entries
+- [ ] **TAGCOLOR** — per-tag chip color slot (`containerColorOverride`/`color`/CardTagRow auto-thread),
+  consumer-requested additive capability (owner-admitted into stewardship scope)
+- [ ] **MICBTN** — MicButton reusability + correctness hardening (CalTracker findings)
+- [ ] **GARD-02** (absorbed from v1.0, now onto `v2.2.0`): cut the unified tag, coordinated consumer
+  repin (SB single-hop, CalTracker `v2.1.0→v2.2.0`), `repin_status.py reconcile` (clears W-1) —
+  human-gated
 
 ### Out of Scope
 
@@ -112,6 +140,7 @@ follow-on. See `.planning/MILESTONES.md` and `.planning/milestones/v1.0-*`.
 |----------|-----------|---------|
 | Hub gets its own GSD project for stewardship; consumers stay main editors | Coherence is a global property no single consumer's litmus can enforce; additive-only can't prune | — Pending |
 | Treat the hub as a two-tier system (primitives + patterns); make it legible before formalizing | Enough evidence (one contribution each way) that the tiering is real, not yet forced | Validated — Phase 1 shipped `Tier` enum, `DESIGN-INTENT.md`, and gallery-visible badges on both surfaces |
+| v2.0: reunify FORWARD onto `main` (not a v1.14.0 additive cherry-pick) + admit the chip-color feature onto the same tag | Kills the standing v1.x/v2.x divergence liability instead of perpetuating it; one unified `v2.2.0` = one SB repin. Keeping ChipBar consolidation (not restoring standalone FilterBar) preserves the coherence-audit gain | — Pending |
 
 ## Evolution
 
@@ -131,4 +160,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-02 — milestone v1.0 (Hub Stewardship) shipped → library v2.0.0; GARD-02 coordinated repin deferred (human-gated)*
+*Last updated: 2026-09-26 — milestone v2.0 (Line Reunification) started → will cut library v2.2.0; absorbs v1.0's deferred GARD-02 coordinated repin*
