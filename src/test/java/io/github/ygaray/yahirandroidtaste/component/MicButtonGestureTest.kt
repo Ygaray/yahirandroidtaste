@@ -46,7 +46,7 @@ class MicButtonGestureTest {
     val composeRule = createComposeRule()
 
     private val tapToTalk = "Tap to talk"
-    private val notSetUp = "Voice not set up — open Settings"
+    private val notSetUp = "Microphone unavailable"
 
     @Test
     fun tap_onEnabledMic_invokesOnTapExactlyOnce() {

@@ -30,8 +30,16 @@ import androidx.compose.ui.unit.dp
  * listening; the icon crossfades mic -> stop while [isListening] so the active state is visible.
  * When [enabled] is false the control renders a disabled mic-off affordance and a tap resolves to
  * [onDisabledTap] instead. This composable is consumer-agnostic — it carries no permission logic
- * and no domain concept; a caller (e.g. CalTracker's `MicFab` wrapper) owns any RECORD_AUDIO
- * permission gating and maps its own "configured" concept onto [enabled] before calling this.
+ * and no domain concept; a caller owns whatever gating (permission, configuration, feature flag,
+ * etc.) it needs and maps that onto [enabled] before calling this. [onTap] and [onDisabledTap] are
+ * dispatched via `rememberUpdatedState` (see the gesture block below), so a caller that swaps
+ * either lambda's identity mid-press — e.g. from external recomposition — always has the LATEST
+ * closure fire at release, never a stale one captured when the gesture began.
+ *
+ * The three rendered content descriptions ([disabledDescription], [tapToTalkDescription],
+ * [listeningDescription]) are also caller-suppliable, with generic, hub-neutral defaults; a
+ * consumer that needs domain-specific microcopy (e.g. pointing the user at a settings screen) can
+ * override any subset without touching the others.
  *
  * ## Why a Surface and not `FloatingActionButton` (voice-mic-press-no-capture fix)
  * This was originally a `FloatingActionButton(onClick = …)` with a custom `modifier.pointerInput { … }`
@@ -44,14 +52,24 @@ import androidx.compose.ui.unit.dp
  * [MutableInteractionSource] fed from the same gesture. Any future rewrite of what happens after a
  * genuine release must preserve this exact single-owner structure byte-for-byte in shape — only the
  * post-release behavior may change, never the gesture-ownership discipline itself.
+ *
+ * @param disabledDescription accessibility label for the mic-off icon shown while [enabled] is
+ * false. Defaults to a generic, hub-neutral string.
+ * @param tapToTalkDescription accessibility label for the idle mic icon shown while [enabled] is
+ * true and [isListening] is false. Defaults to a generic, hub-neutral string.
+ * @param listeningDescription accessibility label for the stop icon shown while [isListening] is
+ * true. Defaults to a generic, hub-neutral string.
  */
 @Composable
 fun MicButton(
     isListening: Boolean,
-    enabled: Boolean,
+    enabled: Boolean = true,
     onTap: () -> Unit,
-    onDisabledTap: () -> Unit,
+    onDisabledTap: () -> Unit = {},
     modifier: Modifier = Modifier,
+    disabledDescription: String = "Microphone unavailable",
+    tapToTalkDescription: String = "Tap to talk",
+    listeningDescription: String = "Listening…",
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     // Read via rememberUpdatedState instead of keying pointerInput on `enabled` directly. Keying
@@ -89,9 +107,10 @@ fun MicButton(
             // ONE pointer-input owner for the ONE gesture — no internal clickable to pre-consume the
             // down (the voice-mic-press-no-capture root cause). Everything happens in `onPress`, gated
             // on a genuine release (`tryAwaitRelease()`); `detectTapGestures` needs no separate `onTap`
-            // parameter. Keyed on Unit — NOT `enabled` — so a config flip mid-press can never cancel
-            // an in-flight gesture before its paired Release/Cancel interaction emits; the latest
-            // `enabled` value is read via `latestEnabled` (rememberUpdatedState) instead.
+            // parameter. Keyed on Unit — NOT `enabled`/`onTap`/`onDisabledTap` — so an `enabled` flip or
+            // a callback-identity swap mid-press can never cancel an in-flight gesture before its
+            // paired Release/Cancel interaction emits; the latest values are read via `latestEnabled`/
+            // `latestOnTap`/`latestOnDisabledTap` (rememberUpdatedState) instead.
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = { offset ->
@@ -112,9 +131,9 @@ fun MicButton(
         Box(contentAlignment = Alignment.Center) {
             Crossfade(targetState = Pair(enabled, isListening), label = "mic-button-icon") { (isEnabled, listening) ->
                 when {
-                    !isEnabled -> Icon(Icons.Default.MicOff, contentDescription = "Voice not set up — open Settings")
-                    listening -> Icon(Icons.Default.Stop, contentDescription = "Listening…")
-                    else -> Icon(Icons.Default.Mic, contentDescription = "Tap to talk")
+                    !isEnabled -> Icon(Icons.Default.MicOff, contentDescription = disabledDescription)
+                    listening -> Icon(Icons.Default.Stop, contentDescription = listeningDescription)
+                    else -> Icon(Icons.Default.Mic, contentDescription = tapToTalkDescription)
                 }
             }
         }
