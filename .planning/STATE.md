@@ -2,19 +2,19 @@
 gsd_state_version: "1.0"
 milestone: v2.0
 milestone_name: Line Reunification
-current_phase: 6
-current_phase_name: forward-port-reunification
+current_phase: 06
+current_phase_name: Forward-port reunification
 status: executing
-stopped_at: Phase 6 UI-SPEC approved
-last_updated: "2026-09-27T06:21:10.452Z"
-last_activity: 2026-09-26
-last_activity_desc: Milestone v2.0 roadmap created (Phases 6-9, 10/10 requirements mapped)
-state_head: 7fc340770318ee12fa62237882c9cec6ffa4d634
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-09-27T06:38:39.264Z"
+last_activity: 2026-09-27
+last_activity_desc: Phase 06 execution started
+state_head: 2fcfd2cf0dba843b78e95470c499c1d7b2cab230
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 3
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -25,14 +25,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-26)
 
 **Core value:** The hub stays a coherent design system — not merely a safe, ever-growing pile of domain-agnostic components — as more consumers contribute.
-**Current focus:** Phase 6 — Forward-port reunification
+**Current focus:** Phase 06 — Forward-port reunification
 
 ## Current Position
 
-Phase: 6 (forward-port-reunification) — READY TO EXECUTE
-Plan: — of TBD
+Phase: 06 (Forward-port reunification) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-09-26 — Milestone v2.0 roadmap created (Phases 6-9, 10/10 requirements mapped)
+Last activity: 2026-09-27 — Phase 06 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -59,6 +59,11 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: -
 
 *Updated after each plan completion*
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 06 P01 | 14min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -70,6 +75,8 @@ Recent decisions affecting current work:
 - v2.0: Reunify FORWARD onto `main` (not a v1.14.0 additive cherry-pick) + fold the chip-color feature onto the same tag — one unified `v2.2.0` = one SB repin; keep the ChipBar consolidation (no standalone FilterBar restore).
 - Roadmap: Phases 6, 7, 8 are mutually independent (distinct files) → parallelizable; Phase 9 (Ship) is kept LAST and gates on all three — the human-gated tag cut + coordinated repin happen once, after everything else lands.
 - Roadmap: SHIP-02's coordinated repin runs in each CONSUMER's own channel (cross-repo-hub convention); the hub phase only surfaces the tag + reconciles the hub's own ECOSYSTEM.md matrix — it edits no consumer repos.
+- [Phase 06]: Recorded git.allow_default_branch_commits:true — this hub project's sequential-in-hub convention (CLAUDE.md, branching_strategy: none) commits directly on main
+- [Phase 06]: Forward-ported DateTimePicker byte-faithful from v1.13.0 via targeted git checkout; hand-inserted the registry entry into main's independently-evolved PickersFamilyScreen.kt rather than whole-file restoring it
 
 ### Pending Todos
 
@@ -92,6 +99,6 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-27T05:58:10.490Z
-Stopped at: Phase 6 UI-SPEC approved
-Resume file: /home/yahir/Projects/Reusable/android/yahirandroidtaste/.planning/phases/06-forward-port-reunification/06-UI-SPEC.md
+Last session: 2026-09-27T06:38:39.240Z
+Stopped at: Completed 06-01-PLAN.md
+Resume file: None
