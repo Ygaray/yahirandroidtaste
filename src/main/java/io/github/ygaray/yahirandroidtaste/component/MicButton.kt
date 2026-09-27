@@ -91,15 +91,12 @@ fun MicButton(
     // LATEST closure, never the one captured when the coroutine launched.
     val latestOnTap by rememberUpdatedState(onTap)
     val latestOnDisabledTap by rememberUpdatedState(onDisabledTap)
-    val containerColor = when {
-        !enabled -> MaterialTheme.colorScheme.surfaceVariant
-        isListening -> MaterialTheme.colorScheme.errorContainer
-        else -> MaterialTheme.colorScheme.primaryContainer
-    }
-    val contentColor = when {
-        !enabled -> MaterialTheme.colorScheme.onSurfaceVariant
-        isListening -> MaterialTheme.colorScheme.onErrorContainer
-        else -> MaterialTheme.colorScheme.onPrimaryContainer
+    // Single when returning both colors as a pair so the three-way state branch
+    // (disabled/listening/idle) is defined exactly once instead of twice in lockstep.
+    val (containerColor, contentColor) = when {
+        !enabled -> MaterialTheme.colorScheme.surfaceVariant to MaterialTheme.colorScheme.onSurfaceVariant
+        isListening -> MaterialTheme.colorScheme.errorContainer to MaterialTheme.colorScheme.onErrorContainer
+        else -> MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
     }
     Surface(
         color = containerColor,
