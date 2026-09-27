@@ -51,7 +51,7 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public final class AppChipKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void AppChip(String label, boolean isSelected, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingIcon, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingIcon, optional Float? relatednessStrength, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onLongClick, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onDoubleClick);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void AppChip(String label, boolean isSelected, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingIcon, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingIcon, optional Float? relatednessStrength, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onLongClick, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onDoubleClick, optional androidx.compose.ui.graphics.Color? containerColorOverride);
   }
 
   public final class AttentionCueDefaults {
@@ -345,7 +345,7 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public final class TagChipWithContextMenuKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void TagChipWithContextMenu(String label, boolean isSelected, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingIcon, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingIcon, optional Float? relatednessStrength, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onEdit, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onRemoveFromContext, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onDelete, optional String removeLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onDoubleClick);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void TagChipWithContextMenu(String label, boolean isSelected, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingIcon, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingIcon, optional Float? relatednessStrength, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onEdit, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onRemoveFromContext, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onDelete, optional String removeLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onDoubleClick, optional androidx.compose.ui.graphics.Color? containerColorOverride);
   }
 
   public final class TagCreateSheetKt {
@@ -931,18 +931,23 @@ package io.github.ygaray.yahirandroidtaste.model {
   }
 
   public final class TagChipUiModel {
+    ctor public TagChipUiModel(String id, String name, int occurrenceCount);
+    ctor public TagChipUiModel(String id, String name, int occurrenceCount, optional long createdAt);
     ctor public TagChipUiModel(String id, String name, int occurrenceCount, optional long createdAt, optional Double? jaccard);
+    ctor @KotlinOnly public TagChipUiModel(String id, String name, int occurrenceCount, optional long createdAt, optional Double? jaccard, optional androidx.compose.ui.graphics.Color? color);
     method public String component1();
     method public String component2();
     method public int component3();
     method public long component4();
     method public Double? component5();
-    method public io.github.ygaray.yahirandroidtaste.model.TagChipUiModel copy(optional String id, optional String name, optional int occurrenceCount, optional long createdAt, optional Double? jaccard);
+    method @KotlinOnly public operator androidx.compose.ui.graphics.Color? component6();
+    method @KotlinOnly public io.github.ygaray.yahirandroidtaste.model.TagChipUiModel copy(optional String id, optional String name, optional int occurrenceCount, optional long createdAt, optional Double? jaccard, optional androidx.compose.ui.graphics.Color? color);
     method @InaccessibleFromKotlin public long getCreatedAt();
     method @InaccessibleFromKotlin public String getId();
     method @InaccessibleFromKotlin public Double? getJaccard();
     method @InaccessibleFromKotlin public String getName();
     method @InaccessibleFromKotlin public int getOccurrenceCount();
+    property public androidx.compose.ui.graphics.Color? color;
     property public long createdAt;
     property public String id;
     property public Double? jaccard;
