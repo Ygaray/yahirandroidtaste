@@ -42,6 +42,14 @@ import org.robolectric.annotation.Config
  * followed by `kotlinx.coroutines.delay()` before `onClick` fires). Real-perception judgment of an
  * actively-bound double-tap's latency belongs to Phase 109's on-device Gate-1 — no call site binds
  * `onDoubleClick` in this phase (D-02), so the question is moot for this phase's own shipped build.
+ *
+ * **Ordering/absence only, not value-correctness (WR-02, Phase 07 code review):** the
+ * `containerColorOverride` precedence-order and D-01 tests below assert arm *presence and
+ * relative position* inside [AppChip]'s raw `when`-block source text (via [whenBlock]), not the
+ * resolved color value each arm evaluates to — a same-order swap of which value an arm resolves
+ * to (e.g. `relatedness.containerColor` typo'd to `relatedness.contentColor` inside an unchanged
+ * arm header) would pass these tests silently. Read the arm bodies by eye when reviewing a future
+ * change to this file; these tests do not substitute for that.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35])

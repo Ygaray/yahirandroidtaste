@@ -14,6 +14,12 @@ import org.robolectric.annotation.Config
  * Robolectric harness cannot assert rendered colors on (no `captureToImage` usage anywhere under
  * `src/test/java`): parsing the real, committed `CardTagRow.kt` source via
  * [SourceContractTestSupport] rather than inventing pixel-capture infrastructure.
+ *
+ * **Ordering/absence only, not value-correctness (WR-02, Phase 07 code review):** these tests
+ * assert whether `containerColorOverride = tag.color` textually appears (or is absent) inside
+ * each call's argument-list region — they do not render [CardTagRow] and cannot confirm the
+ * resulting color is actually correct at runtime. Read the call sites by eye when reviewing a
+ * future change to this file; these tests do not substitute for that.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35])
