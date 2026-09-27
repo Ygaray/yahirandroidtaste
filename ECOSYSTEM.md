@@ -31,7 +31,7 @@ independent apps that consume it:
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
   | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.11.0`** (repinned in **v4.0 Phase 155 Plan 04**, `REMIND-09`) — cut on a branch forked from `v1.10.0` (NOT this hub's `main` tip), deliberately bypassing this hub's own concurrent `v2.0.0` ("v1.0 Hub Stewardship") milestone, which removed the public `FilterBar` composable (folded into `ChipBar`'s expandable mode) — a breaking change SecondBrain's `BrowseScreen.kt` depends on directly and has not yet migrated for. See §"Version-numbering / branch-topology deviation (`v1.10.0` → `v1.11.0`, bypassing `v2.0.0`)" below | `gradle/libs.versions.toml` |
-  | CalTracker | `github.com/Ygaray/…` | `~/Projects/AndroidApps/Personal/CalTracker_Android` | **`v2.1.0`** (repinned + Gate-1-confirmed, Phase 64 / MIC-02) — consumes the hub's new generic `MicButton` component (MIC-01), which CalTracker's `MicFab` wrapper now delegates its render/gesture contract to | `gradle/libs.versions.toml` |
+  | CalTracker | `github.com/Ygaray/…` | `~/Projects/AndroidApps/Personal/CalTracker_Android` | **`v2.1.0`** (repinned + Gate-1-confirmed on real hardware, Phase 64 / MIC-02 — see CalTracker's `64-04-SELF-UAT.md`) — consumes the hub's new generic `MicButton` component (MIC-01), which CalTracker's `MicFab` wrapper now delegates its render/gesture contract to | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
