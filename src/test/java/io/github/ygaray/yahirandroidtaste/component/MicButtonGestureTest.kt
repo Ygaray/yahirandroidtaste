@@ -95,40 +95,20 @@ class MicButtonGestureTest {
         val node = composeRule.onNodeWithContentDescription(disabledDescription)
         node.assertExists()
 
-        node.performTouchInput {
-            down(center)
-            up()
-        }
+        // Press (finger down) and hold — must not fire yet (release-gated, and proves a hold
+        // doesn't fire early; this incremental assertion is what distinguished the now-merged
+        // pressAndHold_onDisabledMic_neverFiresOnTap test).
+        node.performTouchInput { down(center) }
+        composeRule.waitForIdle()
+        assertEquals("holding a disabled mic must never fire onTap", 0, tapped)
+        assertEquals("holding a disabled mic must not fire onDisabledTap before release", 0, disabledTap)
+
+        // Release — the disabled tap completes.
+        node.performTouchInput { up() }
         composeRule.waitForIdle()
 
         assertEquals("a disabled tap must NEVER fire onTap", 0, tapped)
         assertEquals("a disabled tap must invoke onDisabledTap", 1, disabledTap)
-    }
-
-    @Test
-    fun pressAndHold_onDisabledMic_neverFiresOnTap() {
-        var tapped = 0
-        var disabledTap = 0
-        composeRule.setContent {
-            MaterialTheme {
-                MicButton(
-                    isListening = false,
-                    enabled = false,
-                    onTap = { tapped++ },
-                    onDisabledTap = { disabledTap++ },
-                )
-            }
-        }
-        val node = composeRule.onNodeWithContentDescription(disabledDescription)
-
-        node.performTouchInput { down(center) }
-        composeRule.waitForIdle()
-        assertEquals("holding a disabled mic must never fire onTap", 0, tapped)
-
-        node.performTouchInput { up() }
-        composeRule.waitForIdle()
-        assertEquals("onDisabledTap fires exactly once on release", 1, disabledTap)
-        assertEquals(0, tapped)
     }
 
     @Test
