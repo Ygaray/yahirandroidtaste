@@ -76,10 +76,11 @@ RESEARCH.md), so every `.dp` literal the 3 restored composables reference alread
 | — | 4dp | `PlaceMapPicker`'s overlay-caption padding (`PlaceMapOverlayCaption`'s `.padding(4.dp)`) |
 | — | 8dp | `Dimens.CornerRadius.Small` (map surface corner radius); overlay-caption inner padding |
 | `Dimens.HorizontalPadding` | 16dp | Gallery demo wrapper padding for all 3 new entries (`Modifier.fillMaxWidth().padding(horizontal = 16.dp)`) — matches every existing Pickers/Chips peer demo |
-| — | 12dp | `Dimens.CompactPadding` (available; not newly introduced by this phase) |
 
 Exceptions: none. Restored files introduce zero new spacing literals — every value they use
-(4dp, 8dp, 16dp) already exists as a named or precedented value in `Dimens.kt` today.
+(4dp, 8dp, 16dp) already exists as a named or precedented value in `Dimens.kt` today. `Dimens.kt`
+also defines `Dimens.CompactPadding` (12dp), but none of the 3 restored composables consume it, so
+it is intentionally omitted from this phase's declared spacing scale above.
 
 ---
 
@@ -153,6 +154,15 @@ enrichment needed to satisfy this phase's success criteria):
 ---
 
 ## UI Considerations
+
+**Visual anchor per new demo card** (what draws the eye first — restored layout, stated here only
+for executor clarity, not a new design decision):
+
+| Demo card | Primary visual anchor |
+|-----------|------------------------|
+| `DateTimePicker` (all 3 demo variants) | The Material3 dialog's date/time grid itself once opened — at rest, the anchor is the trigger field's current-value text (e.g. formatted date/time string), the only non-chrome content in the row |
+| `PlaceMapPicker` (both demo variants) | The live `MapView` tile surface — the map fills the component's full width/height and is the only large-area content; the radius handle and saved-places `ChipBar` sit visually subordinate below/over it |
+| `PresetChip` (both demo variants, inside `ChipBar`) | The chip row's selected chip — `isSelected` container-color treatment (accent, per Color section) is the only color-differentiated element among otherwise-equal unselected chips |
 
 Applicable state considerations resolved: 3 covered, 2 backstop, 0 unresolved.
 
