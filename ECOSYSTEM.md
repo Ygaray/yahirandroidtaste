@@ -30,7 +30,7 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.11.0`** (repinned in **v4.0 Phase 155 Plan 04**, `REMIND-09`) — cut on a branch forked from `v1.10.0` (NOT this hub's `main` tip), deliberately bypassing this hub's own concurrent `v2.0.0` ("v1.0 Hub Stewardship") milestone, which removed the public `FilterBar` composable (folded into `ChipBar`'s expandable mode) — a breaking change SecondBrain's `BrowseScreen.kt` depends on directly and has not yet migrated for. See §"Version-numbering / branch-topology deviation (`v1.10.0` → `v1.11.0`, bypassing `v2.0.0`)" below | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.13.0`** (per the machine-reconciled matrix above) — originally repinned to **`v1.11.0`** in **v4.0 Phase 155 Plan 04** (`REMIND-09`), cut on a branch forked from `v1.10.0` (NOT this hub's `main` tip), deliberately bypassing this hub's own concurrent `v2.0.0` ("v1.0 Hub Stewardship") milestone, which removed the public `FilterBar` composable (folded into `ChipBar`'s expandable mode) — a breaking change SecondBrain's `BrowseScreen.kt` depends on directly and had not yet migrated for at that time. The pin has since moved further to `v1.13.0`; the `FilterBar`→`ChipBar` migration is still owed before SecondBrain can repin onto `v2.0.0`'s (or later's) lineage — see §"Version-numbering / branch-topology deviation (`v1.10.0` → `v1.11.0`, bypassing `v2.0.0`)" below for the fork's origin, and the subsection directly below the machine-reconciled matrix above for the current bump path | `gradle/libs.versions.toml` |
   | CalTracker | `github.com/Ygaray/…` | `~/Projects/AndroidApps/Personal/CalTracker_Android` | **`v2.1.0`** (repinned + Gate-1-confirmed on real hardware, Phase 64 / MIC-02 — see CalTracker's `64-04-SELF-UAT.md`) — consumes the hub's new generic `MicButton` component (MIC-01), which CalTracker's `MicFab` wrapper now delegates its render/gesture contract to | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
@@ -49,9 +49,27 @@ independent apps that consume it:
 | SecondBrain | v1.13.0 | v2.2.0 | behind |
 <!-- repin-matrix:end -->
 
-**Current published tag:** **`v1.10.0`** — an autonomous minor bump cut in **SecondBrain v2.1
-Phase 135 Plan 02** (`MIND-10`, Phase 135's D-02 decision) on top of the hub's own **Phase 135
-Plan 01** ("Mindmap Heat Ramp Widening") work: `HeatTier` widened from four to six discrete tiers
+### Pending repins (post-v2.2.0)
+
+Per the machine-reconciled matrix above, both consumers are behind `v2.2.0`. This hub phase
+(Phase 9, "Ship & coordinated repin") performs **neither bump** — cross-repo-hub convention
+(root `CLAUDE.md`): the hub's own GSD run edits no consumer repo file. Each repin executes in the
+consumer's own repo/channel, on its own cadence (§7):
+
+- **SecondBrain (`v1.13.0` → `v2.2.0`):** bump the hub coordinate in
+  `gradle/libs.versions.toml` from `v1.13.0` to `v2.2.0`; migrate `BrowseScreen.kt`'s two
+  `FilterBar<TagEntity>` call sites to `ChipBar`'s `expandable`/`rawContent` shape (the follow-up
+  owed since the `v1.10.0` → `v1.11.0` fork note below — `FilterBar` was folded into `ChipBar` at
+  `v2.0.0` and this migration is what lets SecondBrain leave the forked `v1.11.0` lineage and
+  repin straight onto `v2.0.0`-and-later, including `v2.2.0`); and optionally wire the new
+  `TagChipUiModel.color` slot (`TAGCOLOR-01`, Phase 7). Executed in SecondBrain's own repo/channel.
+- **CalTracker (`v2.1.0` → `v2.2.0`):** bump the same coordinate in `gradle/libs.versions.toml`
+  from `v2.1.0` to `v2.2.0` — purely additive, no consumer-side source changes required (CalTracker
+  consumes no `FilterBar`/`ChipBar` call site). Executed in CalTracker's own repo/channel.
+
+`v1.10.0` was cut in **SecondBrain v2.1
+Phase 135 Plan 02** (`MIND-10`, Phase 135's D-02 decision), an autonomous minor bump, on top of the
+hub's own **Phase 135 Plan 01** ("Mindmap Heat Ramp Widening") work: `HeatTier` widened from four to six discrete tiers
 (`COOL, BRISK, MILD, WARM, HOT, BLAZING`), adding `BRISK`/`BLAZING` to bridge the blue-to-amber gap
 and deepen the top band; `heatTier()`'s cut points retuned to `0.08/0.18/0.30/0.45/0.65`, with the
 top cut point deliberately unchanged so the prior "strongly related" threshold is preserved;
@@ -77,15 +95,17 @@ gain `accent`/`tactileDepth` pass-through, a leading `CardTypeChip`, and `Tactil
 titles (`FACE-01`), plus `ListCard`'s "N / M" completion pill and progress bar (`FACE-02`)) — see
 the `v1.8.0`, `v1.8.1`, `v1.8.2`, `v1.9.0`, and `v1.10.0` release records below for the full
 evidence.
-**SecondBrain pins `v1.10.0`**, landed in **SecondBrain Phase 135 Plan 03** (resolve-confirmed +
-suite-green; Gate-1 device verification pending) — this table's cached row was stranded at
-`v1.8.2` through two skipped-reconcile cycles (the actual pin moved `v1.8.2 → v1.9.0` across SB
-Phases 132/133 with no registry update either time) and is now reconciled in one step by Plan 03;
-**CalTracker pins
+**At the time `v1.10.0` shipped, SecondBrain was pinned to `v1.10.0`**, landed in **SecondBrain
+Phase 135 Plan 03** (resolve-confirmed + suite-green; Gate-1 device verification pending) — this
+table's cached row was stranded at `v1.8.2` through two skipped-reconcile cycles (the actual pin
+moved `v1.8.2 → v1.9.0` across SB Phases 132/133 with no registry update either time) and was
+reconciled in one step by Plan 03; **and CalTracker was pinned to
 `v1.5.0`** (repinned
-Phase 48, REL-01) — the hub's own additive-growth tag it was authorized to consume (the hub's own
-latest tag has since moved to `v1.9.0` via an unrelated SecondBrain session, not a CalTracker task;
-a hub change is inert until a consumer repins). `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
+Phase 48, REL-01) — the hub's own additive-growth tag it was authorized to consume at that time (the
+hub's own latest tag had since moved to `v1.9.0` via an unrelated SecondBrain session, not a
+CalTracker task; a hub change is inert until a consumer repins). **Both pins have moved since — see
+the machine-reconciled pin matrix above for each consumer's actual current pin, kept current by
+`repin_status.py reconcile` on every ship.** `v1.0.0` was the first immutable tag, cut human-gated in **Phase 102**
 (LIB-06) on hub commit `4584b60` (JitPack BUILD SUCCESSFUL, `.aar`/`.sources`/`.pom` HTTP 200).
 SecondBrain repinned onto it in **Phase 103** (REPIN-01/02) and it is **device-verified** on the
 SM-S908U (Gate-1 all_pass: cold-start Hilt-across-AAR resolution, live undo + ExplorerActivity,
@@ -397,6 +417,38 @@ abandoned.
 and `.../yahirandroidtaste-v1.11.0.aar` were requested to trigger the lazy JitPack build; if
 either has not finished building by the time a consumer's Gradle sync runs, retry the build rather
 than falling back to a commit-hash pin (this project pins tags, not hashes, per §7 below).
+
+`v2.2.0` was cut by this hub repo's **own internal GSD project** (Phase 9, "Ship & coordinated
+repin", `SHIP-01`), human-gated: the owner explicitly approved the tag cut ("you can cut
+tags... i approve") after Phase 9 Plan 01's closing governance battery ran green on hub commit
+`5310b9a` (`testDebugUnitTest` including the new `GeneratedSymbolDriftGuardTest`, zero-baseline
+`detekt`, both `apiCheck`/`metalavaCheckCompatibilityDebug`/`metalavaCheckCompatibilityRelease`,
+and `publishReleasePublicationToMavenLocal`, plus a passing code review — issues found, no
+blockers — and a security audit — SECURED, 0 open threats; see `09-01-SUMMARY.md`,
+`09-01-REVIEW.md`, `09-01-SECURITY.md`). The annotated tag was pushed to `origin` at
+commit `5310b9a14ad675a9511d301aa69898047d04d4b4`. It carries, by requirement id: **REUNI-01**
+through **REUNI-04** (Phase 6, forward-port reunification); **TAGCOLOR-01** (Phase 7, chip-color
+slot — `TagChipUiModel.color`); **MICBTN-01** through **MICBTN-03** (Phase 8, MicButton
+hardening); and the `apiCheck` KI-2026-09-02-01 fix (`SHIP-01`, Phase 9 Plan 01 — hides
+Dagger-generated `@DaggerGenerated`/`UndoHistoryStore_Factory` from the metalava-tracked surface
+and rebaselines `api.txt`, purely subtractive of generated noise). Every carried change is
+additive/source-compatible with `v1.11.0`; no public composable was removed or renamed, no
+parameter made required.
+
+**JitPack resolution evidence (Plan 09-02 Task 1, confirmed post-tag):** both
+`https://jitpack.io/com/github/Ygaray/yahirandroidtaste/v2.2.0/yahirandroidtaste-v2.2.0.pom` and
+`.../yahirandroidtaste-v2.2.0.aar` returned HTTP `200` (AAR `Content-Length: 1618685` bytes) on
+the first-ever request for this tag — a real, non-cached lazy JitPack build, not a
+`publishToMavenLocal` substitute.
+`https://jitpack.io/api/builds/com.github.Ygaray/yahirandroidtaste/v2.2.0` reports
+`"status":"ok"`, `"commit":"5310b9a14ad675a9511d301aa69898047d04d4b4"` (the exact release SHA,
+equal to `git rev-list -n1 v2.2.0`) and `"isTag":true`. The build log
+(`https://jitpack.io/com/github/Ygaray/yahirandroidtaste/v2.2.0/build.log`) reports `Exit code: 0`
+and lists the built `.aar`, `.pom`, and `-sources.jar` artifacts under
+`com/github/Ygaray/yahirandroidtaste/v2.2.0/`. Full evidence captured in `09-02-SUMMARY.md`.
+**Both consumer repins are still outstanding at write time** — see the subsection immediately
+below the machine-reconciled matrix, near the top of this section, for each consumer's exact
+bump path.
 
 ---
 
