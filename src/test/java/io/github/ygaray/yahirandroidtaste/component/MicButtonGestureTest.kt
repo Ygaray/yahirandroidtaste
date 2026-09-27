@@ -5,9 +5,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTouchInput
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -38,6 +40,13 @@ import org.robolectric.annotation.Config
  *    not press-gated) and never the disabled-tap affordance.
  *  - A disabled tap resolves via `onDisabledTap` and NEVER fires `onTap` — even for a slow
  *    press-and-hold-then-release.
+ *  - (CR-01 accessibility fix) Invoking the semantics `OnClick` action DIRECTLY — via
+ *    [androidx.compose.ui.test.performSemanticsAction], the same dispatch path
+ *    `AccessibilityService.performAction(ACTION_CLICK)` / keyboard Enter / D-pad activation use,
+ *    never a synthesized touch gesture — dispatches to `onTap` when enabled and `onDisabledTap`
+ *    when disabled, exactly like the touch path above. This is a SEPARATE code path from
+ *    `performTouchInput`'s `pointerInput`/`detectTapGestures` gesture: none of the tests above
+ *    exercise it, so it needs its own dedicated proof.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35])
@@ -237,5 +246,71 @@ class MicButtonGestureTest {
         composeRule.waitForIdle()
         assertEquals("release must invoke onDisabledTap per the latest enabled=false", 1, disabledTap)
         assertEquals("release must never invoke onTap once enabled flipped false mid-press", 0, tapped)
+    }
+
+    @Test
+    fun semanticsOnClick_onEnabledMic_invokesOnTapExactlyOnce() {
+        var tapped = 0
+        var disabledTap = 0
+        composeRule.setContent {
+            MaterialTheme {
+                MicButton(
+                    isListening = false,
+                    enabled = true,
+                    onTap = { tapped++ },
+                    onDisabledTap = { disabledTap++ },
+                )
+            }
+        }
+        // `hasClickAction()` locates the node by the presence of the semantics click action
+        // itself (CR-01), matching this file's established convention for semantics-driven
+        // lookups (see `tap_midPressEnabledFlip_firesOnlyOnDisabledTap` above).
+        val node = composeRule.onNode(hasClickAction())
+        node.assertExists()
+
+        // Invoke the semantics OnClick action DIRECTLY — the same dispatch path
+        // AccessibilityService.performAction(ACTION_CLICK) / keyboard Enter / D-pad activation
+        // use. This is a SEPARATE code path from `performTouchInput`'s
+        // `pointerInput`/`detectTapGestures` gesture exercised by every other test in this file.
+        node.performSemanticsAction(SemanticsActions.OnClick)
+        composeRule.waitForIdle()
+
+        assertEquals("the semantics OnClick action must invoke onTap exactly once", 1, tapped)
+        assertEquals(
+            "an enabled semantics click must never hit the disabled-tap affordance",
+            0,
+            disabledTap,
+        )
+    }
+
+    @Test
+    fun semanticsOnClick_onDisabledMic_invokesOnDisabledTap_andNeverFiresOnTap() {
+        var tapped = 0
+        var disabledTap = 0
+        composeRule.setContent {
+            MaterialTheme {
+                MicButton(
+                    isListening = false,
+                    enabled = false,
+                    onTap = { tapped++ },
+                    onDisabledTap = { disabledTap++ },
+                )
+            }
+        }
+        val node = composeRule.onNode(hasClickAction())
+        node.assertExists()
+
+        // Invoke the semantics OnClick action DIRECTLY (see rationale in the enabled-mic test
+        // above) — proves the disabled branch of the same `onClick { ... }` lambda in
+        // `MicButton.kt` dispatches correctly through the accessibility action path too.
+        node.performSemanticsAction(SemanticsActions.OnClick)
+        composeRule.waitForIdle()
+
+        assertEquals("a disabled semantics click must NEVER fire onTap", 0, tapped)
+        assertEquals(
+            "a disabled semantics click must invoke onDisabledTap exactly once",
+            1,
+            disabledTap,
+        )
     }
 }
