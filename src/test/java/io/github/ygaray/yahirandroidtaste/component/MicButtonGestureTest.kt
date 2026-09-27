@@ -166,4 +166,50 @@ class MicButtonGestureTest {
         assertEquals("release must invoke the latest onTap closure (tapB)", 1, tapB)
         assertEquals("release must never invoke the stale onTap closure (tapA)", 0, tapA)
     }
+
+    @Test
+    fun tap_midPressDisabledTapCallbackIdentitySwap_firesOnlyLatestOnDisabledTap() {
+        var disabledTapA = 0
+        var disabledTapB = 0
+        lateinit var swapToDisabledTapB: () -> Unit
+        composeRule.setContent {
+            MaterialTheme {
+                var onDisabledTapCallback by remember { mutableStateOf<() -> Unit>({ disabledTapA++ }) }
+                swapToDisabledTapB = { onDisabledTapCallback = { disabledTapB++ } }
+                MicButton(
+                    isListening = false,
+                    enabled = false,
+                    onTap = {},
+                    onDisabledTap = onDisabledTapCallback,
+                )
+            }
+        }
+        val node = composeRule.onNodeWithContentDescription(notSetUp)
+
+        // Press (finger down) — nothing has fired yet (release-gated, matches the file's convention).
+        node.performTouchInput { down(center) }
+        composeRule.waitForIdle()
+        assertEquals("must not fire on press alone", 0, disabledTapA)
+        assertEquals("must not fire on press alone", 0, disabledTapB)
+
+        // Mid-press: swap the onDisabledTap identity to a DISTINCT counter and force recomposition
+        // while the gesture is still in flight.
+        swapToDisabledTapB()
+        composeRule.waitForIdle()
+
+        // Release — must dispatch through the LATEST closure (disabledTapB), never the stale one
+        // (disabledTapA).
+        node.performTouchInput { up() }
+        composeRule.waitForIdle()
+        assertEquals(
+            "release must invoke the latest onDisabledTap closure (disabledTapB)",
+            1,
+            disabledTapB,
+        )
+        assertEquals(
+            "release must never invoke the stale onDisabledTap closure (disabledTapA)",
+            0,
+            disabledTapA,
+        )
+    }
 }
