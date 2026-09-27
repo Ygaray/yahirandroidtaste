@@ -934,25 +934,34 @@ package io.github.ygaray.yahirandroidtaste.model {
     ctor public TagChipUiModel(String id, String name, int occurrenceCount);
     ctor public TagChipUiModel(String id, String name, int occurrenceCount, optional long createdAt);
     ctor public TagChipUiModel(String id, String name, int occurrenceCount, optional long createdAt, optional Double? jaccard);
-    ctor @KotlinOnly public TagChipUiModel(String id, String name, int occurrenceCount, optional long createdAt, optional Double? jaccard, optional androidx.compose.ui.graphics.Color? color);
     method public String component1();
     method public String component2();
     method public int component3();
     method public long component4();
     method public Double? component5();
-    method @KotlinOnly public operator androidx.compose.ui.graphics.Color? component6();
-    method @KotlinOnly public io.github.ygaray.yahirandroidtaste.model.TagChipUiModel copy(optional String id, optional String name, optional int occurrenceCount, optional long createdAt, optional Double? jaccard, optional androidx.compose.ui.graphics.Color? color);
+    method public io.github.ygaray.yahirandroidtaste.model.TagChipUiModel copy(optional String id, optional String name, optional int occurrenceCount, optional long createdAt, optional Double? jaccard);
     method @InaccessibleFromKotlin public long getCreatedAt();
     method @InaccessibleFromKotlin public String getId();
     method @InaccessibleFromKotlin public Double? getJaccard();
     method @InaccessibleFromKotlin public String getName();
     method @InaccessibleFromKotlin public int getOccurrenceCount();
+    method public static io.github.ygaray.yahirandroidtaste.model.TagChipUiModel of(String id, String name, int occurrenceCount);
+    method public static io.github.ygaray.yahirandroidtaste.model.TagChipUiModel of(String id, String name, int occurrenceCount, optional long createdAt);
+    method public static io.github.ygaray.yahirandroidtaste.model.TagChipUiModel of(String id, String name, int occurrenceCount, optional long createdAt, optional Double? jaccard);
     property public androidx.compose.ui.graphics.Color? color;
     property public long createdAt;
     property public String id;
     property public Double? jaccard;
     property public String name;
     property public int occurrenceCount;
+    field public static final io.github.ygaray.yahirandroidtaste.model.TagChipUiModel.Companion Companion;
+  }
+
+  public static final class TagChipUiModel.Companion {
+    method public io.github.ygaray.yahirandroidtaste.model.TagChipUiModel of(String id, String name, int occurrenceCount);
+    method public io.github.ygaray.yahirandroidtaste.model.TagChipUiModel of(String id, String name, int occurrenceCount, optional long createdAt);
+    method public io.github.ygaray.yahirandroidtaste.model.TagChipUiModel of(String id, String name, int occurrenceCount, optional long createdAt, optional Double? jaccard);
+    method @KotlinOnly public io.github.ygaray.yahirandroidtaste.model.TagChipUiModel of(String id, String name, int occurrenceCount, optional long createdAt, optional Double? jaccard, optional androidx.compose.ui.graphics.Color? color);
   }
 
   public final class TagManagementUiModel {
