@@ -21,6 +21,12 @@ metalava {
     // variant -- this is what keeps metalavaCheckCompatibilityDebug (not just the Release
     // variant apiCheck delegates to) from false-flagging them as a "Removed class" the moment
     // codegen regenerates them under a different signature.
+    // Failure mode if this ever silently stops working (e.g. a future Hilt/Dagger upgrade
+    // renames or drops this annotation FQN): a generated factory could re-enter the committed
+    // api.txt on the next apiDump without any apiCheck/metalavaCheckCompatibility* gate going
+    // red (they only fail on breaking REMOVALS, not additions). GeneratedSymbolDriftGuardTest
+    // (src/test/.../explorer/GeneratedSymbolDriftGuardTest.kt) is the durable regression guard
+    // for exactly that case -- it runs on every testDebugUnitTest.
     hiddenAnnotations.add("dagger.internal.DaggerGenerated")
 }
 
