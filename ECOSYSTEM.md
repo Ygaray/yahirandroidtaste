@@ -62,10 +62,10 @@ consumer's own repo/channel, on its own cadence (§7):
   owed since the `v1.10.0` → `v1.11.0` fork note below — `FilterBar` was folded into `ChipBar` at
   `v2.0.0` and this migration is what lets SecondBrain leave the forked `v1.11.0` lineage and
   repin straight onto `v2.0.0`-and-later, including `v2.2.0`); and optionally wire the new
-  `TagChipUiModel.color` slot (`TAGCOLOR-01`, Phase 7). Executed in SecondBrain's own repo/channel.
+  `TagChipUiModel.color` slot (`TAGCOLOR-01`, Phase 7) -- to be executed in SecondBrain's own repo/channel, not performed by this hub phase.
 - **CalTracker (`v2.1.0` → `v2.2.0`):** bump the same coordinate in `gradle/libs.versions.toml`
   from `v2.1.0` to `v2.2.0` — purely additive, no consumer-side source changes required (CalTracker
-  consumes no `FilterBar`/`ChipBar` call site). Executed in CalTracker's own repo/channel.
+  consumes no `FilterBar`/`ChipBar` call site) -- to be executed in CalTracker's own repo/channel, not performed by this hub phase.
 
 `v1.10.0` was cut in **SecondBrain v2.1
 Phase 135 Plan 02** (`MIND-10`, Phase 135's D-02 decision), an autonomous minor bump, on top of the
