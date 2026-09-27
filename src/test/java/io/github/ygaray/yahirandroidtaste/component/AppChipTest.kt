@@ -1,5 +1,6 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.doubleClick
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.longClick
@@ -7,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -256,5 +258,139 @@ class AppChipTest {
             1,
             clickCount
         )
+    }
+
+    // --- containerColorOverride (Phase 7 Plan 01, TAGCOLOR-01) -------------------------------
+
+    @Test
+    fun `containerColor precedence order is isSelected then relatedness then containerColorOverride then else`() {
+        val containerColorBlock = whenBlock("containerColor")
+
+        val isSelectedIndex = containerColorBlock.indexOf("isSelected ->")
+        val relatednessIndex = containerColorBlock.indexOf("relatedness != null ->")
+        val overrideIndex = containerColorBlock.indexOf("containerColorOverride != null ->")
+        val elseIndex = containerColorBlock.indexOf("else ->")
+
+        assertTrue(
+            "containerColor's when-block must order its arms isSelected -> relatedness != null " +
+                "-> containerColorOverride != null -> else -> (all found, in that order); found " +
+                "indices: isSelected=$isSelectedIndex relatedness=$relatednessIndex " +
+                "override=$overrideIndex else=$elseIndex",
+            isSelectedIndex >= 0 && relatednessIndex > isSelectedIndex &&
+                overrideIndex > relatednessIndex && elseIndex > overrideIndex
+        )
+    }
+
+    @Test
+    fun `contentColor when-block never references containerColorOverride (D-01)`() {
+        val contentColorBlock = whenBlock("contentColor")
+
+        assertEquals(
+            "contentColor's when-block must never gain a containerColorOverride arm — content " +
+                "color stays driven solely by isSelected/relatedness (D-01)",
+            0,
+            SourceContractTestSupport.countOccurrences(contentColorBlock, "containerColorOverride")
+        )
+    }
+
+    @Test
+    fun `borderStroke when-block never references containerColorOverride (D-01)`() {
+        val borderStrokeBlock = whenBlock("borderStroke")
+
+        assertEquals(
+            "borderStroke's when-block must never gain a containerColorOverride arm — the border " +
+                "stays driven solely by isSelected/relatedness (D-01)",
+            0,
+            SourceContractTestSupport.countOccurrences(borderStrokeBlock, "containerColorOverride")
+        )
+    }
+
+    @Test
+    fun `a non-null containerColorOverride still renders the label and stays clickable`() {
+        var clickCount = 0
+
+        composeTestRule.setContent {
+            AppChip(
+                label = "Work",
+                isSelected = false,
+                onClick = { clickCount++ },
+                containerColorOverride = Color(0xFF6750A4)
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Work").assertExists()
+        composeTestRule.onNodeWithText("Work").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(
+            "A chip constructed with a non-null containerColorOverride must still render its " +
+                "label and remain clickable exactly once — the new parameter's wiring must not " +
+                "crash or break the existing gesture",
+            1,
+            clickCount
+        )
+    }
+
+    @Test
+    fun `omitting containerColorOverride - this phase's regression floor - still renders and clicks like pre-phase AppChip`() {
+        var clickCount = 0
+
+        composeTestRule.setContent {
+            AppChip(
+                label = "Work",
+                isSelected = false,
+                onClick = { clickCount++ }
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Work").assertExists()
+        composeTestRule.onNodeWithText("Work").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(
+            "Phase 7 Plan 01's own regression-floor proof: omitting containerColorOverride must " +
+                "render/click exactly like pre-phase AppChip",
+            1,
+            clickCount
+        )
+    }
+
+    // --- Source-reading helpers -------------------------------------------------------------
+
+    /**
+     * Isolates one of AppChip's three `val <name> = when { ... }` blocks by name via depth-aware
+     * brace balancing, mirroring [CardBaseTest]'s `renderConditionalBraces` convention: scan
+     * forward from the `val <name> = when {` anchor, balance `{`/`}` from its opening brace to
+     * the matching close.
+     */
+    private fun whenBlock(name: String): String {
+        val src = SourceContractTestSupport.stripComments(
+            SourceContractTestSupport.source("AppChip.kt")
+        )
+        val anchor = "val $name = when {"
+        val anchorIndex = src.indexOf(anchor)
+        assertTrue("Could not locate '$anchor' in AppChip.kt", anchorIndex >= 0)
+
+        val openBrace = src.indexOf('{', anchorIndex)
+        val closeBrace = matchingCloseBraceIndex(src, openBrace)
+        return src.substring(openBrace, closeBrace + 1)
+    }
+
+    private fun matchingCloseBraceIndex(text: String, openBraceIndex: Int): Int {
+        var depth = 1
+        var i = openBraceIndex + 1
+        while (i < text.length) {
+            when (text[i]) {
+                '{' -> depth++
+                '}' -> {
+                    depth--
+                    if (depth == 0) return i
+                }
+            }
+            i++
+        }
+        error("No matching closing brace found for opening brace at index $openBraceIndex")
     }
 }

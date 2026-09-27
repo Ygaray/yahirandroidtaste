@@ -1,5 +1,6 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,6 +27,29 @@ class CardTagRowTest {
             "CardTagRow's TagChipWithContextMenu(...) call (the hasCapability branch) must pass " +
                 "containerColorOverride = tag.color so the auto-thread wiring is proven",
             callRegion.contains("containerColorOverride = tag.color")
+        )
+    }
+
+    @Test
+    fun `plain AppChip branch (no capability) also threads tag color into containerColorOverride`() {
+        val callRegion = callRegion("AppChip(", occurrence = 1)
+
+        assertTrue(
+            "CardTagRow's plain AppChip(...) call (the !hasCapability branch) must pass " +
+                "containerColorOverride = tag.color, mirroring the TagChipWithContextMenu branch",
+            callRegion.contains("containerColorOverride = tag.color")
+        )
+    }
+
+    @Test
+    fun `overflow +N AppChip call never receives a containerColorOverride`() {
+        val callRegion = callRegion("AppChip(", occurrence = 2)
+
+        assertEquals(
+            "The '+N' overflow AppChip call has no backing TagChipUiModel and must stay " +
+                "theme-default — it must never receive containerColorOverride",
+            0,
+            SourceContractTestSupport.countOccurrences(callRegion, "containerColorOverride")
         )
     }
 
