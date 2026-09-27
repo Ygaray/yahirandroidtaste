@@ -396,7 +396,10 @@ class DomainVocabularyDriftGuardTest {
                 "business object, per Phase 64 D-01) rather than a true consumer-domain noun, " +
                 "but is grandfathered here (not added to PRIMITIVE_NOUN_ALLOWLIST) so a " +
                 "genuinely domain-coupled future name sharing a similar shape still gets " +
-                "flagged for review."
+                "flagged for review.",
+            "PlaceMapPicker" to
+                "Head token 'Place' leans location-domain; acknowledged explicitly per Phase 6 " +
+                "D-05.2 rather than treated as a domain-agnostic primitive."
         )
     }
 }
