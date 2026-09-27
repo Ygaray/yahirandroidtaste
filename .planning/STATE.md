@@ -4,17 +4,17 @@ milestone: v2.0
 milestone_name: Line Reunification
 current_phase: 06
 current_phase_name: Forward-port reunification
-status: executing
-stopped_at: Completed 06-02-PLAN.md
-last_updated: "2026-09-27T06:46:36.456Z"
+status: verifying
+stopped_at: Completed 06-03-PLAN.md
+last_updated: "2026-09-27T06:55:27.039Z"
 last_activity: 2026-09-27
 last_activity_desc: Phase 06 execution started
-state_head: 69f3b12530660e862a162e93ab642fd4f1209988
+state_head: 054b79ae99ecf37784fbc13066d530f73a87e803
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-09-26)
 
 Phase: 06 (Forward-port reunification) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-27 — Phase 06 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -65,6 +65,7 @@ Progress: [░░░░░░░░░░] 0%
 |------|----------|-------|-------|
 | Phase 06 P01 | 14min | 2 tasks | 8 files |
 | Phase 06 P02 | 18min | 2 tasks | 4 files |
+| Phase 06 P03 | 10min | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,8 @@ Recent decisions affecting current work:
 - [Phase 06]: Forward-ported DateTimePicker byte-faithful from v1.13.0 via targeted git checkout; hand-inserted the registry entry into main's independently-evolved PickersFamilyScreen.kt rather than whole-file restoring it
 - [Phase 06]: Restored PresetChip.kt + PresetChipTest.kt byte-faithful via targeted git checkout v1.13.0 -- <path> (not whole-file); hand-inserted the Entry(...) and PresetChipVariants() demo into main's independently-evolved ChipsFamilyScreen.kt, preserving existing entries and tier assignments
 - [Phase 06]: Placed the new PresetChip Entry between ChipBar and SortControl in chipsFamilyEntries, matching v1.13.0's original list order
+- [Phase 06]: Restored the missing SourceContractTestSupport.functionBody helper (predated main's copy) rather than editing the restored PlaceMapPickerTest.kt, preserving byte-faithfulness of the ported test
+- [Phase 06]: Forward-ported the PlaceMapPicker cluster byte-faithful from v1.13.0; hand-inserted its Entry(...) + demo alongside DateTimePicker in main's independently-evolved PickersFamilyScreen.kt
 
 ### Pending Todos
 
@@ -102,6 +105,6 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-27T06:46:36.388Z
-Stopped at: Completed 06-02-PLAN.md
+Last session: 2026-09-27T06:55:27.011Z
+Stopped at: Completed 06-03-PLAN.md
 Resume file: None
