@@ -73,3 +73,17 @@ Which of SB's ~dozen tag-chip sites route through `CardTagRow` (auto-thread) vs.
 
 *Phase: 7-chip-color-slot*
 *Context gathered: 2026-09-26*
+
+## Runtime Decisions
+
+### 2026-09-27 — ABI-break resolution (operator decision, milestone execute stage)
+**Decision point (from 07-VERIFICATION.md gap / 07-REVIEW.md WR-01):** `@JvmOverloads` on the
+`TagChipUiModel` data class removed the old 5-arg `copy()` overload from `api.txt` — a public-API
+ABI break on a JitPack-consumed reusable library (SecondBrain).
+
+**Operator ruling: CODE FIX — restore an additive API.** Do NOT accept the break. Remove
+`@JvmOverloads` from the `TagChipUiModel` data class, and instead add a `@JvmStatic
+Companion.of(...)` factory annotated `@JvmOverloads` (the alternative 07-REVIEW.md itself proposed).
+`api.txt` must end up genuinely additive — no removed symbol, the pre-existing 5-arg `copy()`
+overload preserved — so no consumer can hit `NoSuchMethodError`. Then re-run metalava/API check and
+resume the tail gates (security → Gate-1 self-UAT → nyquist → verify).
