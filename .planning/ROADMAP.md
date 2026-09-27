@@ -123,16 +123,16 @@ Plans:
   3. The hub's `ECOSYSTEM.md` repin matrix is reconciled via `repin_status.py reconcile`, clearing tech-debt W-1.
   4. The coordinated repin is surfaced for the owner (tag + each consumer's bump path) and runs in each **consumer's own channel** per the cross-repo-hub convention: SecondBrain single repin `v1.13.0→v2.2.0` (+ its own FilterBar→ChipBar migration + color wiring) and CalTracker `v2.1.0→v2.2.0` (purely additive, passes its own disabled copy) — the hub run edits **no consumer repos**.
 
-**Plans**: 2 plans
+**Plans**: 2/2 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 09-01-PLAN.md — Close KI-2026-09-02-01 (hide Dagger-generated symbols from metalava, rebaseline api.txt), run the closing governance battery, and surface the v2.2.0 tag cut for the owner's go-ahead
+- [x] 09-01-PLAN.md — Close KI-2026-09-02-01 (hide Dagger-generated symbols from metalava, rebaseline api.txt), run the closing governance battery, and surface the v2.2.0 tag cut for the owner's go-ahead
 
 **Wave 2** *(blocked on Wave 1's checkpoint + the owner's out-of-band tag cut)*
 
-- [ ] 09-02-PLAN.md — Verify v2.2.0 resolves via JitPack, reconcile ECOSYSTEM.md's repin matrix, hand-correct its stale narrative, and surface each consumer's repin path
+- [x] 09-02-PLAN.md — Verify v2.2.0 resolves via JitPack, reconcile ECOSYSTEM.md's repin matrix, hand-correct its stale narrative, and surface each consumer's repin path
 
 ## Progress
 
@@ -145,7 +145,7 @@ on all three. Numeric order: 6 → 7 → 8 → 9.
 | 6. Forward-port reunification | v2.0 | 3/3 | Complete    | 2026-09-27 |
 | 7. Chip-color slot | v2.0 | 1/1 | Complete    | 2026-09-27 |
 | 8. MicButton hardening | v2.0 | 1/1 | Complete    | 2026-09-27 |
-| 9. Ship & coordinated repin | v2.0 | 0/2 | Planned    |  |
+| 9. Ship & coordinated repin | v2.0 | 2/2 | In Progress|  |
 
 ## Backlog
 

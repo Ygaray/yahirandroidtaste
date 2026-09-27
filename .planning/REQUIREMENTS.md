@@ -29,8 +29,8 @@ Requirements for this milestone. Each maps to exactly one roadmap phase.
 
 ### Ship & converge (completes v1.0's GARD-02, now onto `v2.2.0`)
 
-- [ ] **SHIP-01**: Library `v2.2.0` is cut — an immutable annotated tag on `main` after all gates pass (`testDebugUnitTest`, `detekt` zero-baseline, both drift guards, `apiCheck`, `publishReleasePublicationToMavenLocal`). Human-gated tag cut.
-- [ ] **SHIP-02**: Both consumers are coordinated onto `v2.2.0` (SecondBrain single repin + FilterBar→ChipBar migration in its own channel; CalTracker `v2.1.0→v2.2.0`), and the hub's ECOSYSTEM.md repin matrix is reconciled via `repin_status.py reconcile` (clears tech-debt W-1). Each consumer Gate-1 runs in its own channel per the cross-repo convention.
+- [x] **SHIP-01**: Library `v2.2.0` is cut — an immutable annotated tag on `main` after all gates pass (`testDebugUnitTest`, `detekt` zero-baseline, both drift guards, `apiCheck`, `publishReleasePublicationToMavenLocal`). Human-gated tag cut.
+- [x] **SHIP-02**: Both consumers are coordinated onto `v2.2.0` (SecondBrain single repin + FilterBar→ChipBar migration in its own channel; CalTracker `v2.1.0→v2.2.0`), and the hub's ECOSYSTEM.md repin matrix is reconciled via `repin_status.py reconcile` (clears tech-debt W-1). Each consumer Gate-1 runs in its own channel per the cross-repo convention.
 
 ## Future Requirements
 
@@ -64,8 +64,8 @@ Filled during roadmap creation (2026-09-26).
 | MICBTN-01 | Phase 8 | Complete |
 | MICBTN-02 | Phase 8 | Complete |
 | MICBTN-03 | Phase 8 | Complete |
-| SHIP-01 | Phase 9 | Pending |
-| SHIP-02 | Phase 9 | Pending |
+| SHIP-01 | Phase 9 | Complete |
+| SHIP-02 | Phase 9 | Complete |
 
 **Coverage:**
 

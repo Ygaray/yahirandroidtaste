@@ -4,18 +4,19 @@ milestone: v2.0
 milestone_name: Line Reunification
 current_phase: 09
 current_phase_name: ship-coordinated-repin
+current_plan: 2
 status: executing
-stopped_at: Phase 6 complete, ready to plan Phase 07
-last_updated: "2026-09-27T18:40:00.966Z"
+stopped_at: Completed 09-02-PLAN.md
+last_updated: "2026-09-27T19:29:57.428Z"
 last_activity: 2026-09-27
 last_activity_desc: Phase 6 complete, transitioned to Phase 07
-state_head: 21aa091ce321f98d354904a4884bbc92c8236a3b
+state_head: c793ab83cccfb591f0ece630cf3b5e67aca364cd
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 0
   total_plans: 7
-  completed_plans: 5
-  percent: 71
+  completed_plans: 7
+  percent: 0
 ---
 
 # Project State
@@ -29,12 +30,13 @@ See: .planning/PROJECT.md (updated 2026-09-26)
 
 ## Current Position
 
-Phase: 09 (ship-coordinated-repin) — READY TO EXECUTE
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-09-27 — Phase 6 complete, transitioned to Phase 07
+Phase: 09 (ship-coordinated-repin) — EXECUTING
+Current Plan: 2
+Total Plans in Phase: 2
+Status: Plan 09-02 complete
+Last activity: 2026-09-27 — Plan 09-02 (JitPack verify + ECOSYSTEM.md reconcile) complete
 
-Progress: [███████░░░] 71%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -67,6 +69,7 @@ Progress: [███████░░░] 71%
 | Phase 06 P02 | 18min | 2 tasks | 4 files |
 | Phase 06 P03 | 10min | 3 tasks | 12 files |
 | Phase 08 P01 | 15min | 3 tasks | 3 files |
+| Phase 09 P02 | 15min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -85,6 +88,8 @@ Recent decisions affecting current work:
 - [Phase 06]: Restored the missing SourceContractTestSupport.functionBody helper (predated main's copy) rather than editing the restored PlaceMapPickerTest.kt, preserving byte-faithfulness of the ported test
 - [Phase 06]: Forward-ported the PlaceMapPicker cluster byte-faithful from v1.13.0; hand-inserted its Entry(...) + demo alongside DateTimePicker in main's independently-evolved PickersFamilyScreen.kt
 - [Phase 08]: Phase 08: MicButton hardened — rememberUpdatedState for onTap/onDisabledTap (mid-press callback-identity fix), parameterized microcopy with generic defaults, hub-vocabulary KDoc. Landed via HUB_LANE_OVERRIDE=2 (behavior-change lane, sanctioned mechanic).
+- [Phase 09]: Task 1 auto-fixed (Rule 3): added --refresh to repin_status.py reconcile after discovering the 1h tags.json cache predated the v2.2.0 push, which had silently left the matrix reconciled against stale v2.1.0-latest data.
+- [Phase 09]: Task 2: hand-corrected ECOSYSTEM.md's stale narrative (false 'current tag' claim, doubly-stale pins sentence, stale SecondBrain table cell), added a new v2.2.0 tag-cut record and a 'Pending repins' subsection -- clears W-1 fully per D-03.
 
 ### Pending Todos
 
@@ -107,6 +112,6 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-27T15:37:41.997Z
-Stopped at: Phase 6 complete, ready to plan Phase 07
+Last session: 2026-09-27T19:29:57.385Z
+Stopped at: Completed 09-02-PLAN.md
 Resume file: None
