@@ -77,3 +77,13 @@ None — discussion stayed within phase scope. (The coordinated consumer repins 
 
 *Phase: 9-ship-coordinated-repin*
 *Context gathered: 2026-09-26*
+
+## Runtime Decisions
+
+### 2026-09-27 — apiCheck KI disposition FINALIZED (operator, milestone plan stage)
+Provisional decision (area: apicheck-ki, depends-on Phase 6) is now CONFIRMED by the operator after
+Phase 6 completed. **Disposition: KI fix option 1** — exclude `@DaggerGenerated` types (e.g.
+`UndoHistoryStore_Factory`) from the metalava/api surface, then rebaseline `api.txt` so the false
+"Removed class" metalava finding (KI-2026-09-02-01) clears on BOTH Debug and Release variants. Goal:
+apiCheck gate genuinely green (no standing suppressed diff); close KI-2026-09-02-01. This is the
+zero-baseline-consistent path, not an accepted-override.
