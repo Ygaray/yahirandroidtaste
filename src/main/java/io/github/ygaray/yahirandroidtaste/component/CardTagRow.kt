@@ -105,7 +105,8 @@ fun CardTagRow(
                     onEdit = onTagEdit?.let { edit -> { edit(tag.id) } },
                     onRemoveFromContext = onTagRemoveFromCard?.let { remove -> { remove(tag.id) } },
                     onDelete = onTagDelete?.let { delete -> { delete(tag.id, tag.name) } },
-                    removeLabel = removeFromCardLabel
+                    removeLabel = removeFromCardLabel,
+                    containerColorOverride = tag.color
                 )
             } else {
                 AppChip(
@@ -114,7 +115,8 @@ fun CardTagRow(
                     onClick = { onTagClick(tag.id) },
                     modifier = Modifier.weight(1f, fill = false).semantics {
                         contentDescription = "Browse cards tagged ${tag.name}"
-                    }
+                    },
+                    containerColorOverride = tag.color
                 )
             }
         }

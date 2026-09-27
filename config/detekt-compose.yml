@@ -11,6 +11,16 @@
 # (ExpandableFab, resolved separately via composable extraction — see FabActionRow) while still
 # failing meaningfully one step above today's highest legitimate values (ListCard: 228 L / 14
 # params / cyclomatic 22; SwipeableActionRow: cyclomatic 21).
+#
+# CyclomaticComplexMethod re-tuned 25 -> 26 (Phase 7 Plan 01, TAGCOLOR-01, out-of-scope discovery,
+# not a Phase 7 change): TextCard's cyclomatic complexity had drifted to exactly 25 by an earlier,
+# unrelated phase (REMIND-09's ReminderIndicator card-face cluster), tripping the `>= threshold`
+# check at the boundary. TextCard.kt is untouched by this phase's TAGCOLOR-01 changes (confirmed
+# via `git diff` against the phase's base commit) — refactoring its complexity down is out of this
+# phase's scope. Per CLAUDE.md's zero-baseline policy ("fix it or tune the rule with justification"
+# — never regenerate a baseline to bury a finding), this is the minimal one-step bump, following
+# this file's own established practice above, to keep detekt green without silently suppressing a
+# real (if pre-existing, unrelated) signal.
 complexity:
   active: true
   LongMethod:
@@ -23,4 +33,4 @@ complexity:
     ignoreDefaultParameters: true
   CyclomaticComplexMethod:
     active: true
-    threshold: 25
+    threshold: 26

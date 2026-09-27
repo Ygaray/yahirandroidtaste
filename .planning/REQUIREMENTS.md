@@ -19,7 +19,7 @@ Requirements for this milestone. Each maps to exactly one roadmap phase.
 
 ### Chip color (consumer-requested additive capability)
 
-- [ ] **TAGCOLOR-01**: A caller can render a per-tag chip in an opt-in color — `color: Color?` on `TagChipUiModel`, `containerColorOverride: Color?` on `AppChip` and `TagChipWithContextMenu`, auto-threaded from `tag.color` at `CardTagRow`. Backward-compatible (defaulted `null` = today's theme rendering); the hub renders as-is (consumer owns the muted/theme-aware policy); override loses to `isSelected`/`relatednessStrength`.
+- [x] **TAGCOLOR-01**: A caller can render a per-tag chip in an opt-in color — `color: Color?` on `TagChipUiModel`, `containerColorOverride: Color?` on `AppChip` and `TagChipWithContextMenu`, auto-threaded from `tag.color` at `CardTagRow`. Backward-compatible (defaulted `null` = today's theme rendering); the hub renders as-is (consumer owns the muted/theme-aware policy); override loses to `isSelected`/`relatednessStrength`.
 
 ### MicButton hardening (reusability + correctness)
 
@@ -60,7 +60,7 @@ Filled during roadmap creation (2026-09-26).
 | REUNI-02 | Phase 6 | Complete |
 | REUNI-03 | Phase 6 | Complete |
 | REUNI-04 | Phase 6 | Complete |
-| TAGCOLOR-01 | Phase 7 | Pending |
+| TAGCOLOR-01 | Phase 7 | Complete |
 | MICBTN-01 | Phase 8 | Pending |
 | MICBTN-02 | Phase 8 | Pending |
 | MICBTN-03 | Phase 8 | Pending |
