@@ -3,18 +3,18 @@ gsd_state_version: "1.0"
 milestone: v2.0
 milestone_name: Line Reunification
 current_phase: 08
-current_phase_name: micbutton-hardening
-status: executing
-stopped_at: Phase 07 planned (1 plan, checker verified, all gates passed)
-last_updated: "2026-09-27T15:20:00.579Z"
+current_phase_name: MicButton hardening
+status: verifying
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-09-27T15:37:42.035Z"
 last_activity: 2026-09-27
-last_activity_desc: Phase 07 execution started
-state_head: 66ca8ffe74d9865e7a5ed4b389cfec398b410b60
+last_activity_desc: Phase 08 execution started
+state_head: b99fa196ccf2356f2bb5ce857f4aa6c72bd3615b
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 5
-  completed_plans: 4
+  completed_plans: 5
   percent: 0
 ---
 
@@ -25,14 +25,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-26)
 
 **Core value:** The hub stays a coherent design system — not merely a safe, ever-growing pile of domain-agnostic components — as more consumers contribute.
-**Current focus:** Phase 07 — Chip-color slot
+**Current focus:** Phase 08 — MicButton hardening
 
 ## Current Position
 
-Phase: 08 (micbutton-hardening) — READY TO EXECUTE
+Phase: 08 (MicButton hardening) — EXECUTING
 Plan: 1 of 1
-Status: Ready to execute
-Last activity: 2026-09-27 — Phase 07 execution started
+Status: Phase complete — ready for verification
+Last activity: 2026-09-27 — Phase 08 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -66,6 +66,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 06 P01 | 14min | 2 tasks | 8 files |
 | Phase 06 P02 | 18min | 2 tasks | 4 files |
 | Phase 06 P03 | 10min | 3 tasks | 12 files |
+| Phase 08 P01 | 15min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,7 @@ Recent decisions affecting current work:
 - [Phase 06]: Placed the new PresetChip Entry between ChipBar and SortControl in chipsFamilyEntries, matching v1.13.0's original list order
 - [Phase 06]: Restored the missing SourceContractTestSupport.functionBody helper (predated main's copy) rather than editing the restored PlaceMapPickerTest.kt, preserving byte-faithfulness of the ported test
 - [Phase 06]: Forward-ported the PlaceMapPicker cluster byte-faithful from v1.13.0; hand-inserted its Entry(...) + demo alongside DateTimePicker in main's independently-evolved PickersFamilyScreen.kt
+- [Phase 08]: Phase 08: MicButton hardened — rememberUpdatedState for onTap/onDisabledTap (mid-press callback-identity fix), parameterized microcopy with generic defaults, hub-vocabulary KDoc. Landed via HUB_LANE_OVERRIDE=2 (behavior-change lane, sanctioned mechanic).
 
 ### Pending Todos
 
@@ -105,6 +107,6 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-27T08:42:49.131Z
-Stopped at: Phase 07 planned (1 plan, checker verified, all gates passed)
-Resume file: .planning/phases/07-chip-color-slot/07-01-PLAN.md
+Last session: 2026-09-27T15:37:41.997Z
+Stopped at: Completed 08-01-PLAN.md
+Resume file: None

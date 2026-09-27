@@ -23,9 +23,9 @@ Requirements for this milestone. Each maps to exactly one roadmap phase.
 
 ### MicButton hardening (reusability + correctness)
 
-- [ ] **MICBTN-01**: `MicButton` carries no consumer-specific microcopy — its three content descriptions are parameters with generic defaults (`disabledDescription = "Microphone unavailable"`, `tapToTalkDescription`, `listeningDescription`) so any consumer can reword/localize (WR-01).
-- [ ] **MICBTN-02**: `MicButton`'s `onTap`/`onDisabledTap` fire the latest callback identity across recomposition (routed through `rememberUpdatedState`), with a regression test that flips callback identity mid-press (WR-02).
-- [ ] **MICBTN-03**: `MicButton` KDoc uses hub vocabulary (`enabled`, not `config`), and `enabled`/`onDisabledTap` have sensible defaults (`true` / `{}`) (IN-01, IN-02).
+- [x] **MICBTN-01**: `MicButton` carries no consumer-specific microcopy — its three content descriptions are parameters with generic defaults (`disabledDescription = "Microphone unavailable"`, `tapToTalkDescription`, `listeningDescription`) so any consumer can reword/localize (WR-01).
+- [x] **MICBTN-02**: `MicButton`'s `onTap`/`onDisabledTap` fire the latest callback identity across recomposition (routed through `rememberUpdatedState`), with a regression test that flips callback identity mid-press (WR-02).
+- [x] **MICBTN-03**: `MicButton` KDoc uses hub vocabulary (`enabled`, not `config`), and `enabled`/`onDisabledTap` have sensible defaults (`true` / `{}`) (IN-01, IN-02).
 
 ### Ship & converge (completes v1.0's GARD-02, now onto `v2.2.0`)
 
@@ -61,9 +61,9 @@ Filled during roadmap creation (2026-09-26).
 | REUNI-03 | Phase 6 | Complete |
 | REUNI-04 | Phase 6 | Complete |
 | TAGCOLOR-01 | Phase 7 | Complete |
-| MICBTN-01 | Phase 8 | Pending |
-| MICBTN-02 | Phase 8 | Pending |
-| MICBTN-03 | Phase 8 | Pending |
+| MICBTN-01 | Phase 8 | Complete |
+| MICBTN-02 | Phase 8 | Complete |
+| MICBTN-03 | Phase 8 | Complete |
 | SHIP-01 | Phase 9 | Pending |
 | SHIP-02 | Phase 9 | Pending |
 
