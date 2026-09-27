@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
@@ -72,6 +73,15 @@ import androidx.compose.ui.unit.dp
  *                    [combinedClickable] gesture primitive the requirement mandates, not something
  *                    this parameter's plumbing controls — real-perception judgment of it belongs to
  *                    Phase 109's on-device verification.
+ * @param containerColorOverride Optional per-chip container-fill [Color] override (Phase 7 Plan
+ *                    01, TAGCOLOR-01). Slots into the `containerColor` `when`-block below the
+ *                    `isSelected` and active-`relatednessStrength` arms — both of those always win
+ *                    over this override when they apply; it only renders in the plain resting
+ *                    branch (`!isSelected && relatedness == null`). Rendered as-is: no contrast,
+ *                    muting, or theme adjustment is computed on the supplied `Color` (hub/consumer
+ *                    boundary, D-01) — the caller owns that policy. Never affects `contentColor` or
+ *                    `borderStroke` (D-01). Defaults to `null`, so every existing call site renders
+ *                    byte-identical to today.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -84,7 +94,8 @@ fun AppChip(
     trailingIcon: (@Composable () -> Unit)? = null,
     relatednessStrength: Float? = null,
     onLongClick: (() -> Unit)? = null,
-    onDoubleClick: (() -> Unit)? = null
+    onDoubleClick: (() -> Unit)? = null,
+    containerColorOverride: Color? = null
 ) {
     val relatedness = if (!isSelected && relatednessStrength != null)
         relatednessVisual(relatednessStrength, MaterialTheme.colorScheme)
@@ -94,6 +105,7 @@ fun AppChip(
     val containerColor = when {
         isSelected -> MaterialTheme.colorScheme.secondaryContainer
         relatedness != null -> relatedness.containerColor
+        containerColorOverride != null -> containerColorOverride
         else -> MaterialTheme.colorScheme.surface
     }
     val contentColor = when {

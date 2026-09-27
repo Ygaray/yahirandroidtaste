@@ -1,5 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.model
 
+import androidx.compose.ui.graphics.Color
+
 /**
  * UI model for a co-occurrence chip in the Browse screen.
  *
@@ -25,11 +27,18 @@ package io.github.ygaray.yahirandroidtaste.model
  * every other producer leaves it `null`. Nullable, NOT a numeric default like [createdAt]'s
  * `0L`, because a real jaccard of `0.0` (zero shared cards, still a valid relatedness result
  * per v1.17's zero-share-sunk-to-tail policy) must not collide with "not applicable."
+ *
+ * [color] (Phase 7 Plan 01, TAGCOLOR-01) — an opt-in per-tag chip container-color override,
+ * auto-threaded into `containerColorOverride` at `CardTagRow`. Every producer except a
+ * consumer's own color-aware mapper (e.g. SecondBrain's muted/theme-aware tag-color policy)
+ * leaves it `null`. Nullable, NOT a sentinel default like [createdAt]'s `0L`, because `null`
+ * means "no override — render the theme default," never "black" or any other real color value.
  */
 data class TagChipUiModel(
     val id: String,
     val name: String,
     val occurrenceCount: Int,
     val createdAt: Long = 0L,
-    val jaccard: Double? = null
+    val jaccard: Double? = null,
+    val color: Color? = null
 )

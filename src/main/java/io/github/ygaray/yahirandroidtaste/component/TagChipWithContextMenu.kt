@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
@@ -65,6 +66,9 @@ import androidx.compose.ui.unit.dp
  *   default. Per phase decision D-02, no call site binds this parameter in Phase 106 — the
  *   selected/drill-chip binding lands at Phase 109. Carries no hub-side menu behavior: the
  *   double-tap gesture is deliberately independent of this composable's menu-visibility state.
+ * @param containerColorOverride See [AppChip.containerColorOverride] (Phase 7 Plan 01,
+ *   TAGCOLOR-01) — forwarded verbatim to the underlying [AppChip], a straight passthrough since
+ *   it's a plain value, not a callback.
  */
 @Composable
 fun TagChipWithContextMenu(
@@ -79,7 +83,8 @@ fun TagChipWithContextMenu(
     onRemoveFromContext: (() -> Unit)? = null,
     onDelete: (() -> Unit)? = null,
     removeLabel: String = "",
-    onDoubleClick: (() -> Unit)? = null
+    onDoubleClick: (() -> Unit)? = null,
+    containerColorOverride: Color? = null
 ) {
     var showMenu by remember { mutableStateOf(false) }
     val haptic = LocalHapticFeedback.current
@@ -96,7 +101,8 @@ fun TagChipWithContextMenu(
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 showMenu = true
             },
-            onDoubleClick = onDoubleClick
+            onDoubleClick = onDoubleClick,
+            containerColorOverride = containerColorOverride
         )
         DropdownMenu(
             expanded = showMenu,
