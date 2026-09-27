@@ -24,10 +24,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.AccentColorPicker
 import io.github.ygaray.yahirandroidtaste.component.CropOverlay
+import io.github.ygaray.yahirandroidtaste.component.DateTimePicker
 import io.github.ygaray.yahirandroidtaste.component.IconPickerGrid
 import io.github.ygaray.yahirandroidtaste.component.SegmentedOptionSelector
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
+import java.time.LocalDate
+import java.time.LocalTime
 
 /**
  * D-05: this family's slice of [ComponentRegistry.entries], declared here (not in
@@ -60,6 +63,57 @@ internal val pickersFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             ComponentRegistry.StateCell("Focused")
         ),
         content = { AccentColorPickerVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
+    ),
+    ComponentRegistry.Entry(
+        name = "DateTimePicker",
+        family = ExplorerFamilies.PICKERS,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = {
+                    var date by remember { mutableStateOf<LocalDate?>(null) }
+                    var time by remember { mutableStateOf<LocalTime?>(null) }
+                    DateTimePicker(
+                        selectedDate = date,
+                        onDateSelected = { date = it },
+                        selectedTime = time,
+                        onTimeSelected = { time = it },
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+            ),
+            ComponentRegistry.StateCell(
+                "Pressed / Selected",
+                render = {
+                    var date by remember { mutableStateOf<LocalDate?>(LocalDate.of(2026, 9, 15)) }
+                    var time by remember { mutableStateOf<LocalTime?>(LocalTime.of(20, 0)) }
+                    DateTimePicker(
+                        selectedDate = date,
+                        onDateSelected = { date = it },
+                        selectedTime = time,
+                        onTimeSelected = { time = it },
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+            ),
+            ComponentRegistry.StateCell(
+                "Disabled",
+                render = {
+                    DateTimePicker(
+                        selectedDate = LocalDate.of(2026, 9, 15),
+                        onDateSelected = {},
+                        selectedTime = LocalTime.of(20, 0),
+                        onTimeSelected = {},
+                        enabled = false,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+            ),
+            // DateTimePicker has no focus-visual override — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { DateTimePickerVariants() },
         tier = ComponentRegistry.Tier.PATTERN
     ),
     ComponentRegistry.Entry(
@@ -200,6 +254,47 @@ private fun AccentColorPickerVariants() {
         onColorSelected = { selectedColor = it },
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         showIndices = true
+    )
+}
+
+/**
+ * DateTimePicker's demo (HUBW-01) — date-only (with a minDate floor), time-only, and both fields
+ * from one instance (the shape Plan 05's reminder editor uses).
+ */
+@Composable
+private fun DateTimePickerVariants() {
+    SectionLabel("DateTimePicker - date only (minDate = today)")
+    var dateOnly by remember { mutableStateOf<LocalDate?>(null) }
+    DateTimePicker(
+        selectedDate = dateOnly,
+        onDateSelected = { dateOnly = it },
+        selectedTime = null,
+        onTimeSelected = {},
+        showTime = false,
+        minDate = LocalDate.now(),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
+
+    SectionLabel("DateTimePicker - time only")
+    var timeOnly by remember { mutableStateOf<LocalTime?>(null) }
+    DateTimePicker(
+        selectedDate = null,
+        onDateSelected = {},
+        selectedTime = timeOnly,
+        onTimeSelected = { timeOnly = it },
+        showDate = false,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
+
+    SectionLabel("DateTimePicker - date and time, one instance")
+    var bothDate by remember { mutableStateOf<LocalDate?>(null) }
+    var bothTime by remember { mutableStateOf<LocalTime?>(null) }
+    DateTimePicker(
+        selectedDate = bothDate,
+        onDateSelected = { bothDate = it },
+        selectedTime = bothTime,
+        onTimeSelected = { bothTime = it },
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
     )
 }
 

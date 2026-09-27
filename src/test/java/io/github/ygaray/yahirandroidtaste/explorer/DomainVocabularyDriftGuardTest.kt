@@ -311,7 +311,10 @@ class DomainVocabularyDriftGuardTest {
             "Accent", "Adaptive", "Animated", "App", "Attention", "Bulk", "Clearable",
             "Confirmation", "Count", "Crop", "Cycle", "Dynamic", "Elevation", "Empty",
             "Expandable", "Filter", "Gradient", "Hero", "Icon", "List", "Metric", "Name",
-            "Progress", "Segmented", "Sort", "Tactile", "Text", "Undo"
+            "Progress", "Segmented", "Sort", "Tactile", "Text", "Undo",
+            // Phase 6 (REUNI-01/04) forward-port: "Date" is DateTimePicker's head token, a
+            // primitive UI-archetype noun (date/time selection), not consumer-domain vocabulary.
+            "Date"
         )
 
         /**
