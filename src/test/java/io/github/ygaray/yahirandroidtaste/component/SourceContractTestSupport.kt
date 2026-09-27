@@ -58,4 +58,99 @@ internal object SourceContractTestSupport {
         }
         return line
     }
+
+    /**
+     * Extracts one function's full source text — from the start of the [occurrence]-th
+     * (1-based) match of [declaration] (e.g. `"fun clearPinOverlays("`, including the opening
+     * `(` of its parameter list, by this file's own calling convention) through the closing
+     * brace that matches its body's opening brace — from [src] (intended for [stripComments]
+     * output; the same blind spots [stripComments] already documents apply here: a char literal
+     * holding a brace/paren, and a raw triple-quoted string).
+     *
+     * Reused across several source-contract assertions (164-02, and Plan 04 on top of it, and
+     * Phase 6's restored `PlaceMapPickerTest`) so each one names the function it cares about
+     * instead of matching a brittle line-ordering-sensitive substring (164-02 review round 2 LOW,
+     * raised again on 164-04). Restored from tag `v1.13.0` (Phase 6 forward-port) — main's copy of
+     * this shared helper predated this method's addition on the v1.x line.
+     *
+     * Algorithm: first balances *parentheses only* (so a default-valued lambda parameter such as
+     * `= {}` is skipped — its braces never affect this phase) to find the end of the parameter
+     * list; then scans forward requiring a body-opening `{` to appear before any `=` (an
+     * expression-bodied function throws instead of silently extracting the wrong thing); then
+     * balances *braces* from that `{` to its matching `}`. Both balancing passes skip characters
+     * inside double-quoted string literals using the same quote/backslash-escape scan as
+     * [stripTrailingInlineComment].
+     *
+     * @throws IllegalStateException if [declaration] does not occur [occurrence] times in [src],
+     *   if the parameter list or the body's braces never balance before the end of [src], or if
+     *   an `=` (an expression body) appears before the body's opening `{`.
+     */
+    fun functionBody(src: String, declaration: String, occurrence: Int = 1): String {
+        val declarationStart = findDeclarationStart(src, declaration, occurrence)
+        val afterParams = balanceFrom(src, declarationStart + declaration.length, open = '(', close = ')')
+        val bodyStart = findBodyStart(src, afterParams, declaration)
+        val bodyEnd = balanceFrom(src, bodyStart + 1, open = '{', close = '}')
+        return src.substring(declarationStart, bodyEnd)
+    }
+
+    private fun findDeclarationStart(src: String, declaration: String, occurrence: Int): Int {
+        var searchFrom = 0
+        var found = -1
+        repeat(occurrence) {
+            found = src.indexOf(declaration, searchFrom)
+            check(found >= 0) {
+                "functionBody: declaration \"$declaration\" does not occur $occurrence time(s) " +
+                    "in the given source."
+            }
+            searchFrom = found + declaration.length
+        }
+        return found
+    }
+
+    /**
+     * Scans forward from [start] balancing [open]/[close] (already at depth 1, since the caller
+     * consumed the opening character as part of [declaration] or the body-start scan), skipping
+     * string literals, and returns the index just past the matching close character.
+     */
+    private fun balanceFrom(src: String, start: Int, open: Char, close: Char): Int {
+        var depth = 1
+        var i = start
+        var inString = false
+        while (i < src.length && depth > 0) {
+            val c = src[i]
+            when {
+                c == '\\' && inString -> i++
+                c == '"' -> inString = !inString
+                !inString && c == open -> depth++
+                !inString && c == close -> depth--
+            }
+            i++
+        }
+        check(depth == 0) {
+            "functionBody: \"$open$close\" never balances for a declaration starting near " +
+                "index $start before the end of the source."
+        }
+        return i
+    }
+
+    /** Scans forward from [start] (just past the closed parameter list) for the body's opening `{`. */
+    private fun findBodyStart(src: String, start: Int, declaration: String): Int {
+        var i = start
+        var inString = false
+        while (i < src.length) {
+            val c = src[i]
+            when {
+                c == '\\' && inString -> i++
+                c == '"' -> inString = !inString
+                !inString && c == '{' -> return i
+                !inString && c == '=' ->
+                    error(
+                        "functionBody: \"$declaration\" is an expression-bodied function " +
+                            "(found '=' before '{') -- functionBody only supports block bodies."
+                    )
+            }
+            i++
+        }
+        error("functionBody: no body '{' found for \"$declaration\" before the end of the source.")
+    }
 }
