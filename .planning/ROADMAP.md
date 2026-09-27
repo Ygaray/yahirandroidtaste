@@ -53,7 +53,7 @@ Also lands two additive riders (per-tag chip color, MicButton hardening), comple
   4. `osmdroid` is recorded in `.planning/APPROVED-DEPS.md` and `CLAUDE.md` allowed-deps (impl-scope; ships in the `.aar`), and the head tokens (`Date`, `Preset` → `PRIMITIVE_NOUN_ALLOWLIST`; `Place` → `DOMAIN_VOCABULARY` w/ rationale) are allowlisted so `DomainVocabularyDriftGuardTest` stays green.
   5. `detekt` stays green at zero baseline (no new baseline banked).
 
-**Plans**: 1/3 plans executed
+**Plans**: 2/3 plans executed
 
 Plans:
 **Wave 1**
@@ -62,7 +62,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 06-02-PLAN.md — PresetChip (both overloads) restored, registered, allowlisted
+- [x] 06-02-PLAN.md — PresetChip (both overloads) restored, registered, allowlisted
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -122,7 +122,7 @@ on all three. Numeric order: 6 → 7 → 8 → 9.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 6. Forward-port reunification | v2.0 | 1/3 | In Progress|  |
+| 6. Forward-port reunification | v2.0 | 2/3 | In Progress|  |
 | 7. Chip-color slot | v2.0 | 0/TBD | Not started | - |
 | 8. MicButton hardening | v2.0 | 0/TBD | Not started | - |
 | 9. Ship & coordinated repin | v2.0 | 0/TBD | Not started | - |

@@ -14,7 +14,7 @@ Requirements for this milestone. Each maps to exactly one roadmap phase.
 
 - [x] **REUNI-01**: `DateTimePicker` is available on `main` — forward-ported from `v1.13.0` with its test, registered in `ComponentRegistry`, and shown in the ExplorerActivity gallery.
 - [ ] **REUNI-02**: The `PlaceMap*` cluster (`PlaceMapPicker`, `PlaceMapOsmdroidConfig`, `PlaceMapPickerModel`, `model/SavedPlaceUiModel`) is available on `main` — forward-ported with its 4 tests, registered, and shown in the gallery.
-- [ ] **REUNI-03**: `PresetChip` is available on `main` — forward-ported with its test, registered, and shown in the gallery.
+- [x] **REUNI-03**: `PresetChip` is available on `main` — forward-ported with its test, registered, and shown in the gallery.
 - [x] **REUNI-04**: `osmdroid` is admitted as an approved implementation-scope dependency (`.planning/APPROVED-DEPS.md` + `CLAUDE.md` allowed-deps, noting it ships in the `.aar`), and the ported composables' domain-vocabulary head tokens (`Date`, `Preset` → primitive; `Place` → domain-vocab w/ rationale) are allowlisted so both drift guards stay green.
 
 ### Chip color (consumer-requested additive capability)
@@ -58,7 +58,7 @@ Filled during roadmap creation (2026-09-26).
 |-------------|-------|--------|
 | REUNI-01 | Phase 6 | Complete |
 | REUNI-02 | Phase 6 | Pending |
-| REUNI-03 | Phase 6 | Pending |
+| REUNI-03 | Phase 6 | Complete |
 | REUNI-04 | Phase 6 | Complete |
 | TAGCOLOR-01 | Phase 7 | Pending |
 | MICBTN-01 | Phase 8 | Pending |

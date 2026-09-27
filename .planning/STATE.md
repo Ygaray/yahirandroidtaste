@@ -5,16 +5,16 @@ milestone_name: Line Reunification
 current_phase: 06
 current_phase_name: Forward-port reunification
 status: executing
-stopped_at: Completed 06-01-PLAN.md
-last_updated: "2026-09-27T06:38:39.264Z"
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-09-27T06:46:36.456Z"
 last_activity: 2026-09-27
 last_activity_desc: Phase 06 execution started
-state_head: 2fcfd2cf0dba843b78e95470c499c1d7b2cab230
+state_head: 69f3b12530660e862a162e93ab642fd4f1209988
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-26)
 ## Current Position
 
 Phase: 06 (Forward-port reunification) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-09-27 — Phase 06 execution started
 
@@ -64,6 +64,7 @@ Progress: [░░░░░░░░░░] 0%
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 06 P01 | 14min | 2 tasks | 8 files |
+| Phase 06 P02 | 18min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,8 @@ Recent decisions affecting current work:
 - Roadmap: SHIP-02's coordinated repin runs in each CONSUMER's own channel (cross-repo-hub convention); the hub phase only surfaces the tag + reconciles the hub's own ECOSYSTEM.md matrix — it edits no consumer repos.
 - [Phase 06]: Recorded git.allow_default_branch_commits:true — this hub project's sequential-in-hub convention (CLAUDE.md, branching_strategy: none) commits directly on main
 - [Phase 06]: Forward-ported DateTimePicker byte-faithful from v1.13.0 via targeted git checkout; hand-inserted the registry entry into main's independently-evolved PickersFamilyScreen.kt rather than whole-file restoring it
+- [Phase 06]: Restored PresetChip.kt + PresetChipTest.kt byte-faithful via targeted git checkout v1.13.0 -- <path> (not whole-file); hand-inserted the Entry(...) and PresetChipVariants() demo into main's independently-evolved ChipsFamilyScreen.kt, preserving existing entries and tier assignments
+- [Phase 06]: Placed the new PresetChip Entry between ChipBar and SortControl in chipsFamilyEntries, matching v1.13.0's original list order
 
 ### Pending Todos
 
@@ -99,6 +102,6 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-27T06:38:39.240Z
-Stopped at: Completed 06-01-PLAN.md
+Last session: 2026-09-27T06:46:36.388Z
+Stopped at: Completed 06-02-PLAN.md
 Resume file: None
