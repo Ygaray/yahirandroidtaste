@@ -83,7 +83,13 @@ Plans:
   4. The override loses to `isSelected`/`relatednessStrength` (theme roles win when selection is active) — asserted by test.
   5. No new public composables are added; `api.txt` is updated additively and `apiCheck`, both drift guards, and zero-baseline `detekt` stay green.
 
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+**Wave 1**
+
+- [ ] 07-01-PLAN.md — Thread TagChipUiModel.color / AppChip+TagChipWithContextMenu.containerColorOverride end-to-end (tracer), lock the precedence-order + auto-thread test matrix, regenerate api.txt and close the governance battery
+
 **UI hint**: yes
 
 ### Phase 8: MicButton hardening
@@ -123,7 +129,7 @@ on all three. Numeric order: 6 → 7 → 8 → 9.
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 6. Forward-port reunification | v2.0 | 3/3 | Complete    | 2026-09-27 |
-| 7. Chip-color slot | v2.0 | 0/TBD | Not started | - |
+| 7. Chip-color slot | v2.0 | 0/1 | Not started | - |
 | 8. MicButton hardening | v2.0 | 0/TBD | Not started | - |
 | 9. Ship & coordinated repin | v2.0 | 0/TBD | Not started | - |
 
