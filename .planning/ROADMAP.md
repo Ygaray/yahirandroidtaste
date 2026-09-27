@@ -104,7 +104,12 @@ Plans:
   3. `MicButton` KDoc uses hub vocabulary (`enabled`, not `config`), and `enabled`/`onDisabledTap` have defaults (`true` / `{}`).
   4. All changes are backward-compatible (existing call sites compile unchanged); `testDebugUnitTest`, both drift guards, and zero-baseline `detekt` stay green.
 
-**Plans**: TBD
+**Plans**: 0/1 plans executed
+
+Plans:
+**Wave 1**
+
+- [ ] 08-01-PLAN.md — RED→GREEN callback-identity fix, parameterized microcopy + hub-vocabulary KDoc, governance battery (apiDump/apiCheck/detekt/publish)
 
 ### Phase 9: Ship & coordinated repin
 
@@ -130,7 +135,7 @@ on all three. Numeric order: 6 → 7 → 8 → 9.
 |-------|-----------|----------------|--------|-----------|
 | 6. Forward-port reunification | v2.0 | 3/3 | Complete    | 2026-09-27 |
 | 7. Chip-color slot | v2.0 | 1/1 | In Progress|  |
-| 8. MicButton hardening | v2.0 | 0/TBD | Not started | - |
+| 8. MicButton hardening | v2.0 | 0/1 | Not started | - |
 | 9. Ship & coordinated repin | v2.0 | 0/TBD | Not started | - |
 
 ## Backlog
