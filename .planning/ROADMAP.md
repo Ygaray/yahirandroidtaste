@@ -33,7 +33,7 @@ Also lands two additive riders (per-tag chip color, MicButton hardening), comple
 - Integer phases (6, 7, 8, 9): planned milestone work (continues v1.0's 1-5).
 - Decimal phases (e.g., 6.1): urgent insertions, if any (marked INSERTED).
 
-- [ ] **Phase 6: Forward-port reunification** - Port the six v1.x-only components onto `main` net-additively, admit `osmdroid`, keep both drift guards green
+- [x] **Phase 6: Forward-port reunification** - Port the six v1.x-only components onto `main` net-additively, admit `osmdroid`, keep both drift guards green (completed 2026-09-27)
 - [ ] **Phase 7: Chip-color slot** - Add an opt-in, backward-compatible per-tag chip container-color override
 - [ ] **Phase 8: MicButton hardening** - Make `MicButton` consumer-agnostic and callback-correct (CalTracker findings)
 - [ ] **Phase 9: Ship & coordinated repin** - Cut library `v2.2.0` (human-gated), surface the coordinated consumer repins, reconcile the ECOSYSTEM.md matrix
@@ -122,7 +122,7 @@ on all three. Numeric order: 6 → 7 → 8 → 9.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 6. Forward-port reunification | v2.0 | 3/3 | In Progress|  |
+| 6. Forward-port reunification | v2.0 | 3/3 | Complete    | 2026-09-27 |
 | 7. Chip-color slot | v2.0 | 0/TBD | Not started | - |
 | 8. MicButton hardening | v2.0 | 0/TBD | Not started | - |
 | 9. Ship & coordinated repin | v2.0 | 0/TBD | Not started | - |
