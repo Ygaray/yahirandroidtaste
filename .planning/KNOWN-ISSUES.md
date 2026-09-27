@@ -78,3 +78,89 @@ API contract in the first place.
 
 Either fix must keep the real public API entries intact (`UndoHistoryStore` itself, its `@Inject`
 ctor, and the `emitTrackedWithUndo` surface all stay).
+
+---
+
+## KI-2026-09-27-01 — `detekt` fails: `TextCard.kt`'s `CyclomaticComplexMethod` finding (25/25) breaches the zero-baseline gate
+
+**Status:** open · **Severity:** build-config defect (does NOT block `apiCheck`, `testDebugUnitTest`,
+or `publishReleasePublicationToMavenLocal`) · **Pre-existing since:** at least commit `b58e9ee`
+(2026-09-07, `TextCard.kt`'s last touch) — confirmed present at commit `60381d2` (immediately
+before Phase 6's first execution commit) · **Opened:** 2026-09-27 (discovered during Phase 6
+forward-port-reunification verification)
+
+### Summary
+
+`./gradlew detekt` fails with a single weighted issue: `CyclomaticComplexMethod` (25/25, over
+threshold) in `TextCard.kt` at the `TextCard` composable's signature (`TextCard.kt:132`). This is
+unrelated to Phase 6 (Forward-Port Reunification) — `TextCard.kt` is not in any of that phase's
+plans' `files_modified` lists, and `TextCard.kt` was last touched on 2026-09-07, well before Phase 6
+began. Phase 6's own verifier confirmed this by checking out the commit immediately preceding
+Phase 6 (`60381d2`) into an isolated worktree and re-running `./gradlew detekt` there: identical
+failure, identical "1 number of total code smells" Complexity Report both before and after Phase 6.
+
+### Evidence
+
+```
+$ ./gradlew detekt
+> Task :detekt FAILED
+Analysis failed with 1 weighted issues.
+BUILD FAILED
+```
+
+`TextCard.kt:132` — the flagged composable's signature (large parameter list drives the branch
+count inside the function body):
+
+```kotlin
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun TextCard(
+    id: String,
+    title: String,
+    content: String?,
+    categoryPath: String?,
+    createdAt: Long,
+    updatedAt: Long,
+    isPinned: Boolean,
+    isFavorite: Boolean,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+    onTogglePin: () -> Unit,
+    onToggleFavorite: () -> Unit,
+    // ... additional optional params (accent, tactileDepth, onEditRequest, etc.)
+```
+
+### Root cause
+
+`TextCard` has accreted optional parameters and conditional branches across multiple prior phases
+(FACE-01 accent/tactileDepth, EDIT-01/EDIT-03 onEditRequest, etc. — see its own KDoc), each
+individually reasonable, that collectively pushed its cyclomatic complexity over detekt's threshold.
+No single change introduced the breach; it crossed the threshold incrementally.
+
+### Impact
+
+- `./gradlew detekt` (the project's zero-baseline gate) fails on `main` right now.
+- Release/test paths are unaffected: `apiCheck`, `testDebugUnitTest`, and
+  `publishReleasePublicationToMavenLocal` all pass — confirmed during Phase 6's governance battery
+  and independently re-confirmed during Phase 6 verification.
+- Per this repo's zero-baseline detekt policy (root `CLAUDE.md`), the correct remediation is NOT to
+  regenerate `config/detekt-baseline.xml` to bury this finding — it must be fixed at the source
+  (extract helper functions) or the rule tuned with justification.
+
+### Proposed fix (pick one, with an acceptance test)
+
+1. **Extract helper functions (preferred):** split `TextCard`'s body into smaller private
+   `@Composable` helpers (e.g. a header-row helper, an actions-row helper) to bring its cyclomatic
+   complexity under threshold without changing its public signature or behavior. Acceptance:
+   `./gradlew detekt` passes with zero new baseline entries; `TextCard`'s existing tests
+   (call-site compilation + any Robolectric/Compose UI tests) stay green.
+2. **Tune the rule with justification (fallback):** if the complexity is judged inherent to a
+   single large-surface composable rather than genuinely reducible, raise
+   `CyclomaticComplexMethod`'s threshold for this specific function via a documented, justified
+   detekt suppression (`@Suppress("CyclomaticComplexMethod")` with a comment explaining why, per
+   this repo's zero-baseline policy of tuning-with-justification rather than banking debt) —
+   never a blanket baseline regeneration.
+
+Whichever fix lands, it is out of scope for Phase 6 (which does not touch `TextCard.kt`) — tracked
+here per the same precedent as `KI-2026-09-02-01` (pre-existing, unrelated build-config defect,
+does not block release paths, formally tracked rather than silently deferred).
