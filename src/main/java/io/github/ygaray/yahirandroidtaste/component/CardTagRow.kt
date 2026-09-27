@@ -115,7 +115,8 @@ fun CardTagRow(
                     onClick = { onTagClick(tag.id) },
                     modifier = Modifier.weight(1f, fill = false).semantics {
                         contentDescription = "Browse cards tagged ${tag.name}"
-                    }
+                    },
+                    containerColorOverride = tag.color
                 )
             }
         }
