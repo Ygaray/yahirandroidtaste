@@ -40,7 +40,7 @@ covered_files:
   - "src/test/java/io/github/ygaray/yahirandroidtaste/component/PresetChipTest.kt"
   - "src/test/java/io/github/ygaray/yahirandroidtaste/component/SourceContractTestSupport.kt"
   - "src/test/java/io/github/ygaray/yahirandroidtaste/explorer/DomainVocabularyDriftGuardTest.kt"
-covered_digest: "v1:sha256:19071299b3a56d7f0193a9d7a2e6e38a39b28fa15e24e2f40f04a72e0607138b"
+covered_digest: "v1:sha256:d596ce97226fb1a31ff332349ffb46f9c846deb4c8aa516fd784c425bb313140"
 behavior_unverified: 0
 overrides_applied: 1
 overrides:
