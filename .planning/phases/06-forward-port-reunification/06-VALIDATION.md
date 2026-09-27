@@ -3,8 +3,8 @@ phase: "6"
 slug: "forward-port-reunification"
 # status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6)
 # audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117)
-status: draft
-nyquist_compliant: false
+status: validated
+nyquist_compliant: true
 wave_0_complete: false
 created: "2026-09-26"
 ---
@@ -40,12 +40,12 @@ created: "2026-09-26"
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 06-01-* | 01 | 1 | REUNI-01 | — | N/A | unit (Robolectric Compose UI) | `./gradlew testDebugUnitTest --tests "*DateTimePickerTest*"` | ✅ (restore from `v1.13.0`) | ⬜ pending |
-| 06-02-* | 01 | 1 | REUNI-02 | T-06-01 | Tile fetch stays within `configureOsmdroid`'s existing non-bulk pattern | unit (Robolectric Compose UI + plain JUnit for the model) | `./gradlew testDebugUnitTest --tests "*PlaceMapPickerTest*" --tests "*PlaceMapOsmdroidConfigTest*" --tests "*PlaceMapPickerModelTest*"` | ✅ (restore from `v1.13.0`) | ⬜ pending |
-| 06-03-* | 01 | 1 | REUNI-03 | — | N/A | unit (Robolectric Compose UI) | `./gradlew testDebugUnitTest --tests "*PresetChipTest*"` | ✅ (restore from `v1.13.0`) | ⬜ pending |
-| 06-04-* | 01 | 1 | REUNI-04 | T-06-02 | Tiles cache to private `cacheDir` only; consumer declares `INTERNET` | unit (source-text scan guards) + manual doc edit | `./gradlew testDebugUnitTest --tests "*ComponentRegistryDriftGuardTest*" --tests "*DomainVocabularyDriftGuardTest*"` | ✅ (guards exist; new allowlist entries are the task) | ⬜ pending |
-| 06-05-* | 01 | 1 | (all) | — | N/A | build-time gate | `./gradlew apiDump && ./gradlew apiCheck` | ✅ (metalava already wired; `api.txt` confirmed to contain none of the 3 new symbols today) | ⬜ pending |
-| 06-06-* | 01 | 1 | (all) | — | N/A | build-time gate | `./gradlew detekt` | ✅ (already wired) | ⬜ pending |
+| 06-01-* | 01 | 1 | REUNI-01 | — | N/A | unit (Robolectric Compose UI) | `./gradlew testDebugUnitTest --tests "*DateTimePickerTest*"` | ✅ (restore from `v1.13.0`) | ✅ green |
+| 06-02-* | 01 | 1 | REUNI-02 | T-06-01 | Tile fetch stays within `configureOsmdroid`'s existing non-bulk pattern | unit (Robolectric Compose UI + plain JUnit for the model) | `./gradlew testDebugUnitTest --tests "*PlaceMapPickerTest*" --tests "*PlaceMapOsmdroidConfigTest*" --tests "*PlaceMapPickerModelTest*"` | ✅ (restore from `v1.13.0`) | ✅ green |
+| 06-03-* | 01 | 1 | REUNI-03 | — | N/A | unit (Robolectric Compose UI) | `./gradlew testDebugUnitTest --tests "*PresetChipTest*"` | ✅ (restore from `v1.13.0`) | ✅ green |
+| 06-04-* | 01 | 1 | REUNI-04 | T-06-02 | Tiles cache to private `cacheDir` only; consumer declares `INTERNET` | unit (source-text scan guards) + manual doc edit | `./gradlew testDebugUnitTest --tests "*ComponentRegistryDriftGuardTest*" --tests "*DomainVocabularyDriftGuardTest*"` | ✅ (guards exist; new allowlist entries are the task) | ✅ green |
+| 06-05-* | 01 | 1 | (all) | — | N/A | build-time gate | `./gradlew apiDump && ./gradlew apiCheck` | ✅ (metalava already wired; `api.txt` confirmed to contain none of the 3 new symbols today) | ✅ green |
+| 06-06-* | 01 | 1 | (all) | — | N/A | build-time gate | `./gradlew detekt` | ✅ (already wired) | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -59,9 +59,9 @@ created: "2026-09-26"
 
 ## Manual-Only Verifications
 
-| Behavior | Requirement | Why Manual | Test Instructions |
-|----------|-------------|------------|-------------------|
-| Gallery renders `DateTimePicker`, `PlaceMapPicker`, `PresetChip` in ExplorerActivity family-screen previews | REUNI-01, REUNI-02, REUNI-03 | Live `MapView` rendering (osmdroid tile fetch/draw) is device-only-verifiable, not resolvable from source or Robolectric | Launch `ExplorerActivity` on-device (Gate-1), navigate to Pickers/Chips families, confirm each of the 3 composables renders without crash and `PlaceMapPicker`'s `MapView` draws tiles |
+| Behavior | Requirement | Why Manual | Test Instructions | Status |
+|----------|-------------|------------|-------------------|--------|
+| Gallery renders `DateTimePicker`, `PlaceMapPicker`, `PresetChip` in ExplorerActivity family-screen previews | REUNI-01, REUNI-02, REUNI-03 | Live `MapView` rendering (osmdroid tile fetch/draw) is device-only-verifiable, not resolvable from source or Robolectric | Launch `ExplorerActivity` on-device (Gate-1), navigate to Pickers/Chips families, confirm each of the 3 composables renders without crash and `PlaceMapPicker`'s `MapView` draws tiles | ✅ resolved — Gate-1 self-UAT `06-03-SELF-UAT.md` (`result: all_pass`, 2026-09-27, Samsung SM-S908U real hardware) confirmed all 3 composables render, no crashes, saved-places chip row correctly absent when empty |
 
 ---
 
@@ -74,12 +74,29 @@ created: "2026-09-26"
 > the plan-checker do so (INC-2026-07-27-01: a premature plan-time flip is what caused inconsistent
 > COMPLIANT/PARTIAL milestone-audit states).
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 240s
-- [ ] _(finalizer-only, post-execution)_ `nyquist_compliant` — leave `false` at plan time; the
-      finalizer sets `true` iff its gap analysis finds zero gaps
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references (none — no Wave 0 requirements for this phase)
+- [x] No watch-mode flags
+- [x] Feedback latency < 240s
+- [x] _(finalizer-only, post-execution)_ `nyquist_compliant` — set `true`: gap analysis found zero
+      gaps (all 6 task rows automated + green; the sole Manual-Only item resolved by Gate-1
+      all_pass)
 
-**Approval:** pending — finalizer-owned, not set at plan time
+**Approval:** validated 2026-09-27 — finalizer (execute-phase autonomous --auto run,
+finalize_nyquist_gate)
+
+## Validation Audit 2026-09-27
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+Zero gaps: all 6 Per-Task Verification Map rows already had automated commands with existing test
+files; every command was independently re-run and confirmed green during Phase 6 execution (executor
+governance battery, code-review-fix verification, and Gate-1 self-UAT's independent re-derivation).
+The one Manual-Only item (gallery rendering) was resolved by Gate-1's `all_pass` verdict
+(`06-03-SELF-UAT.md`). No `gsd-nyquist-auditor` spawn was needed (auto-mode short-circuit, §3: no
+gaps detected).
