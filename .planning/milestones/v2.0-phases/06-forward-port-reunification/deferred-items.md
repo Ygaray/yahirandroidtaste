@@ -26,6 +26,7 @@ Out-of-scope discoveries logged during execution, per the executor's scope-bound
   `lint` + `check` — proving the two new Gradle dependencies (`osmdroid-android`,
   `androidx-lifecycle-runtime-compose`) resolve and compile without error. Not fixed here — it is
   already tracked as a pre-Phase-9 (`SHIP-01` tag-cut gate) blocker, out of this plan's scope.
+  status: acknowledged
 
 ## 06-03
 
@@ -44,3 +45,4 @@ Out-of-scope discoveries logged during execution, per the executor's scope-bound
   already-tracked `KI-2026-09-02-01` (`metalavaCheckCompatibilityDebug`, the `build`-task variant)
   was not re-triggered by this plan's targeted `apiDump`/`apiCheck` run — remains a Phase 9
   (`SHIP-01`) blocker, unrelated to and unaffected by this plan.
+  status: acknowledged

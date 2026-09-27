@@ -1,6 +1,6 @@
 ### Phase 7 — chip-color-slot (v2.0)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir, 2026-09-27`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.0 (Line Reunification — Forward-Port Reunification → Chip-Color Slot → MicButton
   Hardening → Ship & Coordinated Repin)
 - **Gate 1 self-UAT log:** [`.planning/phases/07-chip-color-slot/07-01-SELF-UAT.md`](phases/07-chip-color-slot/07-01-SELF-UAT.md) — Verdict: **ALL 5 ROADMAP success criteria PASS** (device Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN), library AAR md5 `633c2c599315919f12670f0c6e6b2b75` @ `418dd3b`, 2026-09-27). Confirms on real hardware that `AppChip`/`TagChipWithContextMenu`/`CardTagRow` — all touched by this phase, backing multiple gallery entries — build/install/launch/render/interact with zero regression, and independently re-derives (not merely trusts) `api.txt`'s additivity and the `isSelected`-wins-over-override precedence live in the running app.

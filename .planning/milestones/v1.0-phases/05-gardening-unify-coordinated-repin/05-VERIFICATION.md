@@ -8,6 +8,7 @@ score: 2/4 must-haves verified (2 code-level truths VERIFIED; 2 remaining truths
 behavior_unverified: 0
 overrides_applied: 0
 human_verification:
+
   - test: >
       Review the unified hub state on `main` (commits a966282, dcc367d, 6d5f21d) and decide:
       cut the `v2.0.0` tag and begin the coordinated repin (SecondBrain single-hop, CalTracker
@@ -23,6 +24,10 @@ human_verification:
       shipping is human-gated"). 05-03-PLAN.md's Task 2 is a blocking checkpoint:decision that was
       correctly reached and left unresolved by the executor — this is by design, not a defect. No
       grep/build check can substitute for the human's go/hold decision.
+audit_acknowledged:
+  milestone: v2.0
+  at: 2026-09-27
+  status: human_needed
 ---
 
 # Phase 5: Gardening — Unify & Coordinated Repin Verification Report

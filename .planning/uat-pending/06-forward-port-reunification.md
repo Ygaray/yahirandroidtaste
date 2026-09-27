@@ -1,6 +1,6 @@
 ### Phase 6 — forward-port-reunification (v2.0)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir, 2026-09-27`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.0 (Line Reunification — Forward-Port Reunification → Chip-Color Slot → MicButton
   Hardening → Ship & Coordinated Repin)
 - **Gate 1 self-UAT log:** [`.planning/phases/06-forward-port-reunification/06-03-SELF-UAT.md`](phases/06-forward-port-reunification/06-03-SELF-UAT.md) — Verdict: **ALL 5 ROADMAP success criteria PASS** (device Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN), library AAR md5 `52917361d23adb55c3b43e5919df6cd9` @ `6bf7017`, 2026-09-27). Confirms on real hardware the 3 device-only `human_verification` items `06-VERIFICATION.md` deferred (`DateTimePicker`/`PlaceMapPicker`/`PresetChip` gallery rendering) plus independently re-derives (not merely trusts) the 5 code-level criteria already scored by `06-VERIFICATION.md`.

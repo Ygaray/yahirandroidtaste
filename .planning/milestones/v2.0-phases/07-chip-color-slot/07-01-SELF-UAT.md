@@ -1,12 +1,8 @@
 ---
-status: complete
-result: all_pass
-gate: 1
-phase: 07-chip-color-slot
-source: [ROADMAP.md Phase 7 Success Criteria #1-5, 07-01-PLAN.md must_haves, 07-01-SUMMARY.md D1-D5 coverage, 07-UI-SPEC.md D5 scope note]
-device: Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN via USB adb, Android 15)
-apk: yahirandroidtaste-1.10.0.aar (md5 633c2c599315919f12670f0c6e6b2b75 @ 418dd3b) hosted via throwaway uat-harness app-debug.apk
-run: 2026-09-27T14:56:21Z
+audit_acknowledged:
+  milestone: v2.0
+  at: 2026-09-27
+  gap_snapshot: "unknown::scenarios=0"
 ---
 
 # Self-UAT Log — Phase 7 Plan 01 (Chip-color slot — TAGCOLOR-01)
@@ -27,7 +23,9 @@ run: 2026-09-27T14:56:21Z
 ## Criteria
 
 ### 1. `TagChipUiModel` carries `color: Color? = null`; `AppChip` and `TagChipWithContextMenu` carry `containerColorOverride: Color? = null` — ROADMAP SC1
+
 result: passed
+
 - **Rung:** 3 (headless data/api-diff check) — decisive; supplemented with rung 4 (device structure/crash-free) for the regression-scope this Gate-1 run adds (all 4 modified production files back several gallery entries: `ChipsFamilyScreen`'s `AppChip`/`TagChipWithContextMenu` demos, `CardsFamilyScreen`'s `CardTagRow` demo).
 - **Target:** headless (api.txt diff) + device (yahirs-s22-ultra-2, real hardware).
 - **Expected:** per ROADMAP SC1 + `07-01-PLAN.md` must_haves: `TagChipUiModel.color: Color? = null` exists as an additive field; `AppChip`/`TagChipWithContextMenu` both gain `containerColorOverride: Color? = null`; every existing call site (all named-arg) compiles unchanged; the gallery entries these files back keep building/installing/launching with zero regression.
@@ -37,7 +35,9 @@ result: passed
 - **Evidence:** `git diff 8d692e5~1 -- api.txt` output (this run, captured in this session — not a file artifact); `uiautomator` XML dumps `07-01-index.xml`, `07-02-chips-family.xml`, `07-03-appchip-detail.xml`, `07-06-back-to-chips.xml`, `07-07-tagchipmenu-detail.xml`, `07-09-back-index.xml`, `07-10-cards-family.xml`, `07-11-cardtagrow-detail.xml` (all in this session's scratchpad, not committed — see driver-mechanism note); full-session `adb logcat -d` capture (0 FATAL/Exception lines).
 
 ### 2. A `CardTagRow` test proves each `tag.color` auto-threads to the rendered chip's `containerColorOverride` (both `TagChipWithContextMenu` and plain `AppChip` render paths) — ROADMAP SC2
+
 result: passed
+
 - **Rung:** 1 (unit test) — decisive; this is a source-structural wiring proof (Robolectric cannot render `CardTagRow`'s full card-face tree, per `07-01-PLAN.md`'s explicit design choice), not a rendered-pixel claim. Supplemented with rung 4 device evidence that the wiring executes without crashing for real card-face data.
 - **Target:** headless (JVM/Robolectric) + device.
 - **Expected:** `CardTagRowTest` proves `containerColorOverride = tag.color` is present in both the `TagChipWithContextMenu(` branch and the plain `AppChip(` (`!hasCapability`) branch, and absent from the "+N" overflow `AppChip(` call.
@@ -47,7 +47,9 @@ result: passed
 - **Evidence:** `build/test-results/testDebugUnitTest/TEST-io.github.ygaray.yahirandroidtaste.component.CardTagRowTest.xml` (this run); `07-10-cards-family.xml`, `07-11-cardtagrow-detail.xml` uiautomator dumps; `07-11-cardtagrow-detail-small.jpg` screenshot (Work/Personal/+2 chips rendering correctly, no stray coloring).
 
 ### 3. An `AppChip` render test with a non-null override renders the overridden container, and the default-`null` path is byte-identical to today's theme-role rendering — ROADMAP SC3
+
 result: passed
+
 - **Rung:** 5 (visual capture) — required for the "byte-identical to today's rendering" regression-floor claim, which is inherently visual per the ladder (a structure-tree hit alone can't distinguish "rendered as designed" from "visually regressed").
 - **Target:** device (yahirs-s22-ultra-2, real hardware) + headless unit test (the non-null-override render assertion itself).
 - **Expected:** per `07-UI-SPEC.md`'s Color section: a resting (unselected, no relatedness) `AppChip`/`TagChipWithContextMenu` with `containerColorOverride == null` renders `colorScheme.surface`/`onSurfaceVariant`/1dp `outline` — identical to pre-phase; a non-null override would render as the container fill only in that same resting branch (not exercised live on-device today, since no gallery fake sets a non-null color — confirmed out-of-scope per the task's own D5 note); `AppChipTest`'s Compose-render tests assert both the non-null-override wiring and the omitted-default regression floor.
@@ -57,7 +59,9 @@ result: passed
 - **Evidence:** `build/test-results/testDebugUnitTest/TEST-io.github.ygaray.yahirandroidtaste.component.AppChipTest.xml` (this run); `07-03-appchip-detail-small.jpg` (Default/Pressed-Selected states, plain outlined + filled rendering, no visual regression).
 
 ### 4. The override loses to `isSelected`/`relatednessStrength` (theme roles win when selection is active) — asserted by test — ROADMAP SC4
+
 result: passed
+
 - **Rung:** 5 (visual capture) — this criterion is falsifiable live on-device: toggling `isSelected` in the gallery's interactive Playground must switch the container fill through the exact `containerColor` when-block this phase modified, proving the precedence order holds in the real running composable, not merely in the structural test's string-index assertion.
 - **Target:** device (yahirs-s22-ultra-2, real hardware) + headless unit test (the structural precedence-order assertion).
 - **Expected:** the `containerColor` when-block orders `isSelected -> relatedness != null -> containerColorOverride != null -> else`; toggling the Playground's "Selected" switch (which sets `isSelected` on the live `AppChip` instance) must visibly switch the chip's fill from the resting `surface`/outline look to the `secondaryContainer` filled look, live and crash-free.
@@ -67,7 +71,9 @@ result: passed
 - **Evidence:** `build/test-results/testDebugUnitTest/TEST-io.github.ygaray.yahirandroidtaste.component.AppChipTest.xml`; `07-03-appchip-detail-small.jpg` (toggle off) and `07-05-appchip-selected-toggle-small.jpg` (toggle on) — the falsifying before/after pair.
 
 ### 5. No new public composables are added; `api.txt` is updated additively and `apiCheck`, both drift guards, and zero-baseline `detekt` stay green — ROADMAP SC5
+
 result: passed
+
 - **Rung:** 3 (headless data check) + 1 (unit test) — independently re-derived, not trusted from `07-01-SUMMARY.md`'s inherited claim (the SUMMARY itself documents a two-stage history here: an initial `apiCheck`-accepted-but-not-genuinely-additive state, code-reviewed as WR-01, then fixed by moving `color` out of the primary constructor — this run re-verifies the FIXED state independently, against the TRUE pre-phase baseline, not the phase's own already-mutated one).
 - **Target:** headless.
 - **Expected:** `./gradlew apiCheck detekt publishReleasePublicationToMavenLocal` all succeed; `ComponentRegistryDriftGuardTest`/`DomainVocabularyDriftGuardTest` pass (no new public composable registered/unregistered); `api.txt`'s diff against the true pre-Phase-7 baseline is additive-only.

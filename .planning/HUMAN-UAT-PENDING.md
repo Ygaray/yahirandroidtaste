@@ -71,7 +71,7 @@
 
 ### Phase 6 — forward-port-reunification (v2.0)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir, 2026-09-27`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.0 (Line Reunification — Forward-Port Reunification → Chip-Color Slot → MicButton
   Hardening → Ship & Coordinated Repin)
 - **Gate 1 self-UAT log:** [`.planning/phases/06-forward-port-reunification/06-03-SELF-UAT.md`](phases/06-forward-port-reunification/06-03-SELF-UAT.md) — Verdict: **ALL 5 ROADMAP success criteria PASS** (device Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN), library AAR md5 `52917361d23adb55c3b43e5919df6cd9` @ `6bf7017`, 2026-09-27). Confirms on real hardware the 3 device-only `human_verification` items `06-VERIFICATION.md` deferred (`DateTimePicker`/`PlaceMapPicker`/`PresetChip` gallery rendering) plus independently re-derives (not merely trusts) the 5 code-level criteria already scored by `06-VERIFICATION.md`.
@@ -89,7 +89,7 @@
 
 ### Phase 7 — chip-color-slot (v2.0)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir, 2026-09-27`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.0 (Line Reunification — Forward-Port Reunification → Chip-Color Slot → MicButton
   Hardening → Ship & Coordinated Repin)
 - **Gate 1 self-UAT log:** [`.planning/phases/07-chip-color-slot/07-01-SELF-UAT.md`](phases/07-chip-color-slot/07-01-SELF-UAT.md) — Verdict: **ALL 5 ROADMAP success criteria PASS** (device Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN), library AAR md5 `633c2c599315919f12670f0c6e6b2b75` @ `418dd3b`, 2026-09-27). Confirms on real hardware that `AppChip`/`TagChipWithContextMenu`/`CardTagRow` — all touched by this phase, backing multiple gallery entries — build/install/launch/render/interact with zero regression, and independently re-derives (not merely trusts) `api.txt`'s additivity and the `isSelected`-wins-over-override precedence live in the running app.
@@ -107,7 +107,7 @@
 
 ### Phase 8 — micbutton-hardening (v2.0)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir, 2026-09-27`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.0 (Line Reunification — Forward-Port Reunification → Chip-Color Slot → MicButton
   Hardening → Ship & Coordinated Repin)
 - **Gate 1 self-UAT log:** [`.planning/phases/08-micbutton-hardening/08-01-SELF-UAT.md`](phases/08-micbutton-hardening/08-01-SELF-UAT.md) — Verdict: **ALL 4 ROADMAP success criteria PASS** (device Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN), library AAR md5 `10457c8251ec04bbc6011a53c03077c1` @ `e9c7eda`, 2026-09-27). Confirms on real hardware that `MicButton`'s parameterized microcopy renders correctly, the accessibility semantics click action (CR-01) reaches the LIVE accessibility tree (not just Robolectric's), and both taps and the fresh governance battery are crash-free/green.

@@ -2,11 +2,32 @@
   "contract": "1.0.0",
   "flavor": "core",
   "milestone": "v2.0 — Line Reunification",
-  "phases": [],
+  "phases": [
+    {
+      "number": "6",
+      "name": "Forward-port reunification",
+      "status": "complete"
+    },
+    {
+      "number": "7",
+      "name": "Chip-color slot",
+      "status": "complete"
+    },
+    {
+      "number": "8",
+      "name": "MicButton hardening",
+      "status": "complete"
+    },
+    {
+      "number": "9",
+      "name": "Ship & coordinated repin",
+      "status": "complete"
+    }
+  ],
   "next": {
-    "command": "/gsd:discuss-phase",
-    "label": "Discuss the first phase",
-    "reason": "Project initialized — plan your first phase"
+    "command": "/gsd:progress",
+    "label": "Show progress",
+    "reason": "Unsure of state — showing progress"
   },
-  "updated_at": "2026-09-27T05:08:17.846Z"
+  "updated_at": "2026-09-27T20:59:23.567Z"
 }

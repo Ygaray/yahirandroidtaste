@@ -2,21 +2,20 @@
 gsd_state_version: "1.0"
 milestone: v2.0
 milestone_name: Line Reunification
-current_phase: 09
-current_phase_name: ship-coordinated-repin
-current_plan: 2
-status: complete
+status: Awaiting next milestone
 stopped_at: Phase 09 complete -- all v2.0 phases done, ready for milestone certification/close
-last_updated: "2026-09-27T20:00:00.000Z"
+last_updated: "2026-09-27T20:59:23.553Z"
 last_activity: 2026-09-27
-last_activity_desc: Phase 09 complete (VERIFICATION.md goal_met=true, 4/4 success criteria)
-state_head: 5ea8233de2af258ce625ba6b593e2b878033ba84
+last_activity_desc: Milestone v2.0 completed and archived
+state_head: 62e4d3b7db540fe1497e26e95979e8a0c949f036
 progress:
   total_phases: 4
-  completed_phases: 4
+  completed_phases: 0
   total_plans: 7
   completed_plans: 7
-  percent: 100
+  percent: 0
+current_phase: 09
+current_phase_name: ship-coordinated-repin
 ---
 
 # Project State
@@ -30,13 +29,10 @@ See: .planning/PROJECT.md (updated 2026-09-26)
 
 ## Current Position
 
-Phase: 09 (ship-coordinated-repin) — COMPLETE
-Current Plan: 2 of 2
-Total Plans in Phase: 2
-Status: Phase complete -- VERIFICATION.md goal_met=true (4/4 success criteria)
-Last activity: 2026-09-27 — Phase 09 verified complete; v2.0 milestone's 4 phases all done
-
-Progress: [██████████] 100%
+Phase: Milestone v2.0 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-09-27 — Milestone v2.0 completed and archived
 
 ## Performance Metrics
 
@@ -106,6 +102,13 @@ Items acknowledged and carried forward, most recent first:
 
 | Category | Item | Status | Deferred At | Milestone |
 |----------|------|--------|-------------|-----------|
+| uat_gaps | 06/06-03-SELF-UAT.md | all_pass (scanner reads [unknown]; Gate-2 signed-off 2026-09-27) | 2026-09-27 | v2.0 |
+| uat_gaps | 07/07-01-SELF-UAT.md | all_pass (scanner reads [unknown]; Gate-2 signed-off 2026-09-27) | 2026-09-27 | v2.0 |
+| uat_gaps | 08/08-01-SELF-UAT.md | all_pass (scanner reads [unknown]; Gate-2 signed-off 2026-09-27) | 2026-09-27 | v2.0 |
+| uat_gaps | 01/01-05-SELF-UAT.md (archived v1.0) | all_pass carryover from shipped v1.0 | 2026-09-27 | v2.0 |
+| verification_gaps | 05/05-VERIFICATION.md (archived v1.0) | human_needed carryover from shipped v1.0 | 2026-09-27 | v2.0 |
+| deferred_items | 06/deferred-items.md: TextCard.kt detekt CyclomaticComplexMethod | acknowledged (KI-2026-09-27-01, pre-existing, tracked/accepted) | 2026-09-27 | v2.0 |
+| deferred_items | 06/deferred-items.md: metalava UndoHistoryStore_Factory | acknowledged (KI-2026-09-02-01 — CLOSED by SHIP-01 in Phase 9; note is stale) | 2026-09-27 | v2.0 |
 | Future | GOV-04: fail the build if a new public composable ships without a `Tier` | Deferred | v2.0 requirements | v2.0 |
 | Future | ECO-02: auto-repin tooling across all consumers | Deferred | v2.0 requirements | v2.0 |
 | Backlog | 999.1: committed Gate-2 visualization harness APK + `AGENT-DEVICE-TESTING.md` | Backlog | v2.0 requirements | v2.0 |
@@ -115,3 +118,7 @@ Items acknowledged and carried forward, most recent first:
 Last session: 2026-09-27T20:00:00.000Z
 Stopped at: Phase 09 complete -- all v2.0 phases done, ready for milestone certification/close
 Resume file: None
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone

@@ -1,6 +1,6 @@
 ### Phase 8 — micbutton-hardening (v2.0)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir, 2026-09-27`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.0 (Line Reunification — Forward-Port Reunification → Chip-Color Slot → MicButton
   Hardening → Ship & Coordinated Repin)
 - **Gate 1 self-UAT log:** [`.planning/phases/08-micbutton-hardening/08-01-SELF-UAT.md`](phases/08-micbutton-hardening/08-01-SELF-UAT.md) — Verdict: **ALL 4 ROADMAP success criteria PASS** (device Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN), library AAR md5 `10457c8251ec04bbc6011a53c03077c1` @ `e9c7eda`, 2026-09-27). Confirms on real hardware that `MicButton`'s parameterized microcopy renders correctly, the accessibility semantics click action (CR-01) reaches the LIVE accessibility tree (not just Robolectric's), and both taps and the fresh governance battery are crash-free/green.

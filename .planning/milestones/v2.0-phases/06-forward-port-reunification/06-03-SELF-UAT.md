@@ -1,12 +1,8 @@
 ---
-status: complete
-result: all_pass
-gate: 1
-phase: 06-forward-port-reunification
-source: [ROADMAP.md Phase 6 Success Criteria #1-5, 06-VERIFICATION.md human_verification #1-3, 06-01/06-02/06-03-SUMMARY.md D1 human_judgment items]
-device: Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN, Android 15)
-apk: yahirandroidtaste-1.10.0.aar (md5 52917361d23adb55c3b43e5919df6cd9 @ 6bf7017) hosted via throwaway uat-harness app-debug.apk (md5 63c4f1a9cfc39656f2570a7baa81fb5e)
-run: 2026-09-27T07:36:30Z
+audit_acknowledged:
+  milestone: v2.0
+  at: 2026-09-27
+  gap_snapshot: "unknown::scenarios=0"
 ---
 
 # Self-UAT Log — Phase 6 Plan 03 (Forward-Port Reunification — phase-closing device verification)
@@ -29,7 +25,9 @@ run: 2026-09-27T07:36:30Z
 ## Criteria
 
 ### 1. `DateTimePicker`, `PlaceMapPicker`, and `PresetChip` each render in the ExplorerActivity gallery (family-screen previews) — ROADMAP SC1
+
 result: passed
+
 - **Rung:** 5 (visual capture) — required; this is an inherently visual "renders correctly" claim per `06-VERIFICATION.md`'s own `human_verification` items #1-3, and per the ladder a structure-tree hit alone would not distinguish "rendered as designed" from "present but visually broken/occluded."
 - **Target:** device (yahirs-s22-ultra-2, real hardware; no emulator fallback).
 - **Expected:** Per ROADMAP SC1 + `06-VERIFICATION.md` `human_verification`: (a) `DateTimePicker`'s 3 restored demo variants (date-only w/ minDate, time-only, date-and-time-in-one-instance) render with no crash; (b) `PresetChip`'s both restored demo variants (label-only 7-item `ChipBar<String>`, with-supporting-label 2-item `ChipBar<Pair<String,String>>`) render inside `ChipBar`; (c) `PlaceMapPicker`'s live `MapView` tile surface actually paints, and the saved-places `ChipBar`/`PresetChip` embedding renders when `savedPlaces` is non-empty and is absent entirely when empty.
@@ -50,7 +48,9 @@ result: passed
   8. Full-session `adb logcat -d` capture — 0 FATAL/Exception lines across the harness install, launch, and all navigation.
 
 ### 2. The 5 ported tests pass under `./gradlew testDebugUnitTest` — ROADMAP SC2
+
 result: passed
+
 - **Rung:** 1 (unit tests).
 - **Target:** headless (JVM/Robolectric).
 - **Expected:** `DateTimePickerTest`, `PlaceMapPickerTest`, `PlaceMapOsmdroidConfigTest`, `PlaceMapPickerModelTest`, `PresetChipTest` all pass.
@@ -60,7 +60,9 @@ result: passed
 - **Evidence:** Gradle console output (`BUILD SUCCESSFUL in 1s`, cached from this exact HEAD); `build/test-results/testDebugUnitTest/TEST-*.xml` per-class reports.
 
 ### 3. The three public composables are each registered in exactly one `ComponentRegistry` family list; the integrity test and CATALOG drift guard pass — ROADMAP SC3
+
 result: passed
+
 - **Rung:** 3 (headless data check) + 1 (unit test).
 - **Target:** headless.
 - **Expected:** `grep -c 'name = "<X>"'` = 1 for each of `DateTimePicker`/`PlaceMapPicker` (in `PickersFamilyScreen.kt`) and `PresetChip` (in `ChipsFamilyScreen.kt`); `ComponentRegistryDriftGuardTest` passes.
@@ -70,7 +72,9 @@ result: passed
 - **Evidence:** grep output (this run); `TEST-*ComponentRegistryDriftGuardTest*.xml`; on-device `uiautomator` dumps `02-pickers-family.xml`, `18-chips-family.xml` (one row each, no dupes).
 
 ### 4. `osmdroid` recorded in `APPROVED-DEPS.md`/`CLAUDE.md`; head tokens allowlisted; `DomainVocabularyDriftGuardTest` stays green — ROADMAP SC4
+
 result: passed
+
 - **Rung:** 3 (data check) + 1 (unit test).
 - **Target:** headless.
 - **Expected:** `.planning/APPROVED-DEPS.md` has a dated osmdroid entry; `CLAUDE.md`'s allowed-deps sentence names `osmdroid`; `"Date"`/`"Preset"` in `PRIMITIVE_NOUN_ALLOWLIST`; `"PlaceMapPicker"` in `DOMAIN_VOCABULARY`; `DomainVocabularyDriftGuardTest` passes.
@@ -80,7 +84,9 @@ result: passed
 - **Evidence:** grep output against `APPROVED-DEPS.md`, `CLAUDE.md`, `DomainVocabularyDriftGuardTest.kt` (this run); `TEST-*DomainVocabularyDriftGuardTest*.xml`.
 
 ### 5. `detekt` stays green at zero baseline (no new baseline banked) — ROADMAP SC5
+
 result: passed
+
 - **Rung:** 3 (data check) — independently re-derived, not trusted from `06-VERIFICATION.md`'s inherited override.
 - **Target:** headless.
 - **Expected:** `./gradlew detekt` succeeds with zero new findings and no baseline regeneration.

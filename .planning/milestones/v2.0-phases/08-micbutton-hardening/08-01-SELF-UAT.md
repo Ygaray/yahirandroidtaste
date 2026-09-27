@@ -1,12 +1,8 @@
 ---
-status: complete
-result: all_pass
-gate: 1
-phase: 08-micbutton-hardening
-source: [ROADMAP.md Phase 8 Success Criteria #1-4, 08-01-PLAN.md must_haves, 08-01-SUMMARY.md coverage D1-D4, 08-VERIFICATION.md re-verification of CR-01 semantics OnClick]
-device: Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN via USB adb, Android 15)
-apk: yahirandroidtaste-1.10.0.aar (md5 10457c8251ec04bbc6011a53c03077c1 @ e9c7eda) hosted via throwaway uat-harness app-debug.apk (md5 6993ab67a4081bfc202a52ab601d9cf6)
-run: 2026-09-27T16:27:00Z
+audit_acknowledged:
+  milestone: v2.0
+  at: 2026-09-27
+  gap_snapshot: "unknown::scenarios=0"
 ---
 
 # Self-UAT Log — Phase 8 Plan 01 (MicButton hardening — MICBTN-01/02/03)
@@ -29,7 +25,9 @@ run: 2026-09-27T16:27:00Z
 ## Criteria
 
 ### 1. `MicButton`'s three content descriptions are parameters with generic neutral defaults (`disabledDescription = "Microphone unavailable"`, `tapToTalkDescription = "Tap to talk"`, `listeningDescription = "Listening…"`); no CalTracker-specific microcopy remains in the source — ROADMAP SC1
+
 result: passed
+
 - **Rung:** 4 (UI structure tree — presence/text of the live accessibility content-descriptions) — decisive; supplemented with rung 3 (source grep) for the "no CalTracker microcopy remains" negative claim, which a device pass alone can't exhaustively prove.
 - **Target:** device (yahirs-s22-ultra-2, real hardware) + headless (source grep).
 - **Expected:** per ROADMAP SC1: the States-matrix Default/Pressed-Selected/Disabled cells (`ButtonsFabFamilyEntries`'s `MicButton` entry, `ButtonsFabFamilyScreen.kt:116-126`) render with content-descriptions exactly `"Tap to talk"` / `"Listening…"` / `"Microphone unavailable"` — the literal generic defaults, not any hardcoded CalTracker string (e.g. the old `"Voice not set up"`).
@@ -39,7 +37,9 @@ result: passed
 - **Evidence:** `08-02-micbutton-detail.xml` (uiautomator dump, this session's scratchpad); `08-03-before-taps-crop-small.jpg` (screenshot confirming the three states render distinctly: filled mic / errorContainer stop / grayed mic-off — matches the description-to-icon pairing); grep output (this run).
 
 ### 2. `onTap`/`onDisabledTap` fire the latest callback identity across recomposition (routed through `rememberUpdatedState`), proven by a regression test that flips callback identity mid-press — ROADMAP SC2
+
 result: passed
+
 - **Rung:** 1 (unit test) — decisive; this is inherently a closure-identity/timing claim (swap the callback lambda's identity WHILE the finger is still down, before release) that a real `adb input tap` cannot synthesize — there is no way to inject a mid-gesture recomposition between an `ACTION_DOWN` and `ACTION_UP` from the shell. `08-01-SUMMARY.md`'s own D-03 confirms the test's design deliberately hoists the callback in `mutableStateOf` and swaps it between `down()`/`up()` inside a single Compose test — the correct, and only, layer this mechanism can be proven at. Supplemented with rung 3 (device, crash-free real taps on both the enabled and disabled cells) as the regression-scope confirmation that the fix didn't break real dispatch.
 - **Target:** headless (JVM/Robolectric) + device (crash-free confirmation).
 - **Expected:** `MicButtonGestureTest.tap_midPressCallbackIdentitySwap_firesOnlyLatestOnTap` passes (RED against pre-fix source, GREEN after); on the real device, tapping the enabled ("Default") and disabled cells produces zero crashes and no stuck ripple/pressed-visual artifact.
@@ -49,7 +49,9 @@ result: passed
 - **Evidence:** `build/test-results/testDebugUnitTest/TEST-io.github.ygaray.yahirandroidtaste.component.MicButtonGestureTest.xml` (this run, `tests="7" failures="0" errors="0"`); full-session `adb logcat -d` capture (0 FATAL/Exception lines); `08-03-before-taps-crop-small.jpg`, `08-04-after-default-tap-crop-small.jpg`, `08-05-after-disabled-tap-crop-small.jpg`, `08-06-after-listening-tap-crop-small.jpg` (all four visually identical — no crash, no stuck indication).
 
 ### 3. `MicButton` KDoc uses hub vocabulary (`enabled`, not `config`), and `enabled`/`onDisabledTap` have defaults (`true` / `{}`) — ROADMAP SC3
+
 result: passed
+
 - **Rung:** 3 (headless source/data check) — decisive; a KDoc-wording and default-value claim is not a rendering claim, so this settles cheaply without needing the device.
 - **Target:** headless.
 - **Expected:** `MicButton.kt`'s KDoc block uses `[enabled]`/`[onTap]`/`[onDisabledTap]`/`[isListening]` throughout, no "config" wording, no CalTracker framing; `enabled: Boolean = true` and `onDisabledTap: () -> Unit = {}` are declared with those exact defaults.
@@ -59,7 +61,9 @@ result: passed
 - **Evidence:** `MicButton.kt:33-79` (read this run); grep output (zero matches, this run).
 
 ### 4. All changes are backward-compatible (existing call sites compile unchanged); `testDebugUnitTest`, both drift guards, and zero-baseline `detekt` stay green — ROADMAP SC4
+
 result: passed
+
 - **Rung:** 3 (headless data check) + 1 (unit test) — independently re-derived at HEAD `e9c7eda`, not trusted from `08-VERIFICATION.md`'s inherited claim.
 - **Target:** headless.
 - **Expected:** `./gradlew testDebugUnitTest detekt apiCheck publishReleasePublicationToMavenLocal` all succeed; `ComponentRegistryDriftGuardTest`/`DomainVocabularyDriftGuardTest` pass; `api.txt` has zero uncommitted diff (additive delta already committed).

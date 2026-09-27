@@ -1,12 +1,8 @@
 ---
-status: complete
-result: all_pass
-gate: 1
-phase: 01-tier-legibility
-source: [01-ROADMAP success criteria #2, 01-VERIFICATION.md human_verification #1, 01-UAT.md #1]
-device: Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN, Android 15)
-apk: yahirandroidtaste-1.10.0.aar (md5 18e493e666f8bcaeed23b2c22953fadb @ 87561ff) hosted via throwaway uat-harness app-debug.apk (md5 c8dff9ca01856a2f5a098a224dc7080d)
-run: 2026-09-02T00:23:00Z
+audit_acknowledged:
+  milestone: v2.0
+  at: 2026-09-27
+  gap_snapshot: "unknown::scenarios=0"
 ---
 
 # Self-UAT Log — Phase 01 Plan 05 (Wire Entry.tier into Both Gallery Surfaces)
@@ -34,6 +30,7 @@ source set) — there is no installable APK produced by this repo alone, so the 
 `AGENT-DEVICE-TESTING.md` template's D2 assumption ("build the app, `am start -n
 <APPLICATION_ID>/.MainActivity`") does not directly apply, and no project-local driver playbook
 exists yet. Two dead ends before landing the real fix:
+
 1. `./gradlew assembleDebugAndroidTest` produces an installable, self-instrumenting APK
    (`io.github.ygaray.yahirandroidtaste.test`) whose merged manifest DOES contain `ExplorerActivity`
    — but `adb shell am start` (shell UID) cannot launch it: `ExplorerActivity` is declared
@@ -69,7 +66,9 @@ exists yet. Two dead ends before landing the real fix:
 ## Criteria
 
 ### 1. On-device visual confirmation of the TierBadge (Primitive/Pattern) on both gallery surfaces (ROADMAP SC2 / VERIFICATION.md human_verification #1 / 01-UAT.md #1)
+
 result: passed
+
 - **Rung:** 5 (visual capture) — required; a structure-tree dump alone is explicitly insufficient
   and was proven so mid-run (see Observed below).
 - **Target:** device (yahirs-s22-ultra-2, real hardware; no emulator fallback needed — device was
