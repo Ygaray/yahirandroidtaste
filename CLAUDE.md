@@ -8,8 +8,9 @@ independent consumer apps (SecondBrain, and future apps) import via **JitPack**.
 
 - **Import root:** `io.github.ygaray.yahirandroidtaste` (publisher-owned, consumer-name-free;
   renamed to this publisher-owned root in Phase 101 / LIB-03).
-- **JitPack coordinate:** `com.github.Ygaray:yahirandroidtaste:<tag>` (first tag cut in Phase 102 —
-  none exists yet).
+- **JitPack coordinate:** `com.github.Ygaray:yahirandroidtaste:<tag>` (tags `v1.5.0`…`v2.2.0` are
+  cut and pushed; `v2.2.0` — milestone v2.0 "Line Reunification" — is the current release and
+  resolves on JitPack).
 - **Public repo:** `github.com/Ygaray/yahirandroidtaste`
 - **First consumer (pending repin, Phase 103):** SecondBrain.
 
