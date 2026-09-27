@@ -52,26 +52,26 @@ Deferred, tracked, not in this roadmap.
 
 ## Traceability
 
-Filled during roadmap creation.
+Filled during roadmap creation (2026-09-26).
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REUNI-01 | TBD | Pending |
-| REUNI-02 | TBD | Pending |
-| REUNI-03 | TBD | Pending |
-| REUNI-04 | TBD | Pending |
-| TAGCOLOR-01 | TBD | Pending |
-| MICBTN-01 | TBD | Pending |
-| MICBTN-02 | TBD | Pending |
-| MICBTN-03 | TBD | Pending |
-| SHIP-01 | TBD | Pending |
-| SHIP-02 | TBD | Pending |
+| REUNI-01 | Phase 6 | Pending |
+| REUNI-02 | Phase 6 | Pending |
+| REUNI-03 | Phase 6 | Pending |
+| REUNI-04 | Phase 6 | Pending |
+| TAGCOLOR-01 | Phase 7 | Pending |
+| MICBTN-01 | Phase 8 | Pending |
+| MICBTN-02 | Phase 8 | Pending |
+| MICBTN-03 | Phase 8 | Pending |
+| SHIP-01 | Phase 9 | Pending |
+| SHIP-02 | Phase 9 | Pending |
 
 **Coverage:**
 - v1 requirements: 10 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 10 ⚠️
+- Mapped to phases: 10 ✓
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-26*
-*Last updated: 2026-09-26 after milestone v2.0 definition*
+*Last updated: 2026-09-26 after milestone v2.0 roadmap creation (Phases 6-9)*
