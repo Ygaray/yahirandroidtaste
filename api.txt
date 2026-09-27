@@ -753,13 +753,6 @@ package io.github.ygaray.yahirandroidtaste.feedback {
     property public kotlinx.coroutines.flow.StateFlow<java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry>> entries;
   }
 
-  @dagger.internal.DaggerGenerated @dagger.internal.QualifierMetadata @dagger.internal.ScopeMetadata("javax.inject.Singleton") @javax.annotation.processing.Generated(value="dagger.internal.codegen.ComponentProcessor", comments="https://dagger.dev") public final class UndoHistoryStore_Factory implements dagger.internal.Factory<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore!> {
-    ctor public UndoHistoryStore_Factory();
-    method public static io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore_Factory! create();
-    method public io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore! get();
-    method public static io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore! newInstance();
-  }
-
   public sealed exhaustive interface UndoPreview {
   }
 

@@ -15,6 +15,13 @@ plugins {
 // apiDump/apiCheck below are the stable, tool-agnostic task names downstream guards depend on.
 metalava {
     filename = "api.txt"
+    // KI-2026-09-02-01 fix (D-01): Hilt/Dagger stamps generated factory classes (e.g.
+    // UndoHistoryStore_Factory) with this annotation. They are compiler-generated, never
+    // hand-authored public API, so hide them from the metalava-tracked surface on every
+    // variant -- this is what keeps metalavaCheckCompatibilityDebug (not just the Release
+    // variant apiCheck delegates to) from false-flagging them as a "Removed class" the moment
+    // codegen regenerates them under a different signature.
+    hiddenAnnotations.add("dagger.internal.DaggerGenerated")
 }
 
 tasks.register("apiDump") {

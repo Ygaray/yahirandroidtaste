@@ -8,8 +8,8 @@ control-plane incident log. Control-plane (GSD tooling / devices / ecosystem inf
 
 ## KI-2026-09-02-01 — `metalavaCheckCompatibilityDebug` fails: Dagger-generated `UndoHistoryStore_Factory` leaked into the tracked `api.txt` baseline
 
-**Status:** open · **Severity:** build-config defect (does NOT block the JitPack publish path) ·
-**Pre-existing since:** commit `534ec10` (before Phase 3) · **Opened:** 2026-09-02
+**Status:** closed · **Severity:** build-config defect (does NOT block the JitPack publish path) ·
+**Pre-existing since:** commit `534ec10` (before Phase 3) · **Opened:** 2026-09-02 · **Closed:** 2026-09-27 (Phase 9, SHIP-01, D-01)
 
 ### Summary
 
@@ -78,6 +78,24 @@ API contract in the first place.
 
 Either fix must keep the real public API entries intact (`UndoHistoryStore` itself, its `@Inject`
 ctor, and the `emitTrackedWithUndo` surface all stay).
+
+### Closing evidence (fix option 1 landed, Phase 9 Task 1, 2026-09-27)
+
+`build.gradle.kts`'s `metalava { }` extension now sets
+`hiddenAnnotations.add("dagger.internal.DaggerGenerated")`, hiding every Dagger-generated symbol
+from the metalava-tracked surface on **every** variant (not just Release). After
+`./gradlew apiDump` regenerated `api.txt`:
+
+- `grep -c DaggerGenerated api.txt` → `0`
+- `grep -c UndoHistoryStore_Factory api.txt` → `0`
+- `grep -c 'class UndoHistoryStore {' api.txt` → `1` (real class intact)
+- `grep -c emitTrackedWithUndo api.txt` → `1` (real extension intact)
+- `./gradlew metalavaCheckCompatibilityDebug metalavaCheckCompatibilityRelease` → both `BUILD
+  SUCCESSFUL`, no "Removed class" / compatibility-problem output on either variant.
+
+Fix option 1 landed exactly as specified in the 2026-09-27 Runtime Decision (09-CONTEXT.md): the
+generated symbol is gone from `api.txt` and both compatibility-check variants pass. This is the
+zero-baseline-consistent path (a genuine surface-tracking fix), not an accepted-override.
 
 ---
 
@@ -164,3 +182,9 @@ No single change introduced the breach; it crossed the threshold incrementally.
 Whichever fix lands, it is out of scope for Phase 6 (which does not touch `TextCard.kt`) — tracked
 here per the same precedent as `KI-2026-09-02-01` (pre-existing, unrelated build-config defect,
 does not block release paths, formally tracked rather than silently deferred).
+
+**Note (Phase 9, 2026-09-27):** re-checked during Phase 9's closing governance battery —
+`./gradlew detekt --rerun-tasks` now reports `0 number of total code smells` on `main`. Left `open`
+here rather than self-closed by Phase 9 (out of that phase's scope per its plan), but the blocking
+condition described above no longer reproduces as of this commit; whoever next touches this KI
+should re-verify and close with attribution to whichever phase's change resolved it.
