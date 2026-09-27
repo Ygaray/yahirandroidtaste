@@ -87,3 +87,10 @@ Phase 6 completed. **Disposition: KI fix option 1** — exclude `@DaggerGenerate
 "Removed class" metalava finding (KI-2026-09-02-01) clears on BOTH Debug and Release variants. Goal:
 apiCheck gate genuinely green (no standing suppressed diff); close KI-2026-09-02-01. This is the
 zero-baseline-consistent path, not an accepted-override.
+
+### 2026-09-27 — v2.2.0 tag CUT (operator-approved, milestone execute stage)
+Operator explicitly approved the tag cut ("you can cut tags... i approve"). Annotated tag `v2.2.0`
+created at `5310b9a` and pushed to origin (github.com/Ygaray/yahirandroidtaste). Wave 2 (Plan 09-02)
+is now unblocked: verify JitPack resolution of `com.github.Ygaray:yahirandroidtaste:v2.2.0`, run
+repin_status.py reconcile, and fix ECOSYSTEM.md's stale narrative (clear W-1). Consumer repins remain
+human-gated — surface, do not perform.
