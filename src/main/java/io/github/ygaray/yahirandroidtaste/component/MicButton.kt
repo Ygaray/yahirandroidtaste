@@ -82,8 +82,10 @@ fun MicButton(
     // and a cancellation arriving between `interactionSource.emit(press)` and the paired
     // Release/Cancel emit below would leave an unterminated Press interaction, sticking the
     // ripple/pressed visual indefinitely. Reading the latest value through this state instead
-    // keeps the SAME gesture coroutine alive for the whole press, so the `try`/`finally`-shaped
-    // emit pair below always completes.
+    // keeps the SAME gesture coroutine alive for the whole press. The emit pair below has no
+    // actual try/finally — its completion safety comes from coroutine lifetime == node lifetime:
+    // the only way this coroutine is cancelled is the node leaving composition entirely (which
+    // also tears down `interactionSource`), never a mid-press `enabled`/callback swap.
     val latestEnabled by rememberUpdatedState(enabled)
     // Same rationale, applied to the two dispatch callbacks: the gesture coroutine is keyed on
     // Unit and never restarts, so a caller that swaps `onTap`/`onDisabledTap` identity mid-press
