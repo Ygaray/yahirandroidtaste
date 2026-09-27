@@ -36,21 +36,44 @@ import androidx.compose.ui.graphics.Color
  * render the theme default," never "black" or any other real color value.
  *
  * **Deliberately declared OUTSIDE the primary constructor** (a mutable body property, not a
- * data-class component): Kotlin's compiler-synthesized `copy()`/`equals()`/`hashCode()`/
- * `toString()`/`componentN()` always cover the *full* primary-constructor parameter list with a
- * single, non-overloadable signature — `@JvmOverloads` can suppress a constructor's own
- * binary-compat gap (as it does for [id]/[name]/[occurrenceCount]/[createdAt]/[jaccard] below)
- * but Kotlin does not allow annotating those synthetic members, so adding a 6th primary-ctor
- * parameter would have made `copy()`'s old 5-arg overload a genuine, unfixable API removal
- * (`api.txt` `RemovedMethod`) — exactly the non-additive ABI break Phase 07 code review flagged
- * (WR-01) and the repo owner ruled must be a code fix, not an accepted break. Keeping [color] out
- * of the primary constructor means the constructor, `copy()`, `equals()`, `hashCode()`,
- * `toString()`, and every `componentN()` stay byte-identical to the pre-Phase-7 shape — zero
- * change, not merely "additive" — while [color] itself, and the [Companion.of] factory below,
- * are pure new-symbol additions. The one accepted semantic consequence: two [TagChipUiModel]
- * instances that differ only in [color] are still `equals()` (color is styling metadata, not
- * identity), and `copy()` never carries [color] over — callers that `copy()` an instance must
- * re-set [color] explicitly afterward.
+ * data-class component — Kotlin requires every primary-constructor parameter of a `data class`
+ * to be `val`/`var`, so this couldn't be a plain non-property constructor parameter either):
+ * Kotlin's compiler-synthesized `copy()`/`equals()`/`hashCode()`/`toString()`/`componentN()`
+ * always cover the *full* primary-constructor parameter list with a single, non-overloadable
+ * signature — `@JvmOverloads` can suppress a constructor's own binary-compat gap (as it does for
+ * [id]/[name]/[occurrenceCount]/[createdAt]/[jaccard] below) but Kotlin does not allow annotating
+ * those synthetic members, so adding a 6th primary-ctor parameter would have made `copy()`'s old
+ * 5-arg overload a genuine, unfixable API removal (`api.txt` `RemovedMethod`) — exactly the
+ * non-additive ABI break Phase 07 code review flagged (WR-01) and the repo owner ruled must be a
+ * code fix, not an accepted break. Keeping [color] out of the primary constructor means `copy()`,
+ * `equals()`, `hashCode()`, `toString()`, and every `componentN()` stay byte-identical to the
+ * pre-Phase-7 shape — zero change, not merely "additive" (confirmed at both the `api.txt` text
+ * level and, since `Color` is a Kotlin value class whose JVM member names get compiler-mangled,
+ * at the decompiled-bytecode level too — see 07-REVIEW-02.md). The primary constructor itself is
+ * a related but distinct case: it already gained two additional `@JvmOverloads`-provided
+ * short-arity overloads back in the original Phase 7 landing (an additive superset, not
+ * byte-identical) — that predates and is independent of this `color` re-shape.
+ *
+ * Two accepted consequences of this shape, called out explicitly per 07-REVIEW-02.md WR-02 (not
+ * just the copy()/equals() one already documented below):
+ * 1. Two [TagChipUiModel] instances that differ only in [color] are still `equals()` (color is
+ *    styling metadata, not identity), and `copy()` never carries [color] over — callers that
+ *    `copy()` an instance must re-set [color] explicitly afterward.
+ * 2. `color` is this class's only `var` — every other public model in this package's `model/`
+ *    directory is all-`val` and is therefore inferred `STABLE` by the Compose compiler's stability
+ *    checker; a class containing any `var` cannot be inferred `STABLE` regardless of that var's
+ *    own type. Since [TagChipUiModel]/`List<TagChipUiModel>` is a parameter on roughly a dozen
+ *    public composables in this library, this is a real (if low-severity — no trust boundary,
+ *    accepted by Phase 07's security audit as UF-07-01/AR-07-04) change to how the Compose runtime
+ *    treats this widely-shared type: those composables can no longer be skipped purely on a
+ *    reference-unchanged `TagChipUiModel`/list-of-`TagChipUiModel` parameter. A future phase that
+ *    wants stability back should route `color` mutation exclusively through [Companion.of] (or a
+ *    dedicated copy-like `withColor(Color?)` helper) and make the setter non-public — noting that
+ *    alone does not fully restore compiler-inferred `STABLE`, since any `var` (regardless of
+ *    setter visibility) still disqualifies it; a genuine fix would need `color` to be immutable,
+ *    which Kotlin's "primary-ctor params of a data class must be val/var" rule (confirmed by
+ *    direct compile-error testing) makes impossible without reopening the `copy()` ABI break this
+ *    shape exists to avoid.
  */
 data class TagChipUiModel @JvmOverloads constructor(
     val id: String,
@@ -68,6 +91,13 @@ data class TagChipUiModel @JvmOverloads constructor(
          * rejected approach of adding [color] as a 6th primary-constructor parameter). Kotlin
          * callers may prefer `TagChipUiModel(...).apply { color = ... }`; this factory exists so
          * Java/ABI-sensitive callers have a single-call equivalent without touching `copy()`.
+         *
+         * Note (07-REVIEW-02.md IN-02): the `color`-bearing overload of this function is tagged
+         * `@KotlinOnly` in `api.txt`, purely as this project's Metalava bookkeeping convention for
+         * "the literal full-arity declaration `@JvmOverloads` expands from" (the same convention
+         * already applied to this class's own primary constructor) — decompiling confirms the
+         * real JVM method is genuinely callable from Java; `@KotlinOnly` here is not an actual
+         * Java-visibility restriction.
          */
         @JvmStatic
         @JvmOverloads

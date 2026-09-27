@@ -86,3 +86,25 @@ Commands:
   `error: Source breaking change: Removed method
   io.github.ygaray.yahirandroidtaste.component.ColorUtilsKt.contrastingForeground(...) [RemovedMethod]`.
   Restoring the function to `fun` (public) made `apiCheck` pass again (exit 0).
+
+## Known limitation: mangled (value-class-bearing) members are not tracked (found 2026-09-27, Phase 07 WR-01)
+
+Metalava's signature dump does not track JVM members whose signature includes a Kotlin
+inline/value class (e.g. `androidx.compose.ui.graphics.Color`) beyond the bare `property` line.
+Confirmed by decompiling `TagChipUiModel`'s compiled class (`javap`): the real, callable JVM
+methods `getColor-QN2ZGVo()` / `setColor-Y2TPw74(Color)` (both compiler-mangled because `Color` is
+a value class) do not appear anywhere in `api.txt` — only `property public
+androidx.compose.ui.graphics.Color? color;` does. The same applies to any `@JvmOverloads`-expanded
+overload whose parameter list includes a value-class type.
+
+**Practical consequence:** `apiCheck` cannot detect a rename/removal/visibility change to a
+value-class-typed member's accessor or overload — it would pass green even if such a change broke
+a real Java/ABI-sensitive caller. This is not new to `TagChipUiModel.color` specifically; it is
+inherent to this project's Metalava configuration for any public property/function whose signature
+touches a Compose `Color` (or any other Kotlin value class, e.g. `Dp`).
+
+**Mitigation for now:** when a diff adds/changes a public member whose signature involves a value
+class, additionally verify with `javap` (or `abidiff`) on the compiled `.class`, not just
+`api.txt`, per the review that surfaced this (07-REVIEW-02.md, Phase 07). No code/tooling change
+has been made to close this gap yet — tracked here as a backlog item for a future pass on the
+Metalava/ABI-guard tooling itself.
