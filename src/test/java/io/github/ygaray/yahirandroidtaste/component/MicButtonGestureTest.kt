@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performTouchInput
@@ -211,5 +212,50 @@ class MicButtonGestureTest {
             0,
             disabledTapA,
         )
+    }
+
+    @Test
+    fun tap_midPressEnabledFlip_firesOnlyOnDisabledTap() {
+        var tapped = 0
+        var disabledTap = 0
+        lateinit var disableMidPress: () -> Unit
+        composeRule.setContent {
+            MaterialTheme {
+                var isEnabled by remember { mutableStateOf(true) }
+                disableMidPress = { isEnabled = false }
+                MicButton(
+                    isListening = false,
+                    enabled = isEnabled,
+                    onTap = { tapped++ },
+                    onDisabledTap = { disabledTap++ },
+                )
+            }
+        }
+        // Use `hasClickAction()` (not content-description) as the node matcher: flipping `enabled`
+        // mid-press swaps the rendered icon's contentDescription (via Crossfade) from "Tap to talk"
+        // to the disabled string, which would break a content-description-based lookup for the
+        // later `up()` call. The semantics click action (CR-01) is stable across that flip since
+        // it's always present regardless of `enabled`.
+        val node = composeRule.onNode(hasClickAction())
+
+        // Press (finger down) while still enabled — nothing has fired yet (release-gated).
+        node.performTouchInput { down(center) }
+        composeRule.waitForIdle()
+        assertEquals("must not fire on press alone", 0, tapped)
+        assertEquals("must not fire on press alone", 0, disabledTap)
+
+        // Mid-press: flip `enabled` to false while the gesture is still in flight. This is the
+        // literal scenario `latestEnabled` (rememberUpdatedState) exists to fix: the gesture
+        // coroutine must NOT restart (it is keyed on Unit, not `enabled`), so the in-flight press
+        // survives the flip and dispatch reads the latest `enabled` value at release time.
+        disableMidPress()
+        composeRule.waitForIdle()
+
+        // Release — must dispatch through onDisabledTap (the LATEST enabled state), never onTap
+        // (the state captured when the gesture began).
+        node.performTouchInput { up() }
+        composeRule.waitForIdle()
+        assertEquals("release must invoke onDisabledTap per the latest enabled=false", 1, disabledTap)
+        assertEquals("release must never invoke onTap once enabled flipped false mid-press", 0, tapped)
     }
 }
