@@ -91,6 +91,15 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.coil.compose)
 
+    // HUBW-02 map surface for PlaceMapPicker (D-01): an implementation dependency because
+    // no osmdroid type appears in a public signature. Archived upstream, human-approved in
+    // .planning/APPROVED-DEPS.md.
+    implementation(libs.osmdroid.android)
+    // PlaceMapPicker binds MapView to the host lifecycle through
+    // androidx.lifecycle.compose.LocalLifecycleOwner; declared directly at the version already
+    // selected transitively (2.9.4).
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
     // LIB-04: `api` (not `implementation`) — EditorItemRow is a public composable with a
     // `ReorderableCollectionItemScope` receiver, so an external consumer that calls it needs the
     // reorderable type on its compile classpath. This is the one confirmed public-signature leak.
