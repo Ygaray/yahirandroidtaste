@@ -1,6 +1,10 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performTouchInput
@@ -124,5 +128,42 @@ class MicButtonGestureTest {
         composeRule.waitForIdle()
         assertEquals("onDisabledTap fires exactly once on release", 1, disabledTap)
         assertEquals(0, tapped)
+    }
+
+    @Test
+    fun tap_midPressCallbackIdentitySwap_firesOnlyLatestOnTap() {
+        var tapA = 0
+        var tapB = 0
+        lateinit var swapToTapB: () -> Unit
+        composeRule.setContent {
+            MaterialTheme {
+                var onTapCallback by remember { mutableStateOf<() -> Unit>({ tapA++ }) }
+                swapToTapB = { onTapCallback = { tapB++ } }
+                MicButton(
+                    isListening = false,
+                    enabled = true,
+                    onTap = onTapCallback,
+                    onDisabledTap = {},
+                )
+            }
+        }
+        val node = composeRule.onNodeWithContentDescription(tapToTalk)
+
+        // Press (finger down) — nothing has fired yet (release-gated, matches the file's convention).
+        node.performTouchInput { down(center) }
+        composeRule.waitForIdle()
+        assertEquals("must not fire on press alone", 0, tapA)
+        assertEquals("must not fire on press alone", 0, tapB)
+
+        // Mid-press: swap the onTap identity to a DISTINCT counter and force recomposition while
+        // the gesture is still in flight.
+        swapToTapB()
+        composeRule.waitForIdle()
+
+        // Release — must dispatch through the LATEST closure (tapB), never the stale one (tapA).
+        node.performTouchInput { up() }
+        composeRule.waitForIdle()
+        assertEquals("release must invoke the latest onTap closure (tapB)", 1, tapB)
+        assertEquals("release must never invoke the stale onTap closure (tapA)", 0, tapA)
     }
 }
