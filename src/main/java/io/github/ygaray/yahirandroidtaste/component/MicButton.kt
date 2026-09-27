@@ -1,6 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,6 +24,9 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
 /**
@@ -103,6 +107,21 @@ fun MicButton(
         shadowElevation = 6.dp,
         modifier = modifier
             .size(56.dp)
+            // Semantics-only click action: gives TalkBack an ACTION_CLICK to invoke and gives
+            // keyboard/D-pad focus + Enter/Space a target, WITHOUT adding `clickable`/
+            // `combinedClickable` — either of which would reintroduce a second touch-gesture owner
+            // on this node (the exact voice-mic-press-no-capture bug described above). The
+            // AccessibilityService dispatches this via `performAction(ACTION_CLICK)` on the
+            // semantics node — a separate code path from the raw pointer-event stream `pointerInput`
+            // below consumes, so this cannot race or double-fire against the touch gesture.
+            .semantics(mergeDescendants = true) {
+                role = Role.Button
+                onClick {
+                    if (latestEnabled) latestOnTap() else latestOnDisabledTap()
+                    true
+                }
+            }
+            .focusable(interactionSource = interactionSource)
             .indication(interactionSource, ripple())
             // ONE pointer-input owner for the ONE gesture — no internal clickable to pre-consume the
             // down (the voice-mic-press-no-capture root cause). Everything happens in `onPress`, gated
