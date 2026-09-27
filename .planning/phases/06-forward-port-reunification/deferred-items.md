@@ -26,3 +26,21 @@ Out-of-scope discoveries logged during execution, per the executor's scope-bound
   `lint` + `check` — proving the two new Gradle dependencies (`osmdroid-android`,
   `androidx-lifecycle-runtime-compose`) resolve and compile without error. Not fixed here — it is
   already tracked as a pre-Phase-9 (`SHIP-01` tag-cut gate) blocker, out of this plan's scope.
+
+## 06-03
+
+- **`./gradlew detekt` re-confirmed pre-existing finding in `TextCard.kt`** (same
+  `CyclomaticComplexMethod` finding logged in 06-01/06-02, unchanged). `./gradlew detekt`'s own
+  Complexity Report again shows "1 number of total code smells" total after restoring/registering
+  the `PlaceMapPicker` cluster — zero new findings from this plan's touched files
+  (`component/PlaceMapPicker.kt`, `component/PlaceMapOsmdroidConfig.kt`,
+  `component/PlaceMapPickerModel.kt`, `model/SavedPlaceUiModel.kt`,
+  `test/component/SourceContractTestSupport.kt`, `explorer/PickersFamilyScreen.kt`,
+  `explorer/DomainVocabularyDriftGuardTest.kt`). Not fixed — out of this plan's scope, same
+  disposition as 06-01/06-02.
+- **`metalavaCheckCompatibilityRelease` (the variant `apiCheck` actually runs) is green** —
+  `./gradlew apiDump && ./gradlew apiCheck` both succeeded, confirming `api.txt` is net-additive
+  (only `DateTimePickerKt`/`PlaceMapPickerKt`/`PresetChipKt` added, zero removals). The
+  already-tracked `KI-2026-09-02-01` (`metalavaCheckCompatibilityDebug`, the `build`-task variant)
+  was not re-triggered by this plan's targeted `apiDump`/`apiCheck` run — remains a Phase 9
+  (`SHIP-01`) blocker, unrelated to and unaffected by this plan.
