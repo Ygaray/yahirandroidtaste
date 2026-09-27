@@ -45,8 +45,8 @@ independent apps that consume it:
 <!-- repin-matrix:begin -->
 | Consumer | Pinned | Latest | Status |
 |---|---|---|---|
-| CalTracker_Android | v2.1.0 | v2.1.0 | current |
-| SecondBrain | v1.13.0 | v2.1.0 | behind |
+| CalTracker_Android | v2.1.0 | v2.2.0 | behind |
+| SecondBrain | v1.13.0 | v2.2.0 | behind |
 <!-- repin-matrix:end -->
 
 **Current published tag:** **`v1.10.0`** — an autonomous minor bump cut in **SecondBrain v2.1
