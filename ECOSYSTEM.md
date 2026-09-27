@@ -31,7 +31,7 @@ independent apps that consume it:
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
   | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.11.0`** (repinned in **v4.0 Phase 155 Plan 04**, `REMIND-09`) — cut on a branch forked from `v1.10.0` (NOT this hub's `main` tip), deliberately bypassing this hub's own concurrent `v2.0.0` ("v1.0 Hub Stewardship") milestone, which removed the public `FilterBar` composable (folded into `ChipBar`'s expandable mode) — a breaking change SecondBrain's `BrowseScreen.kt` depends on directly and has not yet migrated for. See §"Version-numbering / branch-topology deviation (`v1.10.0` → `v1.11.0`, bypassing `v2.0.0`)" below | `gradle/libs.versions.toml` |
-  | CalTracker | `github.com/Ygaray/…` | `~/Projects/CalTracker_Android` | **`v1.5.0`** (repinned + Gate-1-confirmed, Phase 48 / REL-01) — the hub's Phase-44 additive-growth tag CalTracker was authorized to consume (hub's own latest tag has since moved to `v1.6.0` via an unrelated concurrent SecondBrain session — not a v1.7 CalTracker task) | `gradle/libs.versions.toml` |
+  | CalTracker | `github.com/Ygaray/…` | `~/Projects/AndroidApps/Personal/CalTracker_Android` | **`v2.1.0`** (repinned + Gate-1-confirmed, Phase 64 / MIC-02) — consumes the hub's new generic `MicButton` component (MIC-01), which CalTracker's `MicFab` wrapper now delegates its render/gesture contract to | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
@@ -45,8 +45,8 @@ independent apps that consume it:
 <!-- repin-matrix:begin -->
 | Consumer | Pinned | Latest | Status |
 |---|---|---|---|
-| CalTracker_Android | v1.5.0 | v2.0.0 | behind |
-| SecondBrain | v1.11.0 | v2.0.0 | behind (v1.11.0 is a deliberate branch off v1.10.0, not a descendant of v2.0.0 — see release note below) |
+| CalTracker_Android | v2.1.0 | v2.1.0 | current |
+| SecondBrain | v1.13.0 | v2.1.0 | behind |
 <!-- repin-matrix:end -->
 
 **Current published tag:** **`v1.10.0`** — an autonomous minor bump cut in **SecondBrain v2.1
