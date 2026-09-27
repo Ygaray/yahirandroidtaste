@@ -62,6 +62,12 @@ fun MicButton(
     // keeps the SAME gesture coroutine alive for the whole press, so the `try`/`finally`-shaped
     // emit pair below always completes.
     val latestEnabled by rememberUpdatedState(enabled)
+    // Same rationale, applied to the two dispatch callbacks: the gesture coroutine is keyed on
+    // Unit and never restarts, so a caller that swaps `onTap`/`onDisabledTap` identity mid-press
+    // (e.g. from external recomposition) must still have the release-time dispatch read the
+    // LATEST closure, never the one captured when the coroutine launched.
+    val latestOnTap by rememberUpdatedState(onTap)
+    val latestOnDisabledTap by rememberUpdatedState(onDisabledTap)
     val containerColor = when {
         !enabled -> MaterialTheme.colorScheme.surfaceVariant
         isListening -> MaterialTheme.colorScheme.errorContainer
@@ -97,7 +103,7 @@ fun MicButton(
                         )
                         // Act ONLY on a genuine release — a drag-away/cancel never calls anything.
                         if (released) {
-                            if (latestEnabled) onTap() else onDisabledTap()
+                            if (latestEnabled) latestOnTap() else latestOnDisabledTap()
                         }
                     },
                 )
