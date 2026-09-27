@@ -47,7 +47,7 @@ class MicButtonGestureTest {
     val composeRule = createComposeRule()
 
     private val tapToTalk = "Tap to talk"
-    private val notSetUp = "Microphone unavailable"
+    private val disabledDescription = "Microphone unavailable"
 
     @Test
     fun tap_onEnabledMic_invokesOnTapExactlyOnce() {
@@ -92,7 +92,7 @@ class MicButtonGestureTest {
                 )
             }
         }
-        val node = composeRule.onNodeWithContentDescription(notSetUp)
+        val node = composeRule.onNodeWithContentDescription(disabledDescription)
         node.assertExists()
 
         node.performTouchInput {
@@ -119,7 +119,7 @@ class MicButtonGestureTest {
                 )
             }
         }
-        val node = composeRule.onNodeWithContentDescription(notSetUp)
+        val node = composeRule.onNodeWithContentDescription(disabledDescription)
 
         node.performTouchInput { down(center) }
         composeRule.waitForIdle()
@@ -185,7 +185,7 @@ class MicButtonGestureTest {
                 )
             }
         }
-        val node = composeRule.onNodeWithContentDescription(notSetUp)
+        val node = composeRule.onNodeWithContentDescription(disabledDescription)
 
         // Press (finger down) — nothing has fired yet (release-gated, matches the file's convention).
         node.performTouchInput { down(center) }
