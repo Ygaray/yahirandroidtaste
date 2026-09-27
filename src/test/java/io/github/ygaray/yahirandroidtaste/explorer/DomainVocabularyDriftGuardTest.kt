@@ -314,7 +314,10 @@ class DomainVocabularyDriftGuardTest {
             "Progress", "Segmented", "Sort", "Tactile", "Text", "Undo",
             // Phase 6 (REUNI-01/04) forward-port: "Date" is DateTimePicker's head token, a
             // primitive UI-archetype noun (date/time selection), not consumer-domain vocabulary.
-            "Date"
+            "Date",
+            // Phase 6 (REUNI-03/04) forward-port: "Preset" is PresetChip's head token, a
+            // primitive UI-archetype noun (one-tap preset row), not consumer-domain vocabulary.
+            "Preset"
         )
 
         /**
