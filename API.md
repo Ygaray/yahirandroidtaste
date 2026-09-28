@@ -79,13 +79,13 @@ these render its body) plus the shared scaffolding and editor rows.
 | `CardEditorShellContent` | The pluggable card-editor shell body (content slot per card type) | `accentColor: Long?, onSave, onNavigateBack, …` |
 | `TextCardBottomSheet` | Read-only text-card preview sheet content (pin/favorite/edit/delete) | metadata + `onEditRequest: (() -> Unit)? = null` — bound routes the Edit row to the host's shared name-and-tags sheet, null (default) falls back to this sheet's local tag-less rename dialog |
 | `ListCardBottomSheet` | Read-only list-card preview sheet content (pin/favorite/edit/delete) | items + subtype + `onEditRequest: (() -> Unit)? = null` — same two-state Edit-routing contract as `TextCardBottomSheet` |
-| `RecordingBottomSheetContent` | Voice-recording sheet body (waveform + timer) | `uiState: RecordingSheetUiState, elapsedSeconds` |
+| `RecordingBottomSheetContent` | Voice-recording sheet body (waveform + timer) | `uiState: RecordingSheetUiState, elapsedSeconds` — `showTagColors = false` opt-in (v2.3.0): forwards into its TITLE-state `TagChipEditorContent` (and, through it, its launched picker); default unchanged |
 | `AlbumSourcePickerSheet` | Camera-vs-gallery source picker sheet | `onNavigateToCamera, onNavigateToGallery, …` |
 | `AlbumTitleConfirmSheet` | Album-title confirmation sheet | title state + confirm callback |
 | `VoiceRenameTagsSheet` | Voice-note rename + tags sheet | `defaultTitle, onSave(title), …` |
-| `TagPickerSheet` | Full tag-picker sheet (host + content) | `existingTagIds: Set<String>, allTags: List<TagChipUiModel>, onDone(List<String>)` |
-| `TagPickerSheetContent` | Tag-picker body (no host) | `allTags, selection, onDone` |
-| `TagChipEditorContent` | Inline tag-chip editor body | `currentTags: List<TagChipUiModel>, isLastTag, …` — applied chips also support double-tap-to-remove, routed through the same undo-backed `onRemoveTag` callback the long-press menu's "Remove from this card" item uses |
+| `TagPickerSheet` | Full tag-picker sheet (host + content) | `existingTagIds: Set<String>, allTags: List<TagChipUiModel>, onDone(List<String>)` — `showTagColors = false` opt-in (v2.3.0): unselected picker chips fill with `TagChipUiModel.color` as-is; selection wins; default unchanged |
+| `TagPickerSheetContent` | Tag-picker body (no host) | `allTags, selection, onDone` — `showTagColors = false` opt-in (v2.3.0): unselected picker chips fill with `TagChipUiModel.color` as-is; selection wins; default unchanged |
+| `TagChipEditorContent` | Inline tag-chip editor body | `currentTags: List<TagChipUiModel>, isLastTag, …` — applied chips also support double-tap-to-remove, routed through the same undo-backed `onRemoveTag` callback the long-press menu's "Remove from this card" item uses; `showTagColors = false` opt-in (v2.3.0): current-tag strip chips fill with `TagChipUiModel.color` as-is (resting-chip look); selection wins; the flag also reaches the launched picker; default unchanged |
 | `TagCreateSheet` | Create-a-tag sheet (host + content) | new-tag name/color + confirm |
 | `TagCreateSheetContent` | Create-a-tag body (no host) | new-tag name/color + confirm |
 | `BulkCreatePopup` | Bulk create-multiple popup (host + content) | `onDismissRequest, actionLabel, …` |
@@ -187,3 +187,28 @@ Removing or renaming a public composable, or changing a component's required par
 **breaking change** for every consumer — bump the major and coordinate the human-gated repin (see
 `CLAUDE.md` / `ECOSYSTEM.md` §7). Adding a new public composable requires registering it in its
 family's entries list (or allowlisting it) or the `ComponentRegistry` drift guard fails the build.
+
+**Appending a defaulted parameter (v2.3.0's `showTagColors`) — the precise compatibility scope.**
+v2.3.0 appended `showTagColors: Boolean = false` as the new LAST parameter on `TagPickerSheet`,
+`TagPickerSheetContent`, `TagChipEditorContent` and `RecordingBottomSheetContent`, each of which
+already ended with a function-typed parameter (`onSortModeChange` on the first three,
+`onDeleteTag` on `TagChipEditorContent`).
+
+- Appending a parameter with a default value is **source-compatible** for named-argument,
+  positional and fully-parenthesized call sites — pinned by the committed
+  `ShowTagColorsSourceCompatTest` compile fixture — and Metalava `apiCheck` passes.
+- It is **NOT source-compatible** for a **trailing-lambda** call of the callback that used to be
+  last: `onSortModeChange` on `TagPickerSheet` / `TagPickerSheetContent` /
+  `RecordingBottomSheetContent`, and `onDeleteTag` on `TagChipEditorContent`. Kotlin binds a
+  trailing lambda to the LAST parameter — now the `Boolean` — so such a caller must pass that
+  callback as a **named argument** (e.g. `onSortModeChange = { … }`) when moving to v2.3.0.
+  Metalava's `api.txt` check does not cover call syntax. No known call site (SecondBrain,
+  CalTracker, hub-internal) used that form as of this release (swept 2026-09-28), and v2.2.0's own
+  `AppChip` `containerColorOverride` addition had the identical shape.
+- It is **not binary-compatible** in general: the compiled JVM signature of a Kotlin function
+  changes when a parameter is added, and for a `@Composable`, the generated default/changed-mask
+  parameters change too — so a consumer artifact compiled against the previous tag can fail at
+  link time if run against the new AAR without recompiling.
+- This ecosystem relies on every consumer rebuilding from an **immutable tag** on each repin
+  (never mixing prebuilt binaries across tags), which is why such an addition ships as a minor
+  version bump.
