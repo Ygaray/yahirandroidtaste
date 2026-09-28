@@ -45,27 +45,35 @@ independent apps that consume it:
 <!-- repin-matrix:begin -->
 | Consumer | Pinned | Latest | Status |
 |---|---|---|---|
-| CalTracker_Android | v2.1.0 | v2.2.0 | behind |
-| SecondBrain | v1.13.0 | v2.2.0 | behind |
+| CalTracker_Android | v2.1.0 | v2.3.0 | behind |
+| SecondBrain | v1.13.0 | v2.3.0 | behind |
 <!-- repin-matrix:end -->
 
-### Pending repins (post-v2.2.0)
+### Pending repins (post-v2.3.0)
 
-Per the machine-reconciled matrix above, both consumers are behind `v2.2.0`. This hub phase
-(Phase 9, "Ship & coordinated repin") performs **neither bump** — cross-repo-hub convention
-(root `CLAUDE.md`): the hub's own GSD run edits no consumer repo file. Each repin executes in the
-consumer's own repo/channel, on its own cadence (§7):
+Per the machine-reconciled matrix above, both consumers are behind `v2.3.0`. Neither this hub
+phase nor Phase 9 performs the bump — cross-repo-hub convention (root `CLAUDE.md`): the hub's own
+GSD run edits no consumer repo file. Each repin executes in the consumer's own repo/channel, on
+its own cadence (§7):
 
-- **SecondBrain (`v1.13.0` → `v2.2.0`):** bump the hub coordinate in
-  `gradle/libs.versions.toml` from `v1.13.0` to `v2.2.0`; migrate `BrowseScreen.kt`'s two
-  `FilterBar<TagEntity>` call sites to `ChipBar`'s `expandable`/`rawContent` shape (the follow-up
-  owed since the `v1.10.0` → `v1.11.0` fork note below — `FilterBar` was folded into `ChipBar` at
-  `v2.0.0` and this migration is what lets SecondBrain leave the forked `v1.11.0` lineage and
-  repin straight onto `v2.0.0`-and-later, including `v2.2.0`); and optionally wire the new
-  `TagChipUiModel.color` slot (`TAGCOLOR-01`, Phase 7) -- to be executed in SecondBrain's own repo/channel, not performed by this hub phase.
-- **CalTracker (`v2.1.0` → `v2.2.0`):** bump the same coordinate in `gradle/libs.versions.toml`
-  from `v2.1.0` to `v2.2.0` — purely additive, no consumer-side source changes required (CalTracker
-  consumes no `FilterBar`/`ChipBar` call site) -- to be executed in CalTracker's own repo/channel, not performed by this hub phase.
+- **SecondBrain (`v1.13.0` → `v2.3.0`, straight — skipping `v2.2.0`):** SecondBrain Phase 169 Plan 01
+  (its own repo) bumps the hub coordinate in `gradle/libs.versions.toml` directly from
+  `v1.13.0` to `v2.3.0` — the owner's Option A decision (`tagui01-editor-picker-color-gap`,
+  2026-09-28) supersedes the earlier "repin to v2.2.0 first" path recorded below, since `v2.3.0`
+  is strictly additive on top of `v2.2.0` and carries everything `v2.2.0` did plus `TAGCOLOR-02`.
+  The repin migrates `BrowseScreen.kt`'s two `FilterBar<TagEntity>` call sites to `ChipBar`'s
+  `expandable`/`rawContent` shape (the follow-up owed since the `v1.10.0` → `v1.11.0` fork note
+  below — `FilterBar` was folded into `ChipBar` at `v2.0.0`, and this migration is what lets
+  SecondBrain leave the forked `v1.11.0` lineage and repin straight onto `v2.0.0`-and-later,
+  including `v2.3.0`); wires the `TagChipUiModel.color` slot (`TAGCOLOR-01`, Phase 7) on card
+  faces and Search; and opts into `showTagColors` (`TAGCOLOR-02`, this cut) in its editor and
+  recorder wrappers (SecondBrain Phase 169 Plan 07) — to be executed entirely in SecondBrain's own
+  repo/channel, not performed by this hub phase.
+- **CalTracker (`v2.1.0` → `v2.3.0`):** bump the same coordinate in `gradle/libs.versions.toml`
+  from `v2.1.0` to `v2.3.0` — purely additive and entirely optional, no consumer-side source
+  changes required (CalTracker consumes no `FilterBar`/`ChipBar` call site, and `showTagColors`
+  defaults off, so CalTracker's existing call sites are unaffected either way) -- to be executed in
+  CalTracker's own repo/channel, not performed by this hub phase.
 
 `v1.10.0` was cut in **SecondBrain v2.1
 Phase 135 Plan 02** (`MIND-10`, Phase 135's D-02 decision), an autonomous minor bump, on top of the
@@ -447,6 +455,43 @@ equal to `git rev-list -n1 v2.2.0`) and `"isTag":true`. The build log
 and lists the built `.aar`, `.pom`, and `-sources.jar` artifacts under
 `com/github/Ygaray/yahirandroidtaste/v2.2.0/`. Full evidence captured in `09-02-SUMMARY.md`.
 **Both consumer repins are still outstanding at write time** — see the subsection immediately
+below the machine-reconciled matrix, near the top of this section, for each consumer's exact
+bump path.
+
+`v2.3.0` was cut by **SecondBrain Phase 169 Plan 06**, under the **personal-app tag-cut waiver**
+(`personal-app-tag-cut-gate-waived`): the agent cut the tag itself on green hub verification, with
+no human checkpoint, per the owner's **Option A** runtime decision
+(`tagui01-editor-picker-color-gap`, 2026-09-28) — Option A deliberately overrides the
+"single, last repin" plan and cuts a **second** additive hub tag beyond `v2.2.0` so tag color can
+reach editors and pickers, not only card faces and Search, this milestone. The annotated tag was
+pushed to `origin` at commit `438135089a3ec5ec6fa1ca7256163655e951b06c` (hub main, `4381350`,
+plan 169-05's own HEAD — Task 1 created zero new hub commits). It carries **TAGCOLOR-02**: a
+strictly-additive, default-off `showTagColors: Boolean = false` parameter on `TagPickerSheet` /
+`TagPickerSheetContent` (colors the picker's unselected chips; selection still wins) and
+`TagChipEditorContent` / `RecordingBottomSheetContent` (colors the editor current-tag strip as a
+resting chip, forwarded into its launched picker). Additivity evidence: `api.txt` differs from
+`v2.2.0` by exactly four re-signatured lines, each the prior signature plus a single trailing
+`, optional boolean showTagColors)` — verified by an exact Python structural set-diff, not eyeballed,
+against both the working tree (plan 169-05) and the tag's own `git show v2.3.0:api.txt` (plan
+169-06); `apiCheck` green; the full hub governance battery
+(`testDebugUnitTest detekt apiCheck metalavaCheckCompatibilityDebug publishReleasePublicationToMavenLocal`
+plus `tools/test/run-all.sh`, including both drift guards and zero-baseline detekt) green on the
+exact tagged commit, gated immediately before the push (`gated_head` identity, not mere ancestry).
+
+**JitPack resolution evidence (Plan 169-06, confirmed post-tag):** both
+`https://jitpack.io/com/github/Ygaray/yahirandroidtaste/v2.3.0/yahirandroidtaste-v2.3.0.pom` and
+`.../yahirandroidtaste-v2.3.0.aar` returned HTTP `200` on the first poll after the tag push (a
+real, non-cached lazy JitPack build resolved USABLE well inside the 10-minute bound, not a
+`publishToMavenLocal` substitute).
+`https://jitpack.io/api/builds/com.github.Ygaray/yahirandroidtaste/v2.3.0` reports `"status":"ok"`,
+`"commit":"438135089a3ec5ec6fa1ca7256163655e951b06c"` (the exact release SHA, equal to
+`git rev-list -n1 v2.3.0`) and `"isTag":true`. The downloaded sources jar
+(`yahirandroidtaste-v2.3.0-sources.jar`) was unzipped and its `TagPickerSheet.kt`,
+`TagChipEditorContent.kt` and `RecordingBottomSheetContent.kt` each confirmed to declare
+`showTagColors: Boolean = false` — the BUILT artifact, not the local tree, carries the API. Full
+evidence captured in `169-06-SUMMARY.md` (SecondBrain repo).
+**SecondBrain's repin (`v1.13.0` → `v2.3.0`, straight, skipping `v2.2.0`) is SecondBrain Phase 169
+Plan 01's job; CalTracker's repin to `v2.3.0` remains optional** — see the subsection immediately
 below the machine-reconciled matrix, near the top of this section, for each consumer's exact
 bump path.
 
