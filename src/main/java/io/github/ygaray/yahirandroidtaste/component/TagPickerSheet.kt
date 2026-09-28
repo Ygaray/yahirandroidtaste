@@ -82,6 +82,11 @@ const val TAG_NAME_MAX_LENGTH = 50
  *                          until the :app wrapper wires a real value (Phase 48 Plan 05).
  * @param onSortModeChange  Invoked when the header's [SortControl] selects a new mode.
  *                          Defaulted to a no-op.
+ * @param showTagColors     Opt-in (v2.3.0, Option A). When `true`, an unselected tag chip whose
+ *                          [TagChipUiModel.color] is non-null fills its container with that color
+ *                          as-is; a selected chip keeps the Material3 selected fill; a chip whose
+ *                          color is `null` renders as the default. `false` (default) is the
+ *                          v2.2.0 look.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,7 +98,8 @@ fun TagPickerSheet(
     onDismiss: () -> Unit,
     maxSelections: Int = Int.MAX_VALUE,
     sortMode: TagSortMode = TagSortMode.DEFAULT,
-    onSortModeChange: (TagSortMode) -> Unit = {}
+    onSortModeChange: (TagSortMode) -> Unit = {},
+    showTagColors: Boolean = false
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -109,7 +115,8 @@ fun TagPickerSheet(
             onDismiss = onDismiss,
             maxSelections = maxSelections,
             sortMode = sortMode,
-            onSortModeChange = onSortModeChange
+            onSortModeChange = onSortModeChange,
+            showTagColors = showTagColors
         )
     }
 }
@@ -138,6 +145,11 @@ fun TagPickerSheet(
  * @param onSortModeChange  Invoked when the header's [SortControl] selects a new mode. Defaulted
  *                          to a no-op. This composable never sorts [allTags] itself (Phase 48 —
  *                          `:designsystem` stays algorithm-free; sorted lists arrive pre-ordered).
+ * @param showTagColors     Opt-in (v2.3.0, Option A). When `true`, an unselected tag chip whose
+ *                          [TagChipUiModel.color] is non-null fills its container with that color
+ *                          as-is; a selected chip keeps the Material3 selected fill; a chip whose
+ *                          color is `null` renders as the default. `false` (default) is the
+ *                          v2.2.0 look.
  */
 // Phase 106-01 (TAG-01, D-01): the nested `confirm()` local function's mirrored validation `when`
 // pushes this composable's cyclomatic complexity from 21 to 27 against the module's 25 threshold
@@ -157,7 +169,8 @@ fun TagPickerSheetContent(
     onDismiss: () -> Unit,
     maxSelections: Int = Int.MAX_VALUE,
     sortMode: TagSortMode = TagSortMode.DEFAULT,
-    onSortModeChange: (TagSortMode) -> Unit = {}
+    onSortModeChange: (TagSortMode) -> Unit = {},
+    showTagColors: Boolean = false
 ) {
     var query by remember { mutableStateOf("") }
     var selectedIds by remember { mutableStateOf<Set<String>>(existingTagIds) }
@@ -363,7 +376,8 @@ fun TagPickerSheetContent(
                                     text = tag.name,
                                     style = MaterialTheme.typography.labelLarge
                                 )
-                            }
+                            },
+                            colors = pickerTagChipColors(showTagColors, tag.color)
                         )
                     },
                     modifier = Modifier.padding(vertical = 8.dp),

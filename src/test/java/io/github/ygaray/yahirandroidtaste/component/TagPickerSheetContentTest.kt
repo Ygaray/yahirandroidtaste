@@ -3,6 +3,7 @@ package io.github.ygaray.yahirandroidtaste.component
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -13,6 +14,7 @@ import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -378,5 +380,52 @@ class TagPickerSheetContentTest {
         composeTestRule.waitForIdle()
 
         assertEquals(listOf(belowCap, "C"), createdNames)
+    }
+
+    @Test
+    fun `showTagColors true leaves selection and Done unchanged`() {
+        var doneIds: List<String>? = null
+        composeTestRule.setContent {
+            TagPickerSheetContent(
+                allTags = listOf(
+                    TagChipUiModel(id = "w1", name = "Work", occurrenceCount = 0)
+                        .apply { color = Color(0xFF6750A4) },
+                    TagChipUiModel(id = "h1", name = "Home", occurrenceCount = 0)
+                ),
+                onDone = { doneIds = it },
+                onCreate = {},
+                onDismiss = {},
+                showTagColors = true
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Work").assertExists()
+        composeTestRule.onNodeWithText("Home").assertExists()
+
+        composeTestRule.onNodeWithText("Work").performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("Done").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(listOf("w1"), doneIds)
+    }
+
+    @Test
+    fun `showTagColors is wired to pickerTagChipColors in TagPickerSheetContent and forwarded by TagPickerSheet`() {
+        val src = SourceContractTestSupport.stripComments(
+            SourceContractTestSupport.source("TagPickerSheet.kt")
+        )
+        val contentBody = SourceContractTestSupport.functionBody(src, "fun TagPickerSheetContent(")
+        val sheetBody = SourceContractTestSupport.functionBody(src, "fun TagPickerSheet(")
+
+        assertTrue(
+            "TagPickerSheetContent body should wire colors = pickerTagChipColors(showTagColors, tag.color)",
+            contentBody.contains("colors = pickerTagChipColors(showTagColors, tag.color)")
+        )
+        assertTrue(
+            "TagPickerSheet body should forward showTagColors = showTagColors",
+            sheetBody.contains("showTagColors = showTagColors")
+        )
     }
 }
