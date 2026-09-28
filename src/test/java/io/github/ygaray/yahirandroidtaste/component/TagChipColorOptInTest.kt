@@ -43,6 +43,14 @@ class TagChipColorOptInTest {
     }
 
     @Test
+    fun `editorTagChipIsSelected is false only when opted in with a non-null color`() {
+        assertEquals(true, editorTagChipIsSelected(false, workColor))
+        assertEquals(false, editorTagChipIsSelected(true, workColor))
+        assertEquals(true, editorTagChipIsSelected(true, null))
+        assertEquals(true, editorTagChipIsSelected(false, null))
+    }
+
+    @Test
     fun `pickerTagChipColors fills only the unselected container when opted in, and matches the default otherwise`() {
         lateinit var optedIn: SelectableChipColors
         lateinit var optedInWithColorExpected: SelectableChipColors

@@ -72,6 +72,13 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  *                          defaults to null so call sites that don't wire a global-delete
  *                          handler keep compiling — a null value omits the "Delete tag
  *                          everywhere" menu item entirely.
+ * @param showTagColors     Opt-in (v2.3.0, Option A). When `true`, each current-tag chip whose
+ *                          [TagChipUiModel.color] is non-null renders as a resting chip (the
+ *                          [AppChip] `containerColorOverride` arm: that color as the container,
+ *                          1dp `outline` border, `onSurfaceVariant` label) instead of the default
+ *                          selected look; a chip whose color is `null` keeps the selected look.
+ *                          Forwarded to the launched [TagPickerSheet]'s own opt-in. Gestures are
+ *                          unchanged either way. `false` (default) is the v2.2.0 look.
  * @param sortMode          Currently active tag sort mode (D-02). Defaulted so existing callers
  *                          keep compiling until the :app wrapper wires a real value (Phase 48
  *                          Plan 05). Forwarded straight into the launched [TagPickerSheet] so both
@@ -94,6 +101,9 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  * `combinedClickable` (via [TagChipWithContextMenu]'s `onDoubleClick` passthrough) rather than
  * any additional gesture detector. The read-only card-face `CardTagRow` is deliberately excluded
  * from this binding (D-02) — a scope carve-out, deferred as a fast follow-up, not an oversight.
+ *
+ * [showTagColors] (v2.3.0, Option A, `tagui01-editor-picker-color-gap`): opt-in colored resting
+ * chips for the current-tag strip, forwarded to the launched [TagPickerSheet].
  */
 @Composable
 fun TagChipEditorContent(
@@ -109,7 +119,8 @@ fun TagChipEditorContent(
     onSortModeChange: (TagSortMode) -> Unit = {},
     showSortControl: Boolean = true,
     onEditTag: ((tagId: String) -> Unit)? = null,
-    onDeleteTag: ((tagId: String, name: String) -> Unit)? = null
+    onDeleteTag: ((tagId: String, name: String) -> Unit)? = null,
+    showTagColors: Boolean = false
 ) {
     var showPicker by remember { mutableStateOf(false) }
 
@@ -176,14 +187,15 @@ fun TagChipEditorContent(
                 // on these two comment markers — load-bearing, not decorative.
                 TagChipWithContextMenu(
                     label = tag.name,
-                    isSelected = true,
+                    isSelected = editorTagChipIsSelected(showTagColors, tag.color),
                     onClick = {},
                     modifier = Modifier.semantics { contentDescription = "${tag.name} tag" },
                     onEdit = onEditTag?.let { edit -> { edit(tag.id) } },
                     onRemoveFromContext = { onRemoveTag(tag.id) },
                     removeLabel = "Remove from this card",
                     onDelete = onDeleteTag?.let { del -> { del(tag.id, tag.name) } },
-                    onDoubleClick = { onRemoveTag(tag.id) }
+                    onDoubleClick = { onRemoveTag(tag.id) },
+                    containerColorOverride = optedInTagColor(showTagColors, tag.color)
                 )
                 // endregion:tag-chip-item
             },
@@ -220,7 +232,8 @@ fun TagChipEditorContent(
             onCreate = { name -> onCreateTag(name) },
             onDismiss = { showPicker = false },
             sortMode = sortMode,
-            onSortModeChange = onSortModeChange
+            onSortModeChange = onSortModeChange,
+            showTagColors = showTagColors
         )
     }
 }

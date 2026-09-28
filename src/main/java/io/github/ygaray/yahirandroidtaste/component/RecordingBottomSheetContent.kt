@@ -84,6 +84,9 @@ enum class RecordingSheetUiState { RECORDING, PAUSED, TITLE, IDLE }
  * @param onCreateAndBufferTag Invoked with a typed name to create-then-buffer a new tag.
  * @param sortMode Currently active tag sort mode (TSORT-01), sourced from the global preference.
  * @param onSortModeChange Invoked when the leading sort control selects a new mode.
+ * @param showTagColors Opt-in (v2.3.0, Option A, `tagui01-editor-picker-color-gap`). Forwarded
+ *   into the TITLE state's [TagChipEditorContent] (and, through it, its launched picker). `false`
+ *   (default) is the v2.2.0 look.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,6 +112,7 @@ fun RecordingBottomSheetContent(
     onCreateAndBufferTag: (String) -> Unit = {},
     sortMode: TagSortMode = TagSortMode.DEFAULT,
     onSortModeChange: (TagSortMode) -> Unit = {},
+    showTagColors: Boolean = false,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -153,7 +157,8 @@ fun RecordingBottomSheetContent(
                     onRemoveBufferedTag = onRemoveBufferedTag,
                     onCreateAndBufferTag = onCreateAndBufferTag,
                     sortMode = sortMode,
-                    onSortModeChange = onSortModeChange
+                    onSortModeChange = onSortModeChange,
+                    showTagColors = showTagColors
                 )
             }
 
@@ -339,7 +344,8 @@ private fun TitleStateContent(
     onRemoveBufferedTag: (String) -> Unit,
     onCreateAndBufferTag: (String) -> Unit,
     sortMode: TagSortMode,
-    onSortModeChange: (TagSortMode) -> Unit
+    onSortModeChange: (TagSortMode) -> Unit,
+    showTagColors: Boolean
 ) {
     // D-01/D-02/D-03: canonical NameAndTagsEditor body, empty header (A3 — recording controls
     // live in the RECORDING/PAUSED states, not here). Discard is wired through the archetype's
@@ -371,7 +377,8 @@ private fun TitleStateContent(
                     .padding(horizontal = 16.dp),
                 sortMode = sortMode,
                 onSortModeChange = onSortModeChange,
-                showSortControl = false
+                showSortControl = false,
+                showTagColors = showTagColors
             )
         },
         onSave = onSave,
