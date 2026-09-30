@@ -80,13 +80,13 @@ parameters; the library imports no consumer code, no OkHttp, and no `voice-actio
   4. The command-approach card's offline-only toggle reflects and emits offline-only state via props + callback
   5. The command-approach card's max-tier cap control reflects and emits the cap via props + callback
 
-**Plans**: 1/2 plans executed
+**Plans**: 2/2 plans executed
 **UI hint**: yes
 
 Plans:
 
 - [x] 10-01-PLAN.md — ProviderKeyCard tracer: masked API-key card + Voice Command family scaffold + additive ClearableTextField masking (VSET-01)
-- [ ] 10-02-PLAN.md — ModelSelectCard + ApproachLadderCard expansion: model selection, tier ladder, offline-only toggle, max-tier cap (VSET-02, VAPPR-01/02/03)
+- [x] 10-02-PLAN.md — ModelSelectCard + ApproachLadderCard expansion: model selection, tier ladder, offline-only toggle, max-tier cap (VSET-02, VAPPR-01/02/03)
 
 ### Phase 11: Voice outcome & failure sheet
 
@@ -192,7 +192,7 @@ Phases execute in numeric order: 10 → 11 → 12 → 13 → 14 (Phases 10 and 1
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 10. Voice command settings surfaces | v2.4 | 1/2 | In Progress|  |
+| 10. Voice command settings surfaces | v2.4 | 2/2 | In Progress|  |
 | 11. Voice outcome & failure sheet | v2.4 | 0/TBD | Not started | - |
 | 12. Generic needs-confirmation state | v2.4 | 0/TBD | Not started | - |
 | 13. Catalog integrity & docs | v2.4 | 0/TBD | Not started | - |
