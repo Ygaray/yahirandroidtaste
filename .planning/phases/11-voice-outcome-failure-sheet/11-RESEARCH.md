@@ -1,27 +1,50 @@
-# Phase 11: Voice outcome & failure sheet - Research
+# Phase 11: Voice outcome & failure sheet - Research (FORCE-REFRESH)
 
 **Researched:** 2026-09-30
-**Domain:** Prop-driven Compose UI (sealed outcome state, additive undo-model extension, domain-vocabulary-safe naming) inside a reusable Android design-system library
-**Confidence:** HIGH (every claim below is grounded in source files read this session, cited with path + line range; the few genuinely undecided items are marked `[ASSUMED]` and listed in the Assumptions Log)
+**Domain:** Additive extension of an existing in-memory undo state machine (`UndoHistoryStore`/`UndoHistoryEntry`) with an atomic, releasable group-claim + group-eviction API, plus a new standalone clarification-choices composable — inside a reusable Android Compose design-system library
+**Confidence:** HIGH (every current-code claim below is grounded in source files read this session, cited with path + line range and quoted verbatim; the store-side grouping *mechanism* is original synthesis against the frozen D-01 contract — clearly separated and flagged below, not asserted as already-decided)
+
+**Why this file was force-refreshed:** The prior `11-RESEARCH.md` (2026-09-30 15:13) was written *before* the R1-seam reconvene landed. `11-CONTEXT.md` D-01 was amended at 16:13 (commit `2e02abf`) with a fully-specified, SB-confirmed, FROZEN store-side grouping API (`openGroup`/grouped `append`/`group`/`groupIdOf`/`groupLabel`/`groupStatus`/`attemptUndoGroup` + `UndoGroupStatus`/`UndoGroupResult`) that the prior research's "build a presentational-only projection, never touch the store" recommendation does not account for. The prior 11-01/11-02 plans were retired to `superseded/` for exactly this reason (commit `d5d426b`). This research is grounded in the *current* frozen D-01 text and does the concrete signature-level design work the amendment defers to "resolve in the plan."
 
 <user_constraints>
 ## User Constraints (from CONTEXT.md)
 
 ### Locked Decisions
 
-- **D-01 [undo-shape].** REVISED at R1 by SecondBrain (the seam owner). SB's Undo Center already IS this repo's `UndoHistoryStore`/`UndoHistoryEntry` (`feedback/`; SB `UndoCenterViewModel.kt`). So the A18 run-level undo shape must EXTEND that existing entry model ADDITIVELY — e.g. an optional run/group id + group status — NOT a new parallel store. The outcome sheet's undo affordance ("Undo all (N)" + per-item Undo) renders a group's entries and emits undo callbacks. "Undo all (N)" counts ONLY items undoable as part of the group; notify-only mutations (e.g. SB edits) are excluded or shown as `Unavailable("can't be undone")`. The existing per-action snackbar `WithUndo` path MUST keep working unchanged (SB stays on it until its Phase 178). Reversibility: one-way — the additive entry-model extension freezes into the `v2.4.0` API. Plan-time tension: the current `UndoHistoryEntry` has an `internal` ctor + `suspend` lambda + `AtomicBoolean` (not a clean Compose-`STABLE` prop model), so the additive extension must expose a presentational, `STABLE`-friendly projection for the sheet WITHOUT breaking the entry's first-consumer-wins invariant — resolve in the plan. CT (R1): CT's voice writes are always CREATEs, so undo = delete the inserted row; a loud `Refused(reason)` suffices and CT needs NO restore payload — make `changedItem` OPTIONAL.
-- **D-02 [undo-placement].** Put the undo affordance as a field on the `Success` outcome + model the undo-refused/partial state as a nested undo substate — NOT a new top-level arm of the sealed `VoiceOutcomeUiState`. This keeps the top-level sealed type stable so Phase 12's `NeedsConfirmation` stays a one-branch additive add.
-- **D-03 [undo-crossrepo].** Validate the per-item `Unavailable(reason)` + top-level `Refused(reason, changedItem)` union against SecondBrain's and CalTracker's real undo call-sites at the A13 reconvene BEFORE authoring — a post-tag reshape is a breaking library change. (cross-repo — reconvene item)
-- **D-04 [handled-by].** The "handled by" UI model carries a REQUIRED tier label + OPTIONAL approach, provider, model, and escalation count — all optional beyond the tier so the shape grows additively. Apps fill these from VAE's committed TEL-01 `CommandTrace` (per-tier attempts, escalation reasons, provider/model).
-- **D-05 [success-editable].** The sealed outcome type needs a committed-but-EDITABLE `Success` state — CT auto-logs a high-confidence single item, then allows in-place edits AFTER commit — distinct from the needs-confirmation (pre-commit) state. Model it as a `Success` variant that can carry an editable payload + edit callbacks (prop-driven; CT injects the editor).
-- **D-06 [batch-results].** For batch outcomes, the sheet renders per-row result reporting — a partial-success summary ("Logged 2 of 3") from a `failedCount` / per-row `success|fail` status — plus a batch-write-in-flight LOCK state (disable actions while the write is running). All prop-driven.
-- **D-07 [clarify-choices].** A generic, prop-driven "clarification choices" composable (VCLAR-01, contract A19) — question text + a list of options, each `{ id: opaque String, label: String }`, + `onSelect(id)` + `onDismiss` (dismiss = cancel). When the model needs clarification ("Which list?"), the user resolves it by TAPPING an option, never by speaking again. Render it as a compact PRESSABLE choice surface (chips/buttons) — a Material snackbar holds only one action, so use a small choice bar or an outcome-sheet state, **your design call, easy to swap**. Visually informative, NOT an error. Apps map the engine's `Clarification` → these props (no engine dependency, L7). Domain-neutral; registered in `ComponentRegistry` (Voice Command family) with a full states matrix.
-- **D-08 [failure-action].** The Failure state carries an OPTIONAL action slot — a label + callback (e.g. "Open Settings" for a missing/invalid key; "Retry" ONLY when the app says the failure is retry-safe). Prop-driven and optional: the app decides whether and what to show; absent → no action rendered. Keeps VOUT-03 loud AND actionable without the library assuming any action is always safe.
+- **D-01 [undo-shape].** REVISED at R1 by SecondBrain (the seam owner), then **FROZEN at the 2026-09-30 R1-seam reconvene, SB-confirmed via orchestrator.** Full frozen text (quoted in full — this is the authoritative field-level shape for the re-plan, freezing into `v2.4.0`):
+
+  > **D-01 — R1-seam decision 2026-09-30, SB-confirmed via orchestrator (FROZEN VUNDO-01 seam).** The blocking-human checkpoint (11-01-PLAN Task 2) is resolved: `new-projection` (presentational models) PLUS an additive store-side grouping API. This is the authoritative field-level shape the re-plan must implement; it freezes into `v2.4.0`. **This supersedes the stale "notify-only mutations (e.g. SB edits) are excluded" clause above:** per Yahir's SB Phase-178 D-01, edits ARE undoable, so **"Undo all (N)" = the count of `Available` group members and INCLUDES SB edits.** `Unavailable(reason)` stays a generic per-item state for any action without an undo adapter — docs/tests MUST NOT assume edits are excluded.
+  >
+  > **Existing API is UNTOUCHED (no ABI break):** the `internal constructor`, the 3-arg `append(message, preview?=null, undoAction)` (ungrouped `WithUndo` path), `attemptUndo(id)` (per-action refusal → `Failed`, unchanged), `clearSpent()` semantics for ungrouped entries, and `entries: StateFlow<List<UndoHistoryEntry>>`. **Do NOT add any `UndoStatus` enum member** (would break consumers' exhaustive `when`s).
+  >
+  > **Store additions** — grouping lives in a private `entryId → groupId` map (SB's pick; primary constructor stays frozen, so no `copy()`/`componentN()` break):
+  > - `fun openGroup(groupId: String, label: String, undoAll: suspend () -> Unit)` — registers the group-level ATOMIC action + label. May be folded into the first grouped `append` if the planner prefers, as long as semantics match.
+  > - `fun append(message: String, preview: UndoPreview? = null, groupId: String, undoAction: suspend () -> Unit): String` — grouped overload (existing 3-arg `append` stays, ungrouped).
+  > - `fun group(groupId: String): List<UndoHistoryEntry>` — newest-first.
+  > - `fun groupIdOf(entryId: String): String?` — REQUIRED (SB derives its grouped view from `entries`). A reactive `groups` `StateFlow` is OPTIONAL.
+  > - `fun groupLabel(groupId: String): String?`
+  > - `fun groupStatus(groupId: String): UndoGroupStatus`, where `UndoGroupStatus` = `Undoable` (all members `Available`) | `PartiallyResolved` (≥1 `Available` AND ≥1 spent) | `FullyResolved` (0 `Available`) | `Empty` (unknown or evicted).
+  > - `suspend fun attemptUndoGroup(groupId: String): UndoGroupResult` — **ATOMIC:** claims all `Available` members, runs `undoAll` ONCE (never a loop over member lambdas), and on success marks all claimed members `Undone`. `UndoGroupResult` = `Undone(count: Int)` | `Refused(reason: String, changedItem: String?)` | `Failed` | `NothingToUndo`. A TYPED refusal exception thrown by the consumer's `undoAll` (`reason`, `changedItem?`) → `Refused`: nothing was written, so claimed members go BACK to `Available` (user can retry). **The group path therefore needs a RELEASABLE claim (a mutex or release), NOT the one-way `consumedGuard`.** Any other throw → `Failed`, marking the claimed members `Failed`.
+  > - **Eviction is group-atomic:** the 50-cap never drops a single member — evict/count a group as ONE unit. `clearSpent()` removes a group only once it is `FullyResolved`.
+  > - Session-scoped, in-memory, NO serialization. `UNDO-PERSIST` is Future.
+  >
+  > **UI projections** (presentational; built by the consumer FROM store reads — `group()`/`groupStatus()`/`groupIdOf()` — never from consumer-side bookkeeping):
+  > - `UndoAffordanceUiModel(allLabel: String, rows: List<UndoRowUiModel> = emptyList(), onUndoAll: (() -> Unit)? = null, refused: UndoRefusedUiModel? = null)`
+  > - `UndoRowUiModel(id: String, label: String, state: UndoRowState)` with `sealed interface UndoRowState { Available(onUndo: () -> Unit) | Undone | Unavailable(reason: String) }`
+  > - `UndoRefusedUiModel(reason: String, changedItem: String? = null)` — fed from `UndoGroupResult.Refused`.
+
+- **D-02 [undo-placement].** Undo lives as a field ON `Success`, undo-refused/partial is a nested substate — NOT a new top-level arm of the sealed `VoiceOutcomeUiState`. Keeps the top-level sealed type stable for Phase 12's additive `NeedsConfirmation`.
+- **D-03 [undo-crossrepo].** Validate the per-item `Unavailable(reason)` + `Refused(reason, changedItem)` union against SB/CT real call-sites at the A13 reconvene BEFORE authoring. **Status: this validation is exactly what D-01's 2026-09-30 amendment *is* — SB confirmed the shape via the orchestrator. Treat D-03 as satisfied by D-01's frozen text; do not reopen the shape question.**
+- **D-04 [handled-by].** `HandledByUiModel`: required tier + optional approach/provider/model/escalationCount. **Status: ALREADY BUILT** — verified live at `model/HandledByUiModel.kt` (quoted below).
+- **D-05 [success-editable].** Sealed outcome needs a committed-but-EDITABLE `Success` state (CT). **Status: ALREADY BUILT** — `VoiceOutcomeUiState.Success.editableContent`/`.inFlight` (quoted below).
+- **D-06 [batch-results].** Batch outcomes render per-row result + in-flight lock. **Status: ALREADY BUILT** — `VoiceOutcomeUiState.Success.batchResults`, `BatchRowResultUiModel`, `OutcomeSheet`'s `BatchResultsList` (quoted below).
+- **D-07 [clarify-choices].** Standalone, prop-driven clarification composable (VCLAR-01, contract A19): question + `{id, label}` options + `onSelect(id)` + `onDismiss`. Pressable chip/button surface, your design call on chips-vs-buttons and bar-vs-sheet-state. **Status: NOT YET BUILT — no commit has touched this.**
+- **D-08 [failure-action].** Failure carries an OPTIONAL action slot (label+callback). **Status: ALREADY BUILT** — `FailureActionUiModel`, `VoiceOutcomeUiState.Failure.action` (quoted below).
 
 ### Claude's Discretion
 
-- Loud-failure and undo-refused visual treatment: research is confident (not a gray area) — use the theme `error`/`errorContainer` roles (icon + headline + reason string, sticky), and explicitly NOT `AttentionCue` (its KDoc forbids use as a failure signal).
-- For VCLAR-01, chips-vs-buttons and bar-vs-sheet-state is a swappable design call (Yahir reviews in the gallery at Gate-1).
+- Loud-failure and undo-refused visual treatment: use theme `error`/`errorContainer` roles (icon + headline + reason string, sticky); explicitly NOT `AttentionCue` (KDoc forbids use as a failure signal). **Status: the Failure half is ALREADY BUILT this way** (verified in `OutcomeSheet.kt`'s `FailureBody`); the undo-refused nested substate still needs the same treatment applied fresh.
+- VCLAR-01: chips-vs-buttons and bar-vs-sheet-state is a swappable design call (Gate-1 gallery review).
 
 ### Deferred Ideas (OUT OF SCOPE)
 
@@ -31,386 +54,507 @@
 <phase_requirements>
 ## Phase Requirements
 
-| ID | Description | Research Support |
-|----|-------------|------------------|
-| VOUT-01 | Outcome/failure sheet renders a command outcome from props, domain-neutral | Sealed `VoiceOutcomeUiState`-equivalent pattern (Architecture Pattern 1); naming-guard finding (Pitfall 1) governs the composable's own name |
-| VOUT-02 | "Handled by: tier/approach" indicator from props | `HandledByUiModel` shape per D-04, rendered as a chip/row reusing `AppChip` |
-| VOUT-03 | Failure states render loudly and visibly, optional action slot | `theme/Color.kt` error roles (verified, quoted below) + `DynamicActionButton` for the optional action; explicit anti-pattern: `AttentionCue` |
-| VUNDO-01 | "Undo all (N)" + per-item Undo + unavailable state + undo-refused/partial state | `UndoHistoryEntry`/`UndoHistoryStore` current shape (verified, quoted below) + additive-extension pattern (Pitfall 3 / TagChipUiModel lesson) |
-| VCLAR-01 | Clarification choices: question + options `{id, label}` + onSelect + onDismiss, pressable, registered | `SegmentedOptionSelector`/`AppChip`/`ChipBar` precedent for compact pressable choice surfaces (Code Examples) |
+| ID | Description | Status | Research Support |
+|----|-------------|--------|-------------------|
+| VOUT-01 | Outcome/failure sheet renders a command outcome from props, domain-neutral | **DONE** (commit `6a946d3`) | `model/VoiceOutcomeUiState.kt`, `component/OutcomeSheet.kt` — verified live, quoted below |
+| VOUT-02 | "Handled by: tier/approach" indicator from props | **DONE** | `model/HandledByUiModel.kt`, `OutcomeSheet.kt`'s `HandledByRow` — verified live |
+| VOUT-03 | Failure states render loudly and visibly, optional action slot | **DONE** | `OutcomeSheet.kt`'s `FailureBody` on `errorContainer`/`onErrorContainer`, `FailureActionUiModel` — verified live |
+| VUNDO-01 | "Undo all (N)" + per-item Undo + unavailable state + undo-refused/partial state | **NOT BUILT — this phase's remaining core work** | The frozen D-01 store-side grouping API design (Architecture Patterns, Code Examples) + the exact current `UndoHistoryEntry`/`UndoHistoryStore` shapes (verified, quoted) |
+| VCLAR-01 | Clarification choices: question + options `{id, label}` + onSelect + onDismiss, pressable, registered | **NOT BUILT** | `AppChip`/`SegmentedOptionSelector` precedent (verified) + the `DomainVocabularyDriftGuardTest` naming gate (verified — `Clarification` is NOT yet allowlisted) |
 </phase_requirements>
 
 ## Project Constraints (from CLAUDE.md)
 
-- **One-way dependency:** library imports no host code, holds no secrets, makes no domain assumptions. New code here must import only Android SDK / AndroidX / Compose / Hilt / Coil / navigation-compose / reorderable / osmdroid — never a consumer, never `voice-action-engine`.
-- **`ComponentRegistry` is the single source of truth + drift guard:** every new public top-level `@Composable` in `component/`, `feedback/`, `modifier/`, `theme/` must be registered in one of the family lists XOR allowlisted in `INTENTIONALLY_UNREGISTERED` — never neither, never both.
-- **A second, independent guard exists and is load-bearing for this phase specifically:** `DomainVocabularyDriftGuardTest` — every public composable's **head token** (leading PascalCase word) must be in `PRIMITIVE_NOUN_ALLOWLIST` or explicitly grandfathered in `DOMAIN_VOCABULARY` with a rationale. See Pitfall 1 below — this is the single highest-risk naming trap for this phase.
-- **Interaction conventions travel with the components:** reveal-confirm destructive swipe, standardized snackbar/undo feedback, conditional-render-no-dead-space — preserve them; failure content is never "no dead space," it is present content that must render loudly (see Pitfall 6 in the milestone PITFALLS.md, corroborated below).
-- **Bindings-only Hilt, no application host:** `UndoHistoryStore` is already `@Singleton @Inject constructor()` — this phase's additive change to it (if any) must preserve that shape; no `@HiltAndroidApp`/`@AndroidEntryPoint` anywhere in this library.
+- **One-way dependency:** library imports no host code, holds no secrets, makes no domain assumptions. New code here must import only Android SDK / AndroidX / Compose / Hilt / Coil / navigation-compose / reorderable / osmdroid — never a consumer, never `voice-action-engine`. `kotlinx.coroutines.sync.Mutex` is part of `kotlinx-coroutines-core`, already a transitive dependency of this module (confirmed: `UndoHistoryStore.kt` already imports `kotlinx.coroutines.flow.*`/`CancellationException` from the same artifact) — using `Mutex` for the group-claim lock introduces **no new Gradle dependency**.
+- **`ComponentRegistry` is the single source of truth + drift guard:** every new public top-level `@Composable` must be registered in a family list XOR allowlisted in `INTENTIONALLY_UNREGISTERED`.
+- **`DomainVocabularyDriftGuardTest` (independent second guard):** every public composable's head token (leading PascalCase word) must be in `PRIMITIVE_NOUN_ALLOWLIST` or individually grandfathered in `DOMAIN_VOCABULARY`. **Verified this session: `"Outcome"` was already added to `PRIMITIVE_NOUN_ALLOWLIST` for `OutcomeSheet`** (`src/test/.../DomainVocabularyDriftGuardTest.kt:326-329`, quoted below). **`"Clarification"` and `"Undo"` need checking for the new work:** `"Undo"` is already present (line 314, part of the "widening" block). `"Clarification"` is **NOT present anywhere** in `PRIMITIVE_NOUN_ALLOWLIST` or `DOMAIN_VOCABULARY` (confirmed via grep this session — zero matches) — the new clarification composable's head token must clear this gate.
+- **Bindings-only Hilt, no application host:** `UndoHistoryStore` stays `@Singleton @Inject constructor()` — the additive change must preserve that; still no `@HiltAndroidApp`/`@AndroidEntryPoint`.
 - **Detekt zero-baseline:** no new findings buried in a regenerated baseline.
-- **AGP 9.2.1 / Kotlin 2.3.20 / Hilt 2.60.1 / Compose BOM 2026.04.01 / JDK 17, minSdk 35, compileSdk 36**, single-module hub — every Gradle command drops the `:yahirandroidtaste` module prefix (`./gradlew testDebugUnitTest`, `./gradlew detekt`, `./gradlew apiCheck`).
+- **AGP 9.2.1 / Kotlin 2.3.20 / Hilt 2.60.1 / Compose BOM 2026.04.01 / JDK 17, minSdk 35, compileSdk 36**, single-module hub — every Gradle command drops the `:yahirandroidtaste` module prefix.
 
 ## Summary
 
-Phase 11 adds one new public composable family — the outcome/failure sheet plus a standalone clarification-choices surface — to a library that already shipped Phase 10's settings cards (`ProviderKeyCard`, `ModelSelectCard`, `ApproachLadderCard`) into a brand-new tenth registry family, `ExplorerFamilies.VOICE_COMMAND` (confirmed live in `explorer/VoiceCommandFamilyScreen.kt` and `explorer/ExplorerIndexScreen.kt:65,78`). Phase 11 extends that same family. The two hardest, most load-bearing facts this research surfaces, both verified directly against source:
+Three of the five phase requirements (VOUT-01/02/03) are **already shipped** (commit `6a946d3`) and verified live this session — `model/VoiceOutcomeUiState.kt`, `model/HandledByUiModel.kt`, `model/FailureActionUiModel.kt`, `model/BatchRowResultUiModel.kt`, and `component/OutcomeSheet.kt` exist exactly as the D-04/D-05/D-06/D-08 decisions describe, registered in `ComponentRegistry`, with `OutcomeSheetTest.kt` covering the success/failure/handled-by/action-slot matrix. **Nothing in this research changes that code or those decisions.**
 
-1. **The naming guard is live and it will reject the obvious names.** `DomainVocabularyDriftGuardTest.kt` enforces that a composable's head token (its leading PascalCase word) must be in `PRIMITIVE_NOUN_ALLOWLIST` or individually grandfathered in `DOMAIN_VOCABULARY`. Neither list currently contains `Outcome`, `Command`, `Clarification`, or `Undo` as a *head* token context that would cover a new top-level `VoiceOutcomeSheet`-style name — `Voice` itself is present ONLY as grandfathered `DOMAIN_VOCABULARY` (for pre-existing `VoiceCard`/`VoiceRenameTagsSheet`), and Phase 10 explicitly avoided reusing it: `ProviderKeyCard`/`ModelSelectCard`/`ApproachLadderCard` all use head tokens (`Provider`, `Model`, `Approach`) that Phase 10 added fresh to `PRIMITIVE_NOUN_ALLOWLIST` rather than reaching for `Voice*` names. Phase 11 must do the same: pick head tokens for the new composables that are either already allowlisted or added to `PRIMITIVE_NOUN_ALLOWLIST`/`DOMAIN_VOCABULARY` with a rationale, in the same commit that introduces them.
-2. **The undo model this phase must extend additively already exists, and its current shape is NOT presentational-ready.** `UndoHistoryEntry`'s primary constructor is `internal`, carries a `suspend () -> Unit` lambda and a private `AtomicBoolean`, and is a `data class` (`feedback/UndoHistoryEntry.kt:47-54`). None of that can be a Compose prop type as-is. The phase needs a new, public, all-`val`, `STABLE`-inferable projection model (mirroring the `TagChipUiModel`/`ApproachRungUiModel` convention already used for every other new model in this milestone) that the consumer derives FROM `UndoHistoryEntry` — never a change to `UndoHistoryEntry`'s own constructor shape (that would risk exactly the `copy()` ABI break `TagChipUiModel.kt`'s KDoc documents, verified below).
+The entire remaining engineering surface is **VUNDO-01** (the frozen D-01 store-side grouping API, not yet touched) and **VCLAR-01** (the clarification composable, not yet touched). VUNDO-01 is the hard problem: `11-CONTEXT.md`'s D-01 amendment specifies the *external* contract in full (method signatures, the two new sealed types, the "atomic claim, releasable on Refused, group-atomic eviction" behavior) but explicitly defers the *internal mechanism* — how to satisfy "releasable claim, NOT the one-way `consumedGuard`" against the CURRENT store's actual machinery — to the plan. This research does that mechanism-level design work concretely, against the verified current shapes:
 
-**Primary recommendation:** Author `VoiceOutcomeUiState` (or an equivalently domain-neutral sealed type) as a NEW public sealed interface in `model/`, with `Success` (carrying optional undo + optional editable payload) and `Failure` (carrying optional action slot) arms only — leave `NeedsConfirmation` for Phase 12. Author a new, all-`val`, public `UndoRowUiModel`/`UndoGroupUiModel`-shaped projection in `model/` that a consumer builds from its own `UndoHistoryEntry` list (never a shape change to `UndoHistoryEntry` itself). Author the clarification-choices composable as a small, separate, registrable composable (not nested inside the outcome sheet's sealed state) so its "chip bar vs bottom-sheet-state" swap stays free, per the user's explicit discretion grant. Settle every new public composable's head-token naming against both drift guards BEFORE writing the first line of implementation — this is cheaper to fix in planning than after `v2.4.0` is tagged.
+1. **`UndoHistoryEntry`'s `tryConsume()` (`feedback/UndoHistoryEntry.kt:58`) is a ONE-WAY `AtomicBoolean` CAS — it can never be "released."** Any group-claim mechanism that calls `tryConsume()` to claim a member permanently strands that entry if the group undo is later `Refused` — directly contradicting D-01's explicit "claimed members go BACK to `Available`" requirement. **The group claim must therefore be implemented ENTIRELY OUTSIDE `tryConsume()`/`consumedGuard`** — a `kotlinx.coroutines.sync.Mutex` held for the whole claim→run→resolve critical section, with `Available`/`Undone`/`Failed` status transitions as the only state that changes (no separate "claimed" flag needed on success or terminal-failure paths; the group's `Refused` path simply never writes a status change at all, since nothing needs reverting — the entries were never marked anything other than `Available`).
+2. **This creates one residual, honestly-disclosed concurrency gap the plan must decide how to handle:** a grouped entry keeps its own individual `undoAction` (used by the pre-existing, unchanged, per-item `attemptUndo(id)` path) *and* participates in a group's shared `undoAll` (used by the new `attemptUndoGroup`). Because `attemptUndoGroup`'s claim is deliberately NOT `tryConsume()`-based, a concurrent single-item `attemptUndo(id)` tap on the same entry id is not mutually excluded by the store alone — see Pitfall 4 and the concrete mitigation recommended there (UI-level mutual exclusion via a `groupBusy` display flag, not a store-level lock spanning both paths, which would require touching the frozen-unchanged `attemptUndo(id)`).
+3. **Eviction and `clearSpent()` must both become group-aware without changing their signatures** — the current `evictIfNeeded`/`clearSpent()` (`feedback/UndoHistoryStore.kt:99-121`) operate entry-by-entry; the group-atomic requirement means both need a "resolve the group, then act on every member of it together" branch for any entry that has a `groupId`, while staying byte-for-byte identical for ungrouped entries.
+
+**Primary recommendation:** Implement the frozen D-01 signatures exactly as specified in `UndoHistoryStore.kt`, backed by: (a) a private `MutableMap<String, String>` (`entryId -> groupId`), a private `MutableMap<String, Pair<String, suspend () -> Unit>>` (`groupId -> (label, undoAll)`) populated by `openGroup`, and one `Mutex` (`groupUndoMutex`) scoped to the whole store (simplest — groups are not expected to be undone concurrently by a single user) guarding only `attemptUndoGroup`'s claim→run→resolve section; (b) `group()`/`groupIdOf()`/`groupLabel()`/`groupStatus()` as pure reads over `_entries.value` + the two maps, no new `StateFlow`; (c) rewritten `evictIfNeeded`/`clearSpent()` with a groupId-aware branch that treats a group as one eviction/clear unit. Build `UndoAffordanceUiModel`/`UndoRowUiModel`/`UndoRefusedUiModel` as new, consumer-facing, all-`val` types in `model/`, constructed by the **consumer** from `UndoHistoryStore.group(groupId)`/`.groupStatus(groupId)` reads (never inside the library itself, since the library never holds a reference to any app's `UndoHistoryStore` instance — INV-01). Wire `VoiceOutcomeUiState.Success.undo: UndoAffordanceUiModel?` and a nested `refused: UndoRefusedUiModel?` per D-02. For VCLAR-01, add `"Clarification"` to `PRIMITIVE_NOUN_ALLOWLIST` in the same commit that introduces the new composable (mirrors the already-landed `"Outcome"` precedent verified this session), and build it as a standalone composable (not nested in `OutcomeSheet`'s `when`) reusing `AppChip` for the option row.
 
 ## Architectural Responsibility Map
 
 | Capability | Primary Tier | Secondary Tier | Rationale |
 |------------|-------------|----------------|-----------|
-| Outcome rendering (success/failure, from props) | Browser/Client (Compose UI, this library) | — | Pure presentation; the engine/consumer computes the outcome, this library only renders it (INV-01) |
-| "Handled by" provenance data (tier/approach/provider/model/escalation count) | Consumer app (owns `CommandTrace` mapping) | Library (renders the `HandledByUiModel` it's given) | The engine's `TEL-01 CommandTrace` lives in `voice-action-engine`, a peer hub this library must never import (L7); consumer maps it to the UI model |
-| Undo execution (the actual mutation reversal) | Consumer app / `UndoHistoryStore.attemptUndo` (existing, in this library but driven by app-supplied `undoAction` lambdas) | — | `UndoHistoryStore` already lives in this library (`feedback/`) as the shared first-consumer-wins CAS store; this phase's job is a presentational projection over it, not new execution logic |
-| Undo-group accounting ("Undo all (N)", per-item unavailable) | Library (derives group membership/count from props or from an app-supplied group id on the entry) | Consumer (decides which entries belong to a group, and marks non-restorable ones `Unavailable`) | Display + emit only, mirroring the `ApproachLadderCard` derived-state precedent (`rung.enabled && …` computed IN the composable from plain primitives) |
-| Clarification resolution (mapping a tapped option id back to the engine's `Clarification`) | Consumer app | Library (renders options, emits the tapped opaque id via `onSelect`) | Library never knows what the `id` means — L7, no engine dependency |
-| Registry/gallery wiring | Library (`explorer/VoiceCommandFamilyScreen.kt`, denylisted from the drift guard) | — | Already the established pattern for this family |
+| Outcome rendering (success/failure, from props) | Browser/Client (Compose UI, this library) | — | **Already shipped.** Pure presentation; engine/consumer computes the outcome (INV-01) |
+| "Handled by" provenance data | Consumer app (owns `CommandTrace` mapping) | Library (renders the model it's given) | **Already shipped.** `voice-action-engine`'s `TEL-01 CommandTrace` is a peer hub this library must never import (L7) |
+| Undo group bookkeeping (`groupId -> entries`, group label, group undoAll action) | **Library** (`UndoHistoryStore`, NEW this phase) | — | D-01's frozen decision: this is a STORE-side addition, not a consumer-side projection — the store already owns first-consumer-wins semantics and is the only place that can make the group claim atomic against the existing `entries` flow |
+| Group-claim atomicity + releasability (`attemptUndoGroup`) | **Library** (`UndoHistoryStore`, NEW this phase) | — | Must live beside `_entries`/`attemptUndo` to be atomic against them; a consumer-side claim could not be atomic against the store's own concurrent mutations |
+| Undo-group UI projection (`UndoAffordanceUiModel`/`UndoRowUiModel`/`UndoRefusedUiModel`) | Consumer app (builds the projection by reading the store) | Library (renders the projection it's given) | D-01: "built by the consumer FROM store reads... never from consumer-side bookkeeping" — the library never holds an app's `UndoHistoryStore` instance itself (no DI wiring crosses that boundary in this library) |
+| Clarification resolution (mapping a tapped option id back to the engine's `Clarification`) | Consumer app | Library (renders options, emits the tapped opaque id via `onSelect`) | Library never interprets `id` — L7, no engine dependency |
+| Registry/gallery wiring | Library (`explorer/VoiceCommandFamilyScreen.kt`) | — | Established pattern; `OutcomeSheet` entry already lands here |
 
 ## Standard Stack
 
 ### Core
 
-No new external library dependency is introduced by this phase — everything is built from Jetpack Compose/Material3 primitives and this library's own existing components. Per INV-01 and the milestone PITFALLS.md Pitfall 5, adding any dependency to `build.gradle.kts` for this phase would itself be a defect.
+No new external library dependency. Everything is Compose/Material3 + `kotlinx.coroutines` primitives already on the classpath.
 
 | Library | Version | Purpose | Why Standard |
-|---------|---------|---------|--------------|
-| Jetpack Compose / Material3 | Compose BOM 2026.04.01 (already pinned, `CLAUDE.md` root) | Sealed-state rendering, `Surface`/`Column`/error color roles | Already the library's only UI toolkit; no alternative considered |
-| Kotlin coroutines (`kotlinx.coroutines`) | Already a transitive dependency via `UndoHistoryStore`'s `suspend` API | The undo projection must remain compatible with `UndoHistoryEntry.undoAction: suspend () -> Unit` | Existing convention; this phase reads, never redefines, the coroutine shape |
+|---------|---------|---------|---------------|
+| Jetpack Compose / Material3 | Compose BOM 2026.04.01 (pinned, root `CLAUDE.md`) | Sealed-state rendering, error color roles, `AppChip` reuse | Already the library's only UI toolkit |
+| `kotlinx.coroutines.sync.Mutex` | Transitively available via `kotlinx-coroutines-core` (already imported in `UndoHistoryStore.kt` for `flow`/`CancellationException`) | Guards `attemptUndoGroup`'s claim→run→resolve critical section — the RELEASABLE claim D-01 requires, deliberately NOT `AtomicBoolean`/`tryConsume()` | `Mutex.withLock { }` is the standard Kotlin-coroutines mutual-exclusion primitive for a suspend critical section; no new Gradle dependency needed |
 
 ### Supporting
 
 | Library | Version | Purpose | When to Use |
 |---------|---------|---------|-------------|
-| `SheetScaffold` (`component/SheetScaffold.kt`) | in-repo | Host chrome for the outcome sheet if it ships as a `ModalBottomSheet` | Whenever the sheet needs to be a bottom sheet rather than an inline card — see Open Questions for the "sheet vs. inline surface" call |
-| `AppChip` (`component/AppChip.kt`) | in-repo | "Handled by" indicator chip; clarification-choice chip option | Any compact labeled/pressable token; already supports `onLongClick`/`onDoubleClick`/`leadingIcon` |
-| `DynamicActionButton` (`component/DynamicActionButton.kt`) | in-repo | Failure's optional action slot ("Open Settings"/"Retry"); Undo-all action | `Destructive`/`Save`/`Neutral` role-to-color mapping already exists; reuse rather than hand-roll a colored button |
-| `SegmentedOptionSelector` (`component/SegmentedOptionSelector.kt`) | in-repo | Reference precedent ONLY (2-option toggle) — not a direct fit for an N-option clarification list, but its "always-visible reason, never conditionally hidden" discipline is the pattern to copy | Read for convention, not reused verbatim (VCLAR-01 needs an arbitrary-length option list, not exactly 2) |
+| `SheetScaffold` (`component/SheetScaffold.kt:50-69`, verified) | in-repo | Already the host for `OutcomeSheet` — no change needed | N/A — already wired |
+| `AppChip` (`component/AppChip.kt:88-175`, verified) | in-repo | Per-item undo row affordance; clarification-choice chip option | Any compact labeled/pressable token |
+| `DynamicActionButton` (`component/DynamicActionButton.kt:37-58`, verified) | in-repo | "Undo all" action button; already used for Failure's action slot | Role-colored button, `Neutral` role for undo-all |
 
 ### Alternatives Considered
 
 | Instead of | Could Use | Tradeoff |
 |------------|-----------|----------|
-| A new `UndoHistoryEntry`-shape change (adding a `groupId` field to its primary constructor) | A separate, new, public `UndoRowUiModel` that a consumer constructs FROM its own `UndoHistoryEntry` reads | The direct-field-add is the more "obvious" extension but risks the exact `copy()`/`componentN()` ABI break `TagChipUiModel.kt`'s KDoc documents (verified below) — a new projection type is the additive-safe choice and costs nothing in expressiveness since the library never constructs `UndoHistoryEntry` itself outside `UndoHistoryStore.append` (ctor is `internal`, per `feedback/UndoHistoryEntry.kt:47`) |
-| `AttentionCue` for the loud-failure surface | A dedicated error-container `Surface` + icon + headline inside the sheet body | `AttentionCue`'s own KDoc states it is "**never** a failure signal" (`component/AttentionCue.kt:29`, verified) — using it would violate the component's own documented contract |
-| A separate `NeedsConfirmation`-shaped sibling composable now, "to save a round-trip later" | Ship only `Success`/`Failure` arms in the sealed type this phase; let Phase 12 add the third arm | Explicitly deferred per CONTEXT.md; adding it now duplicates Phase 12's design-room work and risks guessing the shape wrong before the Phase-12-specific dual-consumer validation happens |
+| A store-level `Mutex` scoped per-group (`Map<String, Mutex>`) | ONE store-wide `groupUndoMutex` guarding all `attemptUndoGroup` calls | Per-group mutexes allow true cross-group concurrency but add unbounded-map-growth/eviction bookkeeping for the mutexes themselves; a single-user session library has no realistic concurrent-multi-group-undo scenario, so ONE mutex is simpler and sufficient — document this as a scoping choice, not an oversight, if the plan wants to revisit |
+| Using `tryConsume()` to claim group members (mirrors the existing single-item path) | A `Mutex`-only claim with no `AtomicBoolean` involvement | D-01 explicitly rules out the one-way guard for exactly the reason verified in `UndoHistoryEntry.kt:57` ("Returns true only for the FIRST caller... false for every caller after" — no reset path exists) |
+| A reactive `groups: StateFlow<Map<String, ...>>` | Pure-function reads (`group()`/`groupStatus()`/`groupIdOf()`) over the existing `entries` `StateFlow` | D-01 marks the reactive `groups` flow explicitly OPTIONAL; the required surface is non-reactive reads, which is strictly less code and lets a consumer combine/derive its own `StateFlow` via `entries.map { ... }` if it wants reactivity |
 
 **Installation:** None — no new Gradle dependency for this phase.
 
 ## Package Legitimacy Audit
 
-**Not applicable.** This phase introduces zero new external packages (npm/PyPI/Maven/etc.). Every new symbol is authored in-repo against the existing Compose/Material3/Kotlin-coroutines dependency set already declared in `build.gradle.kts`. The Package Legitimacy Gate is a no-op for this phase; verify at Phase 13 (the ship gate) that `build.gradle.kts` gained no new `implementation(...)` line, per the milestone PITFALLS.md Pitfall 5.
+**Not applicable.** Zero new external packages. Every new symbol is authored against the existing Compose/Material3/`kotlinx.coroutines` dependency set already declared in `build.gradle.kts` (verified: `implementation(libs.androidx.compose.*)`, `testImplementation(libs.kotlinx.coroutines.test)` — `kotlinx-coroutines-core` itself arrives transitively, already used non-test in `UndoHistoryStore.kt`).
 
 ## Architecture Patterns
 
 ### System Architecture Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│ CONSUMER APP (SecondBrain / CalTracker)                                  │
-│                                                                           │
-│  engine outcome / CommandTrace / UndoHistoryEntry group ──┐              │
-│                                                            │ maps        │
-│                                                            ▼              │
-│                                            ┌───────────────────────────┐ │
-│                                            │  call site                │ │
-│                                            │  builds:                 │ │
-│                                            │  - VoiceOutcomeUiState    │ │
-│                                            │    (Success/Failure)     │ │
-│                                            │  - HandledByUiModel       │ │
-│                                            │  - UndoRowUiModel list    │ │
-│                                            │  - ClarificationOption    │ │
-│                                            │    list                  │ │
-│                                            └─────────────┬─────────────┘ │
-└──────────────────────────────────────────────────────────┼──────────────┘
-                              one-way dependency (INV-01)    │ props
-                                                              ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│ yahirandroidtaste LIBRARY                                                 │
-│                                                                           │
-│  model/ (new, all-val)         component/ (new, flat)                    │
-│  ┌──────────────────────┐      ┌────────────────────────────────────┐  │
-│  │ VoiceOutcomeUiState   │      │ (outcome sheet composable)          │  │
-│  │  ├─ Success           │─────▶│   when(state) {                     │  │
-│  │  │   (undo?, edit?)   │      │     Success -> … + undo row/all     │  │
-│  │  └─ Failure           │      │     Failure -> loud error surface   │  │
-│  │      (action?)        │      │              + optional action     │  │
-│  │ HandledByUiModel      │      │   }                                 │  │
-│  │ UndoRowUiModel        │      │ (clarification choices composable)  │  │
-│  │ ClarificationOption   │      │   question + pressable option chips │  │
-│  └──────────────────────┘      └───────────────┬────────────────────┘  │
-│                                                  │ reuses                │
-│                                  ┌───────────────▼────────────────────┐ │
-│                                  │ SheetScaffold, AppChip,             │ │
-│                                  │ DynamicActionButton,                │ │
-│                                  │ theme/Color.kt error roles          │ │
-│                                  └──────────────────────────────────────┘│
-│                                                                           │
-│  feedback/ (existing, UNCHANGED shape)         explorer/ (denylisted)    │
-│  ┌──────────────────────┐                      ┌───────────────────────┐│
-│  │ UndoHistoryStore      │ ◀── consumer reads ──│ voiceCommandFamily-   ││
-│  │ UndoHistoryEntry      │    .entries, builds  │ Entries += new         ││
-│  │ (internal ctor,       │    UndoRowUiModel     │ Entry(...) per        ││
-│  │  unchanged)           │    projection         │ new composable        ││
-│  └──────────────────────┘                      └───────────────────────┘│
-└─────────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────┐
+│ CONSUMER APP (SecondBrain / CalTracker)                                    │
+│                                                                             │
+│  1. Voice command produces N mutations (e.g. batch-create/edit)           │
+│     -> store.openGroup(groupId, label, undoAll = { /* one atomic undo */})│
+│     -> store.append(msg, groupId = groupId, undoAction = { /* one item */}│
+│        )  x N   (grouped overload — per-member undoAction still usable    │
+│                   via the UNCHANGED attemptUndo(id) path)                 │
+│                                                                             │
+│  2. Building the outcome sheet's props, the consumer READS the store:     │
+│     val members = store.group(groupId)                                   │
+│     val status  = store.groupStatus(groupId)                             │
+│     -> maps members/status into UndoAffordanceUiModel/UndoRowUiModel      │
+│        (this mapping is the consumer's job — library never does it)      │
+│                                                                             │
+│  3. "Undo all (N)" tapped -> onUndoAll() -> consumer calls                │
+│     store.attemptUndoGroup(groupId) -> UndoGroupResult                    │
+│     -> on Refused, consumer re-maps into UndoRefusedUiModel and re-renders│
+└───────────────────────────────────┬─────────────────────────────────────┬─┘
+             one-way dependency (INV-01)   props                          │
+                                     ▼                                    │ reads
+┌───────────────────────────────────────────────────────────────────────────┐
+│ yahirandroidtaste LIBRARY                                                  │
+│                                                                             │
+│  feedback/UndoHistoryStore.kt (EXISTING file, ADDITIVE changes)           │
+│  ┌─────────────────────────────────────────────────────────────────────┐ │
+│  │ _entries: MutableStateFlow<List<UndoHistoryEntry>>   (unchanged)     │ │
+│  │ entries: StateFlow<...>                               (unchanged)    │ │
+│  │ append(message, preview?, undoAction)                (unchanged)     │ │
+│  │ attemptUndo(id)                                       (unchanged)    │ │
+│  │ ── NEW, additive ──                                                  │ │
+│  │ private val groupIdByEntryId: MutableMap<String, String>             │ │
+│  │ private val groupMeta: MutableMap<String, GroupMeta>  (label+undoAll)│ │
+│  │ private val groupUndoMutex = Mutex()                                 │ │
+│  │ openGroup(groupId, label, undoAll)                                   │ │
+│  │ append(message, preview?, groupId, undoAction)   [grouped overload]  │ │
+│  │ group(groupId): List<UndoHistoryEntry>                               │ │
+│  │ groupIdOf(entryId): String?                                          │ │
+│  │ groupLabel(groupId): String?                                         │ │
+│  │ groupStatus(groupId): UndoGroupStatus                                │ │
+│  │ attemptUndoGroup(groupId): UndoGroupResult    <- Mutex-guarded       │ │
+│  │ clearSpent()   [rewritten: group-atomic branch added]                │ │
+│  │ evictIfNeeded  [rewritten: group-atomic branch added]                │ │
+│  └─────────────────────────────────────────────────────────────────────┘ │
+│  feedback/UndoHistoryEntry.kt  — ZERO CHANGES (internal ctor untouched)   │
+│  feedback/UndoGroupTypes.kt (NEW) — UndoGroupStatus, UndoGroupResult,     │
+│                                      UndoGroupRefusedException           │
+│                                                                             │
+│  model/ (new, all-val)              component/OutcomeSheet.kt (EXTEND)   │
+│  ┌──────────────────────┐           ┌──────────────────────────────────┐ │
+│  │ UndoAffordanceUiModel │──────────▶│ Success arm: renders undo.rows,  │ │
+│  │ UndoRowUiModel/       │           │ "Undo all", nested Refused state │ │
+│  │   UndoRowState        │           └──────────────────────────────────┘ │
+│  │ UndoRefusedUiModel    │                                                │
+│  │ ClarificationOption   │           component/ClarificationBar.kt (NEW) │
+│  │   UiModel             │──────────▶│ question + N AppChip options +    │ │
+│  └──────────────────────┘           │ onSelect/onDismiss                 │
+│                                       └──────────────────────────────────┘ │
+└───────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Component Responsibilities
 
-| Component | Responsibility | Implementation |
-|-----------|----------------|-----------------|
-| New outcome/failure composable (name TBD — see Pitfall 1) | Render `Success`/`Failure` from a sealed state prop; loud failure; handled-by indicator; undo-all + per-item undo | `@Composable`, prop-driven, likely hosted in `SheetScaffold` or an equivalent card surface — host/content split precedent applies |
-| New clarification-choices composable (name TBD — see Pitfall 1) | Render a question + N pressable options; `onSelect(id)`; `onDismiss` | Small standalone `@Composable`, NOT nested inside the outcome sheet's sealed state (keeps the "chip bar vs sheet state" swap free) |
-| `model/VoiceOutcomeUiState.kt` (new) | Sealed `Success`/`Failure` shape, additive-ready for Phase 12's `NeedsConfirmation` | Sealed interface, all-`val` data classes, no `var` |
-| `model/HandledByUiModel.kt` (new) | Required tier label + optional approach/provider/model/escalation count (D-04) | All-`val` data class |
-| `model/UndoRowUiModel.kt` (new, name TBD) | Presentational projection of one undo-able row (message, id, `Available`/`Undone`/`Failed`/`Unavailable(reason)`), built by the CONSUMER from its own `UndoHistoryEntry` reads | All-`val` data class — never touches `UndoHistoryEntry`'s own constructor |
-| `model/ClarificationOptionUiModel.kt` (new, name TBD) | `{ id: String, label: String }` per D-07 | All-`val` data class |
+| Component | Responsibility | Status |
+|-----------|----------------|--------|
+| `model/VoiceOutcomeUiState.kt` | Sealed `Success`/`Failure`, additive-ready for Phase 12 | **DONE** — add `undo: UndoAffordanceUiModel?` field to `Success` this phase |
+| `model/HandledByUiModel.kt` | Tier + optional provenance | **DONE** |
+| `model/FailureActionUiModel.kt` | Failure's optional action slot | **DONE** |
+| `model/BatchRowResultUiModel.kt` | Per-row batch result | **DONE** |
+| `component/OutcomeSheet.kt` | Renders `Success`/`Failure` | **DONE** — extend `SuccessBody` to render `undo` |
+| `feedback/UndoHistoryStore.kt` | Append/attemptUndo/clearSpent/eviction | **EXTEND (this phase)** — add the 7-member grouping API |
+| `feedback/UndoHistoryEntry.kt` | Single undo record | **ZERO CHANGES** |
+| `feedback/UndoGroupTypes.kt` (new file) | `UndoGroupStatus`, `UndoGroupResult`, `UndoGroupRefusedException` | **NEW (this phase)** |
+| `model/UndoAffordanceUiModel.kt`, `UndoRowUiModel.kt`, `UndoRefusedUiModel.kt` (new) | Presentational undo-group projection | **NEW (this phase)** |
+| `model/ClarificationOptionUiModel.kt` (new) | `{id, label}` | **NEW (this phase)** |
+| `component/ClarificationBar.kt` (new, name TBD) | Question + pressable options | **NEW (this phase)** |
 
 ## Recommended Project Structure
 
 ```
 src/main/java/io/github/ygaray/yahirandroidtaste/
-├── component/                              # FLAT — matches all 60+ existing components
-│   ├── ProviderKeyCard.kt                 # Phase 10 (existing)
-│   ├── ModelSelectCard.kt                 # Phase 10 (existing)
-│   ├── ApproachLadderCard.kt              # Phase 10 (existing)
-│   ├── <OutcomeSheetName>.kt              # Phase 11 NEW — Success/Failure sealed-state renderer
-│   └── <ClarificationChoicesName>.kt      # Phase 11 NEW — question + pressable options
+├── component/
+│   ├── OutcomeSheet.kt                     # EXISTING — extend SuccessBody for undo affordance
+│   └── ClarificationBar.kt                 # NEW — question + pressable options (VCLAR-01)
+├── feedback/
+│   ├── UndoHistoryEntry.kt                 # UNCHANGED
+│   ├── UndoHistoryStore.kt                 # EXTEND — additive grouping API
+│   └── UndoGroupTypes.kt                   # NEW — UndoGroupStatus / UndoGroupResult / UndoGroupRefusedException
 ├── model/
-│   ├── ApproachRungUiModel.kt             # Phase 10 (existing) — the all-val convention to mirror
-│   ├── KeyFieldState.kt                   # Phase 10 (existing) — sealed-interface convention to mirror
-│   ├── VoiceOutcomeUiState.kt             # Phase 11 NEW — sealed Success/Failure (Phase 12 adds NeedsConfirmation)
-│   ├── HandledByUiModel.kt                # Phase 11 NEW
-│   ├── UndoRowUiModel.kt                  # Phase 11 NEW — name TBD, presentational undo-row projection
-│   └── ClarificationOptionUiModel.kt      # Phase 11 NEW — name TBD
+│   ├── VoiceOutcomeUiState.kt              # EXISTING — add `undo` field to Success
+│   ├── UndoAffordanceUiModel.kt            # NEW
+│   ├── UndoRowUiModel.kt                   # NEW (contains UndoRowState sealed interface)
+│   ├── UndoRefusedUiModel.kt               # NEW
+│   └── ClarificationOptionUiModel.kt       # NEW
 └── explorer/
-    └── VoiceCommandFamilyScreen.kt         # Phase 10 (existing) — Phase 11 APPENDS two new Entry(...) blocks here
+    └── VoiceCommandFamilyScreen.kt         # EXISTING — append undo states to OutcomeSheet's matrix + a new ClarificationBar entry
 ```
 
-### Structure Rationale
+## Verified Current Code (read in full this session)
 
-- **Flat `component/`, unchanged family:** Phase 10 already established the tenth registry family (`ExplorerFamilies.VOICE_COMMAND`, verified live at `explorer/ExplorerIndexScreen.kt:65,78`) and the `voiceCommandFamilyEntries` list in `explorer/VoiceCommandFamilyScreen.kt:43-132`. Phase 11 appends to that same file/list — no new family, no new sub-package.
-- **`UndoRowUiModel` is a NEW type, not an edit to `UndoHistoryEntry`:** `UndoHistoryEntry`'s primary constructor is `internal` (`feedback/UndoHistoryEntry.kt:47`) specifically so only `UndoHistoryStore.append` can construct a fresh entry — "Callers in other modules can only obtain instances via the store and can only transition status via `withStatus`" (`feedback/UndoHistoryEntry.kt:34-39`, quoted verbatim). A consumer-facing Compose prop type must be a different, public, all-`val` class the consumer builds by reading `UndoHistoryStore.entries` and `UndoHistoryEntry.status`/`.message`/`.id` — never a constructor change to `UndoHistoryEntry` itself.
+### `feedback/UndoHistoryEntry.kt` (47 lines total)
 
-## Architectural Patterns
-
-### Pattern 1: Sealed outcome state, Success/Failure only this phase
-
-**What:** `VoiceOutcomeUiState` as a sealed interface with exactly two arms this phase (`Success`, `Failure`); Phase 12 adds `NeedsConfirmation` as a third, purely additive arm.
-**When to use:** Any time the sheet needs to render one of several mutually-exclusive outcome shapes from a single prop.
-**Example:**
 ```kotlin
-// New file: model/VoiceOutcomeUiState.kt
-// Pattern verified against this repo's existing sealed-interface convention,
-// e.g. model/KeyFieldState.kt:10-30 (data object / data class arms, all-val).
-sealed interface VoiceOutcomeUiState {
-
-    data class Success(
-        val summary: String,
-        val handledBy: HandledByUiModel? = null,
-        val undo: UndoAffordanceUiModel? = null,   // D-02: undo lives ON Success, not top-level
-        val editablePayload: EditablePayloadUiModel? = null // D-05: committed-but-editable (CT)
-    ) : VoiceOutcomeUiState
-
-    data class Failure(
-        val reason: String,
-        val handledBy: HandledByUiModel? = null,
-        val action: FailureActionUiModel? = null    // D-08: optional label+callback slot
-    ) : VoiceOutcomeUiState
-
-    // Phase 12 adds, purely additively:
-    // data class NeedsConfirmation(val request: ConfirmRequestUiModel) : VoiceOutcomeUiState
-}
-```
-This mirrors the milestone ARCHITECTURE.md's Pattern 1 exactly, adjusted to fold D-02's undo-on-Success placement and D-05's editable-payload requirement into the `Success` arm, and D-08's optional action slot into the `Failure` arm.
-
-### Pattern 2: Undo group as a presentational projection, not a store change
-
-**What:** A new `UndoAffordanceUiModel` (or similarly named) carrying `allLabel: String` (e.g. "Undo all (3)"), `rows: List<UndoRowUiModel>`, `onUndoAll: () -> Unit`, and each row carrying its own `onUndo: () -> Unit` or an `Unavailable(reason)` marker — built by the CONSUMER from its own read of `UndoHistoryStore.entries` (or an app-side equivalent), never by the library reaching into the store itself.
-**When to use:** Whenever the sheet needs to render "Undo all (N)" + per-item undo + an unavailable/refused state.
-**Trade-offs:** Requires the consumer to do a small mapping step (group membership, "which items count toward N") — but this keeps the library from ever depending on `UndoHistoryStore`'s internal CAS/first-consumer-wins machinery for its *rendering* concerns, and keeps `UndoHistoryEntry`'s `internal` constructor and `AtomicBoolean` untouched (per D-01's own "Plan-time tension" note).
-```kotlin
-// New file: model/UndoAffordanceUiModel.kt — illustrative shape, exact field names are a planning decision
-data class UndoAffordanceUiModel(
-    val allLabel: String,               // e.g. "Undo all (3)" — consumer formats the count
-    val rows: List<UndoRowUiModel>,
-    val onUndoAll: (() -> Unit)? = null, // null hides "Undo all" entirely (D-05 hideable-by-null-prop convention)
-    val refused: UndoRefusedUiModel? = null  // loud undo-refused/partial state, nested per D-02
-)
-
-data class UndoRowUiModel(
+data class UndoHistoryEntry internal constructor(
     val id: String,
-    val label: String,
-    val state: UndoRowState
-)
-
-sealed interface UndoRowState {
-    data object Available : UndoRowState
-    data object Undone : UndoRowState
-    data class Unavailable(val reason: String) : UndoRowState  // entangled-with-another-item case
+    val message: String,
+    val timestamp: Long,
+    val undoAction: suspend () -> Unit,
+    val preview: UndoPreview? = null,
+    val status: UndoStatus = UndoStatus.Available,
+    private val consumedGuard: AtomicBoolean = AtomicBoolean(false)
+) {
+    fun tryConsume(): Boolean = consumedGuard.compareAndSet(false, true)
+    fun withStatus(newStatus: UndoStatus): UndoHistoryEntry = copy(status = newStatus)
 }
-
-data class UndoRefusedUiModel(
-    val reason: String,
-    val changedItem: String? = null   // D-01/CT: OPTIONAL — CT's create-only undo has no restore payload
-)
 ```
+`[VERIFIED: src/main/java/io/github/ygaray/yahirandroidtaste/feedback/UndoHistoryEntry.kt:47-66]`. `UndoStatus` is `enum class UndoStatus { Available, Undone, Failed }` `[VERIFIED: feedback/UndoHistoryEntry.kt:13]` — **exactly 3 members, D-01 forbids adding a 4th.**
 
-### Pattern 3: Clarification choices as a standalone composable
+KDoc quoted verbatim (the one-way-guard fact that drives the whole "must not use `tryConsume` for group claim" conclusion): *"Returns true only for the FIRST caller to claim this entry; false for every caller after."* `[VERIFIED: feedback/UndoHistoryEntry.kt:57]`. There is no method anywhere in this file or `UndoHistoryStore.kt` that resets `consumedGuard` back to `false` — confirmed by reading both files in full this session.
 
-**What:** A dedicated composable taking `question: String`, `options: List<ClarificationOptionUiModel>` (`{id, label}`), `onSelect: (String) -> Unit`, `onDismiss: () -> Unit` — NOT nested as an arm of `VoiceOutcomeUiState`.
-**When to use:** Whenever the model needs the user to disambiguate via tap rather than re-speaking.
-**Trade-offs:** CONTEXT.md D-07 explicitly grants "your design call, easy to swap" for chips-vs-buttons and bar-vs-sheet-state — building it as its own composable (rather than a sealed-state arm) preserves that swappability; folding it into the outcome sheet's `when` would couple its visual form to the sheet's own chrome decisions.
+### `feedback/UndoHistoryStore.kt` (122 lines total)
+
 ```kotlin
-// New file: model/ClarificationOptionUiModel.kt
-data class ClarificationOptionUiModel(
-    val id: String,     // opaque — the library never interprets it
-    val label: String
-)
+@Singleton
+class UndoHistoryStore @Inject constructor() {
+    private val _entries = MutableStateFlow<List<UndoHistoryEntry>>(emptyList())
+    val entries: StateFlow<List<UndoHistoryEntry>> = _entries.asStateFlow()
+
+    fun append(message: String, preview: UndoPreview? = null, undoAction: suspend () -> Unit): String {
+        val entry = UndoHistoryEntry(id = UUID.randomUUID().toString(), message = message,
+            timestamp = System.currentTimeMillis(), undoAction = undoAction, preview = preview)
+        _entries.update { current -> evictIfNeeded(listOf(entry) + current) }
+        return entry.id
+    }
+
+    suspend fun attemptUndo(id: String) {
+        val entry = _entries.value.firstOrNull { it.id == id } ?: return
+        if (entry.status != UndoStatus.Available) return
+        if (!entry.tryConsume()) return
+        val newStatus = try { entry.undoAction(); UndoStatus.Undone }
+            catch (e: CancellationException) { throw e }
+            catch (e: Exception) { UndoStatus.Failed }
+        _entries.update { current -> current.map { if (it.id == id) it.withStatus(newStatus) else it } }
+    }
+
+    fun clearSpent() {
+        _entries.update { current -> current.filterNot { it.status == UndoStatus.Undone || it.status == UndoStatus.Failed } }
+    }
+
+    private fun evictIfNeeded(current: List<UndoHistoryEntry>): List<UndoHistoryEntry> {
+        if (current.size <= 50) return current
+        val oldestSpentIndex = current.indexOfLast { it.status == UndoStatus.Undone || it.status == UndoStatus.Failed }
+        return if (oldestSpentIndex >= 0) current.filterIndexed { index, _ -> index != oldestSpentIndex }
+        else current.dropLast(1)
+    }
+}
 ```
+`[VERIFIED: src/main/java/io/github/ygaray/yahirandroidtaste/feedback/UndoHistoryStore.kt:23-122]` — the full current file, reproduced (comments/KDoc elided for space; no logic elided). This is the exact surface D-01 requires stay byte-for-byte behaviorally unchanged for ungrouped entries.
 
-### Anti-Patterns to Avoid
+### `model/VoiceOutcomeUiState.kt`, `HandledByUiModel.kt`, `FailureActionUiModel.kt`, `BatchRowResultUiModel.kt`, `component/OutcomeSheet.kt`
 
-- **Using `AttentionCue` for the loud-failure surface.** Its own KDoc: *"A caution/verify signal glyph — **never a failure signal**. `tint` defaults to `MaterialTheme.colorScheme.tertiary` and must never be wired to the error color role"* (`component/AttentionCue.kt:28-30`, verified/quoted). Use the `theme/Color.kt` error roles directly instead (see Code Examples).
-- **Changing `UndoHistoryEntry`'s primary constructor to add a group id.** Its ctor is `internal` and its fields are already carefully frozen (`suspend () -> Unit`, `AtomicBoolean`) — any primary-constructor edit to a `data class` regenerates `copy()`/`componentN()` over the full field list as one non-overloadable signature, the exact `TagChipUiModel.kt` lesson (quoted in Pitfalls below). Build a new presentational type instead.
-- **Reaching for a `Voice*`/`Command*`/`Outcome*` head token without checking both drift guards first.** See Pitfall 1 — this is the single highest-probability rework trigger for this phase.
-- **Folding the clarification-choices composable into the outcome sheet's sealed `when`.** Defeats D-07's explicit swappability grant and couples an unrelated visual decision (chips vs. sheet-state) to the outcome sheet's own chrome.
+All five files verified read in full this session — **all already implement D-04/D-05/D-06/D-08 exactly as specified**, registered live in `ComponentRegistry` via `voiceCommandFamilyEntries` (`explorer/VoiceCommandFamilyScreen.kt:138-152`, confirmed `name = "OutcomeSheet"` with a full 4-state matrix and a `content = { OutcomeSheetVariants() }` block). `OutcomeSheetTest.kt` (131 lines, verified) covers: Success summary render, handled-by present/absent, Failure surface+reason, action-button present/click/absent. **Nothing here needs to change except adding an `undo` field to `Success` and rendering it** — do not re-touch VOUT-01/02/03's existing logic.
+
+### `explorer/DomainVocabularyDriftGuardTest.kt` — current allowlist state
+
+`PRIMITIVE_NOUN_ALLOWLIST` (quoted in full, current live contents) `[VERIFIED: src/test/java/io/github/ygaray/yahirandroidtaste/explorer/DomainVocabularyDriftGuardTest.kt:297-330]`:
+```
+"Control","Sheet","Field","Canvas","State","Dialog","Bar","Card","Value","Item","Content","Row",
+"Scaffold","Swatch","Grid","View","Chip","Popup","Picker","Button","Fab","Badge","Selector","Ring",
+"Menu","Overlay","Preview","Cue","Editor","Base","Screen","Theme","Ladder","Showcase",
+"Accent","Adaptive","Animated","App","Attention","Bulk","Clearable","Confirmation","Count","Crop",
+"Cycle","Dynamic","Elevation","Empty","Expandable","Filter","Gradient","Hero","Icon","List","Metric",
+"Name","Progress","Segmented","Sort","Tactile","Text","Undo",
+"Date","Preset","Provider","Model","Approach",
+"Outcome"   // Phase 11 (VOUT-01/02/03, VUNDO-01) — already landed, comment at line 326-329 confirms it
+```
+**`"Undo"` is already present** (part of the widened block, line 314) — a composable named e.g. `UndoRow`/`UndoAllButton` needs no allowlist edit. **`"Clarification"` is NOT present** anywhere in `PRIMITIVE_NOUN_ALLOWLIST` or `DOMAIN_VOCABULARY` (confirmed via `grep -rn "Clarification"` across both files this session — zero matches). The new clarification composable's head token (if named e.g. `ClarificationBar`) MUST be added to `PRIMITIVE_NOUN_ALLOWLIST` with a one-line rationale in the same commit, mirroring the already-landed `"Outcome"` precedent verbatim: `[VERIFIED: explorer/DomainVocabularyDriftGuardTest.kt:326-329]` *"Phase 11 (VOUT-01/02/03, VUNDO-01): 'Outcome' is OutcomeSheet's head token — a generic UI-archetype noun (a command-result presentation surface), not consumer-domain vocabulary; the library authors no app-specific noun of its own."*
 
 ## Don't Hand-Roll
 
 | Problem | Don't Build | Use Instead | Why |
 |---------|-------------|-------------|-----|
-| Compact labeled pressable token (handled-by chip, a clarification option) | A bespoke `Row` + `Surface` + `clickable` | `AppChip` (`component/AppChip.kt:88-175`, verified) | Already handles 48dp touch target, selected/unselected color roles, long-press/double-click, `containerColorOverride` — reinventing it duplicates ~90 lines of already-hardened code |
-| Role-colored action button (failure's optional action, "Undo all") | A hand-rolled `TextButton`/`Button` with inline color logic | `DynamicActionButton` (`component/DynamicActionButton.kt:37-58`, verified) | `Destructive`/`Save`/`Neutral` → M3 color mapping already exists and is the established convention (its own KDoc: "generalizing the hand-rolled `TextButton`/filled-`Button` split") |
-| Bottom-sheet chrome (drag handle, ime padding, window insets) | A raw `ModalBottomSheet` call | `SheetScaffold` (`component/SheetScaffold.kt:50-69`, verified) | "the single shared implementation for all `ModalBottomSheet` call sites app-wide" per its own KDoc; re-implementing risks the documented double-ime-padding bug it exists to prevent |
-| Swipe-reveal-then-undo gesture (if a per-row swipe-to-undo interaction is wanted) | A new gesture wrapper | `SwipeableActionRow` or `RevealActionRow` (`modifier/`, verified) | Both already implement the reveal-then-confirm contract with tested threshold haptics; a third gesture wrapper would be a second implementation of the same contract |
+| Compact labeled pressable token (per-item undo row label, clarification option) | A bespoke `Row`+`Surface`+`clickable` | `AppChip` (`component/AppChip.kt:88-175`, verified) | Already handles 48dp touch target, selected/unselected roles, long-press/double-click |
+| Role-colored action button (undo-all, clarification dismiss) | Hand-rolled `TextButton` | `DynamicActionButton` (`component/DynamicActionButton.kt:37-58`, verified) | `Neutral`/`Destructive`/`Save` → M3 color mapping already exists |
+| Mutual-exclusion / atomic critical section for a `suspend` operation | A hand-rolled spin-loop or a second `AtomicBoolean` | `kotlinx.coroutines.sync.Mutex.withLock { }` | Standard-library primitive, already transitively on the classpath, exactly fits a `suspend fun attemptUndoGroup`'s claim→run→resolve shape |
+| Group-membership bookkeeping duplicated on both the store and the consumer | A second copy of "which entries are in group X" kept consumer-side | Store-side `groupIdByEntryId`/`group(groupId)` as the SINGLE source of truth (D-01 explicit: "never from consumer-side bookkeeping") | Two copies of group membership drift the instant an entry is evicted from one side but not the other |
 
-**Key insight:** Every visual primitive this phase needs (chip, role-colored button, sheet chrome) already exists in this library. The genuinely new work is the **data shape** (`VoiceOutcomeUiState` and its undo/clarification satellite models) and the **naming clearance** against the two drift guards — not new widgets.
+**Key insight:** The presentational primitives (chip, role-button, sheet chrome) all already exist and are already reused by the shipped half of this phase (`OutcomeSheet`). The remaining hard work is entirely in `UndoHistoryStore`'s internal state-machine extension — a data-structure and concurrency-correctness problem, not a widget problem.
 
 ## Runtime State Inventory
 
-Not applicable — this is a greenfield additive phase (new composables + new models in an existing library), not a rename/refactor/migration. No existing runtime state (stored data, live service config, OS-registered state, secrets, build artifacts) is being renamed or relocated.
+Not applicable — additive phase, no rename/refactor/migration. `UndoHistoryStore` stays session-scoped, in-memory, no serialization (D-01 explicit: "Session-scoped, in-memory, NO serialization. `UNDO-PERSIST` is Future.") — no persisted runtime state to migrate.
 
 ## Common Pitfalls
 
-### Pitfall 1: A `Voice*`/`Outcome*`/`Command*`/`Clarification*` head token will fail `DomainVocabularyDriftGuardTest` unless pre-cleared
+### Pitfall 1: Using `tryConsume()`/`consumedGuard` to claim group members (the D-01 trap)
 
-**What goes wrong:** A composable is named, e.g., `VoiceOutcomeSheet` or `ClarificationChoiceBar`, compiles fine, passes `ComponentRegistryDriftGuardTest` (it IS registered), and then fails `DomainVocabularyDriftGuardTest` in the full suite because its head token (`Voice`/`Clarification`) is in neither `PRIMITIVE_NOUN_ALLOWLIST` nor `DOMAIN_VOCABULARY`.
+**What goes wrong:** `attemptUndoGroup` calls `entry.tryConsume()` per member to "claim" them before running `undoAll()`, mirroring the existing single-item `attemptUndo(id)` pattern. On a typed `Refused` throw, the implementation tries to "release" the claim back to `Available` — but `consumedGuard` has no release method (`compareAndSet(false, true)` only, one direction, confirmed no reset call exists anywhere in either file). The claimed entries are now permanently unconsumable via the CAS guard even though their `.status` was set back to `Available` — a future retry attempt's `tryConsume()` silently returns `false` and the retry becomes an invisible no-op.
 
-**Why it happens:** The milestone's own architecture research (written before Phase 10 executed) proposed `VoiceOutcomeSheet`/`VoiceProviderSettingsCard`-style names — but Phase 10's actual implementation deliberately avoided `Voice*` entirely (`ProviderKeyCard`, `ModelSelectCard`, `ApproachLadderCard` — confirmed live in `explorer/VoiceCommandFamilyScreen.kt:43-131`), and the test file's own comment confirms why: `Voice` exists in `DOMAIN_VOCABULARY` ONLY as a day-one grandfather entry for the two pre-existing `VoiceCard`/`VoiceRenameTagsSheet` composables (`src/test/.../DomainVocabularyDriftGuardTest.kt:336-341`, verified), not as a generally-available prefix. Separately, Phase 10 WIDENED `PRIMITIVE_NOUN_ALLOWLIST` with `"Provider", "Model", "Approach"` specifically so its new cards would pass (`src/test/.../DomainVocabularyDriftGuardTest.kt:320-326`, verified) — establishing the precedent that a new settings/outcome-surface phase is expected to widen this list deliberately, not reach for a grandfathered domain word.
+**Why it happens:** It's the "obvious" reuse of the existing single-item mechanism, and D-01's own text ("claimed all `Available` members") reads similarly to the single-item "claim" language — but D-01 explicitly flags this exact trap: *"The group path therefore needs a RELEASABLE claim (a mutex or release), NOT the one-way `consumedGuard`."*
 
-**How to avoid:**
-- Before authoring, check every candidate composable name's head token against the verified current list: `PRIMITIVE_NOUN_ALLOWLIST` = `{Control, Sheet, Field, Canvas, State, Dialog, Bar, Card, Value, Item, Content, Row, Scaffold, Swatch, Grid, View, Chip, Popup, Picker, Button, Fab, Badge, Selector, Ring, Menu, Overlay, Preview, Cue, Editor, Base, Screen, Theme, Ladder, Showcase, Accent, Adaptive, Animated, App, Attention, Bulk, Clearable, Confirmation, Count, Crop, Cycle, Dynamic, Elevation, Empty, Expandable, Filter, Gradient, Hero, Icon, List, Metric, Name, Progress, Segmented, Sort, Tactile, Text, Undo, Date, Preset, Provider, Model, Approach}` (`src/test/.../DomainVocabularyDriftGuardTest.kt:297-326`, verified/quoted in full).
-- `Outcome`, `Handled`, `Clarification` are NOT currently in either list. The planner must either (a) choose a head token already in the list (e.g. name the sheet so its leading word is `Card`/`Sheet`/`Content`/`Badge`/etc.), or (b) add the new word(s) to `PRIMITIVE_NOUN_ALLOWLIST` with a one-line rationale in the SAME commit that introduces the composable — mirroring Phase 10's `Provider`/`Model`/`Approach` widening exactly. `Outcome` and `Clarification` both read as generic, domain-agnostic UI-result/UI-disambiguation nouns (no more consumer-specific than `Confirmation`, already allowlisted) and are reasonable widening candidates, but this is a naming decision for the plan to make explicitly, not an assumption to carry forward silently.
-- `Undo` is ALREADY in `PRIMITIVE_NOUN_ALLOWLIST` (line 314, verified) — a composable or sub-part named e.g. `UndoRow`/`UndoAllButton` needs no allowlist change.
-- Remember this is a head-token (leading word) check, not a full-name check — `ClarificationBar` and `OutcomeCard` are single new head tokens to clear, not two separate problems per word.
-- Sub-parts that stay `private`/`internal` are invisible to this guard entirely (it only scans public top-level composables) — if a piece doesn't need its own gallery tile, keep it private and the naming question disappears for that piece.
+**How to avoid:** Implement the group claim with a `Mutex` held for the whole `attemptUndoGroup` body. Never call `tryConsume()` from `attemptUndoGroup`. On `Refused`, simply do not write any status change — the entries were read as `Available` and stay `Available`, no "release" step is needed because nothing was ever marked otherwise.
 
-**Warning signs:** `DomainVocabularyDriftGuardTest` going RED in a full-suite run naming the new composable(s); a plan that names composables without cross-checking the current allowlist/grandfather-map contents.
+**Warning signs:** Any diff adding `.tryConsume()` calls inside a new `attemptUndoGroup` implementation; a test asserting "retry after Refused re-attempts successfully" failing silently (the retry's group() read shows `Available` status but the undo never actually re-fires).
 
-**Phase to address:** Phase 11 (this phase) — settle the naming vocabulary in the plan, before implementation. This is per-composable discipline, same as the milestone-level PITFALLS.md Pitfall 1, but concretely actionable now because Phase 10's actual choices are known (not just the pre-Phase-10 architecture doc's guesses).
+**Phase to address:** Phase 11 (this phase), at design/implementation time — this is the single highest-risk defect in the whole undo extension.
 
-### Pitfall 2: Extending `UndoHistoryEntry`'s shape instead of building a presentational projection
+### Pitfall 2: `clearSpent()`/eviction dropping one member of a still-partially-live group
 
-**What goes wrong:** The "obvious" way to add group/run-level undo support is to add a `groupId: String?`/`groupStatus: …?` field to `UndoHistoryEntry`'s primary constructor. This compiles, looks additive (new field is nullable/defaulted), and then breaks `apiCheck`/Metalava because Kotlin regenerates `copy()`/`componentN()` over the FULL primary-constructor parameter list as one non-overloadable signature — the exact, already-documented `TagChipUiModel` lesson.
+**What goes wrong:** The existing `clearSpent()` (`feedback/UndoHistoryStore.kt:99-103`) removes every entry with status `Undone`/`Failed`, regardless of group. Applied unchanged to a grouped entry, this silently removes a spent member from a group that is only `PartiallyResolved` (some members still `Available`) — `group(groupId)` now returns an incomplete member list, and a later `attemptUndoGroup` or UI re-render sees a group missing history it should still show (e.g., "2 of 3 undone" becomes unrenderable because the 2 undone rows vanished).
 
-**Why it happens:** `UndoHistoryEntry` already has 7 constructor parameters (`id, message, timestamp, undoAction, preview, status, consumedGuard` — `feedback/UndoHistoryEntry.kt:47-54`, verified) and has grown additively before (`preview` was added this way, per its own KDoc: *"[preview] (Phase 58, UNDO-04, D-03) is an optional snapshot payload... Nullable/defaulted so every existing producer keeps compiling unchanged"*, `feedback/UndoHistoryEntry.kt:41-45`). That prior success can make a 9th-parameter addition look safe by analogy — but `TagChipUiModel.kt`'s own KDoc is explicit that a **6th** parameter addition was REJECTED for exactly this reason and fixed by moving the new field OUTSIDE the primary constructor as a body `var` (`model/TagChipUiModel.kt:38-56`, verified/quoted): *"adding a 6th primary-ctor parameter would have made `copy()`'s old 5-arg overload a genuine, unfixable API removal (`api.txt` `RemovedMethod`) — exactly the non-additive ABI break Phase 07 code review flagged... and the repo owner ruled must be a code fix, not an accepted break."* Whether `UndoHistoryEntry`'s own prior `preview` addition was itself safe is a fact about its OWN ABI history (it was pre-`v2.3.0`, so no external consumer had yet pinned the old arity) — but `v2.3.0` is the CURRENT frozen baseline for this milestone's `apiCheck`, so any further constructor-arity change now risks the identical break `TagChipUiModel` already hit.
+**Why it happens:** `clearSpent()`'s filter predicate is per-entry, with no concept of "this entry belongs to a group that isn't fully resolved yet." The same blind spot applies to `evictIfNeeded`'s single-entry eviction (`feedback/UndoHistoryStore.kt:110-121`) — it could evict exactly one member out of a group, leaving the group's remaining members orphaned (their `groupId` still points at a group whose total member count the consumer can no longer reconstruct correctly).
 
-**How to avoid:**
-- Do not touch `UndoHistoryEntry`'s primary constructor. Build a new, separate, public, all-`val` model (e.g. `UndoRowUiModel`/`UndoAffordanceUiModel`) that the CONSUMER constructs by reading `UndoHistoryStore.entries.value` and mapping each `UndoHistoryEntry.id`/`.message`/`.status` into the new shape, plus whatever the consumer's own group-membership bookkeeping decides.
-- If a genuine "does this entry belong to group X" concept is needed on the STORE side (not just presentationally), that is a decision for the plan to make explicitly and validate against SecondBrain's real `UndoCenterViewModel.kt` call site per D-03's cross-repo validation requirement — not something to default into without that check.
-- Verify additivity locally before proposing any model change: `./gradlew apiCheck` against the `v2.3.0` baseline, plus the repo's `verify-api-additive.sh`/`verify-additive-surface.sh` tooling (per root `CLAUDE.md` and the milestone PITFALLS.md Pitfall 3).
+**How to avoid:** Both functions need a groupId-aware branch:
+- `clearSpent()`: for each entry, if `groupIdByEntryId[entry.id] == null` (ungrouped), keep the existing per-entry Undone/Failed filter unchanged. If grouped, only drop the entry if its ENTIRE group's `groupStatus(groupId) == UndoGroupStatus.FullyResolved` — i.e., compute per-group resolution first, then filter.
+- `evictIfNeeded`: when the chosen eviction target (oldest-spent, or oldest-by-insertion fallback) is a grouped entry, expand the removal to every entry sharing that `groupId` in the same pass, not just the one entry — the resulting list can drop below 50 by more than 1, which is fine (the invariant is `<= 50`, not `== 50`).
 
-**Warning signs:** Any diff touching `UndoHistoryEntry.kt`'s primary constructor parameter list; `apiCheck` reporting `RemovedMethod`/`ChangedType` on `UndoHistoryEntry.copy`/`componentN`.
+**Warning signs:** A test appending a 3-member group, undoing only 1 member via the group path (not possible per D-01's atomic design, but useful as a stress test via direct store manipulation in a unit test), calling `clearSpent()`, and finding `group(groupId).size` has shrunk below its true remaining-live count.
 
-**Phase to address:** Phase 11 (author additively) — Phase 13 is the hard backstop (`apiCheck` gate) but a break authored here and caught there costs a Phase-11 rework.
+**Phase to address:** Phase 11 — both functions must be rewritten in the SAME commit that adds the grouping API, since the 50-cap and clear-spent invariants are unconditionally live the moment any grouped entry exists.
 
-### Pitfall 3: Rendering failure quietly because the "no dead space" convention is misread
+### Pitfall 3: `"Clarification"` (or whatever head token is chosen) failing `DomainVocabularyDriftGuardTest`
 
-**What goes wrong:** An unhandled/failure branch of the outcome `when` renders an empty `Box`/nothing, or failure is styled as muted body text rather than an error-emphatic surface — directly violating VOUT-03 and the repo owner's documented "loud failures" UX rule.
+**What goes wrong:** A new composable is named e.g. `ClarificationBar`, compiles, registers fine in `ComponentRegistry`, then fails `DomainVocabularyDriftGuardTest` in the full suite because `"Clarification"` is in neither `PRIMITIVE_NOUN_ALLOWLIST` nor `DOMAIN_VOCABULARY` (confirmed via grep this session).
 
-**Why it happens:** This library's `conditional-render-no-dead-space` convention (used correctly elsewhere — e.g. `ApproachLadderCard`'s null-prop-hides-the-control pattern, verified at `component/ApproachLadderCard.kt:58-61`) can be misapplied to failure, which is PRESENT content, not absent optional content.
+**Why it happens:** Same category as the already-resolved `"Outcome"` precedent from this phase's first plan wave — a fresh head token always needs an explicit allowlist decision, never assumed.
 
-**How to avoid:** Use the verified theme error roles directly — `ErrorRed`/`OnErrorRed`/`ErrorRedContainer`/`OnErrorRedContainer` (light) and their `*Dark` counterparts (`theme/Color.kt:36-43`, verified/quoted: `val ErrorRed = Color(0xFFBA1A1A)`, `val ErrorRedContainer = Color(0xFFFFDAD6)`, `val OnErrorRedContainer = Color(0xFF410002)`, plus `*Dark` variants). In practice, call sites should reach for `MaterialTheme.colorScheme.error`/`.errorContainer`/`.onErrorContainer` (the theme roles these raw values feed — confirm the exact M3 `ColorScheme` wiring in `theme/Theme.kt`/`theme/Color.kt`'s surrounding file if not already exposed) rather than the raw `Color` constants, matching the existing convention seen in `RecordingBottomSheetContent.kt`'s Stop button (`MaterialTheme.colorScheme.errorContainer`/`.onErrorContainer`, verified at `component/RecordingBottomSheetContent.kt:244-246`) and `SwipeableActionRow.kt`'s Delete slot (`MaterialTheme.colorScheme.errorContainer`, verified at `modifier/SwipeableActionRow.kt:278`).
+**How to avoid:** Add the chosen head token to `PRIMITIVE_NOUN_ALLOWLIST` with a one-line rationale in the SAME commit, exactly mirroring the already-landed `"Outcome"` entry's comment style (quoted above in Verified Current Code).
 
-**Warning signs:** A `when` branch with no visible content for `Failure`; failure text at `bodyMedium`/neutral color with no icon/headline.
+**Warning signs:** `DomainVocabularyDriftGuardTest` going RED in a full-suite run.
 
-**Phase to address:** Phase 11 (owns VOUT-03). Verify on-device via Gate-1 self-UAT driving the failure branch explicitly, not just success.
+**Phase to address:** Phase 11 — settle before implementation, same as the already-resolved Outcome naming decision.
+
+### Pitfall 4: A concurrent per-item `attemptUndo(id)` racing a live `attemptUndoGroup(groupId)` on the same member
+
+**What goes wrong:** A grouped entry's individual `undoAction` remains reachable via the pre-existing, unchanged `attemptUndo(id)` (its own per-item Undo button in the UI, independent of the group's "Undo all"). If a user (or a double-tap) fires both paths on the same entry at nearly the same moment, `attemptUndo(id)`'s `tryConsume()`-based claim and `attemptUndoGroup`'s `Mutex`-based claim are NOT mutually exclusive with each other — they guard different things. In the worst case, the group's `undoAll()` (one atomic batch action) and the single entry's own `undoAction()` both execute for logically the same underlying mutation.
+
+**Why it happens:** D-01's frozen text explicitly forbids reusing `tryConsume()` for the group path (Pitfall 1) and does not introduce any NEW synchronization between the two independent call paths (`attemptUndo(id)` is explicitly "unchanged"). This is a genuine, disclosed gap in the frozen contract, not an oversight of this research.
+
+**How to avoid (recommended, not frozen by D-01 — a plan-level decision):** Handle this at the UI/consumer layer, not the store layer: while `attemptUndoGroup` is in flight for a groupId (a transient, display-only "busy" signal — e.g., the consumer disables the group's individual `UndoRowUiModel.Available.onUndo` callbacks, or the presentational model swaps each row to a distinct disabled-but-visible state, while `attemptUndoGroup` is running), don't offer the per-item Undo tap at all. This keeps the store's two methods simple and independently correct, and matches this library's own "hideable-by-null-prop, never shown-disabled-without-explanation" convention (`ApproachLadderCard.kt:29`, verified) if extended thoughtfully — or, more simply, the plan may accept the residual race as sufficiently rare (single-user, requires a near-simultaneous double-tap) and document it rather than build UI-level mutual exclusion. **This is an Open Question for the plan to resolve explicitly, not something this research resolves for it.**
+
+**Warning signs:** A double-undo test (fire both `attemptUndo(id)` and `attemptUndoGroup(groupId)` concurrently on a group containing that id) observing the underlying mutation reversed twice.
+
+**Phase to address:** Phase 11 — the plan must make an explicit, documented choice here (UI mutual exclusion vs. accepted-and-documented residual race); do not silently pick one without noting the tradeoff in the plan itself.
 
 ## Code Examples
 
-### Loud failure surface, reusing verified error color roles
+### Recommended `UndoGroupTypes.kt` (NEW file) — sealed results, no `UndoStatus` member added
 
 ```kotlin
-// Illustrative — exact composable name pending the Pitfall-1 naming decision.
-// Verified theme roles: theme/Color.kt:36-43 (ErrorRed/ErrorRedContainer/OnErrorRedContainer + *Dark),
-// confirmed usage convention: component/RecordingBottomSheetContent.kt:244-246 (errorContainer/onErrorContainer)
-@Composable
-private fun FailureBody(
-    failure: VoiceOutcomeUiState.Failure,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        color = MaterialTheme.colorScheme.errorContainer,
-        contentColor = MaterialTheme.colorScheme.onErrorContainer,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = failure.reason, style = MaterialTheme.typography.titleMedium)
-            failure.handledBy?.let { HandledByRow(it) }
-            failure.action?.let { action ->
-                DynamicActionButton(
-                    label = action.label,
-                    role = ActionButtonDefaults.ActionButtonRole.Neutral,
-                    onClick = action.onClick
-                )
-            }
-        }
+package io.github.ygaray.yahirandroidtaste.feedback
+
+/** D-01: group-level lifecycle, derived from member statuses — never stored as a field. */
+sealed interface UndoGroupStatus {
+    data object Undoable : UndoGroupStatus          // all members Available
+    data object PartiallyResolved : UndoGroupStatus // >=1 Available AND >=1 spent
+    data object FullyResolved : UndoGroupStatus      // 0 Available (all spent)
+    data object Empty : UndoGroupStatus              // unknown groupId, or fully evicted
+}
+
+/** D-01: result of an atomic attemptUndoGroup call. */
+sealed interface UndoGroupResult {
+    data class Undone(val count: Int) : UndoGroupResult
+    data class Refused(val reason: String, val changedItem: String? = null) : UndoGroupResult
+    data object Failed : UndoGroupResult
+    data object NothingToUndo : UndoGroupResult
+}
+
+/**
+ * Typed refusal the consumer's `undoAll` lambda throws to signal a Refused outcome (D-01) —
+ * "nothing was written" semantics. Any OTHER exception type maps to UndoGroupResult.Failed.
+ */
+class UndoGroupRefusedException(
+    val reason: String,
+    val changedItem: String? = null
+) : Exception(reason)
+```
+*(Illustrative — exact file/placement is a planning decision; sealed-type shape and field names match D-01's frozen text verbatim. `[ASSUMED]` — this is original synthesis to satisfy D-01's requirements, not itself a quoted/verified source.)*
+
+### Recommended `UndoHistoryStore.kt` additions (illustrative skeleton)
+
+```kotlin
+// Added fields:
+private val groupIdByEntryId = mutableMapOf<String, String>()
+private data class GroupMeta(val label: String, val undoAll: suspend () -> Unit)
+private val groupMeta = mutableMapOf<String, GroupMeta>()
+private val groupUndoMutex = Mutex()
+
+fun openGroup(groupId: String, label: String, undoAll: suspend () -> Unit) {
+    groupMeta[groupId] = GroupMeta(label, undoAll)
+}
+
+fun append(message: String, preview: UndoPreview? = null, groupId: String, undoAction: suspend () -> Unit): String {
+    val entry = UndoHistoryEntry(
+        id = UUID.randomUUID().toString(), message = message,
+        timestamp = System.currentTimeMillis(), undoAction = undoAction, preview = preview
+    )
+    groupIdByEntryId[entry.id] = groupId
+    _entries.update { current -> evictIfNeeded(listOf(entry) + current) } // eviction now group-aware
+    return entry.id
+}
+
+fun group(groupId: String): List<UndoHistoryEntry> =
+    _entries.value.filter { groupIdByEntryId[it.id] == groupId } // already newest-first (source list is)
+
+fun groupIdOf(entryId: String): String? = groupIdByEntryId[entryId]
+fun groupLabel(groupId: String): String? = groupMeta[groupId]?.label
+
+fun groupStatus(groupId: String): UndoGroupStatus {
+    val members = group(groupId)
+    if (members.isEmpty()) return UndoGroupStatus.Empty
+    val availableCount = members.count { it.status == UndoStatus.Available }
+    return when {
+        availableCount == members.size -> UndoGroupStatus.Undoable
+        availableCount == 0 -> UndoGroupStatus.FullyResolved
+        else -> UndoGroupStatus.PartiallyResolved
     }
 }
-```
 
-### Undo-all + per-item undo, reusing `DynamicActionButton` and the null-prop-hides convention
+@Suppress("TooGenericExceptionCaught")
+suspend fun attemptUndoGroup(groupId: String): UndoGroupResult = groupUndoMutex.withLock {
+    val meta = groupMeta[groupId] ?: return@withLock UndoGroupResult.NothingToUndo
+    val claimed = group(groupId).filter { it.status == UndoStatus.Available }
+    if (claimed.isEmpty()) return@withLock UndoGroupResult.NothingToUndo
+
+    // NOTE: deliberately NO tryConsume() call here (Pitfall 1) -- the Mutex IS the atomicity
+    // boundary; nothing is marked until the outcome is known.
+    try {
+        meta.undoAll()
+        val claimedIds = claimed.map { it.id }.toSet()
+        _entries.update { current ->
+            current.map { if (it.id in claimedIds) it.withStatus(UndoStatus.Undone) else it }
+        }
+        UndoGroupResult.Undone(count = claimed.size)
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: UndoGroupRefusedException) {
+        // Refused: nothing was written -- entries were never modified, no "release" needed.
+        UndoGroupResult.Refused(reason = e.reason, changedItem = e.changedItem)
+    } catch (e: Exception) {
+        val claimedIds = claimed.map { it.id }.toSet()
+        _entries.update { current ->
+            current.map { if (it.id in claimedIds) it.withStatus(UndoStatus.Failed) else it }
+        }
+        UndoGroupResult.Failed
+    }
+}
+
+// clearSpent() and evictIfNeeded() both need a groupId-aware branch -- see Pitfall 2.
+```
+`[ASSUMED]` — this is this research's own mechanism-level synthesis against the frozen D-01 signatures; it is NOT itself quoted from any existing source (no such code exists in the repo yet). The plan must review, refine, and is free to diverge on internal details (e.g., mutex granularity) as long as the external D-01 signatures and behavioral contract are met.
+
+### Recommended consumer-facing UI projection models (new, in `model/`)
 
 ```kotlin
-// Mirrors ApproachLadderCard's "hideable-by-null-prop, never shown-disabled" convention
-// (component/ApproachLadderCard.kt:58-61, verified KDoc: "Every control is hideable-by-null-prop,
-// never shown-disabled").
+// model/UndoRowUiModel.kt
+sealed interface UndoRowState {
+    data class Available(val onUndo: () -> Unit) : UndoRowState
+    data object Undone : UndoRowState
+    data class Unavailable(val reason: String) : UndoRowState
+}
+
+data class UndoRowUiModel(val id: String, val label: String, val state: UndoRowState)
+
+// model/UndoRefusedUiModel.kt
+data class UndoRefusedUiModel(val reason: String, val changedItem: String? = null)
+
+// model/UndoAffordanceUiModel.kt
+data class UndoAffordanceUiModel(
+    val allLabel: String,
+    val rows: List<UndoRowUiModel> = emptyList(),
+    val onUndoAll: (() -> Unit)? = null,
+    val refused: UndoRefusedUiModel? = null
+)
+```
+Field names/shapes are copied verbatim from D-01's frozen text (`[CITED: 11-CONTEXT.md D-01]`) — not this research's own invention, unlike the store-side mechanism above.
+
+### Extending `OutcomeSheet.kt`'s `SuccessBody` (illustrative — exact diff is a planning decision)
+
+```kotlin
+// VoiceOutcomeUiState.Success gains one new field (additive, defaulted null):
+// val undo: UndoAffordanceUiModel? = null   // D-02: undo lives ON Success
+
 @Composable
-private fun UndoAffordanceBody(undo: UndoAffordanceUiModel, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
+private fun SuccessBody(success: VoiceOutcomeUiState.Success) {
+    Column(/* unchanged */) {
+        Text(success.summary, style = MaterialTheme.typography.headlineSmall)
+        success.handledBy?.let { HandledByRow(it) }
+        success.batchResults.takeIf { it.isNotEmpty() }?.let { BatchResultsList(it) }
+        success.editableContent?.takeIf { !success.inFlight }?.invoke()
+        success.undo?.let { UndoAffordanceBody(it) }   // NEW
+    }
+}
+
+@Composable
+private fun UndoAffordanceBody(undo: UndoAffordanceUiModel) {
+    Column {
         undo.onUndoAll?.let { onUndoAll ->
-            DynamicActionButton(
-                label = undo.allLabel,
-                role = ActionButtonDefaults.ActionButtonRole.Neutral,
-                onClick = onUndoAll
-            )
+            DynamicActionButton(label = undo.allLabel, role = ActionButtonDefaults.ActionButtonRole.Neutral, onClick = onUndoAll)
         }
-        undo.rows.forEach { row ->
-            UndoRowItem(row)
-        }
+        undo.rows.forEach { row -> UndoRowItem(row) }
         undo.refused?.let { refused ->
-            // Loud, per Pitfall 3 — error container, not a muted caption.
-            Surface(color = MaterialTheme.colorScheme.errorContainer) {
-                Text("Couldn't undo: ${refused.reason}" +
-                    (refused.changedItem?.let { ", $it changed since" } ?: ""))
+            // Loud per VOUT-03's discipline: error container, not a muted caption.
+            Surface(color = MaterialTheme.colorScheme.errorContainer, contentColor = MaterialTheme.colorScheme.onErrorContainer) {
+                Text("Couldn't undo: ${refused.reason}" + (refused.changedItem?.let { ", $it changed since" } ?: ""))
             }
         }
     }
 }
 ```
 
-### Clarification choices, compact pressable option list reusing `AppChip`
+### Clarification choices, reusing `AppChip` (VCLAR-01)
 
 ```kotlin
-// AppChip verified at component/AppChip.kt:88-175 — reused here as the "pressable option" surface
-// per D-07's chips-vs-buttons discretion grant.
+// New file: model/ClarificationOptionUiModel.kt
+data class ClarificationOptionUiModel(val id: String, val label: String) // id opaque -- library never interprets it
+
+// New file: component/ClarificationBar.kt -- head token "Clarification" needs a
+// PRIMITIVE_NOUN_ALLOWLIST entry in the SAME commit (Pitfall 3).
 @Composable
-private fun ClarificationOptionBar(
+fun ClarificationBar(
     question: String,
     options: List<ClarificationOptionUiModel>,
     onSelect: (String) -> Unit,
@@ -421,11 +565,7 @@ private fun ClarificationOptionBar(
         Text(question, style = MaterialTheme.typography.titleSmall)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             options.forEach { option ->
-                AppChip(
-                    label = option.label,
-                    isSelected = false,
-                    onClick = { onSelect(option.id) }
-                )
+                AppChip(label = option.label, isSelected = false, onClick = { onSelect(option.id) })
             }
         }
         TextButton(onClick = onDismiss) { Text("Dismiss") }
@@ -436,44 +576,43 @@ private fun ClarificationOptionBar(
 ## State of the Art
 
 | Old Approach | Current Approach | When Changed | Impact |
-|--------------|------------------|---------------|--------|
-| Milestone architecture doc's `VoiceOutcomeSheet`/`VoiceProviderSettingsCard` naming proposal | `ProviderKeyCard`/`ModelSelectCard`/`ApproachLadderCard` (no `Voice*` prefix) | Phase 10 execution (2026-09-30, this session) | Phase 11's composable names must follow the SAME pattern — avoid `Voice*`/other ungrandfathered domain words; the milestone-level ARCHITECTURE.md's exact proposed names are now stale for this reason |
-| `PRIMITIVE_NOUN_ALLOWLIST` as a fixed 34-word seed | A living, phase-by-phase widened allowlist (Phase 10 added `Provider`/`Model`/`Approach`) | Ongoing, this milestone | Phase 11 is expected to widen it again for its own new head tokens, following the established precedent rather than treating the list as frozen |
+|--------------|-------------------|---------------|--------|
+| Prior `11-RESEARCH.md`'s recommendation: "never touch `UndoHistoryStore`, build a pure consumer-side presentational projection" | The frozen D-01 amendment (2026-09-30 16:13, commit `2e02abf`): an additive STORE-side grouping API IS required, alongside the presentational projection | This session — the R1-seam reconvene resolved the ambiguity the prior research correctly flagged as unresolved (its own Open Question 2) | The store-side mechanism design (this file's primary content) did not exist in the prior research at all; the prior research's "don't touch the store" framing is now superseded and must not be carried forward into the plan |
+| Prior research's speculative `UndoRowUiModel`/`UndoAffordanceUiModel` field names | D-01's frozen text now specifies these exact field names/shapes verbatim | Same reconvene | Field names in this research's Code Examples are copied from the frozen text, not re-guessed |
 
-**Deprecated/outdated:** None specific to this phase beyond the naming-proposal drift noted above.
+**Deprecated/outdated:** The prior `11-RESEARCH.md` (now overwritten by this file) and the two plans it fed (`11-01-PLAN.md`, `11-02-PLAN.md`, both retired to `superseded/` per commit `d5d426b`) — do not resurrect either plan's undo-shape sections; they predate the frozen D-01 seam.
 
 ## Assumptions Log
 
 | # | Claim | Section | Risk if Wrong |
-|---|-------|---------|---------------|
-| A1 | `Outcome` and `Clarification` are reasonable candidates to ADD to `PRIMITIVE_NOUN_ALLOWLIST` (rather than reaching for a `DOMAIN_VOCABULARY` grandfather entry) | Pitfall 1 | Low — this is presented as a recommendation for the plan to make explicitly, not asserted as already-decided; if the planner disagrees, any allowlisted head token works equally well structurally |
-| A2 | `MaterialTheme.colorScheme.error`/`.errorContainer`/`.onErrorContainer` are wired to the verified `ErrorRed`/`ErrorRedContainer`/`OnErrorRedContainer` raw values in `theme/Color.kt` via the app's `ColorScheme` builder (not re-read in `theme/Theme.kt` this session) | Common Pitfalls, Code Examples | Low — even if the exact M3 role name differs, the existing verified call sites (`RecordingBottomSheetContent.kt:244-246`, `SwipeableActionRow.kt:278`) already use `MaterialTheme.colorScheme.errorContainer`/`.onErrorContainer` directly, so the pattern is confirmed correct by usage even without re-reading the `ColorScheme` builder itself |
-| A3 | A new `UndoRowUiModel`/`UndoAffordanceUiModel`-shaped presentational projection (built by the consumer from `UndoHistoryStore.entries`) is preferable to any store-side group-tracking change, absent the D-03 cross-repo reconvene's actual verdict | Architecture Patterns, Pitfall 2 | Medium — D-03 explicitly requires validating the undo shape against SecondBrain's and CalTracker's real call-sites at the A13 reconvene BEFORE authoring; if that reconvene produces a different verdict (e.g. the store itself needs a `groupId` concept), this recommendation must be revisited — this is flagged in CONTEXT.md as a cross-repo item, not fully resolved by this phase-level research |
-| A4 | The clarification-choices composable should be a standalone composable rather than nested in the outcome sheet's sealed state | Architecture Patterns Pattern 3 | Low — explicitly grounded in CONTEXT.md D-07's "your design call, easy to swap" language, but the FINAL visual form (chips vs buttons, bar vs sheet-state) is still an open design call for the plan/Gate-1 review, not settled here |
+|---|-------|---------|----------------|
+| A1 | A single store-wide `Mutex` (not per-group) is sufficient for `attemptUndoGroup` | Architecture Patterns, Alternatives Considered | Low — a single-user session library has no realistic concurrent-multi-group-undo scenario; if wrong, upgrading to a per-group `Mutex` map is a localized internal change, no external signature impact |
+| A2 | The concrete claim/resolve mechanism (Mutex-guarded, no `tryConsume()` involvement, no separate "claimed" set) fully satisfies D-01's "releasable claim" requirement | Code Examples, Pitfall 1 | Medium — this is original synthesis, not verified against any authoritative source (no such code exists yet); the plan should sanity-check this against a concrete concurrent-Refused-then-retry unit test before considering it settled |
+| A3 | The `attemptUndo(id)`/`attemptUndoGroup` concurrent-race gap (Pitfall 4) should be mitigated at the UI/consumer layer (a busy flag), not the store layer | Common Pitfalls, Pitfall 4 | Medium — D-01's text is silent on this interaction entirely; if the plan decides a store-level fix is actually required, that would need to touch `attemptUndo(id)`'s behavior, which D-01 says must stay "unchanged" — flagging this tension explicitly is the main point, not asserting my mitigation is the only valid one |
+| A4 | `ClarificationBar` is a reasonable head-token choice that needs adding to `PRIMITIVE_NOUN_ALLOWLIST` | Pitfall 3, Code Examples | Low — any allowlisted-or-added head token works structurally; the plan is free to pick a different name as long as it clears the same gate |
 
-## Open Questions (RESOLVED)
+**If this table is empty:** N/A — see above; A1/A4 are low-risk implementation-detail recommendations, A2/A3 are the genuinely load-bearing design points the plan must scrutinize before treating the undo mechanism as settled.
 
-1. **Exact head-token/composable names for the outcome sheet and clarification-choices composable.**
-   - What we know: the naming MUST clear `DomainVocabularyDriftGuardTest` (head token in `PRIMITIVE_NOUN_ALLOWLIST` or `DOMAIN_VOCABULARY`) and `ComponentRegistryDriftGuardTest` (registered XOR allowlisted); Phase 10's precedent is to widen `PRIMITIVE_NOUN_ALLOWLIST` with fresh, genuinely-generic words rather than reuse `Voice*`.
-   - What's unclear: the exact chosen name(s) — this is a planning/authoring decision, not something research should pre-decide.
-   - Recommendation: the plan should pick names, check them against the verified current allowlist (reproduced in full in Pitfall 1), and add any new head token to `PRIMITIVE_NOUN_ALLOWLIST` with a rationale in the same commit — do not defer this to Phase 13.
-   - **RESOLVED:** Names picked and the allowlist widened accordingly. 11-01-PLAN.md Task 1 names the sheet `OutcomeSheet` and widens `PRIMITIVE_NOUN_ALLOWLIST` with `"Outcome"` in the same commit; 11-02-PLAN.md Task 1 names the clarification composable `ClarificationBar` and widens the same allowlist with `"Clarification"` in its own commit — both mirror Phase 10's widening pattern exactly.
+## Open Questions
 
-2. **Whether the undo-group concept needs any store-side change at all, per D-03's cross-repo validation.**
-   - What we know: D-01/D-03 require validating the `Unavailable(reason)` + `Refused(reason, changedItem)` union against SecondBrain's and CalTracker's actual call-sites at the A13 reconvene before authoring.
-   - What's unclear: whether that reconvene has happened, and what its verdict was — this session found no `.planning/cross-repo/RECONVENE-BRIEF.md` verdict artifact to confirm against (STATE.md shows the project still at "ready for cross-repo reconvene" as of its last update, predating Phase 11 planning).
-   - Recommendation: the plan should either confirm the reconvene verdict exists and cite it, or explicitly flag this as an unresolved cross-repo dependency requiring a `checkpoint:human-verify` before the undo-shape models are frozen.
-   - **RESOLVED:** The A13/R1 reconvene did happen and its verdict is folded into 11-CONTEXT.md's D-01 ("REVISED at R1 by SecondBrain... extend additively... presentational projection" — the store-side-change question is answered: no, extend via a new projection, never a store/`UndoHistoryEntry` shape change). 11-01-PLAN.md Task 2 (`checkpoint:decision`, blocking-human) cites D-01/D-03 and the RECONVENE-BRIEF verdict explicitly and gates the concrete Kotlin field-level shape (not the reconvene-happened-or-not question, which D-01 already settles) before Task 3 authors `UndoAffordanceUiModel`/`UndoRowUiModel`/`UndoRefusedUiModel`.
+1. **Does the plan accept the `attemptUndo(id)`/`attemptUndoGroup` concurrent-race gap (Pitfall 4), or build UI-level mutual exclusion against it?**
+   - What we know: D-01's frozen text does not address this interaction; `attemptUndo(id)` must stay unchanged per D-01.
+   - What's unclear: whether SB's/CT's real UI ever exposes both a per-item Undo AND a live "Undo all" for the same row simultaneously in a way that makes the race practically reachable.
+   - Recommendation: plan should make and document an explicit choice (see Pitfall 4's two options) rather than let it be an unstated side effect of implementation order.
 
-3. **Outcome sheet host: `SheetScaffold`-hosted bottom sheet, or an inline card surface?**
-   - What we know: the milestone ARCHITECTURE.md recommends a host/content split mirroring `RecordingBottomSheetContent.kt`/`ListCardBottomSheet.kt`; CONTEXT.md doesn't lock this choice explicitly for Phase 11 (D-07 only grants discretion for the clarification composable's form, not the outcome sheet's).
-   - What's unclear: whether "sheet" in "outcome/failure sheet" (the phase's own name) is meant literally (a `ModalBottomSheet`) or is just the phase's working title.
-   - Recommendation: default to the `SheetScaffold` host/content split (matches the phase name and existing precedent) unless the plan finds a reason to diverge.
-   - **RESOLVED:** Defaulted as recommended. 11-01-PLAN.md Task 1's action has `OutcomeSheet` call `SheetScaffold(onDismissRequest = onDismissRequest, modifier = modifier)` internally and render its exhaustive `when(outcome)` inside that scaffold's content — the host/content split, settled at authoring time, no divergence found.
+2. **Mutex granularity: one store-wide `groupUndoMutex`, or per-group?**
+   - What we know: a single mutex is simpler and sufficient for the single-user-session case this library targets.
+   - What's unclear: whether any consumer app ever fires two `attemptUndoGroup` calls for two DIFFERENT groups genuinely concurrently (e.g., two independent voice commands' outcome sheets open at once) — if so, a single mutex serializes them, which is a correctness non-issue but could be a latency concern.
+   - Recommendation: default to one mutex (per Alternatives Considered); revisit only if a concrete concurrent-groups UI flow surfaces.
+
+3. **Exact new-file layout: does `UndoGroupStatus`/`UndoGroupResult`/`UndoGroupRefusedException` live in one new `UndoGroupTypes.kt`, or split across `UndoHistoryStore.kt`'s own file (companion types) per this repo's convention (e.g. `KeyFieldState.kt` is its own file, `ActionButtonDefaults` lives beside `DynamicActionButton` in the same file)?**
+   - What we know: both conventions exist live in this repo (small sealed-type-per-file, and object-plus-enum-in-same-file-as-its-composable).
+   - What's unclear: no single rule in this repo dictates which to follow for a non-composable sealed-result type living in `feedback/`.
+   - Recommendation: a single `UndoGroupTypes.kt` is fine (keeps `UndoHistoryStore.kt` from growing unbounded) — this is a purely organizational call for the plan to make, not a design-risk item.
 
 ## Environment Availability
 
-No new external dependency, service, or CLI tool is introduced by this phase. The existing toolchain (AGP 9.2.1, Kotlin 2.3.20, Compose BOM 2026.04.01, JDK 17, Robolectric + Compose UI test + kotlinx-coroutines-test — all confirmed present in `build.gradle.kts`'s `testImplementation` block this session) is sufficient. No environment audit table is needed.
+No new external dependency, service, or CLI tool. `kotlinx.coroutines.sync.Mutex` ships inside the already-transitively-present `kotlinx-coroutines-core` artifact (confirmed: `UndoHistoryStore.kt` already imports sibling `kotlinx.coroutines.*` symbols from the same artifact). No environment audit table needed.
 
 ## Validation Architecture
 
@@ -482,90 +621,94 @@ No new external dependency, service, or CLI tool is introduced by this phase. Th
 | Property | Value |
 |----------|-------|
 | Framework | JUnit4 + Robolectric + Compose UI test (`androidx.compose.ui.test.junit4`) + `kotlinx-coroutines-test` (confirmed in `build.gradle.kts` lines 126-134) |
-| Config file | `build.gradle.kts` (module root; no separate test config file) |
-| Quick run command | `./gradlew testDebugUnitTest --tests "io.github.ygaray.yahirandroidtaste.model.*"` (scope to new model/component test classes during development) |
-| Full suite command | `./gradlew testDebugUnitTest` (required before declaring the phase done — this is what runs `ComponentRegistryDriftGuardTest` and `DomainVocabularyDriftGuardTest`, per the milestone PITFALLS.md Pitfall 4's explicit warning that these guards are full-suite-only) |
+| Config file | `build.gradle.kts` (module root) |
+| Quick run command | `./gradlew testDebugUnitTest --tests "io.github.ygaray.yahirandroidtaste.feedback.*"` (scope to `UndoHistoryStore`/new group-types tests during development) |
+| Full suite command | `./gradlew testDebugUnitTest` (runs both drift guards — full-suite-only) |
 
 ### Phase Requirements → Test Map
 
 | Req ID | Behavior | Test Type | Automated Command | File Exists? |
 |--------|----------|-----------|-------------------|-------------|
-| VOUT-01 | Sheet renders `Success`/`Failure` from props, no app nouns | unit/Robolectric Compose test | `./gradlew testDebugUnitTest --tests "*OutcomeSheetTest*"` | ❌ Wave 0 (new file) |
-| VOUT-02 | "Handled by" indicator renders tier (+ optional fields) from props | unit/Robolectric Compose test | same file as above | ❌ Wave 0 |
-| VOUT-03 | Failure renders with error color role, optional action slot renders iff prop present | unit/Robolectric Compose test | same file as above | ❌ Wave 0 |
-| VUNDO-01 | "Undo all (N)" + per-item undo + `Unavailable`/`Refused` states render correctly | unit/Robolectric Compose test | `./gradlew testDebugUnitTest --tests "*UndoAffordance*"` | ❌ Wave 0 (new file) |
-| VCLAR-01 | Clarification composable renders question + options; `onSelect`/`onDismiss` fire correctly | unit/Robolectric Compose test | `./gradlew testDebugUnitTest --tests "*Clarification*"` | ❌ Wave 0 (new file) |
-| Naming-guard compliance (Pitfall 1) | Every new public composable's head token clears both drift guards | existing full-suite guard tests | `./gradlew testDebugUnitTest --tests "*DriftGuardTest*"` | ✅ (guards already exist; this phase must satisfy them, not create them) |
-| API additivity | `v2.4.0`-in-progress diff vs `v2.3.0` stays additive | static/build-time | `./gradlew apiCheck` | ✅ (tooling exists) |
+| VOUT-01/02/03 | Already covered | unit/Robolectric Compose test | `./gradlew testDebugUnitTest --tests "*OutcomeSheetTest*"` | ✅ Already exists (`OutcomeSheetTest.kt`, verified) |
+| VUNDO-01 (store) | `openGroup`/grouped `append`/`group`/`groupIdOf`/`groupLabel`/`groupStatus`/`attemptUndoGroup` behave per D-01 (incl. Refused-then-retry, group-atomic eviction/clearSpent) | pure-Kotlin JUnit unit test (no Compose needed — store has zero Android/Compose imports) | `./gradlew testDebugUnitTest --tests "*UndoHistoryStoreTest*"` | ❌ Wave 0 — new test file, or extend an existing `UndoHistoryStoreTest.kt` if one already exists (grep before assuming new) |
+| VUNDO-01 (UI) | `OutcomeSheet`'s `Success.undo` renders "Undo all (N)", per-row Available/Undone/Unavailable, nested Refused surface loudly | unit/Robolectric Compose test | extend `OutcomeSheetTest.kt` | ❌ Wave 0 — new test cases in the existing file |
+| VCLAR-01 | `ClarificationBar` renders question + options; `onSelect`/`onDismiss` fire correctly | unit/Robolectric Compose test | `./gradlew testDebugUnitTest --tests "*ClarificationBarTest*"` | ❌ Wave 0 (new file) |
+| Naming-guard compliance | New head token(s) clear both drift guards | existing full-suite guard tests | `./gradlew testDebugUnitTest --tests "*DriftGuardTest*"` | ✅ guards exist; must be satisfied |
+| API additivity | `v2.4.0`-in-progress diff vs `v2.3.0` stays additive | static/build-time | `./gradlew apiCheck` | ✅ tooling exists |
+
+**Before authoring tests, `grep -rl "UndoHistoryStore" src/test/` to check whether a `UndoHistoryStoreTest.kt` already exists from Phase 53/58 — extend it rather than creating a duplicate test class if so.**
 
 ### Sampling Rate
 
-- **Per task commit:** the scoped test command for the model/composable touched.
-- **Per wave merge:** `./gradlew testDebugUnitTest` (full suite — required to catch the drift guards per Pitfall 4/Pitfall 1).
-- **Phase gate:** full suite green (including both drift guards) before `/gsd-verify-work`; Gate-1 self-UAT must explicitly drive the Failure and undo-refused branches on-device, not just the happy path (per CONTEXT.md's "Specific Ideas" note and the milestone PITFALLS.md Pitfall 6).
+- **Per task commit:** the scoped test command for the file touched.
+- **Per wave merge:** `./gradlew testDebugUnitTest` (full suite — required for both drift guards).
+- **Phase gate:** full suite green before `/gsd-verify-work`; Gate-1 self-UAT must explicitly drive the undo-refused/partial branch and the Failure branch on-device, not just the happy path (CONTEXT.md's "Specific Ideas" note).
 
 ### Wave 0 Gaps
 
-- [ ] A new test file for the outcome/failure composable (name pending Pitfall 1's naming decision) — covers VOUT-01/02/03
-- [ ] A new test file for the undo affordance rendering — covers VUNDO-01
-- [ ] A new test file for the clarification-choices composable — covers VCLAR-01
-- [ ] No new shared fixtures/conftest-equivalent needed — this repo's convention is per-family fixture functions declared directly in the `explorer/*FamilyScreen.kt` file (see `ProviderKeyCardFixture`/`ModelSelectCardFixture`/`ApproachLadderCardFixture` in `explorer/VoiceCommandFamilyScreen.kt:171-259`, verified) plus ordinary Robolectric Compose test rules per test file — no framework install needed.
+- [ ] `UndoHistoryStoreTest.kt` (new or extended) — covers the 7-member grouping API, atomicity, releasability-on-Refused, group-atomic eviction/clearSpent
+- [ ] New test cases in `OutcomeSheetTest.kt` — covers the `undo` field rendering (Undo all, per-row states, nested Refused)
+- [ ] `ClarificationBarTest.kt` (new file) — covers VCLAR-01
+- [ ] No new shared fixtures needed — this repo's per-family fixture-function convention (`explorer/VoiceCommandFamilyScreen.kt`) already covers gallery demo needs
 
 ## Security Domain
 
 ### Applicable ASVS Categories
 
 | ASVS Category | Applies | Standard Control |
-|---------------|---------|-------------------|
-| V2 Authentication | No | This phase has no auth surface — it renders outcomes/undo/clarification from props only |
-| V3 Session Management | No | No session concept in this library |
-| V4 Access Control | No | No access-control surface; the library never gates access, only renders |
-| V5 Input Validation | Marginal/Yes | Clarification `id` is an OPAQUE string the library never interprets or executes (D-07: "Apps map the engine's `Clarification` → these props; no engine dependency") — the library's only "validation" responsibility is to pass the tapped `id` back verbatim via `onSelect`, never to parse/execute it. No injection surface exists because no string from this phase is ever used to construct a query, command, or file path inside the library. |
-| V6 Cryptography | No | No cryptographic material touched; the undo/outcome data is plain display state |
+|----------------|---------|-------------------|
+| V2 Authentication | No | No auth surface |
+| V3 Session Management | No | No session concept beyond the existing in-memory `UndoHistoryStore` |
+| V4 Access Control | No | Library never gates access, only renders/stores display state |
+| V5 Input Validation | Marginal/Yes | Clarification `id` and group `label`/`reason`/`changedItem` strings are OPAQUE — library never parses/executes them, only displays and echoes them back verbatim via callbacks |
+| V6 Cryptography | No | No cryptographic material touched |
 
 ### Known Threat Patterns for this stack
 
 | Pattern | STRIDE | Standard Mitigation |
-|---------|--------|----------------------|
-| A consumer accidentally logs or displays a secret (e.g. an API key) inside a `Failure.reason` string | Information Disclosure | Out of this phase's direct control (the library only renders the string it's given) — but the library must not itself log any prop value anywhere (matches the milestone PITFALLS.md Security Mistakes table: "No logging of the key value") |
-| A malformed/duplicate clarification option `id` causes `onSelect` to resolve the wrong engine-side clarification | Tampering (logic-level, not a security vulnerability per se) | The library renders `options` in the order given and calls `onSelect(option.id)` verbatim — uniqueness of `id` within one `options` list is the CONSUMER's responsibility to guarantee; document this in the new model's KDoc |
+|---------|--------|------------------------|
+| A consumer's `undoAll`/`undoAction` lambda throws an exception containing a secret (e.g. an API error body with a token) | Information Disclosure | Out of library control (it only catches/classifies `Exception`, never logs the message) — the library must not log any caught exception's message anywhere, matching the existing `attemptUndo`'s `@Suppress("TooGenericExceptionCaught")` best-effort-never-crash convention |
+| A duplicate `groupId` reused across two unrelated voice commands | Tampering (logic-level) | `openGroup`/grouped `append` accept whatever `groupId` string the consumer supplies — uniqueness is the CONSUMER's responsibility; document this in the new store method KDoc, mirroring the existing clarification-`id`-uniqueness note in the prior research |
 
 ## Sources
 
 ### Primary (HIGH confidence — read directly this session)
 
-- `src/main/java/io/github/ygaray/yahirandroidtaste/feedback/UndoHistoryEntry.kt` (full file) — current shape, `internal` ctor, `AtomicBoolean`, `withStatus`, `preview` addition precedent
-- `src/main/java/io/github/ygaray/yahirandroidtaste/feedback/UndoHistoryStore.kt` (full file) — `append`/`attemptUndo`/`clearSpent`/eviction, first-consumer-wins CAS
-- `src/main/java/io/github/ygaray/yahirandroidtaste/feedback/UndoPreview.kt`, `FeedbackEvent.kt` — sibling shapes, `WithUndo` snackbar path
-- `src/main/java/io/github/ygaray/yahirandroidtaste/component/SheetScaffold.kt` (full file) — host chrome contract
-- `src/main/java/io/github/ygaray/yahirandroidtaste/component/AttentionCue.kt` (full file) — "never a failure signal" KDoc, quoted
-- `src/main/java/io/github/ygaray/yahirandroidtaste/component/RecordingBottomSheetContent.kt`, `ListCardBottomSheet.kt` (full files) — host/content split precedent, error-container usage convention
-- `src/main/java/io/github/ygaray/yahirandroidtaste/theme/Color.kt` (full file) — verified `ErrorRed`/`ErrorRedContainer`/`OnErrorRedContainer` + dark variants
-- `src/main/java/io/github/ygaray/yahirandroidtaste/modifier/SwipeableActionRow.kt`, `RevealActionRow.kt` (full files) — reveal-confirm gesture contract, error-container usage
-- `src/main/java/io/github/ygaray/yahirandroidtaste/explorer/ComponentRegistry.kt` (full file) — registry integrity invariants, `Entry` shape, `voiceCommandFamilyEntries` concatenation confirmed live
-- `src/main/java/io/github/ygaray/yahirandroidtaste/explorer/VoiceCommandFamilyScreen.kt` (full file) — Phase 10's ACTUAL naming choices (`ProviderKeyCard`/`ModelSelectCard`/`ApproachLadderCard`), fixture-function convention
-- `src/test/java/io/github/ygaray/yahirandroidtaste/explorer/DomainVocabularyDriftGuardTest.kt` (full file) — `PRIMITIVE_NOUN_ALLOWLIST`/`DOMAIN_VOCABULARY` contents, verbatim quoted in Pitfall 1
-- `src/main/java/io/github/ygaray/yahirandroidtaste/model/TagChipUiModel.kt` (full file) — the `copy()`/ABI-break lesson, verbatim quoted
-- `src/main/java/io/github/ygaray/yahirandroidtaste/model/ApproachRungUiModel.kt`, `KeyFieldState.kt` — all-`val`/sealed-interface conventions to mirror for new models
-- `src/main/java/io/github/ygaray/yahirandroidtaste/component/AppChip.kt`, `ChipBar.kt`, `DynamicActionButton.kt`, `SegmentedOptionSelector.kt`, `ApproachLadderCard.kt` (full/partial reads) — reusable pressable-token and role-button precedent
-- `build.gradle.kts` (grep) — confirmed test dependency set (JUnit4, Robolectric, Compose UI test junit4, coroutines-test)
+- `src/main/java/io/github/ygaray/yahirandroidtaste/feedback/UndoHistoryEntry.kt` (full file, 66 lines) — current shape, `internal` ctor, `AtomicBoolean` one-way guard (quoted)
+- `src/main/java/io/github/ygaray/yahirandroidtaste/feedback/UndoHistoryStore.kt` (full file, 122 lines) — `append`/`attemptUndo`/`clearSpent`/`evictIfNeeded` (quoted in full)
+- `src/main/java/io/github/ygaray/yahirandroidtaste/feedback/UndoPreview.kt` (full file) — sibling shape, confirms no `AtomicBoolean`-style special-casing elsewhere in `feedback/`
+- `src/main/java/io/github/ygaray/yahirandroidtaste/model/VoiceOutcomeUiState.kt`, `HandledByUiModel.kt`, `FailureActionUiModel.kt`, `BatchRowResultUiModel.kt` (full files) — confirm D-04/D-05/D-06/D-08 already shipped
+- `src/main/java/io/github/ygaray/yahirandroidtaste/component/OutcomeSheet.kt` (full file, 167 lines) — confirms VOUT-01/02/03 already shipped, exact current `SuccessBody`/`FailureBody`/`HandledByRow` shapes
+- `src/test/java/io/github/ygaray/yahirandroidtaste/component/OutcomeSheetTest.kt` (full file, 131 lines) — confirms existing test coverage scope
+- `src/main/java/io/github/ygaray/yahirandroidtaste/explorer/ComponentRegistry.kt` (full file) — registry integrity invariants, confirmed `voiceCommandFamilyEntries` concatenation live
+- `src/main/java/io/github/ygaray/yahirandroidtaste/explorer/VoiceCommandFamilyScreen.kt` (grepped + partial read) — confirms `OutcomeSheet` entry already registered with a full states matrix and variants content
+- `src/test/java/io/github/ygaray/yahirandroidtaste/explorer/DomainVocabularyDriftGuardTest.kt` (full file, 415 lines) — current `PRIMITIVE_NOUN_ALLOWLIST`/`DOMAIN_VOCABULARY` contents (quoted in full), confirmed `"Outcome"` present, `"Clarification"` absent
+- `src/main/java/io/github/ygaray/yahirandroidtaste/model/TagChipUiModel.kt` (full file) — the `copy()`/ABI-break lesson (not directly triggered this phase since `UndoHistoryEntry`'s ctor is untouched, but corroborates why D-01 forbids touching it)
+- `src/main/java/io/github/ygaray/yahirandroidtaste/component/AppChip.kt`, `ApproachLadderCard.kt`, `SegmentedOptionSelector.kt`, `SheetScaffold.kt`, `DynamicActionButton.kt`, `AttentionCue.kt` (full files) — reusable pressable-token, host/content, role-button, and "never a failure signal" precedent
+- `src/main/java/io/github/ygaray/yahirandroidtaste/theme/Color.kt` (partial, lines 1-50) — verified `ErrorRed`/`ErrorRedContainer`/`OnErrorRedContainer` raw values
+- `src/main/java/io/github/ygaray/yahirandroidtaste/model/ApproachRungUiModel.kt`, `KeyFieldState.kt` — all-val/sealed-interface conventions to mirror for new models
+- `build.gradle.kts` (grep) — confirmed test dependency set, confirmed no `kotlinx-coroutines-*` explicit `implementation` line is needed (already transitive)
 - `.planning/config.json` — confirmed `nyquist_validation: true`, `security_enforcement: true`, `security_asvs_level: 1`
+- `.planning/phases/11-voice-outcome-failure-sheet/11-CONTEXT.md` (full file, current, post-amendment) — the frozen D-01 text quoted in full above
+- `git log`/`git show 2e02abf` — confirms the exact amendment commit and its diff scope (CONTEXT.md only, 20 lines added, no code)
+- `.planning/REQUIREMENTS.md`, `.planning/STATE.md` — milestone-level requirement text and current phase status
 
 ### Secondary (MEDIUM confidence)
 
-- `.planning/phases/11-voice-outcome-failure-sheet/11-CONTEXT.md`, `.planning/REQUIREMENTS.md`, `.planning/STATE.md`, `.planning/research/ARCHITECTURE.md`, `.planning/research/FEATURES.md`, `.planning/research/PITFALLS.md` — milestone-level research and locked decisions, all provided as required reading and treated as authoritative for scope/decisions (not re-verified against external sources, but internally consistent with the source code verified above)
+- The prior (now-superseded) `11-RESEARCH.md` and the two retired `superseded/11-01-PLAN.md`/`11-02-PLAN.md` — read for context on what already executed (commit `6a946d3`) and what was explicitly deferred; their undo-shape sections are superseded and NOT carried forward.
 
 ### Tertiary (LOW confidence)
 
-- None — no WebSearch/external lookups were needed for this phase; every technical claim resolves against in-repo source already read this session.
+- None — no WebSearch/external lookups needed; every technical claim resolves against in-repo source read this session, and the store-side mechanism (marked `[ASSUMED]` throughout) is original design synthesis against a fully-specified frozen contract, not an external-source claim.
 
 ## Metadata
 
 **Confidence breakdown:**
-- Standard stack: HIGH — no new dependency, everything reused is verified in-repo
-- Architecture: HIGH — sealed-state and additive-model patterns verified against this repo's own existing conventions (`KeyFieldState`, `ApproachRungUiModel`, `TagChipUiModel`)
-- Pitfalls: HIGH — both drift guards read in full; the naming trap (Pitfall 1) is the single most valuable, concretely-actionable finding of this research and is grounded in a live test file's exact current allowlist contents
-- Cross-repo undo validation (D-03): MEDIUM/LOW — this phase-level research could not confirm whether the A13 reconvene verdict exists; flagged as Open Question 2 and Assumption A3
+- Already-shipped VOUT-01/02/03 status: HIGH — every file read in full this session, matches D-04/D-05/D-06/D-08 exactly
+- Current `UndoHistoryStore`/`UndoHistoryEntry` shape: HIGH — both files read in full, quoted verbatim
+- Frozen D-01 external contract (signatures, behavior): HIGH — quoted verbatim from `11-CONTEXT.md`, SB-confirmed per the commit message
+- Recommended internal mechanism (Mutex-based claim, group-aware eviction/clearSpent): MEDIUM — original synthesis, logically sound against the verified constraints, but not itself verified against any authoritative source since no such code exists yet; flagged `[ASSUMED]` throughout and the two riskiest sub-decisions (A2, A3) are logged explicitly
+- Naming-guard status for the remaining work: HIGH — `DomainVocabularyDriftGuardTest.kt` read in full, `"Clarification"` absence confirmed via direct grep this session
 
 **Research date:** 2026-09-30
-**Valid until:** Until Phase 10's `ProviderKeyCard`/`ModelSelectCard`/`ApproachLadderCard` land (if they change names before merge) or the A13 cross-repo reconvene produces a verdict on the undo shape — whichever comes first. Re-verify the drift-guard allowlist contents (Pitfall 1) immediately before authoring, since Phase 10 may still be mid-execution.
+**Valid until:** Until the plan author either confirms or revises the Mutex-granularity/race-mitigation choices (Open Questions 1-2) — those are implementation decisions this research recommends but does not lock. Re-verify `PRIMITIVE_NOUN_ALLOWLIST`'s exact contents immediately before authoring if any other phase lands concurrently.
