@@ -1,0 +1,86 @@
+# Requirements: yahirandroidtaste — Milestone v2.4 (AI-Voice Command UI)
+
+**Defined:** 2026-09-29
+**Core Value:** The hub stays a coherent design system as more consumers contribute — here, one domain-neutral AI-voice UI surface both SecondBrain and CalTracker can reuse.
+**Cross-repo source of truth:** `~/Projects/Reusable/android/voice-action-engine/CROSS-REPO-SCOPE-CONTRACT.md` §6.3 (bindings L3/L7/A2/A12–A14/E1). Every requirement below cites its contract source.
+
+## v2.4 Requirements
+
+Generic, **presentational** Compose composables only. Each composable takes its content + actions as parameters; the consuming app maps engine outcomes → props. `MicButton` already exists and is not re-authored.
+
+### Settings surfaces
+
+- [ ] **VSET-01**: A provider/API-key settings card composable renders provider selection and API-key entry purely from props + callbacks (no key persistence, no network in the library) (§6.3)
+- [ ] **VSET-02**: A model settings card composable renders the selected/available model(s) from props and emits selection via callback (§6.3)
+
+### Command-approach settings (NEW)
+
+- [ ] **VAPPR-01**: A command-approach settings card composable displays the configured tier ladder (ordered approaches, e.g. Grammar → SingleShot → Plan → Agentic) from props (§6.3)
+- [ ] **VAPPR-02**: The command-approach card exposes an offline-only toggle that reflects and emits offline-only state via props + callback (§6.3)
+- [ ] **VAPPR-03**: The command-approach card exposes a max-tier cap control that reflects and emits the cap via props + callback (§6.3)
+
+### Outcome / failure sheet
+
+- [ ] **VOUT-01**: An outcome/failure sheet composable renders a command outcome from props, domain-neutral (no app-specific nouns) (§6.3)
+- [ ] **VOUT-02**: The outcome sheet shows a "handled by: tier/approach" indicator identifying which tier/approach handled the command, from props (§6.3)
+- [ ] **VOUT-03**: The outcome sheet renders failure states loudly and visibly (prominent, not silent or subtle) (§6.3)
+- [ ] **VOUT-04**: The outcome sheet renders a generic needs-confirmation state from props — a reason string, single-or-batch proposed item(s), and confirm/cancel actions — domain-neutral so it covers both SB's `MutationGate`/`VoiceConfirmGate` risk confirm and CT's weak-match single/batch confirm (A2/E1)
+
+### Catalog & API integrity
+
+- [ ] **CAT-01**: Every new public composable is registered in `ComponentRegistry` (or allowlisted in `INTENTIONALLY_UNREGISTERED`) with its full 4-cell states matrix, and the CATALOG-03 drift guard passes in the **full** test suite (§6.3, CATALOG-03)
+- [ ] **API-01**: The public API is strictly additive versus `v2.3.0` — Metalava `apiCheck` net-additive, no removals or signature changes to existing symbols (§6.3, §11 step 2)
+- [ ] **INV-01**: The new UI adds no dependency on OkHttp or any `voice-action-engine` module; every composable takes data + actions as parameters, preserving the one-way-dependency invariant (§6.3, L7)
+
+### Ship / tag
+
+- [ ] **SHIP-01**: Cut library `v2.4.0` per §11 steps 1–4 (green full suite incl. CATALOG-03, Metalava additive, tagged commit pushed, JitPack resolves the coordinate from a clean cache), then message the orchestrator the full §11 ledger row (§11, A12/A14)
+- [ ] **SHIP-02**: Milestone close creates **no** git tag; the only tag this milestone produces is the `v2.4.0` release coordinate, guarding against the stray milestone-marker-tag hazard (a bare `v2.2` tag already leaked into the JitPack coordinate namespace at the v2.0 close) (orchestrator condition, §11)
+
+## Future Requirements
+
+Deferred to consumer Wave-1 work (not this milestone).
+
+- **Consumer wiring** — SecondBrain and CalTracker map their engine outcomes → these composables' props and adopt the settings/outcome UI (§6.4, §6.5 — consumers' own milestones)
+
+## Out of Scope
+
+Explicitly excluded — belongs to the engine or the consumer apps, not this presentational hub slice.
+
+| Feature | Reason |
+|---------|--------|
+| Any HTTP / OkHttp client, provider transport, API-key persistence | Engine/consumer responsibility; would break the one-way-dependency invariant (INV-01, L7) |
+| Tier ladder *execution*, escalation logic, `TierPolicy` enforcement | Engine (`voice-action-engine` `:core`) — YAT only *displays* the ladder/policy from props |
+| Domain-specific nouns/strings in any composable | Would break reusability across SB + CT; all content arrives via props |
+| `MicButton` re-authoring | Already exists (shipped in v2.0/`v2.2.0`); reused as-is |
+| Cutting a git tag at milestone close | SHIP-02 — the only tag is the `v2.4.0` release coordinate via §11 |
+
+## Traceability
+
+Filled during roadmap creation. Each requirement maps to exactly one phase.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| VSET-01 | TBD | Pending |
+| VSET-02 | TBD | Pending |
+| VAPPR-01 | TBD | Pending |
+| VAPPR-02 | TBD | Pending |
+| VAPPR-03 | TBD | Pending |
+| VOUT-01 | TBD | Pending |
+| VOUT-02 | TBD | Pending |
+| VOUT-03 | TBD | Pending |
+| VOUT-04 | TBD | Pending |
+| CAT-01 | TBD | Pending |
+| API-01 | TBD | Pending |
+| INV-01 | TBD | Pending |
+| SHIP-01 | TBD | Pending |
+| SHIP-02 | TBD | Pending |
+
+**Coverage:**
+- v2.4 requirements: 14 total
+- Mapped to phases: 0 (roadmap pending)
+- Unmapped: 14 ⚠️ (resolved at roadmap creation)
+
+---
+*Requirements defined: 2026-09-29*
+*Last updated: 2026-09-29 after initial definition*
