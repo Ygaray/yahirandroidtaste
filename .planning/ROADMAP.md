@@ -59,7 +59,7 @@ parameters; the library imports no consumer code, no OkHttp, and no `voice-actio
 - Decimal phases (2.1, 2.2): Urgent insertions (marked INSERTED)
 
 - [ ] **Phase 10: Voice command settings surfaces** - Provider/key, model, and command-approach settings cards, all prop-driven
-- [ ] **Phase 11: Voice outcome & failure sheet** - Domain-neutral outcome sheet with a "handled by: tier/approach" indicator, loud failure states, and a generic undo affordance (Undo all + per-item, with unavailable/refused states)
+- [ ] **Phase 11: Voice outcome & failure sheet** - Domain-neutral outcome sheet with a "handled by: tier/approach" indicator, loud failure states, a generic undo affordance (Undo all + per-item, with unavailable/refused states), and a tap-to-clarify choices surface
 - [ ] **Phase 12: Generic needs-confirmation state** - One domain-neutral confirm prompt covering both SB risk confirm and CT weak-match single/batch confirm
 - [ ] **Phase 13: Catalog integrity & docs** - Register all new composables in the new "Voice Command" family, keep the public API strictly additive and engine-free, and fix the seven→ten family-count doc drift (verified — cuts NO tag)
 - [ ] **Phase 14: Cut v2.4.0** - Cut the `v2.4.0` tag on green verification, confirm JitPack resolves it, and message the orchestrator the §11 ledger row (the ONLY tag; split from 13 so the cut follows a green Phase 13)
@@ -84,15 +84,16 @@ Plans:
 - [ ] 10-02-PLAN.md — ModelSelectCard + ApproachLadderCard expansion: model selection, tier ladder, offline-only toggle, max-tier cap (VSET-02, VAPPR-01/02/03)
 
 ### Phase 11: Voice outcome & failure sheet
-**Goal**: Consumers can render a domain-neutral command outcome — including which tier/approach handled it, loud visible failure states, and a generic undo affordance ("Undo all (N)" + per-item undo with an unavailable state, plus a loud undo-refused/partial state) — from props alone.
+**Goal**: Consumers can render a domain-neutral command outcome — including which tier/approach handled it, loud visible failure states, a generic undo affordance ("Undo all (N)" + per-item undo with an unavailable state, plus a loud undo-refused/partial state), and a tap-to-clarify choices surface — from props alone.
 **Depends on**: Nothing (independent of Phase 10 — a separate composable in the same voice UI package; can proceed in parallel)
-**Requirements**: VOUT-01, VOUT-02, VOUT-03, VUNDO-01
+**Requirements**: VOUT-01, VOUT-02, VOUT-03, VUNDO-01, VCLAR-01
 **Success Criteria** (what must be TRUE):
   1. An outcome/failure sheet renders a command outcome from props with no app-specific nouns
   2. The sheet surfaces a "handled by: tier/approach" indicator identifying which tier/approach handled the command, from props
   3. Failure states render prominently and visibly — loud, not silent or subtle
   4. The sheet renders a prop-driven "Undo all (N)" action alongside per-item Undo, and can represent a per-item-undo-unavailable state (an item that cannot be undone alone because it is entangled with another)
   5. An undo-refused / partial-undo state renders loudly with a reason (e.g. "couldn't undo: <reason>, <item> changed since"), domain-neutral
+  6. A prop-driven clarification-choices surface renders a question + pressable options (label + opaque id) with onSelect + dismiss — visually informative (not an error); tapping an option resolves the clarification without re-speaking
 **Plans**: TBD
 **UI hint**: yes
 

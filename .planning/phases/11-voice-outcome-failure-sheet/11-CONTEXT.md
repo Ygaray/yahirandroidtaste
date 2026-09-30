@@ -33,8 +33,11 @@ Resolved in `ai` mode (`source: ai-auto`). The **[undo-crossrepo]** decision is 
 ### batch-results
 - **D-06 [batch-results]:** For batch outcomes, the sheet renders per-row result reporting — a partial-success summary ("Logged 2 of 3") from a `failedCount` / per-row `success|fail` status — plus a batch-write-in-flight LOCK state (disable actions while the write is running). All prop-driven. _(R1 — CT VoiceResultSheet.kt / VoiceLogUiState.kt)_
 
+### clarify-choices
+- **D-07 [clarify-choices]:** A generic, prop-driven "clarification choices" composable (VCLAR-01, contract **A19**) — question text + a list of options, each `{ id: opaque String, label: String }`, + `onSelect(id)` + `onDismiss` (dismiss = cancel). When the model needs clarification ("Which list?"), the user resolves it by TAPPING an option, never by speaking again. Render it as a compact PRESSABLE choice surface (chips/buttons) — a Material snackbar holds only one action, so use a small choice bar or an outcome-sheet state, **your design call, easy to swap**. Visually informative, NOT an error. Apps map the engine's `Clarification` → these props (no engine dependency, L7). Domain-neutral; registered in `ComponentRegistry` (Voice Command family) with a full states matrix. _(§6.3, A19 — Yahir 2026-09-30, VAE 725d8d7)_
+
 ### Claude's Discretion
-Loud-failure and undo-refused visual treatment: research is confident (not a gray area) — use the theme `error`/`errorContainer` roles (icon + headline + reason string, sticky), and explicitly NOT `AttentionCue` (its KDoc forbids use as a failure signal).
+Loud-failure and undo-refused visual treatment: research is confident (not a gray area) — use the theme `error`/`errorContainer` roles (icon + headline + reason string, sticky), and explicitly NOT `AttentionCue` (its KDoc forbids use as a failure signal). For VCLAR-01, chips-vs-buttons and bar-vs-sheet-state is a swappable design call (Yahir reviews in the gallery at Gate-1).
 
 </decisions>
 

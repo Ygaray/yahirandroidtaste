@@ -25,6 +25,7 @@ Generic, **presentational** Compose composables only. Each composable takes its 
 - [ ] **VOUT-02**: The outcome sheet shows a "handled by: tier/approach" indicator identifying which tier/approach handled the command, from props (§6.3)
 - [ ] **VOUT-03**: The outcome sheet renders failure states loudly and visibly (prominent, not silent or subtle) (§6.3)
 - [ ] **VUNDO-01**: The outcome sheet renders a generic, prop-driven undo affordance — an "Undo all (N)" action alongside per-item Undo — where a per-item-undo-**unavailable** state is representable (e.g. an item entangled with another cannot be undone alone), plus a loud undo-refused / partial state (e.g. "couldn't undo: <reason>, <item> changed since"). Domain-neutral, registered with a full states matrix (A18, §6.3)
+- [ ] **VCLAR-01**: A generic, prop-driven "clarification choices" composable renders a question + a list of options — each `{ id: opaque String, label: String }` — with `onSelect(id)` and a dismiss (= cancel), as a compact PRESSABLE choice surface (chips/buttons) — so the user resolves a model clarification ("Which list?") by TAPPING, never by speaking again. Visually informative, NOT an error; domain-neutral (apps map the engine's `Clarification` → these props; no engine dependency, L7); registered with a full states matrix (§6.3, A19, Yahir 2026-09-30)
 - [ ] **VOUT-04**: The outcome sheet renders a generic needs-confirmation state from props — a reason string, single-or-batch proposed item(s), and confirm/cancel actions — domain-neutral so it covers both SB's `MutationGate`/`VoiceConfirmGate` risk confirm and CT's weak-match single/batch confirm (A2/E1)
 
 ### Catalog & API integrity
@@ -71,6 +72,7 @@ Each requirement maps to exactly one phase. Roadmap: `.planning/ROADMAP.md` (Pha
 | VOUT-02 | Phase 11 | Pending |
 | VOUT-03 | Phase 11 | Pending |
 | VUNDO-01 | Phase 11 | Pending |
+| VCLAR-01 | Phase 11 | Pending |
 | VOUT-04 | Phase 12 | Pending |
 | CAT-01 | Phase 13 | Pending |
 | API-01 | Phase 13 | Pending |
@@ -79,10 +81,10 @@ Each requirement maps to exactly one phase. Roadmap: `.planning/ROADMAP.md` (Pha
 | SHIP-02 | Phase 14 | Pending |
 
 **Coverage:**
-- v2.4 requirements: 15 total
-- Mapped to phases: 15 ✓ (Phase 10: 5, Phase 11: 4, Phase 12: 1, Phase 13: 3, Phase 14: 2)
+- v2.4 requirements: 16 total
+- Mapped to phases: 16 ✓ (Phase 10: 5, Phase 11: 5, Phase 12: 1, Phase 13: 3, Phase 14: 2)
 - Unmapped: 0 ✓ (no orphans, no duplicates)
 
 ---
 *Requirements defined: 2026-09-29*
-*Last updated: 2026-09-29 — split Phase 13 → 13 (catalog integrity + docs: CAT-01/API-01/INV-01) + 14 (cut v2.4.0: SHIP-01/SHIP-02), so the tag cut follows a green Phase 13 (orchestrator ruling, INC-2026-09-30-01)*
+*Last updated: 2026-09-30 — added VCLAR-01 (tap-to-clarify choices composable, §6.3 Yahir UX) mapped to Phase 11*
