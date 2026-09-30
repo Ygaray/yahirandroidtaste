@@ -1,152 +1,239 @@
 # Project Research Summary
 
-**Project:** yahirandroidtaste (hub stewardship)
-**Milestone:** v1.0
-**Domain:** Design-system stewardship of a mature, invariant-guarded, two-consumer reusable Jetpack Compose UI hub
-**Researched:** 2026-08-28
+**Project:** yahirandroidtaste
+**Milestone:** v2.4
+**Domain:** Reusable Jetpack Compose design-system library — additive, prop-driven AI-voice command UI cohort (settings surfaces + outcome/confirm surfaces)
+**Researched:** 2026-09-29
 **Confidence:** HIGH
 
 ## Executive Summary
 
-This is **not a greenfield build**. `yahirandroidtaste` is an existing, single-module, additive-only reusable Compose UI library with two live consumers (SecondBrain pinned `v1.10.0`, CalTracker pinned `v1.5.0`). This milestone is five **stewardship deliverables** — make the latent two-tier taxonomy legible, audit the catalog for incoherence, add governance gates, harden repin bookkeeping, and execute the one coordinated breaking "gardening" pass — all while preserving four load-bearing invariants (one-way dependency / no domain assumptions, ComponentRegistry drift guard, zero-baseline detekt, Metalava `apiCheck`). No new runtime dependency is permitted; every version is already pinned and every tool the work needs already exists in `tools/`, the test harness, or the external control-plane `repin_status.py`.
+Milestone v2.4 adds a cohort of **generic, presentational Compose composables** to the reusable
+`yahirandroidtaste` hub: two settings cards (provider/API-key, model), a command-approach card
+(tier ladder + offline-only + max-tier cap), and a single outcome/confirm sheet that renders
+success, loud-failure, and needs-confirmation states. The defining constraint — repeated across all
+four research streams — is that this is a **display-and-emit** slice: the library renders whatever
+the consumer passes and emits decisions via callbacks; it never validates a key, fetches a model
+list, calls a provider, parses an engine result, or enforces the tier ladder. That is INV-01 (the
+one-way-dependency invariant) and it is a hard ship gate (Phase 13 SC-3).
 
-The recommended approach is dictated by the existing substrate, not chosen freely. Tier data lives as a **required `enum class Tier { PRIMITIVE, PATTERN }` field on `ComponentRegistry.Entry`** (never a parallel map — that violates the single-source-of-truth invariant), threaded through all 53 `Entry(...)` call sites across the 9 family files and surfaced as a gallery badge. The single most load-bearing technical finding: adding *any* field to `Entry` — required or defaulted — rewrites its one-line Metalava ctor signature in `api.txt`, so the set-based `verify-api-additive.sh` guard reads it as a lane-3 removal. Phase 1 is therefore unavoidably a **curation-lane commit + `apiDump` rebaseline**, not "just an additive field." Because that cost is paid either way, making `tier` required (no default) is free and buys a compile-time "every entry is tiered" guarantee.
+The recommended approach is **zero new dependencies, all-additive public API.** Every control maps
+to a stock Material 3 / Compose API already resolvable from the pinned Compose BOM `2026.04.01`
+(including the two first-in-tree APIs, `ExposedDropdownMenuBox` and `PasswordVisualTransformation`),
+and every new symbol is net-new (no growth of shipped types). The architecture is settled: new
+composables land **flat in `component/`**, new immutable all-`val` models in `model/`, and the whole
+cohort registers as **one new tenth ComponentRegistry family** ("Voice Command" label), with the
+outcome sheet built as a **single sealed-state composable** so Phase 12's confirmation state is a
+purely additive subtype on the Phase 11 shell.
 
-The dominant risks are all about **discipline and scale**, not implementation difficulty. Phases 1–4 are documentation/tooling with low physical risk; their value is judgment quality and de-risking Phase 5. Phase 5 is the only phase with real breaking-change and multi-repo cost — its marquee failure mode is **stranding a consumer** (a documented precedent: SecondBrain sat stranded at `v1.8.2` through two cycles). Mitigation: treat the coordinated repin as atomic across both consumers, gate tag-cut and consumer edits behind human sign-off (sequential-in-hub, tags immutable), and prove the repin matrix reconcile *before* exercising it on the real break. The second discipline risk is **over-engineering governance for two consumers** — the requirements deliberately defer GOV-04 (build-fail on missing tier) and ECO-02 (auto-repin) to v2; do not pull them forward.
+The risks are almost entirely about silent erosion of reusability and API stability, not technical
+difficulty. The top four: (1) a domain noun leaking into a public name/param/string (the repo's
+`DomainVocabularyDriftGuardTest` mechanically rejects a `Voice`-headed composable name); (2) the
+needs-confirmation prop shape fitting only one consumer — mitigated by modeling single as a
+`List`-of-one batch and paper-validating both SB and CT call-sites before coding; (3) a non-additive
+`copy()`/data-class ABI break (the documented `TagChipUiModel` lesson) — mitigated by all-new,
+constructor-frozen, all-`val` models; and (4) missing `ComponentRegistry` registration, which only
+fails in the **full** test suite, not scoped executor runs. All are prevented at authoring time with
+Phase 13 as the backstop gate.
 
 ## Key Findings
 
 ### Recommended Stack
 
-No new stack — every version is already pinned (Kotlin 2.3.20, AGP 9.2.1, Compose BOM 2026.02.01, Hilt 2.60.1 bindings-only, JDK 17, minSdk 35 / compileSdk 36.1). The "stack" question is *which existing language features, test patterns, and tooling techniques* implement the five deliverables with zero new dependencies. Single-module hub at repo root (D-01): every Gradle command drops the module prefix.
+**No stack additions and no version changes.** All in-scope UI is generic, prop-driven, and
+presentational — Material 3 plus the library's already-declared Compose surface covers 100%. The two
+APIs the design needs that aren't yet used in-tree ship inside the pinned Compose BOM `2026.04.01`,
+so they add no coordinate. Adding anything network/serialization/engine-shaped (OkHttp, Retrofit,
+kotlinx-serialization, a `voice-action-engine` dependency) would break INV-01 and fail the Phase 13
+ship gate — these are forbidden, not merely discouraged.
 
-**Core technologies (all already present):**
-- **Kotlin `enum class Tier`** — the tier representation; gives exhaustiveness + `.name` for gallery display, zero dependency. Precedent: repo already ships public enums.
-- **Metalava (`apiDump`/`apiCheck`)** — the freeze-gate; the rebaseline mechanism for Phase 1 (tier field) and Phase 5 (unify break). Kotlin built-in ABI validators were already spiked and rejected on this AGP-9 stack.
-- **JUnit source-TEXT-scan tests** — reuse `ComponentRegistryDriftGuardTest`'s reflection-free name extraction for the GOV-02 domain-noun guard (reflection is fragile against Compose synthetic params).
-- **Existing `tools/` governance chain** — `classify-hub-change.sh --mode curation` and `HUB_LANE_OVERRIDE` are the *designed* escape hatch for deliberate non-additive stewardship (Phases 1 and 5).
-- **External `repin_status.py reconcile`** (control plane, outside this repo) — Phase 4 contributes only a Markdown `repin-matrix` marker block; no Python added here.
+**Core technologies (all already declared):**
+- Compose BOM `2026.04.01` — single source of Compose versions; every needed API resolves from it, no per-artifact bump
+- `material3` (via BOM) — Cards, `ModalBottomSheet`, `Switch`, `SegmentedButton`, `ExposedDropdownMenuBox`, `OutlinedTextField`; the primitive layer for every control
+- `compose.ui` + `material-icons-extended` (via BOM) — `PasswordVisualTransformation` for key masking, plus failure/tier glyphs
+- Hilt `2.60.1` (bindings-only) — available if a `@Singleton` holder is ever needed; almost certainly not (these are stateless). Never add `@HiltAndroidApp`/`@AndroidEntryPoint`
+
+Reuse, don't reinvent: `SheetScaffold` (house `ModalBottomSheet` wrapper), `SegmentedOptionSelector`,
+`ClearableTextField`, `AppChip`/`ChipBar`, `DynamicActionButton`, and the theme's `error`/
+`errorContainer` roles for the loud-failure state.
 
 ### Expected Features
 
-The five "features" are stewardship deliverables. The overriding discipline is **right-sizing**: every mature-org practice has a heavyweight form (dashboards, multi-tier taxonomies, forbidding gates, auto-repin) that is *wrong* at two consumers.
+This is a presentational slice, so "features" = component-behavior expectations and, critically, the
+**prop-shape + 4-cell states-matrix** per composable.
 
 **Must have (table stakes):**
-- Every registry entry tiered + tier badge in gallery + design-intent doc with per-tier **contract** and **litmus** (LEG-01/02)
-- Written audit of all 9 families, every finding dispositioned (unify / keep-with-rationale / prune), concrete unify list (AUD-01)
-- Tier-aware litmus documented + **flag-not-forbid** domain-noun drift guard + GOV-03 pre-commit false-flag fixed (GOV-01/02/03)
-- `repin-matrix` markers + `reconcile` runs hand-edit-free reflecting true pins (REPIN-01)
-- Unify list implemented, drift guard + Metalava green (rebaselined), one tag, both consumers repinned + Gate-1 verified (GARD-01/02)
+- Provider/key card — provider selector (segmented ≤4 / dropdown if more), masked key entry default-hidden with reveal toggle, `keyState` render (library never validates), set/not-set via last-4 prop
+- Model card — `models` list + selection + empty/disabled (no provider) / loading / error states
+- Command-approach card — ordered display-only tier ladder + offline-only toggle + max-tier cap rendered *on* the ladder (capped rungs greyed-but-present); derived per-rung availability computed in the composable from primitives
+- Outcome sheet — success/failure from props, nullable "handled by" provenance chip, and a **loud** (error-color, icon, headline, reason) failure state
+- Needs-confirmation — **one composable, one prop shape**: `reason` + `items: List` (single = list-of-one) + `AllOrNothing`/`PerItem` selection mode + symmetric confirm/cancel
+- Every composable registered in `ComponentRegistry` with a full 4-cell states matrix
 
-**Should have (the good-vs-checkbox delta — the point of the milestone):**
-- Litmus as one **decidable question** + borderline-cases section (P1)
-- Quantified duplication + `keep-with-rationale` as first-class + consumer call-sites per unify (P2)
-- Guard suggests the resolution + allowlist as the domain-coupling audit trail (P3)
-- Drift/behind flag per consumer + idempotent reconcile (P4)
-- Per-component old→new migration map + single batched tag (P5)
+**Should have (competitive / additive slots):**
+- `onValidateKey` "test key" action slot (state + callback only; consumer does the probe)
+- Per-item include/exclude for `PerItem` batch (needed for CT weak-match "confirm each")
+- Destructive `severity` emphasis on confirm; per-rung tag colors (reuse v2.3.0 TAGCOLOR); provenance `trace` expander
 
-**Defer (v2+):**
-- GOV-04 (build-failing tier-presence enforcement), ECO-02 (auto-repin tooling)
-- Third/fourth tier, per-tier module split, cross-repo adoption scanner, severity-scoring, forbidding name gates, RFC/approval boards
+**Defer (v2+ / consumer wave):**
+- Cost/usage surfacing in the model card (needs an undefined usage contract)
+- Multi-key / key-rotation UI (no consumer needs it; tempts library-side storage)
 
 ### Architecture Approach
 
-Integration research, not greenfield: new data, docs, and gates slot into the existing `ComponentRegistry → drift-guard → gallery → governance-chain → repin` substrate without touching the four invariants. Tier lives ON `Entry`; the design-intent doc is a NEW `docs/DESIGN-INTENT.md` distinct from `API.md`; P4's machine matrix is a NEW marker-delimited block, NOT the existing §1 prose table.
+The cohort integrates additively into the existing library: composables **flat in `component/`**
+(the 60 existing components are flat; families are a registry taxonomy, not a package layout);
+immutable all-`val` models in `model/`; and one new tenth registry family, `voiceCommandFamilyEntries`,
+mirroring how Progress/Metrics and Tactile Foundation each landed as a cohesive new-family drop.
+Data flow is strictly prop-in / callback-out; the library holds nothing and calls nothing.
 
 **Major components:**
-1. **`ComponentRegistry.Entry` + `entries`** — single authoritative record; P1 adds `tier` here and on all 53 call sites across 9 family files.
-2. **Gallery (`ExplorerEntry` NavHost)** — index → family → detail; P1 renders the tier badge on list row + detail header.
-3. **Governance chain (`tools/` + pre-commit)** — lane 1/2/3 classifier; P1 trips it (curation lane), P3 fixes the false-flag, P5 lands the deliberate lane-3 break.
-4. **`docs/` artifacts** — NEW `DESIGN-INTENT.md` (P1) and `COHERENCE-AUDIT.md` (P2).
-5. **`ECOSYSTEM.md` + external `repin_status.py`** — P4 adds machine matrix markers; P5 records the new tag.
+1. New `component/*` composables — render voice settings/outcome UI from props+callbacks; presentation-only, hoisted state
+2. New `model/*` immutable models — a sealed outcome/confirm state + supporting UI models the consumer maps its engine output into (all-`val`, Compose-`STABLE`-inferable)
+3. One sealed-state outcome sheet (host + content split) — Success/Failure in Phase 11; `NeedsConfirmation` added as an additive subtype + one `when` branch in Phase 12
+4. New registry family + gallery wiring — one `Entry` per composable (`tier = PATTERN`, 4-cell states), plus the family in `ExplorerFamilies` consts + `ORDERED_KEYS`
+
+> **Doc-drift flag:** `CLAUDE.md`/the brief say "seven" registry families; the live code
+> concatenates nine, and this cohort makes ten. Phase 13 should correct that wording.
 
 ### Critical Pitfalls
 
-1. **Adding `tier` the wrong way** — a silent default hollows out legibility (every entry "tiered" but nobody decided); mid-list insertion shifts `componentN()`. → Add `tier` **required, last position**; if defaulted for staged migration, pair with a fail-on-default test the same phase.
-2. **Treating Phase 1 as "just a refactor"** — `Entry` is public API; the change trips Metalava + the additive guard. → Plan it as a known curation commit + deliberate `apiDump`; it's additive (no consumer break) but needs a tag before tiers ship.
-3. **Stranding a consumer in the Phase 5 repin** (the marquee failure, with real precedent). → Atomic across both consumers: stage both bumps, don't cut the tag until both ready, Gate-1 verify both, prove pins moved via reconcile.
-4. **Governing domain vocabulary by importing domain vocabulary** — a consumer-term denylist ships domain knowledge into the hub, breaking the very invariant it protects. → Keep the guard structural/heuristic and flag-not-forbid; consumer terms only in test fixtures.
-5. **Blind `apiDump` masking an unintended break** — one-shot "make it green" accepts every delta. → Review the `api.txt` diff line-by-line; every changed line must map 1:1 to the intended change set.
+1. **Domain noun/assumption leak into a "generic" composable** — a name, param, string, or enum encodes one consumer's domain. The repo's `DomainVocabularyDriftGuardTest` mechanically rejects a public composable whose head token isn't allowlisted. Settle a structural naming vocabulary at the top of Phase 10; keep every user-facing string a prop with no domain default; never allowlist a domain head token to silence the guard.
+2. **Needs-confirmation shape too narrow for both consumers** — fits SB's risk-confirm OR CT's weak-match, not both. Model the structural union: `reason: String` + `items: List` (single = size 1) + slot APIs (`trailingContent`) for per-consumer badges. Paper-validate both SB `MutationGate` and CT weak-match call-sites against one signature *before* coding (Phase 12 SC-4).
+3. **Non-additive API / `copy()`-ABI break** — growing a `data class` primary constructor is an unfixable ABI removal (`@JvmOverloads` can't paper over synthetic members). Prefer all-new symbols; freeze model constructors on first authoring; add later fields as defaulted body properties or use non-`data`/interface+slots; keep models all-`val` (a `var` also kills `STABLE`).
+4. **Missing `ComponentRegistry` registration — full-suite-only guard** — CATALOG-03's drift guard fails only in the full suite, not scoped executor tests, so a phase looks green while the gallery silently lacks the component. Register-as-you-author (name + 4-cell states + tier) and run `./gradlew testDebugUnitTest` (full suite) at least once per phase.
+5. **Forbidden dependency/coupling** — OkHttp/serialization/engine sneaking in to "make it work." Hold the line: the library renders passed-in state and never fetches/validates/parses/calls. No new `build.gradle.kts` dependency this milestone.
+6. **Silent/subtle failure state** — happy-path-first authoring leaves failure a muted subtitle or an empty `when` branch. Treat failure as first-class (error color/icon/headline/reason), make the `when` exhaustive with a loud fallback, and drive the failure/cancel branches explicitly in Gate-1 self-UAT.
 
-Also watch: unfalsifiable tier taxonomy (litmus must be a *decidable* test), drift-guard integrity breaks during unify, un-actionable audit findings, over-engineered governance, marker/prose double-source drift, autonomous tag/repin past the human gate, and detekt baseline burial.
+### Cross-cutting tension to resolve: composable naming vs. family/model naming
+
+The research streams **split** on voice naming and this must be an explicit decision, not a silent
+pick:
+
+- **ARCHITECTURE** proposes `Voice*`-prefixed composable names/models (`VoiceProviderSettingsCard`,
+  `VoiceOutcomeSheet`, `VoiceOutcomeUiState`, …) and a "Voice Command" family.
+- **PITFALLS** shows the live `DomainVocabularyDriftGuardTest` **rejects** any public composable
+  whose head token is `Voice` — only `VoiceCard`/`MicButton`/`VoiceRenameTagsSheet` are grandfathered
+  in `DOMAIN_VOCABULARY`, and `Voice` is not in `PRIMITIVE_NOUN_ALLOWLIST`. A new `Voice…`
+  composable goes RED at build time.
+
+**Reconciliation (recommended, flag for discuss/planning):** the two are separable concerns.
+- **Composable names must be structural primitives** — e.g. `CommandOutcomeSheet` / `ConfirmationSheet`,
+  `ProviderKeyCard`, `ApproachLadderCard`, `ModelSelectorCard` — using already-allowlisted head tokens
+  (`Card`, `Sheet`, `Bar`, `Ladder`, `Badge`, `Field`, `Selector`, `State`, `Confirmation`). Note
+  even these head tokens (`Command`, `Approach`, `Provider`) must be checked against the live
+  allowlist; some may themselves need resolution.
+- **The family label and UI-model class names are a separate question** — the family display string
+  ("Voice Command") and model class names are not scanned by the composable head-token guard, so they
+  have more latitude, but they should still read domain-neutral where practical.
+
+Do **not** silently adopt the `Voice*` names from ARCHITECTURE, and do **not** reflexively allowlist
+`Voice`/`Command` into `PRIMITIVE_NOUN_ALLOWLIST` to make the guard pass. This is a naming decision
+to settle **at the top of Phase 10** (discuss/planning) and reuse across all phases.
 
 ## Implications for Roadmap
 
-The existing 5-phase ROADMAP is validated by research. Numeric order `1 → 2 → 3 → 4 → 5` is safe and violates no invariant. Research surfaces one sequencing refinement to flag for discussion.
+The roadmap is already fixed at four phases (10–13); research confirms the ordering and loads each
+with its prop-shapes, reuse targets, and pitfalls.
 
-### Phase 1: Tier Legibility (LEG-01, LEG-02)
-**Rationale:** Defines the tier vocabulary both P2 (altitude-mismatch findings) and P3 (tier-aware litmus) consume — the milestone's spine.
-**Delivers:** `Tier` enum + required field on `Entry` (all 53 sites), gallery badge, `docs/DESIGN-INTENT.md` with per-tier contract + decidable litmus.
-**Uses:** Kotlin enum, Material3 badge (both on classpath), Metalava `apiDump`.
-**Avoids:** Pitfalls 1, 2, 3 — required field (no hollow default), curation-lane + `apiDump` (recognize the API event), decidable litmus (falsifiable taxonomy).
+### Phase 10: Settings surfaces (provider/key, model, command-approach cards)
+**Rationale:** Independent of the outcome sheet; the largest authoring surface; the phase where the
+**naming vocabulary must be settled** and reused everywhere after.
+**Delivers:** Three prop-driven settings cards (provider/key with masked-reveal entry + `keyState`;
+model with list/selection/empty-loading-error; command-approach with ordered ladder + offline-only +
+max-tier cap rendered on the ladder).
+**Uses:** `ExposedDropdownMenuBox`/`SegmentedOptionSelector`, `PasswordVisualTransformation`,
+`ClearableTextField`, `Switch`, theme roles — all from the pinned BOM, zero new deps.
+**Avoids:** Domain-noun leak (Pitfall 1 — settle names here), forbidden dep (Pitfall 5 — cards hold
+no key, call nothing), non-additive API (Pitfall 3 — all-new symbols).
 
-### Phase 2: Coherence Audit (AUD-01)
-**Rationale:** "Altitude mismatch" is only nameable once tiers exist (hard dep on P1); produces the unify list that is P5's entire work order.
-**Delivers:** `docs/COHERENCE-AUDIT.md` — 9 families enumerated, every finding typed (overlap / near-duplicate sibling / altitude) and dispositioned, concrete unify tuples with consumer call-sites.
-**Avoids:** Pitfall 8 — dispositions as verbs not adjectives; every unify a concrete (A,B)→C tuple.
+### Phase 11: Outcome/failure sheet (sealed-state shell)
+**Rationale:** Independent of Phase 10, runs in parallel; must ship the **sealed** `Outcome` state
+(Success/Failure) and a sheet param typed as the sealed interface so Phase 12 is purely additive.
+**Delivers:** One outcome sheet inside `SheetScaffold` with success, a **loud** failure state, and a
+nullable "handled by" provenance chip; host+content split.
+**Implements:** The sealed-state outcome-sheet architecture (Pattern 1).
+**Avoids:** Silent/subtle failure (Pitfall 6 — this phase owns the loud-failure gate; do not use
+`AttentionCue`, whose KDoc forbids failure use), non-additive API (freeze the sealed type here).
 
-### Phase 3: Governance Gates (GOV-01, GOV-02, GOV-03)
-**Rationale:** Independent of P2 (needs only P1's tiers); its GOV-03 false-flag fix unblocks clean doc-commits for P2 and P4.
-**Delivers:** Tier-aware litmus prose, flag-not-forbid `DomainVocabularyDriftGuardTest` with allowlist, pre-commit path-scope fix (retiring the `HUB_LANE_OVERRIDE=2` planning-doc bypass).
-**Avoids:** Pitfalls 4, 9, 12 — structural guard (no domain terms), stay inside the v2 boundary, zero detekt baseline.
+### Phase 12: Needs-confirmation state (additive subtype)
+**Rationale:** Gates on Phase 11's sheet — `NeedsConfirmation` is a new subtype + one `when` branch,
+no signature change. This phase exists to satisfy **both** consumers with one shape.
+**Delivers:** `reason` + `items: List` (single = list-of-one) + `AllOrNothing`/`PerItem` +
+symmetric confirm/cancel + optional per-item slot and destructive severity.
+**Avoids:** The narrow-confirm-shape trap (Pitfall 2 — paper-validate SB `MutationGate` and CT
+weak-match call-sites against one signature before coding), silent cancel/reject state (Pitfall 6).
 
-### Phase 4: Repin Bookkeeping Hardening (REPIN-01)
-**Rationale:** Independent track, sequenced before P5 so reconcile is proven on current pins before the real coordinated break (closes INC-2026-08-28-03).
-**Delivers:** `<!-- repin-matrix:begin/end -->` markers + machine-owned 4-column block (header contains "Consumer") seeded with true pins, hand-edit-free `reconcile`.
-**Avoids:** Pitfall 10 — single machine source, don't wrap markers around the §1 prose table (reconcile would destroy it).
-
-### Phase 5: Gardening — Unify & Coordinated Repin (GARD-01, GARD-02)
-**Rationale:** The one deliberate breaking phase; consumes P2's unify list + P4's proven reconcile. The thing the additive-only channel structurally cannot do.
-**Delivers:** Unify dispositions implemented, drift guard + Metalava rebaselined, migration map, one immutable tag (semver argues `v2.0.0`), both consumers repinned + Gate-1 verified.
-**Avoids:** Pitfalls 5, 6, 7, 11 — atomic repin (no strand), line-by-line rebaseline review, registry integrity kept, human-gated tag/repin.
+### Phase 13: Catalog & ship (integrity gate)
+**Rationale:** Gates on all prior phases; the hard verification gate, not new feature surface.
+**Delivers:** Every composable registered in `voiceCommandFamilyEntries` (4-cell states + tier),
+the tenth family wired into `ExplorerFamilies`, full-suite green, Metalava strictly-additive vs
+`v2.3.0`, detekt zero-baseline, the "seven families" doc-drift corrected, and `v2.4.0` cut.
+**Avoids:** Missing registration (Pitfall 4 — full suite, not scoped tests), non-additive API
+(Pitfall 3 — `apiCheck` + `verify-api-additive.sh`), forbidden dep (Pitfall 5 — grep sources +
+`build.gradle.kts`).
 
 ### Phase Ordering Rationale
-- **P1 is the hard prerequisite** for P2 and P3 (both consume the tier vocabulary/litmus).
-- **P2 (scope) + P4 (verification) gate P5** — the unify list is P5's backlog, the matrix drift flag is P5's no-strand pre-flight.
-- **P3 is independent of P4** — both are hardening tracks, parallelizable and sequenceable ahead of P5.
-- **Sequencing refinement to discuss:** running **P3 before P2/P4** lets their pure-doc commits land without `HUB_LANE_OVERRIDE`. The roadmap's numeric order still works (P2/P4 use the override until P3 lands). Either is invariant-safe — flag as a discuss decision.
+- P10 ∥ P11 are genuinely independent (settings vs outcome); running them in parallel is safe.
+- P12 depends on P11 because it extends the same sealed sheet; shipping the sealed type early keeps
+  P12 additive (decisive for Metalava).
+- P13 is last because it is the aggregate integrity gate (registry + additive API + no-dep + ship).
+- Every pitfall is a per-composable authoring discipline (P10–12) with P13 as the mechanical backstop
+  — the *thinking* must not be deferred to P13, since a break authored in P10 and caught in P13 costs
+  a P10 rework.
 
 ### Research Flags
 
-Phases likely needing deeper research/verification during planning:
-- **Phase 1:** Confirm whether Metalava emits an overloaded ctor (→ lane-2 only) or rewrites the single ctor line (→ lane-3) for a defaulted-param addition on a Kotlin data class. Budget the `api.txt` regen + governance override either way.
-- **Phase 3:** REPRODUCE the GOV-03 false-flag first — `verify-additive-diff.sh` already scopes to `src/main`, so the exact offending step (classifier, api-additive lane, or pre-commit) must be pinned before editing. Do not assume the fix locus.
+Phases likely needing deeper attention during planning:
+- **Phase 10:** The command-approach card is the one **non-standard** surface (no off-the-shelf
+  Material pattern for a tier ladder + on-ladder cap marker + derived offline availability). Its
+  interaction model and states matrix warrant deliberate design in discuss/plan. Also the phase that
+  must resolve the **naming-vocabulary tension** above.
+- **Phase 12:** The dual-consumer confirm prop shape is the sharpest design risk; plan must include
+  both worked call-sites (SB + CT) as acceptance evidence before authoring.
 
-Phases with well-documented patterns (lighter research):
-- **Phase 2:** Doc-only audit against the registry SSOT; method (interface inventory) is established.
-- **Phase 4:** Exact `repin_status.py` marker/table contract is verified against tool source.
-- **Phase 5:** Mechanics (curation lane, rebaseline, repin ritual) are documented in `ECOSYSTEM.md §7` + `~/.claude/context/workflows/repin.md`; the *judgment* (which siblings fold) comes from P2.
+Phases with standard patterns (lighter research):
+- **Phase 11:** Well-understood M3 bottom-sheet + loud-error patterns; house `SheetScaffold` exists.
+- **Phase 13:** Mechanical integrity gate against existing, documented guards and tooling.
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | Grounded in repo's own pinned versions, `api.txt`, tools, and external `repin_status.py` — cited, not invented. |
-| Features | MEDIUM | Practices cross-corroborated across authoritative DS sources; their right-sized application to this two-consumer hub is opinionated synthesis. |
-| Architecture | HIGH | All integration points verified against live source, tests, tooling, `api.txt`; two items flagged MEDIUM (P1 lane, GOV-03 locus). |
-| Pitfalls | HIGH | Grounded in live code + the real stranded-consumer precedent in `ECOSYSTEM.md`. |
+| Stack | HIGH | Grounded in the live `build.gradle.kts` / `libs.versions.toml` and in-tree API greps; "no new deps" is verified, not inferred |
+| Features | HIGH | Established M3/Compose UX patterns; prop-shapes derived from the frozen §6.3 contract + SB `MutationGate`/`VoiceConfirmGate` and CT weak-match |
+| Architecture | HIGH | Grounded in live source (`ComponentRegistry.kt`, drift-guard tests, `ExplorerIndexScreen.kt`, `model/`, `API.md`) |
+| Pitfalls | HIGH | Grounded in the repo's own live guards, the documented v2.0 `copy()`-ABI break, and the cross-repo HANDOFF |
 
 **Overall confidence:** HIGH
 
 ### Gaps to Address
-- **P1 lane-2 vs lane-3 under Metalava defaulted-ctor emission** (MEDIUM): resolve by running `apiDump` in Phase 1 planning and inspecting the emitted ctor line. Either way the mitigation (curation commit + rebaseline) holds.
-- **GOV-03 false-flag root cause not yet located** (MEDIUM): the guard already scopes to `src/main`, so a residual path or a mixed-commit artifact is suspected. Reproduce with a `.planning/`-only commit under the active hook before editing.
-- **Semver for the Phase-5 break** (`v2.0.0` vs continued `v1.x`): a decision for the owner — the ecosystem has only ever cut additive `v1.x` minors.
+- **Naming vocabulary (composable head tokens):** the exact structural names must be checked against
+  the live `PRIMITIVE_NOUN_ALLOWLIST`/`DOMAIN_VOCABULARY` — `Command`/`Approach`/`Provider` head
+  tokens may themselves need a decision. Resolve in Phase 10 discuss/planning; do not assume.
+- **Command-approach card interaction design:** no prior-art Material pattern; the ladder + on-ladder
+  cap + derived offline-availability presentation needs a concrete states-matrix decision in Phase 10.
+- **Confirm shape per-item vs top-level callbacks:** whether confirm/cancel live on the sealed arm or
+  as nullable sheet callbacks, and the exact `PerItem` selection API, should be nailed down with both
+  consumer call-sites in Phase 12 planning.
+- **"Handled by" nullability on failure:** confirm the provenance indicator renders on failure
+  ("attempted by X, failed") not only on success — a Gate-1 verification item.
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- Repo source: `ComponentRegistry.kt`, 9 `*FamilyScreen.kt` (53 call sites), `ComponentRegistryDriftGuardTest.kt`, `api.txt`, `build.gradle.kts`, `CLAUDE.md` — pinned versions, Entry shape, drift-guard machinery.
-- `tools/classify-hub-change.sh`, `verify-additive-diff.sh`, `verify-api-additive.sh`, `hooks/pre-commit` — lane semantics, `--mode curation` / `HUB_LANE_OVERRIDE`, tag-baseline behavior.
-- `~/.claude/context/deps/repin_status.py` — exact `repin-matrix` marker + table contract, reconcile overwrite semantics, `ValueError` on absent markers.
-- `ECOSYSTEM.md` (§1 pins, §7 repin ritual, stranded-SB precedent), `.planning/PROJECT.md` / `ROADMAP.md` / `REQUIREMENTS.md`.
+- `.planning/research/STACK.md` — no-new-deps finding grounded in `build.gradle.kts`, `libs.versions.toml`, in-tree API greps, pinned Compose BOM `2026.04.01`
+- `.planning/research/FEATURES.md` — per-phase prop-shapes, states matrices, anti-features; frozen §6.3 contract + SB/CT confirm concepts
+- `.planning/research/ARCHITECTURE.md` — flat `component/`, one new registry family, sealed-state sheet; grounded in `ComponentRegistry.kt`, drift-guard tests, `ExplorerIndexScreen.kt`, `model/`, `API.md`
+- `.planning/research/PITFALLS.md` — domain drift guard, `copy()`-ABI break (`TagChipUiModel`), CATALOG-03 full-suite-only guard, INV-01, loud-failure rule; grounded in live guards + cross-repo HANDOFF
+- `.planning/ROADMAP.md`, `.planning/PROJECT.md`, root `CLAUDE.md` — phase success criteria, INV-01, additive + human-gated ship ritual
 
 ### Secondary (MEDIUM confidence)
-- Design-system practice literature (Brad Frost interface inventory + recipe tiers, Rad UI three-layer rule, UXPin/Miro governance, Rangle Radius Tracker) — establishes the mature-org forms these deliverables scale *down* from.
+- Material 3 segmented-button / dropdown count guidance; password-field accessibility patterns (cited in FEATURES.md) — established UX consensus
 
 ### Tertiary (LOW confidence)
-- Two-consumer right-sizing and the mapping onto this hub's specific phases — author synthesis grounded in the planning docs.
+- None load-bearing; all findings resolve to repo source or the frozen contract
 
 ---
-*Research completed: 2026-08-28*
+*Research completed: 2026-09-29*
 *Ready for roadmap: yes*
