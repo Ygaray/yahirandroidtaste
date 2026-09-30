@@ -54,6 +54,10 @@ package io.github.ygaray.yahirandroidtaste.component {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void AppChip(String label, boolean isSelected, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingIcon, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingIcon, optional Float? relatednessStrength, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onLongClick, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onDoubleClick, optional androidx.compose.ui.graphics.Color? containerColorOverride);
   }
 
+  public final class ApproachLadderCardKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ApproachLadderCard(java.util.List<io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel> ladder, optional Boolean? offlineOnly, optional kotlin.jvm.functions.Function1<java.lang.Boolean,kotlin.Unit>? onOfflineOnlyChange, optional String? maxTierId, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onMaxTierChange, optional androidx.compose.ui.Modifier modifier);
+  }
+
   public final class AttentionCueDefaults {
     field public static final io.github.ygaray.yahirandroidtaste.component.AttentionCueDefaults INSTANCE;
   }
@@ -866,6 +870,29 @@ package io.github.ygaray.yahirandroidtaste.icon {
 }
 
 package io.github.ygaray.yahirandroidtaste.model {
+
+  public final class ApproachRungUiModel {
+    ctor public ApproachRungUiModel(String id, String label, int rank, optional boolean enabled, optional boolean offlineCapable, optional String? description);
+    method public String component1();
+    method public String component2();
+    method public int component3();
+    method public boolean component4();
+    method public boolean component5();
+    method public String? component6();
+    method public io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel copy(optional String id, optional String label, optional int rank, optional boolean enabled, optional boolean offlineCapable, optional String? description);
+    method @InaccessibleFromKotlin public String? getDescription();
+    method @InaccessibleFromKotlin public boolean getEnabled();
+    method @InaccessibleFromKotlin public String getId();
+    method @InaccessibleFromKotlin public String getLabel();
+    method @InaccessibleFromKotlin public boolean getOfflineCapable();
+    method @InaccessibleFromKotlin public int getRank();
+    property public String? description;
+    property public boolean enabled;
+    property public String id;
+    property public String label;
+    property public boolean offlineCapable;
+    property public int rank;
+  }
 
   public final class BrowseSortPreference {
     ctor public BrowseSortPreference(io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortOption option, io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortDirection direction);

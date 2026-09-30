@@ -20,8 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.component.ApproachLadderCard
 import io.github.ygaray.yahirandroidtaste.component.ModelSelectCard
 import io.github.ygaray.yahirandroidtaste.component.ProviderKeyCard
+import io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel
 import io.github.ygaray.yahirandroidtaste.model.KeyFieldState
 import io.github.ygaray.yahirandroidtaste.model.ModelOptionUiModel
 import io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel
@@ -36,7 +38,7 @@ import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
  *
  * 13-prep groundwork (Phase 10 Plan 01, D-01): this is the NEW tenth registry family. It held
  * ONE entry ([ProviderKeyCard], VSET-01) after Plan 01; Plan 02 appends `ModelSelectCard`
- * (VSET-02) here, and `ApproachLadderCard` (VAPPR-01/02/03) follows in the same list.
+ * (VSET-02) and `ApproachLadderCard` (VAPPR-01/02/03) here.
  */
 internal val voiceCommandFamilyEntries: List<ComponentRegistry.Entry> = listOf(
     ComponentRegistry.Entry(
@@ -100,6 +102,31 @@ internal val voiceCommandFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             ComponentRegistry.StateCell("Focused")
         ),
         content = { ModelSelectCardVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
+    ),
+    ComponentRegistry.Entry(
+        name = "ApproachLadderCard",
+        family = ExplorerFamilies.VOICE_COMMAND,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = { ApproachLadderCardFixture() }
+            ),
+            ComponentRegistry.StateCell(
+                "Pressed / Selected",
+                render = { ApproachLadderCardFixture(initialOfflineOnly = true) }
+            ),
+            // The max-tier cap greyed-but-present treatment is ApproachLadderCard's "unavailable"
+            // posture (D-05 — the cap itself is hideable by null props, not disabled-but-shown),
+            // so this cell previews a capped rung instead of a literal `enabled = false` prop.
+            ComponentRegistry.StateCell(
+                "Disabled",
+                render = { ApproachLadderCardFixture(initialMaxTierId = fixtureLadder.last().id) }
+            ),
+            // ApproachLadderCard's rung rows have no custom focus-visual override — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { ApproachLadderCardVariants() },
         tier = ComponentRegistry.Tier.PATTERN
     )
 )
@@ -199,6 +226,47 @@ private fun ModelSelectCardVariants() {
         selectedModelId = null,
         onModelSelected = {},
         emptyReason = "Set a provider and key first",
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
+}
+
+/** Fixture ladder — explorer-only, never registered (explorer/ is drift-guard denylisted). */
+private val fixtureLadder = listOf(
+    ApproachRungUiModel(id = "cloud", label = "Cloud", rank = 3, offlineCapable = false),
+    ApproachRungUiModel(id = "hybrid", label = "Hybrid", rank = 2, offlineCapable = true),
+    ApproachRungUiModel(id = "local", label = "Local", rank = 1, offlineCapable = true)
+)
+
+/**
+ * Shared hoisted-state wrapper for the States matrix cells — seeds initial offline-only/cap
+ * fixture values and lets the live composable own state from there.
+ */
+@Composable
+private fun ApproachLadderCardFixture(
+    initialOfflineOnly: Boolean = false,
+    initialMaxTierId: String = fixtureLadder.first().id
+) {
+    var offlineOnly by remember { mutableStateOf(initialOfflineOnly) }
+    var maxTierId by remember { mutableStateOf(initialMaxTierId) }
+    ApproachLadderCard(
+        ladder = fixtureLadder,
+        offlineOnly = offlineOnly,
+        onOfflineOnlyChange = { offlineOnly = it },
+        maxTierId = maxTierId,
+        onMaxTierChange = { maxTierId = it },
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
+}
+
+/** ApproachLadderCard's interactive demo, reused verbatim as its Variants. */
+@Composable
+private fun ApproachLadderCardVariants() {
+    SectionLabel("ApproachLadderCard")
+    ApproachLadderCardFixture()
+
+    SectionLabel("ApproachLadderCard — every control hidden (null offlineOnly/cap props)")
+    ApproachLadderCard(
+        ladder = fixtureLadder,
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
     )
 }

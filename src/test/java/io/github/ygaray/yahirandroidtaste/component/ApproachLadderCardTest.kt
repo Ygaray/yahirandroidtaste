@@ -6,6 +6,7 @@ import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -100,7 +101,7 @@ class ApproachLadderCardTest {
         }
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithTag("approach_ladder_card_rung_local").performClick()
+        composeTestRule.onNodeWithText("Local").performClick()
         composeTestRule.waitForIdle()
 
         assertEquals(
@@ -122,11 +123,10 @@ class ApproachLadderCardTest {
         composeTestRule.waitForIdle()
 
         // Cloud (rank 3) and Hybrid (rank 2) are above the "local" cap (rank 1) -- both must stay
-        // visible (conditional-render-no-dead-space), just marked as capped.
+        // visible (conditional-render-no-dead-space), and BOTH carry the capped affordance.
         composeTestRule.onNodeWithText("Cloud").assertExists()
         composeTestRule.onNodeWithText("Hybrid").assertExists()
-        composeTestRule.onNodeWithTag("approach_ladder_card_rung_cloud").assertExists()
-        composeTestRule.onNodeWithTag("approach_ladder_card_rung_hybrid").assertExists()
+        composeTestRule.onAllNodesWithText("Capped").assertCountEquals(2)
     }
 
     @Test
@@ -138,7 +138,7 @@ class ApproachLadderCardTest {
 
         // Null cap props (D-05) -- no rung is wired to a cap-selection callback, proven by the
         // absence of a click action on the rung node (null onClick -> no clickable semantics node).
-        composeTestRule.onNodeWithTag("approach_ladder_card_rung_local").assertHasNoClickAction()
+        composeTestRule.onNodeWithText("Local").assertHasNoClickAction()
     }
 
     @Test
