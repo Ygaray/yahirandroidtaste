@@ -101,3 +101,27 @@ Session names can change after a restart. If one doesn't resolve, ask the orches
 ## 7. Tag / repin intent
 (hubs: what tag and roughly when; consumers: which tags you need, for which phases)
 ```
+
+---
+
+## Current state (2026-09-30)
+
+**Stage:** milestone v2.4 (§6.3) — **Phase 10 PLANNED + plan-checker PASSED; execution NOT started** (Yahir paused at the planning boundary). All milestone setup + R1 rulings committed. HEAD = `8d9b33f`.
+
+**Next command (on resume):** `/gsd-resume-work` → `/gsd-execute-phase 10` (10-01 leads with a blocking public-surface-freeze `checkpoint:decision` → approve it; shapes are orchestrator+consumer-validated, nothing irreversible until Phase 14's cut).
+
+**Roadmap (now 5 phases):** 10 settings cards · 11 outcome/failure sheet + undo · 12 needs-confirmation (**ungated**) · 13 catalog integrity + docs (cuts NO tag) · **14 cut `v2.4.0`** (isolated so the cut follows a green 13). Sequence 10→11→12→13→14.
+
+**Rulings applied + committed this session:**
+- Version `v2.4` / coordinate `v2.4.0` (orchestrator-confirmed).
+- R1 GO-WITH-CHANGES (all 8) + A18 undo (VUNDO-01, P11) folded into CONTEXT.
+- SB + CT confirm/undo shape answers folded into P11/P12 CONTEXT (`38ae4a7`); **P12 ungated**.
+- `git.create_tag=false` (`b20d79d`) — mechanical SHIP-02 guard (INC-2026-09-30-01).
+- Phase 13→13+14 split (`8d9b33f`).
+- discuss-milestone ran **ai mode**; global `milestone_mode` deliberately left at `mixed`.
+
+**Open items waiting on orchestrator / peers:** none blocking. Deferred: consumer repins to `v2.4.0` are Wave-1 (SB `v2.3.0`→, CT `v2.1.0`→). Gallery Gate-1 visual review deferred to milestone-close (Yahir).
+
+**Contract rev absorbed:** A1–A18, E1–E6.
+
+**Resume prompt to relay:** "Read `.planning/cross-repo/HANDOFF.md` (§ Current state) and your `vae-bilingual-multi-repo-effort` memory, then `/gsd-resume-work`; continue with `/gsd-execute-phase 10`. Orchestrator is `yahir-gsd-control-plane-f2`."

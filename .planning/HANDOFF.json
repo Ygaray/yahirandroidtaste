@@ -1,0 +1,54 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-09-30T05:09:35.492Z",
+  "phase": "10",
+  "phase_name": "Voice command settings surfaces",
+  "phase_dir": ".planning/phases/10-voice-command-settings-surfaces",
+  "plan": 1,
+  "task": 0,
+  "total_tasks": 4,
+  "status": "paused",
+  "pause_boundary": "planning-complete / execution-not-started",
+  "completed_tasks": [
+    {"id": "milestone-setup", "name": "new-milestone v2.4 (PROJECT/REQUIREMENTS/ROADMAP)", "status": "done", "commit": "6950b45"},
+    {"id": "research-milestone", "name": "research-milestone → v2.4-DECISION-MAP (13 gray areas)", "status": "done", "commit": "b2a75c0"},
+    {"id": "discuss-milestone", "name": "discuss-milestone ai-mode → CONTEXT for all phases", "status": "done", "commit": "b358fc5"},
+    {"id": "reconvene-R1", "name": "R1 reconvene brief + orchestrator GO-WITH-CHANGES folded", "status": "done", "commit": "77b6f68"},
+    {"id": "cross-repo-shapes", "name": "SB+CT confirm/undo shapes folded into P11/P12; P12 ungated", "status": "done", "commit": "38ae4a7"},
+    {"id": "phase-13-14-split", "name": "split Phase 13 → 13 (catalog+docs) + 14 (cut v2.4.0); git.create_tag=false", "status": "done", "commit": "8d9b33f"},
+    {"id": "plan-phase-10", "name": "Phase 10 planned (2 plans, checker PASSED)", "status": "done", "commit": "a96c6f1"}
+  ],
+  "remaining_tasks": [
+    {"id": "execute-10", "name": "Execute Phase 10 (plans 10-01 tracer, 10-02 expand) — NOT STARTED", "status": "not_started"},
+    {"id": "phase-11", "name": "Plan+execute Phase 11 (outcome/failure sheet + undo)", "status": "not_started"},
+    {"id": "phase-12", "name": "Plan+execute Phase 12 (needs-confirmation state) — ungated", "status": "not_started"},
+    {"id": "phase-13", "name": "Plan+execute Phase 13 (catalog integrity + docs, cuts NO tag)", "status": "not_started"},
+    {"id": "phase-14", "name": "Plan+execute Phase 14 (cut v2.4.0 via §11, message orchestrator ledger row)", "status": "not_started"}
+  ],
+  "blockers": [],
+  "async_jobs": [],
+  "human_actions_pending": [
+    {"action": "Yahir runs /clear (context reset); orchestrator relays the resume prompt", "context": "sessions heavy; planning is the clean boundary", "blocking": false},
+    {"action": "Gallery Gate-1 visual review on the tester (deferred to milestone-close)", "context": "Yahir design-conscious; cap-control tap-a-rung + masked key + loud failures to eyeball", "blocking": false}
+  ],
+  "decisions": [
+    {"decision": "Milestone v2.4 → library coordinate v2.4.0", "rationale": "next additive tag after v2.3.0; orchestrator-confirmed", "phase": "v2.4"},
+    {"decision": "Route version/tag/sequencing to orchestrator (yahir-gsd-control-plane-f2), not Yahir", "rationale": "A14; Yahir's directive 2026-09-29", "phase": "v2.4"},
+    {"decision": "discuss-milestone ran ai mode; did NOT flip global milestone_mode (stays mixed)", "rationale": "Yahir's don't-ask-me directive; avoid changing his global default", "phase": "v2.4"},
+    {"decision": "git.create_tag=false", "rationale": "mechanical SHIP-02 guard vs stray milestone-close tag (INC-2026-09-30-01)", "phase": "14"},
+    {"decision": "Phase 13 split into 13 (catalog+docs) + 14 (cut)", "rationale": "execute-phase runs all plans before verification; bundling the cut would tag before green (§11 step 1)", "phase": "13/14"}
+  ],
+  "uncommitted_files": [
+    " M .planning/graphs/.last-build-snapshot.json (auto-generated graphify)",
+    " M .planning/graphs/.last-build-status.json (auto-generated)",
+    " M .planning/graphs/GRAPH_REPORT.md (auto-generated)",
+    " M .planning/graphs/graph.html (auto-generated)",
+    " M .planning/graphs/graph.json (auto-generated)",
+    "?? .gsd/ (pre-existing tooling dir, not project)",
+    "?? .oc-audit/ (pre-existing tooling dir, not project)",
+    "?? docs/superpowers/ (pre-existing, not project)",
+    "?? graphify-out/ (pre-existing tooling dir, not project)"
+  ],
+  "next_action": "Read .planning/cross-repo/HANDOFF.md (## Current state) + the vae-bilingual memory, then /gsd-resume-work. Continue with /gsd-execute-phase 10 (plan 10-01 leads with the public-surface-freeze checkpoint:decision — approve it; shapes are orchestrator+consumer-validated and nothing is irreversible until Phase 14's cut). Orchestrator is yahir-gsd-control-plane-f2.",
+  "context_notes": "This repo is Wave-0 §6.3 of the 5-repo vae-bilingual effort. All coordination goes through the orchestrator (A14). Never run /gsd-milestone umbrella (skips the reconvene). Phase 10 is fully planned + checker-passed; execution was intentionally NOT started (Yahir paused at the planning boundary). The 10-01 executor will hit a blocking checkpoint:decision (freeze v2.4.0 public surface) — approve it. All R1 + SB/CT shape rulings are already in the phase CONTEXT files."
+}
