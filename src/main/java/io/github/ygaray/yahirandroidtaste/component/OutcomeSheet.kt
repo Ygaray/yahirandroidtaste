@@ -1,5 +1,6 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,8 +13,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
 import io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
+import io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel
+import io.github.ygaray.yahirandroidtaste.model.UndoRowState
+import io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import io.github.ygaray.yahirandroidtaste.theme.expressive
@@ -56,8 +61,9 @@ fun OutcomeSheet(
 /**
  * Renders a [VoiceOutcomeUiState.Success]: the [VoiceOutcomeUiState.Success.summary] headline,
  * an optional [HandledByRow], an optional batch-results list (D-06; hidden when
- * [VoiceOutcomeUiState.Success.batchResults] is empty), and an optional caller-supplied editor
- * slot (D-05; hidden when `null` or while [VoiceOutcomeUiState.Success.inFlight] is `true`).
+ * [VoiceOutcomeUiState.Success.batchResults] is empty), an optional caller-supplied editor
+ * slot (D-05; hidden when `null` or while [VoiceOutcomeUiState.Success.inFlight] is `true`), and
+ * an optional grouped undo affordance (VUNDO-01; hidden when `null`) as the last child.
  */
 @Composable
 private fun SuccessBody(success: VoiceOutcomeUiState.Success) {
@@ -70,6 +76,98 @@ private fun SuccessBody(success: VoiceOutcomeUiState.Success) {
         success.handledBy?.let { HandledByRow(it) }
         success.batchResults.takeIf { it.isNotEmpty() }?.let { BatchResultsList(it) }
         success.editableContent?.takeIf { !success.inFlight }?.invoke()
+        success.undo?.let { UndoAffordanceBody(it) }
+    }
+}
+
+/**
+ * Renders a grouped undo affordance (VUNDO-01, D-01/D-02): an optional "Undo all (N)" action
+ * button ([UndoAffordanceUiModel.onUndoAll] `null` hides it), every [UndoAffordanceUiModel.rows]
+ * row in LIST order (never resorted), then an optional loud undo-refused/partial surface.
+ */
+@Composable
+private fun UndoAffordanceBody(undo: UndoAffordanceUiModel) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = Dimens.ContentSpacing)
+    ) {
+        undo.onUndoAll?.let { onUndoAll ->
+            DynamicActionButton(
+                label = undo.allLabel,
+                role = ActionButtonDefaults.ActionButtonRole.Neutral,
+                onClick = onUndoAll,
+                modifier = Modifier.testTag("outcome_sheet_undo_all")
+            )
+        }
+        undo.rows.forEach { row -> UndoRowItem(row) }
+        undo.refused?.let { refused ->
+            // Loud per VOUT-03's discipline: error-container surface, never AttentionCue.
+            Surface(
+                color = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                shape = MaterialTheme.expressive.cardShapeLarge,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = Dimens.ContentSpacing)
+                    .testTag("outcome_sheet_undo_refused")
+            ) {
+                val suffix = refused.changedItem?.let { ", $it changed since" } ?: ""
+                Text(
+                    text = "Couldn't undo: ${refused.reason}$suffix",
+                    style = MaterialTheme.typography.labelLarge,
+                    modifier = Modifier.padding(Dimens.HorizontalPadding)
+                )
+            }
+        }
+    }
+}
+
+/**
+ * One row of a grouped undo affordance (VUNDO-01) — shares a single `testTag` across every row
+ * (mirrors [ApproachLadderCard][io.github.ygaray.yahirandroidtaste.component.ApproachLadderCard]'s
+ * shared-tag-per-row convention for ordered indexed test access). [UndoRowState.Available] wraps
+ * the row in a clickable modifier invoking its own `onUndo`; [UndoRowState.Undone] renders trailing
+ * muted "Undone" text with no click; [UndoRowState.Unavailable] renders its reason as trailing
+ * `labelSmall` text, never clickable and never counted toward [UndoAffordanceUiModel.allLabel]'s
+ * number.
+ */
+@Composable
+private fun UndoRowItem(row: UndoRowUiModel) {
+    val state = row.state
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = Dimens.HairlineSpacing)
+            // Merge this row's label + trailing Text child into ONE semantics node, mirroring
+            // ApproachLadderCard's CapControl -- required so onAllNodesWithTag(...)'s indexed
+            // access can resolve BOTH the row's label and its trailing text/click action
+            // regardless of state (a clickable Modifier merges automatically; Undone/Unavailable
+            // carry no clickable modifier and would otherwise stay unmerged).
+            .semantics(mergeDescendants = true) {}
+            .then(
+                if (state is UndoRowState.Available) {
+                    Modifier.clickable(onClick = state.onUndo)
+                } else {
+                    Modifier
+                }
+            )
+            .testTag("outcome_sheet_undo_row")
+    ) {
+        Text(text = row.label, modifier = Modifier.weight(1f))
+        when (state) {
+            is UndoRowState.Available -> Unit
+            is UndoRowState.Undone -> Text(
+                text = "Undone",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            is UndoRowState.Unavailable -> Text(
+                text = state.reason,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 

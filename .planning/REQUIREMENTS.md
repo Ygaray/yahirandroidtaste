@@ -21,10 +21,10 @@ Generic, **presentational** Compose composables only. Each composable takes its 
 
 ### Outcome / failure sheet
 
-- [ ] **VOUT-01**: An outcome/failure sheet composable renders a command outcome from props, domain-neutral (no app-specific nouns) (§6.3)
-- [ ] **VOUT-02**: The outcome sheet shows a "handled by: tier/approach" indicator identifying which tier/approach handled the command, from props (§6.3)
-- [ ] **VOUT-03**: The outcome sheet renders failure states loudly and visibly (prominent, not silent or subtle) (§6.3)
-- [ ] **VUNDO-01**: The outcome sheet renders a generic, prop-driven undo affordance — an "Undo all (N)" action alongside per-item Undo — where a per-item-undo-**unavailable** state is representable (e.g. an item entangled with another cannot be undone alone), plus a loud undo-refused / partial state (e.g. "couldn't undo: <reason>, <item> changed since"). Domain-neutral, registered with a full states matrix (A18, §6.3)
+- [x] **VOUT-01**: An outcome/failure sheet composable renders a command outcome from props, domain-neutral (no app-specific nouns) (§6.3)
+- [x] **VOUT-02**: The outcome sheet shows a "handled by: tier/approach" indicator identifying which tier/approach handled the command, from props (§6.3)
+- [x] **VOUT-03**: The outcome sheet renders failure states loudly and visibly (prominent, not silent or subtle) (§6.3)
+- [x] **VUNDO-01**: The outcome sheet renders a generic, prop-driven undo affordance — an "Undo all (N)" action alongside per-item Undo — where a per-item-undo-**unavailable** state is representable (e.g. an item entangled with another cannot be undone alone), plus a loud undo-refused / partial state (e.g. "couldn't undo: <reason>, <item> changed since"). Domain-neutral, registered with a full states matrix (A18, §6.3)
 - [ ] **VCLAR-01**: A generic, prop-driven "clarification choices" composable renders a question + a list of options — each `{ id: opaque String, label: String }` — with `onSelect(id)` and a dismiss (= cancel), as a compact PRESSABLE choice surface (chips/buttons) — so the user resolves a model clarification ("Which list?") by TAPPING, never by speaking again. Visually informative, NOT an error; domain-neutral (apps map the engine's `Clarification` → these props; no engine dependency, L7); registered with a full states matrix (§6.3, A19, Yahir 2026-09-30)
 - [ ] **VOUT-04**: The outcome sheet renders a generic needs-confirmation state from props — a reason string, single-or-batch proposed item(s), and confirm/cancel actions — domain-neutral so it covers both SB's `MutationGate`/`VoiceConfirmGate` risk confirm and CT's weak-match single/batch confirm (A2/E1)
 
@@ -68,10 +68,10 @@ Each requirement maps to exactly one phase. Roadmap: `.planning/ROADMAP.md` (Pha
 | VAPPR-01 | Phase 10 | Complete |
 | VAPPR-02 | Phase 10 | Complete |
 | VAPPR-03 | Phase 10 | Complete |
-| VOUT-01 | Phase 11 | Pending |
-| VOUT-02 | Phase 11 | Pending |
-| VOUT-03 | Phase 11 | Pending |
-| VUNDO-01 | Phase 11 | Pending |
+| VOUT-01 | Phase 11 | Complete |
+| VOUT-02 | Phase 11 | Complete |
+| VOUT-03 | Phase 11 | Complete |
+| VUNDO-01 | Phase 11 | Complete |
 | VCLAR-01 | Phase 11 | Pending |
 | VOUT-04 | Phase 12 | Pending |
 | CAT-01 | Phase 13 | Pending |

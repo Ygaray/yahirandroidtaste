@@ -31,6 +31,10 @@ import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
 import io.github.ygaray.yahirandroidtaste.model.KeyFieldState
 import io.github.ygaray.yahirandroidtaste.model.ModelOptionUiModel
 import io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel
+import io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel
+import io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel
+import io.github.ygaray.yahirandroidtaste.model.UndoRowState
+import io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
@@ -314,6 +318,49 @@ private val fixtureOutcomeFailureWithAction = VoiceOutcomeUiState.Failure(
     action = FailureActionUiModel(label = "Open Settings", onClick = {})
 )
 
+/** Fixture undo affordance -- VUNDO-01 happy path: two Available rows, "Undo all (2)". */
+private val fixtureOutcomeSuccessUndo = VoiceOutcomeUiState.Success(
+    summary = "Logged 2 items",
+    undo = UndoAffordanceUiModel(
+        allLabel = "Undo all (2)",
+        rows = listOf(
+            UndoRowUiModel(id = "1", label = "Card deleted", state = UndoRowState.Available(onUndo = {})),
+            UndoRowUiModel(id = "2", label = "Tag removed", state = UndoRowState.Available(onUndo = {}))
+        ),
+        onUndoAll = {}
+    )
+)
+
+/**
+ * Fixture undo affordance -- VUNDO-01 entangled-item state: one Available row alongside one
+ * Unavailable row (a per-item entangled action the app can't undo individually).
+ */
+private val fixtureOutcomeSuccessUndoUnavailable = VoiceOutcomeUiState.Success(
+    summary = "Logged 2 items",
+    undo = UndoAffordanceUiModel(
+        allLabel = "Undo all (1)",
+        rows = listOf(
+            UndoRowUiModel(id = "1", label = "Card deleted", state = UndoRowState.Available(onUndo = {})),
+            UndoRowUiModel(id = "2", label = "Tag removed", state = UndoRowState.Unavailable(reason = "Entangled with another edit"))
+        ),
+        onUndoAll = {}
+    )
+)
+
+/** Fixture undo affordance -- VUNDO-01 loud undo-refused/partial substate. */
+private val fixtureOutcomeSuccessUndoRefused = VoiceOutcomeUiState.Success(
+    summary = "Logged 2 items",
+    undo = UndoAffordanceUiModel(
+        allLabel = "Undo all (2)",
+        rows = listOf(
+            UndoRowUiModel(id = "1", label = "Card deleted", state = UndoRowState.Available(onUndo = {})),
+            UndoRowUiModel(id = "2", label = "Tag removed", state = UndoRowState.Available(onUndo = {}))
+        ),
+        onUndoAll = {},
+        refused = UndoRefusedUiModel(reason = "Item changed since", changedItem = "Card deleted")
+    )
+)
+
 /**
  * OutcomeSheet's interactive demo -- WR-01-safe pattern (mirrors `AlbumSourcePickerSheetSection`'s
  * "Show sheet" trigger in SheetsFamilyScreen.kt): a single hoisted [visibleOutcome] slot holds AT
@@ -345,6 +392,24 @@ private fun OutcomeSheetVariants() {
     SectionLabel("OutcomeSheet — Failure, action populated")
     Button(
         onClick = { visibleOutcome = fixtureOutcomeFailureWithAction },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) { Text("Show sheet") }
+
+    SectionLabel("OutcomeSheet — Success, undo all (2) + per-item rows (VUNDO-01)")
+    Button(
+        onClick = { visibleOutcome = fixtureOutcomeSuccessUndo },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) { Text("Show sheet") }
+
+    SectionLabel("OutcomeSheet — Success, undo with an entangled Unavailable row (VUNDO-01)")
+    Button(
+        onClick = { visibleOutcome = fixtureOutcomeSuccessUndoUnavailable },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) { Text("Show sheet") }
+
+    SectionLabel("OutcomeSheet — Success, loud undo-refused substate (VUNDO-01)")
+    Button(
+        onClick = { visibleOutcome = fixtureOutcomeSuccessUndoRefused },
         modifier = Modifier.padding(horizontal = 16.dp)
     ) { Text("Show sheet") }
 
