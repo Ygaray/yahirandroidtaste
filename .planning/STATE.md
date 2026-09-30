@@ -1,21 +1,16 @@
 ---
 gsd_state_version: "1.0"
-milestone: v2.0
-milestone_name: Line Reunification
-status: Awaiting next milestone
-stopped_at: Phase 09 complete -- all v2.0 phases done, ready for milestone certification/close
-last_updated: "2026-09-27T20:59:23.553Z"
-last_activity: 2026-09-27
-last_activity_desc: Milestone v2.0 completed and archived
-state_head: 62e4d3b7db540fe1497e26e95979e8a0c949f036
+milestone: v2.4
+milestone_name: AI-Voice Command UI
+status: planning
+last_updated: "2026-09-30T04:01:41.679Z"
+last_activity: 2026-09-29
 progress:
-  total_phases: 4
+  total_phases: 0
   completed_phases: 0
-  total_plans: 7
-  completed_plans: 7
+  total_plans: 0
+  completed_plans: 0
   percent: 0
-current_phase: 09
-current_phase_name: ship-coordinated-repin
 ---
 
 # Project State
@@ -29,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-09-26)
 
 ## Current Position
 
-Phase: Milestone v2.0 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-09-27 — Milestone v2.0 completed and archived
+Status: Defining requirements
+Last activity: 2026-09-29 — Milestone v2.4 started
 
 ## Performance Metrics
 
