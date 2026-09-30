@@ -45,7 +45,7 @@ consumer's own channel; repin paths surfaced in `ECOSYSTEM.md`.
 
 ## Active Milestone
 
-### 🚧 v2.4 — AI-Voice Command UI (Phases 10-13)
+### 🚧 v2.4 — AI-Voice Command UI (Phases 10-14)
 
 **Milestone Goal:** Ship the shared AI-voice UI layer in the hub — generic, prop-driven
 presentational composables that let SecondBrain and CalTracker render voice-command *settings* and
@@ -61,7 +61,8 @@ parameters; the library imports no consumer code, no OkHttp, and no `voice-actio
 - [ ] **Phase 10: Voice command settings surfaces** - Provider/key, model, and command-approach settings cards, all prop-driven
 - [ ] **Phase 11: Voice outcome & failure sheet** - Domain-neutral outcome sheet with a "handled by: tier/approach" indicator, loud failure states, and a generic undo affordance (Undo all + per-item, with unavailable/refused states)
 - [ ] **Phase 12: Generic needs-confirmation state** - One domain-neutral confirm prompt covering both SB risk confirm and CT weak-match single/batch confirm
-- [ ] **Phase 13: Catalog integrity & v2.4.0 ship** - Register all new composables, keep the API strictly additive, and cut `v2.4.0` on green verification
+- [ ] **Phase 13: Catalog integrity & docs** - Register all new composables in the new "Voice Command" family, keep the public API strictly additive and engine-free, and fix the seven→ten family-count doc drift (verified — cuts NO tag)
+- [ ] **Phase 14: Cut v2.4.0** - Cut the `v2.4.0` tag on green verification, confirm JitPack resolves it, and message the orchestrator the §11 ledger row (the ONLY tag; split from 13 so the cut follows a green Phase 13)
 
 ## Phase Details
 
@@ -113,20 +114,34 @@ Plans:
 Plans:
 - [ ] TBD
 
-### Phase 13: Catalog integrity & v2.4.0 ship
-**Goal**: Every new composable is registered, the public API is strictly additive and engine-free, and the library ships as `v2.4.0` resolving on JitPack — with no stray milestone marker tag.
+### Phase 13: Catalog integrity & docs
+**Goal**: Every new composable is registered in the new "Voice Command" family, the public API is strictly additive and engine-free, and the seven→ten family-count doc drift is corrected — all verified. This phase cuts NO tag.
 **Depends on**: Phases 10, 11, 12
-**Requirements**: CAT-01, API-01, INV-01, SHIP-01, SHIP-02
+**Requirements**: CAT-01, API-01, INV-01
 **Success Criteria** (what must be TRUE):
   1. The full test suite passes — including the CATALOG-03 drift guard — with every new public composable registered in `ComponentRegistry` (or allowlisted in `INTENTIONALLY_UNREGISTERED`) with its full 4-cell states matrix
   2. Metalava `apiCheck` confirms the public API is strictly additive versus `v2.3.0` — no removals or signature changes to existing symbols
   3. The library declares no OkHttp or `voice-action-engine` dependency; every new composable takes data + actions as parameters (one-way-dependency invariant preserved)
-  4. `v2.4.0` is tagged, pushed, and resolves on JitPack from a clean cache, and the full §11 ledger row is messaged to the orchestrator (tag-cut human gate waived for this effort)
-  5. Milestone close cuts no git tag beyond the `v2.4.0` release coordinate (guards the stray milestone-marker-tag hazard)
+  4. The stale "seven families" wording is corrected to ten in the load-bearing files (root `CLAUDE.md`, `README.md`, `ComponentRegistry` KDoc, `API.md`)
 **Plans**: TBD
 
 Plans:
 - [ ] TBD
+
+### Phase 14: Cut v2.4.0
+**Goal**: With Phase 13 green, cut the `v2.4.0` tag, confirm JitPack resolves it, and message the orchestrator the §11 ledger row — the ONLY tag this milestone produces.
+**Depends on**: Phase 13
+**Requirements**: SHIP-01, SHIP-02
+**Success Criteria** (what must be TRUE):
+  1. §11 steps 1–4 hold BEFORE the tag is declared cut: full suite green (all 4 drift guards + detekt zero-baseline), Metalava additive vs `v2.3.0`, the tagged commit pushed, and JitPack resolves `v2.4.0` from a clean Gradle cache
+  2. The full §11 ledger row (repo, tag, commit, coordinate, contents, evidence path) is messaged to the orchestrator; no peer writes the §11 ledger (A14)
+  3. Milestone close cuts NO git tag beyond the `v2.4.0` release coordinate — `git.create_tag` is `false` (guards the stray milestone-marker-tag hazard, INC-2026-09-30-01)
+**Plans**: TBD
+
+Plans:
+- [ ] TBD
+
+**Rationale for the 13/14 split:** GSD execute-phase runs ALL of a phase's plans before that phase's verification/Gate-1, so bundling the immutable `v2.4.0` cut with catalog/doc work would tag before Phase 13's own verification is green (violating §11 step 1). Isolating the cut in Phase 14 guarantees it follows a fully-verified Phase 13.
 
 ## Backlog
 
@@ -151,11 +166,12 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 10 → 11 → 12 → 13 (Phases 10 and 11 are mutually independent and may run in parallel; Phase 12 gates on 11; Phase 13 gates on 10, 11, 12).
+Phases execute in numeric order: 10 → 11 → 12 → 13 → 14 (Phases 10 and 11 are mutually independent and may run in parallel; Phase 12 gates on 11; Phase 13 gates on 10, 11, 12; Phase 14 (the tag cut) gates on a green Phase 13).
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 10. Voice command settings surfaces | v2.4 | 0/2 | Planned | - |
 | 11. Voice outcome & failure sheet | v2.4 | 0/TBD | Not started | - |
 | 12. Generic needs-confirmation state | v2.4 | 0/TBD | Not started | - |
-| 13. Catalog integrity & v2.4.0 ship | v2.4 | 0/TBD | Not started | - |
+| 13. Catalog integrity & docs | v2.4 | 0/TBD | Not started | - |
+| 14. Cut v2.4.0 | v2.4 | 0/TBD | Not started | - |

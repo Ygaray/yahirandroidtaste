@@ -75,14 +75,14 @@ Each requirement maps to exactly one phase. Roadmap: `.planning/ROADMAP.md` (Pha
 | CAT-01 | Phase 13 | Pending |
 | API-01 | Phase 13 | Pending |
 | INV-01 | Phase 13 | Pending |
-| SHIP-01 | Phase 13 | Pending |
-| SHIP-02 | Phase 13 | Pending |
+| SHIP-01 | Phase 14 | Pending |
+| SHIP-02 | Phase 14 | Pending |
 
 **Coverage:**
 - v2.4 requirements: 15 total
-- Mapped to phases: 15 ✓ (Phase 10: 5, Phase 11: 4, Phase 12: 1, Phase 13: 5)
+- Mapped to phases: 15 ✓ (Phase 10: 5, Phase 11: 4, Phase 12: 1, Phase 13: 3, Phase 14: 2)
 - Unmapped: 0 ✓ (no orphans, no duplicates)
 
 ---
 *Requirements defined: 2026-09-29*
-*Last updated: 2026-09-29 — added VUNDO-01 (A18, undo affordance) mapped to Phase 11, relayed by orchestrator from VAE commit ccfebdf*
+*Last updated: 2026-09-29 — split Phase 13 → 13 (catalog integrity + docs: CAT-01/API-01/INV-01) + 14 (cut v2.4.0: SHIP-01/SHIP-02), so the tag cut follows a green Phase 13 (orchestrator ruling, INC-2026-09-30-01)*

@@ -6,7 +6,9 @@
 <domain>
 ## Phase Boundary
 
-Register every new composable, prove the public API is strictly additive and engine-free, correct the family-count doc drift, and cut library `v2.4.0` via the §11 protocol (resolving on JitPack) — with NO stray milestone-marker git tag.
+Register every new composable in the "Voice Command" family, prove the public API is strictly additive and engine-free, and correct the family-count doc drift — all VERIFIED. **This phase cuts NO tag.**
+
+> **SPLIT (orchestrator ruling, INC-2026-09-30-01):** the `v2.4.0` cut moved to **Phase 14** (`14-CONTEXT.md`), because GSD execute-phase runs all a phase's plans before that phase's verification — bundling the immutable cut here would tag before Phase 13 is green (violating §11 step 1). Phase 13 = CAT-01/API-01/INV-01 (integrity + docs); Phase 14 = SHIP-01/SHIP-02 (the cut). The `[tag-procedure]` and `[no-stray-tag]` decisions below now live in Phase 14 — kept here only as context for what a green Phase 13 must hand off.
 
 </domain>
 
