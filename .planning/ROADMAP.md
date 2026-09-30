@@ -106,8 +106,12 @@ Plans:
 **UI hint**: yes
 
 Plans:
+**Wave 1**
 
 - [ ] 11-01-PLAN.md — OutcomeSheet (Success/Failure sealed state, handled-by indicator, loud failure, undo affordance) — VOUT-01/02/03, VUNDO-01
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 11-02-PLAN.md — ClarificationBar (pressable tap-to-clarify choices) — VCLAR-01
 
 ### Phase 12: Generic needs-confirmation state
