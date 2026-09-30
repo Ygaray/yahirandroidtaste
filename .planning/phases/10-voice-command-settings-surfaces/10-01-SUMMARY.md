@@ -199,3 +199,9 @@ None - no external service configuration required.
 ---
 *Phase: 10-voice-command-settings-surfaces*
 *Completed: 2026-09-30*
+
+## Self-Check: PASSED
+
+- All 5 created files verified present on disk (`test -f`): `ProviderOptionUiModel.kt`, `KeyFieldState.kt`, `ProviderKeyCard.kt`, `VoiceCommandFamilyScreen.kt`, `ProviderKeyCardTest.kt`.
+- Both commits verified in `git log --oneline`: `91a5599` (feat, Task 2) and `2292170` (docs, metadata).
+- All plan-level `<acceptance_criteria>`/must_haves re-verified: `./gradlew testDebugUnitTest detekt apiCheck` green; `./gradlew testDebugUnitTest --tests "*ProviderKeyCard*"` green (5/5); `api.txt` diff additive-only vs `v2.3.0`.
