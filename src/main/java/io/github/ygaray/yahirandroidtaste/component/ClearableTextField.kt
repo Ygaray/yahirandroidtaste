@@ -1,16 +1,20 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 /**
@@ -34,6 +38,14 @@ import androidx.compose.ui.unit.dp
  * @param keyboardActions   Forwarded to [OutlinedTextField]; defaults to [KeyboardActions.Default]
  *   (no-op) — added for the TagManagementEditSheet rename swap (Phase 49) which relies on a
  *   Done-key `onDone` action, preserving existing callers' behavior unchanged.
+ * @param visualTransformation Forwarded to [OutlinedTextField]; defaults to
+ *   [VisualTransformation.None] (added v2.4.0, additive, VSET-01) — preserves every existing
+ *   caller's unmasked behavior byte-for-byte. Pass `PasswordVisualTransformation()` to mask an
+ *   API-key field.
+ * @param revealToggle      Optional reveal-eye affordance rendered in the trailing slot BESIDE
+ *   the existing clear-✕ (added v2.4.0, additive, D-02/D-05). `null` (the default) shows no eye
+ *   at all — never a disabled one. When non-null, an `IconButton` toggles between "Show key" and
+ *   "Hide key" via [RevealToggle.onToggle].
  */
 @Composable
 fun ClearableTextField(
@@ -46,7 +58,9 @@ fun ClearableTextField(
     supportingText: @Composable (() -> Unit)? = null,
     singleLine: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    revealToggle: RevealToggle? = null
 ) {
     OutlinedTextField(
         value = value,
@@ -55,14 +69,32 @@ fun ClearableTextField(
         label = label,
         leadingIcon = leadingIcon,
         trailingIcon = {
-            if (value.isNotEmpty()) {
-                IconButton(onClick = { onValueChange("") }) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Clear text",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(24.dp)
-                    )
+            if (revealToggle != null || value.isNotEmpty()) {
+                Row {
+                    if (revealToggle != null) {
+                        IconButton(onClick = revealToggle.onToggle) {
+                            Icon(
+                                imageVector = if (revealToggle.revealed) {
+                                    Icons.Default.VisibilityOff
+                                } else {
+                                    Icons.Default.Visibility
+                                },
+                                contentDescription = if (revealToggle.revealed) "Hide key" else "Show key",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+                    if (value.isNotEmpty()) {
+                        IconButton(onClick = { onValueChange("") }) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Clear text",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
                 }
             }
         },
@@ -70,6 +102,22 @@ fun ClearableTextField(
         supportingText = supportingText,
         singleLine = singleLine,
         keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions
+        keyboardActions = keyboardActions,
+        visualTransformation = visualTransformation
     )
 }
+
+/**
+ * Hideable (D-05) reveal-eye affordance for [ClearableTextField]'s masked-entry mode (added
+ * v2.4.0, additive, D-02). Pass `null` to [ClearableTextField]'s `revealToggle` param to render
+ * no eye at all — never a disabled one.
+ *
+ * @param revealed Whether the field's raw value is currently visible (drives the eye icon +
+ *   contentDescription and, at the call site, which [VisualTransformation] is passed).
+ * @param onToggle Invoked when the eye affordance is tapped — the caller flips [revealed] and
+ *   the [VisualTransformation] it passes to [ClearableTextField] in response.
+ */
+data class RevealToggle(
+    val revealed: Boolean,
+    val onToggle: () -> Unit
+)

@@ -62,6 +62,7 @@ object ExplorerFamilies {
     const val EMPTY_STATE = "empty_state"
     const val PROGRESS_METRICS = "progress_metrics"
     const val TACTILE_FOUNDATION = "tactile_foundation"
+    const val VOICE_COMMAND = "voice_command"
 
     /** Fixed authored order rendered by [ExplorerIndexScreen] (EDGE ordering). */
     val ORDERED_KEYS: List<Pair<String, String>> = listOf(
@@ -73,7 +74,8 @@ object ExplorerFamilies {
         FEEDBACK to "Feedback",
         EMPTY_STATE to "Empty State",
         PROGRESS_METRICS to "Progress / Metrics",
-        TACTILE_FOUNDATION to "Tactile Foundation"
+        TACTILE_FOUNDATION to "Tactile Foundation",
+        VOICE_COMMAND to "Voice Command"
     )
 }
 
