@@ -20,8 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.component.ModelSelectCard
 import io.github.ygaray.yahirandroidtaste.component.ProviderKeyCard
 import io.github.ygaray.yahirandroidtaste.model.KeyFieldState
+import io.github.ygaray.yahirandroidtaste.model.ModelOptionUiModel
 import io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
@@ -32,9 +34,9 @@ import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
  * Command's `states`/`content` without touching the shared registry file — mirrors
  * `pickersFamilyEntries` in [PickersFamilyScreen].
  *
- * 13-prep groundwork (Phase 10 Plan 01, D-01): this is the NEW tenth registry family. It
- * currently holds ONE entry ([ProviderKeyCard], VSET-01) — Plan 02's `ModelSelectCard` and
- * `ApproachLadderCard` append to this same list.
+ * 13-prep groundwork (Phase 10 Plan 01, D-01): this is the NEW tenth registry family. It held
+ * ONE entry ([ProviderKeyCard], VSET-01) after Plan 01; Plan 02 appends `ModelSelectCard`
+ * (VSET-02) here, and `ApproachLadderCard` (VAPPR-01/02/03) follows in the same list.
  */
 internal val voiceCommandFamilyEntries: List<ComponentRegistry.Entry> = listOf(
     ComponentRegistry.Entry(
@@ -65,6 +67,39 @@ internal val voiceCommandFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             )
         ),
         content = { ProviderKeyCardVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
+    ),
+    ComponentRegistry.Entry(
+        name = "ModelSelectCard",
+        family = ExplorerFamilies.VOICE_COMMAND,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = { ModelSelectCardFixture(selectedModelId = fixtureModels.first().id) }
+            ),
+            ComponentRegistry.StateCell(
+                "Pressed / Selected",
+                render = { ModelSelectCardFixture(selectedModelId = fixtureModels.last().id) }
+            ),
+            // The empty-models disabled+reason affordance is ModelSelectCard's only "unavailable"
+            // state (D-05 — hideable-by-null-prop convention doesn't apply here; `models` itself
+            // signals unavailability), so this cell doubles as the Disabled preview.
+            ComponentRegistry.StateCell(
+                "Disabled",
+                render = {
+                    ModelSelectCard(
+                        models = emptyList(),
+                        selectedModelId = null,
+                        onModelSelected = {},
+                        emptyReason = "Set a provider and key first",
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                    )
+                }
+            ),
+            // ModelSelectCard's dropdown has no custom focus-visual override — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { ModelSelectCardVariants() },
         tier = ComponentRegistry.Tier.PATTERN
     )
 )
@@ -127,6 +162,45 @@ private fun ProviderKeyCardFixture(keyValue: String, keyState: KeyFieldState) {
 private fun ProviderKeyCardVariants() {
     SectionLabel("ProviderKeyCard")
     ProviderKeyCardFixture(keyValue = "", keyState = KeyFieldState.Empty)
+}
+
+/** Fixture models list — explorer-only, never registered (explorer/ is drift-guard denylisted). */
+private val fixtureModels = listOf(
+    ModelOptionUiModel(id = "gpt-4", label = "GPT-4"),
+    ModelOptionUiModel(id = "claude-3", label = "Claude 3"),
+    ModelOptionUiModel(id = "local-llama", label = "Local Llama (offline)")
+)
+
+/**
+ * Shared hoisted-state wrapper for the States matrix cells — each cell seeds an initial
+ * [selectedModelId] fixture and lets the live composable own the selection from there.
+ */
+@Composable
+private fun ModelSelectCardFixture(selectedModelId: String?) {
+    var currentSelectedId by remember { mutableStateOf(selectedModelId) }
+    ModelSelectCard(
+        models = fixtureModels,
+        selectedModelId = currentSelectedId,
+        onModelSelected = { currentSelectedId = it },
+        emptyReason = "Set a provider and key first",
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
+}
+
+/** ModelSelectCard's interactive demo, reused verbatim as its Variants. */
+@Composable
+private fun ModelSelectCardVariants() {
+    SectionLabel("ModelSelectCard")
+    ModelSelectCardFixture(selectedModelId = fixtureModels.first().id)
+
+    SectionLabel("ModelSelectCard — empty (disabled + reason)")
+    ModelSelectCard(
+        models = emptyList(),
+        selectedModelId = null,
+        onModelSelected = {},
+        emptyReason = "Set a provider and key first",
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -270,6 +270,10 @@ package io.github.ygaray.yahirandroidtaste.component {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void MicButton(boolean isListening, optional boolean enabled, kotlin.jvm.functions.Function0<kotlin.Unit> onTap, optional kotlin.jvm.functions.Function0<kotlin.Unit> onDisabledTap, optional androidx.compose.ui.Modifier modifier, optional String disabledDescription, optional String tapToTalkDescription, optional String listeningDescription);
   }
 
+  public final class ModelSelectCardKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ModelSelectCard(java.util.List<io.github.ygaray.yahirandroidtaste.model.ModelOptionUiModel> models, String? selectedModelId, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onModelSelected, String emptyReason, optional androidx.compose.ui.Modifier modifier);
+  }
+
   public final class NameAndTagsEditorKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void NameAndTagsEditor(optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit> header, String name, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNameChange, String nameLabel, kotlin.jvm.functions.Function0<kotlin.Unit> tagsContent, kotlin.jvm.functions.Function0<kotlin.Unit> onSave, kotlin.jvm.functions.Function0<kotlin.Unit> onDismiss, String saveLabel, optional String dismissLabel, optional boolean dismissDestructive, optional boolean enabled, optional androidx.compose.ui.Modifier modifier);
   }
@@ -952,6 +956,23 @@ package io.github.ygaray.yahirandroidtaste.model {
     property public boolean isCompleted;
     property public int sortOrder;
     property public String text;
+  }
+
+  public final class ModelOptionUiModel {
+    ctor public ModelOptionUiModel(String id, String label, optional String? subtitle, optional String? badge);
+    method public String component1();
+    method public String component2();
+    method public String? component3();
+    method public String? component4();
+    method public io.github.ygaray.yahirandroidtaste.model.ModelOptionUiModel copy(optional String id, optional String label, optional String? subtitle, optional String? badge);
+    method @InaccessibleFromKotlin public String? getBadge();
+    method @InaccessibleFromKotlin public String getId();
+    method @InaccessibleFromKotlin public String getLabel();
+    method @InaccessibleFromKotlin public String? getSubtitle();
+    property public String? badge;
+    property public String id;
+    property public String label;
+    property public String? subtitle;
   }
 
   public final class ProviderOptionUiModel {
