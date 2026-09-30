@@ -55,6 +55,7 @@ parameters; the library imports no consumer code, no OkHttp, and no `voice-actio
 (one-way-dependency invariant, INV-01).
 
 **Phase Numbering:**
+
 - Integer phases (10, 11, …): Planned milestone work (continues from v2.0's Phase 9 — no reset)
 - Decimal phases (2.1, 2.2): Urgent insertions (marked INSERTED)
 
@@ -67,79 +68,99 @@ parameters; the library imports no consumer code, no OkHttp, and no `voice-actio
 ## Phase Details
 
 ### Phase 10: Voice command settings surfaces
+
 **Goal**: Consumers can render voice-command provider/model and command-approach settings entirely from props + callbacks — with no key persistence and no network in the library.
 **Depends on**: Nothing (first phase of milestone v2.4)
 **Requirements**: VSET-01, VSET-02, VAPPR-01, VAPPR-02, VAPPR-03
 **Success Criteria** (what must be TRUE):
+
   1. A provider/API-key settings card renders provider selection and API-key entry from props + callbacks — holding no key and making no network call in the library
   2. A model settings card renders the available/selected model(s) from props and emits the selection via callback
   3. A command-approach settings card displays the configured tier ladder (ordered approaches, e.g. Grammar → SingleShot → Plan → Agentic) from props
   4. The command-approach card's offline-only toggle reflects and emits offline-only state via props + callback
   5. The command-approach card's max-tier cap control reflects and emits the cap via props + callback
-**Plans**: 2 plans
+
+**Plans**: 1/2 plans executed
 **UI hint**: yes
 
 Plans:
-- [ ] 10-01-PLAN.md — ProviderKeyCard tracer: masked API-key card + Voice Command family scaffold + additive ClearableTextField masking (VSET-01)
+
+- [x] 10-01-PLAN.md — ProviderKeyCard tracer: masked API-key card + Voice Command family scaffold + additive ClearableTextField masking (VSET-01)
 - [ ] 10-02-PLAN.md — ModelSelectCard + ApproachLadderCard expansion: model selection, tier ladder, offline-only toggle, max-tier cap (VSET-02, VAPPR-01/02/03)
 
 ### Phase 11: Voice outcome & failure sheet
+
 **Goal**: Consumers can render a domain-neutral command outcome — including which tier/approach handled it, loud visible failure states, a generic undo affordance ("Undo all (N)" + per-item undo with an unavailable state, plus a loud undo-refused/partial state), and a tap-to-clarify choices surface — from props alone.
 **Depends on**: Nothing (independent of Phase 10 — a separate composable in the same voice UI package; can proceed in parallel)
 **Requirements**: VOUT-01, VOUT-02, VOUT-03, VUNDO-01, VCLAR-01
 **Success Criteria** (what must be TRUE):
+
   1. An outcome/failure sheet renders a command outcome from props with no app-specific nouns
   2. The sheet surfaces a "handled by: tier/approach" indicator identifying which tier/approach handled the command, from props
   3. Failure states render prominently and visibly — loud, not silent or subtle — with an OPTIONAL prop-driven action slot (e.g. "Open Settings", or "Retry" only when the app flags it retry-safe); absent prop → no action rendered
   4. The sheet renders a prop-driven "Undo all (N)" action alongside per-item Undo, and can represent a per-item-undo-unavailable state (an item that cannot be undone alone because it is entangled with another)
   5. An undo-refused / partial-undo state renders loudly with a reason (e.g. "couldn't undo: <reason>, <item> changed since"), domain-neutral
   6. A prop-driven clarification-choices surface renders a question + pressable options (label + opaque id) with onSelect + dismiss — visually informative (not an error); tapping an option resolves the clarification without re-speaking
+
 **Plans**: TBD
 **UI hint**: yes
 
 Plans:
+
 - [ ] TBD
 
 ### Phase 12: Generic needs-confirmation state
+
 **Goal**: Consumers can render one domain-neutral needs-confirmation prompt that covers both SecondBrain's `MutationGate`/`VoiceConfirmGate` risk confirm and CalTracker's weak-match single/batch confirm — from props, with no library changes per consumer.
 **Depends on**: Phase 11 (extends the outcome sheet with a confirmation state)
 **Requirements**: VOUT-04
 **Success Criteria** (what must be TRUE):
+
   1. The outcome sheet renders a needs-confirmation state from props: a reason string, proposed item(s), and confirm/cancel actions
   2. The same composable renders both a single proposed item and a batch of proposed items
   3. Confirm and cancel each emit via callback, domain-neutral (no app-specific nouns)
   4. The prop shape satisfies both SB's `MutationGate`/`VoiceConfirmGate` risk confirm and CT's weak-match single/batch confirm without any library-side change
+
 **Plans**: TBD
 **UI hint**: yes
 
 Plans:
+
 - [ ] TBD
 
 ### Phase 13: Catalog integrity & docs
+
 **Goal**: Every new composable is registered in the new "Voice Command" family, the public API is strictly additive and engine-free, and the seven→ten family-count doc drift is corrected — all verified. This phase cuts NO tag.
 **Depends on**: Phases 10, 11, 12
 **Requirements**: CAT-01, API-01, INV-01
 **Success Criteria** (what must be TRUE):
+
   1. The full test suite passes — including the CATALOG-03 drift guard — with every new public composable registered in `ComponentRegistry` (or allowlisted in `INTENTIONALLY_UNREGISTERED`) with its full 4-cell states matrix
   2. Metalava `apiCheck` confirms the public API is strictly additive versus `v2.3.0` — no removals or signature changes to existing symbols
   3. The library declares no OkHttp or `voice-action-engine` dependency; every new composable takes data + actions as parameters (one-way-dependency invariant preserved)
   4. The stale "seven families" wording is corrected to ten in the load-bearing files (root `CLAUDE.md`, `README.md`, `ComponentRegistry` KDoc, `API.md`)
+
 **Plans**: TBD
 
 Plans:
+
 - [ ] TBD
 
 ### Phase 14: Cut v2.4.0
+
 **Goal**: With Phase 13 green, cut the `v2.4.0` tag, confirm JitPack resolves it, and message the orchestrator the §11 ledger row — the ONLY tag this milestone produces.
 **Depends on**: Phase 13
 **Requirements**: SHIP-01, SHIP-02
 **Success Criteria** (what must be TRUE):
+
   1. §11 steps 1–4 hold BEFORE the tag is declared cut: full suite green (all 4 drift guards + detekt zero-baseline), Metalava additive vs `v2.3.0`, the tagged commit pushed, and JitPack resolves `v2.4.0` from a clean Gradle cache
   2. The full §11 ledger row (repo, tag, commit, coordinate, contents, evidence path) is messaged to the orchestrator; no peer writes the §11 ledger (A14)
   3. Milestone close cuts NO git tag beyond the `v2.4.0` release coordinate — `git.create_tag` is `false` (guards the stray milestone-marker-tag hazard, INC-2026-09-30-01)
+
 **Plans**: TBD
 
 Plans:
+
 - [ ] TBD
 
 **Rationale for the 13/14 split:** GSD execute-phase runs ALL of a phase's plans before that phase's verification/Gate-1, so bundling the immutable `v2.4.0` cut with catalog/doc work would tag before Phase 13's own verification is green (violating §11 step 1). Isolating the cut in Phase 14 guarantees it follows a fully-verified Phase 13.
@@ -171,7 +192,7 @@ Phases execute in numeric order: 10 → 11 → 12 → 13 → 14 (Phases 10 and 1
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 10. Voice command settings surfaces | v2.4 | 0/2 | Planned | - |
+| 10. Voice command settings surfaces | v2.4 | 1/2 | In Progress|  |
 | 11. Voice outcome & failure sheet | v2.4 | 0/TBD | Not started | - |
 | 12. Generic needs-confirmation state | v2.4 | 0/TBD | Not started | - |
 | 13. Catalog integrity & docs | v2.4 | 0/TBD | Not started | - |
