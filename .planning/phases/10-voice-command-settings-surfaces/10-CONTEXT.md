@@ -93,5 +93,17 @@ None — discussion stayed within phase scope.
 
 ---
 
+## Runtime Decisions
+
+### 2026-09-30 — Phase 10 UAT visual items deferred to milestone Gate-2 (orchestrator ruling)
+
+**Decision point:** Phase 10 execute stage finished with 13/13 automated must-haves verified (tests/detekt/apiCheck green live), but VERIFICATION.md was `human_needed` for two visual/interaction-feel items both plans explicitly deferred to Gate-1: (1) masked API-key reveal + provider dropdown legibility (light/dark, plan 10-01); (2) tap-a-rung cap feel + hidden-vs-shown-disabled layout (light/dark, plan 10-02).
+
+**Ruling (yahir-gsd-control-plane-f2, 2026-09-30):** Option (a) — defer both visual items to milestone v2.4 Gate-2 and advance. This applies Yahir's existing standing policy ("Gallery Gate-1 visual review deferred to milestone-close (Yahir)", HANDOFF §Current state) — not a new decision. Conditions attached: (1) both items recorded in the pending-UAT ledger with light+dark, phase+plan refs, and the policy source [done in 10-UAT.md, skipped-with-reason]; (2) run the skipped tail gates (secure, nyquist, update_roadmap) and Gate-1 self-UAT for any non-visual behavior before Phase 11 — stop and report on any red; (3) the 6 advisory code-review warnings (WR-01…06) stay advisory but must be durably recorded (they are, in 10-REVIEW.md and 10-VERIFICATION.md Anti-Patterns).
+
+**Applied:** 10-UAT.md → both tests `skipped` with policy reason + `## Deferred Follow-Ups` (drain at Gate-2); 10-VERIFICATION.md status canonicalized `human_needed → passed` (mirrors verify-work complete_session, lines 638-640). git.create_tag stays false; §11 remains the orchestrator's.
+
+---
+
 *Phase: 10-voice-command-settings-surfaces*
 *Context gathered: 2026-09-29*

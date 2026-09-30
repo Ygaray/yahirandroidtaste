@@ -1,9 +1,10 @@
 ---
 phase: 10-voice-command-settings-surfaces
 verified: 2026-09-30T00:00:00Z
-status: human_needed
+status: passed
 score: 13/13 must-haves verified
 covered_files:
+
   - .planning/REQUIREMENTS.md
   - .planning/phases/10-voice-command-settings-surfaces/10-01-PLAN.md
   - .planning/phases/10-voice-command-settings-surfaces/10-01-SUMMARY.md
@@ -26,10 +27,12 @@ covered_files:
   - src/test/java/io/github/ygaray/yahirandroidtaste/component/ModelSelectCardTest.kt
   - src/test/java/io/github/ygaray/yahirandroidtaste/component/ProviderKeyCardTest.kt
   - src/test/java/io/github/ygaray/yahirandroidtaste/explorer/DomainVocabularyDriftGuardTest.kt
+
 covered_digest: "v1:sha256:480fb5fff4f85a0ee16f77f50a1f341b731f90125acc32f49fe145370e9de438"
 behavior_unverified: 0
 overrides_applied: 0
 human_verification:
+
   - test: "Launch ExplorerActivity → Voice Command family → open ProviderKeyCard. Confirm the masked API-key field's glyphs render as dots/bullets (not the raw key), and that tapping the reveal eye visibly swaps to the raw characters, in both light and dark theme."
     expected: "Key is visually unreadable by default; reveal affordance visibly un-masks it; layout/contrast holds in both themes."
     why_human: "Automated ProviderKeyCardTest proves the Password semantics marker is set by default and that the reveal toggle's contentDescription flips (state threads correctly) — it cannot pixel-verify the rendered glyphs or the visual reveal transition in a headless Robolectric run. This plan's own <verification> section explicitly defers this to Gate-1."
@@ -42,7 +45,7 @@ human_verification:
 
 **Phase Goal:** Consumers can render voice-command provider/model and command-approach settings entirely from props + callbacks — with no key persistence and no network in the library.
 **Verified:** 2026-09-30
-**Status:** human_needed
+**Status:** passed — 13/13 automated must-haves verified; the 2 visual/interaction-feel items below are DEFERRED to milestone v2.4 Gate-2 (not failed), per standing policy "Gallery Gate-1 visual review deferred to milestone-close (Yahir)" and the orchestrator (yahir-gsd-control-plane-f2) ruling of 2026-09-30. Recorded in 10-UAT.md (skipped-with-reason) for Gate-2 draining.
 **Re-verification:** No — initial verification
 
 ## Goal Achievement
