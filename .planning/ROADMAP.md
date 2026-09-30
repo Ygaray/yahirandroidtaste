@@ -108,7 +108,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 11-01-PLAN.md — OutcomeSheet (Success/Failure sealed state, handled-by indicator, loud failure, undo affordance) — VOUT-01/02/03, VUNDO-01
+- [ ] 11-01-PLAN.md — Re-planned (D-01 frozen VUNDO-01 seam, 2026-09-30): additive UndoHistoryStore grouping API (openGroup/append/group/attemptUndoGroup) + undo-projection models + OutcomeSheet's undo rendering — VOUT-01/02/03 (already shipped, commit 6a946d3, carried for traceability), VUNDO-01
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
