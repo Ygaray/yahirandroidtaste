@@ -1,6 +1,6 @@
 # Reconvene brief — yahirandroidtaste (YAT) — R1
 
-**Milestone:** v2.4 AI-Voice Command UI  ·  **Contract rev read:** A1–A18 / E1–E3 (VAE `ccfebdf`)  ·  **Date:** 2026-09-29
+**Milestone:** v2.4 AI-Voice Command UI  ·  **Contract rev read:** A1–A18 / E1–E6 (VAE `ccfebdf`; R1 verdict folded)  ·  **Date:** 2026-09-29
 **Slice:** §6.3 (Wave 0)  ·  **Cuts:** library `com.github.Ygaray:yahirandroidtaste:v2.4.0`  ·  **Depends on:** nothing (SB + CT repin to my tag in Wave 1)
 
 ## 1. Phases (from ROADMAP)

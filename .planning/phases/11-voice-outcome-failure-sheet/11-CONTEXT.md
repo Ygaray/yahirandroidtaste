@@ -16,13 +16,16 @@ Deliver a domain-neutral outcome/failure sheet rendered from props: the command 
 Resolved in `ai` mode (`source: ai-auto`). The **[undo-crossrepo]** decision is a cross-repo item flagged for the R1 reconvene.
 
 ### undo-shape
-- **D-01 [undo-shape]:** Model the VUNDO-01 (A18) undo affordance as a NEW all-`val` undo UI model — a list of per-item entries (id + label + status incl. an `Unavailable(reason)` case), a derived "Undo all (N)" where N = count of currently-undoable items, and `onUndoItem(id)`/`onUndoAll()` callbacks. Do NOT reuse `UndoHistoryEntry`/`UndoHistoryStore` (internal constructor + `suspend` lambda + `AtomicBoolean` guard make them unusable as a prop, and they lack the entangled/unavailable concept). — **Reversibility:** one-way — the undo prop shape freezes into the `v2.4.0` API.
+- **D-01 [undo-shape]:** **REVISED at R1 by SecondBrain (the seam owner).** SB's Undo Center already IS this repo's `UndoHistoryStore`/`UndoHistoryEntry` (`feedback/`; SB `UndoCenterViewModel.kt`). So the A18 run-level undo shape must EXTEND that existing entry model ADDITIVELY — e.g. an optional run/group id + group status — NOT a new parallel store. The outcome sheet's undo affordance ("Undo all (N)" + per-item Undo) renders a group's entries and emits undo callbacks. "Undo all (N)" counts ONLY items undoable as part of the group; notify-only mutations (e.g. SB edits) are excluded or shown as `Unavailable("can't be undone")`. The existing per-action snackbar `WithUndo` path MUST keep working unchanged (SB stays on it until its Phase 178). — **Reversibility:** one-way — the additive entry-model extension freezes into the `v2.4.0` API. **Plan-time tension:** the current `UndoHistoryEntry` has an `internal` ctor + `suspend` lambda + `AtomicBoolean` (not a clean Compose-`STABLE` prop model), so the additive extension must expose a presentational, `STABLE`-friendly projection for the sheet WITHOUT breaking the entry's first-consumer-wins invariant — resolve in the plan. _(R1 — SB shape answer)_
 
 ### undo-placement
 - **D-02 [undo-placement]:** Put the undo affordance as a field on the `Success` outcome + model the undo-refused/partial state as a nested undo substate — NOT a new top-level arm of the sealed `VoiceOutcomeUiState`. This keeps the top-level sealed type stable so Phase 12's `NeedsConfirmation` stays a one-branch additive add.
 
 ### undo-crossrepo
 - **D-03 [undo-crossrepo]:** Validate the per-item `Unavailable(reason)` + top-level `Refused(reason, changedItem)` union against SecondBrain's and CalTracker's real undo call-sites at the A13 reconvene BEFORE authoring — a post-tag reshape is a breaking library change. _(cross-repo — reconvene item)_
+
+### handled-by
+- **D-04 [handled-by]:** The "handled by" UI model carries a REQUIRED tier label + OPTIONAL approach, provider, model, and escalation count — all optional beyond the tier so the shape grows additively. Apps fill these from VAE's committed TEL-01 `CommandTrace` (per-tier attempts, escalation reasons, provider/model). _(R1 orchestrator change 3)_
 
 ### Claude's Discretion
 Loud-failure and undo-refused visual treatment: research is confident (not a gray area) — use the theme `error`/`errorContainer` roles (icon + headline + reason string, sticky), and explicitly NOT `AttentionCue` (its KDoc forbids use as a failure signal).

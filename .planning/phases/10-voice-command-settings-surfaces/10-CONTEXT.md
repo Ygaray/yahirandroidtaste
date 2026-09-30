@@ -13,22 +13,28 @@ Deliver three prop-driven, presentational settings composables — a provider/AP
 <decisions>
 ## Implementation Decisions
 
-Resolved in `ai` mode (research recommendations adopted as working defaults; `source: ai-auto`). The **[naming]** decision is milestone-wide and flagged for confirmation at the R1 cross-repo reconvene.
+Resolved in `ai` mode (research recommendations adopted as working defaults; `source: ai-auto`), then updated per the **R1 reconvene GO-WITH-CHANGES** (orchestrator, 2026-09-29). The **[naming]** decision is now APPROVED (change 5).
 
 ### naming
-- **D-01 [naming]:** Use structural composable names whose leading token is generic (e.g. `ProviderKeyCard`, `ModelSelectCard`, `ApproachLadderCard`) and widen `PRIMITIVE_NOUN_ALLOWLIST` with the new leading tokens — NOT `DOMAIN_VOCABULARY` (that self-brands the cohort as domain-coupled). The `DomainVocabularyDriftGuardTest` keys off the leading PascalCase token, and `Provider`/`Model`/`Approach`/`Command`/`Outcome`/`Voice` are all currently unlisted. — **Reversibility:** costly — renaming public composables or the allowlist after `v2.4.0` is tagged is a breaking change for both consumers.
+- **D-01 [naming]:** Use structural composable names whose leading token is generic (e.g. `ProviderKeyCard`, `ModelSelectCard`, `ApproachLadderCard`) and widen `PRIMITIVE_NOUN_ALLOWLIST` with the new leading tokens — NOT `DOMAIN_VOCABULARY` (that self-brands the cohort as domain-coupled). The `DomainVocabularyDriftGuardTest` keys off the leading PascalCase token, and `Provider`/`Model`/`Approach`/`Command`/`Outcome`/`Voice` are all currently unlisted. — **Reversibility:** costly — renaming public composables or the allowlist after `v2.4.0` is tagged is a breaking change for both consumers. **APPROVED at R1** (orchestrator): structural names + widen `PRIMITIVE_NOUN_ALLOWLIST` with generic leading tokens (Provider/Model/Approach/Outcome/Command/Undo); do NOT grandfather full names into `DOMAIN_VOCABULARY`.
 
 ### key-entry
 - **D-02 [key-entry]:** Render masked API-key entry by adding an additive `visualTransformation` + reveal-toggle parameter to `ClearableTextField` (it currently exposes none); fall back to a purpose-built masked key field only if the additive param muddies that primitive. `PasswordVisualTransformation` is available in the pinned Compose BOM (no new dependency).
 
 ### cap-control
-- **D-03 [cap-control]:** Render the max-tier cap as tap-a-rung on the ladder (a cap marker with rungs-above greyed-but-present, matching conditional-render-no-dead-space); a `SingleChoiceSegmentedButtonRow` is the fallback for a short fixed ladder. `SegmentedOptionSelector` hard-requires exactly 2 options, so it can back the offline-only toggle but NOT a 3–4-tier cap.
+- **D-03 [cap-control]:** Render the max-tier cap as tap-a-rung on the ladder (a cap marker with rungs-above greyed-but-present, matching conditional-render-no-dead-space); a `SingleChoiceSegmentedButtonRow` is the fallback for a short fixed ladder. `SegmentedOptionSelector` hard-requires exactly 2 options, so it can back the offline-only toggle but NOT a 3–4-tier cap. **R1:** default to tap-a-rung, and build it so the cap control is easy to swap — Yahir (design-conscious) reviews it in the gallery at Gate-1.
 
 ### prop-models
 - **D-04 [prop-models]:** All settings prop-models are all-`val` immutable models in `model/` with frozen constructors. — **Reversibility:** one-way — model shapes freeze into the `v2.4.0` public API; a `var` reproduces the `TagChipUiModel` Compose-`STABLE`/`copy()` regression.
 
+### control-visibility
+- **D-05 [control-visibility]:** Every settings/approach control is optional and hideable by props — a null/absent prop means "not shown", never shown-disabled. (SB hides the offline-only toggle until it has an offline tier, and the router toggle, until engine v1.1.) _(R1 orchestrator change 2)_
+
+### offline-capable
+- **D-06 [offline-capable]:** `offlineCapable` per rung is an APP-derived prop; YAT never depends on VAE's `TierPolicy` type (L7 — no hub-to-hub edge). Props are self-contained and only need to be renderable. _(R1 orchestrator change 4)_
+
 ### Claude's Discretion
-The exact cap-control widget (tap-a-rung vs segmented) may be finalized at plan/UI time against the expected tier count; both are dependency-free.
+The exact cap-control widget (tap-a-rung vs segmented) may be finalized at plan/UI time against the expected tier count; both are dependency-free. Build the cap control so it is easy to swap.
 
 </decisions>
 

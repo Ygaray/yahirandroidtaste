@@ -13,7 +13,9 @@ Deliver ONE domain-neutral needs-confirmation state, rendered inside the Phase 1
 <decisions>
 ## Implementation Decisions
 
-Resolved in `ai` mode (`source: ai-auto`). **[additivity]** is provisional (depends on Phase 11); **[confirm-crossrepo]** is a reconvene item.
+Resolved in `ai` mode (`source: ai-auto`); updated per **R1 GO-WITH-CHANGES**. **[additivity]** is provisional (depends on Phase 11); **[confirm-crossrepo]** is a reconvene item.
+
+**⚠ Planning gate:** Phase 12 planning WAITS for SecondBrain + CalTracker to confirm the confirm-shape against their real call-sites (orchestrator relaying). Do NOT run `/gsd-plan-phase 12` until the orchestrator sends GO for it.
 
 ### per-item-metadata
 - **D-01 [per-item-metadata]:** Carry the per-item metadata that differs between consumers (SB risk tier vs CT match score) as an OPAQUE presentational per-item slot (e.g. `trailingContent: @Composable () -> Unit`, or a nullable/defaulted field the library never interprets) — never a library-defined risk/score/severity enum. — **Reversibility:** one-way — the confirm prop shape freezes into the `v2.4.0` API; a library enum would leak one consumer's domain (drift-guard RED).
@@ -23,6 +25,12 @@ Resolved in `ai` mode (`source: ai-auto`). **[additivity]** is provisional (depe
 
 ### confirm-crossrepo
 - **D-03 [confirm-crossrepo]:** Model single-or-batch as one uniform `List<ProposedItemUiModel>` (size 1 = single) + a `SelectionMode` (AllOrNothing | PerItem). Validate the exact `ProposedItemUiModel` field set against SB's `MutationGate`/`VoiceConfirmGate` and CT's `VoiceResultSheet` Proposed/ProposedBatch call-sites at the A13 reconvene before authoring. _(cross-repo — reconvene item)_
+
+### confirm-scope
+- **D-04 [confirm-scope]:** The confirm state must ALSO cover per-item EDIT before confirm (CT Phase 70 multi-item sheet has per-row edit/delete; VAE GATE-01 has `Admit(amended)`), per-item REMOVE, and a "Confirm all (N)" action. The opaque per-item slot may carry the edit UI, but the state model itself needs an item-level amended/removed representation. — **Reversibility:** one-way — freezes into the `v2.4.0` API. _(R1 orchestrator change 1)_
+
+### confirm-sb-props (SB's real call-site, R1)
+- **D-05 [confirm-sb-props]:** SB always sends a SINGLE item (size 1 — its gate is sequential; the batch case is CT, still pending). Add these OPTIONAL confirm props: (1) a `title` separate from the reason/body (e.g. "Delete card?" / "Merge tags?" / "Allow this change?"); (2) a per-confirm confirm-button VERB (default "Confirm"; e.g. "Delete" / "Merge" / "Allow"); (3) a style/severity (Destructive = red, per the indicative-buttons convention — all 4 SB subjects are destructive); (4) a reversibility hint (Undoable / Irreversible, or free text) that stays visible. **Behavior:** dismiss / outside-tap / back = decline; the host may WITHDRAW the sheet while it is showing (SB's gate auto-holds after 120 s) — handle without crashing or flashing. **Privacy:** `ProposedItemUiModel.toString()` must NOT print item names (SB T-166-05, same spirit as VAE TEL-04) — SB passes finished strings, so YAT never sees raw subjects. _(R1 — SB shape answer; CT batch answer still pending)_
 
 ### Claude's Discretion
 Do NOT reuse `component/ConfirmationDialog.kt` (it is an `AlertDialog` with scalar title/body — can't host a batch list; the confirm state lives INSIDE the sheet).
