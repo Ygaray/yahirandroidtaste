@@ -108,7 +108,7 @@ Session names can change after a restart. If one doesn't resolve, ask the orches
 
 **Stage:** milestone v2.4 (§6.3) — **Phase 10 PLANNED + plan-checker PASSED; execution NOT started** (Yahir paused at the planning boundary). All milestone setup + R1 rulings committed. HEAD = `8d9b33f`.
 
-**Next command (on resume):** `/gsd-resume-work` → `/gsd-execute-phase 10` (10-01 leads with a blocking public-surface-freeze `checkpoint:decision` → approve it; shapes are orchestrator+consumer-validated, nothing irreversible until Phase 14's cut).
+**Next action (on resume):** `/gsd-resume-work`, then **WAIT for the orchestrator to dispatch `/gsd-execute-milestone --subagent-driven`** in this session. **PROCESS CHANGE (Yahir, 2026-09-30):** sessions are bounded to new-milestone → research → discuss → reconvene; after a reconvene clears a repo you do NOT hand-drive `/gsd-plan-phase` or `/gsd-execute-phase` — the control plane dispatches the milestone executor, which runs the already-planned phases. Phase 10's plan (2 plans, checker-passed) stays valid for it. When the milestone executor runs, 10-01 opens with a blocking public-surface-freeze `checkpoint:decision` → approve it (shapes are orchestrator+consumer-validated; nothing irreversible until Phase 14's cut).
 
 **Roadmap (now 5 phases):** 10 settings cards · 11 outcome/failure sheet + undo · 12 needs-confirmation (**ungated**) · 13 catalog integrity + docs (cuts NO tag) · **14 cut `v2.4.0`** (isolated so the cut follows a green 13). Sequence 10→11→12→13→14.
 
@@ -124,4 +124,4 @@ Session names can change after a restart. If one doesn't resolve, ask the orches
 
 **Contract rev absorbed:** A1–A18, E1–E6.
 
-**Resume prompt to relay:** "Read `.planning/cross-repo/HANDOFF.md` (§ Current state) and your `vae-bilingual-multi-repo-effort` memory, then `/gsd-resume-work`; continue with `/gsd-execute-phase 10`. Orchestrator is `yahir-gsd-control-plane-f2`."
+**Resume prompt to relay:** "Read `.planning/cross-repo/HANDOFF.md` (§ Current state) and your `vae-bilingual-multi-repo-effort` memory, then `/gsd-resume-work`; then WAIT for the orchestrator to dispatch `/gsd-execute-milestone --subagent-driven` (do NOT hand-drive `/gsd-plan-phase` or `/gsd-execute-phase`). Orchestrator is `yahir-gsd-control-plane-f2`."
