@@ -75,11 +75,12 @@ parameters; the library imports no consumer code, no OkHttp, and no `voice-actio
   3. A command-approach settings card displays the configured tier ladder (ordered approaches, e.g. Grammar → SingleShot → Plan → Agentic) from props
   4. The command-approach card's offline-only toggle reflects and emits offline-only state via props + callback
   5. The command-approach card's max-tier cap control reflects and emits the cap via props + callback
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: yes
 
 Plans:
-- [ ] TBD
+- [ ] 10-01-PLAN.md — ProviderKeyCard tracer: masked API-key card + Voice Command family scaffold + additive ClearableTextField masking (VSET-01)
+- [ ] 10-02-PLAN.md — ModelSelectCard + ApproachLadderCard expansion: model selection, tier ladder, offline-only toggle, max-tier cap (VSET-02, VAPPR-01/02/03)
 
 ### Phase 11: Voice outcome & failure sheet
 **Goal**: Consumers can render a domain-neutral command outcome — including which tier/approach handled it, loud visible failure states, and a generic undo affordance ("Undo all (N)" + per-item undo with an unavailable state, plus a loud undo-refused/partial state) — from props alone.
@@ -154,7 +155,7 @@ Phases execute in numeric order: 10 → 11 → 12 → 13 (Phases 10 and 11 are m
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 10. Voice command settings surfaces | v2.4 | 0/TBD | Not started | - |
+| 10. Voice command settings surfaces | v2.4 | 0/2 | Planned | - |
 | 11. Voice outcome & failure sheet | v2.4 | 0/TBD | Not started | - |
 | 12. Generic needs-confirmation state | v2.4 | 0/TBD | Not started | - |
 | 13. Catalog integrity & v2.4.0 ship | v2.4 | 0/TBD | Not started | - |
