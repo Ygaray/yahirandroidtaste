@@ -451,22 +451,25 @@ private fun ClarificationOptionBar(
 | A3 | A new `UndoRowUiModel`/`UndoAffordanceUiModel`-shaped presentational projection (built by the consumer from `UndoHistoryStore.entries`) is preferable to any store-side group-tracking change, absent the D-03 cross-repo reconvene's actual verdict | Architecture Patterns, Pitfall 2 | Medium — D-03 explicitly requires validating the undo shape against SecondBrain's and CalTracker's real call-sites at the A13 reconvene BEFORE authoring; if that reconvene produces a different verdict (e.g. the store itself needs a `groupId` concept), this recommendation must be revisited — this is flagged in CONTEXT.md as a cross-repo item, not fully resolved by this phase-level research |
 | A4 | The clarification-choices composable should be a standalone composable rather than nested in the outcome sheet's sealed state | Architecture Patterns Pattern 3 | Low — explicitly grounded in CONTEXT.md D-07's "your design call, easy to swap" language, but the FINAL visual form (chips vs buttons, bar vs sheet-state) is still an open design call for the plan/Gate-1 review, not settled here |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Exact head-token/composable names for the outcome sheet and clarification-choices composable.**
    - What we know: the naming MUST clear `DomainVocabularyDriftGuardTest` (head token in `PRIMITIVE_NOUN_ALLOWLIST` or `DOMAIN_VOCABULARY`) and `ComponentRegistryDriftGuardTest` (registered XOR allowlisted); Phase 10's precedent is to widen `PRIMITIVE_NOUN_ALLOWLIST` with fresh, genuinely-generic words rather than reuse `Voice*`.
    - What's unclear: the exact chosen name(s) — this is a planning/authoring decision, not something research should pre-decide.
    - Recommendation: the plan should pick names, check them against the verified current allowlist (reproduced in full in Pitfall 1), and add any new head token to `PRIMITIVE_NOUN_ALLOWLIST` with a rationale in the same commit — do not defer this to Phase 13.
+   - **RESOLVED:** Names picked and the allowlist widened accordingly. 11-01-PLAN.md Task 1 names the sheet `OutcomeSheet` and widens `PRIMITIVE_NOUN_ALLOWLIST` with `"Outcome"` in the same commit; 11-02-PLAN.md Task 1 names the clarification composable `ClarificationBar` and widens the same allowlist with `"Clarification"` in its own commit — both mirror Phase 10's widening pattern exactly.
 
 2. **Whether the undo-group concept needs any store-side change at all, per D-03's cross-repo validation.**
    - What we know: D-01/D-03 require validating the `Unavailable(reason)` + `Refused(reason, changedItem)` union against SecondBrain's and CalTracker's actual call-sites at the A13 reconvene before authoring.
    - What's unclear: whether that reconvene has happened, and what its verdict was — this session found no `.planning/cross-repo/RECONVENE-BRIEF.md` verdict artifact to confirm against (STATE.md shows the project still at "ready for cross-repo reconvene" as of its last update, predating Phase 11 planning).
    - Recommendation: the plan should either confirm the reconvene verdict exists and cite it, or explicitly flag this as an unresolved cross-repo dependency requiring a `checkpoint:human-verify` before the undo-shape models are frozen.
+   - **RESOLVED:** The A13/R1 reconvene did happen and its verdict is folded into 11-CONTEXT.md's D-01 ("REVISED at R1 by SecondBrain... extend additively... presentational projection" — the store-side-change question is answered: no, extend via a new projection, never a store/`UndoHistoryEntry` shape change). 11-01-PLAN.md Task 2 (`checkpoint:decision`, blocking-human) cites D-01/D-03 and the RECONVENE-BRIEF verdict explicitly and gates the concrete Kotlin field-level shape (not the reconvene-happened-or-not question, which D-01 already settles) before Task 3 authors `UndoAffordanceUiModel`/`UndoRowUiModel`/`UndoRefusedUiModel`.
 
 3. **Outcome sheet host: `SheetScaffold`-hosted bottom sheet, or an inline card surface?**
    - What we know: the milestone ARCHITECTURE.md recommends a host/content split mirroring `RecordingBottomSheetContent.kt`/`ListCardBottomSheet.kt`; CONTEXT.md doesn't lock this choice explicitly for Phase 11 (D-07 only grants discretion for the clarification composable's form, not the outcome sheet's).
    - What's unclear: whether "sheet" in "outcome/failure sheet" (the phase's own name) is meant literally (a `ModalBottomSheet`) or is just the phase's working title.
    - Recommendation: default to the `SheetScaffold` host/content split (matches the phase name and existing precedent) unless the plan finds a reason to diverge.
+   - **RESOLVED:** Defaulted as recommended. 11-01-PLAN.md Task 1's action has `OutcomeSheet` call `SheetScaffold(onDismissRequest = onDismissRequest, modifier = modifier)` internally and render its exhaustive `when(outcome)` inside that scaffold's content — the host/content split, settled at authoring time, no divergence found.
 
 ## Environment Availability
 
