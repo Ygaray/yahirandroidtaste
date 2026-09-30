@@ -317,7 +317,12 @@ class DomainVocabularyDriftGuardTest {
             "Date",
             // Phase 6 (REUNI-03/04) forward-port: "Preset" is PresetChip's head token, a
             // primitive UI-archetype noun (one-tap preset row), not consumer-domain vocabulary.
-            "Preset"
+            "Preset",
+            // Phase 10 (VSET-01, D-01 APPROVED at R1): "Provider", "Model", "Approach" are
+            // ProviderKeyCard/ModelSelectCard/ApproachLadderCard's head tokens — generic
+            // UI-archetype nouns (a settings-card subject), not consumer-domain vocabulary.
+            // Widened here (13-prep) so Plan 02's cards register with no further edit to this file.
+            "Provider", "Model", "Approach"
         )
 
         /**

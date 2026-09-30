@@ -102,7 +102,7 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public final class ClearableTextFieldKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void ClearableTextField(String value, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onValueChange, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? label, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingIcon, optional boolean isError, optional kotlin.jvm.functions.Function0<kotlin.Unit>? supportingText, optional boolean singleLine, optional androidx.compose.foundation.text.KeyboardOptions keyboardOptions, optional androidx.compose.foundation.text.KeyboardActions keyboardActions);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ClearableTextField(String value, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onValueChange, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? label, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingIcon, optional boolean isError, optional kotlin.jvm.functions.Function0<kotlin.Unit>? supportingText, optional boolean singleLine, optional androidx.compose.foundation.text.KeyboardOptions keyboardOptions, optional androidx.compose.foundation.text.KeyboardActions keyboardActions, optional androidx.compose.ui.text.input.VisualTransformation visualTransformation, optional io.github.ygaray.yahirandroidtaste.component.RevealToggle? revealToggle);
   }
 
   public final class ColorUtilsKt {
@@ -287,6 +287,10 @@ package io.github.ygaray.yahirandroidtaste.component {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void ProgressRing(float fraction, optional androidx.compose.ui.Modifier modifier, optional androidx.compose.ui.unit.Dp strokeWidth, optional androidx.compose.ui.graphics.Color trackColor, optional androidx.compose.ui.graphics.Color progressColor, optional androidx.compose.animation.core.FiniteAnimationSpec<java.lang.Float> animationSpec, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.BoxScope,kotlin.Unit> content);
   }
 
+  public final class ProviderKeyCardKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ProviderKeyCard(java.util.List<io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel> providers, String? selectedProviderId, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onProviderSelected, String keyValue, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onKeyChange, io.github.ygaray.yahirandroidtaste.model.KeyFieldState keyState, String keyLabel, optional androidx.compose.ui.Modifier modifier);
+  }
+
   public final class RecordingBottomSheetContentKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void RecordingBottomSheetContent(io.github.ygaray.yahirandroidtaste.component.RecordingSheetUiState uiState, long elapsedSeconds, java.util.List<java.lang.Float> amplitudeBars, String titleText, String defaultTitle, boolean permissionDenied, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTitleChange, kotlin.jvm.functions.Function0<kotlin.Unit> onPause, kotlin.jvm.functions.Function0<kotlin.Unit> onResume, kotlin.jvm.functions.Function0<kotlin.Unit> onStop, kotlin.jvm.functions.Function0<kotlin.Unit> onSave, kotlin.jvm.functions.Function0<kotlin.Unit> onDiscard, kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClosePermissionDenied, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> bufferedTags, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> allTags, optional kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onAddBufferedTags, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onRemoveBufferedTag, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCreateAndBufferTag, optional io.github.ygaray.yahirandroidtaste.model.TagSortMode sortMode, optional kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.model.TagSortMode,kotlin.Unit> onSortModeChange, optional boolean showTagColors);
   }
@@ -326,6 +330,17 @@ package io.github.ygaray.yahirandroidtaste.component {
     property public androidx.compose.ui.graphics.Color containerColor;
     property public androidx.compose.ui.graphics.Color contentColor;
     property public androidx.compose.ui.text.font.FontWeight fontWeight;
+  }
+
+  public final class RevealToggle {
+    ctor public RevealToggle(boolean revealed, kotlin.jvm.functions.Function0<kotlin.Unit> onToggle);
+    method public boolean component1();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit> component2();
+    method public io.github.ygaray.yahirandroidtaste.component.RevealToggle copy(optional boolean revealed, optional kotlin.jvm.functions.Function0<kotlin.Unit> onToggle);
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnToggle();
+    method @InaccessibleFromKotlin public boolean getRevealed();
+    property public kotlin.jvm.functions.Function0<kotlin.Unit> onToggle;
+    property public boolean revealed;
   }
 
   public final class SegmentedOptionSelectorKt {
@@ -560,6 +575,7 @@ package io.github.ygaray.yahirandroidtaste.explorer {
     property public static String PROGRESS_METRICS;
     property public static String SHEETS;
     property public static String TACTILE_FOUNDATION;
+    property public static String VOICE_COMMAND;
     field public static final String BUTTONS_FAB = "buttons_fab";
     field public static final String CARDS = "cards";
     field public static final String CHIPS = "chips";
@@ -570,6 +586,7 @@ package io.github.ygaray.yahirandroidtaste.explorer {
     field public static final String PROGRESS_METRICS = "progress_metrics";
     field public static final String SHEETS = "sheets";
     field public static final String TACTILE_FOUNDATION = "tactile_foundation";
+    field public static final String VOICE_COMMAND = "voice_command";
   }
 
   public final class ExplorerIndexScreenKt {
@@ -662,6 +679,10 @@ package io.github.ygaray.yahirandroidtaste.explorer {
     method @InaccessibleFromKotlin public androidx.compose.ui.text.TextStyle getStyle();
     property public String name;
     property public androidx.compose.ui.text.TextStyle style;
+  }
+
+  public final class VoiceCommandFamilyScreenKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void VoiceCommandFamilyScreen(kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNavigateToDetail, io.github.ygaray.yahirandroidtaste.theme.ThemeMode themeMode, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleTheme);
   }
 
 }
@@ -886,6 +907,33 @@ package io.github.ygaray.yahirandroidtaste.model {
     property public io.github.ygaray.yahirandroidtaste.model.BrowseTagSortMode DEFAULT;
   }
 
+  public sealed exhaustive interface KeyFieldState {
+  }
+
+  public static final class KeyFieldState.Empty implements io.github.ygaray.yahirandroidtaste.model.KeyFieldState {
+    field public static final io.github.ygaray.yahirandroidtaste.model.KeyFieldState.Empty INSTANCE;
+  }
+
+  public static final class KeyFieldState.Entered implements io.github.ygaray.yahirandroidtaste.model.KeyFieldState {
+    field public static final io.github.ygaray.yahirandroidtaste.model.KeyFieldState.Entered INSTANCE;
+  }
+
+  public static final class KeyFieldState.Invalid implements io.github.ygaray.yahirandroidtaste.model.KeyFieldState {
+    ctor public KeyFieldState.Invalid(String reason);
+    method public String component1();
+    method public io.github.ygaray.yahirandroidtaste.model.KeyFieldState.Invalid copy(optional String reason);
+    method @InaccessibleFromKotlin public String getReason();
+    property public String reason;
+  }
+
+  public static final class KeyFieldState.Valid implements io.github.ygaray.yahirandroidtaste.model.KeyFieldState {
+    field public static final io.github.ygaray.yahirandroidtaste.model.KeyFieldState.Valid INSTANCE;
+  }
+
+  public static final class KeyFieldState.Validating implements io.github.ygaray.yahirandroidtaste.model.KeyFieldState {
+    field public static final io.github.ygaray.yahirandroidtaste.model.KeyFieldState.Validating INSTANCE;
+  }
+
   public final class ListItemUiModel {
     ctor public ListItemUiModel(String id, String text, boolean isCompleted, int sortOrder, optional Long? completedAt);
     method public String component1();
@@ -904,6 +952,17 @@ package io.github.ygaray.yahirandroidtaste.model {
     property public boolean isCompleted;
     property public int sortOrder;
     property public String text;
+  }
+
+  public final class ProviderOptionUiModel {
+    ctor public ProviderOptionUiModel(String id, String label);
+    method public String component1();
+    method public String component2();
+    method public io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel copy(optional String id, optional String label);
+    method @InaccessibleFromKotlin public String getId();
+    method @InaccessibleFromKotlin public String getLabel();
+    property public String id;
+    property public String label;
   }
 
   public final class SavedPlaceUiModel {
