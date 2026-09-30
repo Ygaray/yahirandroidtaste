@@ -593,22 +593,25 @@ fun ClarificationBar(
 
 **If this table is empty:** N/A — see above; A1/A4 are low-risk implementation-detail recommendations, A2/A3 are the genuinely load-bearing design points the plan must scrutinize before treating the undo mechanism as settled.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Does the plan accept the `attemptUndo(id)`/`attemptUndoGroup` concurrent-race gap (Pitfall 4), or build UI-level mutual exclusion against it?**
    - What we know: D-01's frozen text does not address this interaction; `attemptUndo(id)` must stay unchanged per D-01.
    - What's unclear: whether SB's/CT's real UI ever exposes both a per-item Undo AND a live "Undo all" for the same row simultaneously in a way that makes the race practically reachable.
    - Recommendation: plan should make and document an explicit choice (see Pitfall 4's two options) rather than let it be an unstated side effect of implementation order.
+   - **RESOLVED (11-01-PLAN.md Task 2):** the residual race is ACCEPTED, not store-mitigated — `attemptUndo(id)` stays unchanged per D-01, and the gap is documented in KDoc with the consumer-side `Unavailable` projection as the practical mitigation.
 
 2. **Mutex granularity: one store-wide `groupUndoMutex`, or per-group?**
    - What we know: a single mutex is simpler and sufficient for the single-user-session case this library targets.
    - What's unclear: whether any consumer app ever fires two `attemptUndoGroup` calls for two DIFFERENT groups genuinely concurrently (e.g., two independent voice commands' outcome sheets open at once) — if so, a single mutex serializes them, which is a correctness non-issue but could be a latency concern.
    - Recommendation: default to one mutex (per Alternatives Considered); revisit only if a concrete concurrent-groups UI flow surfaces.
+   - **RESOLVED (11-01-PLAN.md):** single store-wide `groupUndoMutex` field, per the default recommendation.
 
 3. **Exact new-file layout: does `UndoGroupStatus`/`UndoGroupResult`/`UndoGroupRefusedException` live in one new `UndoGroupTypes.kt`, or split across `UndoHistoryStore.kt`'s own file (companion types) per this repo's convention (e.g. `KeyFieldState.kt` is its own file, `ActionButtonDefaults` lives beside `DynamicActionButton` in the same file)?**
    - What we know: both conventions exist live in this repo (small sealed-type-per-file, and object-plus-enum-in-same-file-as-its-composable).
    - What's unclear: no single rule in this repo dictates which to follow for a non-composable sealed-result type living in `feedback/`.
    - Recommendation: a single `UndoGroupTypes.kt` is fine (keeps `UndoHistoryStore.kt` from growing unbounded) — this is a purely organizational call for the plan to make, not a design-risk item.
+   - **RESOLVED (11-01-PLAN.md):** one new `UndoGroupTypes.kt` file, per the default recommendation.
 
 ## Environment Availability
 
