@@ -439,4 +439,157 @@ class UndoHistoryStoreTest {
         assertEquals(UndoGroupStatus.FullyResolved, store.groupStatus(groupId))
         assertTrue(store.group(groupId).all { it.status == UndoStatus.Undone })
     }
+
+    // ---- (j) VUNDO-01 edge hardening (Phase 11 Plan 01 Task 2) ----
+
+    @Test
+    fun attemptUndoGroup_refused_leavesEveryClaimedMemberAvailable_andARetriedCallCanSucceed() = runTest {
+        val store = UndoHistoryStore()
+        val groupId = "group-refused"
+        var shouldRefuse = true
+        val undoAllCallCount = AtomicInteger(0)
+
+        store.openGroup(groupId, label = "Undo all (2)") {
+            undoAllCallCount.incrementAndGet()
+            if (shouldRefuse) {
+                throw UndoGroupRefusedException(reason = "Item changed", changedItem = "card-1")
+            }
+        }
+        store.append("Card deleted", groupId = groupId) { }
+        store.append("Tag removed", groupId = groupId) { }
+
+        val refusedResult = store.attemptUndoGroup(groupId)
+
+        assertEquals(
+            UndoGroupResult.Refused(reason = "Item changed", changedItem = "card-1"),
+            refusedResult
+        )
+        assertTrue(
+            "Refused must leave every claimed member Available -- never permanently stranded " +
+                "(Pitfall 1 closure)",
+            store.group(groupId).all { it.status == UndoStatus.Available }
+        )
+
+        shouldRefuse = false
+        val retryResult = store.attemptUndoGroup(groupId)
+
+        assertEquals(
+            "A retried attemptUndoGroup on the same group must still be able to succeed, proving " +
+                "the claim was genuinely released, not a stuck guard",
+            UndoGroupResult.Undone(count = 2),
+            retryResult
+        )
+        assertEquals(2, undoAllCallCount.get())
+    }
+
+    @Test
+    fun attemptUndoGroup_undoAllThrowsAPlainException_marksEveryClaimedMemberFailed() = runTest {
+        val store = UndoHistoryStore()
+        val groupId = "group-failed"
+        store.openGroup(groupId, label = "Undo all (2)") { throw IllegalStateException("boom") }
+        val firstId = store.append("Card deleted", groupId = groupId) { }
+        val secondId = store.append("Tag removed", groupId = groupId) { }
+
+        val result = store.attemptUndoGroup(groupId)
+
+        assertEquals(UndoGroupResult.Failed, result)
+        assertEquals(UndoStatus.Failed, store.entries.value.single { it.id == firstId }.status)
+        assertEquals(UndoStatus.Failed, store.entries.value.single { it.id == secondId }.status)
+    }
+
+    @Test
+    fun attemptUndoGroup_unknownGroupId_orAllMembersAlreadySpent_returnsNothingToUndo_withoutInvokingUndoAll() =
+        runTest {
+            val store = UndoHistoryStore()
+
+            val unknownResult = store.attemptUndoGroup("never-opened")
+            assertEquals(UndoGroupResult.NothingToUndo, unknownResult)
+
+            val groupId = "group-all-spent"
+            val undoAllCallCount = AtomicInteger(0)
+            store.openGroup(groupId, label = "Undo all (1)") { undoAllCallCount.incrementAndGet() }
+            store.append("Card deleted", groupId = groupId) { }
+            store.attemptUndoGroup(groupId) // resolves the group to FullyResolved
+            undoAllCallCount.set(0)
+
+            val allSpentResult = store.attemptUndoGroup(groupId)
+
+            assertEquals(UndoGroupResult.NothingToUndo, allSpentResult)
+            assertEquals(
+                "undoAll must never be invoked when every member is already spent",
+                0,
+                undoAllCallCount.get()
+            )
+        }
+
+    @Test
+    fun clearSpent_neverRemovesAPartiallyResolvedGroupsSpentMembers_removesTheWholeGroupOnceFullyResolved() =
+        runTest {
+            val store = UndoHistoryStore()
+            val groupId = "group-partial"
+            store.openGroup(groupId, label = "Undo all (3)") { }
+            val firstId = store.append("first", groupId = groupId) { }
+            val secondId = store.append("second", groupId = groupId) { }
+            val thirdId = store.append("third", groupId = groupId) { }
+
+            // Undo the first two individually via the UNCHANGED per-item path -- the group is
+            // PartiallyResolved (2 spent, 1 still Available).
+            store.attemptUndo(firstId)
+            store.attemptUndo(secondId)
+            assertEquals(UndoGroupStatus.PartiallyResolved, store.groupStatus(groupId))
+
+            store.clearSpent()
+
+            assertEquals(
+                "clearSpent() must NOT remove a PartiallyResolved group's spent members ahead of " +
+                    "its still-Available member",
+                3,
+                store.group(groupId).size
+            )
+
+            // Resolve the third member too -> FullyResolved -> clearSpent now removes the group.
+            store.attemptUndo(thirdId)
+            assertEquals(UndoGroupStatus.FullyResolved, store.groupStatus(groupId))
+
+            store.clearSpent()
+
+            assertEquals(
+                "clearSpent() must remove the WHOLE group in one call once it is FullyResolved",
+                0,
+                store.group(groupId).size
+            )
+        }
+
+    @Test
+    fun evictIfNeeded_whenTheEvictionTargetBelongsToAGroup_evictsEveryMemberOfThatGroupTogether() = runTest {
+        val store = UndoHistoryStore()
+        val groupId = "group-evict"
+        store.openGroup(groupId, label = "Undo all (2)") { }
+
+        val firstMemberId = store.append("first-member", groupId = groupId) { }
+        val secondMemberId = store.append("second-member", groupId = groupId) { }
+        store.attemptUndo(firstMemberId) // spends the oldest group member individually
+
+        // Fill up to the 50-entry cap with ungrouped Available entries appended AFTER the group.
+        repeat(48) { i -> store.append("filler-$i") { } }
+        assertEquals(50, store.entries.value.size)
+
+        val overflowId = store.append("overflow") { }
+
+        val entries = store.entries.value
+        assertEquals(
+            "The <= 50 cap holds even though a 2-member group is evicted together in one pass",
+            49,
+            entries.size
+        )
+        assertFalse(
+            "The spent group member (the chosen eviction target) must be evicted",
+            entries.any { it.id == firstMemberId }
+        )
+        assertFalse(
+            "The still-Available sibling in the SAME group must be evicted together, never stranded",
+            entries.any { it.id == secondMemberId }
+        )
+        assertTrue(entries.any { it.id == overflowId })
+    }
 }

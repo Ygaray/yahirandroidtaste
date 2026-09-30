@@ -1,6 +1,9 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertHasNoClickAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -9,6 +12,7 @@ import androidx.compose.ui.test.performClick
 import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel
+import io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRowState
 import io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
@@ -162,5 +166,148 @@ class OutcomeSheetTest {
         composeTestRule.waitForIdle()
 
         assertEquals(true, undoAllInvoked)
+    }
+
+    // ── VUNDO-01: edge hardening -- Unavailable/Refused rendering (Phase 11 Plan 01 Task 2) ──
+
+    @Test
+    fun `an Unavailable row renders its reason as non-clickable text while a sibling Available row still fires its own onUndo, and allLabel renders verbatim`() {
+        var availableRowUndoInvoked = false
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(
+                    summary = "Logged 1 item",
+                    undo = UndoAffordanceUiModel(
+                        allLabel = "Undo all (1)",
+                        rows = listOf(
+                            UndoRowUiModel(
+                                id = "1",
+                                label = "Card deleted",
+                                state = UndoRowState.Available(onUndo = { availableRowUndoInvoked = true })
+                            ),
+                            UndoRowUiModel(
+                                id = "2",
+                                label = "Tag removed",
+                                state = UndoRowState.Unavailable(reason = "Entangled")
+                            )
+                        ),
+                        onUndoAll = {}
+                    )
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        // The composable never recomputes the count -- allLabel renders exactly what it was given.
+        composeTestRule.onNodeWithText("Undo all (1)").assertExists()
+        composeTestRule.onNodeWithText("Entangled").assertExists()
+
+        val rows = composeTestRule.onAllNodesWithTag("outcome_sheet_undo_row")
+        rows.assertCountEquals(2)
+        rows[1].assertHasNoClickAction()
+
+        rows[0].performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, availableRowUndoInvoked)
+    }
+
+    @Test
+    fun `a null undo renders no undo_all or undo_row node at all`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(summary = "Logged 1 item", undo = null),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("outcome_sheet_undo_all").assertDoesNotExist()
+        composeTestRule.onNodeWithTag("outcome_sheet_undo_row").assertDoesNotExist()
+    }
+
+    @Test
+    fun `an undo with empty rows and a null onUndoAll also renders neither undo_all nor undo_row`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(
+                    summary = "Logged 1 item",
+                    undo = UndoAffordanceUiModel(allLabel = "Undo all (0)")
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("outcome_sheet_undo_all").assertDoesNotExist()
+        composeTestRule.onNodeWithTag("outcome_sheet_undo_row").assertDoesNotExist()
+    }
+
+    @Test
+    fun `undo rows render in the exact supplied list order, never resorted`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(
+                    summary = "Logged 3 items",
+                    undo = UndoAffordanceUiModel(
+                        allLabel = "Undo all (3)",
+                        rows = listOf(
+                            UndoRowUiModel(id = "1", label = "Zebra card", state = UndoRowState.Available(onUndo = {})),
+                            UndoRowUiModel(id = "2", label = "Apple tag", state = UndoRowState.Available(onUndo = {})),
+                            UndoRowUiModel(id = "3", label = "Mango link", state = UndoRowState.Available(onUndo = {}))
+                        )
+                    )
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        val rows = composeTestRule.onAllNodesWithTag("outcome_sheet_undo_row")
+        rows.assertCountEquals(3)
+        rows[0].assert(hasText("Zebra card"))
+        rows[1].assert(hasText("Apple tag"))
+        rows[2].assert(hasText("Mango link"))
+    }
+
+    @Test
+    fun `a non-null refused renders the error-container surface with the reason and appends the changed-since suffix when changedItem is non-null`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(
+                    summary = "Logged 1 item",
+                    undo = UndoAffordanceUiModel(
+                        allLabel = "Undo all (1)",
+                        refused = UndoRefusedUiModel(reason = "Item changed", changedItem = "Card 1")
+                    )
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("outcome_sheet_undo_refused").assertExists()
+        composeTestRule.onNodeWithText("Couldn't undo: Item changed, Card 1 changed since").assertExists()
+    }
+
+    @Test
+    fun `a non-null refused with a null changedItem renders the reason without the changed-since suffix`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(
+                    summary = "Logged 1 item",
+                    undo = UndoAffordanceUiModel(
+                        allLabel = "Undo all (1)",
+                        refused = UndoRefusedUiModel(reason = "Item changed", changedItem = null)
+                    )
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("outcome_sheet_undo_refused").assertExists()
+        composeTestRule.onNodeWithText("Couldn't undo: Item changed").assertExists()
     }
 }
