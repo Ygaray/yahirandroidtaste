@@ -10,7 +10,7 @@ Generic, **presentational** Compose composables only. Each composable takes its 
 
 ### Settings surfaces
 
-- [ ] **VSET-01**: A provider/API-key settings card composable renders provider selection and API-key entry purely from props + callbacks (no key persistence, no network in the library) (§6.3)
+- [x] **VSET-01**: A provider/API-key settings card composable renders provider selection and API-key entry purely from props + callbacks (no key persistence, no network in the library) (§6.3)
 - [ ] **VSET-02**: A model settings card composable renders the selected/available model(s) from props and emits selection via callback (§6.3)
 
 ### Command-approach settings (NEW)
@@ -63,7 +63,7 @@ Each requirement maps to exactly one phase. Roadmap: `.planning/ROADMAP.md` (Pha
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VSET-01 | Phase 10 | Pending |
+| VSET-01 | Phase 10 | Complete |
 | VSET-02 | Phase 10 | Pending |
 | VAPPR-01 | Phase 10 | Pending |
 | VAPPR-02 | Phase 10 | Pending |
@@ -81,6 +81,7 @@ Each requirement maps to exactly one phase. Roadmap: `.planning/ROADMAP.md` (Pha
 | SHIP-02 | Phase 14 | Pending |
 
 **Coverage:**
+
 - v2.4 requirements: 16 total
 - Mapped to phases: 16 ✓ (Phase 10: 5, Phase 11: 5, Phase 12: 1, Phase 13: 3, Phase 14: 2)
 - Unmapped: 0 ✓ (no orphans, no duplicates)
