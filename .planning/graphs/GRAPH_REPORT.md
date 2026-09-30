@@ -1,16 +1,16 @@
 # Graph Report - yahirandroidtaste  (2026-09-27)
 
 ## Corpus Check
-- 374 files · ~1,061,551 words
+- 380 files · ~1,064,211 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 4034 nodes · 4977 edges · 566 communities (220 shown, 346 thin omitted)
+- 4096 nodes · 5028 edges · 566 communities (223 shown, 343 thin omitted)
 - Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 707 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3f38423a`
+- Built from commit: `cb517622`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -579,7 +579,7 @@
 - [[_COMMUNITY_RevealActionRow|RevealActionRow]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `Communities (561 total, 345 thin omitted)` - 213 edges
+1. `Communities (566 total, 346 thin omitted)` - 217 edges
 2. `PlaceMapPickerTest` - 87 edges
 3. `SectionLabel()` - 50 edges
 4. `VoiceCardClipListTest` - 50 edges
@@ -595,21 +595,21 @@
   src/main/java/io/github/ygaray/yahirandroidtaste/component/AccentColorPicker.kt → src/main/java/io/github/ygaray/yahirandroidtaste/component/ColorUtils.kt
 - `AdaptiveMediaPreviewContent()` --calls--> `AdaptiveMediaPreview()`  [INFERRED]
   src/main/java/io/github/ygaray/yahirandroidtaste/explorer/CardsFamilyScreen.kt → src/main/java/io/github/ygaray/yahirandroidtaste/component/AdaptiveMediaPreview.kt
-- `AlbumCard()` --calls--> `AdaptiveMediaPreview()`  [INFERRED]
-  src/main/java/io/github/ygaray/yahirandroidtaste/component/AlbumCard.kt → src/main/java/io/github/ygaray/yahirandroidtaste/component/AdaptiveMediaPreview.kt
 - `AlbumCardContent()` --calls--> `AlbumCard()`  [INFERRED]
   src/main/java/io/github/ygaray/yahirandroidtaste/explorer/CardsFamilyScreen.kt → src/main/java/io/github/ygaray/yahirandroidtaste/component/AlbumCard.kt
 - `AlbumCard()` --calls--> `CardBase()`  [INFERRED]
   src/main/java/io/github/ygaray/yahirandroidtaste/component/AlbumCard.kt → src/main/java/io/github/ygaray/yahirandroidtaste/component/CardBase.kt
+- `AlbumCard()` --calls--> `CardTypeChip()`  [INFERRED]
+  src/main/java/io/github/ygaray/yahirandroidtaste/component/AlbumCard.kt → src/main/java/io/github/ygaray/yahirandroidtaste/component/CardTypeChip.kt
 
 ## Import Cycles
 - None detected.
 
-## Communities (566 total, 346 thin omitted)
+## Communities (566 total, 343 thin omitted)
 
 ### Community 0 - "CardsFamilyScreen.kt"
 Cohesion: 0.01
-Nodes (213): Communities (561 total, 345 thin omitted), Community 0 - "CardsFamilyScreen.kt", Community 100 - "install.sh", Community 101 - "run-all.sh", Community 103 - "build.gradle.kts", Community 104 - "settings.gradle.kts", Community 105 - "Color.kt", Community 106 - "Type.kt" (+205 more)
+Nodes (217): Communities (566 total, 346 thin omitted), Community 0 - "CardsFamilyScreen.kt", Community 100 - "install.sh", Community 101 - "run-all.sh", Community 103 - "build.gradle.kts", Community 104 - "settings.gradle.kts", Community 105 - "Color.kt", Community 106 - "Type.kt" (+209 more)
 
 ### Community 1 - "TagPickerSheetContent"
 Cohesion: 0.07
@@ -620,8 +620,8 @@ Cohesion: 0.05
 Nodes (25): ExplorerFakeData, emit(), UndoCenterScreenVariants(), FeedbackDispatcher, DismissScreen, FeedbackEvent, Notify, WithUndo (+17 more)
 
 ### Community 3 - "ListCard"
-Cohesion: 0.20
-Nodes (26): ListItemUiModel, AnchoredDraggableState, Boolean, Color, Composable, Int, List, Long (+18 more)
+Cohesion: 0.06
+Nodes (41): titleSlotVisible(), CardQuickView(), ListCardBottomSheet(), ListPreviewItemRow(), CardQuickViewContent(), ListItemUiModel, ListCardTest, CardTagRow() (+33 more)
 
 ### Community 4 - "NameAndTagsEditor"
 Cohesion: 0.04
@@ -632,16 +632,16 @@ Cohesion: 0.17
 Nodes (11): 1. The shape — hub + spokes, 2. How a consumer actually consumes the hub (and why it matters for bug-fixing), 3. Cross-repo jurisdiction — you may fix the hub, but shipping it is gated, 4. Where new code goes — the tiers, 5. The litmus — the one test that decides tier, 6. Extraction history — this hub was carved OUT of a consumer (consumer-first origin), 7. Versioning & the repin ritual (shipping a hub change), 8. Onboarding a new consumer — the manual path (no scaffolder yet) (+3 more)
 
 ### Community 6 - "RelatednessVisual"
-Cohesion: 0.04
-Nodes (43): Entries, Human UAT Pending, Phase 1 — tier-legibility (v1.0), Phase 2 — coherence-audit (v1.0), Phase 3 — governance-gates (v1.0), Phase 6 — forward-port-reunification (v2.0), Phase 7 — chip-color-slot (v2.0), Phase 8 — micbutton-hardening (v2.0) (+35 more)
+Cohesion: 0.22
+Nodes (8): Entries, Human UAT Pending, Phase 1 — tier-legibility (v1.0), Phase 2 — coherence-audit (v1.0), Phase 3 — governance-gates (v1.0), Phase 6 — forward-port-reunification (v2.0), Phase 7 — chip-color-slot (v2.0), Phase 8 — micbutton-hardening (v2.0)
 
 ### Community 7 - "AlbumCard"
 Cohesion: 0.06
 Nodes (9): SavedPlaceUiModel, Boolean, Double, Float, List, query, String, Unit (+1 more)
 
 ### Community 8 - "CardBase"
-Cohesion: 0.31
-Nodes (3): AnimatedStatValue(), AnimatedStatValueVariants(), AnimatedStatValueTest
+Cohesion: 0.04
+Nodes (48): Alternatives Considered, Anti-Patterns to Avoid, Applicable ASVS Categories, Architectural Responsibility Map, Architecture Patterns, Assumptions Log, Claude's Discretion, Code Examples (+40 more)
 
 ### Community 9 - "Control"
 Cohesion: 0.04
@@ -668,8 +668,8 @@ Cohesion: 0.07
 Nodes (27): 1. Cards, 2. Chips, 3. Sheets, 4. Buttons / FAB, 5. Pickers, 6. Feedback, 7. Empty-state, 8. Progress / Metrics (+19 more)
 
 ### Community 15 - "AlbumCardTest"
-Cohesion: 0.07
-Nodes (25): Milestones — yahirandroidtaste (Hub Stewardship), v1.0 — Hub Stewardship ✅ SHIPPED 2026-09-02, Carried to v2 / Future, Coherence Audit, Gardening, Governance, Legibility, Out of Scope (unchanged) (+17 more)
+Cohesion: 0.18
+Nodes (10): Carried to v2 / Future, Coherence Audit, Gardening, Governance, Legibility, Out of Scope (unchanged), Repin Bookkeeping, Requirements (ARCHIVED): yahirandroidtaste — Hub Stewardship v1.0 (+2 more)
 
 ### Community 16 - "VoiceCardClipListTest"
 Cohesion: 0.06
@@ -687,6 +687,10 @@ Nodes (23): LocalDate, LocalTime, SelectableDates, DateTimePicker(), DateTimePic
 Cohesion: 0.07
 Nodes (26): Anti-Pattern 1: Storing tier in a parallel map to "avoid the api.txt hit", Anti-Pattern 2: Wrapping repin markers around the human §1 table, Anti-Pattern 3: Making the domain-vocabulary guard fail the build, Anti-Pattern 4: Bundling P5's breaking removals into an earlier phase's commit, Anti-Patterns (specific to this milestone), Architectural Patterns (the ones this milestone must honor or extend), Architecture Research, Build Order (respects stated deps + invariants) (+18 more)
 
+### Community 21 - "YahirAndroidTasteTheme"
+Cohesion: 0.11
+Nodes (17): 2026-09-27 — apiCheck KI disposition FINALIZED (operator, milestone plan stage), 2026-09-27 — v2.2.0 tag CUT (operator-approved, milestone execute stage), apicheck-ki, Canonical References, Deferred Ideas, Established Patterns, Existing Code Insights, Implementation Decisions (+9 more)
+
 ### Community 24 - "Architecture"
 Cohesion: 0.09
 Nodes (21): Architecture Approach, Confidence Assessment, Critical Pitfalls, Executive Summary, Expected Features, Gaps to Address, Implications for Roadmap, Key Findings (+13 more)
@@ -696,12 +700,12 @@ Cohesion: 0.10
 Nodes (20): Critical Pitfalls, Integration Gotchas (consumer / repin / ecosystem coupling), "Looks Done But Isn't" Checklist, Pitfall 10: repin-matrix markers become a *second* source of truth that drifts from ECOSYSTEM §1, Pitfall 11: Shipping autonomously — auto-tagging or auto-repinning past the human gate, Pitfall 12: Burying a new finding under a regenerated detekt baseline, Pitfall 1: Adding `tier` to `Entry` the wrong way — silent default that defeats legibility, or a non-additive break that panics the guards, Pitfall 2: Treating Phase 1's `Entry` edit as "just a refactor" — forgetting it is a public-API + additive-guard event (+12 more)
 
 ### Community 27 - "HeroStatCard"
-Cohesion: 0.27
-Nodes (3): HeroStatCard(), HeroStatCardTest, Shape
+Cohesion: 0.09
+Nodes (10): AnimatedStatValue(), HeroStatCard(), ProgressRing(), AnimatedStatValueVariants(), HeroStatCardVariants(), ProgressRingVariants(), AnimatedStatValueTest, HeroStatCardTest (+2 more)
 
 ### Community 28 - "AppChip"
-Cohesion: 0.12
-Nodes (16): CardBase(), CardTypeChip(), accentGradient(), accentGradientStops(), accentTint(), contrastingForeground(), GradientSwatch(), CardBaseContent() (+8 more)
+Cohesion: 0.16
+Nodes (7): accentGradient(), accentGradientStops(), accentTint(), contrastingForeground(), GradientSwatch(), GradientSwatchVariants(), ColorUtilsTest
 
 ### Community 29 - "CardEditorShellContent"
 Cohesion: 0.10
@@ -712,8 +716,8 @@ Cohesion: 0.11
 Nodes (18): Allowing @HiltAndroidApp in the library, Anti-Patterns, Architectural Constraints, Architecture, Circular dependency between Component and Feedback, Component Responsibilities, Cross-Cutting Concerns, Data Flow (+10 more)
 
 ### Community 31 - "TextCard"
-Cohesion: 0.09
-Nodes (16): TextCardBottomSheet(), TextCardImageIndicatorTest, AnchoredDraggableState, Boolean, Color, Composable, Int, List (+8 more)
+Cohesion: 0.12
+Nodes (14): AnchoredDraggableState, Boolean, Color, Composable, Int, List, Long, Modifier (+6 more)
 
 ### Community 32 - "TextListBottomSheetEditMenuSourceContractTest"
 Cohesion: 0.11
@@ -792,12 +796,12 @@ Cohesion: 0.13
 Nodes (14): Accomplishments, Actuals (#2632), Awaiting, Checkpoint Details, CHECKPOINT REACHED, Completed Tasks, Current Task, Dependency graph (+6 more)
 
 ### Community 51 - "Project State"
-Cohesion: 0.15
-Nodes (12): Accomplishments, Auto-fixed Issues, Decisions Made, Deviations from Plan, Files Created/Modified, Issues Encountered, Next Phase Readiness, Performance (+4 more)
+Cohesion: 0.12
+Nodes (15): Accomplishments, Actuals (#2632), Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+7 more)
 
 ### Community 52 - "SortControl"
-Cohesion: 0.17
-Nodes (20): EmptyState(), CardsFamilyScreen(), CardsFamilyTopBar(), EmptyStateFamilyScreen(), EmptyStateFamilyTopBar(), EmptyStateVariants(), ExplorerEntry(), ComponentRow() (+12 more)
+Cohesion: 0.35
+Nodes (9): CardsFamilyScreen(), CardsFamilyTopBar(), ExplorerThemeToggleAction(), FeedbackFamilyScreen(), FeedbackFamilyTopBar(), ProgressFamilyScreen(), ProgressFamilyTopBar(), SheetsFamilyScreen() (+1 more)
 
 ### Community 54 - "ListCardBottomSheetReadOnlyPreviewSourceContractTest"
 Cohesion: 0.14
@@ -808,16 +812,16 @@ Cohesion: 0.14
 Nodes (13): 1. A tier-aware contribution litmus is documented: primitives get the strict no-domain-vocabulary gate, patterns get the looser opinion-allowed gate., 2. That litmus is enforced where feasible — wired into review/test tooling, not just prose., 3. A domain-vocabulary drift guard flags (does not forbid) when a new public component name introduces a domain noun, surfacing the coupling for human review., 4. The additive-guard pre-commit hook no longer false-flags non-AAR paths (`.planning/`, docs) as lane-2 — planning/doc commits land without needing `HUB_LANE_OVERRIDE`., Arrange/Act discipline for this phase, Classification (read before the criteria below), Criteria, Findings routed to gap-closure (if any) (+5 more)
 
 ### Community 56 - "SegmentedOptionSelector"
-Cohesion: 0.22
-Nodes (4): CycleSubTypeButton(), nextSubType(), CycleSubTypeButtonTest, CycleSubTypeButtonVariants()
+Cohesion: 0.24
+Nodes (3): CycleSubTypeButton(), nextSubType(), CycleSubTypeButtonTest
 
 ### Community 57 - "ComponentRow"
 Cohesion: 0.21
 Nodes (3): VoiceClipUiModel, YahirAndroidTasteTheme(), VoiceClipRowsSection()
 
 ### Community 59 - ".VoiceCardFixture"
-Cohesion: 0.13
-Nodes (14): `component/DateTimePicker.kt`, `component/PresetChip.kt`, `component/PlaceMapPicker.kt`, `component/PlaceMapOsmdroidConfig.kt`, `component/PlaceMapPickerModel.kt`, `model/SavedPlaceUiModel.kt` + their 5 tests, `explorer/ChipsFamilyScreen.kt` (edit — insert 1 new `Entry(...)` block for `PresetChip`), `explorer/PickersFamilyScreen.kt` (edit — insert 2 new `Entry(...)` blocks), File Classification, Governance-gate verification loop, `gradle/libs.versions.toml` + `build.gradle.kts` (edit — osmdroid dependency admission), Mandatory `tier` field on every restored `Entry(...)` (CONTEXT.md D-01, RESEARCH.md Pitfall 2), Metadata (+6 more)
+Cohesion: 0.12
+Nodes (15): Accomplishments, Actuals (#2632), Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+7 more)
 
 ### Community 61 - "AttentionCue"
 Cohesion: 0.15
@@ -825,7 +829,7 @@ Nodes (12): Buttons / FAB, Cards, Chips, Coherence Audit — yahirandroidtaste, 
 
 ### Community 62 - "ExpandableFab"
 Cohesion: 0.12
-Nodes (15): Accomplishments, Actuals (#2632), Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+7 more)
+Nodes (15): Canonical References, Deferred Ideas, Design + invariants, Established Patterns, Existing Code Insights, Implementation Decisions, Integration Points, map-render (+7 more)
 
 ### Community 63 - "MetricBar"
 Cohesion: 0.15
@@ -844,8 +848,8 @@ Cohesion: 0.15
 Nodes (12): Anti-Patterns Found, Behavioral Spot-Checks (this pass), Full re-verification: truth #7 (the closed gap), Human Verification Required, Observable Truths (full list, updated), Phase 3: Governance Gates Verification Report, Re-verification scope, Required Artifacts (+4 more)
 
 ### Community 67 - "SheetScaffold"
-Cohesion: 0.31
-Nodes (5): Control, Enum, Toggle, initial(), PlaygroundState
+Cohesion: 0.29
+Nodes (6): PlaygroundKnobs(), Control, Enum, Toggle, initial(), PlaygroundState
 
 ### Community 68 - "CardTagRow"
 Cohesion: 0.15
@@ -856,8 +860,8 @@ Cohesion: 0.15
 Nodes (12): 1. Tag-cut + coordinated repin go/hold decision, Anti-Patterns Found, Behavioral Spot-Checks / Independent Test Execution, Gaps Summary, Goal Achievement, Human Verification Required, IMPORTANT — Read before routing this report, Key Link Verification (+4 more)
 
 ### Community 70 - "SourceContractTestSupport"
-Cohesion: 0.04
-Nodes (48): Alternatives Considered, Anti-Patterns to Avoid, Applicable ASVS Categories, Architectural Responsibility Map, Architecture Patterns, Assumptions Log, Claude's Discretion, Code Examples (+40 more)
+Cohesion: 0.12
+Nodes (15): 2026-09-27 — ABI-break resolution (operator decision, milestone execute stage), Canonical References, content-color, Deferred Ideas, Design + invariants, Established Patterns, Existing Code Insights, Implementation Decisions (+7 more)
 
 ### Community 71 - "ComponentRegistrySearchTest"
 Cohesion: 0.17
@@ -892,12 +896,16 @@ Cohesion: 0.17
 Nodes (11): Decision Map — v1.0 milestone, Gray Areas, Gray Areas, Gray Areas, Gray Areas, Gray Areas, Phase 1: Tier Legibility, Phase 2: Coherence Audit (+3 more)
 
 ### Community 79 - "VoiceRenameTagsSheet"
-Cohesion: 0.14
-Nodes (28): AdaptiveMediaPreviewContent(), AdaptiveMediaPreviewSection(), AdaptiveMediaPreviewVariants(), AlbumCardContent(), AlbumCardPreview(), AlbumCardSection(), AlbumCardVariants(), CardQuickViewSection() (+20 more)
+Cohesion: 0.12
+Nodes (31): formatElapsedTime(), PauseResumeButton(), RecordingBottomSheetContent(), RecordingSheetUiState, RecordingStateContent(), TitleStateContent(), AdaptiveMediaPreviewContent(), AdaptiveMediaPreviewSection() (+23 more)
 
 ### Community 80 - "PresetChip"
-Cohesion: 0.17
-Nodes (5): Boolean, Modifier, String, PresetChip(), PresetChipTest
+Cohesion: 0.06
+Nodes (16): BorderStroke, HeatSwatch(), trimmedLabel(), HeatTier, HeatVisual, hubNodeVisual(), RelatednessTier, RelatednessVisual (+8 more)
+
+### Community 81 - "TagCreateSheetContent"
+Cohesion: 0.07
+Nodes (15): TagChipEditorContent(), TagPickerSheet(), TagPickerSheetContent(), TagSortMode, TagChipEditorDoubleTapRemovalTest, TagPickerSheetContentTest, Color, Double (+7 more)
 
 ### Community 82 - "FeedbackFamilyScreen"
 Cohesion: 0.25
@@ -908,12 +916,12 @@ Cohesion: 0.46
 Nodes (7): ColorSection(), ElevationSection(), ShapeSection(), SpacingSection(), toHex(), TokenBrowserScreen(), TypeSection()
 
 ### Community 84 - "VoiceRenameTagsSheetGateTest"
-Cohesion: 0.50
-Nodes (3): Artifacts this phase produces, STRIDE Threat Register, Trust Boundaries
+Cohesion: 0.12
+Nodes (15): api-compat, Canonical References, Deferred Ideas, Design + invariants, Established Patterns, Existing Code Insights, Implementation Decisions, Integration Points (+7 more)
 
 ### Community 85 - "ComponentDetailResolutionTest"
-Cohesion: 0.12
-Nodes (15): Canonical References, Deferred Ideas, Design + invariants, Established Patterns, Existing Code Insights, Implementation Decisions, Integration Points, map-render (+7 more)
+Cohesion: 0.13
+Nodes (14): Accomplishments, Actuals (#2632), Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered, Next Phase Readiness (+6 more)
 
 ### Community 86 - "DimensTest"
 Cohesion: 0.18
@@ -944,8 +952,8 @@ Cohesion: 0.18
 Nodes (10): Accomplishments, Actuals (#2632), Auto-fixed Issues, Dependency graph, Deviations from Plan, Performance, Phase 5 Plan 02: Extract shared sheet header/menu/rename composable (WO-2) Summary, Self-Check: PASSED (+2 more)
 
 ### Community 93 - "test-verify-api-additive.sh"
-Cohesion: 0.12
-Nodes (15): api-compat, Canonical References, Deferred Ideas, Design + invariants, Established Patterns, Existing Code Insights, Implementation Decisions, Integration Points (+7 more)
+Cohesion: 0.13
+Nodes (14): `component/DateTimePicker.kt`, `component/PresetChip.kt`, `component/PlaceMapPicker.kt`, `component/PlaceMapOsmdroidConfig.kt`, `component/PlaceMapPickerModel.kt`, `model/SavedPlaceUiModel.kt` + their 5 tests, `explorer/ChipsFamilyScreen.kt` (edit — insert 1 new `Entry(...)` block for `PresetChip`), `explorer/PickersFamilyScreen.kt` (edit — insert 2 new `Entry(...)` blocks), File Classification, Governance-gate verification loop, `gradle/libs.versions.toml` + `build.gradle.kts` (edit — osmdroid dependency admission), Mandatory `tier` field on every restored `Entry(...)` (CONTEXT.md D-01, RESEARCH.md Pitfall 2), Metadata (+6 more)
 
 ### Community 94 - "TactileType"
 Cohesion: 0.20
@@ -972,8 +980,8 @@ Cohesion: 0.20
 Nodes (9): audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117), Manual-Only Verifications, Per-Task Verification Map, Phase 05 — Validation Strategy, Sampling Rate, status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6), Test Infrastructure, Validation Sign-Off (+1 more)
 
 ### Community 100 - "install.sh"
-Cohesion: 0.50
-Nodes (3): Artifacts this phase produces, STRIDE Threat Register, Trust Boundaries
+Cohesion: 0.13
+Nodes (14): Anti-Patterns Found, Behavioral Spot-Checks, Fresh Governance Battery (run by this verifier this session, not cached, not inherited), Gaps Summary, Goal Achievement, Human Verification Required, Independent `api.txt` Re-Diff (this session's own evidence, not trusted from any prior report), Key Link Verification (+6 more)
 
 ### Community 101 - "run-all.sh"
 Cohesion: 0.29
@@ -984,16 +992,16 @@ Cohesion: 0.22
 Nodes (8): Applying the Litmus, Design Intent — yahirandroidtaste, Enforcement, The Litmus, The Patterns Contract, The Primitives Contract, The Tier-Aware Contribution Litmus, Worked Examples (the three borderline cases)
 
 ### Community 104 - "settings.gradle.kts"
-Cohesion: 0.22
-Nodes (8): 1. On-device visual confirmation of the TierBadge (Primitive/Pattern) on both gallery surfaces (ROADMAP SC2 / VERIFICATION.md human_verification #1 / 01-UAT.md #1), Criteria, Driver-mechanism note (read before the criteria — this is the interesting part), Findings routed to gap-closure (if any), Notes / anomalies (for the Gate-2 reviewer), Self-UAT Log — Phase 01 Plan 05 (Wire Entry.tier into Both Gallery Surfaces), Summary, Verdict
+Cohesion: 0.13
+Nodes (14): Anti-Patterns Found, Behavioral Spot-Checks, Fresh Governance Battery (run by this verifier, not inherited), Gaps Summary, Goal Achievement, Human Verification Required, Independent `api.txt` Re-Diff (the actual gap-closure evidence), Key Link Verification (+6 more)
 
 ### Community 105 - "Color.kt"
 Cohesion: 0.22
 Nodes (8): IN-01: `HeroStatCard`'s "Pressed / Selected" and "Focused" state cells render an identical preview, IN-02: Unused `MaterialTheme` import in `FeedbackFamilyScreen.kt`, Info, Phase 01: Code Review Report, Summary, Warnings, WR-01: `AppChip` tiered PRIMITIVE despite a documented, non-caller-driven visual encoding baked into `relatednessStrength`, WR-02: New `TierBadge` has no overflow/truncation handling next to long component names
 
 ### Community 106 - "Type.kt"
-Cohesion: 0.11
-Nodes (17): 2026-09-27 — apiCheck KI disposition FINALIZED (operator, milestone plan stage), 2026-09-27 — v2.2.0 tag CUT (operator-approved, milestone execute stage), apicheck-ki, Canonical References, Deferred Ideas, Established Patterns, Existing Code Insights, Implementation Decisions (+9 more)
+Cohesion: 0.13
+Nodes (14): Accomplishments, Actuals (#2632), Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered, Next Phase Readiness (+6 more)
 
 ### Community 107 - "CardsFamilyScreen.kt"
 Cohesion: 0.25
@@ -1004,8 +1012,8 @@ Cohesion: 0.25
 Nodes (7): Codebase Structure, Directory Layout, Directory Purposes, Key File Locations, Naming Conventions, Special Directories, Where to Add New Code
 
 ### Community 109 - "Graph Report - yahirandroidtaste  (2026-08-28)"
-Cohesion: 0.12
-Nodes (15): Accomplishments, Actuals (#2632), Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+7 more)
+Cohesion: 0.14
+Nodes (13): Additive-optional-param-with-default, always appended, always byte-identical-when-null, File Classification, Metadata, No Analog Found, Nullable `Color?` slot, rendered as-is, no hub-side computation, Parity-test idiom: Robolectric + Compose, assert default-null path is byte-identical, Pattern Assignments, Phase 7: Chip-color slot - Pattern Map (+5 more)
 
 ### Community 110 - "ThresholdSide"
 Cohesion: 0.25
@@ -1024,24 +1032,28 @@ Cohesion: 0.25
 Nodes (7): Certification — v1.0 milestone, Cross-Phase Integration, Gate Audit, Handoff, Non-blocking integration findings, Open gaps (4) and why each is human-gated, not auto-fixable, Verdict
 
 ### Community 114 - "AdaptiveMediaPreview"
-Cohesion: 0.10
-Nodes (14): CameraKey, canSubmitSearch(), formatMeters(), handlePoint(), haversineMeters(), Boolean, Double, String (+6 more)
+Cohesion: 0.11
+Nodes (12): CameraKey, canSubmitSearch(), handlePoint(), haversineMeters(), Boolean, Double, MapLifecycleGate, normalizeLongitude() (+4 more)
+
+### Community 115 - "UndoCenterScreen"
+Cohesion: 0.24
+Nodes (6): CountBadge(), CountBadgeDefaultPreview(), CountBadgeVariants(), DividerRow(), StatesMatrixSection(), CountBadgeTest
 
 ### Community 116 - "UndoHistoryRow"
 Cohesion: 0.25
 Nodes (6): WaveformCanvas(), CornerRadius, Dimens, Elevation, Icons, SwipeReveal
 
 ### Community 117 - "UndoPreview"
-Cohesion: 0.12
-Nodes (15): 2026-09-27 — ABI-break resolution (operator decision, milestone execute stage), Canonical References, content-color, Deferred Ideas, Design + invariants, Established Patterns, Existing Code Insights, Implementation Decisions (+7 more)
+Cohesion: 0.15
+Nodes (12): 1. `DateTimePicker`, `PlaceMapPicker`, and `PresetChip` each render in the ExplorerActivity gallery (family-screen previews) — ROADMAP SC1, 2. The 5 ported tests pass under `./gradlew testDebugUnitTest` — ROADMAP SC2, 3. The three public composables are each registered in exactly one `ComponentRegistry` family list; the integrity test and CATALOG drift guard pass — ROADMAP SC3, 4. `osmdroid` recorded in `APPROVED-DEPS.md`/`CLAUDE.md`; head tokens allowlisted; `DomainVocabularyDriftGuardTest` stays green — ROADMAP SC4, 5. `detekt` stays green at zero baseline (no new baseline banked) — ROADMAP SC5, Criteria, Driver-mechanism note (carried forward from `01-05-SELF-UAT.md`), Findings routed to gap-closure (if any) (+4 more)
 
 ### Community 118 - ".onCreate"
 Cohesion: 0.36
 Nodes (3): ExpressiveTokens, expressiveTokensFor(), ExpressiveTokensTest
 
 ### Community 120 - "ExplorerFakeData"
-Cohesion: 0.17
-Nodes (11): File Classification, Latest-callback safety via `rememberUpdatedState`, Metadata, Modifier-first / default-before-nondefault param ordering, No Analog Found, Pattern Assignments, Phase 8: MicButton hardening - Pattern Map, Robolectric + Compose gesture-injection test harness (+3 more)
+Cohesion: 0.15
+Nodes (12): 1. `TagChipUiModel` carries `color: Color? = null`; `AppChip` and `TagChipWithContextMenu` carry `containerColorOverride: Color? = null` — ROADMAP SC1, 2. A `CardTagRow` test proves each `tag.color` auto-threads to the rendered chip's `containerColorOverride` (both `TagChipWithContextMenu` and plain `AppChip` render paths) — ROADMAP SC2, 3. An `AppChip` render test with a non-null override renders the overridden container, and the default-`null` path is byte-identical to today's theme-role rendering — ROADMAP SC3, 4. The override loses to `isSelected`/`relatednessStrength` (theme roles win when selection is active) — asserted by test — ROADMAP SC4, 5. No new public composables are added; `api.txt` is updated additively and `apiCheck`, both drift guards, and zero-baseline `detekt` stay green — ROADMAP SC5, Criteria, Driver-mechanism note (carried forward from `01-05-SELF-UAT.md` / `06-03-SELF-UAT.md`), Findings routed to gap-closure (if any) (+4 more)
 
 ### Community 121 - "CountBadge"
 Cohesion: 0.25
@@ -1088,28 +1100,28 @@ Cohesion: 0.33
 Nodes (5): IN-01: Consumer identifier disagrees between the two consumer tables in the same doc, IN-02: New matrix section doesn't cross-reference its relationship to the table directly above it, Info, Phase 04: Code Review Report, Summary
 
 ### Community 134 - "ElevationBand"
-Cohesion: 0.14
-Nodes (13): Active Milestone: v2.0 — Line Reunification, Backlog, Completed Milestones, Milestones, Phase 6: Forward-port reunification, Phase 7: Chip-color slot, Phase 8: MicButton hardening, Phase 999.1: Formalize reusable Gate-2 visualization harness APK (BACKLOG) (+5 more)
+Cohesion: 0.10
+Nodes (19): Active Milestone: v2.0 — Line Reunification, Backlog, Completed Milestones, Milestones, Phase 6: Forward-port reunification, Phase 7: Chip-color slot, Phase 8: MicButton hardening, Phase 999.1: Formalize reusable Gate-2 visualization harness APK (BACKLOG) (+11 more)
 
 ### Community 135 - "Phase 1 — Validation Strategy"
 Cohesion: 0.15
 Nodes (12): Additive capability (consumer-driven), Already-resolved decisions (locked in the design spec §9), Charter note — read before scoping (needs a conscious owner call), Consumer coordination state (for the run log), Goal (one paragraph), Milestone Scope — v2.0 "Line Reunification", Out of scope, Proposed requirements (+4 more)
 
 ### Community 136 - "String"
-Cohesion: 0.50
-Nodes (3): Artifacts this phase produces, STRIDE Threat Register, Trust Boundaries
+Cohesion: 0.15
+Nodes (12): Accomplishments, Decisions Made, Deviations from Plan, Files Created/Modified, Issues Encountered, Next Phase Readiness, Performance, Phase 7 Plan 1: Chip-color slot Summary (+4 more)
 
 ### Community 137 - "downsample"
 Cohesion: 0.16
-Nodes (30): Alignment, Density, GeoPoint, GradientDrawable, LifecycleOwner, MapView, Polygon, buildHandleIcon() (+22 more)
+Nodes (29): Alignment, GeoPoint, GradientDrawable, LifecycleOwner, MapView, Polygon, buildHandleIcon(), buildOvalIcon() (+21 more)
 
 ### Community 140 - "CardTagRow"
-Cohesion: 0.13
-Nodes (14): Accomplishments, Actuals (#2632), Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered, Next Phase Readiness (+6 more)
+Cohesion: 0.15
+Nodes (12): CR-01: MicButton exposes no accessibility semantics — TalkBack/keyboard users cannot activate it, Critical Issues, IN-01: Duplicated three-way `when` for `containerColor`/`contentColor`, IN-02: KDoc describes the interaction emit pair as "try/finally-shaped" but no `try`/`finally` exists, IN-03: Test helper name `notSetUp` reintroduces domain framing into a domain-agnostic library test, IN-04: `pressAndHold_onDisabledMic_neverFiresOnTap` largely duplicates the prior test, Info, Phase 08: Code Review Report (+4 more)
 
 ### Community 144 - "VoiceRenameTagsSheet"
 Cohesion: 0.15
-Nodes (12): CR-01: MicButton exposes no accessibility semantics — TalkBack/keyboard users cannot activate it, Critical Issues, IN-01: Duplicated three-way `when` for `containerColor`/`contentColor`, IN-02: KDoc describes the interaction emit pair as "try/finally-shaped" but no `try`/`finally` exists, IN-03: Test helper name `notSetUp` reintroduces domain framing into a domain-agnostic library test, IN-04: `pressAndHold_onDisabledMic_neverFiresOnTap` largely duplicates the prior test, Info, Phase 08: Code Review Report (+4 more)
+Nodes (12): Anti-Patterns Found, Behavioral Spot-Checks, CR-01 Gap Closure — Behavioral Evidence, Gaps Summary, Goal Achievement, Human Verification Required, Key Link Verification, Observable Truths (+4 more)
 
 ### Community 145 - "WaveformCanvas"
 Cohesion: 0.50
@@ -1176,84 +1188,80 @@ Cohesion: 0.06
 Nodes (13): AccentColor, AccentColorPicker(), AlbumSourcePickerSheet(), filterIconEntries(), IconPickerGrid(), SheetScaffold(), TagCreateSheet(), TagCreateSheetContent() (+5 more)
 
 ### Community 177 - "CropOverlay.kt"
-Cohesion: 0.16
-Nodes (9): TagChipWithContextMenuTest, Boolean, Color, Composable, Float, Modifier, String, Unit (+1 more)
+Cohesion: 0.15
+Nodes (12): Accomplishments, Auto-fixed Issues, Decisions Made, Deviations from Plan, Files Created/Modified, Issues Encountered, Next Phase Readiness, Performance (+4 more)
 
 ### Community 182 - "03-governance-gates.md"
 Cohesion: 0.22
 Nodes (4): downsample(), AmplitudeBarsDecodeTest, writeAmplitudeSamplesFile(), readAmplitudeBars()
 
 ### Community 202 - "CountBadge"
-Cohesion: 0.11
-Nodes (11): AppChip(), Boolean, Color, Composable, Float, Modifier, String, Unit (+3 more)
+Cohesion: 0.07
+Nodes (20): TagChipWithContextMenuTest, AppChip(), Boolean, Color, Composable, Float, Modifier, String (+12 more)
 
 ### Community 203 - "TagListItem"
 Cohesion: 0.15
 Nodes (12): `api.txt` (generated signature baseline, rebaseline target), api.txt regeneration discipline, `build.gradle.kts` (config, metalava exclusion fix), `ECOSYSTEM.md` (doc, machine block + prose reconcile), ECOSYSTEM.md machine-block vs. prose separation, File Classification, Human-gated tag cut (applies to the whole phase, not a single file), Metadata (+4 more)
 
 ### Community 204 - "BulkCreatePopup"
-Cohesion: 0.11
-Nodes (38): SegmentedOptionSelector(), AlbumSourcePickerSheetSection(), AlbumSourcePickerSheetVariants(), AlbumTitleConfirmSheetSection(), AlbumTitleConfirmSheetVariants(), BulkCreatePopupContentPreview(), BulkCreatePopupSection(), BulkCreatePopupVariants() (+30 more)
+Cohesion: 0.13
+Nodes (31): AlbumSourcePickerSheetSection(), AlbumSourcePickerSheetVariants(), AlbumTitleConfirmSheetSection(), AlbumTitleConfirmSheetVariants(), BulkCreatePopupContentPreview(), BulkCreatePopupVariants(), CardEditorShellContentVariants(), CardEditorShellSection() (+23 more)
 
 ### Community 205 - "Boolean"
-Cohesion: 0.19
-Nodes (4): TagPickerSheet(), TagPickerSheetContent(), TagPickerSheetContentTest, TagChipUiModel
+Cohesion: 0.17
+Nodes (11): Checker Sign-Off, Color, Component Inventory, Copywriting Contract, Design System, Phase 6 — UI Design Contract, Registry Safety, Scope note (read first) (+3 more)
 
 ### Community 206 - "GalleryDemoInteractionTest"
-Cohesion: 0.22
-Nodes (8): Anti-Patterns Found, Gaps Summary, Goal Achievement, Governance Artifacts (Review / Security), Human Verification Required, Observable Truths (ROADMAP Success Criteria), Phase 9: Ship & coordinated repin — Verification Report, Requirements Coverage
+Cohesion: 0.17
+Nodes (11): Anti-Patterns Found, Behavioral Spot-Checks / Direct Test Runs (re-verification), Gaps Summary, Goal Achievement, Key Link Verification, Observable Truths, Override Decision (carried forward from initial verification, unchanged), Phase 6: Forward-port reunification Verification Report (+3 more)
 
 ### Community 207 - "SortControl"
-Cohesion: 0.15
-Nodes (12): Accomplishments, Decisions Made, Deviations from Plan, Files Created/Modified, Issues Encountered, Next Phase Readiness, Performance, Phase 7 Plan 1: Chip-color slot Summary (+4 more)
+Cohesion: 0.17
+Nodes (11): 1. `MicButton`'s three content descriptions are parameters with generic neutral defaults (`disabledDescription = "Microphone unavailable"`, `tapToTalkDescription = "Tap to talk"`, `listeningDescription = "Listening…"`); no CalTracker-specific microcopy remains in the source — ROADMAP SC1, 2. `onTap`/`onDisabledTap` fire the latest callback identity across recomposition (routed through `rememberUpdatedState`), proven by a regression test that flips callback identity mid-press — ROADMAP SC2, 3. `MicButton` KDoc uses hub vocabulary (`enabled`, not `config`), and `enabled`/`onDisabledTap` have defaults (`true` / `{}`) — ROADMAP SC3, 4. All changes are backward-compatible (existing call sites compile unchanged); `testDebugUnitTest`, both drift guards, and zero-baseline `detekt` stay green — ROADMAP SC4, Criteria, Driver-mechanism note (carried forward from `01-05-SELF-UAT.md` / `06-03-SELF-UAT.md` / `07-01-SELF-UAT.md`), Findings routed to gap-closure (if any), Notes / anomalies (for the Gate-2 reviewer) (+3 more)
 
 ### Community 208 - "HeatEncodingTest"
-Cohesion: 0.15
-Nodes (12): Anti-Patterns Found, Behavioral Spot-Checks, CR-01 Gap Closure — Behavioral Evidence, Gaps Summary, Goal Achievement, Human Verification Required, Key Link Verification, Observable Truths (+4 more)
+Cohesion: 0.17
+Nodes (11): File Classification, Latest-callback safety via `rememberUpdatedState`, Metadata, Modifier-first / default-before-nondefault param ordering, No Analog Found, Pattern Assignments, Phase 8: MicButton hardening - Pattern Map, Robolectric + Compose gesture-injection test harness (+3 more)
 
 ### Community 236 - "List"
-Cohesion: 0.13
-Nodes (14): Anti-Patterns Found, Behavioral Spot-Checks, Fresh Governance Battery (run by this verifier, not inherited), Gaps Summary, Goal Achievement, Human Verification Required, Independent `api.txt` Re-Diff (the actual gap-closure evidence), Key Link Verification (+6 more)
+Cohesion: 0.18
+Nodes (10): 1. DateTimePicker forward-port renders in Pickers gallery, 2. PresetChip forward-port renders in Chips gallery, 3. PlaceMapPicker cluster forward-port renders in Pickers gallery, 4. Drift guards stay green with "Date" head token allowlisted, 5. Drift guards stay green with "Preset" head token allowlisted, 6. Phase-closing governance battery green (drift guards, detekt zero-new, apiCheck net-additive, publish), Current Test, Gaps (+2 more)
 
 ### Community 237 - "Modifier"
-Cohesion: 0.13
-Nodes (14): Anti-Patterns Found, Behavioral Spot-Checks, Fresh Governance Battery (run by this verifier this session, not cached, not inherited), Gaps Summary, Goal Achievement, Human Verification Required, Independent `api.txt` Re-Diff (this session's own evidence, not trusted from any prior report), Key Link Verification (+6 more)
+Cohesion: 0.18
+Nodes (10): audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117), Manual-Only Verifications, Per-Task Verification Map, Phase 6 — Validation Strategy, Sampling Rate, status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6), Test Infrastructure, Validation Audit 2026-09-27 (+2 more)
 
 ### Community 238 - "TagChipWithContextMenu"
-Cohesion: 0.20
-Nodes (8): ClearableTextField(), EditorItemRow(), ListCardBottomSheet(), ListPreviewItemRow(), SheetHeaderMenu(), EditorItemRowStatePreview(), KeyboardActions, KeyboardOptions
+Cohesion: 0.25
+Nodes (6): ClearableTextField(), EditorItemRow(), SheetHeaderMenu(), EditorItemRowStatePreview(), KeyboardActions, KeyboardOptions
 
 ### Community 240 - "tagId"
 Cohesion: 0.38
 Nodes (3): CardTagRowTest, Int, String
 
 ### Community 241 - "Unit"
-Cohesion: 0.22
-Nodes (8): IN-01: Two incompatible tag-color representations now coexist in the public model surface, IN-02: `CardTagRowTest`'s occurrence-indexed `AppChip(` lookup is fragile to unrelated reordering, Info, Phase 07: Code Review Report, Summary, Warnings, WR-01: `TagChipUiModel.copy()` signature change is a real, non-additive ABI break beyond the documented Factory-class known issue, WR-02: New structural tests assert source text, not runtime behavior — a silent-pass risk for future refactors
-
-### Community 356 - "ReminderIndicator"
-Cohesion: 0.20
-Nodes (9): Files Created, Gap 1 — `equals()`/`hashCode()`/`copy()` exclusion of `color` (untested), Gap 2 — `Companion.of(...)` factory (untested, possibly dead code), Gap 3 — Pre-existing `AppChipTest.kt`/`CardTagRowTest.kt` coverage (D2/D3) still accurate post-fix, Gap 4 — other Nyquist-relevant gaps, Gaps Investigated, Phase 07: Nyquist Validation Gap-Fill Report, Verdict (+1 more)
-
-### Community 357 - "Composable"
-Cohesion: 0.25
-Nodes (7): Fixed Issues, IN-01: Two incompatible tag-color representations now coexist in the public model surface, IN-02: `CardTagRowTest`'s occurrence-indexed `AppChip(` lookup is fragile to unrelated reordering, Phase 07: Code Review Fix Report, Skipped Issues, WR-01: `TagChipUiModel.copy()` signature change is a real, non-additive ABI break beyond the documented Factory-class known issue, WR-02: New structural tests assert source text, not runtime behavior — a silent-pass risk for future refactors
-
-### Community 358 - "CardTagRow"
 Cohesion: 0.18
 Nodes (10): CR-01: MicButton exposes no accessibility semantics — TalkBack/keyboard users cannot activate it, Fixed Issues, IN-01: Duplicated three-way `when` for `containerColor`/`contentColor`, IN-02: KDoc describes the emit pair as "try/finally-shaped" but no `try`/`finally` exists, IN-03: Test helper name `notSetUp` reintroduces domain framing, IN-04: `pressAndHold_onDisabledMic_neverFiresOnTap` largely duplicates the prior test, Phase 08: Code Review Fix Report, Skipped Issues (+2 more)
 
-### Community 359 - "FeedbackFamilyScreen"
-Cohesion: 0.29
-Nodes (7): DialogProperties, BulkCreatePopup(), BulkCreatePopupContent(), ConfirmationDialog(), ConfirmationDialogDefaults, ConfirmStyle, ConfirmationDialogVariants()
+### Community 356 - "ReminderIndicator"
+Cohesion: 0.18
+Nodes (10): Accomplishments, Decisions Made, Deviations from Plan, Files Created/Modified, Issues Encountered, Next Phase Readiness, Performance, Phase 9 Plan 01: apiCheck KI closure + closing governance battery + tag-cut checkpoint Summary (+2 more)
 
-### Community 360 - "String"
+### Community 357 - "Composable"
+Cohesion: 0.18
+Nodes (10): Chip color (consumer-requested additive capability), Future Requirements, MicButton hardening (reusability + correctness), Out of Scope, Requirements Archive: v2.0 Line Reunification, Requirements: yahirandroidtaste — Line Reunification (v2.0), Reunification (forward-port v1.x-only components onto `main`), Ship & converge (completes v1.0's GARD-02, now onto `v2.2.0`) (+2 more)
+
+### Community 358 - "CardTagRow"
 Cohesion: 0.20
-Nodes (9): IN-01: KDoc overstates "the constructor... stay byte-identical to the pre-Phase-7 shape", IN-02: `Companion.of(...)`'s `Color`-bearing overload is Java-invisible per `api.txt`'s own `@KotlinOnly` tag, which is in tension with the factory's stated Java-ergonomics purpose, Info, Phase 07: Code Review Report (Follow-up — WR-01 closure verification), Summary, Warnings, WR-01: `api.txt`/`apiCheck` has zero binary-compatibility coverage of `color`'s own accessors — a pre-existing gap this fix inherits and slightly widens, WR-01 Closure Verdict (+1 more)
+Nodes (9): Milestone Summary, Milestone v1.0: Hub Stewardship — Tier Legibility → Coherence Audit → Governance → Repin Bookkeeping → Gardening, Overview, Phase 1: Tier Legibility — ✅ Complete (2026-09-01), Phase 2: Coherence Audit — ✅ Complete (2026-09-01), Phase 3: Governance Gates — ✅ Complete (2026-09-01), Phase 4: Repin Bookkeeping Hardening — ✅ Complete (2026-09-01), Phase 5: Gardening — Unify & Coordinated Repin — ◑ Unify shipped; repin deferred (2026-09-02) (+1 more)
+
+### Community 359 - "FeedbackFamilyScreen"
+Cohesion: 0.25
+Nodes (8): DialogProperties, BulkCreatePopup(), BulkCreatePopupContent(), ConfirmationDialog(), ConfirmationDialogDefaults, ConfirmStyle, ConfirmationDialogVariants(), BulkCreatePopupSection()
 
 ### Community 361 - "RecordingBottomSheetContent"
-Cohesion: 0.47
-Nodes (4): MetricBand, MetricBar(), MetricBarDefaults, MetricBarVariants()
+Cohesion: 0.15
+Nodes (18): CardBase(), MetricBand, MetricBar(), MetricBarDefaults, CardBaseContent(), CardBasePreview(), CardBaseSection(), CardBaseVariants() (+10 more)
 
 ### Community 470 - "Int"
 Cohesion: 0.13
@@ -1264,8 +1272,8 @@ Cohesion: 0.13
 Nodes (3): Float, Int, RadiusSpec
 
 ### Community 496 - "Project State"
-Cohesion: 0.18
-Nodes (10): Accumulated Context, Blockers/Concerns, Current Position, Decisions, Deferred Items, Pending Todos, Performance Metrics, Project Reference (+2 more)
+Cohesion: 0.17
+Nodes (11): Accumulated Context, Blockers/Concerns, Current Position, Decisions, Deferred Items, Operator Next Steps, Pending Todos, Performance Metrics (+3 more)
 
 ### Community 497 - "Requirements: yahirandroidtaste — Line Reunification (v2.0)"
 Cohesion: 0.20
@@ -1276,64 +1284,64 @@ Cohesion: 0.20
 Nodes (9): Decision Map — v2.0 Line Reunification, Gray Areas, Gray Areas, Gray Areas, Gray Areas, Phase 6: Forward-port reunification, Phase 7: Chip-color slot, Phase 8: MicButton hardening (+1 more)
 
 ### Community 499 - "Fixed Issues"
-Cohesion: 0.25
-Nodes (7): Fixed Issues, IN-01 (07-REVIEW-02.md): KDoc overstated "the constructor... stay byte-identical to the pre-Phase-7 shape", IN-02 (07-REVIEW-02.md): `Companion.of(...)`'s color-bearing overload is `@KotlinOnly`-tagged in `api.txt`, in tension with its "Java-ergonomic" stated purpose, Phase 07: Code Review Fix Report (Iteration 2 — WR-01 closure follow-up review), Verification, WR-01 (07-REVIEW-02.md): `api.txt`/`apiCheck` has zero binary-compatibility coverage of `color`'s own accessors — a pre-existing Metalava blind spot for value-class-typed members, WR-02 (07-REVIEW-02.md): `var color` is the first public, freely-mutable, non-constructor property in this repo's `model/` package — undocumented Compose-stability and aliasing consequences
+Cohesion: 0.20
+Nodes (9): Files Created, Gap 1 — `equals()`/`hashCode()`/`copy()` exclusion of `color` (untested), Gap 2 — `Companion.of(...)` factory (untested, possibly dead code), Gap 3 — Pre-existing `AppChipTest.kt`/`CardTagRowTest.kt` coverage (D2/D3) still accurate post-fix, Gap 4 — other Nyquist-relevant gaps, Gaps Investigated, Phase 07: Nyquist Validation Gap-Fill Report, Verdict (+1 more)
 
 ### Community 500 - "AnimatedStatValue"
-Cohesion: 0.17
-Nodes (11): Checker Sign-Off, Color, Component Inventory, Copywriting Contract, Design System, Phase 6 — UI Design Contract, Registry Safety, Scope note (read first) (+3 more)
+Cohesion: 0.20
+Nodes (9): IN-01: KDoc overstates "the constructor... stay byte-identical to the pre-Phase-7 shape", IN-02: `Companion.of(...)`'s `Color`-bearing overload is Java-invisible per `api.txt`'s own `@KotlinOnly` tag, which is in tension with the factory's stated Java-ergonomics purpose, Info, Phase 07: Code Review Report (Follow-up — WR-01 closure verification), Summary, Warnings, WR-01: `api.txt`/`apiCheck` has zero binary-compatibility coverage of `color`'s own accessors — a pre-existing gap this fix inherits and slightly widens, WR-01 Closure Verdict (+1 more)
 
 ### Community 501 - "Entries"
 Cohesion: 0.40
 Nodes (4): Approved Dependencies, Entries, gradle-plugin: me.tylerbwong.gradle.metalava, maven: org.osmdroid:osmdroid-android
 
 ### Community 502 - "AttentionCue"
-Cohesion: 0.14
-Nodes (13): Additive-optional-param-with-default, always appended, always byte-identical-when-null, File Classification, Metadata, No Analog Found, Nullable `Color?` slot, rendered as-is, no hub-side computation, Parity-test idiom: Robolectric + Compose, assert default-null path is byte-identical, Pattern Assignments, Phase 7: Chip-color slot - Pattern Map (+5 more)
+Cohesion: 0.20
+Nodes (9): 1. Caller-supplied chip color legibility (D5 — held-out, consumer policy), 2. TagChipUiModel.color additive; call sites unchanged (D1, TAGCOLOR-01), 3. containerColorOverride slot + precedence (D2, TAGCOLOR-01), 4. CardTagRow auto-threads tag.color; overflow chip excluded (D3, TAGCOLOR-01), 5. No new public composable; api additive; gates green (D4, TAGCOLOR-01), Current Test, Gaps, Summary (+1 more)
 
 ### Community 504 - "Phase 07 — Security"
-Cohesion: 0.25
-Nodes (7): Accepted Risks Log, Phase 07 — Security, Security Audit Trail, Sign-Off, Threat Register, Trust Boundaries, Unregistered Flags (surfaced during this audit, not in the original plan-time register)
+Cohesion: 0.20
+Nodes (9): Checker Sign-Off, Color, Copywriting Contract, Design System, Phase 07 — UI Design Contract, Registry Safety, Spacing Scale, Typography (+1 more)
 
 ### Community 505 - "AppChip"
 Cohesion: 0.17
-Nodes (12): Boolean, Double, Modifier, query, Unit, PlaceMapCurrentLocationSection(), PlaceMapPicker(), PlaceMapSearchSection() (+4 more)
+Nodes (10): Density, Boolean, Double, List, Modifier, query, Unit, PlaceMapCurrentLocationSection() (+2 more)
 
 ### Community 506 - "ButtonsFabFamilyScreen.kt"
-Cohesion: 0.24
-Nodes (7): FlowRowScope, ChipBar(), ExpandableConfig, SortControl(), ChipBarVariants(), PresetChipVariants(), SortControlVariants()
+Cohesion: 0.18
+Nodes (14): FlowRowScope, ChipBar(), ExpandableConfig, SortControl(), SectionLabel(), CycleSubTypeButtonVariants(), DynamicActionButtonVariants(), ExpandableFabVariants() (+6 more)
 
 ### Community 507 - "Phase 6 Plan 2: PresetChip Forward-Port Summary"
-Cohesion: 0.13
-Nodes (14): Accomplishments, Actuals (#2632), Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered, Next Phase Readiness (+6 more)
+Cohesion: 0.20
+Nodes (9): Accepted Risks Log, audited_head = git HEAD sha at audit time — freshness stamp. child-result re-checks it: if, implementation (outside .planning) changed since this sha, the audit is stale (INC-2026-08-06-04)., Phase 08 — Security, Security Audit Trail, Sign-Off, Threat Register, threats_open = count of OPEN threats at or above workflow.security_block_on severity (the blocking gate) (+1 more)
 
 ### Community 508 - "Phase 6 — Validation Strategy"
-Cohesion: 0.18
-Nodes (10): audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117), Manual-Only Verifications, Per-Task Verification Map, Phase 6 — Validation Strategy, Sampling Rate, status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6), Test Infrastructure, Validation Audit 2026-09-27 (+2 more)
+Cohesion: 0.22
+Nodes (8): 1. On-device visual confirmation of the TierBadge (Primitive/Pattern) on both gallery surfaces (ROADMAP SC2 / VERIFICATION.md human_verification #1 / 01-UAT.md #1), Criteria, Driver-mechanism note (read before the criteria — this is the interesting part), Findings routed to gap-closure (if any), Notes / anomalies (for the Gate-2 reviewer), Self-UAT Log — Phase 01 Plan 05 (Wire Entry.tier into Both Gallery Surfaces), Summary, Verdict
 
 ### Community 509 - "ShowSheetButton"
-Cohesion: 0.17
-Nodes (11): Anti-Patterns Found, Behavioral Spot-Checks / Direct Test Runs (re-verification), Gaps Summary, Goal Achievement, Key Link Verification, Observable Truths, Override Decision (carried forward from initial verification, unchanged), Phase 6: Forward-port reunification Verification Report (+3 more)
+Cohesion: 0.22
+Nodes (8): IN-01: `PlaceMapPicker.kt` mixes several concerns in one ~900-line file, IN-02: Redundant blank-check duplicated between the gallery demo and the hub's own gate, Info, Phase 06: Code Review Report, Summary, Warnings, WR-01: CLAUDE.md's documented Compose BOM version has drifted from the actual pin, WR-02: `androidx-lifecycle-runtime-compose` hardcodes its version, breaking the catalog's own single-source-of-truth convention
 
 ### Community 510 - "ThemeMode"
-Cohesion: 0.20
-Nodes (3): RelatednessTier, RelatednessVisual, RelatednessEncodingTest
+Cohesion: 0.22
+Nodes (8): IN-01: Two incompatible tag-color representations now coexist in the public model surface, IN-02: `CardTagRowTest`'s occurrence-indexed `AppChip(` lookup is fragile to unrelated reordering, Info, Phase 07: Code Review Report, Summary, Warnings, WR-01: `TagChipUiModel.copy()` signature change is a real, non-additive ABI break beyond the documented Factory-class known issue, WR-02: New structural tests assert source text, not runtime behavior — a silent-pass risk for future refactors
 
 ### Community 511 - "Phase 6 — Deferred Items"
-Cohesion: 0.50
-Nodes (3): 06-01, 06-03, Phase 6 — Deferred Items
+Cohesion: 0.22
+Nodes (8): 1. Neutral parameterized content descriptions; no consumer microcopy (D1, MICBTN-01), 2. Latest-callback safety via rememberUpdatedState (D2, MICBTN-02), 3. Hub-vocabulary KDoc + sensible defaults (D3, MICBTN-03), 4. Backward-compatible; all hub gates green (D4), Current Test, Gaps, Summary, Tests
 
 ### Community 512 - ".onCreate"
-Cohesion: 0.19
-Nodes (10): List, PlaceMapSavedPlacesSection(), SavedPlaceChipItem, Int, List, String, T, occurrenceIndices() (+2 more)
+Cohesion: 0.17
+Nodes (11): PlaceMapSavedPlacesSection(), SavedPlaceChipItem, formatMeters(), String, Int, List, String, T (+3 more)
 
 ### Community 513 - "SourceContractTestSupport"
 Cohesion: 0.35
 Nodes (4): Char, Int, String, SourceContractTestSupport
 
 ### Community 514 - "SheetScaffold"
-Cohesion: 0.20
-Nodes (9): Checker Sign-Off, Color, Copywriting Contract, Design System, Phase 07 — UI Design Contract, Registry Safety, Spacing Scale, Typography (+1 more)
+Cohesion: 0.22
+Nodes (8): Manual-Only Verifications, Per-Task Verification Map, Phase 08 — Validation Strategy, Sampling Rate, Test Infrastructure, Validation Audit 2026-09-27, Validation Sign-Off, Wave 0 Requirements
 
 ### Community 515 - "CLAUDE.md — `yahirandroidtaste` (the reusable Compose UI design-system library)"
 Cohesion: 0.33
@@ -1341,10 +1349,10 @@ Nodes (5): Changes here ripple to every consumer — and shipping is human-gated
 
 ### Community 516 - "ExplorerEntry"
 Cohesion: 0.22
-Nodes (8): IN-01: `PlaceMapPicker.kt` mixes several concerns in one ~900-line file, IN-02: Redundant blank-check duplicated between the gallery demo and the hub's own gate, Info, Phase 06: Code Review Report, Summary, Warnings, WR-01: CLAUDE.md's documented Compose BOM version has drifted from the actual pin, WR-02: `androidx-lifecycle-runtime-compose` hardcodes its version, breaking the catalog's own single-source-of-truth convention
+Nodes (8): Anti-Patterns Found, Gaps Summary, Goal Achievement, Governance Artifacts (Review / Security), Human Verification Required, Observable Truths (ROADMAP Success Criteria), Phase 9: Ship & coordinated repin — Verification Report, Requirements Coverage
 
 ### Community 519 - "TextCardBottomSheet"
-Cohesion: 0.40
+Cohesion: 0.44
 Nodes (3): Marker, PlaceMapHandleDragListener, PlaceMapPinDragListener
 
 ### Community 520 - "DynamicActionButton"
@@ -1352,72 +1360,96 @@ Cohesion: 0.28
 Nodes (11): clampCropRect(), computeDisplayGeometry(), computeInitialCropRect(), computeResetCropRect(), CropOverlay(), CropRect, DisplayGeometry, InitialCropResult (+3 more)
 
 ### Community 522 - "ClearableTextField"
+Cohesion: 0.32
+Nodes (7): SegmentedOptionSelector(), ListCardBottomSheetReadOnlyPreviewSection(), ListCardBottomSheetVariants(), ListCardSheetSection(), ShowSheetButton(), TextCardSheetSection(), SegmentedOptionSelectorVariants()
+
+### Community 523 - "RecordingBottomSheetContent"
 Cohesion: 0.25
-Nodes (7): Fixed Issues, IN-01: `PlaceMapPicker.kt` mixes several concerns in one ~900-line file, IN-02: Redundant blank-check duplicated between the gallery demo and the hub's own gate, Phase 06: Code Review Fix Report, Skipped Issues, WR-01: CLAUDE.md's documented Compose BOM version has drifted from the actual pin, WR-02: `androidx-lifecycle-runtime-compose` hardcodes its version, breaking the catalog's single-source-of-truth convention
+Nodes (7): Cross-Phase Integration — CLEAN, Milestone v2.0 "Line Reunification" — Audit Report, Outcome: ✅ PASSED, Phase Verifications, Relationship to v2.0-CERTIFY.md, Requirements Coverage (3-source cross-reference), Tech Debt (non-blocking)
 
 ### Community 524 - "MicButton"
-Cohesion: 0.29
-Nodes (6): Accepted Risks Log, Phase 06 — Security, Security Audit Trail, Sign-Off, Threat Register, Trust Boundaries
+Cohesion: 0.25
+Nodes (7): Fixed Issues, IN-01: `PlaceMapPicker.kt` mixes several concerns in one ~900-line file, IN-02: Redundant blank-check duplicated between the gallery demo and the hub's own gate, Phase 06: Code Review Fix Report, Skipped Issues, WR-01: CLAUDE.md's documented Compose BOM version has drifted from the actual pin, WR-02: `androidx-lifecycle-runtime-compose` hardcodes its version, breaking the catalog's single-source-of-truth convention
 
 ### Community 525 - "Hub additive guards"
 Cohesion: 0.29
 Nodes (6): ABI-dump mechanism (Task 1 spike, 2026-08-27), API dump discipline, Declaring non-additive (lane-2/3) changes, Hub additive guards, Installation, Known limitation: mangled (value-class-bearing) members are not tracked (found 2026-09-27, Phase 07 WR-01)
 
 ### Community 526 - "ChipBar"
-Cohesion: 0.18
-Nodes (10): Accomplishments, Decisions Made, Deviations from Plan, Files Created/Modified, Issues Encountered, Next Phase Readiness, Performance, Phase 9 Plan 01: apiCheck KI closure + closing governance battery + tag-cut checkpoint Summary (+2 more)
+Cohesion: 0.25
+Nodes (7): Fixed Issues, IN-01: Two incompatible tag-color representations now coexist in the public model surface, IN-02: `CardTagRowTest`'s occurrence-indexed `AppChip(` lookup is fragile to unrelated reordering, Phase 07: Code Review Fix Report, Skipped Issues, WR-01: `TagChipUiModel.copy()` signature change is a real, non-additive ABI break beyond the documented Factory-class known issue, WR-02: New structural tests assert source text, not runtime behavior — a silent-pass risk for future refactors
 
 ### Community 527 - "MicButton"
-Cohesion: 0.19
-Nodes (19): ExplorerFamilies, `accent alone without tactileDepth never activates the depth chrome`(), `card_accent_spine is a matchParentSize overlay with a null-safe neutral fallback`(), `card_depth_container is tagged exactly once and only inside the tactileDepth true branch`(), CardBaseFixture(), `content slots compose in every param combination`(), countOccurrences(), `default params render no depth chrome and no wrapper node`() (+11 more)
+Cohesion: 0.35
+Nodes (11): `accent alone without tactileDepth never activates the depth chrome`(), `card_accent_spine is a matchParentSize overlay with a null-safe neutral fallback`(), `card_depth_container is tagged exactly once and only inside the tactileDepth true branch`(), countOccurrences(), matchingCloseBraceIndex(), readCardBaseSource(), renderConditionalBraces(), resolveModuleSourceRoot() (+3 more)
+
+### Community 528 - "VoiceAlbumEditMenuTest"
+Cohesion: 0.25
+Nodes (7): Fixed Issues, IN-01 (07-REVIEW-02.md): KDoc overstated "the constructor... stay byte-identical to the pre-Phase-7 shape", IN-02 (07-REVIEW-02.md): `Companion.of(...)`'s color-bearing overload is `@KotlinOnly`-tagged in `api.txt`, in tension with its "Java-ergonomic" stated purpose, Phase 07: Code Review Fix Report (Iteration 2 — WR-01 closure follow-up review), Verification, WR-01 (07-REVIEW-02.md): `api.txt`/`apiCheck` has zero binary-compatibility coverage of `color`'s own accessors — a pre-existing Metalava blind spot for value-class-typed members, WR-02 (07-REVIEW-02.md): `var color` is the first public, freely-mutable, non-constructor property in this repo's `model/` package — undocumented Compose-stability and aliasing consequences
 
 ### Community 529 - "ImageCountIndicator"
 Cohesion: 0.25
 Nodes (7): Certification — v2.0 Line Reunification, Cross-Phase Integration, Documentation reconcile (non-blocking), Gate Audit (certify-status, raw), Outcome, Route, Why every gap is a false-positive (evidence)
 
+### Community 531 - "NameAndTagsEditor"
+Cohesion: 0.25
+Nodes (7): Accepted Risks Log, Phase 07 — Security, Security Audit Trail, Sign-Off, Threat Register, Trust Boundaries, Unregistered Flags (surfaced during this audit, not in the original plan-time register)
+
 ### Community 533 - "Phase 08 — Security"
-Cohesion: 0.20
-Nodes (9): Accepted Risks Log, audited_head = git HEAD sha at audit time — freshness stamp. child-result re-checks it: if, implementation (outside .planning) changed since this sha, the audit is stale (INC-2026-08-06-04)., Phase 08 — Security, Security Audit Trail, Sign-Off, Threat Register, threats_open = count of OPEN threats at or above workflow.security_block_on severity (the blocking gate) (+1 more)
+Cohesion: 0.29
+Nodes (6): Accepted Risks Log, Phase 06 — Security, Security Audit Trail, Sign-Off, Threat Register, Trust Boundaries
+
+### Community 535 - "AdaptiveMediaPreview"
+Cohesion: 0.40
+Nodes (4): EmptyState(), EmptyStateFamilyScreen(), EmptyStateFamilyTopBar(), EmptyStateVariants()
 
 ### Community 537 - "Phase 08 — Validation Strategy"
-Cohesion: 0.22
-Nodes (8): Manual-Only Verifications, Per-Task Verification Map, Phase 08 — Validation Strategy, Sampling Rate, Test Infrastructure, Validation Audit 2026-09-27, Validation Sign-Off, Wave 0 Requirements
+Cohesion: 0.33
+Nodes (5): IN-01: `hiddenAnnotations` config lacks a regression comment tying it to the drift-guard tests, Narrative Findings (AI reviewer), Phase 9 (Plan 01, Task 1): Code Review Report — commit `ff3d9c6`, Summary, WR-01: Commit mixes an unrelated KI edit into a commit scoped to a different KI, undisclosed in the commit message
+
+### Community 538 - "TagChipUiModelTest"
+Cohesion: 0.33
+Nodes (5): IN-01: Inherited dangling-preposition phrasing carried forward unchanged by the tense rewrite, Narrative Findings (AI reviewer), Phase 9 (Plan 02): Code Review Report — commits `5d3555b`, `c793ab8`, `a3d4e3f`, Summary, WR-01: "Pending repins" bullets end on an ambiguous past-participle fragment that reads like a completed-action claim
 
 ### Community 539 - "TokenSwatches.kt"
-Cohesion: 0.21
-Nodes (3): HeatTier, HeatVisual, HeatEncodingTest
+Cohesion: 0.33
+Nodes (5): Additional confirmations, Phase 9 Plan 02 — Security Verdict, Post-verdict note, Threat Verification, Unregistered Flags
 
 ### Community 540 - ".onCreate"
-Cohesion: 0.14
-Nodes (10): titleSlotVisible(), CardQuickView(), CardQuickViewContent(), CardTagRow(), List, Modifier, name, String (+2 more)
-
-### Community 541 - "AttentionCue"
 Cohesion: 0.33
 Nodes (5): Behavioral proof (red/green, not just "test exists"), Fix applied, Gap identified, Phase 9 / Plan 09-01 — SHIP-01 Validation, Resolution
 
+### Community 541 - "AttentionCue"
+Cohesion: 0.40
+Nodes (4): Cross-Phase Integration (gsd-integration-checker), Milestone v1.0 — Hub Stewardship — Audit, Requirements Coverage (3-source cross-reference), Verdict
+
 ### Community 542 - "HeatSwatch"
-Cohesion: 0.23
-Nodes (8): ComponentDetailScreen(), PlaygroundKnobs(), StatesMatrixSection(), ComponentRegistry, Entry, StateCell, Tier, ComponentSearch
+Cohesion: 0.19
+Nodes (12): ComponentDetailScreen(), ComponentRegistry, Entry, StateCell, Tier, ComponentSearch, ComponentRow(), ExplorerIndexScreen() (+4 more)
 
 ### Community 543 - "RecordingBottomSheetContent"
-Cohesion: 0.39
-Nodes (7): formatElapsedTime(), PauseResumeButton(), RecordingBottomSheetContent(), RecordingSheetUiState, RecordingStateContent(), TitleStateContent(), TagSortMode
+Cohesion: 0.40
+Nodes (4): Notes, Phase 9 Plan 01 — Security Verdict, Threat Verification, Unregistered Flags
 
 ### Community 544 - "of"
-Cohesion: 0.33
-Nodes (6): Color, Double, Int, Long, String, of()
+Cohesion: 0.50
+Nodes (3): Milestones — yahirandroidtaste (Hub Stewardship), v1.0 — Hub Stewardship ✅ SHIPPED 2026-09-02, v2.0 Line Reunification (Shipped: 2026-09-27)
 
 ### Community 545 - "ListCardBottomSheet"
 Cohesion: 0.40
 Nodes (3): Bundle, ComponentActivity, ExplorerActivity
 
 ### Community 546 - "ElevationLadderVariants"
-Cohesion: 0.13
-Nodes (13): cardTypeIcon(), AlbumCard(), AnchoredDraggableState, Boolean, Color, Int, List, Modifier (+5 more)
+Cohesion: 0.06
+Nodes (23): android, AdaptiveMediaPreview(), MediaThumbnailCell, mosaicCellFraming(), ThumbnailCell(), cardTypeIcon(), VoiceAlbumEditMenuTest, AlbumCard() (+15 more)
 
 ### Community 548 - "TactileTypeShowcaseVariants"
-Cohesion: 0.21
-Nodes (5): Boolean, Modifier, String, MicButton(), MicButtonGestureTest
+Cohesion: 0.17
+Nodes (7): ExplorerFamilies, Pair, Boolean, Modifier, String, MicButton(), MicButtonGestureTest
+
+### Community 549 - ".whenBlock"
+Cohesion: 0.50
+Nodes (3): Artifacts this phase produces, STRIDE Threat Register, Trust Boundaries
 
 ### Community 550 - "ListCardBottomSheet"
 Cohesion: 0.40
@@ -1427,69 +1459,49 @@ Nodes (5): DimensEntry, shapeEntries(), ShapeEntry, TokenSwatch, TypeScaleEntry
 Cohesion: 0.22
 Nodes (8): ElevationLadderVariants(), TactileFoundationFamilyScreen(), TactileFoundationFamilyTopBar(), TactileTypeShowcaseVariants(), ElevationBand(), ElevationLadder(), TactileTypeSample, TactileTypeShowcase()
 
-### Community 552 - "ExpandableFab"
-Cohesion: 0.67
-Nodes (3): ExpandableFab(), FabActionRow(), ExpandableFabVariants()
-
 ### Community 553 - "Narrative Findings (AI reviewer)"
-Cohesion: 0.33
-Nodes (5): IN-01: `hiddenAnnotations` config lacks a regression comment tying it to the drift-guard tests, Narrative Findings (AI reviewer), Phase 9 (Plan 01, Task 1): Code Review Report — commit `ff3d9c6`, Summary, WR-01: Commit mixes an unrelated KI edit into a commit scoped to a different KI, undisclosed in the commit message
+Cohesion: 0.50
+Nodes (3): Artifacts this phase produces, STRIDE Threat Register, Trust Boundaries
 
 ### Community 554 - "ThemeMode"
-Cohesion: 0.22
-Nodes (11): ThemeMode, ButtonsFabFamilyScreen(), ButtonsFabFamilyTopBar(), DynamicActionButtonVariants(), MicButtonVariants(), AppChipVariants(), ChipsFamilyScreen(), ChipsFamilyTopBar() (+3 more)
+Cohesion: 0.36
+Nodes (8): ExplorerEntry(), ThemeMode, ButtonsFabFamilyScreen(), ButtonsFabFamilyTopBar(), ChipsFamilyScreen(), ChipsFamilyTopBar(), PickersFamilyScreen(), PickersFamilyTopBar()
 
 ### Community 556 - "Phase 9 Plan 01 — Security Verdict"
-Cohesion: 0.40
-Nodes (4): Notes, Phase 9 Plan 01 — Security Verdict, Threat Verification, Unregistered Flags
+Cohesion: 0.50
+Nodes (3): Artifacts this phase produces, STRIDE Threat Register, Trust Boundaries
 
 ### Community 557 - "Narrative Findings (AI reviewer)"
-Cohesion: 0.33
-Nodes (5): IN-01: Inherited dangling-preposition phrasing carried forward unchanged by the tense rewrite, Narrative Findings (AI reviewer), Phase 9 (Plan 02): Code Review Report — commits `5d3555b`, `c793ab8`, `a3d4e3f`, Summary, WR-01: "Pending repins" bullets end on an ambiguous past-participle fragment that reads like a completed-action claim
+Cohesion: 0.50
+Nodes (3): 06-01, 06-03, Phase 6 — Deferred Items
 
 ### Community 558 - "AttentionCue"
 Cohesion: 0.50
 Nodes (4): AttentionCue(), AttentionCueDefaults, Style, AttentionCueVariants()
 
 ### Community 559 - "listCompletionFraction"
-Cohesion: 0.18
-Nodes (11): ProgressRing(), SectionLabel(), HeroStatCardVariants(), ProgressRingVariants(), ProgressRingTest, CropOverlayFixedAspectPreview(), CropOverlayFreeCropPreview(), CropOverlayVariants() (+3 more)
-
-### Community 560 - "ReminderIndicator"
-Cohesion: 0.24
-Nodes (4): Int, Modifier, ReminderIndicator(), ReminderIndicatorTest
-
-### Community 561 - "Phase 9 Plan 02 — Security Verdict"
-Cohesion: 0.33
-Nodes (5): Additional confirmations, Phase 9 Plan 02 — Security Verdict, Post-verdict note, Threat Verification, Unregistered Flags
-
-### Community 563 - ".assertNoClickActionsInSubtree"
-Cohesion: 0.29
-Nodes (5): BorderStroke, HeatSwatch(), trimmedLabel(), hubNodeVisual(), HeatSwatchVariants()
-
-### Community 564 - "AdaptiveMediaPreview"
-Cohesion: 0.67
-Nodes (5): android, AdaptiveMediaPreview(), MediaThumbnailCell, mosaicCellFraming(), ThumbnailCell()
+Cohesion: 0.27
+Nodes (9): CropOverlayFixedAspectPreview(), CropOverlayFreeCropPreview(), CropOverlayVariants(), DateTimePickerVariants(), IconPickerGridVariants(), Double, Float, PlaceMapPickerDemo() (+1 more)
 
 ## Knowledge Gaps
-- **1733 isolated node(s):** `Style`, `DateTimePickerPanel`, `StateCell`, `Tier`, `TokenSwatch` (+1728 more)
+- **1780 isolated node(s):** `Style`, `DateTimePickerPanel`, `StateCell`, `Tier`, `TokenSwatch` (+1775 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **346 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **343 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `SectionLabel()` connect `listCompletionFraction` to `UndoHistoryStore`, `CardBase`, `AppChip`, `HeatSwatch`, `TactileTypeShowcaseVariants`, `ExpandableFab`, `03-01-PLAN.md`, `ThemeMode`, `AttentionCue`, `.assertNoClickActionsInSubtree`, `SegmentedOptionSelector`, `BulkCreatePopup`, `VoiceRenameTagsSheet`, `DemoTagChipEditor`, `run-all.sh`, `FeedbackFamilyScreen`, `RecordingBottomSheetContent`, `AppChip`, `ButtonsFabFamilyScreen.kt`?**
-  _High betweenness centrality (0.041) - this node is a cross-community bridge._
-- **Why does `PlaceMapPicker()` connect `AppChip` to `.onCreate`, `AlbumCard`, `downsample`, `AdaptiveMediaPreview`, `String`?**
+- **Why does `SectionLabel()` connect `ButtonsFabFamilyScreen.kt` to `UndoHistoryStore`, `run-all.sh`, `FeedbackFamilyScreen`, `TactileTypeShowcaseVariants`, `RecordingBottomSheetContent`, `ClearableTextField`, `03-01-PLAN.md`, `BulkCreatePopup`, `AttentionCue`, `VoiceRenameTagsSheet`, `PresetChip`, `listCompletionFraction`, `UndoCenterScreen`, `DemoTagChipEditor`, `HeroStatCard`, `AppChip`, `HeatSwatch`?**
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+- **Why does `PlaceMapPicker()` connect `AppChip` to `.onCreate`, `AlbumCard`, `downsample`, `listCompletionFraction`, `AdaptiveMediaPreview`, `String`?**
   _High betweenness centrality (0.020) - this node is a cross-community bridge._
-- **Why does `ClearableTextField()` connect `TagChipWithContextMenu` to `TagPickerSheetContent`, `ListCard`, `03-01-PLAN.md`, `BulkCreatePopup`, `Boolean`, `AppChip`, `TextCard`?**
-  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `ClearableTextField()` connect `TagChipWithContextMenu` to `TagPickerSheetContent`, `ListCard`, `03-01-PLAN.md`, `BulkCreatePopup`, `TagCreateSheetContent`, `AppChip`, `TextCard`?**
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
 - **Are the 48 inferred relationships involving `SectionLabel()` (e.g. with `AdaptiveMediaPreviewSection()` and `AlbumCardSection()`) actually correct?**
   _`SectionLabel()` has 48 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 34 inferred relationships involving `YahirAndroidTasteTheme()` (e.g. with `CardsFamilyScreen()` and `ComponentDetailScreen()`) actually correct?**
   _`YahirAndroidTasteTheme()` has 34 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Style`, `DateTimePickerPanel`, `StateCell` to the rest of the system?**
-  _1733 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _1780 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `CardsFamilyScreen.kt` be split into smaller, more focused modules?**
-  _Cohesion score 0.009389671361502348 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.009216589861751152 - nodes in this community are weakly interconnected._
