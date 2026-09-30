@@ -33,13 +33,18 @@ sealed interface VoiceOutcomeUiState {
      *   never infers this from any other field.
      * @param batchResults Per-row batch result reporting (D-06) — empty hides the section
      *   entirely (a single-item outcome has nothing to list here).
+     * @param undo A grouped undo affordance (VUNDO-01, D-01/D-02) — "Undo all (N)" plus per-item
+     *   rows, built by the CONSUMER from [io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore]
+     *   reads. `null` renders no undo section at all; undo lives ON [Success] rather than a new
+     *   top-level sealed arm so the top-level type stays additive-ready for Phase 12.
      */
     data class Success(
         val summary: String,
         val handledBy: HandledByUiModel? = null,
         val editableContent: (@Composable () -> Unit)? = null,
         val inFlight: Boolean = false,
-        val batchResults: List<BatchRowResultUiModel> = emptyList()
+        val batchResults: List<BatchRowResultUiModel> = emptyList(),
+        val undo: UndoAffordanceUiModel? = null
     ) : VoiceOutcomeUiState
 
     /**

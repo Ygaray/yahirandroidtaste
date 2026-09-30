@@ -8,6 +8,9 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
+import io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel
+import io.github.ygaray.yahirandroidtaste.model.UndoRowState
+import io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -127,5 +130,37 @@ class OutcomeSheetTest {
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithTag("outcome_sheet_action_button").assertDoesNotExist()
+    }
+
+    // ── VUNDO-01: grouped undo affordance happy path (Phase 11 Plan 01 Task 1) ─────
+
+    @Test
+    fun `Success with a non-null undo renders undo-all and every row, and undo-all invokes its callback`() {
+        var undoAllInvoked = false
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(
+                    summary = "Logged 2 items",
+                    undo = UndoAffordanceUiModel(
+                        allLabel = "Undo all (2)",
+                        rows = listOf(
+                            UndoRowUiModel(id = "1", label = "Card deleted", state = UndoRowState.Available(onUndo = {})),
+                            UndoRowUiModel(id = "2", label = "Tag removed", state = UndoRowState.Available(onUndo = {}))
+                        ),
+                        onUndoAll = { undoAllInvoked = true }
+                    )
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onAllNodesWithTag("outcome_sheet_undo_all").assertCountEquals(1)
+        composeTestRule.onAllNodesWithTag("outcome_sheet_undo_row").assertCountEquals(2)
+
+        composeTestRule.onNodeWithTag("outcome_sheet_undo_all").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, undoAllInvoked)
     }
 }

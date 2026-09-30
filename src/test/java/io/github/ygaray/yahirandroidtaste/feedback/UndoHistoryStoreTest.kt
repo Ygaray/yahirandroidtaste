@@ -409,4 +409,34 @@ class UndoHistoryStoreTest {
         val entry = store.entries.value.single { it.id == id }
         assertEquals(null, entry.preview)
     }
+
+    // ---- (i) VUNDO-01 / D-01 grouping API happy path (Phase 11 Plan 01 Task 1) ----
+
+    @Test
+    fun groupedAppend_thenAttemptUndoGroup_undoesAllOnceAndResolvesTheGroup() = runTest {
+        val store = UndoHistoryStore()
+        val groupId = "group-1"
+        val undoAllCallCount = AtomicInteger(0)
+
+        store.openGroup(groupId, label = "Undo all (2)") { undoAllCallCount.incrementAndGet() }
+        val firstId = store.append("Card deleted", groupId = groupId) { }
+        val secondId = store.append("Tag removed", groupId = groupId) { }
+
+        assertEquals(UndoGroupStatus.Undoable, store.groupStatus(groupId))
+        assertEquals(2, store.group(groupId).size)
+        assertEquals(groupId, store.groupIdOf(firstId))
+        assertEquals(groupId, store.groupIdOf(secondId))
+        assertEquals("Undo all (2)", store.groupLabel(groupId))
+
+        val result = store.attemptUndoGroup(groupId)
+
+        assertEquals(UndoGroupResult.Undone(count = 2), result)
+        assertEquals(
+            "undoAll must run exactly once for the whole group, never once per member",
+            1,
+            undoAllCallCount.get()
+        )
+        assertEquals(UndoGroupStatus.FullyResolved, store.groupStatus(groupId))
+        assertTrue(store.group(groupId).all { it.status == UndoStatus.Undone })
+    }
 }
