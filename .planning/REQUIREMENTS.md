@@ -11,13 +11,13 @@ Generic, **presentational** Compose composables only. Each composable takes its 
 ### Settings surfaces
 
 - [x] **VSET-01**: A provider/API-key settings card composable renders provider selection and API-key entry purely from props + callbacks (no key persistence, no network in the library) (§6.3)
-- [ ] **VSET-02**: A model settings card composable renders the selected/available model(s) from props and emits selection via callback (§6.3)
+- [x] **VSET-02**: A model settings card composable renders the selected/available model(s) from props and emits selection via callback (§6.3)
 
 ### Command-approach settings (NEW)
 
-- [ ] **VAPPR-01**: A command-approach settings card composable displays the configured tier ladder (ordered approaches, e.g. Grammar → SingleShot → Plan → Agentic) from props (§6.3)
-- [ ] **VAPPR-02**: The command-approach card exposes an offline-only toggle that reflects and emits offline-only state via props + callback (§6.3)
-- [ ] **VAPPR-03**: The command-approach card exposes a max-tier cap control that reflects and emits the cap via props + callback (§6.3)
+- [x] **VAPPR-01**: A command-approach settings card composable displays the configured tier ladder (ordered approaches, e.g. Grammar → SingleShot → Plan → Agentic) from props (§6.3)
+- [x] **VAPPR-02**: The command-approach card exposes an offline-only toggle that reflects and emits offline-only state via props + callback (§6.3)
+- [x] **VAPPR-03**: The command-approach card exposes a max-tier cap control that reflects and emits the cap via props + callback (§6.3)
 
 ### Outcome / failure sheet
 
@@ -64,10 +64,10 @@ Each requirement maps to exactly one phase. Roadmap: `.planning/ROADMAP.md` (Pha
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | VSET-01 | Phase 10 | Complete |
-| VSET-02 | Phase 10 | Pending |
-| VAPPR-01 | Phase 10 | Pending |
-| VAPPR-02 | Phase 10 | Pending |
-| VAPPR-03 | Phase 10 | Pending |
+| VSET-02 | Phase 10 | Complete |
+| VAPPR-01 | Phase 10 | Complete |
+| VAPPR-02 | Phase 10 | Complete |
+| VAPPR-03 | Phase 10 | Complete |
 | VOUT-01 | Phase 11 | Pending |
 | VOUT-02 | Phase 11 | Pending |
 | VOUT-03 | Phase 11 | Pending |
