@@ -24,6 +24,7 @@ Generic, **presentational** Compose composables only. Each composable takes its 
 - [ ] **VOUT-01**: An outcome/failure sheet composable renders a command outcome from props, domain-neutral (no app-specific nouns) (§6.3)
 - [ ] **VOUT-02**: The outcome sheet shows a "handled by: tier/approach" indicator identifying which tier/approach handled the command, from props (§6.3)
 - [ ] **VOUT-03**: The outcome sheet renders failure states loudly and visibly (prominent, not silent or subtle) (§6.3)
+- [ ] **VUNDO-01**: The outcome sheet renders a generic, prop-driven undo affordance — an "Undo all (N)" action alongside per-item Undo — where a per-item-undo-**unavailable** state is representable (e.g. an item entangled with another cannot be undone alone), plus a loud undo-refused / partial state (e.g. "couldn't undo: <reason>, <item> changed since"). Domain-neutral, registered with a full states matrix (A18, §6.3)
 - [ ] **VOUT-04**: The outcome sheet renders a generic needs-confirmation state from props — a reason string, single-or-batch proposed item(s), and confirm/cancel actions — domain-neutral so it covers both SB's `MutationGate`/`VoiceConfirmGate` risk confirm and CT's weak-match single/batch confirm (A2/E1)
 
 ### Catalog & API integrity
@@ -69,6 +70,7 @@ Each requirement maps to exactly one phase. Roadmap: `.planning/ROADMAP.md` (Pha
 | VOUT-01 | Phase 11 | Pending |
 | VOUT-02 | Phase 11 | Pending |
 | VOUT-03 | Phase 11 | Pending |
+| VUNDO-01 | Phase 11 | Pending |
 | VOUT-04 | Phase 12 | Pending |
 | CAT-01 | Phase 13 | Pending |
 | API-01 | Phase 13 | Pending |
@@ -77,10 +79,10 @@ Each requirement maps to exactly one phase. Roadmap: `.planning/ROADMAP.md` (Pha
 | SHIP-02 | Phase 13 | Pending |
 
 **Coverage:**
-- v2.4 requirements: 14 total
-- Mapped to phases: 14 ✓ (Phase 10: 5, Phase 11: 3, Phase 12: 1, Phase 13: 5)
+- v2.4 requirements: 15 total
+- Mapped to phases: 15 ✓ (Phase 10: 5, Phase 11: 4, Phase 12: 1, Phase 13: 5)
 - Unmapped: 0 ✓ (no orphans, no duplicates)
 
 ---
 *Requirements defined: 2026-09-29*
-*Last updated: 2026-09-29 — traceability filled at roadmap creation (Phases 10-13)*
+*Last updated: 2026-09-29 — added VUNDO-01 (A18, undo affordance) mapped to Phase 11, relayed by orchestrator from VAE commit ccfebdf*
