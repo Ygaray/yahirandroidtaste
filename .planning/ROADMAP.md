@@ -90,7 +90,7 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. An outcome/failure sheet renders a command outcome from props with no app-specific nouns
   2. The sheet surfaces a "handled by: tier/approach" indicator identifying which tier/approach handled the command, from props
-  3. Failure states render prominently and visibly — loud, not silent or subtle
+  3. Failure states render prominently and visibly — loud, not silent or subtle — with an OPTIONAL prop-driven action slot (e.g. "Open Settings", or "Retry" only when the app flags it retry-safe); absent prop → no action rendered
   4. The sheet renders a prop-driven "Undo all (N)" action alongside per-item Undo, and can represent a per-item-undo-unavailable state (an item that cannot be undone alone because it is entangled with another)
   5. An undo-refused / partial-undo state renders loudly with a reason (e.g. "couldn't undo: <reason>, <item> changed since"), domain-neutral
   6. A prop-driven clarification-choices surface renders a question + pressable options (label + opaque id) with onSelect + dismiss — visually informative (not an error); tapping an option resolves the clarification without re-speaking

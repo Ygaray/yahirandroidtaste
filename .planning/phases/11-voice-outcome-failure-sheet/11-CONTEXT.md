@@ -33,6 +33,9 @@ Resolved in `ai` mode (`source: ai-auto`). The **[undo-crossrepo]** decision is 
 ### batch-results
 - **D-06 [batch-results]:** For batch outcomes, the sheet renders per-row result reporting — a partial-success summary ("Logged 2 of 3") from a `failedCount` / per-row `success|fail` status — plus a batch-write-in-flight LOCK state (disable actions while the write is running). All prop-driven. _(R1 — CT VoiceResultSheet.kt / VoiceLogUiState.kt)_
 
+### failure-action
+- **D-08 [failure-action]:** The Failure state carries an OPTIONAL action slot — a label + callback (e.g. "Open Settings" for a missing/invalid key; "Retry" ONLY when the app says the failure is retry-safe). Prop-driven and optional: the app decides whether and what to show; absent → no action rendered. Keeps VOUT-03 loud AND actionable without the library assuming any action is always safe. _(R1 — SB brief, 2026-09-30)_
+
 ### clarify-choices
 - **D-07 [clarify-choices]:** A generic, prop-driven "clarification choices" composable (VCLAR-01, contract **A19**) — question text + a list of options, each `{ id: opaque String, label: String }`, + `onSelect(id)` + `onDismiss` (dismiss = cancel). When the model needs clarification ("Which list?"), the user resolves it by TAPPING an option, never by speaking again. Render it as a compact PRESSABLE choice surface (chips/buttons) — a Material snackbar holds only one action, so use a small choice bar or an outcome-sheet state, **your design call, easy to swap**. Visually informative, NOT an error. Apps map the engine's `Clarification` → these props (no engine dependency, L7). Domain-neutral; registered in `ComponentRegistry` (Voice Command family) with a full states matrix. _(§6.3, A19 — Yahir 2026-09-30, VAE 725d8d7)_
 

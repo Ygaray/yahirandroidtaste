@@ -124,6 +124,8 @@ Session names can change after a restart. If one doesn't resolve, ask the orches
 
 **Late requirement (post-pause, folded in):** **VCLAR-01** (contract **A19**, VAE `725d8d7`) — a generic tap-to-clarify "clarification choices" composable (question + options `{id, label}` + `onSelect(id)` + dismiss=cancel; apps map the engine's `Clarification` → props, L7). Mapped to **Phase 11** (16 reqs total now; Phase 11: 5). ROADMAP + REQUIREMENTS + 11-CONTEXT updated.
 
+**R1:** CLOSED 5/5. Also folded post-pause into 11-CONTEXT (D-08): the Failure state carries an OPTIONAL prop-driven action slot ("Open Settings" / "Retry" only when the app flags retry-safe).
+
 **Contract rev absorbed:** A1–A19, E1–E6.
 
 **Resume prompt to relay:** "Read `.planning/cross-repo/HANDOFF.md` (§ Current state) and your `vae-bilingual-multi-repo-effort` memory, then `/gsd-resume-work`; then WAIT for the orchestrator to dispatch `/gsd-execute-milestone --subagent-driven` (do NOT hand-drive `/gsd-plan-phase` or `/gsd-execute-phase`). Orchestrator is `yahir-gsd-control-plane-f2`."
