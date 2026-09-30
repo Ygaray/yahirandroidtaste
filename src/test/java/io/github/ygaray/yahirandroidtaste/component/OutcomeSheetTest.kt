@@ -171,6 +171,31 @@ class OutcomeSheetTest {
     // ── VUNDO-01: edge hardening -- Unavailable/Refused rendering (Phase 11 Plan 01 Task 2) ──
 
     @Test
+    fun `an Undone row renders muted trailing text and is never clickable`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(
+                    summary = "Logged 1 item",
+                    undo = UndoAffordanceUiModel(
+                        allLabel = "Undo all (0)",
+                        rows = listOf(
+                            UndoRowUiModel(id = "1", label = "Card deleted", state = UndoRowState.Undone)
+                        )
+                    )
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        val rows = composeTestRule.onAllNodesWithTag("outcome_sheet_undo_row")
+        rows.assertCountEquals(1)
+        rows[0].assert(hasText("Card deleted"))
+        rows[0].assert(hasText("Undone"))
+        rows[0].assertHasNoClickAction()
+    }
+
+    @Test
     fun `an Unavailable row renders its reason as non-clickable text while a sibling Available row still fires its own onUndo, and allLabel renders verbatim`() {
         var availableRowUndoInvoked = false
         composeTestRule.setContent {

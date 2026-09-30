@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
 import io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel
@@ -138,6 +139,12 @@ private fun UndoRowItem(row: UndoRowUiModel) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = Dimens.HairlineSpacing)
+            // Merge this row's label + trailing Text child into ONE semantics node, mirroring
+            // ApproachLadderCard's CapControl -- required so onAllNodesWithTag(...)'s indexed
+            // access can resolve BOTH the row's label and its trailing text/click action
+            // regardless of state (a clickable Modifier merges automatically; Undone/Unavailable
+            // carry no clickable modifier and would otherwise stay unmerged).
+            .semantics(mergeDescendants = true) {}
             .then(
                 if (state is UndoRowState.Available) {
                     Modifier.clickable(onClick = state.onUndo)
