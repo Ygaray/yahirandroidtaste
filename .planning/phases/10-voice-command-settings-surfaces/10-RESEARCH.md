@@ -473,9 +473,11 @@ All patterns are inline under Q1–Q6 above (verified against the pinned BOM and
 | A3 | Generic model names (`ProviderOptionUiModel`, etc.) preferred over ARCHITECTURE.md's `VoiceProviderUiModel`/`CommandTierUiModel` | Q4 | LOW — models aren't head-token-gated; naming is a coherence call to resolve at plan time |
 | A4 | Exact `KeyFieldState`/`modelsState` enum shape | Q4 | LOW — render-only enum; final shape is a plan-time detail |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Cap widget final choice (tap-a-rung vs segmented).**
+**All three are decision-closed** (plan-checker hygiene, 2026-09-29): (1) cap widget → **tap-a-rung** behind the `CapControl` swap seam (D-03 + CONTEXT Claude's Discretion; Yahir confirms in the gallery at Gate-1); (2) provider selector → **`ExposedDropdownMenuBox`**; (3) model naming → generic **`…OptionUiModel`/`ApproachRungUiModel`**, frozen in 10-01 Task 1's signature list. No residual risk to the phase goal.
+
+1. **Cap widget final choice (tap-a-rung vs segmented).** _(RESOLVED: tap-a-rung behind `CapControl` seam.)_
    - What we know: default is tap-a-rung (D-03); `SingleChoiceSegmentedButtonRow` is the fallback; both dependency-free; must be built behind a swap seam.
    - What's unclear: the expected tier count at Gate-1 (3 vs 4+ rungs).
    - Recommendation: implement tap-a-rung behind the `CapControl` seam (Q3); Yahir reviews in the gallery and the swap is one line if segmented reads better.
