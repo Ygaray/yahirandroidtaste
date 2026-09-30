@@ -57,30 +57,30 @@ Explicitly excluded — belongs to the engine or the consumer apps, not this pre
 
 ## Traceability
 
-Filled during roadmap creation. Each requirement maps to exactly one phase.
+Each requirement maps to exactly one phase. Roadmap: `.planning/ROADMAP.md` (Phases 10-13).
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VSET-01 | TBD | Pending |
-| VSET-02 | TBD | Pending |
-| VAPPR-01 | TBD | Pending |
-| VAPPR-02 | TBD | Pending |
-| VAPPR-03 | TBD | Pending |
-| VOUT-01 | TBD | Pending |
-| VOUT-02 | TBD | Pending |
-| VOUT-03 | TBD | Pending |
-| VOUT-04 | TBD | Pending |
-| CAT-01 | TBD | Pending |
-| API-01 | TBD | Pending |
-| INV-01 | TBD | Pending |
-| SHIP-01 | TBD | Pending |
-| SHIP-02 | TBD | Pending |
+| VSET-01 | Phase 10 | Pending |
+| VSET-02 | Phase 10 | Pending |
+| VAPPR-01 | Phase 10 | Pending |
+| VAPPR-02 | Phase 10 | Pending |
+| VAPPR-03 | Phase 10 | Pending |
+| VOUT-01 | Phase 11 | Pending |
+| VOUT-02 | Phase 11 | Pending |
+| VOUT-03 | Phase 11 | Pending |
+| VOUT-04 | Phase 12 | Pending |
+| CAT-01 | Phase 13 | Pending |
+| API-01 | Phase 13 | Pending |
+| INV-01 | Phase 13 | Pending |
+| SHIP-01 | Phase 13 | Pending |
+| SHIP-02 | Phase 13 | Pending |
 
 **Coverage:**
 - v2.4 requirements: 14 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 14 ⚠️ (resolved at roadmap creation)
+- Mapped to phases: 14 ✓ (Phase 10: 5, Phase 11: 3, Phase 12: 1, Phase 13: 5)
+- Unmapped: 0 ✓ (no orphans, no duplicates)
 
 ---
 *Requirements defined: 2026-09-29*
-*Last updated: 2026-09-29 after initial definition*
+*Last updated: 2026-09-29 — traceability filled at roadmap creation (Phases 10-13)*

@@ -4,6 +4,7 @@
 
 - ✅ **v1.0 — Hub Stewardship** — Phases 1-5 (shipped 2026-09-02, library `v2.0.0`)
 - ✅ **v2.0 — Line Reunification** — Phases 6-9 (shipped 2026-09-27, cut library `v2.2.0`)
+- 🚧 **v2.4 — AI-Voice Command UI** — Phases 10-13 (in progress, cuts library `v2.4.0`)
 
 ## Completed Milestones
 
@@ -44,7 +45,85 @@ consumer's own channel; repin paths surfaced in `ECOSYSTEM.md`.
 
 ## Active Milestone
 
-None — v2.0 shipped. Start the next milestone with `/gsd-new-milestone`.
+### 🚧 v2.4 — AI-Voice Command UI (Phases 10-13)
+
+**Milestone Goal:** Ship the shared AI-voice UI layer in the hub — generic, prop-driven
+presentational composables that let SecondBrain and CalTracker render voice-command *settings* and
+*outcomes* with zero engine or HTTP coupling — and cut it as library `v2.4.0`. This is Wave 0, §6.3
+of the frozen `vae-bilingual` cross-repo contract. Every composable takes data + actions as
+parameters; the library imports no consumer code, no OkHttp, and no `voice-action-engine` module
+(one-way-dependency invariant, INV-01).
+
+**Phase Numbering:**
+- Integer phases (10, 11, …): Planned milestone work (continues from v2.0's Phase 9 — no reset)
+- Decimal phases (2.1, 2.2): Urgent insertions (marked INSERTED)
+
+- [ ] **Phase 10: Voice command settings surfaces** - Provider/key, model, and command-approach settings cards, all prop-driven
+- [ ] **Phase 11: Voice outcome & failure sheet** - Domain-neutral outcome sheet with a "handled by: tier/approach" indicator and loud failure states
+- [ ] **Phase 12: Generic needs-confirmation state** - One domain-neutral confirm prompt covering both SB risk confirm and CT weak-match single/batch confirm
+- [ ] **Phase 13: Catalog integrity & v2.4.0 ship** - Register all new composables, keep the API strictly additive, and cut `v2.4.0` on green verification
+
+## Phase Details
+
+### Phase 10: Voice command settings surfaces
+**Goal**: Consumers can render voice-command provider/model and command-approach settings entirely from props + callbacks — with no key persistence and no network in the library.
+**Depends on**: Nothing (first phase of milestone v2.4)
+**Requirements**: VSET-01, VSET-02, VAPPR-01, VAPPR-02, VAPPR-03
+**Success Criteria** (what must be TRUE):
+  1. A provider/API-key settings card renders provider selection and API-key entry from props + callbacks — holding no key and making no network call in the library
+  2. A model settings card renders the available/selected model(s) from props and emits the selection via callback
+  3. A command-approach settings card displays the configured tier ladder (ordered approaches, e.g. Grammar → SingleShot → Plan → Agentic) from props
+  4. The command-approach card's offline-only toggle reflects and emits offline-only state via props + callback
+  5. The command-approach card's max-tier cap control reflects and emits the cap via props + callback
+**Plans**: TBD
+**UI hint**: yes
+
+Plans:
+- [ ] TBD
+
+### Phase 11: Voice outcome & failure sheet
+**Goal**: Consumers can render a domain-neutral command outcome — including which tier/approach handled it and loud, visible failure states — from props alone.
+**Depends on**: Nothing (independent of Phase 10 — a separate composable in the same voice UI package; can proceed in parallel)
+**Requirements**: VOUT-01, VOUT-02, VOUT-03
+**Success Criteria** (what must be TRUE):
+  1. An outcome/failure sheet renders a command outcome from props with no app-specific nouns
+  2. The sheet surfaces a "handled by: tier/approach" indicator identifying which tier/approach handled the command, from props
+  3. Failure states render prominently and visibly — loud, not silent or subtle
+**Plans**: TBD
+**UI hint**: yes
+
+Plans:
+- [ ] TBD
+
+### Phase 12: Generic needs-confirmation state
+**Goal**: Consumers can render one domain-neutral needs-confirmation prompt that covers both SecondBrain's `MutationGate`/`VoiceConfirmGate` risk confirm and CalTracker's weak-match single/batch confirm — from props, with no library changes per consumer.
+**Depends on**: Phase 11 (extends the outcome sheet with a confirmation state)
+**Requirements**: VOUT-04
+**Success Criteria** (what must be TRUE):
+  1. The outcome sheet renders a needs-confirmation state from props: a reason string, proposed item(s), and confirm/cancel actions
+  2. The same composable renders both a single proposed item and a batch of proposed items
+  3. Confirm and cancel each emit via callback, domain-neutral (no app-specific nouns)
+  4. The prop shape satisfies both SB's `MutationGate`/`VoiceConfirmGate` risk confirm and CT's weak-match single/batch confirm without any library-side change
+**Plans**: TBD
+**UI hint**: yes
+
+Plans:
+- [ ] TBD
+
+### Phase 13: Catalog integrity & v2.4.0 ship
+**Goal**: Every new composable is registered, the public API is strictly additive and engine-free, and the library ships as `v2.4.0` resolving on JitPack — with no stray milestone marker tag.
+**Depends on**: Phases 10, 11, 12
+**Requirements**: CAT-01, API-01, INV-01, SHIP-01, SHIP-02
+**Success Criteria** (what must be TRUE):
+  1. The full test suite passes — including the CATALOG-03 drift guard — with every new public composable registered in `ComponentRegistry` (or allowlisted in `INTENTIONALLY_UNREGISTERED`) with its full 4-cell states matrix
+  2. Metalava `apiCheck` confirms the public API is strictly additive versus `v2.3.0` — no removals or signature changes to existing symbols
+  3. The library declares no OkHttp or `voice-action-engine` dependency; every new composable takes data + actions as parameters (one-way-dependency invariant preserved)
+  4. `v2.4.0` is tagged, pushed, and resolves on JitPack from a clean cache, and the full §11 ledger row is messaged to the orchestrator (tag-cut human gate waived for this effort)
+  5. Milestone close cuts no git tag beyond the `v2.4.0` release coordinate (guards the stray milestone-marker-tag hazard)
+**Plans**: TBD
+
+Plans:
+- [ ] TBD
 
 ## Backlog
 
@@ -65,3 +144,15 @@ Context:
 Plans:
 
 - [ ] TBD (promote with /gsd-review-backlog when ready)
+
+## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 10 → 11 → 12 → 13 (Phases 10 and 11 are mutually independent and may run in parallel; Phase 12 gates on 11; Phase 13 gates on 10, 11, 12).
+
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 10. Voice command settings surfaces | v2.4 | 0/TBD | Not started | - |
+| 11. Voice outcome & failure sheet | v2.4 | 0/TBD | Not started | - |
+| 12. Generic needs-confirmation state | v2.4 | 0/TBD | Not started | - |
+| 13. Catalog integrity & v2.4.0 ship | v2.4 | 0/TBD | Not started | - |
