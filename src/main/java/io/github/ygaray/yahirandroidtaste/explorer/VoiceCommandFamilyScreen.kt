@@ -22,10 +22,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.ApproachLadderCard
+import io.github.ygaray.yahirandroidtaste.component.ClarificationBar
 import io.github.ygaray.yahirandroidtaste.component.ModelSelectCard
 import io.github.ygaray.yahirandroidtaste.component.OutcomeSheet
 import io.github.ygaray.yahirandroidtaste.component.ProviderKeyCard
 import io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel
+import io.github.ygaray.yahirandroidtaste.model.ClarificationOptionUiModel
 import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
 import io.github.ygaray.yahirandroidtaste.model.KeyFieldState
@@ -154,6 +156,28 @@ internal val voiceCommandFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             ComponentRegistry.StateCell("Focused")
         ),
         content = { OutcomeSheetVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
+    ),
+    ComponentRegistry.Entry(
+        name = "ClarificationBar",
+        family = ExplorerFamilies.VOICE_COMMAND,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = { ClarificationBarFixture(options = fixtureClarificationOptionsTwo) }
+            ),
+            ComponentRegistry.StateCell(
+                "Pressed / Selected",
+                render = { ClarificationBarFixture(options = fixtureClarificationOptionsDuplicateLabel) }
+            ),
+            // ClarificationBar has no disabled/greyed posture -- onSelect/onDismiss fire ONLY
+            // from a direct tap and there is no "unavailable" visual state to preview (mirrors
+            // ProviderKeyCard's precedent for controls with no disabled param) -- N/A.
+            ComponentRegistry.StateCell("Disabled"),
+            // No custom focus-visual override -- N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { ClarificationBarVariants() },
         tier = ComponentRegistry.Tier.PATTERN
     )
 )
@@ -416,6 +440,43 @@ private fun OutcomeSheetVariants() {
     visibleOutcome?.let { outcome ->
         OutcomeSheet(outcome = outcome, onDismissRequest = { visibleOutcome = null })
     }
+}
+
+/** Fixture options -- explorer-only, never registered (explorer/ is drift-guard denylisted). */
+private val fixtureClarificationOptionsTwo = listOf(
+    ClarificationOptionUiModel(id = "groceries", label = "Groceries"),
+    ClarificationOptionUiModel(id = "work", label = "Work")
+)
+
+/**
+ * Fixture options -- VCLAR-01 duplicate-label edge: two options sharing the SAME label but
+ * distinct opaque ids, demonstrating the no-de-duplication/no-merging contract.
+ */
+private val fixtureClarificationOptionsDuplicateLabel = listOf(
+    ClarificationOptionUiModel(id = "list-a", label = "Shopping List"),
+    ClarificationOptionUiModel(id = "list-b", label = "Shopping List")
+)
+
+/** Shared fixture wrapper for the States matrix cells. */
+@Composable
+private fun ClarificationBarFixture(options: List<ClarificationOptionUiModel>) {
+    ClarificationBar(
+        question = "Which list?",
+        options = options,
+        onSelect = {},
+        onDismiss = {},
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
+}
+
+/** ClarificationBar's interactive demo, including the duplicate-label edge fixture. */
+@Composable
+private fun ClarificationBarVariants() {
+    SectionLabel("ClarificationBar")
+    ClarificationBarFixture(options = fixtureClarificationOptionsTwo)
+
+    SectionLabel("ClarificationBar — duplicate-label edge (two options, same label, different ids)")
+    ClarificationBarFixture(options = fixtureClarificationOptionsDuplicateLabel)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
