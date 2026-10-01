@@ -13,7 +13,7 @@ findings:
   warning: 2
   info: 0
   total: 5
-status: issues_found
+status: resolved
 ---
 
 # Phase 13: Code Review Report
