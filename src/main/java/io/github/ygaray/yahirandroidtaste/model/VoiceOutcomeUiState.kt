@@ -1,6 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.model
 
 import androidx.compose.runtime.Composable
+import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
 
 /**
  * Render-only outcome state for a voice command result
@@ -64,5 +65,57 @@ sealed interface VoiceOutcomeUiState {
         val reason: String,
         val handledBy: HandledByUiModel? = null,
         val action: FailureActionUiModel? = null
+    ) : VoiceOutcomeUiState
+
+    /**
+     * A generic needs-confirmation state (VOUT-04, D-01/D-02/D-03/D-05/D-06) -- a reason string,
+     * one-or-more proposed items, and confirm/cancel actions. [items].size == 1 is a single
+     * confirm (SecondBrain's `MutationGate`/`VoiceConfirmGate` destructive risk confirm, or
+     * CalTracker's weak single match); [items].size > 1 is a batch (CalTracker's `ProposedBatch`).
+     * The SAME render path handles both -- there is no size-based special casing anywhere in this
+     * type or in [io.github.ygaray.yahirandroidtaste.component.OutcomeSheet]'s rendering of it.
+     *
+     * A consumer constructing a [NeedsConfirmation] MUST route
+     * [io.github.ygaray.yahirandroidtaste.component.OutcomeSheet]'s own `onDismissRequest` param to
+     * the SAME decline logic as [onCancel] -- mirroring
+     * [AlbumTitleConfirmSheet][io.github.ygaray.yahirandroidtaste.component.AlbumTitleConfirmSheet]'s
+     * own documented `onDismiss`/`onSave` distinction. Dismiss/outside-tap/back = decline (D-05);
+     * this is a documented integration contract, not library-enforceable.
+     *
+     * @param reason Caller-formatted, human-readable reason this confirmation is needed. Required.
+     * @param items The proposed item(s) to confirm or cancel. Size 1 = single; size >1 = batch.
+     * @param selectionMode How a batch resolves to a confirm action (D-03/D-06). Defaults to
+     *   [SelectionMode.AllOrNothing] -- the only mode either live consumer currently exercises.
+     * @param title An optional headline separate from [reason] (D-05), e.g. "Delete card?".
+     * @param severity Confirm-button color/role treatment -- reuses the existing public
+     *   [io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole] rather
+     *   than a new library-defined enum (D-05, Don't Hand-Roll). Defaults to
+     *   [ActionButtonDefaults.ActionButtonRole.Neutral].
+     * @param reversibilityHint An optional "Undoable"/"Irreversible"/free-text hint that stays
+     *   visible (D-05). `null` renders nothing.
+     * @param confirmLabel The confirm button's verb (D-05), e.g. "Delete"/"Merge"/"Allow"/
+     *   "Confirm all (N)". Defaults to "Confirm".
+     * @param cancelLabel The cancel button's label. Defaults to "Cancel".
+     * @param topLevelContent An optional sheet-level content slot rendered ONCE regardless of
+     *   [items]'s size (D-06) -- e.g. CalTracker's single shared date-picker row for a batch.
+     *   `null` renders nothing (null-prop-hides).
+     * @param onConfirm Invoked exactly once on an explicit Confirm-button tap. Never invoked on
+     *   composition/recomposition or on a timeout (all of SecondBrain's `ConfirmSubject` arms are
+     *   destructive).
+     * @param onCancel Invoked exactly once on an explicit Cancel-button tap (or routed from a
+     *   genuine scrim/back/drag dismiss gesture the consumer wires to the same decline logic).
+     */
+    data class NeedsConfirmation(
+        val reason: String,
+        val items: List<ProposedItemUiModel>,
+        val selectionMode: SelectionMode = SelectionMode.AllOrNothing,
+        val title: String? = null,
+        val severity: ActionButtonDefaults.ActionButtonRole = ActionButtonDefaults.ActionButtonRole.Neutral,
+        val reversibilityHint: String? = null,
+        val confirmLabel: String = "Confirm",
+        val cancelLabel: String = "Cancel",
+        val topLevelContent: (@Composable () -> Unit)? = null,
+        val onConfirm: () -> Unit,
+        val onCancel: () -> Unit
     ) : VoiceOutcomeUiState
 }

@@ -12,6 +12,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
+import io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRowState
@@ -369,5 +370,96 @@ class OutcomeSheetTest {
 
         composeTestRule.onNodeWithTag("outcome_sheet_undo_refused").assertExists()
         composeTestRule.onNodeWithText("Couldn't undo: Item changed").assertExists()
+    }
+
+    // ── VOUT-04: NeedsConfirmation -- single-item confirm/cancel (Plan 01 Task 1) ──
+
+    @Test
+    fun `NeedsConfirmation with a single item renders its title, reason, reversibilityHint, and the item's title and subtitle`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "This will permanently remove the card and its history.",
+                    title = "Delete card?",
+                    items = listOf(ProposedItemUiModel(id = "card-1", title = "Grocery list", subtitle = "12 items")),
+                    reversibilityHint = "Irreversible",
+                    confirmLabel = "Delete",
+                    onConfirm = {},
+                    onCancel = {}
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Delete card?").assertExists()
+        composeTestRule.onNodeWithText("This will permanently remove the card and its history.").assertExists()
+        composeTestRule.onNodeWithText("Irreversible").assertExists()
+        composeTestRule.onNodeWithText("Grocery list").assertExists()
+        composeTestRule.onNodeWithText("12 items").assertExists()
+    }
+
+    @Test
+    fun `tapping the Confirm button invokes onConfirm exactly once and does not invoke onCancel`() {
+        var confirmed = false
+        var cancelled = false
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "This will permanently remove the card and its history.",
+                    title = "Delete card?",
+                    items = listOf(ProposedItemUiModel(id = "card-1", title = "Grocery list")),
+                    confirmLabel = "Delete",
+                    onConfirm = { confirmed = true },
+                    onCancel = { cancelled = true }
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("outcome_sheet_confirmation_confirm").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, confirmed)
+        assertEquals(false, cancelled)
+    }
+
+    @Test
+    fun `tapping the Cancel button invokes onCancel exactly once and does not invoke onConfirm`() {
+        var confirmed = false
+        var cancelled = false
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "This will permanently remove the card and its history.",
+                    title = "Delete card?",
+                    items = listOf(ProposedItemUiModel(id = "card-1", title = "Grocery list")),
+                    confirmLabel = "Delete",
+                    onConfirm = { confirmed = true },
+                    onCancel = { cancelled = true }
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("outcome_sheet_confirmation_cancel").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, cancelled)
+        assertEquals(false, confirmed)
+    }
+
+    @Test
+    fun `ProposedItemUiModel toString never prints title, subtitle, or confidenceCue`() {
+        val item = ProposedItemUiModel(
+            id = "x",
+            title = "Secret Name",
+            subtitle = "Secret Sub",
+            confidenceCue = "Weak match"
+        )
+
+        assertEquals("ProposedItemUiModel(id=x, amended=false)", item.toString())
     }
 }
