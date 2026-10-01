@@ -507,7 +507,17 @@ private fun OutcomeSheetVariants() {
     ) { Text("Show sheet") }
 
     visibleOutcome?.let { outcome ->
-        OutcomeSheet(outcome = outcome, onDismissRequest = { visibleOutcome = null })
+        OutcomeSheet(
+            outcome = outcome,
+            onDismissRequest = {
+                // WR-01: NeedsConfirmation's own KDoc requires onDismissRequest to route to the
+                // SAME decline logic as its onCancel -- this gallery is the library's own
+                // canonical reference implementation, so it must honor that contract rather than
+                // silently no-op the fixture's onCancel.
+                (outcome as? VoiceOutcomeUiState.NeedsConfirmation)?.onCancel?.invoke()
+                visibleOutcome = null
+            }
+        )
     }
 }
 
