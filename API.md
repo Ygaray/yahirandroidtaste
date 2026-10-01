@@ -15,19 +15,19 @@ and the CATALOG drift guard.
 
 | Family | Registered composables | What it is |
 |--------|-----------------------|------------|
-| 1. Cards | 9 | Card faces + card-face sub-rows for the five card archetypes |
-| 2. Chips | 4 | Tag/selection chips and the bar that lays them out (with an optional filter/sort chrome mode) |
+| 1. Cards | 11 | Card faces + card-face sub-rows for the five card archetypes |
+| 2. Chips | 5 | Tag/selection chips and the bar that lays them out (with an optional filter/sort chrome mode) |
 | 3. Sheets | 18 | Bottom-sheet / editor / popup content surfaces and their scaffolding |
-| 4. Buttons / FAB | 3 | The expandable create-FAB and dynamic action buttons |
-| 5. Pickers | 4 | Accent-color, icon, crop, and segmented-option pickers |
+| 4. Buttons / FAB | 4 | The expandable create-FAB and dynamic action buttons |
+| 5. Pickers | 6 | Accent-color, icon, crop, and segmented-option pickers |
 | 6. Feedback | 3 | Confirmation dialog, the Undo Center, and the attention-cue glyph |
 | 7. Empty-state | 1 | The shared empty-state surface |
 | 8. Progress / Metrics | 4 | Determinate ring / count-up / hero-card primitives for at-a-glance stat display |
 | 9. Tactile Foundation | 4 | Elevation ladder, Space Grotesk display ramp, gradient/tint accent surfaces, and the Heat relatedness ramp |
 | 10. Voice Command | 5 | Provider/API-key, model, and command-approach settings cards, plus the outcome/undo/confirmation sheet and the tap-to-clarify bar |
 
-**51 registered public composables** across the ten families, plus **5 intentionally-unregistered**
-structural sub-parts (see the end of this doc) = **56 public composables total**. Every component
+**61 registered public composables** across the ten families, plus **5 intentionally-unregistered**
+structural sub-parts (see the end of this doc) = **66 public composables total**. Every component
 renders inside `YahirAndroidTasteTheme` (family 7's theme wrapper — see the tail note). Every
 `Modifier` parameter defaults to `Modifier`; only the load-bearing parameters are listed below.
 
@@ -45,6 +45,8 @@ underlying `CardBase` shell.
 
 | Composable | Purpose | Key parameters |
 |-----------|---------|----------------|
+| `CardBase` | Structural card shell every card face wraps (reveal-confirm swipe, tap, long-press, tactile depth) | `openRowState: MutableState<AnchoredDraggableState<SwipeAnchor>?>, onDeleteClick, onEditClick, onClick, onLongClick, accent: Color?, tactileDepth: Boolean = false, …` content slots |
+| `CardTypeChip` | Small accent-tinted badge icon rendered on a card face | `accent: Color?, icon: @Composable () -> Unit` |
 | `TextCard` | Text-note card face | `id, title, content: String?`, tap/swipe callbacks |
 | `ListCard` | List card face (bulleted / ordered / checkbox `subType`) | `id, title, subType, …` list preview + callbacks |
 | `AlbumCard` | Photo-album card face | `id, title, isPinned, …` thumbnails + callbacks |
@@ -65,6 +67,7 @@ a consumer supplies its own item type.
 | `AppChip` | The base selectable chip | `label, isSelected, onClick` |
 | `TagChipWithContextMenu` | A tag chip carrying a long-press context menu | `label, isSelected, onClick, …` menu callbacks |
 | `ChipBar` | Generic horizontally-scrolling chip row, with an optional expand/collapse chrome mode (WO-1) | `items: List<T>, key: (T)->Any, itemContent: @Composable (T)->Unit`, optional `leading/trailingContent`, optional `expandable: ExpandableConfig? = null` — non-null wraps the row in expand/collapse chrome (chevron + tonal `Surface`, single-line-clip collapsed / height-capped-scroll expanded), null (default) renders the bare row unchanged; same two-state opt-in-mode contract as `TextCardBottomSheet`'s `onEditRequest`. Optional `rawContent: (@Composable FlowRowScope.() -> Unit)? = null` carries freeform body content in place of `items`/`itemContent` |
+| `PresetChip` | Selectable preset/filter chip with an optional supporting label | `label: String, onClick: () -> Unit, supportingLabel: String? = null, enabled = true, isSelected = false, contentDescription: String?` (an overload without `contentDescription` preserves the pre-164-03 signature) |
 | `SortControl` | Generic sort-mode selector | `sortMode: T, options: List<T>, optionLabel: (T)->String, onSortModeChange` |
 
 ## 3. Sheets
@@ -104,12 +107,15 @@ these render its body) plus the shared scaffolding and editor rows.
 | `ExpandableFab` | The expandable create-FAB that fans out per-card-type create actions | `onCreateTextCard, onCreateListCard, …` per-type callbacks |
 | `CycleSubTypeButton` | Cycles a card's sub-type (e.g. list ordering) | `currentSubType, onCycle(nextSubType), enabled = true` |
 | `DynamicActionButton` | Semantically-colored dynamic action button (destructive/save/neutral; disabled until dirty) | `label, role: ActionButtonDefaults.ActionButtonRole, onClick` |
+| `MicButton` | Tap-to-talk mic button with single-owner press/release gesture handling | `isListening: Boolean, enabled: Boolean = true, onTap: () -> Unit, onDisabledTap: () -> Unit = {}, disabledDescription, tapToTalkDescription, listeningDescription` |
 
 ## 5. Pickers
 
 | Composable | Purpose | Key parameters |
 |-----------|---------|----------------|
 | `AccentColorPicker` | Accent-color swatch picker | `selectedColor: Long, onColorSelected: (Long) -> Unit` |
+| `DateTimePicker` | Date/time field pair with Material3 calendar/clock panels | `selectedDate: LocalDate?, onDateSelected, selectedTime: LocalTime?, onTimeSelected, showDate = true, showTime, minDate, is24Hour, enabled, testTag` |
+| `PlaceMapPicker` | Map-based place/radius picker (search, saved places, current-location, pin + radius) | `pinLatitude: Double?, pinLongitude: Double?, onPinChange, radiusMeters: Float, onRadiusChange, minRadiusMeters, maxRadiusMeters, defaultRadiusMeters, userAgent: String, …` search/saved-places callbacks — the hub never geocodes; the caller resolves and reports back |
 | `IconPickerGrid` | Module/tag icon grid picker | `selectedIcon: String, onIconSelected: (String) -> Unit` — public parameters unchanged; the grid includes a built-in live case-insensitive name-substring search field with an empty-state when nothing matches |
 | `CropOverlay` | Crop-rectangle overlay for image editing | `bitmapWidth, bitmapHeight, aspectRatio: Float?, …` |
 | `SegmentedOptionSelector` | Two-option segmented toggle with an always-visible disabled+reason affordance | `selectedIndex: Int, options: List<String>, onSelect: (Int) -> Unit, enabled: Boolean, disabledReason: String?` |
