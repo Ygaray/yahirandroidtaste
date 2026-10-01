@@ -165,6 +165,27 @@ class ProviderKeyCardTest {
         composeTestRule.onNodeWithContentDescription("Show key").assertExists()
     }
 
+    // ── WR-03: an empty providers list renders a caption, never a blank tappable dropdown ──
+
+    @Test
+    fun `an empty providers list renders the emptyProvidersReason caption instead of a dropdown`() {
+        composeTestRule.setContent {
+            ProviderKeyCard(
+                providers = emptyList(),
+                selectedProviderId = null,
+                onProviderSelected = {},
+                keyValue = "",
+                onKeyChange = {},
+                keyState = KeyFieldState.Empty,
+                keyLabel = "API key",
+                emptyProvidersReason = "Add a provider to get started"
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Add a provider to get started").assertExists()
+    }
+
     @Test
     fun `an Invalid keyState renders the reason and sets the field's error state`() {
         composeTestRule.setContent {

@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import io.github.ygaray.yahirandroidtaste.model.KeyFieldState
 import io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
@@ -37,18 +38,23 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * Mirrors [HeroStatCard]'s prop-driven card shape (required content params first, then
  * [modifier]), wrapped in a [Surface] + [Column] body with [Dimens] padding.
  *
- * @param providers The caller's known providers, rendered as dropdown rows in list order.
+ * @param providers The caller's known providers, rendered as dropdown rows in list order. When
+ *   empty, the dropdown is replaced by a caption rendering [emptyProvidersReason] (never a blank,
+ *   still-tappable anchor) — mirrors [ModelSelectCard]'s empty-list convention.
  * @param selectedProviderId The currently-selected provider's [ProviderOptionUiModel.id], or
  *   `null` when nothing is selected yet.
  * @param onProviderSelected Invoked with a provider's `id` when the caller picks it from the
  *   dropdown.
  * @param keyValue The API key's current raw value — hoisted, never stored by this composable.
  * @param onKeyChange Invoked on every edit (including clear-✕). Every edit is trimmed of
- *   leading/trailing whitespace before this callback fires (WR-04 — not scoped to paste alone;
- *   pure formatting, no validation — INV-01).
+ *   leading/trailing whitespace before this callback fires — not scoped to paste alone; pure
+ *   formatting, no validation (INV-01).
  * @param keyState Render-only validation state (see [KeyFieldState]) driving the field's
  *   error/supporting-text presentation. The library never validates the key itself.
  * @param keyLabel Caller-formatted label text for the key field (e.g. `"API key"`).
+ * @param emptyProvidersReason Caption shown when [providers] is empty (e.g. "No providers
+ *   configured yet") — never a blank control. Defaults to a generic caption so existing callers
+ *   are source-compatible; callers with a more specific message should override it.
  * @param modifier Applied to the outer [Surface].
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,6 +67,7 @@ fun ProviderKeyCard(
     onKeyChange: (String) -> Unit,
     keyState: KeyFieldState,
     keyLabel: String,
+    emptyProvidersReason: String = "No providers configured yet",
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -73,6 +80,7 @@ fun ProviderKeyCard(
                 providers = providers,
                 selectedProviderId = selectedProviderId,
                 onProviderSelected = onProviderSelected,
+                emptyReason = emptyProvidersReason,
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("provider_key_card_dropdown")
@@ -101,7 +109,9 @@ fun ProviderKeyCard(
 /**
  * Private provider-selection dropdown — first in-tree [ExposedDropdownMenuBox] use (RESEARCH.md
  * Q2, canonical Material 3 shape): a read-only [OutlinedTextField] anchor + [ExposedDropdownMenu]
- * listing [providers] in list order.
+ * listing [providers] in list order. When [providers] is empty, renders [emptyReason] as a caption
+ * instead (never a blank, still-tappable anchor) — mirrors [ModelSelectCard]'s empty-list
+ * convention.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,8 +119,20 @@ private fun ProviderDropdown(
     providers: List<ProviderOptionUiModel>,
     selectedProviderId: String?,
     onProviderSelected: (String) -> Unit,
+    emptyReason: String,
     modifier: Modifier = Modifier
 ) {
+    if (providers.isEmpty()) {
+        Text(
+            text = emptyReason,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = modifier
+        )
+        return
+    }
     var expanded by rememberSaveable { mutableStateOf(false) }
     val selectedLabel = providers.firstOrNull { it.id == selectedProviderId }?.label ?: ""
     ExposedDropdownMenuBox(
