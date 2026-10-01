@@ -326,7 +326,11 @@ class DomainVocabularyDriftGuardTest {
             // Phase 11 (VOUT-01/02/03, VUNDO-01): "Outcome" is OutcomeSheet's head token — a
             // generic UI-archetype noun (a command-result presentation surface), not
             // consumer-domain vocabulary; the library authors no app-specific noun of its own.
-            "Outcome"
+            "Outcome",
+            // Phase 11 (VCLAR-01): "Clarification" is ClarificationBar's head token — a generic
+            // UI-archetype noun (a tap-to-resolve choices surface), not consumer-domain
+            // vocabulary; the library authors no app-specific noun of its own.
+            "Clarification"
         )
 
         /**
