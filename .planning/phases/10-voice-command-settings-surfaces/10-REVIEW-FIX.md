@@ -90,3 +90,26 @@ anchor with no signal of the mismatch. Low risk since ids are caller-supplied.
 _Fixed: 2026-09-30_
 _Fixer: Claude (gsd-code-fixer)_
 _Iteration: 1_
+
+## Orchestrator Addendum — Post-Fix Build Verification
+
+After the fixer's commits above, a full `./gradlew testDebugUnitTest detekt apiCheck` run
+surfaced a build break the fixer's own pass did not catch: the WR-03 fix (`3c5a132`) inserted
+`emptyProvidersReason` **before** `modifier` in `ProviderKeyCard`'s parameter list and did not
+regenerate `api.txt`. `apiCheck` failed with `Source breaking change: Removed method
+ProviderKeyCard(...)` — inserting a new parameter ahead of the pre-existing trailing `modifier`
+parameter (rather than strictly appending after it) changes the recorded signature even though
+the new parameter is defaulted, because `modifier` was the last parameter in the previously
+published (v2.3.0-era) signature.
+
+**Fix (commits `fb51807`, `107400a`):** Reordered the parameter so `modifier` remains last and
+`emptyProvidersReason` is appended after it (matching this repo's established additive-param
+convention, e.g. `ClearableTextField`'s `visualTransformation`/`revealToggle` appended at the true
+end of its parameter list). Regenerated `api.txt` via `./gradlew apiDump`. Re-ran
+`testDebugUnitTest detekt apiCheck` — all green, 0 failures.
+
+No call sites needed edits (`VoiceCommandFamilyScreen.kt` and `ProviderKeyCardTest.kt` already use
+named arguments exclusively).
+
+_Addendum: 2026-10-01_
+_By: Claude (execute-phase orchestrator, re-verify re-drive)_
