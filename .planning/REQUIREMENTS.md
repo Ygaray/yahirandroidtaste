@@ -36,8 +36,8 @@ Generic, **presentational** Compose composables only. Each composable takes its 
 
 ### Ship / tag
 
-- [ ] **SHIP-01**: Cut library `v2.4.0` per §11 steps 1–4 (green full suite incl. CATALOG-03, Metalava additive, tagged commit pushed, JitPack resolves the coordinate from a clean cache), then message the orchestrator the full §11 ledger row (§11, A12/A14)
-- [ ] **SHIP-02**: Milestone close creates **no** git tag; the only tag this milestone produces is the `v2.4.0` release coordinate, guarding against the stray milestone-marker-tag hazard (a bare `v2.2` tag already leaked into the JitPack coordinate namespace at the v2.0 close) (orchestrator condition, §11)
+- [x] **SHIP-01**: Cut library `v2.4.0` per §11 steps 1–4 (green full suite incl. CATALOG-03, Metalava additive, tagged commit pushed, JitPack resolves the coordinate from a clean cache), then message the orchestrator the full §11 ledger row (§11, A12/A14)
+- [x] **SHIP-02**: Milestone close creates **no** git tag; the only tag this milestone produces is the `v2.4.0` release coordinate, guarding against the stray milestone-marker-tag hazard (a bare `v2.2` tag already leaked into the JitPack coordinate namespace at the v2.0 close) (orchestrator condition, §11)
 
 ## Future Requirements
 
@@ -77,8 +77,8 @@ Each requirement maps to exactly one phase. Roadmap: `.planning/ROADMAP.md` (Pha
 | CAT-01 | Phase 13 | Complete |
 | API-01 | Phase 13 | Complete |
 | INV-01 | Phase 13 | Complete |
-| SHIP-01 | Phase 14 | Pending |
-| SHIP-02 | Phase 14 | Pending |
+| SHIP-01 | Phase 14 | Complete |
+| SHIP-02 | Phase 14 | Complete |
 
 **Coverage:**
 
