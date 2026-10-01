@@ -175,14 +175,13 @@ rendered):**
 
 ---
 
-## Intentionally-unregistered sub-parts (6)
+## Intentionally-unregistered sub-parts (5)
 
 Public composables that are **not** standalone catalog tiles (structural sub-parts, exercised
 indirectly), tracked in `ComponentRegistry.INTENTIONALLY_UNREGISTERED`:
 
 | Composable | Why unregistered |
 |-----------|------------------|
-| `CardBase` | Structural shell every card type wraps — exercised via `TextCard`/`ListCard`/`AlbumCard`/`VoiceCard`. |
 | `WaveformCanvas` | Sub-part rendered inside the voice-recording sheet / `VoiceCard` — exercised indirectly. |
 | `SwipeableActionRow` | The reveal-confirm swipe mechanics powering `CardBase` and `EditorItemRow` — infrastructure, not a visual archetype. |
 | `RevealActionRow` | Swipe-reveal mechanics for arbitrary 0-2 action slots — infrastructure, not an independent visual archetype; exercised indirectly via callers' own row demos. |
