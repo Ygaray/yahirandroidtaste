@@ -3,9 +3,9 @@ phase: "14"
 slug: "cut-v2-4-0"
 # status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6)
 # audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117)
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: "2026-09-30"
 ---
 
@@ -40,12 +40,12 @@ created: "2026-09-30"
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 14-01-01 | 01 | 1 | SHIP-01 (§11 step 1) | — | Full suite + all 4 drift guards + zero-baseline detekt green at tagged commit | unit/static-analysis | `./gradlew testDebugUnitTest && ./gradlew detekt` | ✅ | ⬜ pending |
-| 14-01-02 | 01 | 1 | SHIP-01 (§11 step 2) | — | Public API strictly additive vs `v2.3.0`, `api.txt` refreshed+committed | static-analysis (Metalava) | `cp api.txt /tmp/b.bak && git show v2.3.0:api.txt > api.txt && ./gradlew apiCheck; RC=$?; cp /tmp/b.bak api.txt; exit $RC` | ✅ | ⬜ pending |
-| 14-01-03 | 01 | 1 | SHIP-01 (§11 step 3) | — | Tagged commit pushed to `origin` | scripted git check | `git ls-remote --tags origin v2.4.0` matches `git rev-parse v2.4.0^{}` | ✅ | ⬜ pending |
-| 14-01-04 | 01 | 1 | SHIP-01 (§11 step 4) | — | JitPack resolves `v2.4.0` (pom + aar + builds-API cross-checked against the tagged commit SHA) | smoke (network) | `curl` triple against jitpack.io (pom, aar, builds-API JSON) | ✅ | ⬜ pending |
-| 14-01-05 | 01 | 1 | SHIP-01 (ledger) | — | Full §11 ledger row produced as a durable artifact for the orchestrator (A14: never self-written to the ledger) | manual/scripted | produce `14-SHIP-LEDGER-ROW.md`; best-effort live message if a messaging tool is available | ⚠ mechanism unconfirmed (Open Question #1) | ⬜ pending |
-| 14-01-06 | 01 | 1 | SHIP-02 | — | No stray tag beyond `v2.4.0` created; `git.create_tag` is `false` | config check | `grep '"create_tag"' .planning/config.json` shows `false` | ✅ | ⬜ pending |
+| 14-01-01 | 01 | 1 | SHIP-01 (§11 step 1) | — | Full suite + all 4 drift guards + zero-baseline detekt green at tagged commit | unit/static-analysis | `./gradlew testDebugUnitTest && ./gradlew detekt` | ✅ | ✅ green |
+| 14-01-02 | 01 | 1 | SHIP-01 (§11 step 2) | — | Public API strictly additive vs `v2.3.0`, `api.txt` refreshed+committed | static-analysis (Metalava) | `cp api.txt /tmp/b.bak && git show v2.3.0:api.txt > api.txt && ./gradlew apiCheck; RC=$?; cp /tmp/b.bak api.txt; exit $RC` | ✅ | ✅ green |
+| 14-01-03 | 01 | 1 | SHIP-01 (§11 step 3) | — | Tagged commit pushed to `origin` | scripted git check | `git ls-remote --tags origin v2.4.0` matches `git rev-parse v2.4.0^{}` | ✅ | ✅ green |
+| 14-01-04 | 01 | 1 | SHIP-01 (§11 step 4) | — | JitPack resolves `v2.4.0` (pom + aar + builds-API cross-checked against the tagged commit SHA) | smoke (network) | `curl` triple against jitpack.io (pom, aar, builds-API JSON) | ✅ | ✅ green |
+| 14-01-05 | 01 | 1 | SHIP-01 (ledger) | — | Full §11 ledger row produced as a durable artifact for the orchestrator (A14: never self-written to the ledger) | manual/scripted | produce `14-SHIP-LEDGER-ROW.md`; best-effort live message if a messaging tool is available | ✅ (file artifact; no messaging tool was reachable — resolved per 14-VERIFICATION.md's accepted override) | ✅ green (manual-only, by design — see Manual-Only Verifications) |
+| 14-01-06 | 01 | 1 | SHIP-02 | — | No stray tag beyond `v2.4.0` created; `git.create_tag` is `false` | config check | `grep '"create_tag"' .planning/config.json` shows `false` | ✅ | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -61,7 +61,23 @@ Existing infrastructure covers all phase requirements. No new test file is neede
 
 | Behavior | Requirement | Why Manual | Test Instructions |
 |----------|-------------|------------|-------------------|
-| A14 orchestrator messaging of the §11 ledger row | SHIP-01 | No in-repo precedent for live agent-to-agent messaging from inside a GSD plan task (RESEARCH.md Open Question #1); the durable `14-SHIP-LEDGER-ROW.md` artifact is the fallback-always path | After the tag is confirmed resolvable, produce the ledger row (repo, tag, commit SHA, JitPack coordinate, contents summary, evidence path) in `14-SHIP-LEDGER-ROW.md`; if a live messaging tool is available in the execution context, also send it — but the file artifact is the authoritative, always-produced record the human/orchestrator session relays from |
+| A14 orchestrator messaging of the §11 ledger row | SHIP-01 | No in-repo precedent for live agent-to-agent messaging from inside a GSD plan task (RESEARCH.md Open Question #1); the durable `14-SHIP-LEDGER-ROW.md` artifact is the fallback-always path | **Resolved at execution:** no live messaging tool was reachable from the execution context; `14-SHIP-LEDGER-ROW.md` was produced as the authoritative record. `14-VERIFICATION.md` records an accepted override treating this as satisfying SHIP-01/A14 per the plan's own pre-approved Assumption A1 fallback. **Still outstanding:** a human or the milestone/control-plane orchestrator session must actually relay the file's contents onward to `yahir-gsd-control-plane-f2` (and from there to SecondBrain/CalTracker) — this repo cannot do that itself. |
+
+---
+
+## Validation Audit 2026-10-01
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+All 6 per-task verifications (14-01-01 through 14-01-06) ran as fresh, live commands during
+execution and are documented verbatim in `14-SHIP-GATE-EVIDENCE.md`; independently re-confirmed
+by `14-VERIFICATION.md`. No automatable requirement is missing coverage. The single manual-only
+item (14-01-05, A14 ledger messaging) was always a manual/scripted verification by design (not an
+automatable gap) and is resolved per the accepted override in `14-VERIFICATION.md`.
 
 ---
 
@@ -74,12 +90,13 @@ Existing infrastructure covers all phase requirements. No new test file is neede
 > the plan-checker do so (INC-2026-07-27-01: a premature plan-time flip is what caused inconsistent
 > COMPLIANT/PARTIAL milestone-audit states).
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 600s
-- [ ] _(finalizer-only, post-execution)_ `nyquist_compliant` — leave `false` at plan time; the
-      finalizer sets `true` iff its gap analysis finds zero gaps
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 600s
+- [x] _(finalizer-only, post-execution)_ `nyquist_compliant: true` — gap analysis found zero
+      automatable gaps; all 6 per-task verifications ran and passed (5 automated + 1 manual-only
+      by design, itself resolved at execution and tracked above)
 
-**Approval:** pending — finalizer-owned, not set at plan time
+**Approval:** verified 2026-10-01 — finalized by the execute-phase Nyquist finalizer (auto mode)
