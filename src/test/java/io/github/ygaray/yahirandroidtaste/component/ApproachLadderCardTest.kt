@@ -201,4 +201,30 @@ class ApproachLadderCardTest {
         composeTestRule.onNodeWithText("Cloud").assertExists()
         composeTestRule.onNodeWithText("Needs network").assertExists()
     }
+
+    // ── WR-02: a disabled rung renders an explicit "Unavailable" affordance ──
+
+    @Test
+    fun `a disabled rung renders greyed-but-present with an Unavailable affordance`() {
+        val ladderWithDisabledRung = listOf(
+            ApproachRungUiModel(id = "cloud", label = "Cloud", rank = 3, offlineCapable = false),
+            ApproachRungUiModel(
+                id = "hybrid",
+                label = "Hybrid",
+                rank = 2,
+                enabled = false,
+                offlineCapable = true
+            ),
+            ApproachRungUiModel(id = "local", label = "Local", rank = 1, offlineCapable = true)
+        )
+        composeTestRule.setContent {
+            ApproachLadderCard(ladder = ladderWithDisabledRung)
+        }
+        composeTestRule.waitForIdle()
+
+        // Disabled-but-present (conditional-render-no-dead-space) -- "Hybrid" stays visible and
+        // carries an explicit affordance explaining why it reads as greyed-out.
+        composeTestRule.onNodeWithText("Hybrid").assertExists()
+        composeTestRule.onNodeWithText("Unavailable").assertExists()
+    }
 }

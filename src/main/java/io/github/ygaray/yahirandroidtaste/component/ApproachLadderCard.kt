@@ -147,6 +147,13 @@ private fun RungRow(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f)
         )
+        if (!rung.enabled) {
+            Text(
+                text = "Unavailable",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
         if (isCapped) {
             Text(
                 text = "Capped",
