@@ -2,14 +2,14 @@
 gsd_state_version: "1.0"
 milestone: v2.4
 milestone_name: AI-Voice Command UI
-current_phase: 11
-current_phase_name: Voice outcome & failure sheet
-status: planning
+current_phase: 12
+current_phase_name: Generic needs-confirmation state
+status: executing
 stopped_at: Phase 10 complete, ready to plan Phase 11
-last_updated: "2026-10-01T03:01:53.974Z"
+last_updated: "2026-10-01T03:14:55.443Z"
 last_activity: 2026-09-30
-last_activity_desc: Phase 10 complete, transitioned to Phase 11
-state_head: eac57b58c984a4b957c3af170bc7e2dab06d4c5b
+last_activity_desc: Phase 12 execution started
+state_head: d6163d8b1e68153083f8a90cdfbd412b7cdae7f7
 progress:
   total_phases: 5
   completed_phases: 1
@@ -25,14 +25,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-29)
 
 **Core value:** The hub stays a coherent design system — not merely a safe, ever-growing pile of domain-agnostic components — as more consumers contribute.
-**Current focus:** Phase 11 — Voice outcome & failure sheet
+**Current focus:** Phase 12 — Generic needs-confirmation state
 
 ## Current Position
 
-Phase: 11 — Voice outcome & failure sheet
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-09-30 — Phase 10 complete, transitioned to Phase 11
+Phase: 12 (Generic needs-confirmation state) — EXECUTING
+Plan: 1 of 1
+Status: Executing Phase 12
+Last activity: 2026-09-30 — Phase 12 execution started
 
 Progress: [██░░░░░░░░] 20%
 

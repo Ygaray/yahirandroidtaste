@@ -126,12 +126,12 @@ Plans:
   3. Confirm and cancel each emit via callback, domain-neutral (no app-specific nouns)
   4. The prop shape satisfies both SB's `MutationGate`/`VoiceConfirmGate` risk confirm and CT's weak-match single/batch confirm without any library-side change
 
-**Plans**: 1 plan
+**Plans**: 1/1 plans executed
 **UI hint**: yes
 
 Plans:
 
-- [ ] 12-01-PLAN.md — NeedsConfirmation end-to-end: single destructive item tracer (Task 1) + batch/topLevelContent/per-item-remove/edge-coverage expansion + full-suite close (Task 2) (VOUT-04)
+- [x] 12-01-PLAN.md — NeedsConfirmation end-to-end: single destructive item tracer (Task 1) + batch/topLevelContent/per-item-remove/edge-coverage expansion + full-suite close (Task 2) (VOUT-04)
 
 ### Phase 13: Catalog integrity & docs
 
@@ -199,6 +199,6 @@ Phases execute in numeric order: 10 → 11 → 12 → 13 → 14 (Phases 10 and 1
 |-------|-----------|----------------|--------|-----------|
 | 10. Voice command settings surfaces | v2.4 | 2/2 | In Progress|  |
 | 11. Voice outcome & failure sheet | v2.4 | 2/2 | In Progress|  |
-| 12. Generic needs-confirmation state | v2.4 | 0/1 | Not started | - |
+| 12. Generic needs-confirmation state | v2.4 | 1/1 | In Progress|  |
 | 13. Catalog integrity & docs | v2.4 | 0/TBD | Not started | - |
 | 14. Cut v2.4.0 | v2.4 | 0/TBD | Not started | - |
