@@ -403,7 +403,7 @@ retired; `git.create_tag: false` is now the standing guard against it recurring 
 no training-knowledge package names or external-ecosystem claims are made in this research (no
 packages are installed this phase).
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Does the execution harness expose an agent-to-agent messaging tool this session can call for A14's "message the orchestrator" step?**
    - What we know: `.planning/cross-repo/HANDOFF.md` describes the orchestrator being found via
@@ -417,6 +417,7 @@ packages are installed this phase).
      attempt the live message only if the tool is confirmed available in that task's context,
      treating its absence as a soft "produced for human/orchestrator relay" outcome, not a hard
      failure of SHIP-01.
+   - **Resolution (14-01-PLAN.md Task 3):** file-first, best-effort live message — `14-SHIP-LEDGER-ROW.md` is always produced as the durable, mechanism-independent artifact; a live message is attempted only if a messaging tool is confirmed available in that task's execution context, with its absence treated as a non-blocking soft outcome.
 
 ## Environment Availability
 
