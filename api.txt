@@ -304,7 +304,7 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public final class ProviderKeyCardKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void ProviderKeyCard(java.util.List<io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel> providers, String? selectedProviderId, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onProviderSelected, String keyValue, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onKeyChange, io.github.ygaray.yahirandroidtaste.model.KeyFieldState keyState, String keyLabel, optional androidx.compose.ui.Modifier modifier);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ProviderKeyCard(java.util.List<io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel> providers, String? selectedProviderId, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onProviderSelected, String keyValue, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onKeyChange, io.github.ygaray.yahirandroidtaste.model.KeyFieldState keyState, String keyLabel, optional androidx.compose.ui.Modifier modifier, optional String emptyProvidersReason);
   }
 
   public final class RecordingBottomSheetContentKt {
