@@ -2,7 +2,9 @@ package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -46,6 +48,7 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * @param onDismiss Invoked only in direct response to a tap on the trailing dismiss control.
  * @param modifier Applied to the outer [Surface].
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ClarificationBar(
     question: String,
@@ -63,9 +66,15 @@ fun ClarificationBar(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = question, style = MaterialTheme.typography.titleSmall)
-            Row(
-                modifier = Modifier.padding(top = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            // WR-03: FlowRow (mirrors ChipBar's own non-expandable layout) wraps overflow onto a
+            // second line instead of a plain Row clipping trailing chips off-screen when more
+            // options arrive than fit on one line.
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 options.forEach { option ->
                     AppChip(

@@ -1,6 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -118,6 +119,42 @@ class ClarificationBarTest {
         composeTestRule.waitForIdle()
 
         assertEquals("list-b", selected)
+    }
+
+    // ── WR-03 regression: overflow wraps to a second line instead of clipping off-screen ────
+
+    @Test
+    fun `more options than fit on one line wrap to a second row -- all chips still exist and are tappable`() {
+        var selected: String? = null
+        val manyOptions = (1..12).map {
+            ClarificationOptionUiModel(id = "opt-$it", label = "Option number $it")
+        }
+        composeTestRule.setContent {
+            ClarificationBar(
+                question = "Which list?",
+                options = manyOptions,
+                onSelect = { selected = it },
+                onDismiss = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        val chips = composeTestRule.onAllNodesWithTag("clarification_bar_option")
+        chips.assertCountEquals(12)
+
+        // FlowRow wraps overflow onto additional rows (WR-03) -- the last chip's top MUST sit
+        // below the first chip's top, proving it landed on a later line rather than being laid
+        // out past the right edge on the SAME line (which a plain, non-wrapping Row would do).
+        val firstTop = chips[0].getUnclippedBoundsInRoot().top
+        val lastTop = chips[11].getUnclippedBoundsInRoot().top
+        assert(lastTop > firstTop) {
+            "expected the 12th chip to wrap onto a lower row than the 1st (firstTop=$firstTop, lastTop=$lastTop)"
+        }
+
+        // Every chip -- including ones that wrapped -- stays tappable.
+        chips[11].performClick()
+        composeTestRule.waitForIdle()
+        assertEquals("opt-12", selected)
     }
 
     @Test
