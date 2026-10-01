@@ -94,5 +94,13 @@ None — discussion stayed within phase scope.
 
 ---
 
+## Runtime Decisions
+
+### 2026-09-30 — D-02 [additivity] provisional refreshed (ai-auto, dependency Phase 11 now complete)
+
+The provisional D-02 additivity decision is RESOLVED against Phase 11's real output. Phase 11 shipped `sealed interface VoiceOutcomeUiState` (`src/main/.../model/VoiceOutcomeUiState.kt`) with exactly `Success` and `Failure` arms and an explicit KDoc contract that the top-level type stays stable and that **Phase 12 adds `NeedsConfirmation` as a NEW sealed subtype + one `when` branch, never a reshape of either arm**. Seam verified live in `src/main` at HEAD (not from the plan text). → **Plan Phase 12 as a purely additive 3rd arm** reusing `SheetScaffold` + `DynamicActionButton`; do not reshape `Success`/`Failure`. The additivity contingency in D-02 is satisfied. _(milestone master provisional-refresh, source: ai-auto)_
+
+---
+
 *Phase: 12-generic-needs-confirmation-state*
 *Context gathered: 2026-09-29*
