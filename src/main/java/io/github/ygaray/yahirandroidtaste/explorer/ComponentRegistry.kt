@@ -15,20 +15,15 @@ import androidx.compose.runtime.Composable
  * `.content`) or in [INTENTIONALLY_UNREGISTERED] (a documented sub-part exclusion) — never
  * neither.
  *
- * Recomputed from the live `entries`/`INTENTIONALLY_UNREGISTERED` state at Phase 129 Plan 01
- * Task 3 execution time (2026-08-28) — **53 registered, 4 intentionally unregistered = 57 total
- * public composables** (`ComponentRegistry.entries.size` + `INTENTIONALLY_UNREGISTERED.size`,
- * cross-checked against
- * [io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistryDriftGuardTest]'s own live source
- * scan, which stays green). This is a full recount, not an adjustment of the prior comment's
- * numbers (40 registered / 4 unregistered = 44 total, dated Phase 87 Plan 01 2026-08-08) — this
- * phase's own audit found that prior count already stale against the live maps before any Phase
- * 129 edit landed, so the delta below is Phase 129's contribution only, not the full gap: Phase
- * 129 adds `CardTypeChip` as a genuinely new public composable (+1 to the total), and moves
- * `CardBase` from [INTENTIONALLY_UNREGISTERED] into `entries` (net zero on the total; +1
- * registered, -1 unregistered) now that it carries its own opt-in Tactile depth-card states
- * matrix (DS-02) instead of being exercised only indirectly through
- * `TextCard`/`ListCard`/`AlbumCard`/`VoiceCard`.
+ * Recomputed from the live `entries`/`INTENTIONALLY_UNREGISTERED` state at Phase 13 execution time
+ * (2026-09-30) — **61 registered, 5 intentionally unregistered = 66 total public composables**
+ * (`ComponentRegistry.entries.size` + `INTENTIONALLY_UNREGISTERED.size`). This replaces the prior
+ * comment's numbers (53 registered / 4 unregistered = 57 total, dated Phase 129 Plan 01 2026-08-28),
+ * which had already drifted against the live maps — the per-family `*FamilyScreen.kt` files and
+ * `INTENTIONALLY_UNREGISTERED` are the only sources of truth for this count; this comment records a
+ * point-in-time snapshot and is not itself enforced, so prefer reading
+ * `ComponentRegistry.entries.size` / `INTENTIONALLY_UNREGISTERED.size` directly over trusting this
+ * prose on its next drift.
  */
 object ComponentRegistry {
 
