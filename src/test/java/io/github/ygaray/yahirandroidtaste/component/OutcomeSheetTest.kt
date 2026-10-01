@@ -3,6 +3,7 @@ package io.github.ygaray.yahirandroidtaste.component
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasNoClickAction
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
@@ -314,6 +315,40 @@ class OutcomeSheetTest {
 
         composeTestRule.onNodeWithTag("outcome_sheet_undo_refused").assertExists()
         composeTestRule.onNodeWithText("Couldn't undo: Item changed, Card 1 changed since").assertExists()
+    }
+
+    // ── CR-02: inFlight locks the undo affordance (regression) ─────────────────────
+
+    @Test
+    fun `inFlight true strips the click action from undo-all and every Available row`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(
+                    summary = "Logging 2 items",
+                    inFlight = true,
+                    undo = UndoAffordanceUiModel(
+                        allLabel = "Undo all (2)",
+                        rows = listOf(
+                            UndoRowUiModel(id = "1", label = "Card deleted", state = UndoRowState.Available(onUndo = {}))
+                        ),
+                        onUndoAll = {}
+                    )
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        // Both controls still render (locked = disabled, never hidden, CR-02). "Undo all" is a
+        // DynamicActionButton -- M3's own enabled=false (AlbumTitleConfirmSheetTest's established
+        // assertIsNotEnabled convention). Row items carry no clickable Modifier at all while
+        // locked (not a disabled-clickable) -- ApproachLadderCardTest's assertHasNoClickAction
+        // convention for an absent callback applies instead.
+        composeTestRule.onNodeWithTag("outcome_sheet_undo_all").assertExists()
+        composeTestRule.onNodeWithTag("outcome_sheet_undo_all").assertIsNotEnabled()
+        val rows = composeTestRule.onAllNodesWithTag("outcome_sheet_undo_row")
+        rows.assertCountEquals(1)
+        rows[0].assertHasNoClickAction()
     }
 
     @Test

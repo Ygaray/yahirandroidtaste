@@ -12,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel
@@ -63,7 +64,8 @@ fun OutcomeSheet(
  * an optional [HandledByRow], an optional batch-results list (D-06; hidden when
  * [VoiceOutcomeUiState.Success.batchResults] is empty), an optional caller-supplied editor
  * slot (D-05; hidden when `null` or while [VoiceOutcomeUiState.Success.inFlight] is `true`), and
- * an optional grouped undo affordance (VUNDO-01; hidden when `null`) as the last child.
+ * an optional grouped undo affordance (VUNDO-01; hidden when `null`) as the last child, locked
+ * (disabled, never hidden -- CR-02) while [VoiceOutcomeUiState.Success.inFlight] is `true`.
  */
 @Composable
 private fun SuccessBody(success: VoiceOutcomeUiState.Success) {
@@ -76,7 +78,7 @@ private fun SuccessBody(success: VoiceOutcomeUiState.Success) {
         success.handledBy?.let { HandledByRow(it) }
         success.batchResults.takeIf { it.isNotEmpty() }?.let { BatchResultsList(it) }
         success.editableContent?.takeIf { !success.inFlight }?.invoke()
-        success.undo?.let { UndoAffordanceBody(it) }
+        success.undo?.let { UndoAffordanceBody(it, locked = success.inFlight) }
     }
 }
 
@@ -84,9 +86,13 @@ private fun SuccessBody(success: VoiceOutcomeUiState.Success) {
  * Renders a grouped undo affordance (VUNDO-01, D-01/D-02): an optional "Undo all (N)" action
  * button ([UndoAffordanceUiModel.onUndoAll] `null` hides it), every [UndoAffordanceUiModel.rows]
  * row in LIST order (never resorted), then an optional loud undo-refused/partial surface.
+ *
+ * @param locked When `true` (mirrors [VoiceOutcomeUiState.Success.inFlight], CR-02), every undo
+ *   control renders disabled (dimmed, no click action) rather than hidden -- the affordance stays
+ *   visible so the user can see what WILL be undoable once the in-flight batch write settles.
  */
 @Composable
-private fun UndoAffordanceBody(undo: UndoAffordanceUiModel) {
+private fun UndoAffordanceBody(undo: UndoAffordanceUiModel, locked: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -97,10 +103,11 @@ private fun UndoAffordanceBody(undo: UndoAffordanceUiModel) {
                 label = undo.allLabel,
                 role = ActionButtonDefaults.ActionButtonRole.Neutral,
                 onClick = onUndoAll,
+                enabled = !locked,
                 modifier = Modifier.testTag("outcome_sheet_undo_all")
             )
         }
-        undo.rows.forEach { row -> UndoRowItem(row) }
+        undo.rows.forEach { row -> UndoRowItem(row, locked = locked) }
         undo.refused?.let { refused ->
             // Loud per VOUT-03's discipline: error-container surface, never AttentionCue.
             Surface(
@@ -131,14 +138,22 @@ private fun UndoAffordanceBody(undo: UndoAffordanceUiModel) {
  * muted "Undone" text with no click; [UndoRowState.Unavailable] renders its reason as trailing
  * `labelSmall` text, never clickable and never counted toward [UndoAffordanceUiModel.allLabel]'s
  * number.
+ *
+ * @param locked When `true` (CR-02), an [UndoRowState.Available] row loses its clickable modifier
+ *   and dims (standard Material3 disabled alpha, mirrors
+ *   [DateTimePicker][io.github.ygaray.yahirandroidtaste.component.DateTimePicker]'s own
+ *   enabled/disabled convention) rather than invoking `onUndo`. No-op for `Undone`/`Unavailable`,
+ *   which are never clickable regardless.
  */
 @Composable
-private fun UndoRowItem(row: UndoRowUiModel) {
+private fun UndoRowItem(row: UndoRowUiModel, locked: Boolean) {
     val state = row.state
+    val isAvailable = state is UndoRowState.Available
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = Dimens.HairlineSpacing)
+            .alpha(if (isAvailable && locked) 0.38f else 1f)
             // Merge this row's label + trailing Text child into ONE semantics node, mirroring
             // ApproachLadderCard's CapControl -- required so onAllNodesWithTag(...)'s indexed
             // access can resolve BOTH the row's label and its trailing text/click action
@@ -146,7 +161,7 @@ private fun UndoRowItem(row: UndoRowUiModel) {
             // carry no clickable modifier and would otherwise stay unmerged).
             .semantics(mergeDescendants = true) {}
             .then(
-                if (state is UndoRowState.Available) {
+                if (state is UndoRowState.Available && !locked) {
                     Modifier.clickable(onClick = state.onUndo)
                 } else {
                     Modifier
