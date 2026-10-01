@@ -2,11 +2,16 @@ package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -308,6 +313,9 @@ private fun NeedsConfirmationBody(confirmation: VoiceOutcomeUiState.NeedsConfirm
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+        confirmation.topLevelContent?.let { content ->
+            Box(modifier = Modifier.testTag("outcome_sheet_confirmation_top_level_content")) { content() }
+        }
         confirmation.items.forEach { item -> ProposedItemRow(item) }
         Row(modifier = Modifier.padding(top = Dimens.ContentSpacing)) {
             DynamicActionButton(
@@ -337,6 +345,11 @@ private fun ProposedItemRow(item: ProposedItemUiModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            // Merge this row's title/subtitle/confidenceCue text into ONE semantics node
+            // (mirrors UndoRowItem's convention) so an indexed onAllNodesWithTag(...)[n] query can
+            // resolve the row's own text via hasText(...). The remove IconButton keeps its own
+            // distinct testTag and is queried separately via useUnmergedTree = true.
+            .semantics(mergeDescendants = true) {}
             .testTag("outcome_sheet_confirmation_item")
     ) {
         Column(Modifier.weight(1f)) {
@@ -344,6 +357,15 @@ private fun ProposedItemRow(item: ProposedItemUiModel) {
             item.subtitle?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
             item.confidenceCue?.let {
                 Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
+            }
+        }
+        item.trailingContent?.invoke()
+        item.onRemove?.let { onRemove ->
+            IconButton(
+                onClick = onRemove,
+                modifier = Modifier.testTag("outcome_sheet_confirmation_item_remove")
+            ) {
+                Icon(Icons.Default.Close, contentDescription = "Remove")
             }
         }
     }

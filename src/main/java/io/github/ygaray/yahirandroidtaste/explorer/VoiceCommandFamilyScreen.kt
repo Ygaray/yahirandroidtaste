@@ -35,6 +35,7 @@ import io.github.ygaray.yahirandroidtaste.model.KeyFieldState
 import io.github.ygaray.yahirandroidtaste.model.ModelOptionUiModel
 import io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel
 import io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel
+import io.github.ygaray.yahirandroidtaste.model.SelectionMode
 import io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRowState
@@ -403,6 +404,24 @@ private val fixtureOutcomeNeedsConfirmationSingleDestructive = VoiceOutcomeUiSta
 )
 
 /**
+ * Fixture needs-confirmation -- VOUT-04 batch (CT's `ProposedBatch` shape: a shared
+ * `topLevelContent` date row and per-item `onRemove`).
+ */
+private val fixtureOutcomeNeedsConfirmationBatch = VoiceOutcomeUiState.NeedsConfirmation(
+    reason = "3 items parsed from your grocery run -- check the one marked Weak match.",
+    items = listOf(
+        ProposedItemUiModel(id = "1", title = "Apple", subtitle = "2 ct"),
+        ProposedItemUiModel(id = "2", title = "Banana", subtitle = "1 bunch", confidenceCue = "Weak match", onRemove = {}),
+        ProposedItemUiModel(id = "3", title = "Bread", subtitle = "1 loaf", amended = true, onRemove = {})
+    ),
+    selectionMode = SelectionMode.AllOrNothing,
+    confirmLabel = "Confirm all (3)",
+    topLevelContent = { Text("Logged for: Today") },
+    onConfirm = {},
+    onCancel = {}
+)
+
+/**
  * OutcomeSheet's interactive demo -- WR-01-safe pattern (mirrors `AlbumSourcePickerSheetSection`'s
  * "Show sheet" trigger in SheetsFamilyScreen.kt): a single hoisted [visibleOutcome] slot holds AT
  * MOST one fixture at a time, so tapping a different "Show" button swaps the live sheet instead
@@ -457,6 +476,12 @@ private fun OutcomeSheetVariants() {
     SectionLabel("OutcomeSheet — NeedsConfirmation, single destructive item (VOUT-04)")
     Button(
         onClick = { visibleOutcome = fixtureOutcomeNeedsConfirmationSingleDestructive },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) { Text("Show sheet") }
+
+    SectionLabel("OutcomeSheet — NeedsConfirmation, batch with shared topLevelContent + per-item remove (VOUT-04)")
+    Button(
+        onClick = { visibleOutcome = fixtureOutcomeNeedsConfirmationBatch },
         modifier = Modifier.padding(horizontal = 16.dp)
     ) { Text("Show sheet") }
 
