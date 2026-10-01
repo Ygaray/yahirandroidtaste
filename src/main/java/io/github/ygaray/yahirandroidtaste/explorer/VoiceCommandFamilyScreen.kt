@@ -35,7 +35,6 @@ import io.github.ygaray.yahirandroidtaste.model.KeyFieldState
 import io.github.ygaray.yahirandroidtaste.model.ModelOptionUiModel
 import io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel
 import io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel
-import io.github.ygaray.yahirandroidtaste.model.SelectionMode
 import io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRowState
@@ -414,7 +413,6 @@ private val fixtureOutcomeNeedsConfirmationBatch = VoiceOutcomeUiState.NeedsConf
         ProposedItemUiModel(id = "2", title = "Banana", subtitle = "1 bunch", confidenceCue = "Weak match", onRemove = {}),
         ProposedItemUiModel(id = "3", title = "Bread", subtitle = "1 loaf", amended = true, onRemove = {})
     ),
-    selectionMode = SelectionMode.AllOrNothing,
     confirmLabel = "Confirm all (3)",
     topLevelContent = { Text("Logged for: Today") },
     onConfirm = {},
