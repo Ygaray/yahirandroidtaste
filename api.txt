@@ -105,6 +105,10 @@ package io.github.ygaray.yahirandroidtaste.component {
     method @KotlinOnly @androidx.compose.runtime.Composable public static <T> void ChipBar(java.util.List<T> items, kotlin.jvm.functions.Function1<T,java.lang.Object> key, kotlin.jvm.functions.Function1<T,kotlin.Unit> itemContent, optional androidx.compose.ui.Modifier modifier, optional String testTag, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingContent, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingContent, optional io.github.ygaray.yahirandroidtaste.component.ExpandableConfig? expandable, optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.FlowRowScope,kotlin.Unit>? rawContent);
   }
 
+  public final class ClarificationBarKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ClarificationBar(String question, java.util.List<io.github.ygaray.yahirandroidtaste.model.ClarificationOptionUiModel> options, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onSelect, kotlin.jvm.functions.Function0<kotlin.Unit> onDismiss, optional androidx.compose.ui.Modifier modifier);
+  }
+
   public final class ClearableTextFieldKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void ClearableTextField(String value, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onValueChange, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? label, optional kotlin.jvm.functions.Function0<kotlin.Unit>? leadingIcon, optional boolean isError, optional kotlin.jvm.functions.Function0<kotlin.Unit>? supportingText, optional boolean singleLine, optional androidx.compose.foundation.text.KeyboardOptions keyboardOptions, optional androidx.compose.foundation.text.KeyboardActions keyboardActions, optional androidx.compose.ui.text.input.VisualTransformation visualTransformation, optional io.github.ygaray.yahirandroidtaste.component.RevealToggle? revealToggle);
   }
@@ -280,6 +284,10 @@ package io.github.ygaray.yahirandroidtaste.component {
 
   public final class NameAndTagsEditorKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void NameAndTagsEditor(optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit> header, String name, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNameChange, String nameLabel, kotlin.jvm.functions.Function0<kotlin.Unit> tagsContent, kotlin.jvm.functions.Function0<kotlin.Unit> onSave, kotlin.jvm.functions.Function0<kotlin.Unit> onDismiss, String saveLabel, optional String dismissLabel, optional boolean dismissDestructive, optional boolean enabled, optional androidx.compose.ui.Modifier modifier);
+  }
+
+  public final class OutcomeSheetKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void OutcomeSheet(io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState outcome, kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, optional androidx.compose.ui.Modifier modifier);
   }
 
   public final class PlaceMapPickerKt {
@@ -749,6 +757,63 @@ package io.github.ygaray.yahirandroidtaste.feedback {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void UndoCenterScreen(java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry> entries, kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onUndo, kotlin.jvm.functions.Function0<kotlin.Unit> onClear);
   }
 
+  public final class UndoGroupRefusedException extends java.lang.Exception {
+    ctor public UndoGroupRefusedException(String reason, optional String? changedItem);
+    method @InaccessibleFromKotlin public String? getChangedItem();
+    method @InaccessibleFromKotlin public String getReason();
+    property public String? changedItem;
+    property public String reason;
+  }
+
+  public sealed exhaustive interface UndoGroupResult {
+  }
+
+  public static final class UndoGroupResult.Failed implements io.github.ygaray.yahirandroidtaste.feedback.UndoGroupResult {
+    field public static final io.github.ygaray.yahirandroidtaste.feedback.UndoGroupResult.Failed INSTANCE;
+  }
+
+  public static final class UndoGroupResult.NothingToUndo implements io.github.ygaray.yahirandroidtaste.feedback.UndoGroupResult {
+    field public static final io.github.ygaray.yahirandroidtaste.feedback.UndoGroupResult.NothingToUndo INSTANCE;
+  }
+
+  public static final class UndoGroupResult.Refused implements io.github.ygaray.yahirandroidtaste.feedback.UndoGroupResult {
+    ctor public UndoGroupResult.Refused(String reason, optional String? changedItem);
+    method public String component1();
+    method public String? component2();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoGroupResult.Refused copy(optional String reason, optional String? changedItem);
+    method @InaccessibleFromKotlin public String? getChangedItem();
+    method @InaccessibleFromKotlin public String getReason();
+    property public String? changedItem;
+    property public String reason;
+  }
+
+  public static final class UndoGroupResult.Undone implements io.github.ygaray.yahirandroidtaste.feedback.UndoGroupResult {
+    ctor public UndoGroupResult.Undone(int count);
+    method public int component1();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoGroupResult.Undone copy(optional int count);
+    method @InaccessibleFromKotlin public int getCount();
+    property public int count;
+  }
+
+  public sealed exhaustive interface UndoGroupStatus {
+  }
+
+  public static final class UndoGroupStatus.Empty implements io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus {
+    field public static final io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus.Empty INSTANCE;
+  }
+
+  public static final class UndoGroupStatus.FullyResolved implements io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus {
+    field public static final io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus.FullyResolved INSTANCE;
+  }
+
+  public static final class UndoGroupStatus.PartiallyResolved implements io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus {
+    field public static final io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus.PartiallyResolved INSTANCE;
+  }
+
+  public static final class UndoGroupStatus.Undoable implements io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus {
+    field public static final io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus.Undoable INSTANCE;
+  }
+
   public final class UndoHistoryEntry {
     method public String component1();
     method public String component2();
@@ -775,10 +840,17 @@ package io.github.ygaray.yahirandroidtaste.feedback {
 
   @javax.inject.Singleton public final class UndoHistoryStore {
     ctor @javax.inject.Inject public UndoHistoryStore();
+    method public String append(String message, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview, String groupId, kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction);
     method public String append(String message, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview, kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction);
     method public suspend Object? attemptUndo(String id, kotlin.coroutines.Continuation<? super kotlin.Unit>);
+    method public suspend Object? attemptUndoGroup(String groupId, kotlin.coroutines.Continuation<? super io.github.ygaray.yahirandroidtaste.feedback.UndoGroupResult>);
     method public void clearSpent();
     method @InaccessibleFromKotlin public kotlinx.coroutines.flow.StateFlow<java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry>> getEntries();
+    method public java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry> group(String groupId);
+    method public String? groupIdOf(String entryId);
+    method public String? groupLabel(String groupId);
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus groupStatus(String groupId);
+    method public void openGroup(String groupId, String label, kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAll);
     property public kotlinx.coroutines.flow.StateFlow<java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry>> entries;
   }
 
@@ -894,6 +966,20 @@ package io.github.ygaray.yahirandroidtaste.model {
     property public int rank;
   }
 
+  public final class BatchRowResultUiModel {
+    ctor public BatchRowResultUiModel(String label, boolean succeeded, optional String? detail);
+    method public String component1();
+    method public boolean component2();
+    method public String? component3();
+    method public io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel copy(optional String label, optional boolean succeeded, optional String? detail);
+    method @InaccessibleFromKotlin public String? getDetail();
+    method @InaccessibleFromKotlin public String getLabel();
+    method @InaccessibleFromKotlin public boolean getSucceeded();
+    property public String? detail;
+    property public String label;
+    property public boolean succeeded;
+  }
+
   public final class BrowseSortPreference {
     ctor public BrowseSortPreference(io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortOption option, io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortDirection direction);
     method public io.github.ygaray.yahirandroidtaste.model.BrowseSortPreference.SortOption component1();
@@ -936,6 +1022,48 @@ package io.github.ygaray.yahirandroidtaste.model {
   public static final class BrowseTagSortMode.Companion {
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.BrowseTagSortMode getDEFAULT();
     property public io.github.ygaray.yahirandroidtaste.model.BrowseTagSortMode DEFAULT;
+  }
+
+  public final class ClarificationOptionUiModel {
+    ctor public ClarificationOptionUiModel(String id, String label);
+    method public String component1();
+    method public String component2();
+    method public io.github.ygaray.yahirandroidtaste.model.ClarificationOptionUiModel copy(optional String id, optional String label);
+    method @InaccessibleFromKotlin public String getId();
+    method @InaccessibleFromKotlin public String getLabel();
+    property public String id;
+    property public String label;
+  }
+
+  public final class FailureActionUiModel {
+    ctor public FailureActionUiModel(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick);
+    method public String component1();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit> component2();
+    method public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel copy(optional String label, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClick);
+    method @InaccessibleFromKotlin public String getLabel();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnClick();
+    property public String label;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit> onClick;
+  }
+
+  public final class HandledByUiModel {
+    ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount);
+    method public String component1();
+    method public String? component2();
+    method public String? component3();
+    method public String? component4();
+    method public Integer? component5();
+    method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel copy(optional String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount);
+    method @InaccessibleFromKotlin public String? getApproach();
+    method @InaccessibleFromKotlin public Integer? getEscalationCount();
+    method @InaccessibleFromKotlin public String? getModel();
+    method @InaccessibleFromKotlin public String? getProvider();
+    method @InaccessibleFromKotlin public String getTier();
+    property public String? approach;
+    property public Integer? escalationCount;
+    property public String? model;
+    property public String? provider;
+    property public String tier;
   }
 
   public sealed exhaustive interface KeyFieldState {
@@ -1101,6 +1229,71 @@ package io.github.ygaray.yahirandroidtaste.model {
     property public io.github.ygaray.yahirandroidtaste.model.TagSortMode DEFAULT;
   }
 
+  public final class UndoAffordanceUiModel {
+    ctor public UndoAffordanceUiModel(String allLabel, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel> rows, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onUndoAll, optional io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel? refused);
+    method public String component1();
+    method public java.util.List<io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel> component2();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit>? component3();
+    method public io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel? component4();
+    method public io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel copy(optional String allLabel, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel> rows, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onUndoAll, optional io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel? refused);
+    method @InaccessibleFromKotlin public String getAllLabel();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getOnUndoAll();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel? getRefused();
+    method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel> getRows();
+    property public String allLabel;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit>? onUndoAll;
+    property public io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel? refused;
+    property public java.util.List<io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel> rows;
+  }
+
+  public final class UndoRefusedUiModel {
+    ctor public UndoRefusedUiModel(String reason, optional String? changedItem);
+    method public String component1();
+    method public String? component2();
+    method public io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel copy(optional String reason, optional String? changedItem);
+    method @InaccessibleFromKotlin public String? getChangedItem();
+    method @InaccessibleFromKotlin public String getReason();
+    property public String? changedItem;
+    property public String reason;
+  }
+
+  public sealed exhaustive interface UndoRowState {
+  }
+
+  public static final class UndoRowState.Available implements io.github.ygaray.yahirandroidtaste.model.UndoRowState {
+    ctor public UndoRowState.Available(kotlin.jvm.functions.Function0<kotlin.Unit> onUndo);
+    method public kotlin.jvm.functions.Function0<kotlin.Unit> component1();
+    method public io.github.ygaray.yahirandroidtaste.model.UndoRowState.Available copy(optional kotlin.jvm.functions.Function0<kotlin.Unit> onUndo);
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnUndo();
+    property public kotlin.jvm.functions.Function0<kotlin.Unit> onUndo;
+  }
+
+  public static final class UndoRowState.Unavailable implements io.github.ygaray.yahirandroidtaste.model.UndoRowState {
+    ctor public UndoRowState.Unavailable(String reason);
+    method public String component1();
+    method public io.github.ygaray.yahirandroidtaste.model.UndoRowState.Unavailable copy(optional String reason);
+    method @InaccessibleFromKotlin public String getReason();
+    property public String reason;
+  }
+
+  public static final class UndoRowState.Undone implements io.github.ygaray.yahirandroidtaste.model.UndoRowState {
+    field public static final io.github.ygaray.yahirandroidtaste.model.UndoRowState.Undone INSTANCE;
+  }
+
+  public final class UndoRowUiModel {
+    ctor public UndoRowUiModel(String id, String label, io.github.ygaray.yahirandroidtaste.model.UndoRowState state);
+    method public String component1();
+    method public String component2();
+    method public io.github.ygaray.yahirandroidtaste.model.UndoRowState component3();
+    method public io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel copy(optional String id, optional String label, optional io.github.ygaray.yahirandroidtaste.model.UndoRowState state);
+    method @InaccessibleFromKotlin public String getId();
+    method @InaccessibleFromKotlin public String getLabel();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.UndoRowState getState();
+    property public String id;
+    property public String label;
+    property public io.github.ygaray.yahirandroidtaste.model.UndoRowState state;
+  }
+
   public final class VoiceClipUiModel {
     ctor public VoiceClipUiModel(String id, int sortOrder, long durationMs, optional String? samplesPath);
     method public String component1();
@@ -1116,6 +1309,46 @@ package io.github.ygaray.yahirandroidtaste.model {
     property public String id;
     property public String? samplesPath;
     property public int sortOrder;
+  }
+
+  public sealed exhaustive interface VoiceOutcomeUiState {
+  }
+
+  public static final class VoiceOutcomeUiState.Failure implements io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState {
+    ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action);
+    method public String component1();
+    method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? component2();
+    method public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? component3();
+    method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.Failure copy(optional String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action);
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? getAction();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? getHandledBy();
+    method @InaccessibleFromKotlin public String getReason();
+    property public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action;
+    property public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy;
+    property public String reason;
+  }
+
+  public static final class VoiceOutcomeUiState.Success implements io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState {
+    ctor public VoiceOutcomeUiState.Success(String summary, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional kotlin.jvm.functions.Function0<kotlin.Unit>? editableContent, optional boolean inFlight, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel> batchResults, optional io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? undo);
+    method public String component1();
+    method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? component2();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit>? component3();
+    method public boolean component4();
+    method public java.util.List<io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel> component5();
+    method public io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? component6();
+    method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.Success copy(optional String summary, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional kotlin.jvm.functions.Function0<kotlin.Unit>? editableContent, optional boolean inFlight, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel> batchResults, optional io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? undo);
+    method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel> getBatchResults();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getEditableContent();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? getHandledBy();
+    method @InaccessibleFromKotlin public boolean getInFlight();
+    method @InaccessibleFromKotlin public String getSummary();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? getUndo();
+    property public java.util.List<io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel> batchResults;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit>? editableContent;
+    property public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy;
+    property public boolean inFlight;
+    property public String summary;
+    property public io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? undo;
   }
 
 }
