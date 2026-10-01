@@ -44,7 +44,9 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  *   maps its engine's tier metadata into [ApproachRungUiModel] at the call site.
  * @param offlineOnly Current offline-only state, or `null` to hide the toggle entirely (D-05).
  * @param onOfflineOnlyChange Invoked with the new value when the toggle is tapped, or `null` to
- *   hide the toggle entirely (D-05) — must be non-null exactly when [offlineOnly] is non-null.
+ *   hide the toggle entirely (D-05) — must be non-null exactly when [offlineOnly] is non-null
+ *   (enforced via `require`; violating this pairing throws immediately rather than silently
+ *   omitting the toggle with no signal).
  * @param maxTierId The currently-capped rung's [ApproachRungUiModel.id], or `null` to hide the
  *   cap control entirely (D-05) — no rung is clickable when this is `null`. If non-null but it
  *   matches no [ApproachRungUiModel.id] in [ladder] (e.g. a stale id after the ladder changed),
@@ -68,6 +70,11 @@ fun ApproachLadderCard(
     require((maxTierId == null) == (onMaxTierChange == null)) {
         "ApproachLadderCard: maxTierId and onMaxTierChange must both be null or both be non-null " +
             "(got maxTierId=$maxTierId, onMaxTierChange=${if (onMaxTierChange == null) "null" else "non-null"})"
+    }
+    require((offlineOnly == null) == (onOfflineOnlyChange == null)) {
+        "ApproachLadderCard: offlineOnly and onOfflineOnlyChange must both be null or both be " +
+            "non-null (got offlineOnly=$offlineOnly, onOfflineOnlyChange=" +
+            "${if (onOfflineOnlyChange == null) "null" else "non-null"})"
     }
     val effectiveOfflineOnly = offlineOnly == true
     val capRank = maxTierId?.let { id -> ladder.firstOrNull { it.id == id }?.rank } ?: Int.MAX_VALUE

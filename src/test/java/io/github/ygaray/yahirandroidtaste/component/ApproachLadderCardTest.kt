@@ -164,6 +164,28 @@ class ApproachLadderCardTest {
         }
     }
 
+    // ── WR-01 symmetry regression: offlineOnly/onOfflineOnlyChange pairing is enforced too ──
+
+    @Test
+    fun `a non-null onOfflineOnlyChange with a null offlineOnly throws -- the pairing invariant is enforced`() {
+        assertThrows(IllegalArgumentException::class.java) {
+            composeTestRule.setContent {
+                ApproachLadderCard(ladder = ladder, offlineOnly = null, onOfflineOnlyChange = {})
+            }
+            composeTestRule.waitForIdle()
+        }
+    }
+
+    @Test
+    fun `a non-null offlineOnly with a null onOfflineOnlyChange throws -- the pairing invariant is enforced`() {
+        assertThrows(IllegalArgumentException::class.java) {
+            composeTestRule.setContent {
+                ApproachLadderCard(ladder = ladder, offlineOnly = true, onOfflineOnlyChange = null)
+            }
+            composeTestRule.waitForIdle()
+        }
+    }
+
     @Test
     fun `offline-only on gives an offline-incapable rung a needs-network affordance while staying visible`() {
         composeTestRule.setContent {
