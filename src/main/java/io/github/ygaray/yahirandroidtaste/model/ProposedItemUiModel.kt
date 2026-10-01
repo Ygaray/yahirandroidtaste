@@ -21,6 +21,9 @@ import androidx.compose.runtime.Composable
  * @param confidenceCue An optional "weak match, check this one" cue (D-06; mirrors CalTracker's
  *   `needsAttention`). `null` renders nothing. Never printed by [toString].
  * @param amended Whether the caller has in-place-edited this item (D-04). Defaults to `false`.
+ *   The library intentionally renders no visual treatment for this flag anywhere in
+ *   [io.github.ygaray.yahirandroidtaste.component.OutcomeSheet] -- any visual indicator (e.g. an
+ *   "Edited" label/icon) is the consumer's own responsibility, typically via [trailingContent].
  * @param onRemove Invoked when this row's own remove control is tapped. `null` hides the remove
  *   control entirely for this row (null-prop-hides, D-04).
  * @param trailingContent An opaque per-item slot the library never interprets (D-01) -- e.g.
