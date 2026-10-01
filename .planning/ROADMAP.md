@@ -102,7 +102,7 @@ Plans:
   5. An undo-refused / partial-undo state renders loudly with a reason (e.g. "couldn't undo: <reason>, <item> changed since"), domain-neutral
   6. A prop-driven clarification-choices surface renders a question + pressable options (label + opaque id) with onSelect + dismiss — visually informative (not an error); tapping an option resolves the clarification without re-speaking
 
-**Plans**: 1/2 plans executed
+**Plans**: 2/2 plans executed
 **UI hint**: yes
 
 Plans:
@@ -112,7 +112,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 11-02-PLAN.md — ClarificationBar (pressable tap-to-clarify choices) — VCLAR-01
+- [x] 11-02-PLAN.md — ClarificationBar (pressable tap-to-clarify choices) — VCLAR-01
 
 ### Phase 12: Generic needs-confirmation state
 
@@ -198,7 +198,7 @@ Phases execute in numeric order: 10 → 11 → 12 → 13 → 14 (Phases 10 and 1
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 10. Voice command settings surfaces | v2.4 | 2/2 | In Progress|  |
-| 11. Voice outcome & failure sheet | v2.4 | 1/2 | In Progress|  |
+| 11. Voice outcome & failure sheet | v2.4 | 2/2 | In Progress|  |
 | 12. Generic needs-confirmation state | v2.4 | 0/TBD | Not started | - |
 | 13. Catalog integrity & docs | v2.4 | 0/TBD | Not started | - |
 | 14. Cut v2.4.0 | v2.4 | 0/TBD | Not started | - |
