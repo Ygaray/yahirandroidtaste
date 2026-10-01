@@ -63,7 +63,7 @@ parameters; the library imports no consumer code, no OkHttp, and no `voice-actio
 - [x] **Phase 11: Voice outcome & failure sheet** - Domain-neutral outcome sheet with a "handled by: tier/approach" indicator, loud failure states, a generic undo affordance (Undo all + per-item, with unavailable/refused states), and a tap-to-clarify choices surface (completed 2026-09-30)
 - [x] **Phase 12: Generic needs-confirmation state** - One domain-neutral confirm prompt covering both SB risk confirm and CT weak-match single/batch confirm (completed 2026-09-30)
 - [x] **Phase 13: Catalog integrity & docs** - Register all new composables in the new "Voice Command" family, keep the public API strictly additive and engine-free, and fix the seven→ten family-count doc drift (verified — cuts NO tag) (completed 2026-09-30)
-- [ ] **Phase 14: Cut v2.4.0** - Cut the `v2.4.0` tag on green verification, confirm JitPack resolves it, and message the orchestrator the §11 ledger row (the ONLY tag; split from 13 so the cut follows a green Phase 13)
+- [x] **Phase 14: Cut v2.4.0** - Cut the `v2.4.0` tag on green verification, confirm JitPack resolves it, and message the orchestrator the §11 ledger row (the ONLY tag; split from 13 so the cut follows a green Phase 13) (completed 2026-10-01)
 
 ## Phase Details
 
