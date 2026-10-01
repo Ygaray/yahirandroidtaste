@@ -618,6 +618,28 @@ class OutcomeSheetTest {
         composeTestRule.onNodeWithTag("outcome_sheet_confirmation_cancel").assertExists()
     }
 
+    // ── WR-03: item.trailingContent has real rendering coverage ────────────────────
+
+    @Test
+    fun `a non-null trailingContent renders for its own row`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "Review this item before confirming.",
+                    items = listOf(
+                        ProposedItemUiModel(id = "tag-1", title = "Apple", trailingContent = { Text("tag") })
+                    ),
+                    onConfirm = {},
+                    onCancel = {}
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("tag").assertExists()
+    }
+
     @Test
     fun `severity Destructive still renders a clickable Confirm button whose tap invokes onConfirm`() {
         var confirmed = false

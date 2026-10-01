@@ -422,6 +422,21 @@ private val fixtureOutcomeNeedsConfirmationBatch = VoiceOutcomeUiState.NeedsConf
 )
 
 /**
+ * Fixture needs-confirmation -- WR-03 coverage: a single item using
+ * [ProposedItemUiModel.trailingContent] (the opaque per-item slot, D-01), e.g. a tag badge a
+ * consumer renders via its own composable. Mirrors [fixtureOutcomeNeedsConfirmationBatch]'s
+ * [VoiceOutcomeUiState.NeedsConfirmation.topLevelContent] coverage, but for the per-item slot.
+ */
+private val fixtureOutcomeNeedsConfirmationTrailingContent = VoiceOutcomeUiState.NeedsConfirmation(
+    reason = "Review this item before confirming.",
+    items = listOf(
+        ProposedItemUiModel(id = "tag-1", title = "Apple", trailingContent = { Text("tag") })
+    ),
+    onConfirm = {},
+    onCancel = {}
+)
+
+/**
  * OutcomeSheet's interactive demo -- WR-01-safe pattern (mirrors `AlbumSourcePickerSheetSection`'s
  * "Show sheet" trigger in SheetsFamilyScreen.kt): a single hoisted [visibleOutcome] slot holds AT
  * MOST one fixture at a time, so tapping a different "Show" button swaps the live sheet instead
@@ -482,6 +497,12 @@ private fun OutcomeSheetVariants() {
     SectionLabel("OutcomeSheet — NeedsConfirmation, batch with shared topLevelContent + per-item remove (VOUT-04)")
     Button(
         onClick = { visibleOutcome = fixtureOutcomeNeedsConfirmationBatch },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) { Text("Show sheet") }
+
+    SectionLabel("OutcomeSheet — NeedsConfirmation, per-item trailingContent (VOUT-04)")
+    Button(
+        onClick = { visibleOutcome = fixtureOutcomeNeedsConfirmationTrailingContent },
         modifier = Modifier.padding(horizontal = 16.dp)
     ) { Text("Show sheet") }
 
