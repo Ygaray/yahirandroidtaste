@@ -1,5 +1,6 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.material3.Text
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasNoClickAction
@@ -12,6 +13,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
+import io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRowState
@@ -369,5 +371,251 @@ class OutcomeSheetTest {
 
         composeTestRule.onNodeWithTag("outcome_sheet_undo_refused").assertExists()
         composeTestRule.onNodeWithText("Couldn't undo: Item changed").assertExists()
+    }
+
+    // ── VOUT-04: NeedsConfirmation -- single-item confirm/cancel (Plan 01 Task 1) ──
+
+    @Test
+    fun `NeedsConfirmation with a single item renders its title, reason, reversibilityHint, and the item's title and subtitle`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "This will permanently remove the card and its history.",
+                    title = "Delete card?",
+                    items = listOf(ProposedItemUiModel(id = "card-1", title = "Grocery list", subtitle = "12 items")),
+                    reversibilityHint = "Irreversible",
+                    confirmLabel = "Delete",
+                    onConfirm = {},
+                    onCancel = {}
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Delete card?").assertExists()
+        composeTestRule.onNodeWithText("This will permanently remove the card and its history.").assertExists()
+        composeTestRule.onNodeWithText("Irreversible").assertExists()
+        composeTestRule.onNodeWithText("Grocery list").assertExists()
+        composeTestRule.onNodeWithText("12 items").assertExists()
+    }
+
+    @Test
+    fun `tapping the Confirm button invokes onConfirm exactly once and does not invoke onCancel`() {
+        var confirmed = false
+        var cancelled = false
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "This will permanently remove the card and its history.",
+                    title = "Delete card?",
+                    items = listOf(ProposedItemUiModel(id = "card-1", title = "Grocery list")),
+                    confirmLabel = "Delete",
+                    onConfirm = { confirmed = true },
+                    onCancel = { cancelled = true }
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("outcome_sheet_confirmation_confirm").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, confirmed)
+        assertEquals(false, cancelled)
+    }
+
+    @Test
+    fun `tapping the Cancel button invokes onCancel exactly once and does not invoke onConfirm`() {
+        var confirmed = false
+        var cancelled = false
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "This will permanently remove the card and its history.",
+                    title = "Delete card?",
+                    items = listOf(ProposedItemUiModel(id = "card-1", title = "Grocery list")),
+                    confirmLabel = "Delete",
+                    onConfirm = { confirmed = true },
+                    onCancel = { cancelled = true }
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("outcome_sheet_confirmation_cancel").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, cancelled)
+        assertEquals(false, confirmed)
+    }
+
+    @Test
+    fun `ProposedItemUiModel toString never prints title, subtitle, or confidenceCue`() {
+        val item = ProposedItemUiModel(
+            id = "x",
+            title = "Secret Name",
+            subtitle = "Secret Sub",
+            confidenceCue = "Weak match"
+        )
+
+        assertEquals("ProposedItemUiModel(id=x, amended=false)", item.toString())
+    }
+
+    // ── VOUT-04: NeedsConfirmation -- batch, topLevelContent, per-item remove, edge coverage (Plan 01 Task 2) ──
+
+    @Test
+    fun `a batch of 3 items renders exactly 3 rows in the exact supplied order, and topLevelContent renders exactly once`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "3 items parsed from your grocery run.",
+                    items = listOf(
+                        ProposedItemUiModel(id = "1", title = "Apple"),
+                        ProposedItemUiModel(id = "2", title = "Banana"),
+                        ProposedItemUiModel(id = "3", title = "Bread")
+                    ),
+                    topLevelContent = { Text("Logged for: Today") },
+                    onConfirm = {},
+                    onCancel = {}
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        val rows = composeTestRule.onAllNodesWithTag("outcome_sheet_confirmation_item")
+        rows.assertCountEquals(3)
+        rows[0].assert(hasText("Apple"))
+        rows[1].assert(hasText("Banana"))
+        rows[2].assert(hasText("Bread"))
+
+        composeTestRule.onAllNodesWithTag("outcome_sheet_confirmation_top_level_content").assertCountEquals(1)
+    }
+
+    @Test
+    fun `tapping a specific row's remove control invokes THAT row's own onRemove and no other row's`() {
+        var row0Removed = false
+        var row1Removed = false
+        var row2Removed = false
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "3 items parsed from your grocery run.",
+                    items = listOf(
+                        ProposedItemUiModel(id = "1", title = "Apple", onRemove = { row0Removed = true }),
+                        ProposedItemUiModel(id = "2", title = "Banana", onRemove = { row1Removed = true }),
+                        ProposedItemUiModel(id = "3", title = "Bread", onRemove = { row2Removed = true })
+                    ),
+                    onConfirm = {},
+                    onCancel = {}
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onAllNodesWithTag("outcome_sheet_confirmation_item_remove", useUnmergedTree = true)[1].performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(false, row0Removed)
+        assertEquals(true, row1Removed)
+        assertEquals(false, row2Removed)
+    }
+
+    @Test
+    fun `two items sharing the same id, and separately two sharing the same title, both render as 2 separate rows, never merged`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "Duplicate adjacency check.",
+                    items = listOf(
+                        ProposedItemUiModel(id = "dup", title = "Milk"),
+                        ProposedItemUiModel(id = "dup", title = "Eggs"),
+                        ProposedItemUiModel(id = "a", title = "Same Title"),
+                        ProposedItemUiModel(id = "b", title = "Same Title")
+                    ),
+                    onConfirm = {},
+                    onCancel = {}
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onAllNodesWithTag("outcome_sheet_confirmation_item").assertCountEquals(4)
+    }
+
+    @Test
+    fun `items with duplicate titles still render in the exact supplied list order, never resorted`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "Ordering check.",
+                    items = listOf(
+                        ProposedItemUiModel(id = "1", title = "Zebra item", subtitle = "first"),
+                        ProposedItemUiModel(id = "2", title = "Zebra item", subtitle = "second"),
+                        ProposedItemUiModel(id = "3", title = "Zebra item", subtitle = "third")
+                    ),
+                    onConfirm = {},
+                    onCancel = {}
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        val rows = composeTestRule.onAllNodesWithTag("outcome_sheet_confirmation_item")
+        rows.assertCountEquals(3)
+        rows[0].assert(hasText("first"))
+        rows[1].assert(hasText("second"))
+        rows[2].assert(hasText("third"))
+    }
+
+    @Test
+    fun `an empty items list renders zero item rows without crashing, while reason and both buttons still render`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "Nothing left to confirm.",
+                    items = emptyList(),
+                    onConfirm = {},
+                    onCancel = {}
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onAllNodesWithTag("outcome_sheet_confirmation_item").assertCountEquals(0)
+        composeTestRule.onNodeWithText("Nothing left to confirm.").assertExists()
+        composeTestRule.onNodeWithTag("outcome_sheet_confirmation_confirm").assertExists()
+        composeTestRule.onNodeWithTag("outcome_sheet_confirmation_cancel").assertExists()
+    }
+
+    @Test
+    fun `severity Destructive still renders a clickable Confirm button whose tap invokes onConfirm`() {
+        var confirmed = false
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "This will permanently remove the card and its history.",
+                    items = listOf(ProposedItemUiModel(id = "card-1", title = "Grocery list")),
+                    severity = ActionButtonDefaults.ActionButtonRole.Destructive,
+                    confirmLabel = "Delete",
+                    onConfirm = { confirmed = true },
+                    onCancel = {}
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("outcome_sheet_confirmation_confirm").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, confirmed)
     }
 }

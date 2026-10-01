@@ -2,11 +2,16 @@ package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -17,6 +22,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
+import io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRowState
 import io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel
@@ -34,6 +40,9 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * mirrors [ListCardBottomSheet]'s "rides SheetScaffold" canon. [outcome]'s sealed `when` match is
  * exhaustive (compiler-enforced); Phase 12 adds a `NeedsConfirmation` third arm explicitly, never
  * silently (D-02).
+ *
+ * As of VOUT-04, [outcome] additionally renders [VoiceOutcomeUiState.NeedsConfirmation] via the
+ * new `NeedsConfirmationBody` arm of the `when` below.
  *
  * A [VoiceOutcomeUiState.Failure] renders loudly on the theme's error/errorContainer color
  * roles — never via [AttentionCue], whose own KDoc forbids use as a failure signal — with an
@@ -55,6 +64,7 @@ fun OutcomeSheet(
         when (outcome) {
             is VoiceOutcomeUiState.Success -> SuccessBody(outcome)
             is VoiceOutcomeUiState.Failure -> FailureBody(outcome)
+            is VoiceOutcomeUiState.NeedsConfirmation -> NeedsConfirmationBody(outcome)
         }
     }
 }
@@ -274,6 +284,89 @@ private fun HandledByRow(handledBy: HandledByUiModel) {
         }
         if (secondary.isNotEmpty()) {
             Text(text = secondary.joinToString(" · "), style = MaterialTheme.typography.labelSmall)
+        }
+    }
+}
+
+/**
+ * Renders a [VoiceOutcomeUiState.NeedsConfirmation] (VOUT-04, D-01/D-02/D-03/D-05): an optional
+ * [VoiceOutcomeUiState.NeedsConfirmation.title] headline, the
+ * [VoiceOutcomeUiState.NeedsConfirmation.reason] body, an optional
+ * [VoiceOutcomeUiState.NeedsConfirmation.reversibilityHint], every
+ * [VoiceOutcomeUiState.NeedsConfirmation.items] row in LIST order (never resorted, never
+ * merged/deduplicated), then a trailing Cancel/Confirm action row. The SAME render path handles
+ * both a single item and a batch -- no size-based special casing.
+ */
+@Composable
+private fun NeedsConfirmationBody(confirmation: VoiceOutcomeUiState.NeedsConfirmation) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Dimens.HorizontalPadding)
+    ) {
+        confirmation.title?.let { Text(it, style = MaterialTheme.typography.headlineSmall) }
+        Text(confirmation.reason, style = MaterialTheme.typography.bodyLarge)
+        confirmation.reversibilityHint?.let {
+            Text(
+                it,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        confirmation.topLevelContent?.let { content ->
+            Box(modifier = Modifier.testTag("outcome_sheet_confirmation_top_level_content")) { content() }
+        }
+        confirmation.items.forEach { item -> ProposedItemRow(item) }
+        Row(modifier = Modifier.padding(top = Dimens.ContentSpacing)) {
+            DynamicActionButton(
+                label = confirmation.cancelLabel,
+                role = ActionButtonDefaults.ActionButtonRole.Neutral,
+                onClick = confirmation.onCancel,
+                modifier = Modifier.testTag("outcome_sheet_confirmation_cancel")
+            )
+            DynamicActionButton(
+                label = confirmation.confirmLabel,
+                role = confirmation.severity,
+                onClick = confirmation.onConfirm,
+                modifier = Modifier.testTag("outcome_sheet_confirmation_confirm")
+            )
+        }
+    }
+}
+
+/**
+ * One row of a [VoiceOutcomeUiState.NeedsConfirmation.items] list (VOUT-04) -- shares a single
+ * `testTag` across every row (mirrors [UndoRowItem]'s shared-tag-per-row convention for ordered
+ * indexed test access). Renders [ProposedItemUiModel.title], an optional
+ * [ProposedItemUiModel.subtitle], and an optional [ProposedItemUiModel.confidenceCue].
+ */
+@Composable
+private fun ProposedItemRow(item: ProposedItemUiModel) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            // Merge this row's title/subtitle/confidenceCue text into ONE semantics node
+            // (mirrors UndoRowItem's convention) so an indexed onAllNodesWithTag(...)[n] query can
+            // resolve the row's own text via hasText(...). The remove IconButton keeps its own
+            // distinct testTag and is queried separately via useUnmergedTree = true.
+            .semantics(mergeDescendants = true) {}
+            .testTag("outcome_sheet_confirmation_item")
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(item.title)
+            item.subtitle?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
+            item.confidenceCue?.let {
+                Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
+            }
+        }
+        item.trailingContent?.invoke()
+        item.onRemove?.let { onRemove ->
+            IconButton(
+                onClick = onRemove,
+                modifier = Modifier.testTag("outcome_sheet_confirmation_item_remove")
+            ) {
+                Icon(Icons.Default.Close, contentDescription = "Remove")
+            }
         }
     }
 }

@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
 import io.github.ygaray.yahirandroidtaste.component.ApproachLadderCard
 import io.github.ygaray.yahirandroidtaste.component.ClarificationBar
 import io.github.ygaray.yahirandroidtaste.component.ModelSelectCard
@@ -32,7 +33,9 @@ import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
 import io.github.ygaray.yahirandroidtaste.model.KeyFieldState
 import io.github.ygaray.yahirandroidtaste.model.ModelOptionUiModel
+import io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel
 import io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel
+import io.github.ygaray.yahirandroidtaste.model.SelectionMode
 import io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRowState
@@ -386,6 +389,39 @@ private val fixtureOutcomeSuccessUndoRefused = VoiceOutcomeUiState.Success(
 )
 
 /**
+ * Fixture needs-confirmation -- VOUT-04 single destructive item (SB's `MutationGate`/
+ * `VoiceConfirmGate` shape: one item, Destructive severity, a reversibility hint).
+ */
+private val fixtureOutcomeNeedsConfirmationSingleDestructive = VoiceOutcomeUiState.NeedsConfirmation(
+    reason = "This will permanently remove the card and its history.",
+    title = "Delete card?",
+    items = listOf(ProposedItemUiModel(id = "card-1", title = "Grocery list", subtitle = "12 items")),
+    severity = ActionButtonDefaults.ActionButtonRole.Destructive,
+    reversibilityHint = "Irreversible",
+    confirmLabel = "Delete",
+    onConfirm = {},
+    onCancel = {}
+)
+
+/**
+ * Fixture needs-confirmation -- VOUT-04 batch (CT's `ProposedBatch` shape: a shared
+ * `topLevelContent` date row and per-item `onRemove`).
+ */
+private val fixtureOutcomeNeedsConfirmationBatch = VoiceOutcomeUiState.NeedsConfirmation(
+    reason = "3 items parsed from your grocery run -- check the one marked Weak match.",
+    items = listOf(
+        ProposedItemUiModel(id = "1", title = "Apple", subtitle = "2 ct"),
+        ProposedItemUiModel(id = "2", title = "Banana", subtitle = "1 bunch", confidenceCue = "Weak match", onRemove = {}),
+        ProposedItemUiModel(id = "3", title = "Bread", subtitle = "1 loaf", amended = true, onRemove = {})
+    ),
+    selectionMode = SelectionMode.AllOrNothing,
+    confirmLabel = "Confirm all (3)",
+    topLevelContent = { Text("Logged for: Today") },
+    onConfirm = {},
+    onCancel = {}
+)
+
+/**
  * OutcomeSheet's interactive demo -- WR-01-safe pattern (mirrors `AlbumSourcePickerSheetSection`'s
  * "Show sheet" trigger in SheetsFamilyScreen.kt): a single hoisted [visibleOutcome] slot holds AT
  * MOST one fixture at a time, so tapping a different "Show" button swaps the live sheet instead
@@ -434,6 +470,18 @@ private fun OutcomeSheetVariants() {
     SectionLabel("OutcomeSheet — Success, loud undo-refused substate (VUNDO-01)")
     Button(
         onClick = { visibleOutcome = fixtureOutcomeSuccessUndoRefused },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) { Text("Show sheet") }
+
+    SectionLabel("OutcomeSheet — NeedsConfirmation, single destructive item (VOUT-04)")
+    Button(
+        onClick = { visibleOutcome = fixtureOutcomeNeedsConfirmationSingleDestructive },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) { Text("Show sheet") }
+
+    SectionLabel("OutcomeSheet — NeedsConfirmation, batch with shared topLevelContent + per-item remove (VOUT-04)")
+    Button(
+        onClick = { visibleOutcome = fixtureOutcomeNeedsConfirmationBatch },
         modifier = Modifier.padding(horizontal = 16.dp)
     ) { Text("Show sheet") }
 
