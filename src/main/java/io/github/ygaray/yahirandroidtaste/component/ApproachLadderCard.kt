@@ -46,10 +46,14 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * @param onOfflineOnlyChange Invoked with the new value when the toggle is tapped, or `null` to
  *   hide the toggle entirely (D-05) — must be non-null exactly when [offlineOnly] is non-null.
  * @param maxTierId The currently-capped rung's [ApproachRungUiModel.id], or `null` to hide the
- *   cap control entirely (D-05) — no rung is clickable when this is `null`.
+ *   cap control entirely (D-05) — no rung is clickable when this is `null`. If non-null but it
+ *   matches no [ApproachRungUiModel.id] in [ladder] (e.g. a stale id after the ladder changed),
+ *   the cap silently falls back to "no cap at all" (WR-02) — no rung renders "Capped" and no
+ *   assertion fires; this is a caller/integration bug the component does not detect.
  * @param onMaxTierChange Invoked with a rung's `id` when it is tapped as the new cap, or `null`
  *   to hide the cap control entirely (D-05) — must be non-null exactly when [maxTierId] is
- *   non-null.
+ *   non-null (enforced via `require`; violating this pairing throws immediately rather than
+ *   silently leaving every rung clickable with no visible cap, WR-01).
  * @param modifier Applied to the outer [Surface].
  */
 @Composable
@@ -61,6 +65,10 @@ fun ApproachLadderCard(
     onMaxTierChange: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
+    require((maxTierId == null) == (onMaxTierChange == null)) {
+        "ApproachLadderCard: maxTierId and onMaxTierChange must both be null or both be non-null " +
+            "(got maxTierId=$maxTierId, onMaxTierChange=${if (onMaxTierChange == null) "null" else "non-null"})"
+    }
     val effectiveOfflineOnly = offlineOnly == true
     val capRank = maxTierId?.let { id -> ladder.firstOrNull { it.id == id }?.rank } ?: Int.MAX_VALUE
 

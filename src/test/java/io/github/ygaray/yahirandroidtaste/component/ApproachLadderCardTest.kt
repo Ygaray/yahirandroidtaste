@@ -13,6 +13,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -139,6 +140,28 @@ class ApproachLadderCardTest {
         // Null cap props (D-05) -- no rung is wired to a cap-selection callback, proven by the
         // absence of a click action on the rung node (null onClick -> no clickable semantics node).
         composeTestRule.onNodeWithText("Local").assertHasNoClickAction()
+    }
+
+    // ── WR-01 regression: maxTierId/onMaxTierChange pairing is enforced, never silently violated ──
+
+    @Test
+    fun `a non-null onMaxTierChange with a null maxTierId throws -- the pairing invariant is enforced`() {
+        assertThrows(IllegalArgumentException::class.java) {
+            composeTestRule.setContent {
+                ApproachLadderCard(ladder = ladder, maxTierId = null, onMaxTierChange = {})
+            }
+            composeTestRule.waitForIdle()
+        }
+    }
+
+    @Test
+    fun `a non-null maxTierId with a null onMaxTierChange throws -- the pairing invariant is enforced`() {
+        assertThrows(IllegalArgumentException::class.java) {
+            composeTestRule.setContent {
+                ApproachLadderCard(ladder = ladder, maxTierId = "local", onMaxTierChange = null)
+            }
+            composeTestRule.waitForIdle()
+        }
     }
 
     @Test
