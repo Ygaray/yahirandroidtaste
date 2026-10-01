@@ -16,23 +16,23 @@
     {
       "number": "12",
       "name": "Generic needs-confirmation state",
-      "status": "pending"
+      "status": "in_progress"
     },
     {
       "number": "13",
       "name": "Catalog integrity & docs",
-      "status": "pending"
+      "status": "in_progress"
     },
     {
       "number": "14",
       "name": "Cut v2.4.0",
-      "status": "pending"
+      "status": "in_progress"
     }
   ],
   "next": {
-    "command": "/gsd:progress --next",
-    "label": "Advance to the next step (plan phase 10)",
-    "reason": "Phase 10 of 5 — needs a plan"
+    "command": "/gsd:new-milestone",
+    "label": "Start a new milestone",
+    "reason": "All phases complete — start a new milestone"
   },
-  "updated_at": "2026-10-01T01:24:17.627Z"
+  "updated_at": "2026-10-01T06:41:14.964Z"
 }
