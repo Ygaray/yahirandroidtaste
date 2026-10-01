@@ -152,3 +152,89 @@ local peeled SHA — the pushed tag correctly dereferences to the tagged commit 
 `v2.4.0` is now live on `origin` as an annotated tag pointing at
 `8d197d5f01dde2d8f80d7a088915a2209a704edb`. Next: §11 Step 4 (JitPack resolution confirmation).
 
+## Step 4 Evidence (JitPack resolution)
+
+Per RESEARCH.md Pitfall 1, JitPack lazily builds a tag only on first resolution request — a
+single immediate non-200/`"status":"none"` is not evidence of failure. Polled in a retry loop
+with 30s backoff, logging every attempt:
+
+```
+[attempt 0]  POM=404 AAR=404 JSON status="none" commit="" isTag=false   (not yet triggered)
+[attempt 1]  POM=404 AAR=404 JSON status="none" commit="" isTag=false
+[attempt 2]  POM=404 AAR=404 JSON status="none" commit="" isTag=false
+[attempt 3]  POM=404 AAR=404 JSON status="none" commit="" isTag=false
+[attempt 4]  POM=404 AAR=404 JSON status="none" commit="" isTag=false
+[attempt 5]  POM=404 AAR=404 JSON status="none" commit="" isTag=false
+[attempt 6]  POM=200 AAR=200 JSON status="ok"   commit="8d197d5f01dde2d8f80d7a088915a2209a704edb" isTag=true
+             -> all three signals green, ~3 minutes after the first poll (well inside the
+                10-minute budget, consistent with this repo's 2/2 prior-cut precedent)
+```
+
+Full raw transcript (attempts 0-16, polling continued past success due to the script bug noted
+below before being stopped once success was confirmed):
+
+```
+[attempt 6] POM=200 AAR=200 JSON={
+  "version" : "v2.4.0",
+  "status" : "ok",
+  "message" : "",
+  "time" : 1790835574619,
+  "commit" : "8d197d5f01dde2d8f80d7a088915a2209a704edb",
+  "ci" : false,
+  "buildUrl" : "",
+  "modules" : [ ],
+  "isTag" : true,
+  "private" : false
+}
+```
+
+**Deviation (Rule 1 — plan verify-script bug, auto-fixed):** the plan's literal retry-loop verify
+command uses `grep -q '"status":"ok"'` (no whitespace around the colon). JitPack's actual
+builds-API response is pretty-printed with spaces (`"status" : "ok"`), so the literal pattern
+never matches even though the build had already succeeded at attempt 6 — the loop would have
+run to the full 20-attempt/10-minute budget and incorrectly declared `TIMEOUT`/failure despite a
+genuinely successful remote build. Fixed by using whitespace-tolerant patterns
+(`grep -Eq '"status"\s*:\s*"ok"'`, `'"isTag"\s*:\s*true'`, `"\"commit\"\s*:\s*\"$TAGGED_SHA\""`)
+and re-running a clean one-shot check against the live JitPack API:
+
+```
+$ TAGGED_SHA=$(git rev-parse v2.4.0^{})
+$ curl -s -o /dev/null -w '%{http_code}' https://jitpack.io/com/github/Ygaray/yahirandroidtaste/v2.4.0/yahirandroidtaste-v2.4.0.pom
+200
+$ curl -s -o /dev/null -w '%{http_code}' https://jitpack.io/com/github/Ygaray/yahirandroidtaste/v2.4.0/yahirandroidtaste-v2.4.0.aar
+200
+$ curl -s https://jitpack.io/api/builds/com.github.Ygaray/yahirandroidtaste/v2.4.0
+{
+  "version" : "v2.4.0",
+  "status" : "ok",
+  "message" : "",
+  "time" : 1790835574619,
+  "commit" : "8d197d5f01dde2d8f80d7a088915a2209a704edb",
+  "ci" : false,
+  "buildUrl" : "",
+  "modules" : [ ],
+  "isTag" : true,
+  "private" : false
+}
+-> status="ok", isTag=true, commit == 8d197d5f01dde2d8f80d7a088915a2209a704edb == $TAGGED_SHA
+ALL SIGNALS PASS
+```
+
+Step 4 PASS: `.pom` HTTP 200, `.aar` HTTP 200, builds-API JSON reports `status:"ok"`, `isTag:true`,
+and `commit` equal to the exact tagged SHA `8d197d5f01dde2d8f80d7a088915a2209a704edb`. This is
+JitPack's own remote build of the pushed tag — not a local
+`publishReleasePublicationToMavenLocal` run — per RESEARCH.md's explicit anti-pattern warning.
+
+## Final Summary (Steps 1-4)
+
+| Requirement | Verdict |
+|---|---|
+| Full suite + detekt (§11 step 1) | PASS |
+| API-01 additive vs v2.3.0 (§11 step 2) | PASS |
+| Pre-tag guard (SHIP-02/D-02) | PASS |
+| Tag + push (§11 step 3) | PASS |
+| JitPack resolution (§11 step 4) | PASS |
+
+`v2.4.0` is fully cut: fresh-verified, tagged, pushed, and resolvable from JitPack's own remote
+build. Coordinate: `com.github.Ygaray:yahirandroidtaste:v2.4.0`.
+
