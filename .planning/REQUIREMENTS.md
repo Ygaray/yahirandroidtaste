@@ -30,9 +30,9 @@ Generic, **presentational** Compose composables only. Each composable takes its 
 
 ### Catalog & API integrity
 
-- [ ] **CAT-01**: Every new public composable is registered in `ComponentRegistry` (or allowlisted in `INTENTIONALLY_UNREGISTERED`) with its full 4-cell states matrix, and the CATALOG-03 drift guard passes in the **full** test suite (§6.3, CATALOG-03)
-- [ ] **API-01**: The public API is strictly additive versus `v2.3.0` — Metalava `apiCheck` net-additive, no removals or signature changes to existing symbols (§6.3, §11 step 2)
-- [ ] **INV-01**: The new UI adds no dependency on OkHttp or any `voice-action-engine` module; every composable takes data + actions as parameters, preserving the one-way-dependency invariant (§6.3, L7)
+- [x] **CAT-01**: Every new public composable is registered in `ComponentRegistry` (or allowlisted in `INTENTIONALLY_UNREGISTERED`) with its full 4-cell states matrix, and the CATALOG-03 drift guard passes in the **full** test suite (§6.3, CATALOG-03)
+- [x] **API-01**: The public API is strictly additive versus `v2.3.0` — Metalava `apiCheck` net-additive, no removals or signature changes to existing symbols (§6.3, §11 step 2)
+- [x] **INV-01**: The new UI adds no dependency on OkHttp or any `voice-action-engine` module; every composable takes data + actions as parameters, preserving the one-way-dependency invariant (§6.3, L7)
 
 ### Ship / tag
 
@@ -74,9 +74,9 @@ Each requirement maps to exactly one phase. Roadmap: `.planning/ROADMAP.md` (Pha
 | VUNDO-01 | Phase 11 | Complete |
 | VCLAR-01 | Phase 11 | Complete |
 | VOUT-04 | Phase 12 | Complete |
-| CAT-01 | Phase 13 | Pending |
-| API-01 | Phase 13 | Pending |
-| INV-01 | Phase 13 | Pending |
+| CAT-01 | Phase 13 | Complete |
+| API-01 | Phase 13 | Complete |
+| INV-01 | Phase 13 | Complete |
 | SHIP-01 | Phase 14 | Pending |
 | SHIP-02 | Phase 14 | Pending |
 

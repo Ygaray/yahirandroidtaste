@@ -149,6 +149,8 @@ Plans:
 
 Plans:
 
+- [x] 13-01-PLAN.md
+
 - [ ] TBD
 
 ### Phase 14: Cut v2.4.0
@@ -200,5 +202,5 @@ Phases execute in numeric order: 10 → 11 → 12 → 13 → 14 (Phases 10 and 1
 | 10. Voice command settings surfaces | v2.4 | 2/2 | In Progress|  |
 | 11. Voice outcome & failure sheet | v2.4 | 2/2 | In Progress|  |
 | 12. Generic needs-confirmation state | v2.4 | 1/1 | In Progress|  |
-| 13. Catalog integrity & docs | v2.4 | 0/TBD | Not started | - |
+| 13. Catalog integrity & docs | v2.4 | 1/1 | In Progress|  |
 | 14. Cut v2.4.0 | v2.4 | 0/TBD | Not started | - |

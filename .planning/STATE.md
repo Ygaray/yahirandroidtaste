@@ -3,18 +3,18 @@ gsd_state_version: "1.0"
 milestone: v2.4
 milestone_name: AI-Voice Command UI
 current_phase: 13
-current_phase_name: catalog-integrity-v2-4-0-ship
-status: executing
-stopped_at: Phase 12 complete, ready to plan Phase 13
-last_updated: "2026-10-01T05:05:47.363Z"
+current_phase_name: Catalog integrity & docs
+status: verifying
+stopped_at: Completed 13-01-PLAN.md
+last_updated: "2026-10-01T05:16:18.192Z"
 last_activity: 2026-09-30
-last_activity_desc: Phase 12 complete, transitioned to Phase 13
-state_head: 7fe7e91f24b1559a54c4602fecb20f90f59f815e
+last_activity_desc: Phase 13 execution started
+state_head: 39da3a29d1ce107d33f079fff6a8ea05c913b5bd
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
   percent: 20
 ---
 
@@ -25,14 +25,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-29)
 
 **Core value:** The hub stays a coherent design system — not merely a safe, ever-growing pile of domain-agnostic components — as more consumers contribute.
-**Current focus:** Phase 12 — Generic needs-confirmation state
+**Current focus:** Phase 13 — Catalog integrity & docs
 
 ## Current Position
 
-Phase: 13 (catalog-integrity-v2-4-0-ship) — READY TO EXECUTE
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-09-30 — Phase 12 complete, transitioned to Phase 13
+Phase: 13 (Catalog integrity & docs) — EXECUTING
+Plan: 1 of 1
+Status: Phase complete — ready for verification
+Last activity: 2026-09-30 — Phase 13 execution started
 
 Progress: [██░░░░░░░░] 20%
 
@@ -59,6 +59,11 @@ Progress: [██░░░░░░░░] 20%
 - Trend: -
 
 *Updated after each plan completion*
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 13 P01 | 5 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -71,6 +76,8 @@ Recent decisions affecting current work:
 - Roadmap: Phases 10 (settings) and 11 (outcome sheet) are mutually independent (distinct composables) → parallelizable; Phase 12 (needs-confirmation) extends the outcome sheet, so it gates on 11.
 - Roadmap: VOUT-04 (generic needs-confirmation state) gets its own phase (Phase 12) for design room — one domain-neutral state must render BOTH SB's `MutationGate`/`VoiceConfirmGate` risk confirm AND CT's weak-match single/batch confirm.
 - Roadmap: CAT-01/API-01/INV-01 (catalog + API + one-way-dependency integrity) fold into the ship phase (Phase 13) — CATALOG-03's drift guard only fails in the FULL suite, and Metalava additive + engine-free are proven at the §11 ship gate.
+- [Phase 13]: Used the Metalava v2.3.0-swap-baseline apiCheck technique as the sole authoritative API-01 evidence, documenting classify-hub-change.sh's LANE 3 as a known ClearableTextField-additive-params false positive
+- [Phase 13]: Used HUB_LANE_OVERRIDE=2 (repo's documented escape hatch, not --no-verify) for the doc-drift commit, since the DS-05 append-only guard cannot distinguish a KDoc comment reword from a real behavior change
 
 ### Pending Todos
 
@@ -95,8 +102,8 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-29
-Stopped at: Phase 12 complete, ready to plan Phase 13
+Last session: 2026-10-01T05:16:18.139Z
+Stopped at: Completed 13-01-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
