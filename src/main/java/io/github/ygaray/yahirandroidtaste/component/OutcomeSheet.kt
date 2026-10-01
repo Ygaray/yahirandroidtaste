@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.testTag
@@ -317,7 +318,10 @@ private fun NeedsConfirmationBody(confirmation: VoiceOutcomeUiState.NeedsConfirm
             Box(modifier = Modifier.testTag("outcome_sheet_confirmation_top_level_content")) { content() }
         }
         confirmation.items.forEach { item -> ProposedItemRow(item) }
-        Row(modifier = Modifier.padding(top = Dimens.ContentSpacing)) {
+        Row(
+            modifier = Modifier.padding(top = Dimens.ContentSpacing),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.ContentSpacing, Alignment.End)
+        ) {
             DynamicActionButton(
                 label = confirmation.cancelLabel,
                 role = ActionButtonDefaults.ActionButtonRole.Neutral,
@@ -350,7 +354,8 @@ private fun ProposedItemRow(item: ProposedItemUiModel) {
             // resolve the row's own text via hasText(...). The remove IconButton keeps its own
             // distinct testTag and is queried separately via useUnmergedTree = true.
             .semantics(mergeDescendants = true) {}
-            .testTag("outcome_sheet_confirmation_item")
+            .testTag("outcome_sheet_confirmation_item"),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.ContentSpacing)
     ) {
         Column(Modifier.weight(1f)) {
             Text(item.title)
