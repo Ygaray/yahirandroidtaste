@@ -52,10 +52,10 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * @param keyState Render-only validation state (see [KeyFieldState]) driving the field's
  *   error/supporting-text presentation. The library never validates the key itself.
  * @param keyLabel Caller-formatted label text for the key field (e.g. `"API key"`).
+ * @param modifier Applied to the outer [Surface].
  * @param emptyProvidersReason Caption shown when [providers] is empty (e.g. "No providers
  *   configured yet") — never a blank control. Defaults to a generic caption so existing callers
  *   are source-compatible; callers with a more specific message should override it.
- * @param modifier Applied to the outer [Surface].
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,8 +67,8 @@ fun ProviderKeyCard(
     onKeyChange: (String) -> Unit,
     keyState: KeyFieldState,
     keyLabel: String,
-    emptyProvidersReason: String = "No providers configured yet",
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    emptyProvidersReason: String = "No providers configured yet"
 ) {
     Surface(
         shape = MaterialTheme.expressive.cardShapeLarge,
