@@ -59,7 +59,7 @@ parameters; the library imports no consumer code, no OkHttp, and no `voice-actio
 - Integer phases (10, 11, …): Planned milestone work (continues from v2.0's Phase 9 — no reset)
 - Decimal phases (2.1, 2.2): Urgent insertions (marked INSERTED)
 
-- [ ] **Phase 10: Voice command settings surfaces** - Provider/key, model, and command-approach settings cards, all prop-driven
+- [x] **Phase 10: Voice command settings surfaces** - Provider/key, model, and command-approach settings cards, all prop-driven (completed 2026-09-30)
 - [x] **Phase 11: Voice outcome & failure sheet** - Domain-neutral outcome sheet with a "handled by: tier/approach" indicator, loud failure states, a generic undo affordance (Undo all + per-item, with unavailable/refused states), and a tap-to-clarify choices surface (completed 2026-09-30)
 - [ ] **Phase 12: Generic needs-confirmation state** - One domain-neutral confirm prompt covering both SB risk confirm and CT weak-match single/batch confirm
 - [ ] **Phase 13: Catalog integrity & docs** - Register all new composables in the new "Voice Command" family, keep the public API strictly additive and engine-free, and fix the seven→ten family-count doc drift (verified — cuts NO tag)
