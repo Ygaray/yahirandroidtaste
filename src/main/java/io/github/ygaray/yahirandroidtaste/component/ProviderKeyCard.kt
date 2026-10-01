@@ -43,8 +43,9 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * @param onProviderSelected Invoked with a provider's `id` when the caller picks it from the
  *   dropdown.
  * @param keyValue The API key's current raw value — hoisted, never stored by this composable.
- * @param onKeyChange Invoked on every edit (including clear-✕). Pasted whitespace is trimmed
- *   before this callback fires (pure formatting, no validation — INV-01).
+ * @param onKeyChange Invoked on every edit (including clear-✕). Every edit is trimmed of
+ *   leading/trailing whitespace before this callback fires (WR-04 — not scoped to paste alone;
+ *   pure formatting, no validation — INV-01).
  * @param keyState Render-only validation state (see [KeyFieldState]) driving the field's
  *   error/supporting-text presentation. The library never validates the key itself.
  * @param keyLabel Caller-formatted label text for the key field (e.g. `"API key"`).
