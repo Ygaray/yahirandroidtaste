@@ -2,11 +2,37 @@
   "contract": "1.0.0",
   "flavor": "core",
   "milestone": "v2.4 — AI-Voice Command UI",
-  "phases": [],
+  "phases": [
+    {
+      "number": "10",
+      "name": "Voice command settings surfaces",
+      "status": "in_progress"
+    },
+    {
+      "number": "11",
+      "name": "Voice outcome & failure sheet",
+      "status": "in_progress"
+    },
+    {
+      "number": "12",
+      "name": "Generic needs-confirmation state",
+      "status": "pending"
+    },
+    {
+      "number": "13",
+      "name": "Catalog integrity & docs",
+      "status": "pending"
+    },
+    {
+      "number": "14",
+      "name": "Cut v2.4.0",
+      "status": "pending"
+    }
+  ],
   "next": {
-    "command": "/gsd:discuss-phase",
-    "label": "Discuss the first phase",
-    "reason": "Project initialized — plan your first phase"
+    "command": "/gsd:progress --next",
+    "label": "Advance to the next step (plan phase 10)",
+    "reason": "Phase 10 of 5 — needs a plan"
   },
-  "updated_at": "2026-09-30T04:01:41.684Z"
+  "updated_at": "2026-10-01T01:24:17.627Z"
 }
