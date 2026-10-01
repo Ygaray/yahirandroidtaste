@@ -85,11 +85,11 @@ object ComponentRegistry {
      * matches the family screen's rendered section order) so registry iteration is reproducible
      * across runs (EDGE ordering).
      *
-     * D-05 (Phase 62 Plan 02): the seven per-family lists below are each declared in their own
+     * D-05 (Phase 62 Plan 02): the ten per-family lists below are each declared in their own
      * family screen file (`cardsFamilyEntries` in `CardsFamilyScreen.kt`, etc.) rather than
      * inline here, so family-content plans (03-05) can author `states`/`content` on disjoint
      * files without touching this shared registry file. This concatenation — reproducing the
-     * exact prior declaration order — is the only place the seven lists are combined.
+     * exact prior declaration order — is the only place the ten lists are combined.
      */
     val entries: List<Entry> = cardsFamilyEntries +
         chipsFamilyEntries +

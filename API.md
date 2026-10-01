@@ -1,14 +1,15 @@
-# API.md — `yahirandroidtaste` public surface (the nine-family composable catalog)
+# API.md — `yahirandroidtaste` public surface (the ten-family composable catalog)
 
 Everything a consumer calls. Package root: `io.github.ygaray.yahirandroidtaste`. To wire the
 library, see `INTEGRATION.md`; for the reuse rules, `CLAUDE.md`.
 
 This is a **UI component library**, so its public surface is a **catalog of composables**, not a
-service seam. The composables are organized into the library's **nine families** — the same
+service seam. The composables are organized into the library's **ten families** — the same
 taxonomy the library ships in `explorer/ComponentRegistry.kt` (`cardsFamilyEntries +
 chipsFamilyEntries + sheetsFamilyEntries + buttonsFabFamilyEntries + pickersFamilyEntries +
 feedbackFamilyEntries + emptyStateFamilyEntries + progressFamilyEntries +
-tactileFoundationFamilyEntries`), which is the single source of truth and the CATALOG drift guard.
+tactileFoundationFamilyEntries + voiceCommandFamilyEntries`), which is the single source of truth
+and the CATALOG drift guard.
 
 ## Surface at a glance
 
@@ -23,8 +24,9 @@ tactileFoundationFamilyEntries`), which is the single source of truth and the CA
 | 7. Empty-state | 1 | The shared empty-state surface |
 | 8. Progress / Metrics | 4 | Determinate ring / count-up / hero-card primitives for at-a-glance stat display |
 | 9. Tactile Foundation | 4 | Elevation ladder, Space Grotesk display ramp, gradient/tint accent surfaces, and the Heat relatedness ramp |
+| 10. Voice Command | 5 | Provider/API-key, model, and command-approach settings cards, plus the outcome/undo/confirmation sheet and the tap-to-clarify bar |
 
-**51 registered public composables** across the nine families, plus **5 intentionally-unregistered**
+**51 registered public composables** across the ten families, plus **5 intentionally-unregistered**
 structural sub-parts (see the end of this doc) = **56 public composables total**. Every component
 renders inside `YahirAndroidTasteTheme` (family 7's theme wrapper — see the tail note). Every
 `Modifier` parameter defaults to `Modifier`; only the load-bearing parameters are listed below.

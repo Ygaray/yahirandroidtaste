@@ -32,7 +32,7 @@ how this library relates to its consumers:
   job (see `INTEGRATION.md`).
 - **`ComponentRegistry` is the single source of truth + a drift guard.** Every public top-level
   `@Composable` in the visual packages (`component/`, `feedback/`, `modifier/`, `theme/`) must be
-  **registered** in one of the seven family lists XOR **allowlisted** in
+  **registered** in one of the ten family lists XOR **allowlisted** in
   `INTENTIONALLY_UNREGISTERED` — never neither, never both. The registry's integrity test (and the
   CATALOG drift guard) fails the build otherwise. When you add a public component, register it in
   its family screen's entries list; when you add a private sub-part, no action needed.

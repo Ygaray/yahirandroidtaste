@@ -18,7 +18,7 @@ library's bindings into its `SingletonComponent`. See **[`INTEGRATION.md`](INTEG
 **Docs for agents & integrators:**
 - **[`INTEGRATION.md`](INTEGRATION.md)** — step-by-step checklist to consume the library, including
   the two prerequisites (Hilt `SingletonComponent` host + Compose-BOM alignment).
-- **[`API.md`](API.md)** — the full public surface, organized as the seven-family composable catalog.
+- **[`API.md`](API.md)** — the full public surface, organized as the ten-family composable catalog.
 - **[`ECOSYSTEM.md`](ECOSYSTEM.md)** — the hub-and-consumers constitution (who owns what, where new
   components go, the repin ritual).
 - **[`CLAUDE.md`](CLAUDE.md)** — the reuse invariants and the (human-gated) tag → JitPack → repin flow.
@@ -56,7 +56,7 @@ implementation("com.github.Ygaray:yahirandroidtaste:<tag>")   // <tag> cut in Ph
 1. **Wrap your UI in the theme.** `YahirAndroidTasteTheme { … }` establishes the design tokens
    (colors, typography, shapes, accent) every component reads. Every component assumes it renders
    inside this theme.
-2. **Call components directly.** They are plain public `@Composable` functions grouped into seven
+2. **Call components directly.** They are plain public `@Composable` functions grouped into ten
    families — see **[`API.md`](API.md)** for the catalog and the key parameters each one takes.
 3. **Host the Hilt bindings.** The library provides `@Singleton`-scoped state holders (e.g.
    `UndoHistoryStore`) via constructor injection; your app must be a Hilt app so its
@@ -70,13 +70,14 @@ YahirAndroidTasteTheme {
     EmptyState(/* … */)
     AppChip(/* … */)
     ConfirmationDialog(/* … */)
-    // …the full seven-family catalog is enumerated in API.md
+    // …the full ten-family catalog is enumerated in API.md
 }
 ```
 
 ## The surface at a glance
 
-- **Seven component families:** cards, chips, sheets, buttons/FAB, pickers, feedback, empty-state.
+- **Ten component families:** cards, chips, sheets, buttons/FAB, pickers, feedback, empty-state,
+  progress/metrics, tactile foundation, voice command.
 - **41 registered public composables** in `ComponentRegistry` (the single source of truth that
   drives the gallery and the CATALOG drift guard), plus **4 intentionally-unregistered** structural
   sub-parts (`CardBase`, `WaveformCanvas`, `SwipeableActionRow`, `YahirAndroidTasteTheme`) — 45
