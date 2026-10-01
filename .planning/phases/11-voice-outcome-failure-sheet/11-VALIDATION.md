@@ -3,10 +3,11 @@ phase: "11"
 slug: "voice-outcome-failure-sheet"
 # status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6)
 # audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117)
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: "2026-09-30"
+validated: "2026-09-30"
 ---
 
 # Phase 11 — Validation Strategy
@@ -40,35 +41,49 @@ created: "2026-09-30"
 
 ## Per-Task Verification Map
 
-Populated by the planner/executor as tasks are authored; the Nyquist finalizer completes it post-execution.
+Finalized post-execution by the Nyquist finalizer (`/gsd-validate-phase 11 --auto`, auto-mode
+chain, 2026-09-30) — zero gaps found, all requirements automated-covered.
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 11-xx-xx | xx | 1 | VOUT-01/02 | — | Success/Failure render from props, no app nouns; "handled by" tier indicator renders | compose-ui | `./gradlew testDebugUnitTest --tests "*OutcomeSheetTest*"` | ❌ W0 | ⬜ pending |
-| 11-xx-xx | xx | 1 | VOUT-03 | — | Failure renders with error color role; optional action slot renders iff prop present | compose-ui | `./gradlew testDebugUnitTest --tests "*OutcomeSheetTest*"` | ❌ W0 | ⬜ pending |
-| 11-xx-xx | xx | 1 | VUNDO-01 | — | "Undo all (N)" + per-item undo + `Unavailable`/`Refused(reason, changedItem)` states render correctly | compose-ui | `./gradlew testDebugUnitTest --tests "*UndoAffordance*"` | ❌ W0 | ⬜ pending |
-| 11-xx-xx | xx | 1 | VCLAR-01 | — | Clarification composable renders question + options; `onSelect`/`onDismiss` fire correctly | compose-ui | `./gradlew testDebugUnitTest --tests "*Clarification*"` | ❌ W0 | ⬜ pending |
-| 11-xx-xx | xx | 1 | Naming-guard compliance (Pitfall 1) | — | Every new public composable's head token clears both drift guards | existing full-suite guard tests | `./gradlew testDebugUnitTest --tests "*DriftGuardTest*"` | ✅ | ⬜ pending |
-| 11-xx-xx | xx | 1 | API additivity | — | `v2.4.0`-in-progress diff vs `v2.3.0` stays additive | static/build-time | `./gradlew apiCheck` | ✅ | ⬜ pending |
+| 11-01 Task 1 (tracer) | 01 | 1 | VUNDO-01 | T-11-01..04 | Grouped undo API (`openGroup`/`attemptUndoGroup`/`groupStatus`), Mutex-guarded atomic claim-run-resolve, releasable-on-Refused | unit (coroutines-test) | `./gradlew testDebugUnitTest --tests "*UndoHistoryStoreTest*" --tests "*OutcomeSheetTest*"` | ✅ | ✅ green |
+| 11-01 Task 2 (auto) | 01 | 1 | VUNDO-01, VOUT-01/02 | T-11-01..04 | "Undo all (N)" + per-item undo + `Unavailable`/`Refused(reason, changedItem)` states render correctly; `inFlight` disables undo controls (CR-02 fix) | compose-ui | `./gradlew testDebugUnitTest && ./gradlew detekt && ./gradlew apiCheck` | ✅ | ✅ green |
+| 11-02 Task 1 (auto) | 02 | 1 | VCLAR-01 | T-11-05..07 | Clarification composable renders question + options; `onSelect`/`onDismiss` fire correctly; opaque-id passthrough, no auto-resolve | compose-ui | `./gradlew testDebugUnitTest --tests "*ClarificationBarTest*"` | ✅ | ✅ green |
+| 11-02 Task 2 (auto) | 02 | 1 | VCLAR-01 | T-11-05..07 | All four specless-probe VCLAR-01 edges pass as automated tests; id-uniqueness documented as consumer responsibility | compose-ui | `./gradlew testDebugUnitTest && ./gradlew detekt && ./gradlew apiCheck` | ✅ | ✅ green |
+| CR-01/02, WR-01..04 (review-fix) | fix | — | VOUT-01/02/03, VUNDO-01, VCLAR-01 | — | api.txt regenerated; `inFlight`→`locked` threaded into undo render path; `require()` maxTierId/onMaxTierChange pairing; `ClarificationBar` `FlowRow` wrap; `ProviderKeyCard` KDoc corrected | unit + compose-ui + static | `./gradlew testDebugUnitTest detekt apiCheck --no-daemon` | ✅ | ✅ green |
+| Naming-guard compliance (Pitfall 1) | both | 1 | — | — | Every new public composable's head token clears both drift guards | existing full-suite guard tests | `./gradlew testDebugUnitTest --tests "*DriftGuardTest*"` | ✅ | ✅ green |
+| API additivity | both | 1 | — | — | `v2.4.0`-in-progress diff vs `v2.3.0` stays additive | static/build-time | `./gradlew apiCheck` | ✅ | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+
+**Coverage verified independently three times this cycle:** full suite + detekt + apiCheck re-run
+by the orchestrator post-fix (`BUILD SUCCESSFUL`); targeted re-run by `gsd-verifier`
+(`OutcomeSheetTest` 15/15, `ClarificationBarTest` 9/9, `UndoHistoryStoreTest` group tests 25/25); and
+a fresh on-device re-run by `gsd-agentic-tester` during Gate-1 self-UAT (`OutcomeSheetTest` 15/15,
+`ClarificationBarTest` 9/9, `UndoHistoryStoreTest` 25/25). Zero gaps.
 
 ---
 
 ## Wave 0 Requirements
 
-- [ ] New test file for the outcome/failure composable (name pending naming decision) — covers VOUT-01/02/03
-- [ ] New test file for the undo affordance rendering — covers VUNDO-01
-- [ ] New test file for the clarification-choices composable — covers VCLAR-01
-- [ ] No new shared fixtures/conftest-equivalent needed — this repo's convention is per-family fixture functions declared in `explorer/*FamilyScreen.kt` (see `ProviderKeyCardFixture`/`ModelSelectCardFixture`/`ApproachLadderCardFixture` in `explorer/VoiceCommandFamilyScreen.kt`), plus ordinary Robolectric Compose test rules per test file — no framework install needed.
+- [x] New test file for the outcome/failure composable — `OutcomeSheetTest.kt` covers VOUT-01/02/03
+- [x] New test file for the undo affordance rendering — `UndoHistoryStoreTest.kt` + `OutcomeSheetTest.kt` cover VUNDO-01
+- [x] New test file for the clarification-choices composable — `ClarificationBarTest.kt` covers VCLAR-01
+- [x] No new shared fixtures/conftest-equivalent needed — this repo's convention is per-family fixture functions declared in `explorer/*FamilyScreen.kt` (see `ProviderKeyCardFixture`/`ModelSelectCardFixture`/`ApproachLadderCardFixture` in `explorer/VoiceCommandFamilyScreen.kt`), plus ordinary Robolectric Compose test rules per test file — no framework install needed.
 
 ---
 
 ## Manual-Only Verifications
 
-| Behavior | Requirement | Why Manual | Test Instructions |
-|----------|-------------|------------|-------------------|
-| Loud-failure and undo-refused visual treatment (error roles, sticky, not `AttentionCue`); clarification chips/buttons swappable design call | VOUT-03 / VUNDO-01 / VCLAR-01 | Visual/interaction judgment (Yahir is design-conscious); CONTEXT.md explicitly defers chips-vs-buttons/bar-vs-sheet-state to gallery review | Launch `ExplorerActivity` → Voice Command family → drive Failure, undo-refused/partial, and clarification states in light + dark at Gate-1 on the tester |
+**Resolved at Gate-1 (2026-09-30) — no items remain manual-only.** The goal-backward verifier
+flagged two visual/interaction-judgment items as `human_verification`; `gsd-agentic-tester` drove
+both live on-device (Samsung SM-S908U, `yahirs-s22-ultra-2`) in light + dark and recorded PASS for
+all 6 Gate-1 criteria (see `11-02-SELF-UAT.md`). The original manual-only row is preserved below
+for history; it is no longer outstanding.
+
+| Behavior | Requirement | Why Manual | Resolution |
+|----------|-------------|------------|------------|
+| Loud-failure and undo-refused visual treatment (error roles, sticky, not `AttentionCue`); clarification chips/buttons swappable design call | VOUT-03 / VUNDO-01 / VCLAR-01 | Visual/interaction judgment (Yahir is design-conscious); CONTEXT.md explicitly defers chips-vs-buttons/bar-vs-sheet-state to gallery review | **Resolved via Gate-1 self-UAT** — driven live on-device (ExplorerActivity → Voice Command family), held-press ripple-capture technique confirmed genuine per-element tap-responsiveness; all 6 criteria PASS. Gate-2 fragment registered in `.planning/HUMAN-UAT-PENDING.md` as a read-confirmation-only item (no outstanding visual concerns). |
 
 ---
 
@@ -91,22 +106,35 @@ Populated by the planner/executor as tasks are authored; the Nyquist finalizer c
 | A consumer accidentally logs or displays a secret (e.g. an API key) inside a `Failure.reason` string | Information Disclosure | Out of this phase's direct control — but the library must not itself log any prop value anywhere |
 | A malformed/duplicate clarification option `id` causes `onSelect` to resolve the wrong engine-side clarification | Tampering (logic-level) | The library renders `options` in the order given and calls `onSelect(option.id)` verbatim — uniqueness of `id` within one `options` list is the CONSUMER's responsibility; document in KDoc |
 
+**Formal threat verification:** see `.planning/phases/11-voice-outcome-failure-sheet/11-SECURITY.md`
+— 7/7 threats (T-11-01..07) closed, `threats_open: 0`, audited at ASVS L1 (`gsd-security-auditor`,
+2026-09-30).
+
+---
+
+## Validation Audit 2026-09-30
+
+| Metric | Count |
+|--------|-------|
+| Requirements checked | 5 (VOUT-01, VOUT-02, VOUT-03, VUNDO-01, VCLAR-01) |
+| Gaps found | 0 |
+| Resolved | 0 (none needed) |
+| Escalated | 0 |
+
+**Mode:** auto (`--auto` chain, `finalize_nyquist_gate`). Per the auto-mode contract, the
+`gsd-nyquist-auditor` was not spawned — a gap audit against existing SUMMARY/PLAN/VALIDATION
+artifacts plus the independently-confirmed green full suite found zero gaps, so no gap-filling
+was needed.
+
 ---
 
 ## Validation Sign-Off
 
-> **Plan-time state is a DRAFT.** Leave frontmatter `status: draft` and `nyquist_compliant: false`.
-> These are finalized ONLY post-execution by the Nyquist finalizer (the `verify:post` →
-> `validate-phase` hook, invoked by execute-phase `finalize_nyquist_validation` after Gate-1). Never
-> set `nyquist_compliant: true` — or otherwise "sign off" compliance — at plan time, and do not let
-> the plan-checker do so (INC-2026-07-27-01).
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 180s
+- [x] `nyquist_compliant: true` — finalizer's gap analysis found zero gaps (2026-09-30)
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 180s
-- [ ] _(finalizer-only, post-execution)_ `nyquist_compliant` — leave `false` at plan time; the
-      finalizer sets `true` iff its gap analysis finds zero gaps
-
-**Approval:** pending — finalizer-owned, not set at plan time
+**Approval:** verified 2026-09-30 (Nyquist finalizer, auto-mode chain)
