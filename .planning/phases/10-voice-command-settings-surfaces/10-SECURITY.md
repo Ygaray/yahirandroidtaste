@@ -7,7 +7,7 @@ threats_open: 0
 asvs_level: 1
 # audited_head = git HEAD sha at audit time — freshness stamp. child-result re-checks it: if
 # implementation (outside .planning) changed since this sha, the audit is stale (INC-2026-08-06-04).
-audited_head: bca91cebf6cc6bdb378df9042e25e1d430facde0
+audited_head: 9b0e1d8d90911b2a3972a23d4e1dc1b519fed420
 created: "2026-09-30"
 ---
 
@@ -69,6 +69,7 @@ level 1.
 | Audit Date | Threats Total | Closed | Open | Run By |
 |------------|---------------|--------|------|--------|
 | 2026-09-30 | 9 | 9 | 0 | gates-only re-drive orchestrator (grep-level ASVS L1 verification, short-circuited per Step 3 rule — no auditor subagent spawned) |
+| 2026-10-01 | 9 | 9 | 0 | gsd-security-auditor (RE-AUDIT, INC-2026-08-12-03 staleness trigger — prior audit's `audited_head` (`bca91ce`) predated Phase 11's `d46d7c1`/`3a6dfa4` and this phase's own code-review re-drive `0f51eff`/`87a0458`/`3c5a132`/`390e847`/`fb51807`/`107400a`; re-verified all 9 threats fresh against current HEAD, none re-opened; new `require()` pairing guards and `emptyProvidersReason` param assessed as hardening / already-covered by T-10-07, no new register entry needed) |
 
 ---
 
