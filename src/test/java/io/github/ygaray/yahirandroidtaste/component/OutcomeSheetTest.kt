@@ -464,6 +464,29 @@ class OutcomeSheetTest {
         assertEquals("ProposedItemUiModel(id=x, amended=false)", item.toString())
     }
 
+    // ── CR-01: NeedsConfirmation's own toString() must also stay privacy-safe (regression) ──
+
+    @Test
+    fun `NeedsConfirmation toString never prints title or reason`() {
+        val confirmation = VoiceOutcomeUiState.NeedsConfirmation(
+            reason = "This will permanently remove 'My Secret Diary' and its history.",
+            title = "Delete 'My Secret Diary'?",
+            items = listOf(ProposedItemUiModel(id = "card-1", title = "My Secret Diary")),
+            onConfirm = {},
+            onCancel = {}
+        )
+
+        val representation = confirmation.toString()
+
+        assertEquals(
+            "NeedsConfirmation(items=1, selectionMode=AllOrNothing, severity=Neutral)",
+            representation
+        )
+        assertEquals(false, representation.contains("My Secret Diary"))
+        assertEquals(false, representation.contains(confirmation.reason))
+        assertEquals(false, representation.contains(confirmation.title ?: ""))
+    }
+
     // ── VOUT-04: NeedsConfirmation -- batch, topLevelContent, per-item remove, edge coverage (Plan 01 Task 2) ──
 
     @Test

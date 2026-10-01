@@ -13,6 +13,9 @@ import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
  * Exactly two arms this phase (D-02): [Success] and [Failure]. The top level MUST stay stable —
  * Phase 12 adds a `NeedsConfirmation` third arm purely additively (a new sealed subtype), never a
  * reshape of either arm below. Do not guess at or pre-model that third arm here.
+ *
+ * Update (VOUT-04): a third arm, [NeedsConfirmation], now exists below -- see its own KDoc; this
+ * paragraph's "exactly two arms" describes the Phase 11 baseline only.
  */
 sealed interface VoiceOutcomeUiState {
 
@@ -118,4 +121,16 @@ sealed interface VoiceOutcomeUiState {
         val onConfirm: () -> Unit,
         val onCancel: () -> Unit
     ) : VoiceOutcomeUiState
+    {
+        /**
+         * Privacy-safe representation (mirrors
+         * [ProposedItemUiModel][io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel]'s
+         * own `toString()`) -- deliberately omits [reason] and [title], both caller-formatted,
+         * potentially subject-identifying free text (e.g. "Delete 'My Secret Diary'?"). Never let
+         * this class's default data-class-generated representation print verbatim into a log,
+         * crash report, or recomposition trace (D-05 privacy, T-12-01).
+         */
+        override fun toString(): String =
+            "NeedsConfirmation(items=${items.size}, selectionMode=$selectionMode, severity=$severity)"
+    }
 }
