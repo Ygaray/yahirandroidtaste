@@ -114,3 +114,87 @@ None — all 5 ROADMAP success criteria are genuine PASSes, each independently r
 ## Verdict
 
 All 5 criteria PASS → Gate-1 complete; the 2 visual/interaction-*feel* items remain correctly deferred to milestone v2.4 Gate-2 per the existing, unchanged standing-policy disposition (not re-litigated by this run). Registered in `.planning/uat-pending/10-voice-command-settings-surfaces.md` → `HUMAN-UAT-PENDING.md`.
+
+---
+
+## Addendum — 2026-10-01 re-verify re-drive (source materially changed since the 2026-09-30 run above)
+
+**Why this addendum exists:** source changed materially since the run above (`78477f7`): Phase 11 landed `maxTierId`/`onMaxTierChange` pairing enforcement as a `require()` throw, and this phase's own code-review re-drive added (WR-01) a symmetric `require()` guard for `offlineOnly`/`onOfflineOnlyChange`, (WR-02) a new "Unavailable" affordance for `enabled = false` rungs, and (WR-03) a defaulted `emptyProvidersReason` param on `ProviderKeyCard`. Per this workflow's own instruction, the prior `all_pass` verdict above is a claim to audit, not a fact — this addendum re-derives each affected criterion from the ROADMAP text and re-observes on the real running app at the new HEAD rather than trusting the inherited log.
+
+**Build identity (this run):** HEAD `b3fe6e7` (`git status --short -- src/ build.gradle.kts api.txt` clean at the time of this run). Old mavenLocal `1.10.0` artifact deleted; `./gradlew clean publishReleasePublicationToMavenLocal --no-daemon -q` → BUILD SUCCESSFUL. AAR md5 `ec4ab0a2221d7489700ac97714fc35f1`.
+
+**Device:** same rig, `R5CT10XNKQN` (Samsung SM-S908U, Android 15). Live-probed (`adb -s R5CT10XNKQN get-state` → `device`, both USB serial and tailnet `100.118.21.106:1496` listed in `adb devices`), leased (`gsd-lease.sh acquire device:R5CT10XNKQN`, owner `phase-10-1079787`), confirmed awake (`mWakefulness=Awake`) and unlocked (`deviceLocked=0` on the real user-0 trust record, `isKeyguardShowing=false`; the co-present `deviceLocked=1` is the unrelated Secure Folder profile, a known device quirk). Released at run end (`gsd-lease.sh release`, confirmed `RELEASED`).
+
+**Harness:** reused this session's existing scratchpad harness scaffold (`com.android.application`, AGP 9.2.1, `compileSdk { release(36) { minorApiLevel = 1 } }`, `minSdk 35`), rebuilt against the fresh `1.10.0` AAR. **Extended this run** with a second Activity, `FixtureActivity` (Compose added to the harness solely to host it), which directly instantiates `ApproachLadderCard` with a hand-crafted ladder — this is a D5 **programmatic-seed fallback**, not a UI-driven Arrange: no gallery fixture (`VoiceCommandFamilyScreen.kt`'s `fixtureLadder`) constructs a rung with `enabled = false`, so there is no UI path from the static compiled-in registry fixtures to the combined-affordance state the re-verify needed to exercise. `pm uninstall` confirmed the harness absent at run end (`pm list packages --user 0`, no match).
+
+**Unit suite (fresh at HEAD `b3fe6e7`, `--rerun-tasks`):** `ApproachLadderCardTest` 12/12 (grew from 7 → 12: the two new symmetric `require()`-pairing tests for `offlineOnly`/`onOfflineOnlyChange`, plus the new "a disabled rung renders greyed-but-present with an Unavailable affordance" test), `ProviderKeyCardTest` 6/6 (grew from 5 → 6, the new `emptyProvidersReason` test), `ModelSelectCardTest` 3/3, `ComponentRegistryDriftGuardTest` 1/1, `DomainVocabularyDriftGuardTest` 2/2 — all green, 0 failures/errors.
+
+### Re-verified: Criterion 4 (VAPPR-02, offline-only toggle) and Criterion 5 (VAPPR-03, max-tier cap) at new HEAD
+
+result: passed (re-confirmed)
+
+- **Rung:** 4 (UI structure tree), decisive — re-ran the same live interaction from the original run (tap "Offline only" → tap the "Hybrid" rung) against the gallery's default `ApproachLadderCard` cell.
+- **Did (drove):** Voice Command family → `ApproachLadderCard` → Default cell: tapped "Offline only" segment (`765,991`); re-dumped (Cloud gained "Needs network", correct — `offlineCapable = false`). Tapped "Hybrid" rung (`540,753`) to set the cap there; re-dumped (Cloud now shows BOTH "Capped" AND "Needs network" simultaneously, Hybrid/Local unaffected).
+- **Observed:** Both live emits (`onOfflineOnlyChange`, `onMaxTierChange`) still fire correctly and visibly on the real gallery card at the new HEAD — the `require()` additions did not regress the normal (paired-prop) path, as expected since the gallery's own fixture (`ApproachLadderCardFixture`) always supplies both props of each pair together. No regression.
+- **Evidence:** `redrive-ladder-default.xml`, `redrive-ladder-offline-toggled.xml`, `redrive-ladder-cap-tapped.xml` (`10-02-SELF-UAT-evidence-2026-10-01/`).
+
+### New: the WR-02 "Unavailable" affordance renders live, and co-exists structurally with "Capped"/"Needs network" on the same rung (ROADMAP SC5 / VAPPR-03, expanded scope)
+
+result: passed
+
+- **Rung:** 4 (UI structure tree) — decisive for the FUNCTIONAL claim this addendum targets ("does it render, structurally, when three affordances co-occur on one rung"). The *aesthetic* legibility/contrast judgment of three co-occurring subdued labels remains correctly deferred to milestone v2.4 Gate-2 per `10-VERIFICATION.md`/`10-UAT.md`'s explicit, already-recorded scope expansion — this addendum does not re-litigate that deferral, only confirms the underlying mechanism is genuinely functional (every label text node is actually present, none is dropped/overwritten when stacked).
+- **Target:** device (yahirs-s22-ultra-2, real hardware), via the `FixtureActivity` D5 programmatic-seed path (no gallery fixture constructs a disabled rung — see Harness note above).
+- **Expected:** per `10-VERIFICATION.md`'s explicit re-scope: "confirm a rung with `enabled = false` shows the new 'Unavailable' label legibly alongside the other two affordances" — i.e., when a rung is simultaneously `enabled = false`, above the max-tier cap, AND offline-incapable while `offlineOnly = true`, all three subdued labels ("Unavailable", "Capped", "Needs network") must render — none silently suppressed/overwritten by the others.
+- **Arranged (seeded):** a hand-crafted ladder passed directly to `ApproachLadderCard` via `FixtureActivity` (D5 programmatic seed, no UI path exists for this combination): `Cloud` (`id="cloud"`, `rank=3`, `enabled=false`, `offlineCapable=false`), `Hybrid` (`rank=2`, `enabled=true`, `offlineCapable=true`), `Local` (`rank=1`, `enabled=true`, `offlineCapable=true`); card instantiated with `offlineOnly=true`, `maxTierId="local"` — so `Cloud` is simultaneously disabled, above the cap, and needs-network.
+- **Did (drove):** Launched `FixtureActivity` directly (`am start -n io.github.ygaray.yahirandroidtasteharness/.FixtureActivity`); dumped the hierarchy.
+- **Observed:** The `Cloud` row's text nodes, in order, are exactly `"Cloud"`, `"Unavailable"`, `"Capped"`, `"Needs network"` — all three affordance labels present simultaneously on the one ineffective rung, each a distinct, intact text node (none merged/overwritten/dropped). `Hybrid` (enabled, offline-capable, above the cap) shows only `"Capped"` — correctly NOT "Unavailable" (it IS enabled) and NOT "Needs network" (it IS offline-capable), confirming the three conditions are independently gated, not conflated. `Local` (at the cap, enabled, offline-capable) shows no affordance at all — the fully-effective rung. This decisively proves the WR-02 mechanism: `ApproachLadderCard.kt:155-176`'s three `if` blocks (`!rung.enabled` → "Unavailable", `isCapped` → "Capped", `needsNetwork` → "Needs network") are independent and additive, not mutually exclusive, and none silently wins over the others when stacked on one rung. A supplementary screenshot was captured but a harness-only cosmetic issue (this throwaway `FixtureActivity` renders no system-bar insets padding, so its first rung is partly obscured by the status bar/title bar) made it non-decisive for a pixel read — not a library defect, since the decisive claim here is structural presence, already settled at rung 4, and the genuinely visual contrast/legibility judgment is the explicitly-deferred Gate-2 item, not this addendum's job.
+- **Evidence:** `redrive-fixture-combined-affordances.xml` (`10-02-SELF-UAT-evidence-2026-10-01/`) — `Cloud` row's text nodes `Cloud`/`Unavailable`/`Capped`/`Needs network` all present; `redrive-fixture-combined-affordances-shot.png` (supplementary, non-decisive per above); `ApproachLadderCardTest`'s new "a disabled rung renders greyed-but-present with an Unavailable affordance" test, 1/1 fresh at HEAD `b3fe6e7` (headless rung, confirms the single-affordance case; this device pass extends it to the triple-stacked case the unit suite does not cover).
+
+### Re-verified: Criterion 1 (VSET-01, ProviderKeyCard) at new HEAD, including the new `emptyProvidersReason` default
+
+result: passed (re-confirmed)
+
+- **Rung:** 5 (visual capture) — decisive for the masking/reveal claim, same as the original run; re-captured independently rather than trusting the prior screenshot.
+- **Did (drove):** Fresh navigation (relaunch → index → Voice Command → ProviderKeyCard, to rule out any stale-scroll-position false lead from an earlier fumbled attempt this session — see note below). Screenshotted the Pressed/Selected cell's key field BEFORE any tap (masked dots + "Show key" + "Clear text" visible). Tapped the reveal eye (`788,1508`). Screenshotted again.
+- **Observed:** Pre-tap: `••••••••••••••••••••` masked dots, eye icon = "Show key". Post-tap: `content-desc` flips to "Hide key" (confirmed via tree dump) AND the screenshot shows the literal raw text `sk-fixture-key-value` in the field — re-confirms the original run's finding at the new HEAD, byte-for-byte the same mechanism, unaffected by this phase's `require()`/`Unavailable`/`emptyProvidersReason` changes (none of which touch `ProviderKeyCard`'s reveal path). Provider dropdown on the Default cell: tapped to open (menu showed `OpenAI`/`Anthropic`/`Local (offline)`), tapped `Anthropic` — Default cell's dropdown updated to `"Anthropic"` live, while the untouched Pressed/Selected and Focused cells stayed `"OpenAI"` (per-instance isolation, re-confirmed). `emptyProvidersReason`'s new defaulted param produces no visible behavior change for any gallery fixture (all pass non-empty `providers` lists), consistent with its additive, backward-compatible contract — confirmed by `ProviderKeyCardTest` 6/6 (including the new empty-providers test, headless) rather than needing a device-level empty-providers demo (none exists in the gallery, and none is required — `ModelSelectCard`'s identical convention was already device-confirmed in the original run above).
+- **Adversarial note (process, not a defect):** mid-session, an earlier attempt at this same re-check landed on a transient blank-field read after a missed-then-retried tap sequence left the page in an inconsistent scroll/focus state (two stacked taps at stale coordinates from an earlier dump). A clean relaunch + fresh navigation + a single precise tap reproduced the correct masked→raw swap cleanly, matching the original run's finding exactly — recorded here so a future re-run doesn't mistake a self-inflicted stale-coordinate artifact for a reveal-mechanism regression.
+- **Evidence:** `redrive-pkc-pre-reveal.xml`/`redrive-pkc-pre-reveal-shot.png`, `redrive-pkc-post-reveal.xml`/`redrive-pkc-post-reveal-shot.png`, `redrive-provider-dropdown-open.xml`, `redrive-provider-selected-anthropic.xml` (`10-02-SELF-UAT-evidence-2026-10-01/`); `ProviderKeyCardTest` 6/6 fresh at HEAD `b3fe6e7`; `redrive-logcat.txt` (0 FATAL/Exception, 0 occurrences of `sk-fixture-key-value`, this run).
+
+### Re-verified: Criterion 2 (VSET-02, ModelSelectCard) at new HEAD
+
+result: passed (re-confirmed)
+
+- **Rung:** 4 (UI structure tree), decisive — no code in this diff touches `ModelSelectCard`; re-confirmed as a regression check only.
+- **Did (drove):** Voice Command family → `ModelSelectCard`; dumped the hierarchy.
+- **Observed:** Default cell shows `"GPT-4"`; Pressed/Selected shows `"Local Llama (offline)"`; Disabled cell (empty `models`) shows the caption `"Set a provider and key first"` in place of a dropdown. Identical to the original run's finding — no regression.
+- **Evidence:** `redrive-modelselectcard.xml` (`10-02-SELF-UAT-evidence-2026-10-01/`); `ModelSelectCardTest` 3/3 fresh at HEAD `b3fe6e7`.
+
+### Re-verified: Criterion 3 (VAPPR-01, ladder list order) at new HEAD
+
+result: passed (re-confirmed)
+
+- **Rung:** 1 (unit test), decisive, same reasoning as the original run (the gallery's own fixture is coincidentally alphabetical; only the unit test's deliberately-unsorted fixture can distinguish "preserved order" from "coincidental resort"). `ApproachLadderCardTest`'s list-order test, 1/1 fresh at HEAD `b3fe6e7` (part of the 12/12 suite run above). Device dumps across this addendum (`redrive-ladder-default.xml`, `redrive-fixture-combined-affordances.xml`) additionally show `Cloud, Hybrid, Local` top-to-bottom in every cell touched, consistent with list order, not re-sorted.
+- **Evidence:** `build/test-results/testDebugUnitTest/TEST-...ApproachLadderCardTest.xml` (this run, 12/12); device dumps above.
+
+## Summary (Addendum)
+
+total re-verified/newly-verified: 5 (Criteria 1-5, all re-confirmed; the new "Unavailable" + combined-affordance structural claim folded into Criterion 5)
+passed: 5
+partial: 0
+failed: 0
+infra: 0
+
+## Notes / anomalies (Addendum)
+
+- **The combined-legibility (aesthetic) judgment remains correctly deferred to Gate-2**, per `10-VERIFICATION.md`'s own explicit scope expansion ("Gate-2 should now also judge the combined legibility of up to three co-occurring subdued labels on one ineffective rung"). This addendum settles the functional/mechanism layer underneath that judgment — all three labels DO render, independently gated, none dropped or overwritten — which is a materially stronger finding than "the code looks right," since it was previously unexercised live by any prior self-UAT (flagged explicitly in `10-VERIFICATION.md`'s own why_human note).
+- **Harness note:** `FixtureActivity` (the direct-call seed harness added this run) is throwaway, uncommitted UAT scaffolding — same diagnose-only contract as the rest of the harness. Its lack of system-bar-insets handling is a harness cosmetic limitation, not a library finding; it did not block the decisive rung-4 structural proof.
+- **An incidental accessibility observation, NOT filed as a defect:** while chasing the stale-coordinate false lead (see Criterion 1's adversarial note), the `ProviderKeyCard` key field's `uiautomator`-reported `password="true"` attribute was observed to persist even after the reveal toggle flips to "Hide key" (visually unmasked). This is plausibly intentional/standard Android behavior (TalkBack/accessibility services conventionally still withhold password-field text from spoken announcement regardless of the visual masking state, to prevent audio shoulder-surfing) and is unrelated to this phase's diff (`ClearableTextField`'s `visualTransformation` forwarding is unchanged code, not touched by WR-01/02/03). It is not one of the 5 ROADMAP success criteria and is called out here only for completeness, not as a routed finding — a future phase involving accessibility-specific requirements should examine it with that lens if relevant, but it does not block this phase's gate.
+- Device lease (`phase-10-1079787`) and harness app both cleaned up at run end, confirmed by direct check (`RELEASED`, `pm list packages` absent).
+
+## Findings routed to gap-closure (Addendum)
+
+None. All criteria remain genuine PASSes at HEAD `b3fe6e7`; the newly-added `require()` guards, "Unavailable" affordance, and `emptyProvidersReason` default are all additive, correctly functioning, and introduce no regression to the previously-verified mechanisms.
+
+## Verdict (Addendum)
+
+All 5 ROADMAP success criteria remain PASS at HEAD `b3fe6e7`, independently re-derived and re-observed on the real running app (not trusted from the 2026-09-30 log above). The WR-01/02/03 changes are confirmed additive and non-regressing. The combined-legibility (three-subdued-labels) structural mechanism is now, for the first time, live-confirmed functional — closing the specific gap `10-VERIFICATION.md` flagged as unexercised by the prior self-UAT — while the remaining aesthetic/contrast judgment correctly stays deferred to milestone v2.4 Gate-2, unchanged. Gate-1 remains satisfied; no gap-closure routing required.
