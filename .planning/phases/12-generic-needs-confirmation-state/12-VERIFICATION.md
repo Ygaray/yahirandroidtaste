@@ -1,12 +1,25 @@
 ---
 phase: 12-generic-needs-confirmation-state
-verified: 2026-09-30T22:05:00Z
+verified: 2026-09-30T23:10:00Z
 status: passed
 score: 11/11 must-haves verified
-covered_files: [".planning/REQUIREMENTS.md", ".planning/phases/12-generic-needs-confirmation-state/12-01-PLAN.md", ".planning/phases/12-generic-needs-confirmation-state/12-01-SUMMARY.md", ".planning/phases/12-generic-needs-confirmation-state/12-REVIEW-FIX.md", ".planning/phases/12-generic-needs-confirmation-state/12-REVIEW.md", ".planning/phases/12-generic-needs-confirmation-state/12-SECURITY.md", ".planning/phases/12-generic-needs-confirmation-state/12-VALIDATION.md", "api.txt", "src/main/java/io/github/ygaray/yahirandroidtaste/component/OutcomeSheet.kt", "src/main/java/io/github/ygaray/yahirandroidtaste/explorer/VoiceCommandFamilyScreen.kt", "src/main/java/io/github/ygaray/yahirandroidtaste/model/ProposedItemUiModel.kt", "src/main/java/io/github/ygaray/yahirandroidtaste/model/VoiceOutcomeUiState.kt", "src/test/java/io/github/ygaray/yahirandroidtaste/component/OutcomeSheetTest.kt"]
-covered_digest: "v1:sha256:052d600053fb37d3f99f4cdda081fc8ae416bda913af128487df352b41f00ced"
+covered_files: [".planning/REQUIREMENTS.md", ".planning/phases/12-generic-needs-confirmation-state/12-01-PLAN.md", ".planning/phases/12-generic-needs-confirmation-state/12-01-SELF-UAT.md", ".planning/phases/12-generic-needs-confirmation-state/12-01-SUMMARY.md", ".planning/phases/12-generic-needs-confirmation-state/12-REVIEW-FIX.md", ".planning/phases/12-generic-needs-confirmation-state/12-REVIEW.md", ".planning/phases/12-generic-needs-confirmation-state/12-SECURITY.md", ".planning/phases/12-generic-needs-confirmation-state/12-VALIDATION.md", "api.txt", "src/main/java/io/github/ygaray/yahirandroidtaste/component/OutcomeSheet.kt", "src/main/java/io/github/ygaray/yahirandroidtaste/explorer/VoiceCommandFamilyScreen.kt", "src/main/java/io/github/ygaray/yahirandroidtaste/model/ProposedItemUiModel.kt", "src/main/java/io/github/ygaray/yahirandroidtaste/model/VoiceOutcomeUiState.kt", "src/test/java/io/github/ygaray/yahirandroidtaste/component/OutcomeSheetTest.kt"]
+covered_digest: "v1:sha256:c900a479b6d40f0dc0ba08fa3232e3142b767bf979c99aff07be7d9c380a8e04"
 behavior_unverified: 0
 overrides_applied: 0
+re_verification:
+  previous_status: passed
+  previous_score: 11/11
+  previous_head: 8d232e1
+  current_head: 0eae541
+  reason: "Prior VERIFICATION.md (8d232e1) went stale: 12-VALIDATION.md (Nyquist finalization) and 12-01-SELF-UAT.md (Gate-1 self-UAT) both landed afterward (commits c9b049a, 14f33e1, 0eae541). Re-run to refresh the digest and confirm no regression."
+  gaps_closed: []
+  gaps_remaining: []
+  regressions: []
+coincidental_reliance_items:
+  - truth: "The prop shape satisfies both SB's and CT's real shapes with zero library-side change"
+    reason: undeclared-precondition
+    harden: "The 'zero library-side change' guarantee still rests on 12-RESEARCH.md's cross-repo field analysis (independently re-confirmed against live consumer source) rather than an actual consumer integration commit in this repo. Consumer wiring is explicitly out of scope for this phase per ROADMAP — this will be closed by SecondBrain's/CalTracker's own consumer-side milestones, not by this repo."
 ---
 
 # Phase 12: Generic Needs-Confirmation State Verification Report
@@ -14,9 +27,24 @@ overrides_applied: 0
 **Phase Goal:** Consumers can render one domain-neutral needs-confirmation prompt that covers both
 SecondBrain's `MutationGate`/`VoiceConfirmGate` risk confirm and CalTracker's weak-match single/batch
 confirm — from props, with no library changes per consumer.
-**Verified:** 2026-09-30T22:05:00Z (against HEAD `8d232e1`)
+**Verified:** 2026-09-30T23:10:00Z (against HEAD `0eae541`)
 **Status:** passed
-**Re-verification:** No — initial verification
+**Re-verification:** Yes — digest-refresh re-run. The prior VERIFICATION.md (status: passed, 11/11,
+recorded at HEAD `8d232e1`) went stale once `12-VALIDATION.md` (Nyquist finalizer) and
+`12-01-SELF-UAT.md` (Gate-1 self-UAT) were updated in three subsequent commits (`c9b049a`, `14f33e1`,
+`0eae541`). This re-run confirms zero source regression and refreshes the fingerprint.
+
+## What Changed Since the Prior Verification
+
+`git diff --stat 8d232e1 HEAD` touches only planning/evidence artifacts: `.planning/HUMAN-UAT-PENDING.md`,
+`.planning/uat-pending/12-generic-needs-confirmation-state.md`, the new
+`12-01-SELF-UAT-evidence/` screenshot+XML capture directory, `12-01-SELF-UAT.md` (new file, Gate-1
+run), and `12-VALIDATION.md` (status `draft`→`validated`, `nyquist_compliant: true`, finalizer
+sign-off section added). **Zero bytes changed** in `src/`, `api.txt`, `build.gradle.kts`, or
+`tools/` — confirmed via `git diff --stat 8d232e1 HEAD -- src/ api.txt build.gradle.kts tools/`
+(empty output) and via `git log -1 --format=%H -- <the 5 phase files>` resolving to `6bdfd9fa`, a
+commit that predates `8d232e1`. No regression is possible from source drift; this re-verification
+re-proves the same 11 truths hold and additionally confirms the two newly-landed docs are honest.
 
 ## Goal Achievement
 
@@ -24,76 +52,110 @@ confirm — from props, with no library changes per consumer.
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | Outcome sheet renders `NeedsConfirmation` from props: reason, items, confirm/cancel actions, via the existing exhaustive `when` (no new top-level composable) | ✓ VERIFIED | `OutcomeSheet.kt:68` adds `is VoiceOutcomeUiState.NeedsConfirmation -> NeedsConfirmationBody(outcome)` as the third exhaustive `when` arm; `NeedsConfirmationBody` renders title/reason/reversibilityHint/items/Confirm/Cancel (lines 301-339); Compose test `NeedsConfirmation with a single item renders its title, reason, reversibilityHint...` passes (27/27 green, see Behavioral Spot-Checks) |
-| 2 | The SAME `NeedsConfirmationBody`/`ProposedItemRow` composables render both a single item and a batch, no size-based branching | ✓ VERIFIED | Single code path `confirmation.items.forEach { item -> ProposedItemRow(item) }` (`OutcomeSheet.kt:320`) — no `if (items.size == 1)` branch anywhere in the type or render function (grep-confirmed). Test `a batch of 3 items renders exactly 3 rows...` and the single-item test both exercise this identical function and pass |
-| 3 | Confirm/Cancel each emit via callback, domain-neutral, exactly once | ✓ VERIFIED | `onConfirm`/`onCancel` appear ONLY as `DynamicActionButton` `onClick` params (`OutcomeSheet.kt:328`, `:334`) — no other call site exists in the file. Tests `tapping the Confirm button invokes onConfirm exactly once and does not invoke onCancel` and the Cancel counterpart both pass. Field/param names (`reason`, `items`, `title`, `severity`, `confirmLabel`, `cancelLabel`, `onConfirm`, `onCancel`, `id`, `subtitle`, `confidenceCue`, `amended`, `onRemove`, `trailingContent`) are fully domain-neutral; `grep -i "secondbrain\|caltracker\|mutationgate\|...` in the 3 production files hits KDoc traceability comments only, never a field/function/type name |
-| 4 | Prop shape satisfies both SB's and CT's real shapes with zero library-side change | ✓ VERIFIED (coincidental-reliance caveat — see below) | 12-RESEARCH.md's field-level cross-check is grounded in real consumer source read live this session: verified `/home/yahir/Projects/AndroidApps/Personal/SecondBrain/.../VoiceConfirmGate.kt` (`ConfirmSubject` 4-arm sealed type, `PendingConfirmation.toString()` precedent) and `/home/yahir/Projects/AndroidApps/Personal/CalTracker_Android/.../VoiceLogUiState.kt` (`ProposedBatch(rows, date, transcript)`, `BatchItemState(..., needsAttention: Boolean)`) both exist on disk and match the field names RESEARCH.md cites verbatim (independently re-grepped, confirmed) |
-| 5 | `ProposedItemUiModel.toString()` never prints title/subtitle/confidenceCue | ✓ VERIFIED | `ProposedItemUiModel.kt:42`: `override fun toString(): String = "ProposedItemUiModel(id=$id, amended=$amended)"`. Unit test passes |
-| 6 | `NeedsConfirmation`'s own default `toString()` does not leak `title`/`reason` (CR-01 fix) | ✓ VERIFIED | `VoiceOutcomeUiState.kt:133-134` adds the override; regression test `NeedsConfirmation toString never prints title or reason` passes, asserting exact output and absence of the subject-identifying strings |
-| 7 | No merge/dedup of items sharing `id` or `title` | ✓ VERIFIED | `Column`+`forEach` has no key-based dedup logic; test `two items sharing the same id, and separately two sharing the same title, both render as 2 separate rows` asserts 4 rows for 4 items incl. 2 duplicate pairs — passes |
-| 8 | Empty items list renders zero rows without crashing; single-element renders exactly one | ✓ VERIFIED | Test `an empty items list renders zero item rows without crashing...` asserts 0 rows + reason/buttons still render; single-item test asserts exactly 1 row — both pass |
-| 9 | `id` is an opaque `String`, never normalized/case-folded | ✓ VERIFIED (backstop) | Code inspection: `ProposedItemUiModel.id` is a plain `String` field; no normalization/case-fold/encoding logic exists anywhere in `OutcomeSheet.kt`'s handling of `item.id` (`id` is never read by the rendering code at all — only `onRemove`/`title`/`subtitle`/`confidenceCue`/`trailingContent` are) |
-| 10 | Items render in exact supplied list order, never resorted | ✓ VERIFIED | `confirmation.items.forEach` (list-order iteration, no `sortedBy`/`sortedWith`); test `items with duplicate titles still render in the exact supplied list order, never resorted` passes with 3 identical-titled items distinguished only by order-dependent subtitle assertions |
-| 11 | No auto-confirm/auto-cancel without an explicit tap (safety prohibition) | ✓ VERIFIED | `onConfirm`/`onCancel` referenced only as `DynamicActionButton.onClick` arguments — no `LaunchedEffect`, no timeout, no composition-time invocation anywhere in `NeedsConfirmationBody`/`ProposedItemRow` (full-file read, confirmed) |
+| 1 | Outcome sheet renders `NeedsConfirmation` from props: reason, items, confirm/cancel actions, via the existing exhaustive `when` (no new top-level composable) | ✓ VERIFIED | `OutcomeSheet.kt:68` adds `is VoiceOutcomeUiState.NeedsConfirmation -> NeedsConfirmationBody(outcome)` as the third exhaustive `when` arm (unchanged since last verification, re-confirmed via `git log` on the file). Re-ran `./gradlew testDebugUnitTest --tests "*OutcomeSheetTest*" --rerun-tasks` fresh in this session: `tests="27" skipped="0" failures="0" errors="0"`. Additionally confirmed live on real hardware in `12-01-SELF-UAT.md` Criterion 1 (uiautomator dump matches fixture props exactly) |
+| 2 | The SAME `NeedsConfirmationBody`/`ProposedItemRow` composables render both a single item and a batch, no size-based branching | ✓ VERIFIED | Single code path `confirmation.items.forEach { item -> ProposedItemRow(item) }` (`OutcomeSheet.kt:320`), unchanged. Unit tests pass (27/27, re-run fresh). Gate-1 self-UAT Criterion 2 additionally confirms live: single fixture renders exactly 1 row, batch fixture renders exactly 3 rows + `topLevelContent` exactly once (not per-item) |
+| 3 | Confirm/Cancel each emit via callback, domain-neutral, exactly once | ✓ VERIFIED | `onConfirm`/`onCancel` only reachable via `DynamicActionButton` `onClick` (unchanged). Unit tests pass. Gate-1 self-UAT Criterion 3 additionally confirms live: all rendered fixture text across both fixtures (10+ strings) contains zero SecondBrain/CalTracker-specific nouns, and all 3 dismiss gestures (back/outside-tap/swipe) route through the same `onCancel` decline path with zero crash/flash on real hardware |
+| 4 | Prop shape satisfies both SB's and CT's real shapes with zero library-side change | ✓ VERIFIED (coincidental-reliance caveat — see below) | Unchanged from prior verification: 12-RESEARCH.md's field-level cross-check grounded in live consumer source read, independently re-verified to exist and match. Gate-1 self-UAT additionally confirms both named gallery fixtures (SB-shaped single-destructive, CT-shaped batch) render correctly from the identical `NeedsConfirmation`/`OutcomeSheet` path on real hardware with zero library-side branching beyond `items.forEach` |
+| 5 | `ProposedItemUiModel.toString()` never prints title/subtitle/confidenceCue | ✓ VERIFIED | `ProposedItemUiModel.kt:42` override unchanged. Regression test passes fresh |
+| 6 | `NeedsConfirmation`'s own default `toString()` does not leak `title`/`reason` (CR-01 fix) | ✓ VERIFIED | `VoiceOutcomeUiState.kt:133-134` override unchanged. Regression test passes fresh |
+| 7 | No merge/dedup of items sharing `id` or `title` | ✓ VERIFIED | Unchanged `Column`+`forEach`, no dedup logic. Test asserting 4 separate rows for 4 items incl. 2 duplicate pairs passes fresh |
+| 8 | Empty items list renders zero rows without crashing; single-element renders exactly one | ✓ VERIFIED | Both tests pass fresh |
+| 9 | `id` is an opaque `String`, never normalized/case-folded | ✓ VERIFIED (backstop) | Unchanged code inspection: no normalization logic exists; `id` is never read by rendering code at all |
+| 10 | Items render in exact supplied list order, never resorted | ✓ VERIFIED | Unchanged `forEach` iteration, no sort. Order-dependent test passes fresh |
+| 11 | No auto-confirm/auto-cancel without an explicit tap (safety prohibition) | ✓ VERIFIED | Unchanged: `onConfirm`/`onCancel` only referenced as `onClick` arguments, no `LaunchedEffect`/timeout/composition-time invocation. Gate-1 self-UAT additionally confirms live: all 3 dismiss gestures close cleanly without ever invoking `onConfirm`, only routing to `onCancel` via the documented contract |
 
 **Score:** 11/11 truths verified (0 present-but-behavior-unverified)
 
-**Note on Truth 4 (coincidental-reliance, advisory only):** The "no library-side change" guarantee rests on 12-RESEARCH.md's live cross-repo field analysis rather than an actual SecondBrain/CalTracker consumer wiring commit (deferred to each consumer's own milestone, per SUMMARY.md's "Next Phase Readiness" and ROADMAP's explicit phase scoping — this phase ships the library side only). I independently re-verified the cited consumer source files exist and their field names match the research's claims verbatim, which is strong supporting evidence, but the claim is not closed by an actual consumer integration in this repo. This does not block this phase (consumer wiring is explicitly out of scope per ROADMAP Phase 12 vs. the "secondbrain-mutationgate-wiring"/"caltracker-voiceresultsheet-wiring" downstream items in SUMMARY.md's `affects:` field) — flagged here as a hardening note, not a gap.
+**Note on Truth 4 (coincidental-reliance, advisory only — unchanged from prior verification):** The
+"no library-side change" guarantee still rests on 12-RESEARCH.md's cross-repo field analysis rather
+than an actual consumer integration commit in this repo. Consumer wiring is explicitly out of scope
+for this phase per ROADMAP (deferred to SecondBrain's/CalTracker's own milestones). Not a gap for
+this phase.
 
 ### Required Artifacts
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `model/VoiceOutcomeUiState.kt` | `NeedsConfirmation` third sealed arm, additive only | ✓ VERIFIED | Arm present with all 11 documented fields; `Success`/`Failure` byte-identical (confirmed via `tools/verify-additive-diff.sh v2.3.0`: 0 removed lines) |
-| `model/ProposedItemUiModel.kt` | New file: model + `SelectionMode` enum | ✓ VERIFIED | File exists, both types present, privacy-safe `toString()` |
-| `component/OutcomeSheet.kt` | `NeedsConfirmationBody`/`ProposedItemRow` private composables, wired into the `when` | ✓ VERIFIED | Both present, `private`, third `when` arm wired |
-| `explorer/VoiceCommandFamilyScreen.kt` | Fixtures + gallery buttons, no new `ComponentRegistry.Entry` | ✓ VERIFIED | 3 fixtures present (single-destructive, batch, trailingContent); `ComponentRegistryDriftGuardTest`/`DomainVocabularyDriftGuardTest` both green with zero edits |
-| `test/.../OutcomeSheetTest.kt` | VOUT-04 test section | ✓ VERIFIED | 14 new VOUT-04 test cases found; full suite 27/27 pass |
+| `model/VoiceOutcomeUiState.kt` | `NeedsConfirmation` third sealed arm, additive only | ✓ VERIFIED | Unchanged since last verification (`git log` resolves to `6bdfd9fa`, pre-dating prior pass); `./gradlew apiCheck` re-run clean |
+| `model/ProposedItemUiModel.kt` | New file: model + `SelectionMode` enum | ✓ VERIFIED | Unchanged, both types present |
+| `component/OutcomeSheet.kt` | `NeedsConfirmationBody`/`ProposedItemRow` private composables, wired into the `when` | ✓ VERIFIED | Unchanged, both present and wired |
+| `explorer/VoiceCommandFamilyScreen.kt` | Fixtures + gallery buttons, no new `ComponentRegistry.Entry` | ✓ VERIFIED | Unchanged; `ComponentRegistryDriftGuardTest`/`DomainVocabularyDriftGuardTest` re-run green in full-suite run |
+| `test/.../OutcomeSheetTest.kt` | VOUT-04 test section | ✓ VERIFIED | Unchanged, 27/27 re-run fresh this session |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |------|-----|-----|--------|---------|
-| `VoiceOutcomeUiState`'s exhaustive `when` | `OutcomeSheet.kt` render | Third `NeedsConfirmation` arm | ✓ WIRED | Compiles; `when (outcome)` has exactly 3 branches, compiler-enforced exhaustiveness |
-| `NeedsConfirmation.severity` | `DynamicActionButton`'s `role` param | Direct pass-through | ✓ WIRED | `OutcomeSheet.kt:333`: `role = confirmation.severity` on the Confirm button; `severity Destructive still renders a clickable Confirm button whose tap invokes onConfirm` test passes |
-| `OutcomeSheet.onDismissRequest` | `NeedsConfirmation.onCancel` | Documented integration contract + gallery reference impl | ✓ WIRED (reference impl) | Not library-enforceable by design (confirmed: `NeedsConfirmation` is a plain data class with no composition-time interception point) — documented in KDoc (`VoiceOutcomeUiState.kt:81-86`); the library's own gallery (the canonical usage reference) now honors it post WR-01 fix: `VoiceCommandFamilyScreen.kt:515` `(outcome as? VoiceOutcomeUiState.NeedsConfirmation)?.onCancel?.invoke()` before clearing `visibleOutcome` |
-| `voiceCommandFamilyEntries`'s registered `OutcomeSheet` Entry | `OutcomeSheetVariants()` | New fixtures appended inside, no new `Entry` | ✓ WIRED | `ComponentRegistryDriftGuardTest` (1/1 pass), `DomainVocabularyDriftGuardTest` (2/2 pass) — zero allowlist/entry edits needed |
+| `VoiceOutcomeUiState`'s exhaustive `when` | `OutcomeSheet.kt` render | Third `NeedsConfirmation` arm | ✓ WIRED | Unchanged; compiles, 3-branch exhaustive `when` |
+| `NeedsConfirmation.severity` | `DynamicActionButton`'s `role` param | Direct pass-through | ✓ WIRED | Unchanged; Gate-1 self-UAT additionally confirms live: Destructive severity renders unambiguous red/error-tinted Confirm button text on real hardware (decisive screenshot) |
+| `OutcomeSheet.onDismissRequest` | `NeedsConfirmation.onCancel` | Documented integration contract + gallery reference impl | ✓ WIRED (reference impl) | Unchanged (WR-01 fix); Gate-1 self-UAT additionally confirms live: all 3 dismiss gestures (back/outside-tap/swipe) genuinely route through `onCancel` on real hardware with zero crash/flash — not merely re-read from source |
+| `voiceCommandFamilyEntries`'s registered `OutcomeSheet` Entry | `OutcomeSheetVariants()` | New fixtures appended inside, no new `Entry` | ✓ WIRED | Unchanged; drift guards re-run green |
 
-### Behavioral Spot-Checks
+### Behavioral Spot-Checks (re-run fresh this session, at HEAD `0eae541`)
 
 | Behavior | Command | Result | Status |
 |----------|---------|--------|--------|
-| Full `OutcomeSheetTest` suite (27 cases incl. 14 new VOUT-04 cases) | `./gradlew testDebugUnitTest --tests "*OutcomeSheetTest*"` | `BUILD SUCCESSFUL`; XML report: `tests="27" skipped="0" failures="0" errors="0"` | ✓ PASS |
-| Full suite + both full-suite-only drift guards | `./gradlew testDebugUnitTest` | `ComponentRegistryDriftGuardTest` 1/1, `DomainVocabularyDriftGuardTest` 2/2, `GeneratedSymbolDriftGuardTest` 2/2 — all 0 failures | ✓ PASS |
+| Full `OutcomeSheetTest` suite (27 cases incl. 14 VOUT-04 cases), forced rerun | `./gradlew testDebugUnitTest --tests "*OutcomeSheetTest*" --rerun-tasks` | `BUILD SUCCESSFUL`; XML report: `tests="27" skipped="0" failures="0" errors="0"` | ✓ PASS |
+| Full suite + both full-suite-only drift guards | `./gradlew testDebugUnitTest` | `BUILD SUCCESSFUL` (35 tasks, no failures) | ✓ PASS |
 | Zero detekt code smells, zero baseline | `./gradlew detekt` | `BUILD SUCCESSFUL` | ✓ PASS |
-| Metalava API additivity vs `v2.3.0` | `./gradlew apiCheck` | `BUILD SUCCESSFUL`; `api.txt` contains `NeedsConfirmation`/`ProposedItemUiModel`/`SelectionMode` new public symbols | ✓ PASS |
+| Metalava API additivity vs `v2.3.0` | `./gradlew apiCheck` | `BUILD SUCCESSFUL` | ✓ PASS |
 | DS-05 append-only source-diff guard vs `v2.3.0` | `bash tools/verify-additive-diff.sh v2.3.0` | `DS-05 PASS: 0 removed line(s), all accounted for by an identical added line (append-only)` | ✓ PASS |
-| No debt markers (TBD/FIXME/XXX/TODO/HACK/PLACEHOLDER) in the 5 phase files | `grep -n -E "TBD\|FIXME\|XXX\|TODO\|HACK\|PLACEHOLDER"` | 0 matches | ✓ PASS |
+| No debt markers (TBD/FIXME/XXX/TODO/HACK/PLACEHOLDER) in the 5 phase files | `grep -n -E "TBD\|FIXME\|XXX\|TODO\|HACK\|PLACEHOLDER"` across all 5 | 0 matches (exit 1 = no match) | ✓ PASS |
+
+All five checks were executed directly in this verification session against current HEAD
+(`0eae541`), not copied from `12-01-SELF-UAT.md`'s or the prior `12-VERIFICATION.md`'s claims.
+
+### Gate-1 Self-UAT Cross-Check (new evidence since prior verification)
+
+`12-01-SELF-UAT.md` (`status: complete`, `result: all_pass`, run `2026-09-30T22:10:00Z` on Samsung
+SM-S908U / `yahirs-s22-ultra-2`) drove the real running app and reports all 4 ROADMAP success
+criteria PASS, plus resolves all 3 of `12-VALIDATION.md`'s Manual-Only Verifications table items
+(swipe/back/outside-tap dismiss-as-decline, destructive-severity visual styling, batch per-row
+Remove tap isolation) live on-device. Read in full for this re-verification; the evidence trail
+(uiautomator XML dumps + screenshots in `12-01-SELF-UAT-evidence/`) is internally consistent with
+the claims (decisive rungs named per-criterion, adversarial notes disclosing two self-inflicted
+tester navigation mishaps during Arrange with no bearing on the code under test, and an honest
+caveat that the gallery's `onRemove` demo callbacks are no-ops by established convention —
+addressed at the decisive layer via a held-press ripple capture + the per-row unit test rather than
+an unavailable visual side effect). `12-VALIDATION.md`'s finalizer sign-off (`nyquist_compliant:
+true`, zero gaps) is consistent with this session's own fresh re-run of the same commands it cites
+(`testDebugUnitTest`, `detekt`, `apiCheck`, all green).
+
+This self-UAT is a separate downstream gate (Gate-1 → Gate-2 human sign-off, tracked in
+`.planning/HUMAN-UAT-PENDING.md` as `pending`) and does not itself change this phase-goal
+verification's status — it corroborates it. The 3 Manual-Only items remain correctly outside this
+report's `human_verification` section (as in the prior verification) because they are owned by that
+separate, already-exercised downstream gate, not by this goal-backward pass.
 
 ### Requirements Coverage
 
 | Requirement | Source Plan | Description | Status | Evidence |
 |-------------|------------|-------------|--------|----------|
-| VOUT-04 | 12-01-PLAN.md | Generic needs-confirmation state, domain-neutral, single+batch | ✓ SATISFIED | REQUIREMENTS.md line 76: `VOUT-04 \| Phase 12 \| Complete`; all supporting truths verified above. No orphaned requirements — VOUT-04 is the only ID mapped to Phase 12 in REQUIREMENTS.md and it matches the plan's own `requirements: [VOUT-04]` frontmatter |
-
-### Code Review + Security Audit (post-execution hardening, verified against current HEAD)
-
-- **12-REVIEW.md** found 7 issues (1 critical: CR-01 `toString()` privacy leak; 5 warnings: WR-01 gallery dismiss contract, WR-02 undocumented `amended` no-op, WR-03 untested `trailingContent`, WR-04 missing spacing, WR-05 stale KDoc; 1 info: IN-01 redundant default). **12-REVIEW-FIX.md** reports all 7 fixed — independently confirmed by reading current source: `NeedsConfirmation.toString()` override present (CR-01), gallery dismiss wired to `onCancel` (WR-01), `amended` KDoc updated (WR-02), `trailingContent` has its own fixture + passing test (WR-03), `horizontalArrangement` present on both rows (WR-04), KDoc has the "Update (VOUT-04)" correction paragraph (WR-05), `selectionMode = SelectionMode.AllOrNothing` explicit assignment removed from the batch fixture (IN-01).
-- **12-SECURITY.md**: `threats_open: 0`, `audited_head: 26cc481...`. Current HEAD is `8d232e1`, one commit ahead of the audited head; `git show --stat 8d232e1` confirms that commit touched only `12-SECURITY.md` itself (68 lines added, no source change) — the security audit is current against the shipped implementation, not stale.
+| VOUT-04 | 12-01-PLAN.md | Generic needs-confirmation state, domain-neutral, single+batch | ✓ SATISFIED | `.planning/REQUIREMENTS.md:76`: `VOUT-04 \| Phase 12 \| Complete`; line 29 marks the requirement `[x]`. All supporting truths verified above, re-confirmed at current HEAD. No orphaned requirements |
 
 ### Anti-Patterns Found
 
-None. Grep for `TBD|FIXME|XXX|TODO|HACK|PLACEHOLDER`, `placeholder|coming soon|not yet implemented`, and empty-implementation patterns across all 5 phase-modified files returned zero matches.
+None. Grep for `TBD|FIXME|XXX|TODO|HACK|PLACEHOLDER` across the 5 phase-modified files returned zero
+matches, re-run fresh this session.
 
 ### Human Verification Required
 
-None for this goal-backward verification. 12-VALIDATION.md's "Manual-Only Verifications" table lists 3 items (swipe-dismiss-as-decline, destructive-severity visual color, batch-remove-end-to-end interactive flow) — these are explicitly scoped to Gate-1 self-UAT per the plan's own `<verification>` block and 12-01-SUMMARY.md's "Next Phase Readiness" (routed to `gsd-agentic-tester`), not to this phase-goal verification. They are not duplicated here as `human_verification` items because the phase's own planning artifacts already own and track them as a separate downstream gate; all unit-testable behavior behind those 3 manual items (tap-fires-callback, remove-fires-per-row, severity renders a clickable button) IS covered by the automated suite above.
+None for this goal-backward verification. As in the prior pass, the 3 Manual-Only items from
+`12-VALIDATION.md` are owned by the separate Gate-1 self-UAT gate — and unlike the prior
+verification, that gate has now actually run and reports all 3 PASS with device evidence
+(`12-01-SELF-UAT.md`), further reducing residual risk rather than leaving it open.
 
 ### Gaps Summary
 
-None. All 4 ROADMAP success criteria and all 11 plan-level must-have truths are verified against current HEAD (`8d232e1`), not just the original plan/summary snapshot. The full verification suite (27 unit tests, 3 drift guards, detekt, apiCheck, DS-05 additive-diff) passes when re-run directly in this session. All 7 code-review findings and all 3 security threats are closed and independently confirmed fixed in the current source, not merely claimed.
+None. This is a digest-refresh re-verification, not a gap-closure cycle — the prior verification
+(HEAD `8d232e1`) already passed 11/11 with zero gaps. Re-confirmed zero source drift between
+`8d232e1` and current HEAD `0eae541` (`git diff --stat` on `src/`, `api.txt`, `build.gradle.kts`,
+`tools/` is empty), re-ran the full build/test/lint/API/additive-diff suite fresh in this session
+(all green, matching the prior pass's results bit-for-bit), and cross-checked the two newly-landed
+planning docs (`12-VALIDATION.md` finalization, `12-01-SELF-UAT.md` Gate-1 run) for internal
+consistency and consistency with the re-run build evidence. No regressions found.
 
 ---
 
-_Verified: 2026-09-30T22:05:00Z_
+_Verified: 2026-09-30T23:10:00Z_
 _Verifier: Claude (gsd-verifier)_
