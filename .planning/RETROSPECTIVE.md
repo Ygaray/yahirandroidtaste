@@ -36,6 +36,39 @@
 
 ---
 
+## Milestone: v2.4 — AI-Voice Command UI
+
+**Shipped:** 2026-10-01 (library `v2.4.0`)
+**Phases:** 5 (10–14) | **Plans:** 7 | **Tasks:** 15
+
+### What Was Built
+- Tenth "Voice Command" `ComponentRegistry` family: `ProviderKeyCard`, `ModelSelectCard`, `ApproachLadderCard` (settings), `OutcomeSheet` (handled-by indicator + loud failure + generic undo + needs-confirmation), `ClarificationBar` (tap-to-clarify) — all prop-driven, engine-free (INV-01), strictly additive vs `v2.3.0`.
+- Additive `VoiceOutcomeUiState.NeedsConfirmation` sealed arm covering SB risk-confirm and CT weak-match/batch confirm with zero per-consumer library change.
+- Cut library `v2.4.0` autonomously (A12 tag-gate waiver), JitPack-confirmed, §11 ledger relayed to the orchestrator.
+
+### What Worked
+- The vae-bilingual orchestrator-driven close: Gate-2 batched at the shared device with the owner, verdict relayed and recorded with explicit "via orchestrator" provenance — cleanly decoupled the headless hub session from the human's physical presence.
+- Isolating the immutable tag cut in its own phase (14, split from 13) so the cut provably followed a green Phase 13 (§11 step 1).
+- A live A3 gallery fixture added post-tag (explorer-only, drift-guard-denylisted) made the one screenshot-only Gate-2 item reviewable on-device without touching the tag or public API.
+
+### What Was Inefficient
+- Phase verifications re-staled (mtime) after the downstream Phase 13 doc + Phase 14 tag commits, forcing an override_closeout again — the same noise flagged at v2.0's close; still no mtime-vs-content discrimination at milestone close.
+- A transient session rate-limit killed the Phase 13 plan stage mid-run; recovered cleanly on re-drive, but a long autonomous milestone run stays exposed to session-limit interruptions.
+
+### Patterns Established
+- Gate-2-via-orchestrator relay for an owner who reviews at a shared device while the repo session stays headless.
+- Post-tag, gallery-only review fixtures (additive, explorer-denylisted) as a sanctioned way to make a deferred visual item reviewable without disturbing an immutable release.
+
+### Key Lessons
+1. For a library repo the **tag**, not `main`, is what consumers resolve — `main` can lag `origin` without affecting the coordinate, but back it up deliberately rather than letting the whole milestone history sit local-only.
+2. Dispatch GSD-generated child prompts **verbatim** (INC-2026-09-30-04): adding even accurate, CONTEXT-redundant claims to a child prompt is a protocol deviation; the planner reads CONTEXT.md regardless.
+
+### Cost Observations
+- Model mix: Opus driver + Sonnet milestone-phase orchestrators/executors; one agentic-tester run (device).
+- Notable: claude-mem capture degraded again (opencode outage at session start); one session rate-limit mid-run.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -44,6 +77,7 @@
 |-----------|--------|------------|
 | v1.0 — Hub Stewardship | 5 | Introduced two-tier design system, governance drift guards, repin matrix |
 | v2.0 — Line Reunification | 4 | Forward-port reunification onto one line; coverage-classified UAT; escalate-with-evidence certification over buggy resolver |
+| v2.4 — AI-Voice Command UI | 5 | Cross-repo orchestrator-driven milestone run + Gate-2-via-orchestrator relay; autonomous A12 tag cut; isolated tag-cut phase |
 
 ### Cumulative Quality
 
@@ -51,6 +85,7 @@
 |-----------|--------------|-------------|----------------------|
 | v1.0 | (shipped, library v2.0.0) | — | green |
 | v2.0 | 10/10 satisfied | CLEAN | green except pre-existing KI-2026-09-27-01 (TextCard.kt, unrelated) |
+| v2.4 | 16/16 satisfied | CLEAN | green (zero baseline) |
 
 ### Top Lessons (Verified Across Milestones)
 

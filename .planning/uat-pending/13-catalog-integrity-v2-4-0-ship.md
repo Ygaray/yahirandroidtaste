@@ -1,6 +1,6 @@
 ### Phase 13 — catalog-integrity-v2-4-0-ship (v2.4)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir (PASS via orchestrator), 2026-10-01`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.4 (Voice Command settings/outcome surfaces → generic confirmation state → catalog integrity & docs → ship)
 - **Gate 1 self-UAT log:** [`.planning/phases/13-catalog-integrity-v2-4-0-ship/13-01-SELF-UAT.md`](phases/13-catalog-integrity-v2-4-0-ship/13-01-SELF-UAT.md) — Verdict: **ALL 4 criteria PASS** (no device/app surface in scope — this phase shipped zero composable/UI source changes, confirmed via `git show --stat` across all 15 phase-13 commits: only `.planning/*.md`, `README.md`, `API.md`, `CLAUDE.md`, and a `ComponentRegistry.kt` KDoc comment block changed, git sha `a71ff9e`, 2026-09-30).
 - **Items covered (4 ROADMAP success criteria — CAT-01, API-01, INV-01, doc-wording):**

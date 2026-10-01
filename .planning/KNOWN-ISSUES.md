@@ -188,3 +188,31 @@ does not block release paths, formally tracked rather than silently deferred).
 here rather than self-closed by Phase 9 (out of that phase's scope per its plan), but the blocking
 condition described above no longer reproduces as of this commit; whoever next touches this KI
 should re-verify and close with attribution to whichever phase's change resolved it.
+
+---
+
+## KI-2026-10-01-01 — Future polish: ApproachLadderCard combined-subdued-label legibility (v2.4 Gate-2, waived)
+
+**Status:** open (future polish, non-blocking) · **Severity:** UI-polish · **Opened:** 2026-10-01
+(v2.4 milestone Gate-2) · **Source:** Yahir's Gate-2 review, PASS with these two notes explicitly
+**waived** (relayed via the vae-bilingual orchestrator). Recorded here as future polish per that
+ruling — they did **not** block the Gate-2 sign-off and did **not** gate the `v2.4.0` tag.
+
+### Notes
+
+1. **Combined subdued-label crowding.** When an ineffective `ApproachLadderCard` rung carries all
+   three subdued affordances at once ("Unavailable" + "Capped" + "Needs network"), the labels pack
+   tightly toward the card's right edge ("Needs network" sits very close to the edge) in both light
+   and dark themes. Candidate polish: wrap/flow the trailing labels, or add right-edge breathing room,
+   when 3 co-occur. (Live demo cell added for review: the "combined subdued labels" fixture in
+   `VoiceCommandFamilyScreen.kt`, commit `71204f9`.)
+2. **Light-theme capped-rung label dimming.** In light theme the capped rung's *label* reads less
+   obviously dimmed than its siblings (the subdued cue is carried mostly by the trailing labels, not
+   the rung-label tone); it's clearer in dark. Candidate polish: strengthen the light-theme subdued
+   rung-label tone.
+
+### Scope
+
+Both are additive, prop-driven, library-local UI refinements — a future patch tag (`v2.4.x`) or a
+later milestone, not a `v2.4.0` blocker. Any fix keeps the existing public API additive (INV-01/API-01
+invariants) and re-runs the full suite + detekt green.

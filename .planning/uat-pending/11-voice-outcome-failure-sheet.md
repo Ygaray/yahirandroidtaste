@@ -1,6 +1,6 @@
 ### Phase 11 — voice-outcome-failure-sheet (v2.4)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir (PASS via orchestrator), 2026-10-01`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.4
 - **Gate 1 self-UAT log:** [`.planning/phases/11-voice-outcome-failure-sheet/11-02-SELF-UAT.md`](phases/11-voice-outcome-failure-sheet/11-02-SELF-UAT.md) — Verdict: **ALL 6 ROADMAP success criteria PASS** (device Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN), library AAR md5 `c6fd4cf3401e1d6c1382f17014ecc4f9` @ `3a6dfa4`, 2026-09-30). Resolves both of `11-VERIFICATION.md`'s human_verification items live on-device (not deferred further): the `OutcomeSheet` entangled-Unavailable row genuinely has no clickable modifier (structural) and shows zero ripple on press, while its sibling Available row visibly ripples under the exact same held-press capture technique, in both light and dark theme; the undo-refused substate renders as a loud, full-width error-container surface (not a snackbar) in both themes; the `ClarificationBar` duplicate-label chips are two structurally distinct, independently-rippling tap targets despite sharing a label, and the bar itself renders as a plain, non-error, visually-informative surface in both themes.
 - **Items covered (6 ROADMAP success criteria):**

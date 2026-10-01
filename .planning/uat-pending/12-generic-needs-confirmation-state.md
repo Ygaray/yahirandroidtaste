@@ -1,6 +1,6 @@
 ### Phase 12 — generic-needs-confirmation-state (v2.4)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir (PASS via orchestrator), 2026-10-01`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.4
 - **Gate 1 self-UAT log:** [`.planning/phases/12-generic-needs-confirmation-state/12-01-SELF-UAT.md`](phases/12-generic-needs-confirmation-state/12-01-SELF-UAT.md) — Verdict: **ALL 4 ROADMAP success criteria PASS** (device Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN), library AAR md5 `f359f64d953d511d11235e353a213c18` @ `c9b049a`, 2026-09-30). Resolves all 3 of `12-VALIDATION.md`'s Manual-Only Verifications live on-device, not deferred further: back/outside-tap/swipe dismiss on an open `NeedsConfirmation` sheet all decline cleanly with zero crash/flash; the Destructive-severity Confirm button renders unambiguous red/error-tinted text against the Neutral Cancel button; a batch-fixture Remove tap is proven isolated/per-row-correct via a decisive held-press ripple capture plus the already-passing per-row unit test.
 - **Items covered (4 ROADMAP success criteria):**

@@ -18,41 +18,29 @@ catalog legible and prunable.
 
 ## Current State
 
-**Shipped: milestone v1.0 — Hub Stewardship (2026-09-02) → library `v2.0.0`.** The hub is now a
-legible, audited, governed two-tier (primitives/patterns) design system: explicit compile-enforced
-tiers + gallery badges, a full coherence audit, tier-aware governance gates + a domain-vocabulary
-drift guard, hardened repin bookkeeping, and the first breaking "gardening" unification (FilterBar→
-ChipBar, SheetHeaderMenu) cut as `v2.0.0`. 8/9 requirements satisfied.
+**Shipped: milestone v2.4 — AI-Voice Command UI (2026-10-01) → library `v2.4.0`.** The hub now carries
+a shared, domain-neutral AI-voice UI layer as its tenth "Voice Command" `ComponentRegistry` family:
+`ProviderKeyCard` + `ModelSelectCard` (provider/key + model settings), `ApproachLadderCard`
+(tier-ladder + offline-only toggle + max-tier cap), `OutcomeSheet` (a "handled by: tier/approach"
+indicator, loud failure states, a generic undo affordance, and a domain-neutral needs-confirmation
+state covering SB risk-confirm and CT weak-match/batch confirm), and `ClarificationBar` (tap-to-clarify
+choices). All prop-driven and engine-free (no OkHttp, no `voice-action-engine` dependency — INV-01),
+strictly additive versus `v2.3.0`, cut as `v2.4.0`. 16/16 requirements satisfied; Gate-2 signed off
+(Yahir, 2026-10-01). Wave 0, §6.3 of the `vae-bilingual` cross-repo effort.
 
-**One thing deliberately deferred (human-gated):** the **GARD-02 coordinated consumer repin** —
-SecondBrain + CalTracker onto `v2.0.0`, each Gate-1 re-verified, then `repin_status.py reconcile`
-(which also clears tech-debt W-1, the stale ECOSYSTEM.md matrix). That is the next concrete
-follow-on. See `.planning/MILESTONES.md` and `.planning/milestones/v1.0-*`.
+**Next concrete follow-on (Wave 1, each consumer's own channel):** SecondBrain (`v2.3.0`→`v2.4.0`) and
+CalTracker (`v2.1.0`→`v2.4.0`) repin onto `v2.4.0` and adopt the voice UI, gated by the orchestrator's
+R2 reconvene. Two Gate-2-waived `ApproachLadderCard` UI-polish notes are tracked as future polish
+(`KNOWN-ISSUES.md` KI-2026-10-01-01).
 
-## Current Milestone: v2.4 AI-Voice Command UI
+**Prior milestones:** v1.0 — Hub Stewardship (2026-09-02, `v2.0.0`); v2.0 — Line Reunification
+(2026-09-27, `v2.2.0`, + `TAGCOLOR-02` follow-on `v2.3.0`). See `.planning/MILESTONES.md`.
 
-**Goal:** Ship the shared AI-voice UI layer in the hub — generic, prop-driven presentational
-composables that let consumer apps render voice-command *settings* and *outcomes* with zero engine
-or HTTP coupling — and cut it as library `v2.4.0`. This is Wave 0, §6.3 of the frozen `vae-bilingual`
-cross-repo contract.
+## Next Milestone
 
-**Target features:**
-- **Provider + model settings** — a provider/API-key card and a model card, both prop-driven (§6.3).
-- **Command-approach settings card (NEW)** — tier-ladder display, offline-only toggle, max-tier cap;
-  all driven by props (§6.3).
-- **Outcome/failure sheet** — a **"handled by: tier/approach"** indicator and loud, visible failure
-  states (§6.3), plus a **generic needs-confirmation state** (reason string, single-or-batch proposed
-  items, confirm/cancel) that renders both SB's `MutationGate`/`VoiceConfirmGate` risk confirm and
-  CT's weak-match single/batch confirm — domain-neutral (A2/E1).
-- **Register + ship** — every new public composable registered in `ComponentRegistry` (CATALOG-03),
-  strictly additive public API; cut `v2.4.0` on green verification via the §11 tag protocol, then
-  record the ledger row with the orchestrator (A12/A14). Milestone close cuts **no** git tag.
-
-**Cross-repo effort:** the single source of truth is the frozen contract
-`~/Projects/Reusable/android/voice-action-engine/CROSS-REPO-SCOPE-CONTRACT.md` (§6.3 slice; bindings
-L3/L7/A2/A12–A14/E1). Handoff: `.planning/cross-repo/HANDOFF.md`. Orchestrator:
-`yahir-gsd-control-plane-f2`. Per A13, this milestone STOPs after research + discussion for a
-cross-repo reconvene before planning.
+**Planning.** No active milestone — start the next with `/gsd-new-milestone` when scoped. The standing
+cross-repo context (the `vae-bilingual` contract, orchestrator `yahir-gsd-control-plane-f2`, and the
+A13 reconvene protocol) continues to govern any hub slice of that effort.
 
 ## Context
 
@@ -123,19 +111,27 @@ cross-repo reconvene before planning.
 - ✓ **MicButton hardening** — parameterized microcopy, `rememberUpdatedState` callbacks, hub-neutral
   KDoc — validated milestone v2.0, shipped `v2.2.0`
 
+- ✓ **Voice-command settings surfaces** — `ProviderKeyCard` (masked key + reveal, no persistence/no
+  network), `ModelSelectCard`, `ApproachLadderCard` (tier ladder + offline-only toggle + max-tier cap),
+  all prop-driven — validated milestone v2.4 (VSET-01/02, VAPPR-01/02/03), shipped `v2.4.0`
+- ✓ **Voice outcome/failure sheet + clarification** — `OutcomeSheet` ("handled by: tier/approach"
+  indicator, loud failure states, generic "Undo all (N)" + per-item undo with unavailable/refused
+  states) and `ClarificationBar` tap-to-clarify choices — validated milestone v2.4 (VOUT-01/02/03,
+  VUNDO-01, VCLAR-01), shipped `v2.4.0`
+- ✓ **Generic needs-confirmation state** — additive `VoiceOutcomeUiState.NeedsConfirmation` sealed arm
+  (reason + single-or-batch items + confirm/cancel) rendering both SB `MutationGate`/`VoiceConfirmGate`
+  risk confirm and CT weak-match/batch confirm, domain-neutral — validated milestone v2.4 (VOUT-04),
+  shipped `v2.4.0`
+- ✓ **Catalog integrity + additive ship** — all 5 composables registered in the tenth "Voice Command"
+  family (CATALOG-03 drift guard green in the full suite), API strictly additive vs `v2.3.0`, engine-free
+  (INV-01), cut as `v2.4.0` via the §11 protocol with the ledger row relayed to the orchestrator —
+  validated milestone v2.4 (CAT-01, API-01, INV-01, SHIP-01/02)
+
 ### Active
 
-<!-- Milestone v2.4 (AI-Voice Command UI) scope — §6.3 of the vae-bilingual contract. Hypotheses until shipped. -->
+<!-- No active milestone — v2.4 (AI-Voice Command UI) shipped 2026-10-01 as v2.4.0. Next milestone TBD via /gsd-new-milestone. -->
 
-- [ ] **VSET** — provider/API-key settings card + model settings card, prop-driven (§6.3)
-- [ ] **VAPPROACH** — command-approach settings card: tier-ladder display, offline-only toggle,
-  max-tier cap, prop-driven (§6.3)
-- [ ] **VOUTCOME** — outcome/failure sheet with a "handled by: tier/approach" indicator and loud,
-  visible failure states, + a generic needs-confirmation state rendering SB `MutationGate` risk
-  confirm and CT weak-match single/batch confirm (§6.3, A2/E1)
-- [ ] **VSHIP** — register every new public composable in `ComponentRegistry` (CATALOG-03), keep the
-  public API strictly additive, and cut `v2.4.0` on green verification via the §11 protocol (no git
-  tag at milestone close) (§11, A12/A14)
+(none — milestone v2.4 shipped as `v2.4.0`; next milestone not yet scoped)
 
 ### Out of Scope
 
@@ -152,7 +148,8 @@ cross-repo reconvene before planning.
 | Hub gets its own GSD project for stewardship; consumers stay main editors | Coherence is a global property no single consumer's litmus can enforce; additive-only can't prune | — Pending |
 | Treat the hub as a two-tier system (primitives + patterns); make it legible before formalizing | Enough evidence (one contribution each way) that the tiering is real, not yet forced | Validated — Phase 1 shipped `Tier` enum, `DESIGN-INTENT.md`, and gallery-visible badges on both surfaces |
 | v2.0: reunify FORWARD onto `main` (not a v1.14.0 additive cherry-pick) + admit the chip-color feature onto the same tag | Kills the standing v1.x/v2.x divergence liability instead of perpetuating it; one unified `v2.2.0` = one SB repin. Keeping ChipBar consolidation (not restoring standalone FilterBar) preserves the coherence-audit gain | ✓ Good — shipped v2.2.0 (2026-09-27) |
-| v2.4: admit the shared AI-voice UI (settings + outcome/failure surfaces) into the hub as generic, prop-driven presentational composables — no OkHttp, no engine dependency | §6.3 of the vae-bilingual contract: SB + CT both need the same voice-command settings/outcome UI; putting the domain-neutral shell in the hub (apps map engine outcomes → props) keeps the one-way-dependency invariant clean and gives both consumers one surface | — Pending |
+| v2.4: admit the shared AI-voice UI (settings + outcome/failure surfaces) into the hub as generic, prop-driven presentational composables — no OkHttp, no engine dependency | §6.3 of the vae-bilingual contract: SB + CT both need the same voice-command settings/outcome UI; putting the domain-neutral shell in the hub (apps map engine outcomes → props) keeps the one-way-dependency invariant clean and gives both consumers one surface | ✓ Good — shipped `v2.4.0` (2026-10-01), 16/16 reqs, one-way-dependency invariant held (INV-01) |
+| v2.4: cut the immutable `v2.4.0` tag autonomously on green verification (A12 human-gate waiver) rather than pausing for a human tag gate | The vae-bilingual effort waived per-repo human tag gates (A12, Yahir) so the five coordinated repos can ship without serialized human checkpoints; the agent owns tag correctness via §11 steps 1–4 + the orchestrator's ledger re-check (A14) | ✓ Good — `v2.4.0` cut + JitPack-confirmed; §11 ledger relayed; no stray marker tag (SHIP-02) |
 
 ## Evolution
 
@@ -172,4 +169,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-29 — milestone v2.4 (AI-Voice Command UI) started → will cut library v2.4.0; Wave 0 §6.3 of the vae-bilingual cross-repo effort. Prior milestone v2.0 (Line Reunification) shipped 2026-09-27 as v2.2.0; TAGCOLOR-02 follow-on shipped v2.3.0.*
+*Last updated: 2026-10-01 after v2.4 milestone — AI-Voice Command UI shipped as library `v2.4.0` (Wave 0 §6.3 of the vae-bilingual cross-repo effort; Gate-2 signed off, 16/16 reqs). Consumer repins (SB, CT → v2.4.0) are Wave-1. Prior: v1.0 → v2.0.0 (2026-09-02); v2.0 Line Reunification → v2.2.0 (2026-09-27), TAGCOLOR-02 → v2.3.0.*

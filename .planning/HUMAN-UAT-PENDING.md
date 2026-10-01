@@ -124,7 +124,7 @@
 
 ### Phase 10 — voice-command-settings-surfaces (v2.4)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir (PASS via orchestrator), 2026-10-01`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.4 (first phase of the milestone)
 - **Gate 1 self-UAT log:** [`.planning/phases/10-voice-command-settings-surfaces/10-02-SELF-UAT.md`](phases/10-voice-command-settings-surfaces/10-02-SELF-UAT.md) — Verdict: **ALL 5 ROADMAP success criteria PASS**, re-verified twice: original run (device Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN), library AAR md5 `3fcdeb908f1675863a838907569ec4eb` @ `78477f7`, 2026-09-30) and a 2026-10-01 re-verify Addendum at HEAD `b3fe6e7` (AAR md5 `ec4ab0a2221d7489700ac97714fc35f1`) after source changes landed symmetric `require()` pairing enforcement, a new "Unavailable" affordance for disabled ladder rungs, and a defaulted `ProviderKeyCard.emptyProvidersReason` param. The addendum re-derived every criterion fresh (not trusted from the original log) and additionally live-confirmed, via a D5 programmatic-seed `FixtureActivity` (no gallery fixture constructs a disabled rung), that all three subdued rung affordances ("Unavailable"/"Capped"/"Needs network") render structurally intact and independently-gated when stacked on one ineffective rung — closing the specific gap `10-VERIFICATION.md` flagged as unexercised by the original self-UAT.
 - **Items covered (5 ROADMAP success criteria):**
@@ -144,7 +144,7 @@
 
 ### Phase 11 — voice-outcome-failure-sheet (v2.4)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir (PASS via orchestrator), 2026-10-01`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.4
 - **Gate 1 self-UAT log:** [`.planning/phases/11-voice-outcome-failure-sheet/11-02-SELF-UAT.md`](phases/11-voice-outcome-failure-sheet/11-02-SELF-UAT.md) — Verdict: **ALL 6 ROADMAP success criteria PASS** (device Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN), library AAR md5 `c6fd4cf3401e1d6c1382f17014ecc4f9` @ `3a6dfa4`, 2026-09-30). Resolves both of `11-VERIFICATION.md`'s human_verification items live on-device (not deferred further): the `OutcomeSheet` entangled-Unavailable row genuinely has no clickable modifier (structural) and shows zero ripple on press, while its sibling Available row visibly ripples under the exact same held-press capture technique, in both light and dark theme; the undo-refused substate renders as a loud, full-width error-container surface (not a snackbar) in both themes; the `ClarificationBar` duplicate-label chips are two structurally distinct, independently-rippling tap targets despite sharing a label, and the bar itself renders as a plain, non-error, visually-informative surface in both themes.
 - **Items covered (6 ROADMAP success criteria):**
@@ -162,7 +162,7 @@
 
 ### Phase 12 — generic-needs-confirmation-state (v2.4)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir (PASS via orchestrator), 2026-10-01`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.4
 - **Gate 1 self-UAT log:** [`.planning/phases/12-generic-needs-confirmation-state/12-01-SELF-UAT.md`](phases/12-generic-needs-confirmation-state/12-01-SELF-UAT.md) — Verdict: **ALL 4 ROADMAP success criteria PASS** (device Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN), library AAR md5 `f359f64d953d511d11235e353a213c18` @ `c9b049a`, 2026-09-30). Resolves all 3 of `12-VALIDATION.md`'s Manual-Only Verifications live on-device, not deferred further: back/outside-tap/swipe dismiss on an open `NeedsConfirmation` sheet all decline cleanly with zero crash/flash; the Destructive-severity Confirm button renders unambiguous red/error-tinted text against the Neutral Cancel button; a batch-fixture Remove tap is proven isolated/per-row-correct via a decisive held-press ripple capture plus the already-passing per-row unit test.
 - **Items covered (4 ROADMAP success criteria):**
@@ -178,7 +178,7 @@
 
 ### Phase 13 — catalog-integrity-v2-4-0-ship (v2.4)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir (PASS via orchestrator), 2026-10-01`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.4 (Voice Command settings/outcome surfaces → generic confirmation state → catalog integrity & docs → ship)
 - **Gate 1 self-UAT log:** [`.planning/phases/13-catalog-integrity-v2-4-0-ship/13-01-SELF-UAT.md`](phases/13-catalog-integrity-v2-4-0-ship/13-01-SELF-UAT.md) — Verdict: **ALL 4 criteria PASS** (no device/app surface in scope — this phase shipped zero composable/UI source changes, confirmed via `git show --stat` across all 15 phase-13 commits: only `.planning/*.md`, `README.md`, `API.md`, `CLAUDE.md`, and a `ComponentRegistry.kt` KDoc comment block changed, git sha `a71ff9e`, 2026-09-30).
 - **Items covered (4 ROADMAP success criteria — CAT-01, API-01, INV-01, doc-wording):**

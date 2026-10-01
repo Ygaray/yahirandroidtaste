@@ -1,5 +1,27 @@
 # Milestones — yahirandroidtaste (Hub Stewardship)
 
+## v2.4 AI-Voice Command UI (Shipped: 2026-10-01)
+
+**Phases completed:** 5 phases, 7 plans, 15 tasks
+
+**Key accomplishments:**
+
+- Landed the Phase 10 tracer: a provider-selection dropdown + masked API-key card (`ProviderKeyCard`, VSET-01) wired end-to-end through the new tenth "Voice Command" registry family, an additively-extended `ClearableTextField`, and a full drift-guard-green + additive-`apiCheck` pass.
+- Expanded the Voice Command settings surface with `ModelSelectCard` (VSET-02) and `ApproachLadderCard` (VAPPR-01/02/03) via full RED→GREEN TDD cycles, both registered in the tenth registry family with a strictly-additive API surface.
+- Additive `UndoHistoryStore` grouping API (Mutex-guarded, releasable-on-Refused, group-atomic eviction) plus `OutcomeSheet`'s new "Undo all (N)" / per-item-row / loud-refused rendering, closing VUNDO-01.
+- `ClarificationBar` -- a standalone, prop-driven tap-to-clarify choices surface (question + opaque-id/label options + onSelect/onDismiss), registered in the Voice Command family, closing VCLAR-01 and Phase 11.
+- `VoiceOutcomeUiState.NeedsConfirmation` -- a purely additive, domain-neutral third sealed arm rendering both single-item destructive confirms (SecondBrain) and batch confirms with a shared `topLevelContent` slot and per-item remove (CalTracker), reusing `ActionButtonDefaults.ActionButtonRole` for severity with zero new public enum.
+- Independently re-proved CAT-01/API-01/INV-01 green at HEAD via the Metalava v2.3.0-swap-baseline technique, captured as `13-SHIP-GATE-EVIDENCE.md`, and corrected the stale "seven"/"nine" family-count doc-drift to "ten" across CLAUDE.md, README.md, API.md, and `ComponentRegistry.kt`'s KDoc.
+- Cut, pushed, and JitPack-confirmed the annotated `v2.4.0` tag on fresh green verification, autonomously per A12's waiver, and produced the section-11 ledger row for orchestrator relay — fixing two latent bugs in the plan's own verify scripts along the way.
+
+**Gate-2:** Phases 10–13 human-signed-off (Yahir, 2026-10-01, PASS via orchestrator — the pre-agreed vae-bilingual Gate-2 relay channel); Phase 14 had no deferred device checkpoint (release-tooling phase). Audit: 16/16 requirements satisfied, cross-phase integration CLEAN, Nyquist compliant.
+
+**Closeout type:** override_closeout — phase verifications read mtime-`stale` after the downstream Phase 13 doc + Phase 14 tag/evidence commits moved HEAD past their verification mtimes (the known mtime artifact, per RETROSPECTIVE guidance). Real state verified independently: `/gsd-certify-milestone` `all_pass` (0 gaps) and the full `testDebugUnitTest` suite + additive `apiCheck` green at the tagged commit. **Known verification overrides:** 0 newly acknowledged, 7 carried forward from a prior close (see STATE.md Deferred Items).
+
+**Deferred (future polish, Gate-2-waived):** two non-blocking `ApproachLadderCard` UI-polish notes (combined-subdued-label right-edge crowding; light-theme capped-rung dimming) — `KNOWN-ISSUES.md` KI-2026-10-01-01. **Consumer repins** (SecondBrain `v2.3.0`→, CalTracker `v2.1.0`→ `v2.4.0`) are Wave-1, in each consumer's own channel.
+
+---
+
 ## v2.0 Line Reunification (Shipped: 2026-09-27)
 
 **Phases completed:** 4 phases, 7 plans, 17 tasks
