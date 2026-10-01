@@ -164,11 +164,11 @@ Plans:
   2. The full §11 ledger row (repo, tag, commit, coordinate, contents, evidence path) is messaged to the orchestrator; no peer writes the §11 ledger (A14)
   3. Milestone close cuts NO git tag beyond the `v2.4.0` release coordinate — `git.create_tag` is `false` (guards the stray milestone-marker-tag hazard, INC-2026-09-30-01)
 
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
 
-- [ ] TBD
+- [ ] 14-01-PLAN.md — Fresh verify-then-tag-then-push (SHIP-01 steps 1-3), confirm JitPack resolves `v2.4.0` from its own remote build (SHIP-01 step 4), and produce the section-11 ledger row for orchestrator relay while re-confirming the no-stray-tag guard (SHIP-02)
 
 **Rationale for the 13/14 split:** GSD execute-phase runs ALL of a phase's plans before that phase's verification/Gate-1, so bundling the immutable `v2.4.0` cut with catalog/doc work would tag before Phase 13's own verification is green (violating §11 step 1). Isolating the cut in Phase 14 guarantees it follows a fully-verified Phase 13.
 
@@ -203,4 +203,4 @@ Phases execute in numeric order: 10 → 11 → 12 → 13 → 14 (Phases 10 and 1
 | 11. Voice outcome & failure sheet | v2.4 | 2/2 | In Progress|  |
 | 12. Generic needs-confirmation state | v2.4 | 1/1 | In Progress|  |
 | 13. Catalog integrity & docs | v2.4 | 1/1 | In Progress|  |
-| 14. Cut v2.4.0 | v2.4 | 0/TBD | Not started | - |
+| 14. Cut v2.4.0 | v2.4 | 0/1 | Not started | - |
