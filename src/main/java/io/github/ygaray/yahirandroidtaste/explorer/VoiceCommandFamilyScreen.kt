@@ -291,6 +291,20 @@ private val fixtureLadder = listOf(
 )
 
 /**
+ * Gate-2 A3 fixture (Phase 10 deferred visual item) — a ladder whose top rung is simultaneously
+ * disabled, offline-incapable, and above a low cap, so with offlineOnly=true + maxTierId="local" it
+ * renders all three subdued affordances at once ("Unavailable" + "Capped" + "Needs network") on the
+ * one row. No other gallery fixture demonstrates the three labels co-occurring, which the human
+ * legibility/contrast judgment (light + dark) needs. explorer-only, never registered (explorer/ is
+ * drift-guard denylisted).
+ */
+private val fixtureLadderCombinedAffordance = listOf(
+    ApproachRungUiModel(id = "cloud", label = "Cloud", rank = 3, enabled = false, offlineCapable = false),
+    ApproachRungUiModel(id = "hybrid", label = "Hybrid", rank = 2, offlineCapable = true),
+    ApproachRungUiModel(id = "local", label = "Local", rank = 1, offlineCapable = true)
+)
+
+/**
  * Shared hoisted-state wrapper for the States matrix cells — seeds initial offline-only/cap
  * fixture values and lets the live composable own state from there.
  */
@@ -320,6 +334,20 @@ private fun ApproachLadderCardVariants() {
     SectionLabel("ApproachLadderCard — every control hidden (null offlineOnly/cap props)")
     ApproachLadderCard(
         ladder = fixtureLadder,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
+
+    // Gate-2 A3 review cell (Phase 10 deferred visual item): the top rung carries all three subdued
+    // affordances at once — Unavailable (disabled) + Capped (above the "local" cap) + Needs network
+    // (offline-only, not offline-capable) — so the human can judge combined legibility/contrast in
+    // light and dark. Controls are fixed (no-op callbacks) so the three labels stay co-visible.
+    SectionLabel("ApproachLadderCard — combined subdued labels (Unavailable + Capped + Needs network)")
+    ApproachLadderCard(
+        ladder = fixtureLadderCombinedAffordance,
+        offlineOnly = true,
+        onOfflineOnlyChange = {},
+        maxTierId = "local",
+        onMaxTierChange = {},
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
     )
 }
