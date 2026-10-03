@@ -30,8 +30,8 @@ independent apps that consume it:
 
   | Consumer | Repo | Dev checkout | Pins hub at | Pin file |
   |----------|------|--------------|-------------|----------|
-  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v1.13.0`** (per the machine-reconciled matrix above) — originally repinned to **`v1.11.0`** in **v4.0 Phase 155 Plan 04** (`REMIND-09`), cut on a branch forked from `v1.10.0` (NOT this hub's `main` tip), deliberately bypassing this hub's own concurrent `v2.0.0` ("v1.0 Hub Stewardship") milestone, which removed the public `FilterBar` composable (folded into `ChipBar`'s expandable mode) — a breaking change SecondBrain's `BrowseScreen.kt` depends on directly and had not yet migrated for at that time. The pin has since moved further to `v1.13.0`; the `FilterBar`→`ChipBar` migration is still owed before SecondBrain can repin onto `v2.0.0`'s (or later's) lineage — see §"Version-numbering / branch-topology deviation (`v1.10.0` → `v1.11.0`, bypassing `v2.0.0`)" below for the fork's origin, and the subsection directly below the machine-reconciled matrix above for the current bump path | `gradle/libs.versions.toml` |
-  | CalTracker | `github.com/Ygaray/…` | `~/Projects/AndroidApps/Personal/CalTracker_Android` | **`v2.1.0`** (repinned + Gate-1-confirmed on real hardware, Phase 64 / MIC-02 — see CalTracker's `64-04-SELF-UAT.md`) — consumes the hub's new generic `MicButton` component (MIC-01), which CalTracker's `MicFab` wrapper now delegates its render/gesture contract to | `gradle/libs.versions.toml` |
+  | SecondBrain | `github.com/Ygaray/…` (private working tree) | `~/Projects/SecondBrain` | **`v2.4.0`** (Wave-1 repin, §11 `3a15549`; per the machine-reconciled matrix above) — now on this hub's `main` lineage. Originally repinned to **`v1.11.0`** in **v4.0 Phase 155 Plan 04** (`REMIND-09`), cut on a branch forked from `v1.10.0` (NOT this hub's `main` tip), bypassing the `v2.0.0` milestone that removed public `FilterBar` (folded into `ChipBar`'s expandable mode) — a breaking change `BrowseScreen.kt` depended on directly. The pin moved `v1.11.0`→`v1.13.0` on the fork, and **SecondBrain Phase 169 then repinned straight `v1.13.0`→`v2.4.0`**, completing the owed `FilterBar`→`ChipBar` migration and leaving the forked lineage for `v2.0.0`-and-later — see §"Version-numbering / branch-topology deviation" below for the fork's origin | `gradle/libs.versions.toml` |
+  | CalTracker | `github.com/Ygaray/…` | `~/Projects/AndroidApps/Personal/CalTracker_Android` | **`v2.4.0`** (Wave-1 repin, §11 `63cbeb0`; previously **`v2.1.0`** repinned + Gate-1-confirmed on real hardware, Phase 64 / MIC-02 — see CalTracker's `64-04-SELF-UAT.md`) — consumes the hub's generic `MicButton` (MIC-01), which CalTracker's `MicFab` wrapper delegates its render/gesture contract to, plus the v2.4.0 Voice Command UI surface | `gradle/libs.versions.toml` |
 
   _(Best-effort cache — keep it current: a new consumer adds a row; a repin updates "Pins hub at".
   The authoritative pin is each consumer's manifest + `./gradlew :app:dependencies` resolution.
@@ -45,35 +45,30 @@ independent apps that consume it:
 <!-- repin-matrix:begin -->
 | Consumer | Pinned | Latest | Status |
 |---|---|---|---|
-| CalTracker_Android | v2.1.0 | v2.3.0 | behind |
-| SecondBrain | v1.13.0 | v2.3.0 | behind |
+| CalTracker_Android | v2.4.0 | v2.4.0 | current |
+| SecondBrain | v2.4.0 | v2.4.0 | current |
 <!-- repin-matrix:end -->
 
-### Pending repins (post-v2.3.0)
+### Completed repins (Wave 1 → `v2.4.0`)
 
-Per the machine-reconciled matrix above, both consumers are behind `v2.3.0`. Neither this hub
-phase nor Phase 9 performs the bump — cross-repo-hub convention (root `CLAUDE.md`): the hub's own
-GSD run edits no consumer repo file. Each repin executes in the consumer's own repo/channel, on
-its own cadence (§7):
+Both consumers have repinned to `v2.4.0` (the machine-reconciled matrix above now reads
+`current` for both; §11-ledgered). Per the cross-repo-hub convention (root `CLAUDE.md`), neither
+bump was performed by this hub — each executed in the consumer's own repo/channel, on its own
+cadence (§7), and is recorded here as a best-effort cache:
 
-- **SecondBrain (`v1.13.0` → `v2.3.0`, straight — skipping `v2.2.0`):** SecondBrain Phase 169 Plan 01
-  (its own repo) bumps the hub coordinate in `gradle/libs.versions.toml` directly from
-  `v1.13.0` to `v2.3.0` — the owner's Option A decision (`tagui01-editor-picker-color-gap`,
-  2026-09-28) supersedes the earlier "repin to v2.2.0 first" path recorded below, since `v2.3.0`
-  is strictly additive on top of `v2.2.0` and carries everything `v2.2.0` did plus `TAGCOLOR-02`.
-  The repin migrates `BrowseScreen.kt`'s two `FilterBar<TagEntity>` call sites to `ChipBar`'s
-  `expandable`/`rawContent` shape (the follow-up owed since the `v1.10.0` → `v1.11.0` fork note
-  below — `FilterBar` was folded into `ChipBar` at `v2.0.0`, and this migration is what lets
-  SecondBrain leave the forked `v1.11.0` lineage and repin straight onto `v2.0.0`-and-later,
-  including `v2.3.0`); wires the `TagChipUiModel.color` slot (`TAGCOLOR-01`, Phase 7) on card
-  faces and Search; and opts into `showTagColors` (`TAGCOLOR-02`, this cut) in its editor and
-  recorder wrappers (SecondBrain Phase 169 Plan 07) — to be executed entirely in SecondBrain's own
-  repo/channel, not performed by this hub phase.
-- **CalTracker (`v2.1.0` → `v2.3.0`):** bump the same coordinate in `gradle/libs.versions.toml`
-  from `v2.1.0` to `v2.3.0` — purely additive and entirely optional, no consumer-side source
-  changes required (CalTracker consumes no `FilterBar`/`ChipBar` call site, and `showTagColors`
-  defaults off, so CalTracker's existing call sites are unaffected either way) -- to be executed in
-  CalTracker's own repo/channel, not performed by this hub phase.
+- **SecondBrain (`v1.13.0` → `v2.4.0`, straight — skipping `v2.2.0`/`v2.3.0` intermediate pins; §11 `3a15549`):**
+  SecondBrain Phase 169 (its own repo) bumped the hub coordinate in `gradle/libs.versions.toml` from
+  `v1.13.0` onto this hub's `main` lineage. The repin migrated `BrowseScreen.kt`'s two
+  `FilterBar<TagEntity>` call sites to `ChipBar`'s `expandable`/`rawContent` shape (the follow-up
+  owed since the `v1.10.0` → `v1.11.0` fork note below — `FilterBar` was folded into `ChipBar` at
+  `v2.0.0`, and this migration is what let SecondBrain leave the forked `v1.11.0` lineage); wired the
+  `TagChipUiModel.color` slot (`TAGCOLOR-01`) and opted into `showTagColors` (`TAGCOLOR-02`); and now
+  additionally has the `v2.4.0` Voice Command UI surface available.
+- **CalTracker (`v2.1.0` → `v2.4.0`; §11 `63cbeb0`):** bumped the same coordinate in
+  `gradle/libs.versions.toml` from `v2.1.0` to `v2.4.0` — strictly additive, no consumer-side source
+  changes forced (CalTracker consumes no `FilterBar`/`ChipBar` call site, and `showTagColors` defaults
+  off), bringing `TAGCOLOR-02` and the `v2.4.0` Voice Command UI surface into reach — executed in
+  CalTracker's own repo/channel.
 
 `v1.10.0` was cut in **SecondBrain v2.1
 Phase 135 Plan 02** (`MIND-10`, Phase 135's D-02 decision), an autonomous minor bump, on top of the
