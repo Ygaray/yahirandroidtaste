@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -62,10 +64,51 @@ fun OutcomeSheet(
     modifier: Modifier = Modifier
 ) {
     SheetScaffold(onDismissRequest = onDismissRequest, modifier = modifier) {
+        OutcomeSheetContent(outcome)
+    }
+}
+
+/**
+ * Scaffold-free sheet content (v2.4.1): a scrollable body region plus a pinned action footer.
+ *
+ * **Why this shape (CT Phase 74 defect).** OutcomeSheet's content sits inside a bounded-height
+ * [ModalBottomSheet][androidx.compose.material3.ModalBottomSheet]. A plain [Column] measures each
+ * non-weighted child with only the main-axis space LEFT by its earlier siblings, so when a branch's
+ * body is taller than the sheet the trailing action [Row] (the last child) is measured with
+ * near-zero remaining height — collapsing Confirm/Cancel to a ~10px sliver while
+ * `minimumInteractiveComponentSize` still reports a 48dp touch target (the exact
+ * 135px-touch / 10px-surface / label-absent signature measured on the TESTER). A `defaultMinSize`
+ * or a fixed height can NOT fix this: a hard max-height constraint always wins over a child minimum.
+ *
+ * **The fix.** The body scrolls inside a `weight(1f, fill = false)` region — so short content still
+ * wraps (today's look is unchanged) and tall content scrolls — while the action footer renders
+ * OUTSIDE that region and is measured with its full intrinsic height first, so it can never be
+ * starved. Kept `internal` + [ColumnScope]-free (owns its own outer [Column]) so a height-bounded
+ * test can host it directly without driving a `ModalBottomSheet`; being `internal` it stays out of
+ * the public Metalava API surface (api dump unchanged).
+ */
+@Composable
+internal fun OutcomeSheetContent(outcome: VoiceOutcomeUiState, modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .weight(1f, fill = false)
+                .verticalScroll(rememberScrollState())
+        ) {
+            when (outcome) {
+                is VoiceOutcomeUiState.Success -> SuccessBody(outcome)
+                is VoiceOutcomeUiState.Failure -> FailureBody(outcome)
+                is VoiceOutcomeUiState.NeedsConfirmation -> NeedsConfirmationBody(outcome)
+            }
+        }
+        // Pinned action footer — stays visible without scrolling. ONLY NeedsConfirmation pins its
+        // Cancel/Confirm (a decision that must stay reachable). Failure's optional action and a
+        // Success's variable-length undo affordance ride the scrollable body above (un-starved by
+        // the scroll, with their Gate-2-passed short-content look unchanged — no footer, no reflow).
         when (outcome) {
-            is VoiceOutcomeUiState.Success -> SuccessBody(outcome)
-            is VoiceOutcomeUiState.Failure -> FailureBody(outcome)
-            is VoiceOutcomeUiState.NeedsConfirmation -> NeedsConfirmationBody(outcome)
+            is VoiceOutcomeUiState.Success -> Unit
+            is VoiceOutcomeUiState.Failure -> Unit
+            is VoiceOutcomeUiState.NeedsConfirmation -> NeedsConfirmationActions(outcome)
         }
     }
 }
@@ -250,6 +293,9 @@ private fun FailureBody(failure: VoiceOutcomeUiState.Failure) {
         Column(modifier = Modifier.padding(Dimens.HorizontalPadding)) {
             Text(text = failure.reason, style = MaterialTheme.typography.headlineSmall)
             failure.handledBy?.let { HandledByRow(it) }
+            // v2.4.1: the optional action (D-08) stays INSIDE the error surface (unchanged
+            // short-content look, Gate-2-passed). The scroll body in OutcomeSheetContent is what
+            // keeps it from starving on a tall sheet — no separate pinned footer for Failure.
             failure.action?.let { action ->
                 DynamicActionButton(
                     label = action.label,
@@ -318,23 +364,37 @@ private fun NeedsConfirmationBody(confirmation: VoiceOutcomeUiState.NeedsConfirm
             Box(modifier = Modifier.testTag("outcome_sheet_confirmation_top_level_content")) { content() }
         }
         confirmation.items.forEach { item -> ProposedItemRow(item) }
-        Row(
-            modifier = Modifier.padding(top = Dimens.ContentSpacing),
-            horizontalArrangement = Arrangement.spacedBy(Dimens.ContentSpacing, Alignment.End)
-        ) {
-            DynamicActionButton(
-                label = confirmation.cancelLabel,
-                role = ActionButtonDefaults.ActionButtonRole.Neutral,
-                onClick = confirmation.onCancel,
-                modifier = Modifier.testTag("outcome_sheet_confirmation_cancel")
-            )
-            DynamicActionButton(
-                label = confirmation.confirmLabel,
-                role = confirmation.severity,
-                onClick = confirmation.onConfirm,
-                modifier = Modifier.testTag("outcome_sheet_confirmation_confirm")
-            )
-        }
+    }
+}
+
+/**
+ * Pinned action footer for a [VoiceOutcomeUiState.NeedsConfirmation] (v2.4.1) — the Cancel/Confirm
+ * row, rendered OUTSIDE the scrollable body (see [OutcomeSheetContent]) so a confirmation decision
+ * is ALWAYS visible and tappable without scrolling, the exact affordance the CT Phase 74 defect
+ * destroyed. [Modifier.fillMaxWidth] makes the `Alignment.End` arrangement actually right-align the
+ * pair — the pre-patch wrap-content `Row` left-packed them against the sheet's start edge.
+ */
+@Composable
+private fun NeedsConfirmationActions(confirmation: VoiceOutcomeUiState.NeedsConfirmation) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimens.HorizontalPadding)
+            .padding(top = Dimens.ContentSpacing),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.ContentSpacing, Alignment.End)
+    ) {
+        DynamicActionButton(
+            label = confirmation.cancelLabel,
+            role = ActionButtonDefaults.ActionButtonRole.Neutral,
+            onClick = confirmation.onCancel,
+            modifier = Modifier.testTag("outcome_sheet_confirmation_cancel")
+        )
+        DynamicActionButton(
+            label = confirmation.confirmLabel,
+            role = confirmation.severity,
+            onClick = confirmation.onConfirm,
+            modifier = Modifier.testTag("outcome_sheet_confirmation_confirm")
+        )
     }
 }
 

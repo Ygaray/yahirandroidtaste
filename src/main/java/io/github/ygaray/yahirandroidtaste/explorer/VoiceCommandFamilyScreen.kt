@@ -463,6 +463,51 @@ private val fixtureOutcomeNeedsConfirmationTrailingContent = VoiceOutcomeUiState
 )
 
 /**
+ * v2.4.1 / CT Phase 74 regression demo: a NeedsConfirmation whose body is deliberately TALLER than
+ * the sheet (a tall `topLevelContent` block + several items), so the gallery shows the scroll-body
+ * / pinned Cancel-Confirm footer in action — the body scrolls while the action row stays visible.
+ * Before v2.4.1 the trailing Cancel/Confirm collapsed to a ~10px sliver under this exact shape (a
+ * bounded `Column` starving its last child); this fixture is the on-device proof it no longer does.
+ */
+private val fixtureOutcomeNeedsConfirmationTall = VoiceOutcomeUiState.NeedsConfirmation(
+    title = "Log these?",
+    reason = "You said: “I ate two eggs, toast, orange juice, and a banana”",
+    reversibilityHint = "You can undo this from the log.",
+    severity = ActionButtonDefaults.ActionButtonRole.Save,
+    confirmLabel = "Confirm all",
+    topLevelContent = {
+        Text(
+            """
+            Date: Oct 4, 2026
+            Correction controls (dropdown + amount editor)
+            Serving size
+            Unit
+            Calories preview
+            Protein preview
+            Carbs preview
+            Fat preview
+            Notes
+            Source
+            Confidence
+            Meal slot
+            Tags
+            Related items
+            History
+            More detail rows to force the body past the sheet height
+            """.trimIndent()
+        )
+    },
+    items = listOf(
+        ProposedItemUiModel(id = "tall-1", title = "Eggs", subtitle = "2 ct", trailingContent = { Text("editor") }),
+        ProposedItemUiModel(id = "tall-2", title = "Toast", subtitle = "2 slices", trailingContent = { Text("editor") }),
+        ProposedItemUiModel(id = "tall-3", title = "Orange juice", subtitle = "1 cup", trailingContent = { Text("editor") }),
+        ProposedItemUiModel(id = "tall-4", title = "Banana", subtitle = "1 ct", trailingContent = { Text("editor") })
+    ),
+    onConfirm = {},
+    onCancel = {}
+)
+
+/**
  * OutcomeSheet's interactive demo -- WR-01-safe pattern (mirrors `AlbumSourcePickerSheetSection`'s
  * "Show sheet" trigger in SheetsFamilyScreen.kt): a single hoisted [visibleOutcome] slot holds AT
  * MOST one fixture at a time, so tapping a different "Show" button swaps the live sheet instead
@@ -529,6 +574,12 @@ private fun OutcomeSheetVariants() {
     SectionLabel("OutcomeSheet — NeedsConfirmation, per-item trailingContent (VOUT-04)")
     Button(
         onClick = { visibleOutcome = fixtureOutcomeNeedsConfirmationTrailingContent },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) { Text("Show sheet") }
+
+    SectionLabel("OutcomeSheet — NeedsConfirmation, TALL body → scroll + pinned Cancel/Confirm (v2.4.1, CT P74)")
+    Button(
+        onClick = { visibleOutcome = fixtureOutcomeNeedsConfirmationTall },
         modifier = Modifier.padding(horizontal = 16.dp)
     ) { Text("Show sheet") }
 

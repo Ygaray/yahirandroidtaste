@@ -1,9 +1,14 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasNoClickAction
+import androidx.compose.ui.test.assertHeightIsAtLeast
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -11,6 +16,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
 import io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel
@@ -663,4 +669,59 @@ class OutcomeSheetTest {
 
         assertEquals(true, confirmed)
     }
+
+    // ── v2.4.1 regression (CT Phase 74) ──────────────────────────────────────
+    // A NeedsConfirmation taller than its host must keep the Confirm/Cancel action row VISIBLE and
+    // full-height — never starved to a ~10px sliver by the bounded sheet height. Hosts the internal
+    // OutcomeSheetContent seam in a height-bounded Box (no ModalBottomSheet needed), mirroring CT's
+    // shape (tall topLevelContent + several items). Goes RED if OutcomeSheetContent's scroll-body /
+    // pinned-footer structure is reverted to a plain bounded Column (the trailing row starves).
+
+    @Test
+    fun `tall NeedsConfirmation keeps Confirm visible and full-height`() {
+        composeTestRule.setContent {
+            Box(Modifier.height(240.dp)) {
+                OutcomeSheetContent(outcome = tallNeedsConfirmationFixture())
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        // Pinned footer: both actions laid out, visible, and at least a full interactive height —
+        // pre-fix these collapsed to ~10px with their labels absent from the tree (CT TESTER bounds).
+        composeTestRule.onNodeWithTag("outcome_sheet_confirmation_confirm")
+            .assertIsDisplayed()
+            .assertHeightIsAtLeast(40.dp)
+        composeTestRule.onNodeWithTag("outcome_sheet_confirmation_cancel")
+            .assertIsDisplayed()
+            .assertHeightIsAtLeast(40.dp)
+        // The label text actually reaches the rendered/semantics surface (CT found zero "Confirm"
+        // matches pre-fix because the starved button never laid its Text out).
+        composeTestRule.onNodeWithText("Confirm").assertExists()
+    }
+
+    /**
+     * A CT-Phase-74-shaped [VoiceOutcomeUiState.NeedsConfirmation] whose content is deliberately
+     * TALLER than its host Box: a tall [VoiceOutcomeUiState.NeedsConfirmation.topLevelContent] slot
+     * plus several proposed items (each with its own trailing editor), so the trailing action row
+     * is exactly the child a plain bounded [androidx.compose.foundation.layout.Column] would starve.
+     */
+    private fun tallNeedsConfirmationFixture() = VoiceOutcomeUiState.NeedsConfirmation(
+        title = "Log these?",
+        reason = "You said: “I ate two eggs and toast”",
+        reversibilityHint = "You can undo this from the log.",
+        severity = ActionButtonDefaults.ActionButtonRole.Save,
+        confirmLabel = "Confirm",
+        cancelLabel = "Cancel",
+        topLevelContent = { Box(Modifier.height(400.dp)) { Text("date + correction controls") } },
+        items = List(4) { i ->
+            ProposedItemUiModel(
+                id = "item-$i",
+                title = "Proposed item $i",
+                subtitle = "an amount / unit detail line",
+                trailingContent = { Box(Modifier.height(80.dp)) { Text("editor $i") } }
+            )
+        },
+        onConfirm = {},
+        onCancel = {}
+    )
 }
