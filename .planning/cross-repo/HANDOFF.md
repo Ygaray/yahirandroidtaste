@@ -104,7 +104,41 @@ Session names can change after a restart. If one doesn't resolve, ask the orches
 
 ---
 
-## Current state (2026-09-30)
+## Current state (2026-10-04) — v2.4 SHIPPED + v2.4.1 hotfix CUT
+
+**Stage:** milestone v2.4 (§6.3) CLOSED — certified (16/16 reqs, integration clean, Nyquist
+compliant) + Gate-2 signed off (Yahir, 2026-10-01, via orchestrator), archived to
+`.planning/milestones/v2.4-*`. Library shipped as `v2.4.0`; a **v2.4.1 patch** is now cut on top.
+
+**v2.4.1 (CT Phase 74 hub defect — OutcomeSheet action-row starvation):**
+- Root cause: inside the bounded-height `ModalBottomSheet`, a plain `Column` starved its LAST child
+  (the Confirm/Cancel `Row`) to ~10px on tall content. Fix: `OutcomeSheet` scrolls its body in a
+  `weight(1f, fill = false).verticalScroll` region and PINS the NeedsConfirmation Cancel/Confirm
+  footer; Failure action + Success undo ride the scroll body (look unchanged). Internal-only
+  (`internal OutcomeSheetContent`); `SheetScaffold` untouched; `api.txt` byte-identical.
+- Verified: `testDebugUnitTest` + `detekt` (zero-baseline) + `apiCheck` GREEN (new test RED pre-fix →
+  GREEN); TESTER (SM-S908U) recheck ALL-PASS (buttons ~64dp, pinned, labels present, light+dark;
+  short look unchanged; Failure action inside the red surface). Evidence `.planning/v2.4.1-gate-evidence/`.
+- Cut: annotated tag `v2.4.1` (`1319a76` → commit `ada4a01`) pushed; JitPack
+  `com.github.Ygaray:yahirandroidtaste:v2.4.1` resolves (status:ok, isTag:true, commit match). §11
+  ledger-row args relayed to the orchestrator (A14). SHIP-02 clean: `git.create_tag` still false, no
+  stray marker tag. Lane-2 commit landed with `HUB_LANE_OVERRIDE=2` (coordinated; API additive).
+- Visible change (release note): NeedsConfirmation Cancel/Confirm now right-align (`Alignment.End`).
+
+**Consumer repins:** SB + CT are at `v2.4.0` (§11-ledgered; ECOSYSTEM matrix reads `current`).
+**Pending in each consumer's OWN channel (not hub work):** repin to `v2.4.1` + the SB canary recheck
+(SB Phase 175 Gate-1).
+
+**Local git:** `main` is ~152 commits ahead of `origin/main` and UNPUSHED (the whole v1.0→v2.4.1
+history). Consumers resolve the immutable TAGS (all pushed + JitPack-live), so nothing is broken — a
+`git push origin main` for backup/visibility is an open decision for Yahir (pushes held until asked).
+
+**Next action (on resume):** nothing in-flight — milestone closed, v2.4.1 shipped. Re-read this
+HANDOFF and WAIT for an orchestrator dispatch; no pending phase to resume.
+
+---
+
+## Current state (2026-09-30) — HISTORICAL (superseded by the 2026-10-04 block above)
 
 **Stage:** milestone v2.4 (§6.3) — **Phase 10 PLANNED + plan-checker PASSED; execution NOT started** (Yahir paused at the planning boundary). All milestone setup + R1 rulings committed. HEAD = `8d9b33f`.
 
