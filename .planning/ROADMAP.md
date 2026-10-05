@@ -17,7 +17,7 @@ strictly additively, with no behavior change for existing callers. Scope locked 
 of the `vae-bilingual` effort (orchestrator `yahir-gsd-control-plane-6e`). Phase numbering continues
 from v2.4 (which ended at Phase 14).
 
-- [ ] **Phase 15: Voice-surface i18n label params** - Caller-overridable English-default labels on the settings cards + voice-surface composables (VI18N-01..04)
+- [x] **Phase 15: Voice-surface i18n label params** - Caller-overridable English-default labels on the settings cards + voice-surface composables (VI18N-01..04) (completed 2026-10-05)
 - [ ] **Phase 16: A11y + Failure enrichment** - Approach-row min interactive size + selected semantics; `Failure` action role + body slot + semantics prefix (VA11Y-01, VFAIL-01..03)
 - [ ] **Phase 17: ApproachLadderCard Router ON/OFF toggle** - Additive `router`/`onRouterChange` pair mirroring the `offlineOnly` pattern (VAPPR-04)
 - [ ] **Phase 18: Catalog integrity + API dump + docs** - Registry drift guard green, regenerated `api.txt`, docs updated, invariants preserved — cuts NO tag (CAT-02, API-02, DOC-02, INV-02)

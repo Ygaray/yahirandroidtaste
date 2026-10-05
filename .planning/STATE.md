@@ -2,20 +2,20 @@
 gsd_state_version: "1.0"
 milestone: v2.5
 milestone_name: Voice UI Localization & Accessibility
-current_phase: 15
-current_phase_name: Voice-surface i18n label params
-status: verifying
-stopped_at: Completed 15-03-PLAN.md
-last_updated: "2026-10-05T09:09:14.587Z"
+current_phase: 16
+current_phase_name: A11y + Failure enrichment
+status: planning
+stopped_at: Phase 15 complete, ready to plan Phase 16
+last_updated: "2026-10-05T09:33:28.589Z"
 last_activity: 2026-10-05
-last_activity_desc: Phase 15 execution started
-state_head: adc0ffaf54e4a4d896014a51be98bf811b69e01b
+last_activity_desc: Phase 15 complete, transitioned to Phase 16
+state_head: 9563df71d0c19f887891813d5151dd0009d4c64a
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
   completed_plans: 3
-  percent: 0
+  percent: 20
 ---
 
 # Project State
@@ -29,18 +29,18 @@ See: .planning/PROJECT.md (updated 2026-10-05)
 
 ## Current Position
 
-Phase: 15 (Voice-surface i18n label params) — EXECUTING
-Plan: 3 of 3
-Status: Phase complete — ready for verification
-Last activity: 2026-10-05 — Phase 15 execution started
+Phase: 16 — A11y + Failure enrichment
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-10-05 — Phase 15 complete, transitioned to Phase 16
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity (milestone v2.5):**
 
-- Total plans completed: 0
+- Total plans completed: 3
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -48,7 +48,7 @@ Progress: [░░░░░░░░░░] 0%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 15 | TBD | - | - |
+| 15 | 3 | - | - |
 | 16 | TBD | - | - |
 | 17 | TBD | - | - |
 | 18 | TBD | - | - |
@@ -111,7 +111,7 @@ Items acknowledged and carried forward, most recent first:
 ## Session Continuity
 
 Last session: 2026-10-05T09:09:14.562Z
-Stopped at: Completed 15-03-PLAN.md
+Stopped at: Phase 15 complete, ready to plan Phase 16
 Resume file: None
 
 ## Operator Next Steps
