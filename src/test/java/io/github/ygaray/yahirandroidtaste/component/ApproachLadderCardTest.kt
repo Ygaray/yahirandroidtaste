@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -226,5 +227,83 @@ class ApproachLadderCardTest {
         // carries an explicit affordance explaining why it reads as greyed-out.
         composeTestRule.onNodeWithText("Hybrid").assertExists()
         composeTestRule.onNodeWithText("Unavailable").assertExists()
+    }
+
+    // ── VI18N-03: caller-localizable rung-state and toggle labels ──
+
+    @Test
+    fun `supplied rung-state labels replace the Unavailable Capped and Needs network affordances`() {
+        val mixedLadder = listOf(
+            ApproachRungUiModel(id = "cloud", label = "Cloud", rank = 3, offlineCapable = false),
+            ApproachRungUiModel(
+                id = "hybrid",
+                label = "Hybrid",
+                rank = 2,
+                enabled = false,
+                offlineCapable = true
+            ),
+            ApproachRungUiModel(id = "local", label = "Local", rank = 1, offlineCapable = true)
+        )
+        composeTestRule.setContent {
+            ApproachLadderCard(
+                ladder = mixedLadder,
+                offlineOnly = true,
+                onOfflineOnlyChange = {},
+                maxTierId = "local",
+                onMaxTierChange = {},
+                unavailableLabel = "Indisponible",
+                cappedLabel = "Plafonné",
+                needsNetworkLabel = "Réseau requis"
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        // Cloud (rank 3) and Hybrid (rank 2) sit above the "local" cap -> two capped rows.
+        composeTestRule.onAllNodesWithText("Plafonné").assertCountEquals(2)
+        composeTestRule.onAllNodesWithText("Indisponible").assertCountEquals(1)
+        composeTestRule.onAllNodesWithText("Réseau requis").assertCountEquals(1)
+        composeTestRule.onAllNodesWithText("Capped").assertCountEquals(0)
+        composeTestRule.onAllNodesWithText("Unavailable").assertCountEquals(0)
+        composeTestRule.onAllNodesWithText("Needs network").assertCountEquals(0)
+    }
+
+    @Test
+    fun `supplied toggle labels replace the Online and Offline only segments and still emit`() {
+        var lastValue: Boolean? = null
+        composeTestRule.setContent {
+            ApproachLadderCard(
+                ladder = ladder,
+                offlineOnly = false,
+                onOfflineOnlyChange = { lastValue = it },
+                onlineLabel = "En ligne",
+                offlineOnlyLabel = "Hors ligne"
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        // The trailing state words "selected" / "not selected" come from SegmentedOptionSelector
+        // and remain English (known residual; not part of VI18N-01..04).
+        composeTestRule.onNodeWithContentDescription("En ligne, selected").assertExists()
+        composeTestRule.onAllNodesWithContentDescription("Offline only, not selected")
+            .assertCountEquals(0)
+
+        composeTestRule.onNodeWithContentDescription("Hors ligne, not selected").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, lastValue)
+    }
+
+    @Test
+    fun `omitting the toggle labels keeps the English Online segment`() {
+        composeTestRule.setContent {
+            ApproachLadderCard(
+                ladder = ladder,
+                offlineOnly = false,
+                onOfflineOnlyChange = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithContentDescription("Online, selected").assertExists()
     }
 }

@@ -57,6 +57,19 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  *   non-null (enforced via `require`; violating this pairing throws immediately rather than
  *   silently leaving every rung clickable with no visible cap).
  * @param modifier Applied to the outer [Surface].
+ * @param unavailableLabel Caller-localizable text of the affordance shown on a disabled rung.
+ *   Defaults to the English `"Unavailable"`; rendered verbatim as plain text.
+ * @param cappedLabel Caller-localizable text of the affordance shown on a rung above the cap.
+ *   Defaults to the English `"Capped"`; rendered verbatim as plain text.
+ * @param needsNetworkLabel Caller-localizable text of the affordance shown on an
+ *   offline-incapable rung while offline-only is on. Defaults to the English `"Needs network"`;
+ *   rendered verbatim as plain text.
+ * @param onlineLabel Caller-localizable text of the toggle's "online" segment. Defaults to the
+ *   English `"Online"`. The toggle's accessibility state words ("selected" / "not selected") are
+ *   announced by [SegmentedOptionSelector] and stay English.
+ * @param offlineOnlyLabel Caller-localizable text of the toggle's "offline only" segment. Defaults
+ *   to the English `"Offline only"`. The toggle's accessibility state words ("selected" /
+ *   "not selected") are announced by [SegmentedOptionSelector] and stay English.
  */
 @Composable
 fun ApproachLadderCard(
@@ -65,7 +78,12 @@ fun ApproachLadderCard(
     onOfflineOnlyChange: ((Boolean) -> Unit)? = null,
     maxTierId: String? = null,
     onMaxTierChange: ((String) -> Unit)? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    unavailableLabel: String = "Unavailable",
+    cappedLabel: String = "Capped",
+    needsNetworkLabel: String = "Needs network",
+    onlineLabel: String = "Online",
+    offlineOnlyLabel: String = "Offline only"
 ) {
     // Both optional prop pairs below are gated by `require()` rather than left to fail silently:
     // an earlier revision only guarded the maxTierId/onMaxTierChange pair, leaving a caller that
@@ -100,6 +118,9 @@ fun ApproachLadderCard(
                         isEffective = isEffective,
                         needsNetwork = needsNetwork,
                         isCapped = isCapped,
+                        unavailableLabel = unavailableLabel,
+                        cappedLabel = cappedLabel,
+                        needsNetworkLabel = needsNetworkLabel,
                         onCapClick = onMaxTierChange?.let { callback -> { callback(rung.id) } }
                     )
                 }
@@ -108,7 +129,7 @@ fun ApproachLadderCard(
             if (offlineOnly != null && onOfflineOnlyChange != null) {
                 SegmentedOptionSelector(
                     selectedIndex = if (offlineOnly) 1 else 0,
-                    options = listOf("Online", "Offline only"),
+                    options = listOf(onlineLabel, offlineOnlyLabel),
                     onSelect = { index -> onOfflineOnlyChange(index == 1) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -127,6 +148,9 @@ private fun RungRow(
     isEffective: Boolean,
     needsNetwork: Boolean,
     isCapped: Boolean,
+    unavailableLabel: String,
+    cappedLabel: String,
+    needsNetworkLabel: String,
     onCapClick: (() -> Unit)?,
     modifier: Modifier = Modifier
 ) {
@@ -154,21 +178,21 @@ private fun RungRow(
         )
         if (!rung.enabled) {
             Text(
-                text = "Unavailable",
+                text = unavailableLabel,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         if (isCapped) {
             Text(
-                text = "Capped",
+                text = cappedLabel,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         if (needsNetwork) {
             Text(
-                text = "Needs network",
+                text = needsNetworkLabel,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(start = Dimens.ContentSpacing)
