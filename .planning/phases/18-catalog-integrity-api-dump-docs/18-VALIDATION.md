@@ -1,9 +1,9 @@
 ---
 phase: "18"
 slug: "catalog-integrity-api-dump-docs"
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: "2026-10-05"
 ---
 
@@ -38,10 +38,10 @@ created: "2026-10-05"
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 18-01-xx | 01 | 1 | DOC-02 | — | N/A | grep | API.md names all 20 new params/fields + `## 10. Voice Command` + `trailingContent =` caveat; INTEGRATION.md has a localization note | ❌ W0 (the doc edit itself) | ⬜ pending |
-| 18-02-xx | 02 | 2 | CAT-02 | — | N/A | unit (source-scan) | `./gradlew cleanTestDebugUnitTest testDebugUnitTest --no-build-cache` (unscoped) | ✅ | ⬜ pending |
-| 18-02-xx | 02 | 2 | API-02 | — | N/A | gate | `API_FILE=api.txt bash tools/verify-api-additive.sh v2.4.1` exit 3 with exactly the 10-line allowlist; swap-baseline `apiCheck` vs v2.4.1 and v2.4.0; `apiDump` idempotent; `bash tools/test/run-all.sh` | ✅ | ⬜ pending |
-| 18-02-xx | 02 | 2 | INV-02 | — | N/A | script | import filter prints nothing; `git diff --exit-code v2.4.1..HEAD -- build.gradle.kts gradle/ settings.gradle.kts jitpack.yml`; `./gradlew detekt`; baseline unchanged | ✅ | ⬜ pending |
+| 18-01-xx | 01 | 1 | DOC-02 | — | N/A | grep | API.md names all 20 new params/fields + `## 10. Voice Command` + `trailingContent =` caveat; INTEGRATION.md has a localization note | ✅ | ✅ green |
+| 18-02-xx | 02 | 2 | CAT-02 | — | N/A | unit (source-scan) | `./gradlew cleanTestDebugUnitTest testDebugUnitTest --no-build-cache` (unscoped) | ✅ | ✅ green |
+| 18-02-xx | 02 | 2 | API-02 | — | N/A | gate | `API_FILE=api.txt bash tools/verify-api-additive.sh v2.4.1` exit 3 with exactly the 10-line allowlist; swap-baseline `apiCheck` vs v2.4.1 and v2.4.0; `apiDump` idempotent; `bash tools/test/run-all.sh` | ✅ | ✅ green |
+| 18-02-xx | 02 | 2 | INV-02 | — | N/A | script | import filter prints nothing; `git diff --exit-code v2.4.1..HEAD -- build.gradle.kts gradle/ settings.gradle.kts jitpack.yml`; `./gradlew detekt`; baseline unchanged | ✅ | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -49,7 +49,7 @@ created: "2026-10-05"
 
 ## Wave 0 Requirements
 
-- [ ] `18-SHIP-GATE-EVIDENCE.md` — evidence file (headers `## CAT-02 Evidence`, `## API-02 Evidence`, `## INV-02 Evidence`, `## Restore Confirmation`), modelled on the v2.4 Phase 13 analog
+- [x] `18-SHIP-GATE-EVIDENCE.md` — evidence file (headers `## CAT-02 Evidence`, `## API-02 Evidence`, `## INV-02 Evidence`, `## Restore Confirmation`), modelled on the v2.4 Phase 13 analog
 - No new test framework, fixtures or automated tests (D-03)
 
 ---
@@ -66,11 +66,23 @@ All phase behaviors have automated verification.
 > These are finalized ONLY post-execution by the Nyquist finalizer (the `verify:post` →
 > `validate-phase` hook). Never set `nyquist_compliant: true` at plan time.
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 90s
-- [ ] _(finalizer-only, post-execution)_ `nyquist_compliant` — leave `false` at plan time
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 90s
+- [x] _(finalizer-only, post-execution)_ `nyquist_compliant: true` set by the finalizer (zero gaps)
 
-**Approval:** pending
+**Approval:** validated 2026-10-05
+
+---
+
+## Validation Audit 2026-10-05
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+All four requirements (DOC-02, CAT-02, API-02, INV-02) have automated commands that ran green on the final code HEAD (evidence: `18-SHIP-GATE-EVIDENCE.md`, `18-VERIFICATION.md`, `18-02-SELF-UAT.md`). No tests were generated (D-03: docs and evidence phase).
