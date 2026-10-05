@@ -39,4 +39,15 @@ cp "$DIR/classify-hub-change.sh" tools/
 rm tools/verify-additive-diff.sh
 set +e; bash tools/classify-hub-change.sh --baseline v0.0.0 >/dev/null 2>&1; check "$?" 1 "missing sub-guard => classifier fails closed exit 1"; set -e
 
+# (6) IN-02: argument validation (run the real script; each must exit 1 with a message, not 'unbound variable')
+git reset -q --hard HEAD
+set +e
+"$SCRIPT" --baseline v0.0.0 --mode bogus >/dev/null 2>"$TMP/e1"; check "$?" 1 "unknown --mode rejected"
+grep -q 'bad --mode' "$TMP/e1" && pass=$((pass+1)) || { echo "FAIL: --mode error message missing"; fail=$((fail+1)); }
+"$SCRIPT" --baseline v0.0.0 --mode >/dev/null 2>"$TMP/e2"; check "$?" 1 "--mode without value exits 1"
+grep -q 'needs a value' "$TMP/e2" && pass=$((pass+1)) || { echo "FAIL: --mode no-value message missing"; fail=$((fail+1)); }
+"$SCRIPT" --baseline >/dev/null 2>"$TMP/e3"; check "$?" 1 "--baseline without value exits 1"
+"$SCRIPT" --baseline 'v0"x' --json >/dev/null 2>"$TMP/e4"; check "$?" 1 "malformed --baseline rejected"
+set -e
+
 echo "PASS=$pass FAIL=$fail"; [ "$fail" -eq 0 ]

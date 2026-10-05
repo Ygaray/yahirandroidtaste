@@ -9,12 +9,15 @@ set -euo pipefail
 DIR="$(cd "$(dirname "$0")" && pwd)"; cd "$(git rev-parse --show-toplevel)"
 BASE=""; MODE="additive"; JSON=0
 while [ "$#" -gt 0 ]; do case "$1" in
-  --baseline) BASE="$2"; shift 2;;
-  --mode) MODE="$2"; shift 2;;
+  --baseline) [ "$#" -ge 2 ] || { echo "--baseline needs a value" >&2; exit 1; }; BASE="$2"; shift 2;;
+  --mode) [ "$#" -ge 2 ] || { echo "--mode needs a value" >&2; exit 1; }; MODE="$2"; shift 2;;
   --json) JSON=1; shift;;
   *) echo "unknown arg: $1" >&2; exit 1;;
 esac; done
 [ -n "$BASE" ] || { echo "Usage: $0 --baseline <tag> [--mode additive|curation] [--json]" >&2; exit 1; }
+case "$MODE" in additive|curation) ;; *) echo "bad --mode '$MODE' (expected additive|curation)" >&2; exit 1;; esac
+# Same ref allow-list as verify-binary-abi.sh; also keeps the --json interpolation below valid JSON.
+printf '%s' "$BASE" | grep -Eq '^[A-Za-z0-9][A-Za-z0-9._/-]*$' || { echo "malformed --baseline '$BASE'" >&2; exit 1; }
 
 set +e
 bash "$DIR/verify-additive-diff.sh" "$BASE" >/dev/null 2>&1; src_rc=$?
