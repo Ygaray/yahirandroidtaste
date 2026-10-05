@@ -30,6 +30,8 @@ gen_src(){ # <srcdir> <variant>
     echo "  public void b($b x) {}"
     [ "$v" = add ] && echo '  public void c() {}'
     echo '}'; } > "$s/p/Alpha.java"
+  # Modifier-less (package-private) class: javap -public prints "class p.Hidden {" with its public members (WR-05).
+  [ "$v" = nohid ] || printf 'package p;\nclass Hidden { public void hid() {} }\n' > "$s/p/Hidden.java"
   [ "$v" = nofactory ] || printf 'package p;\npublic class Foo_Factory { public void make() {} }\n' > "$s/p/Foo_Factory.java"
   [ "$v" = nocs ] || printf 'package p;\npublic class ComposableSingletons$FooKt { public void lam() {} }\n' > "$s/p/ComposableSingletons\$FooKt.java"
   [ "$v" = add ] && printf 'package p;\npublic class Beta { public void z() {} }\n' > "$s/p/Beta.java"
@@ -52,6 +54,7 @@ build_aar rm rm
 build_aar nocs nocs
 build_aar nofactory nofactory
 build_aar chg chg
+build_aar nohid nohid
 build_aar hostile hostile
 build_aar corrupt corrupt
 
@@ -80,6 +83,11 @@ run 0 "(b) additive head exit 0" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/
 run 3 "(c) removed method exit 3" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/rm.aar" \
   bash tools/verify-binary-abi.sh v0.0.0
 check_grep "$ERR" 'ABI-ADDITIVE FAIL \(lane 3\).*p\.Alpha#a\(\)V' "(c) stderr names p.Alpha#a()V"
+
+# (c2) WR-05: a modifier-less class header must still own its members; removing p.Hidden.hid() names p.Hidden
+run 3 "(c2) removed member of package-private class exit 3" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/nohid.aar" \
+  bash tools/verify-binary-abi.sh v0.0.0
+check_grep "$ERR" 'ABI-ADDITIVE FAIL \(lane 3\).*p\.Hidden#hid\(\)V' "(c2) stderr names p.Hidden#hid()V"
 
 # (d) ComposableSingletons class dropped -> pass, counted as filtered
 run 0 "(d) ComposableSingletons loss ignored" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/nocs.aar" \

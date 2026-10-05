@@ -114,9 +114,12 @@ normalize() { # <aar> <out-listing>
   [ "$rc" -eq 0 ] || die 2 "javap exited $rc on $aar: $(head -3 "$d/javap.err")"
   [ ! -s "$d/javap.err" ] || die 2 "javap wrote to stderr on $aar: $(head -3 "$d/javap.err")"
   awk '
-    / (class|interface) [^ ]+.*\{$/ { match($0, /(class|interface) [^ <{]+/); s=substr($0, RSTART, RLENGTH); sub(/^(class|interface) /, "", s); cls=s }
-    /descriptor:/ { n=prev; sub(/\(.*/, "", n); k=split(n, a, " "); print cls "#" a[k] $2 }
-    { prev=$0 }' "$d/javap.out" | LC_ALL=C sort -u > "$out"
+    /^([a-z]+ )*(class|interface) [^ ]+.*\{$/ { match($0, /(class|interface) [^ <{]+/); s=substr($0, RSTART, RLENGTH); sub(/^(class|interface) /, "", s); cls=s }
+    /descriptor:/ {
+      if (cls == "") { print "descriptor line before any class header: " $0 > "/dev/stderr"; exit 2 }
+      n=prev; sub(/\(.*/, "", n); k=split(n, a, " "); print cls "#" a[k] $2 }
+    { prev=$0 }' "$d/javap.out" | LC_ALL=C sort -u > "$out" \
+    || die 2 "cannot attribute javap members to a class in $aar (unparsed class header)"
 }
 normalize "$BASE_AAR" "$W/base.txt"
 normalize "$HEAD_AAR" "$W/head.txt"
