@@ -3,6 +3,8 @@ package io.github.ygaray.yahirandroidtaste.model
 import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -255,6 +257,37 @@ class VoiceModelLabelDefaultsTest {
         assertTrue(copyArities(FailureActionUiModel::class.java).containsAll(listOf(2, 3)))
     }
 
+    // ---- VoiceOutcomeUiState.Failure.body / semanticsPrefix (Phase 16 / VFAIL-02, VFAIL-03) ----
+
+    @Test
+    fun `Failure v2_4 one and three argument construction shapes carry null body and prefix`() {
+        val one = VoiceOutcomeUiState.Failure("r")
+        val three = VoiceOutcomeUiState.Failure("r", null, null)
+
+        assertNull(one.body)
+        assertNull(one.semanticsPrefix)
+        assertNull(three.body)
+        assertNull(three.semanticsPrefix)
+    }
+
+    @Test
+    fun `Failure legacy three-argument copy preserves a custom body and semanticsPrefix`() {
+        val body: @androidx.compose.runtime.Composable () -> Unit = {}
+        val failure = VoiceOutcomeUiState.Failure("r", null, null, body = body, semanticsPrefix = "Erreur :")
+
+        val copied = failure.copy("r2", null, null)
+
+        assertSame(body, copied.body)
+        assertEquals("Erreur :", copied.semanticsPrefix)
+        assertEquals("r2", copied.reason)
+    }
+
+    @Test
+    fun `Failure keeps every old constructor arity and the new copy arities`() {
+        assertTrue(constructorArities(VoiceOutcomeUiState.Failure::class.java).containsAll(listOf(1, 2, 3, 4, 5)))
+        assertTrue(copyArities(VoiceOutcomeUiState.Failure::class.java).containsAll(listOf(3, 5)))
+    }
+
     // ---- IN-02: legacy-arity copy drift guards (every field non-default) ----
 
     @Test
@@ -262,6 +295,7 @@ class VoiceModelLabelDefaultsTest {
         val onRemove: () -> Unit = {}
         val trailing: @androidx.compose.runtime.Composable () -> Unit = {}
         val failureOnClick: () -> Unit = {}
+        val failureBody: @androidx.compose.runtime.Composable () -> Unit = {}
 
         assertLegacyCopyCarriesEveryField(
             HandledByUiModel("Cloud", "ladder", "prov", "mod", 3, escalationsLabel = "Escalades :")
@@ -286,6 +320,15 @@ class VoiceModelLabelDefaultsTest {
         )
         assertLegacyCopyCarriesEveryField(
             FailureActionUiModel("l", failureOnClick, role = ActionButtonDefaults.ActionButtonRole.Destructive)
+        )
+        assertLegacyCopyCarriesEveryField(
+            VoiceOutcomeUiState.Failure(
+                reason = "r",
+                handledBy = HandledByUiModel("Local"),
+                action = FailureActionUiModel("l", failureOnClick, ActionButtonDefaults.ActionButtonRole.Destructive),
+                body = failureBody,
+                semanticsPrefix = "Erreur :"
+            )
         )
     }
 }

@@ -1385,17 +1385,28 @@ package io.github.ygaray.yahirandroidtaste.model {
   }
 
   public static final class VoiceOutcomeUiState.Failure implements io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState {
+    ctor public VoiceOutcomeUiState.Failure(String reason);
+    ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy);
     ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action);
+    ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body);
+    ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body, optional String? semanticsPrefix);
     method public String component1();
     method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? component2();
     method public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? component3();
-    method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.Failure copy(optional String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action);
+    method public kotlin.jvm.functions.Function0<kotlin.Unit>? component4();
+    method public String? component5();
+    method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.Failure copy(String reason, io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action);
+    method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.Failure copy(optional String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body, optional String? semanticsPrefix);
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? getAction();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getBody();
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? getHandledBy();
     method @InaccessibleFromKotlin public String getReason();
+    method @InaccessibleFromKotlin public String? getSemanticsPrefix();
     property public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit>? body;
     property public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy;
     property public String reason;
+    property public String? semanticsPrefix;
   }
 
   public static final class VoiceOutcomeUiState.NeedsConfirmation implements io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState {

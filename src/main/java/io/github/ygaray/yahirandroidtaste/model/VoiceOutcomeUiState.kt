@@ -63,12 +63,38 @@ sealed interface VoiceOutcomeUiState {
      *   missing/invalid key, or "Retry" only when the caller knows the failure is retry-safe.
      *   `null` renders NO action at all; the library never adds an implicit default action
      *   (VOUT-03 — retry-safety is never assumed by the library).
+     * @param body An optional caller-supplied composable slot (VFAIL-02) rendered inside the error
+     *   surface, after the handled-by row and before the [action] — the same nullable-slot idiom as
+     *   [Success.editableContent]. `null` renders nothing (no node, no space). Equality is by lambda
+     *   reference, so remember the lambda if this [Failure] is compared or used as a key.
+     * @param semanticsPrefix Optional caller-localized text prepended to [reason] in the error
+     *   surface's accessibility announcement (VFAIL-03, D-02), joined by a single ASCII space so any
+     *   punctuation belongs to the prefix (e.g. `"Error:"`). `null` or blank leaves the announcement
+     *   unchanged. Plain text, no templating. Static UI copy only — never put sensitive text here
+     *   (this class uses the generated `toString`).
      */
-    data class Failure(
+    data class Failure @JvmOverloads constructor(
         val reason: String,
         val handledBy: HandledByUiModel? = null,
-        val action: FailureActionUiModel? = null
-    ) : VoiceOutcomeUiState
+        val action: FailureActionUiModel? = null,
+        val body: (@Composable () -> Unit)? = null,
+        val semanticsPrefix: String? = null
+    ) : VoiceOutcomeUiState {
+        // Hand-written pre-v2.5 `copy` arity. Without it Metalava reports the shipped JVM
+        // `copy(String, HandledByUiModel, FailureActionUiModel)` as a removed method once [body] and
+        // [semanticsPrefix] are appended (the compiler only generates the full-arity copy).
+        // Delegates with the CURRENT body and prefix so a legacy three-argument copy never resets a
+        // caller's custom values. A body `var` (the TagChipUiModel alternative) is rejected because
+        // it would cost Compose all-val stability.
+        fun copy(reason: String, handledBy: HandledByUiModel?, action: FailureActionUiModel?): Failure =
+            copy(
+                reason = reason,
+                handledBy = handledBy,
+                action = action,
+                body = body,
+                semanticsPrefix = semanticsPrefix
+            )
+    }
 
     /**
      * A generic needs-confirmation state (VOUT-04, D-01/D-02/D-03/D-05/D-06) -- a reason string,

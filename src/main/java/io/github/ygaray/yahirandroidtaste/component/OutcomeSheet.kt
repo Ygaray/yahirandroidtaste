@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
@@ -277,12 +278,15 @@ private fun BatchResultsList(rows: List<BatchRowResultUiModel>) {
 
 /**
  * Renders a [VoiceOutcomeUiState.Failure] loudly on the theme's error-container color roles
- * (VOUT-03) — the [VoiceOutcomeUiState.Failure.reason] headline, an optional [HandledByRow], and
- * an optional action button that renders with the caller's `FailureActionUiModel.role` (VFAIL-01;
- * default Neutral). This is the ONLY place an action ever renders — a `null`
+ * (VOUT-03) — the [VoiceOutcomeUiState.Failure.reason] headline, an optional [HandledByRow], an
+ * optional caller-supplied [VoiceOutcomeUiState.Failure.body] slot (VFAIL-02, placed after the
+ * handled-by row and before the action), and an optional action button that renders with the
+ * caller's `FailureActionUiModel.role` (VFAIL-01; default Neutral). This is the ONLY place an
+ * action ever renders — a `null`
  * [VoiceOutcomeUiState.Failure.action] renders nothing (never
  * [AttentionCue][io.github.ygaray.yahirandroidtaste.component.AttentionCue] and never an implicit
- * default action).
+ * default action). A non-blank [VoiceOutcomeUiState.Failure.semanticsPrefix] is prepended to the
+ * reason in the surface's merged accessibility description (VFAIL-03, D-02).
  */
 @Composable
 private fun FailureBody(failure: VoiceOutcomeUiState.Failure) {
@@ -293,10 +297,27 @@ private fun FailureBody(failure: VoiceOutcomeUiState.Failure) {
         modifier = Modifier
             .fillMaxWidth()
             .testTag("outcome_sheet_failure_surface")
+            // VFAIL-03 / D-02: a non-blank caller prefix is announced by a combined description on
+            // the surface's merged node — the prefix, one ASCII space, then the reason (plain
+            // concatenation, no format parsing; punctuation belongs to the prefix). Merge-only, so
+            // the action button stays its own focusable, clickable node. Null/blank adds nothing.
+            .then(
+                if (!failure.semanticsPrefix.isNullOrBlank()) {
+                    Modifier.semantics(mergeDescendants = true) {
+                        contentDescription = "${failure.semanticsPrefix} ${failure.reason}"
+                    }
+                } else {
+                    Modifier
+                }
+            )
     ) {
         Column(modifier = Modifier.padding(Dimens.HorizontalPadding)) {
             Text(text = failure.reason, style = MaterialTheme.typography.headlineSmall)
             failure.handledBy?.let { HandledByRow(it) }
+            // VFAIL-02: optional caller slot, after the handled-by row and before the action. No
+            // wrapper container, so a null body adds no node and no space; it rides the existing
+            // scroll region in OutcomeSheetContent.
+            failure.body?.invoke()
             // v2.4.1: the optional action (D-08) stays INSIDE the error surface (unchanged
             // short-content look, Gate-2-passed). The scroll body in OutcomeSheetContent is what
             // keeps it from starving on a tall sheet — no separate pinned footer for Failure.

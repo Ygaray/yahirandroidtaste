@@ -4,12 +4,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.assertHeightIsAtLeast
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
@@ -28,6 +34,7 @@ import io.github.ygaray.yahirandroidtaste.model.UndoRowState
 import io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -865,6 +872,183 @@ class OutcomeSheetTest {
         // The label text actually reaches the rendered/semantics surface (CT found zero "Confirm"
         // matches pre-fix because the starved button never laid its Text out).
         composeTestRule.onNodeWithText("Confirm").assertExists()
+    }
+
+    // ── Phase 16: VFAIL-01 / VFAIL-02 / VFAIL-03 / D-02 — Failure enrichment ──────────────────
+    // Hosts OutcomeSheetContent (internal, same module) directly. Robolectric cannot assert button
+    // color, so role wiring is pinned structurally by FailureRoleSourceContractTest; the role tests
+    // here are behavioral regression pins (one clickable action button per role).
+
+    private fun failureSurface() = composeTestRule.onNodeWithTag("outcome_sheet_failure_surface")
+
+    private fun noContentDescription() =
+        SemanticsMatcher.keyNotDefined(SemanticsProperties.ContentDescription)
+
+    private fun topOf(tag: String): Float =
+        composeTestRule.onNodeWithTag(tag, useUnmergedTree = true).fetchSemanticsNode().boundsInRoot.top
+
+    @Test
+    fun `Failure body renders inside the failure surface`() {
+        composeTestRule.setContent {
+            OutcomeSheetContent(
+                VoiceOutcomeUiState.Failure(
+                    reason = "Network down",
+                    body = { Text("BODYTEXT", Modifier.testTag("failure_body_probe")) }
+                )
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNode(
+            hasText("BODYTEXT") and hasAnyAncestor(hasTestTag("outcome_sheet_failure_surface")),
+            useUnmergedTree = true
+        ).assertExists()
+    }
+
+    @Test
+    fun `Failure body sits below handled-by and above the action`() {
+        composeTestRule.setContent {
+            OutcomeSheetContent(
+                VoiceOutcomeUiState.Failure(
+                    reason = "Network down",
+                    handledBy = HandledByUiModel(tier = "Local"),
+                    action = FailureActionUiModel("Retry", {}),
+                    body = { Text("BODYTEXT", Modifier.testTag("failure_body_probe")) }
+                )
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        val handledByTop = topOf("outcome_sheet_handled_by")
+        val bodyTop = topOf("failure_body_probe")
+        val actionTop = topOf("outcome_sheet_action_button")
+        assertTrue("handled-by must be above body ($handledByTop < $bodyTop)", handledByTop < bodyTop)
+        assertTrue("body must be above the action ($bodyTop < $actionTop)", bodyTop < actionTop)
+    }
+
+    @Test
+    fun `Failure body without an action renders the body and no action node`() {
+        composeTestRule.setContent {
+            OutcomeSheetContent(
+                VoiceOutcomeUiState.Failure(
+                    reason = "Network down",
+                    action = null,
+                    body = { Text("BODYTEXT", Modifier.testTag("failure_body_probe")) }
+                )
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("failure_body_probe", useUnmergedTree = true).assertExists()
+        composeTestRule.onNodeWithTag("outcome_sheet_action_button", useUnmergedTree = true).assertDoesNotExist()
+    }
+
+    @Test
+    fun `Failure semanticsPrefix combines with the reason into the surface contentDescription`() {
+        composeTestRule.setContent {
+            OutcomeSheetContent(VoiceOutcomeUiState.Failure(reason = "Network down", semanticsPrefix = "Erreur :"))
+        }
+        composeTestRule.waitForIdle()
+
+        failureSurface().assertContentDescriptionEquals("Erreur : Network down")
+    }
+
+    @Test
+    fun `Failure null semanticsPrefix leaves the surface contentDescription undefined`() {
+        composeTestRule.setContent {
+            OutcomeSheetContent(VoiceOutcomeUiState.Failure(reason = "Network down", semanticsPrefix = null))
+        }
+        composeTestRule.waitForIdle()
+
+        failureSurface().assert(noContentDescription())
+    }
+
+    @Test
+    fun `Failure empty semanticsPrefix is treated as null`() {
+        composeTestRule.setContent {
+            OutcomeSheetContent(VoiceOutcomeUiState.Failure(reason = "Network down", semanticsPrefix = ""))
+        }
+        composeTestRule.waitForIdle()
+
+        failureSurface().assert(noContentDescription())
+    }
+
+    @Test
+    fun `Failure whitespace-only semanticsPrefix is treated as null`() {
+        composeTestRule.setContent {
+            OutcomeSheetContent(VoiceOutcomeUiState.Failure(reason = "Network down", semanticsPrefix = "   "))
+        }
+        composeTestRule.waitForIdle()
+
+        failureSurface().assert(noContentDescription())
+    }
+
+    @Test
+    fun `Failure semanticsPrefix with format-like and markup-like characters is announced verbatim`() {
+        composeTestRule.setContent {
+            OutcomeSheetContent(
+                VoiceOutcomeUiState.Failure(reason = "Network down", semanticsPrefix = "100 %s {0} & Erreur :")
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        failureSurface().assertContentDescriptionEquals("100 %s {0} & Erreur : Network down")
+    }
+
+    @Test
+    fun `Failure action stays a separate clickable node under a merged prefix surface`() {
+        var clicked = false
+        composeTestRule.setContent {
+            OutcomeSheetContent(
+                VoiceOutcomeUiState.Failure(
+                    reason = "Network down",
+                    action = FailureActionUiModel("Retry", { clicked = true }),
+                    semanticsPrefix = "Erreur :"
+                )
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        failureSurface().assertContentDescriptionEquals("Erreur : Network down")
+        composeTestRule.onAllNodesWithTag("outcome_sheet_action_button").assertCountEquals(1)
+        composeTestRule.onNodeWithTag("outcome_sheet_action_button").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, clicked)
+    }
+
+    private fun assertRoleRendersOneClickableActionButton(role: ActionButtonDefaults.ActionButtonRole) {
+        var clicked = false
+        composeTestRule.setContent {
+            OutcomeSheetContent(
+                VoiceOutcomeUiState.Failure(
+                    reason = "Network down",
+                    action = FailureActionUiModel("Act", { clicked = true }, role)
+                )
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onAllNodesWithTag("outcome_sheet_action_button").assertCountEquals(1)
+        composeTestRule.onNodeWithTag("outcome_sheet_action_button").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, clicked)
+    }
+
+    @Test
+    fun `Failure action with the Save role renders one clickable action button`() {
+        assertRoleRendersOneClickableActionButton(ActionButtonDefaults.ActionButtonRole.Save)
+    }
+
+    @Test
+    fun `Failure action with the Destructive role renders one clickable action button`() {
+        assertRoleRendersOneClickableActionButton(ActionButtonDefaults.ActionButtonRole.Destructive)
+    }
+
+    @Test
+    fun `Failure action with the Neutral role renders one clickable action button`() {
+        assertRoleRendersOneClickableActionButton(ActionButtonDefaults.ActionButtonRole.Neutral)
     }
 
     /**
