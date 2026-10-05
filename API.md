@@ -286,7 +286,8 @@ shipped constructor arity via `@JvmOverloads` plus a hand-written old-arity `cop
   hidden members with the exact v2.4.1 synthetic descriptors: the `(…, int, DefaultConstructorMarker)`
   default-argument constructor and `copy$default`. Kotlin callers built against v2.4.x link to
   those synthetics. The proof is a `javap -public -s` diff of the release AAR against the v2.4.1
-  JitPack AAR that shows zero missing descriptors.
+  JitPack AAR. It showed zero missing descriptors when the binary-compat fix landed; it is re-proven
+  at the v2.5.0 cut and is not asserted here as freshly verified for any later addition.
 - `FailureActionUiModel("l") { … }` (the v2.4.0 trailing-lambda shape) compiles again through an
   explicit `(label, onClick)` constructor.
 - It is **NOT source-compatible** for a **trailing-lambda** call of `ProposedItemUiModel`. The v2.4.x
@@ -316,8 +317,9 @@ defaults and behaviour).
   shapes working.
 - **Binary compatibility** follows the mechanism described above: the hidden v2.4.1
   `ApproachLadderCard` overload passes `router = null`, and the `FailureActionUiModel` and `Failure`
-  synthetics are among the six restored. That claim rests on the `javap` proof and is re-proven at
-  the v2.5.0 cut; it is not asserted here as freshly verified.
+  synthetics are among the six restored. That claim rests on the same `javap` proof stated in the
+  binary-compatibility bullet above, with the same status: re-proven at the v2.5.0 cut, not asserted
+  here as freshly verified.
 - The rung accessibility change (VA11Y-01) is behaviour only, with no signature change; it is
   documented in section 10.
 - `semanticsPrefix` is static UI copy only, never sensitive text, because the generated `toString`
