@@ -1,9 +1,9 @@
 ---
 phase: "19"
 slug: "cut-v2-5-0"
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: "2026-10-05"
 ---
 
@@ -38,11 +38,11 @@ created: "2026-10-05"
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 19-01-xx | 01 | 1 | D-03 | T-19-01 | ABI gate exits 3 on any missing public descriptor, 2 on sanity-floor failure | shell fixture | `bash tools/test/test-verify-binary-abi.sh` | ❌ W0 | ⬜ pending |
-| 19-01-xx | 01 | 1 | D-03 | T-19-01 | Real v2.4.1 vs HEAD ABI diff, missing=0 | integration | `tools/verify-binary-abi.sh v2.4.1` | ❌ W0 | ⬜ pending |
-| 19-01-xx | 01 | 1 | D-03 | - | Raw-line api.txt check fully unwired; hook still blocks lane 2 | shell | `bash tools/test/run-all.sh` | ✅ (rewrite) | ⬜ pending |
-| 19-02-xx | 02 | 2 | SHIP-03 | T-19-02 | Battery green on `GATED_HEAD`; tag by SHA; no stray tag | Gradle + git | full suite command; `git rev-parse v2.5.0^{commit}` equals `GATED_HEAD` | ✅ | ⬜ pending |
-| 19-02-xx | 02 | 2 | SHIP-03 | T-19-02 | JitPack resolves v2.5.0 (status ok, isTag true, commit match) | network | JitPack poll | ✅ | ⬜ pending |
+| 19-01-xx | 01 | 1 | D-03 | T-19-01 | ABI gate exits 3 on any missing public descriptor, 2 on sanity-floor failure | shell fixture | `bash tools/test/test-verify-binary-abi.sh` | ✅ | ✅ green |
+| 19-01-xx | 01 | 1 | D-03 | T-19-01 | Real v2.4.1 vs HEAD ABI diff, missing=0 | integration | `tools/verify-binary-abi.sh v2.4.1` | ✅ | ✅ green |
+| 19-01-xx | 01 | 1 | D-03 | - | Raw-line api.txt check fully unwired; hook still blocks lane 2 | shell | `bash tools/test/run-all.sh` | ✅ (rewrite) | ✅ green |
+| 19-02-xx | 02 | 2 | SHIP-03 | T-19-02 | Battery green on `GATED_HEAD`; tag by SHA; no stray tag | Gradle + git | full suite command; `git rev-parse v2.5.0^{commit}` equals `GATED_HEAD` | ✅ | ✅ green |
+| 19-02-xx | 02 | 2 | SHIP-03 | T-19-02 | JitPack resolves v2.5.0 (status ok, isTag true, commit match) | network | JitPack poll | ✅ | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -50,9 +50,9 @@ created: "2026-10-05"
 
 ## Wave 0 Requirements
 
-- [ ] `tools/test/test-verify-binary-abi.sh` - fixtures for D-03 script behavior
-- [ ] `tools/verify-binary-abi.sh` - unit under test (created RED-test-first)
-- [ ] Rewrite api cases in `tools/test/test-classify-hub-change.sh` and `tools/test/test-precommit-hook.sh`
+- [x] `tools/test/test-verify-binary-abi.sh` - fixtures for D-03 script behavior
+- [x] `tools/verify-binary-abi.sh` - unit under test (created RED-test-first)
+- [x] Rewrite api cases in `tools/test/test-classify-hub-change.sh` and `tools/test/test-precommit-hook.sh`
 
 ---
 
@@ -64,13 +64,23 @@ All phase behaviors have automated verification. (Orchestrator ledger-row relay 
 
 ## Validation Sign-Off
 
-> **Plan-time state is a DRAFT.** Leave frontmatter `status: draft` and `nyquist_compliant: false`; the Nyquist finalizer owns sign-off.
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 5s (shell tests)
+- [x] `nyquist_compliant: true` - finalized post-execution
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 5s (shell tests)
-- [ ] _(finalizer-only, post-execution)_ `nyquist_compliant` - leave `false` at plan time
+**Approval:** validated 2026-10-05
 
-**Approval:** pending (finalizer-owned)
+---
+
+## Validation Audit 2026-10-05
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+Evidence: `bash tools/test/run-all.sh` green (classify 12/12, hook 6/6, additive-diff 5/5, binary-abi 52/52); GATED_HEAD battery 751 tests 0 failures; ABI gate missing=0 vs v2.4.1; tag v2.5.0 peeled SHA == GATED_HEAD; JitPack pom/aar 200, status ok, commit match (see 19-SHIP-GATE-EVIDENCE.md, 19-VERIFICATION.md).
