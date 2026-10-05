@@ -3,19 +3,19 @@ gsd_state_version: "1.0"
 milestone: v2.5
 milestone_name: Voice UI Localization & Accessibility
 current_phase: 16
-current_phase_name: a11y-failure-enrichment
+current_phase_name: A11y + Failure enrichment
 status: executing
-stopped_at: Phase 15 complete, ready to plan Phase 16
-last_updated: "2026-10-05T09:59:23.723Z"
+stopped_at: Completed 16-01-PLAN.md
+last_updated: "2026-10-05T10:05:24.933Z"
 last_activity: 2026-10-05
-last_activity_desc: Phase 15 complete, transitioned to Phase 16
-state_head: 084317e652ffe7f3c501d6af9852a882e423e7dc
+last_activity_desc: Phase 16 execution started
+state_head: 52ff36583df2dbd9cd83fd19adf9b79001c51fde
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 0
   total_plans: 6
-  completed_plans: 3
-  percent: 20
+  completed_plans: 4
+  percent: 0
 ---
 
 # Project State
@@ -25,16 +25,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-05)
 
 **Core value:** The hub stays a coherent design system — not merely a safe, ever-growing pile of domain-agnostic components — as more consumers contribute.
-**Current focus:** Phase 15 — Voice-surface i18n label params
+**Current focus:** Phase 16 — A11y + Failure enrichment
 
 ## Current Position
 
-Phase: 16 (a11y-failure-enrichment) — READY TO EXECUTE
-Plan: Not started
+Phase: 16 (A11y + Failure enrichment) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-10-05 — Phase 15 complete, transitioned to Phase 16
+Last activity: 2026-10-05 — Phase 16 execution started
 
-Progress: [██░░░░░░░░] 20%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -67,6 +67,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 15 P01 | 6min | 3 tasks | 9 files |
 | Phase 15 P02 | 8min | 2 tasks | 6 files |
 | Phase 15 P03 | 15min | 3 tasks | 7 files |
+| Phase 16 P01 | 4 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,7 @@ Recent decisions affecting current work:
 - [Phase 15]: Phase 15-01: pre-commit hook classifies re-signatured composable commits as lane 2; commits use HUB_LANE_OVERRIDE=2 (detected lane), not 3 as planned
 - [Phase 15]: Phase 15-01: SegmentedOptionSelector a11y state words (selected/not selected) remain English - out of VI18N-01..04, Phase 18 docs note candidate
 - [Phase 15]: [15-02] Model-field append recipe: @JvmOverloads constructor + hand-written old-arity copy (Metalava-safe); commits use HUB_LANE_OVERRIDE=2 (hook-detected lane)
+- [Phase 16]: 16-01: rung Selected derives from rung.id == maxTierId (D-01); Role.RadioButton/min-size only when cap selectable (D-03, A4 locked: min-size gated on onClick != null) — Cap-less ladders stay compact and are never announced as an empty radio group; ~58dp pitch growth accepted (D-04), Gate-2 visual check
 
 ### Pending Todos
 
@@ -110,8 +112,8 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-05T09:09:14.562Z
-Stopped at: Phase 15 complete, ready to plan Phase 16
+Last session: 2026-10-05T10:05:24.904Z
+Stopped at: Completed 16-01-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
