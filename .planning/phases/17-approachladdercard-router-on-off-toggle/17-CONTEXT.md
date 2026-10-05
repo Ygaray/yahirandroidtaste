@@ -24,7 +24,13 @@ Add a Router ON/OFF toggle to `ApproachLadderCard` as an additive `router: Boole
   - **Append order:** `router: Boolean? = null`, `onRouterChange: ((Boolean) -> Unit)? = null`, `routerOnLabel: String = "Router on"` and `routerOffLabel: String = "Router off"` are appended AFTER the current last parameter (`offlineOnlyLabel`). This makes the change append-only at source level.
   - **The F1 shim stays:** `ApproachLadderCard`'s `@Deprecated(level = HIDDEN)` v2.4.1 overload (quick 261005-dmc, `07f66cf`) MUST keep its exact v2.4.1 parameter list. It MUST keep delegating to the current overload by **named** args, so the new router params take their defaults. Its `VoiceBinaryCompatShimTest` case MUST stay green, including the `$default`-mask render-through. Update the test only if the current signature it calls with all params changes.
   - **No shim for the Phase-15 shape:** the Phase-15 v2.5 shape is untagged (v2.5.0 is not cut). Only tagged signatures get a hidden delegate, so Phase 17 adds **no** new shim for it. Each published signature keeps exactly one hidden shim.
-  - **Data classes:** if this phase appends a property to any public data class, Kotlin callers need a hidden secondary ctor with the tagged params and defaults, plus a hidden legacy `copy` with `= this.x` defaults. `@JvmOverloads` alone only covers Java callers. This applies to tagged shapes only (see quick 261005-e2e / F1c).
+  - **Data classes (variant K, orchestrator ruling 2026-10-05):** `@JvmOverloads` alone only covers Java callers. A Kotlin caller compiled against a tagged shape links to the synthetic `(…, int, DefaultConstructorMarker)` ctor and to `copy$default`. To keep both:
+    - Keep `@JvmOverloads` and the visible legacy `copy`.
+    - Add a `@Deprecated(HIDDEN)` ctor declared with the tagged shape's exact synthetic params (`…, mask: Int, marker: DefaultConstructorMarker?`).
+    - Add a private companion `@JvmStatic @JvmName("copy\$default")` shim.
+    - Give each a per-class reflection test plus a behavioural test with a non-zero mask.
+    
+    K members are needed **only for TAGGED shapes**: add them at the release cut, not mid-milestone. A property this phase appends to a data class needs no K member for the untagged v2.5 shape. The v2.4.1 K members (quick 261005-e2e / F1c) must stay intact. The recipe is in the quick 261005-e2e SUMMARY.
   - **Gates:** Metalava `apiCheck` is the **source-level** gate only. The **binary** gate is the javap descriptor diff of the release AAR against the v2.4.1 JitPack AAR, with zero missing public descriptors (method in quick 261005-dmc/261005-e2e SUMMARY; it becomes `tools/verify-binary-abi.sh` at the v2.5.0 cut, F3). Run it as part of the phase's closing gate. _(source: orchestrator ruling — not revisitable by the planner)_
 
 ### Claude's Discretion

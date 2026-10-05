@@ -230,15 +230,19 @@ shipped constructor arity via `@JvmOverloads` plus a hand-written old-arity `cop
 - It is **source-compatible**: every v2.4.x call shape (positional, named, partial, `copy(...)`,
   destructuring) still compiles — pinned by the committed `VoiceI18nSourceCompatTest` fixture — and
   Metalava `apiCheck` passes (it tracks only the public, non-synthetic surface).
-- It is **NOT binary-compatible** for Kotlin call sites that rely on default arguments:
-  `HandledByUiModel("Local")` and `item.copy(title = "x")` link to the synthetic
-  `(…, int, DefaultConstructorMarker)` constructor and `copy$default(…, int, Object)` members, whose
-  arity and mask change when a field is appended; the five composables' `$default` and Composer
-  changed-mask signatures change the same way. Metalava's `api.txt` does not see synthetic members,
-  so a clean `apiCheck` is **not** proof of binary compatibility. A consumer artifact compiled
-  against v2.4.x and run against the v2.5.0 AAR can fail with `NoSuchMethodError`.
-- **Consumers must recompile** when repinning to v2.5.0 (the standard rebuild-from-an-immutable-tag
-  repin, `ECOSYSTEM.md` §7) — never mix a prebuilt v2.4.x consumer binary with the v2.5.0 AAR.
+- It is **binary-compatible with v2.4.x** (binary-compat fix, 2026-10-05). Every v2.4.1 public
+  JVM descriptor is still present in the v2.5.0 AAR. The four composables keep a
+  `@Deprecated(level = HIDDEN)` overload with their exact v2.4.1 signature that delegates to the
+  current one. The six affected data classes (`HandledByUiModel`, `ProposedItemUiModel`,
+  `UndoRefusedUiModel`, `UndoRowUiModel`, `FailureActionUiModel`, `VoiceOutcomeUiState.Failure`) keep
+  hidden members with the exact v2.4.1 synthetic descriptors: the `(…, int, DefaultConstructorMarker)`
+  default-argument constructor and `copy$default`. Kotlin callers built against v2.4.x link to
+  those synthetics. The proof is a `javap -public -s` diff of the release AAR against the v2.4.1
+  JitPack AAR that shows zero missing descriptors.
+- `FailureActionUiModel("l") { … }` (the v2.4.0 trailing-lambda shape) compiles again through an
+  explicit `(label, onClick)` constructor.
+- Consumers still rebuild from an immutable tag on every repin (`ECOSYSTEM.md` §7). Binary
+  compatibility is a safety net for prebuilt dependents, not a reason to skip the rebuild.
 
 **Voice label fragments — how the sheet joins them (v2.5.0, VI18N-04).** The label fields are plain
 text fragments; `OutcomeSheet` composes them with fixed separators: a single ASCII space between a
@@ -254,3 +258,33 @@ and a literal `", "` before the optional changed-item fragment
 - The `", "` list separator and the label-then-value order are fixed. A language that needs a
   different order or a non-ASCII separator should fold the item into `reason` and pass
   `changedItem = null` (see `UndoRefusedUiModel`).
+
+### The binary-compatibility rule (applies to every change from v2.5 on)
+
+Never change a **tagged** public signature in place. Metalava `apiCheck` is only the
+**source-level** gate. It models Kotlin signatures, not the JVM descriptors that Compose and
+default arguments compile to, so a clean `apiCheck` does not prove binary compatibility. The
+**binary** gate is the `javap` descriptor diff of the release AAR against the previous tag's AAR:
+zero missing public descriptors (Dagger `*_Factory` / `*_MembersInjector` and
+`ComposableSingletons$*` excluded). It becomes `tools/verify-binary-abi.sh` at the v2.5.0 cut.
+
+- **Composables:** append new parameters as the last parameter (source compat). Keep the tagged
+  signature as a `@Deprecated("…", level = DeprecationLevel.HIDDEN) @Composable` overload with the
+  exact tagged parameters and defaults, delegating to the current one by **named** arguments. Add
+  one test per shim that resolves the tagged JVM descriptor (`…, Composer, int, int`) by reflection
+  and renders through it with the `$default` mask a tagged caller would pass.
+- **Data classes:** `@JvmOverloads` plus a visible legacy-arity `copy` keep **Java** callers and
+  Metalava happy, but **Kotlin** callers that omit defaulted arguments link to compiler synthetics.
+  Restore those synthetics with "variant K":
+  - Add a `@Deprecated(HIDDEN)` constructor declared with the tagged synthetic parameters
+    (`…, mask: Int, marker: DefaultConstructorMarker?`). Only add it if the tagged primary had a
+    default.
+  - Add a private companion with `@JvmStatic @JvmName("copy\$default")`.
+  - Give each a reflection test plus a behavioural test with non-zero masks.
+  - Do not hide the legacy `copy` and do not drop `@JvmOverloads`. Both remove `api.txt` lines and
+    break Java source callers.
+  - The full recipe and its pitfalls are in `.planning/quick/261005-e2e-*/261005-e2e-SUMMARY.md`
+    (§ K recipe).
+- **Only tagged shapes get shims.** Inside one unreleased milestone, intermediate shapes need none.
+  Add the shims for a release at its cut, and keep exactly one hidden shim per published signature.
+- A deliberate break is a lane-3 release that bumps the major version, not a waived gate.

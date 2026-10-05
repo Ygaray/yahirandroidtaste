@@ -224,3 +224,17 @@
 ---
 
 *Convention analysis: 2026-08-21*
+
+## Public API Evolution (binary compatibility)
+
+Never change a **tagged** public signature in place. Append new parameters and properties last, and
+keep the tagged shape reachable at the JVM level:
+- **Composables:** add a `@Deprecated(level = HIDDEN)` overload with the exact tagged signature that
+  delegates to the current one by named args.
+- **Data classes:** keep `@JvmOverloads` and the visible legacy `copy`, which cover Java callers and
+  Metalava. Add the variant-K hidden members (a synthetic-shaped default ctor and
+  `copy$default`) for Kotlin callers.
+
+Only tagged shapes get shims, added at the release cut. Metalava `apiCheck` is the source-level gate;
+the `javap` AAR diff against the previous tag (zero missing) is the binary gate. Full rule: `API.md`
+§ "The binary-compatibility rule"; recipe: quick 261005-e2e SUMMARY § K recipe.
