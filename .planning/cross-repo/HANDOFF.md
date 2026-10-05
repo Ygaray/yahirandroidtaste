@@ -104,6 +104,51 @@ Session names can change after a restart. If one doesn't resolve, ask the orches
 
 ---
 
+## Current state (2026-10-05) — milestone v2.5 PAUSED for binary-compat fix
+
+**Stage:** milestone v2.5 "Voice UI Localization & Accessibility" (5 phases: 15–19) **IN PROGRESS,
+PAUSED at a clean committed seam.** Run was `/gsd-execute-milestone` (operator-authorized in-session
+override of the parked state; orchestrator had not dispatched).
+
+**Exact stop point:** paused **AFTER the Phase 17 PLAN stage, BEFORE Phase 17 execute.** Phase 17's
+plan (`17-01-PLAN.md`, VAPPR-04) is committed; its execute stage did NOT run. No source changed at
+the stop step; no half-written plans; no subagents in flight.
+
+**Per-phase status this run:**
+- **Phase 15** (voice-surface i18n label params): ✅ EXECUTED + settled. Gates green, Gate-1 all-pass
+  (tester R5CT10XNKQN), 689 tests. **⚠ This is the phase at the root of the binary-compat issue** — it
+  re-signatured 4 public composables **in place**. Metalava `apiCheck` passed because it does not
+  model Compose's `$default`/`$changed` synthetics, but the change is **binary-incompatible**.
+- **Phase 16** (a11y + Failure enrichment): ✅ EXECUTED + settled. Gates green; SC5 partial = a known
+  source-compat caveat (`FailureActionUiModel` trailing-lambda construction no longer compiles; real
+  consumers use named args).
+- **Phase 17** (ApproachLadderCard router ON/OFF toggle): ◆ PLANNED ONLY. Router-copy provisional
+  resolved **with Yahir in-session**: overridable `routerOnLabel`/`routerOffLabel` (defaults
+  "Router on"/"Router off"), mirroring Phase 15's localizable labels. **This plan appends router
+  params to the same 4 composables** — it will likely need a REPLAN after the fix lands.
+- **Phases 18** (catalog integrity + API dump + docs) **& 19** (cut `v2.5.0`): NOT started.
+
+**WHY PAUSED — the binary-compat fix (control-plane owns it):** before any more params append to the
+re-signatured composables, a fix is being planned: hidden `@Deprecated(level = HIDDEN)` overloads for
+binary compatibility + a real binary-ABI check. **Fix plan:
+`<control-plane>/docs/plans/2026-10-05-yat-binary-compat-fix-plan.md` (commit `79a5cdc`).** This hub
+session did NOT touch the fix.
+
+**DO NOT RESUME autonomously.** Stay parked until the orchestrator (`yahir-gsd-control-plane-6e`)
+dispatches. Resume path (orchestrator-gated): `/gsd-execute-milestone --from 17` (expect a Phase 17
+replan first, to adopt the hidden-overload pattern).
+
+**Related tooling seed filed this run:** technician seed **S-003** — YAT pre-commit hook exports an
+absolute `API_FILE` so the additive check degrades to source-only; `verify-api-additive.sh` exits 3
+on the 8 superseded Metalava lines (Phase 18 SC2 will trip). Likely related to the ABI-check work.
+
+**Local git:** run bookkeeping committed (`8bbd0de`: state/run-log/decision-map + 5 stage markers;
+`_milestone_run_active` cleared). Working tree otherwise clean except 4 pre-existing
+`.planning/graphs/*` artifacts that were already dirty at session start (not this run's). Still
+unpushed (whole v1.0→ history + v2.5 WIP); pushes held pending Yahir.
+
+---
+
 ## Current state (2026-10-04) — v2.4 SHIPPED + v2.4.1 hotfix CUT
 
 **Stage:** milestone v2.4 (§6.3) CLOSED — certified (16/16 reqs, integration clean, Nyquist
