@@ -36,11 +36,26 @@ R2 reconvene. Two Gate-2-waived `ApproachLadderCard` UI-polish notes are tracked
 **Prior milestones:** v1.0 — Hub Stewardship (2026-09-02, `v2.0.0`); v2.0 — Line Reunification
 (2026-09-27, `v2.2.0`, + `TAGCOLOR-02` follow-on `v2.3.0`). See `.planning/MILESTONES.md`.
 
-## Next Milestone
+## Current Milestone: v2.5 — Voice UI Localization & Accessibility
 
-**Planning.** No active milestone — start the next with `/gsd-new-milestone` when scoped. The standing
-cross-repo context (the `vae-bilingual` contract, orchestrator `yahir-gsd-control-plane-f2`, and the
-A13 reconvene protocol) continues to govern any hub slice of that effort.
+**Goal:** Make the AI-voice UI surface fully caller-localizable and more accessible — strictly
+additively, with no behavior change for existing callers.
+
+**Target features:**
+- i18n label params — settings-card labels (XR-172-01: Provider/Model) + voice-surface literals
+  (XR-175-02 a,b: ClarificationBar / OutcomeSheet / HandledBy / ApproachLadderCard), some via
+  additive model fields
+- A11y + Failure enrichment — approach-row minimum interactive size + selected semantics
+  (XR-175-02 c); `VoiceOutcomeUiState.Failure` action role + body slot + semantics prefix (XR-175-02 d)
+- `ApproachLadderCard` Router ON/OFF toggle (XR-175-02 e) — `router`/`onRouterChange`, the
+  `offlineOnly` pattern
+- Catalog integrity + regenerated `api.txt` + docs (no tag), then cut `v2.5.0` (isolated, follows a green catalog)
+
+**Cross-repo:** Wave 0, §6.3 of the `vae-bilingual` effort; orchestrator `yahir-gsd-control-plane-6e`
+(of record per `xrepo/vae-bilingual/effort.json` @`87131d1`; prior `-f2` retired). R-v1.1 GO issued;
+scope locked to `.planning/cross-repo/RECONVENE-BRIEF-R-v1.1.md` (`cb5f047`). The tag cut goes through
+`xrepo build` and stays human-gated (A12 waiver pending Yahir's direct OK). The A13 reconvene protocol
+governs this slice.
 
 ## Context
 
@@ -129,9 +144,13 @@ A13 reconvene protocol) continues to govern any hub slice of that effort.
 
 ### Active
 
-<!-- No active milestone — v2.4 (AI-Voice Command UI) shipped 2026-10-01 as v2.4.0. Next milestone TBD via /gsd-new-milestone. -->
+<!-- Milestone v2.5 — Voice UI Localization & Accessibility (scope locked by RECONVENE-BRIEF-R-v1.1, cb5f047). REQ-IDs defined in REQUIREMENTS.md. All strictly additive vs v2.4.0. -->
 
-(none — milestone v2.4 shipped as `v2.4.0`; next milestone not yet scoped)
+- [ ] Caller-localizable labels on the settings cards + voice-surface composables (XR-172-01, XR-175-02 a,b) — English defaults preserved
+- [ ] Accessibility on approach-ladder rows: minimum interactive size + selected semantics (XR-175-02 c)
+- [ ] `VoiceOutcomeUiState.Failure` enrichment: action role + optional body slot + a11y semantics prefix (XR-175-02 d)
+- [ ] `ApproachLadderCard` Router ON/OFF toggle — `router`/`onRouterChange`, mirrors `offlineOnly` (XR-175-02 e)
+- [ ] Catalog integrity + regenerated `api.txt` + docs, then additive `v2.5.0` cut (§11, human-gated)
 
 ### Out of Scope
 
@@ -169,4 +188,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-01 after v2.4 milestone — AI-Voice Command UI shipped as library `v2.4.0` (Wave 0 §6.3 of the vae-bilingual cross-repo effort; Gate-2 signed off, 16/16 reqs). Consumer repins (SB, CT → v2.4.0) are Wave-1. Prior: v1.0 → v2.0.0 (2026-09-02); v2.0 Line Reunification → v2.2.0 (2026-09-27), TAGCOLOR-02 → v2.3.0.*
+*Last updated: 2026-10-05 — started milestone v2.5 (Voice UI Localization & Accessibility; vae-bilingual R-v1.1 GO, scope locked to RECONVENE-BRIEF-R-v1.1 cb5f047, all additive). Prior: v2.4 AI-Voice Command UI shipped as `v2.4.0` (2026-10-01, Gate-2 signed off, 16/16 reqs; a v2.4.1 OutcomeSheet hotfix followed). SB + CT repinned to v2.4.0 (→ v2.4.1 in their own channels). Earlier: v1.0 → v2.0.0 (2026-09-02); v2.0 Line Reunification → v2.2.0 (2026-09-27), TAGCOLOR-02 → v2.3.0.*

@@ -1,20 +1,16 @@
 ---
 gsd_state_version: "1.0"
-milestone: v2.4
-milestone_name: AI-Voice Command UI
-status: Awaiting next milestone
-stopped_at: Phase 14 complete — all phases complete
-last_updated: "2026-10-01T16:06:12.579Z"
-last_activity: 2026-10-01
-last_activity_desc: Milestone v2.4 completed and archived
-state_head: fae8f7cf062c887810bbc107b96e6b8b598d8eac
+milestone: v2.5
+milestone_name: Voice UI Localization & Accessibility
+status: planning
+last_updated: "2026-10-05T07:40:53.103Z"
+last_activity: 2026-10-05
 progress:
-  total_phases: 5
-  completed_phases: 1
-  total_plans: 7
-  completed_plans: 7
-  percent: 20
-current_phase: 14
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -28,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-09-29)
 
 ## Current Position
 
-Phase: Milestone v2.4 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-10-01 — Milestone v2.4 completed and archived
+Status: Defining requirements
+Last activity: 2026-10-05 — Milestone v2.5 started
 
 ## Performance Metrics
 
