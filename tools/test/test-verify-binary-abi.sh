@@ -44,6 +44,8 @@ gen_src(){ # <srcdir> <variant>
     else echo 'public class Sub extends Alpha implements Marker {}'; fi; } > "$s/p/Sub.java"
   if [ "$v" = final ]; then printf 'package p;\npublic final class Open {}\n' > "$s/p/Open.java"
   else printf 'package p;\npublic class Open {}\n' > "$s/p/Open.java"; fi
+  # Hand-written class whose name merely CONTAINS _Factory must still be compared (IN-01).
+  [ "$v" = nohelper ] || printf 'package p;\npublic class Foo_FactoryHelper { public void h() {} }\n' > "$s/p/Foo_FactoryHelper.java"
   [ "$v" = nofactory ] || printf 'package p;\npublic class Foo_Factory { public void make() {} }\n' > "$s/p/Foo_Factory.java"
   [ "$v" = nocs ] || printf 'package p;\npublic class ComposableSingletons$FooKt { public void lam() {} }\n' > "$s/p/ComposableSingletons\$FooKt.java"
   [ "$v" = add ] && printf 'package p;\npublic class Beta { public void z() {} }\n' > "$s/p/Beta.java"
@@ -71,6 +73,7 @@ build_aar noprot noprot
 build_aar rmmarker rmmarker
 build_aar nosuper nosuper
 build_aar final final
+build_aar nohelper nohelper
 build_aar hostile hostile
 build_aar corrupt corrupt
 
@@ -134,6 +137,11 @@ check_grep "$OUT" 'filtered_ComposableSingletons=[1-9][0-9]* missing=0$' "(d) fi
 # (e) *_Factory class dropped -> pass (excluded class)
 run 0 "(e) Foo_Factory loss ignored" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/nofactory.aar" \
   bash tools/verify-binary-abi.sh v0.0.0
+
+# (e2) IN-01: only Dagger-style suffixes are excluded; Foo_FactoryHelper dropped -> exit 3
+run 3 "(e2) Foo_FactoryHelper loss detected" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/nohelper.aar" \
+  bash tools/verify-binary-abi.sh v0.0.0
+check_grep "$ERR" 'ABI-ADDITIVE FAIL \(lane 3\).*p\.Foo_FactoryHelper#h\(\)V' "(e2) stderr names p.Foo_FactoryHelper#h()V"
 
 # (f) sanity floor above fixture size -> exit 2
 run 2 "(f) sanity floor exit 2" env SKIP_BUILD=1 MIN_LINES=100000 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/same.aar" \

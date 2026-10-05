@@ -103,7 +103,7 @@ normalize() { # <aar> <out-listing>
   while IFS= read -r e; do
     case "$e" in *.class) ;; *) continue ;; esac
     n="${e%.class}"; n="${n//\//.}"
-    case "$n" in *_Factory*|*_MembersInjector*) continue ;; esac
+    case "$n" in *_Factory|*_Factory\$*|*_MembersInjector|*_MembersInjector\$*) continue ;; esac
     printf '%s' "$n" | grep -Eq '^[A-Za-z0-9_$][A-Za-z0-9_$.-]*$' \
       || die 2 "unsafe class entry name in $aar: '$e'"
     names+=("$n")
