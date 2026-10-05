@@ -2,10 +2,10 @@
 # verify-binary-abi.sh <baseline-tag> - binary (JVM descriptor) additivity gate for the release AAR (D-03).
 #
 # Why: Metalava apiCheck is a SOURCE-level gate and is blind to Compose $default / $changed synthetics and
-# data-class synthetics (INC-2026-10-05-02). This gate runs `javap -public -s` over every class in the
+# data-class synthetics (INC-2026-10-05-02). This gate runs `javap -protected -s` (public AND protected members) over every class in the
 # release AAR's classes.jar at HEAD and in the baseline tag's AAR, normalizes both to sorted unique
-# `class#member descriptor` lines, and diffs append-only: every public descriptor present in the baseline
-# must still exist at HEAD.
+# `class#member descriptor` lines, and diffs append-only: every public or protected descriptor present in the
+# baseline must still exist at HEAD (protected members are binary API for consumers that subclass).
 #
 # Usage:   tools/verify-binary-abi.sh <baseline-tag>        e.g. tools/verify-binary-abi.sh v2.4.1
 # Exit codes:
@@ -110,7 +110,7 @@ normalize() { # <aar> <out-listing>
   done <<< "$entries"
   [ "${#names[@]}" -gt 0 ] || die 2 "no class survives the filters in $aar"
   local rc=0
-  javap -public -s -cp "$d/classes.jar" "${names[@]}" >"$d/javap.out" 2>"$d/javap.err" || rc=$?
+  javap -protected -s -cp "$d/classes.jar" "${names[@]}" >"$d/javap.out" 2>"$d/javap.err" || rc=$?
   [ "$rc" -eq 0 ] || die 2 "javap exited $rc on $aar: $(head -3 "$d/javap.err")"
   [ ! -s "$d/javap.err" ] || die 2 "javap wrote to stderr on $aar: $(head -3 "$d/javap.err")"
   awk '

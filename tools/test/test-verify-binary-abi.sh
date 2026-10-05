@@ -32,6 +32,10 @@ gen_src(){ # <srcdir> <variant>
     echo '}'; } > "$s/p/Alpha.java"
   # Modifier-less (package-private) class: javap -public prints "class p.Hidden {" with its public members (WR-05).
   [ "$v" = nohid ] || printf 'package p;\nclass Hidden { public void hid() {} }\n' > "$s/p/Hidden.java"
+  # Protected member of a public open class: binary API for subclassing consumers; javap -public would hide it (WR-02).
+  { echo 'package p;'; echo 'public class Prot {'
+    [ "$v" = noprot ] || echo '  protected void prot(int x) {}'
+    echo '  public void keep() {}'; echo '}'; } > "$s/p/Prot.java"
   [ "$v" = nofactory ] || printf 'package p;\npublic class Foo_Factory { public void make() {} }\n' > "$s/p/Foo_Factory.java"
   [ "$v" = nocs ] || printf 'package p;\npublic class ComposableSingletons$FooKt { public void lam() {} }\n' > "$s/p/ComposableSingletons\$FooKt.java"
   [ "$v" = add ] && printf 'package p;\npublic class Beta { public void z() {} }\n' > "$s/p/Beta.java"
@@ -55,6 +59,7 @@ build_aar nocs nocs
 build_aar nofactory nofactory
 build_aar chg chg
 build_aar nohid nohid
+build_aar noprot noprot
 build_aar hostile hostile
 build_aar corrupt corrupt
 
@@ -88,6 +93,11 @@ check_grep "$ERR" 'ABI-ADDITIVE FAIL \(lane 3\).*p\.Alpha#a\(\)V' "(c) stderr na
 run 3 "(c2) removed member of package-private class exit 3" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/nohid.aar" \
   bash tools/verify-binary-abi.sh v0.0.0
 check_grep "$ERR" 'ABI-ADDITIVE FAIL \(lane 3\).*p\.Hidden#hid\(\)V' "(c2) stderr names p.Hidden#hid()V"
+
+# (c3) WR-02: removing a protected method is binary-breaking for subclassers -> exit 3
+run 3 "(c3) removed protected method exit 3" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/noprot.aar" \
+  bash tools/verify-binary-abi.sh v0.0.0
+check_grep "$ERR" 'ABI-ADDITIVE FAIL \(lane 3\).*p\.Prot#prot\(I\)V' "(c3) stderr names p.Prot#prot(I)V"
 
 # (d) ComposableSingletons class dropped -> pass, counted as filtered
 run 0 "(d) ComposableSingletons loss ignored" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/nocs.aar" \
