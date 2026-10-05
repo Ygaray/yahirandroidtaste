@@ -214,14 +214,14 @@ Text(text = "${refused.refusedPrefix} ${refused.reason}$suffix", /* … */)
 | A2 | Names `refusedPrefix` / `changedSinceSuffix` are acceptable to SecondBrain (brief only says "refused-prefix on undo model") | Models | Consumer must rename once on repin; Claude's-discretion area per CONTEXT |
 | A3 | Leaving `SegmentedOptionSelector`'s English "selected"/"not selected" a11y text untouched is acceptable for VI18N-03 | Residual literals | SB TalkBack users hear mixed-language toggle announcement; may need a follow-up phase/requirement |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **`SegmentedOptionSelector` a11y English ("selected"/"not selected")**
+1. **`SegmentedOptionSelector` a11y English ("selected"/"not selected")** — RESOLVED: out of scope; recorded as an explicit residual in 15-01/15-03 plans and a Phase 18 docs-note candidate.
    - Known: `SegmentedOptionSelector.kt:65` builds the contentDescription; it is public and shared; existing test pins English at `ApproachLadderCardTest.kt:77`.
    - Unclear: whether SB's localization needs this overridable.
    - Recommendation: out of Phase 15 scope (not in VI18N-01..04); record as a follow-up/backlog item and mention in the P18 docs note ("toggle a11y state words remain English"). If the owner wants it, add optional `selectedStateLabel`/`notSelectedStateLabel` params to `SegmentedOptionSelector` last — would also be a new API line.
-2. **Refused-message word order** — prefix/suffix composition can't express reordered grammars. Recommendation: ship brief's shape; document the workaround (fold `changedItem` into `reason`, pass `changedItem = null`).
-3. **Optional showcase (D-03)** — skip; zero guard impact.
+2. **Refused-message word order** — RESOLVED: shipped as brief shape; limitation documented in KDoc per 15-02. prefix/suffix composition can't express reordered grammars. Recommendation: ship brief's shape; document the workaround (fold `changedItem` into `reason`, pass `changedItem = null`).
+3. **Optional showcase (D-03)** — RESOLVED: skipped (D-03); gallery untouched; zero guard impact.
 
 ## Environment Availability
 
