@@ -32,7 +32,7 @@ See: .planning/PROJECT.md (updated 2026-10-05)
 Phase: 17 (approachladdercard-router-on-off-toggle) — READY TO EXECUTE
 Plan: Not started
 Status: Ready to execute
-Last activity: 2026-10-05 — Phase 16 complete, transitioned to Phase 17
+Last activity: 2026-10-05 - Completed quick task 261005-dmc: F1+F1b binary-compat (hidden v2.4.1 overloads + FailureActionUiModel trailing-lambda ctor)
 
 Progress: [██░░░░░░░░] 20%
 
@@ -99,6 +99,12 @@ None yet.
 - **Tag-cut human gate (SHIP-03 / Phase 19):** shipping is human-gated per root `CLAUDE.md`; the A12 tag-cut waiver is still pending Yahir's direct OK for this effort's YAT tag. Cut `v2.5.0` only on a green Phase 18, then relay the full §11 ledger row to the orchestrator. Confirm the waiver stands before the cut.
 - **SHIP-03 stray-tag hazard:** milestone close must cut NO git marker tag (`git.create_tag` false) — the only tag is the `v2.5.0` release coordinate. A bare `v2.2` milestone-marker tag already leaked into the JitPack coordinate namespace at the v2.0 close; do not repeat it.
 - **Strictly-additive guard (API-02 / INV-02):** every change is a new defaulted param/field or internal-only; re-confirm with `tools/verify-api-additive.sh` against a regenerated `api.txt`, keep detekt zero-baseline, preserve the one-way-dependency invariant (no engine/consumer import).
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 261005-dmc | F1+F1b binary-compat: hidden v2.4.1 composable overloads + FailureActionUiModel trailing-lambda ctor | 2026-10-05 | 2d803be | [261005-dmc-f1-f1b-binary-compat-hidden-v2-4-1-compo](./quick/261005-dmc-f1-f1b-binary-compat-hidden-v2-4-1-compo/) |
 
 ## Deferred Items
 
