@@ -1,5 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.model
 
+import kotlin.jvm.internal.DefaultConstructorMarker
+
 /**
  * Provenance indicator for a voice command outcome
  * ([io.github.ygaray.yahirandroidtaste.component.OutcomeSheet], VOUT-02) — mirrors
@@ -49,4 +51,51 @@ data class HandledByUiModel @JvmOverloads constructor(
         escalationCount = escalationCount,
         escalationsLabel = escalationsLabel
     )
+
+    // v2.4.x binary-compatibility shims (INC-2026-10-05-02 F1c). They re-emit the compiler-generated
+    // v2.4.1 default-argument constructor and static `copy$default` that consumers compiled against
+    // v2.4.x link to when they omit defaulted arguments. Mask bit i means v2.4.1 parameter i took
+    // its default. A defaulted hidden ctor is not used because it clashes with the @JvmOverloads
+    // arity that already emits the v2.4.1 primary descriptor; a hidden legacy copy is not used
+    // because it would drop the visible legacy copy's api.txt line and become synthetic. Hidden from
+    // Kotlin and Java source: do not call them or document them as API.
+    @Deprecated("Binary compatibility with v2.4.x", level = DeprecationLevel.HIDDEN)
+    constructor(
+        tier: String,
+        approach: String?,
+        provider: String?,
+        model: String?,
+        escalationCount: Int?,
+        mask: Int,
+        marker: DefaultConstructorMarker?
+    ) : this(
+        tier = tier,
+        approach = if (mask and (1 shl 1) != 0) null else approach,
+        provider = if (mask and (1 shl 2) != 0) null else provider,
+        model = if (mask and (1 shl 3) != 0) null else model,
+        escalationCount = if (mask and (1 shl 4) != 0) null else escalationCount
+    )
+
+    private companion object {
+        @Deprecated("Binary compatibility with v2.4.x", level = DeprecationLevel.HIDDEN)
+        @JvmStatic
+        @JvmName("copy\$default")
+        fun legacyCopyDefault(
+            self: HandledByUiModel,
+            tier: String?,
+            approach: String?,
+            provider: String?,
+            model: String?,
+            escalationCount: Int?,
+            mask: Int,
+            marker: Any?
+        ): HandledByUiModel = self.copy(
+            tier = if (mask and (1 shl 0) != 0) self.tier else requireNotNull(tier),
+            approach = if (mask and (1 shl 1) != 0) self.approach else approach,
+            provider = if (mask and (1 shl 2) != 0) self.provider else provider,
+            model = if (mask and (1 shl 3) != 0) self.model else model,
+            escalationCount = if (mask and (1 shl 4) != 0) self.escalationCount else escalationCount,
+            escalationsLabel = self.escalationsLabel
+        )
+    }
 }
