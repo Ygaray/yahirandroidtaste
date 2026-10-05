@@ -1,9 +1,9 @@
 ---
 phase: "17"
 slug: "approachladdercard-router-on-off-toggle"
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: "2026-10-05"
 ---
 
@@ -39,9 +39,9 @@ created: "2026-10-05"
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 17-01-01 | 01 | 1 | VAPPR-04 | — | N/A | Compose UI | `./gradlew testDebugUnitTest --tests '*ApproachLadderCardTest'` | ❌ W0 | ⬜ pending |
-| 17-01-02 | 01 | 1 | VAPPR-04 | — | N/A | Compose UI (registry-reached) | `./gradlew testDebugUnitTest --tests '*GalleryDemoInteractionTest'` | ❌ W0 | ⬜ pending |
-| 17-01-03 | 01 | 1 | VAPPR-04 | — | N/A | gradle + git + javap | closing gate (see 17-RESEARCH.md Validation Architecture) | ✅ | ⬜ pending |
+| 17-01-01 | 01 | 1 | VAPPR-04 | — | N/A | Compose UI | `./gradlew testDebugUnitTest --tests '*ApproachLadderCardTest'` | ✅ | ✅ green |
+| 17-01-02 | 01 | 1 | VAPPR-04 | — | N/A | Compose UI (registry-reached) | `./gradlew testDebugUnitTest --tests '*GalleryDemoInteractionTest'` | ✅ | ✅ green |
+| 17-01-03 | 01 | 1 | VAPPR-04 | — | N/A | gradle + git + javap | closing gate (see 17-RESEARCH.md Validation Architecture) | ✅ | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -49,9 +49,9 @@ created: "2026-10-05"
 
 ## Wave 0 Requirements
 
-- [ ] Router cases in `ApproachLadderCardTest.kt` (SC1-SC5, label overrides, placement, rung behaviour unchanged)
-- [ ] Registry-reached gallery render test for the `ApproachLadderCard` fixture (D-02)
-- [ ] `.planning/uat-pending/17-approachladdercard-router-on-off-toggle.md` Gate-2 registration
+- [x] Router cases in `ApproachLadderCardTest.kt` (SC1-SC5, label overrides, placement, rung behaviour unchanged)
+- [x] Registry-reached gallery render test for the `ApproachLadderCard` fixture (D-02)
+- [x] `.planning/uat-pending/17-approachladdercard-router-on-off-toggle.md` Gate-2 registration
 
 ---
 
@@ -65,14 +65,26 @@ created: "2026-10-05"
 
 ## Validation Sign-Off
 
-> **Plan-time state is a DRAFT.** Leave frontmatter `status: draft` and `nyquist_compliant: false`.
-> These are finalized ONLY post-execution by the Nyquist finalizer.
+> Finalized post-execution by the Nyquist finalizer (2026-10-05).
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 300s
-- [ ] _(finalizer-only, post-execution)_ `nyquist_compliant` — leave `false` at plan time
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 300s
+- [x] _(finalizer-only, post-execution)_ `nyquist_compliant: true` — zero automatable gaps
 
-**Approval:** pending
+**Approval:** validated 2026-10-05
+
+
+---
+
+## Validation Audit 2026-10-05
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+Evidence: full suite (751 tests, 0 failures), detekt zero-baseline and apiCheck green at HEAD; ApproachLadderCardTest 33, ApproachLadderRouterCompatTest 2, ApproachLadderCardGalleryDemoTest 3 pass; closing binary javap gate missing=0; Gate-1 self-UAT all_pass (17-01-SELF-UAT.md). The two-stacked-toggles visual judgement stays Manual-Only (Gate-2, owner) and is not an automatable gap.
