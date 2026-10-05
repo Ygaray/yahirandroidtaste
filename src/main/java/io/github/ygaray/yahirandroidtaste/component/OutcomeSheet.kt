@@ -278,7 +278,8 @@ private fun BatchResultsList(rows: List<BatchRowResultUiModel>) {
 /**
  * Renders a [VoiceOutcomeUiState.Failure] loudly on the theme's error-container color roles
  * (VOUT-03) — the [VoiceOutcomeUiState.Failure.reason] headline, an optional [HandledByRow], and
- * an optional action button. This is the ONLY place an action ever renders — a `null`
+ * an optional action button that renders with the caller's `FailureActionUiModel.role` (VFAIL-01;
+ * default Neutral). This is the ONLY place an action ever renders — a `null`
  * [VoiceOutcomeUiState.Failure.action] renders nothing (never
  * [AttentionCue][io.github.ygaray.yahirandroidtaste.component.AttentionCue] and never an implicit
  * default action).
@@ -302,7 +303,7 @@ private fun FailureBody(failure: VoiceOutcomeUiState.Failure) {
             failure.action?.let { action ->
                 DynamicActionButton(
                     label = action.label,
-                    role = ActionButtonDefaults.ActionButtonRole.Neutral,
+                    role = action.role,
                     onClick = action.onClick,
                     modifier = Modifier
                         .padding(top = Dimens.ContentSpacing)

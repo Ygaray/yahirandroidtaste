@@ -1,5 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.model
 
+import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
+
 /**
  * An optional label+callback action slot for a [VoiceOutcomeUiState.Failure] (D-08) — e.g. "Open
  * Settings" for a missing/invalid key, or "Retry" only when the caller knows the failure is
@@ -12,8 +14,21 @@ package io.github.ygaray.yahirandroidtaste.model
  * @param label The action button's visible text.
  * @param onClick Invoked when the action is tapped. The library never inspects or interprets
  *   this callback — it crosses back OUT to consumer-owned code.
+ * @param role The caller-chosen button role/severity of the failure action (VFAIL-01) — e.g.
+ *   [ActionButtonDefaults.ActionButtonRole.Destructive] for a destructive remedy. Reuses the
+ *   existing public enum (English-free; no new library type). Defaults to
+ *   [ActionButtonDefaults.ActionButtonRole.Neutral], today's rendering.
  */
-data class FailureActionUiModel(
+data class FailureActionUiModel @JvmOverloads constructor(
     val label: String,
-    val onClick: () -> Unit
-)
+    val onClick: () -> Unit,
+    val role: ActionButtonDefaults.ActionButtonRole = ActionButtonDefaults.ActionButtonRole.Neutral
+) {
+    // Hand-written pre-v2.5 `copy` arity. Without it Metalava reports the shipped JVM
+    // `copy(String, Function0)` as a removed method once [role] is appended (the compiler only
+    // generates the full-arity copy). Delegates with the CURRENT role so a legacy two-argument
+    // copy never resets a caller's custom role. A body `var` (the TagChipUiModel alternative) is
+    // rejected because it would cost Compose all-val stability.
+    fun copy(label: String, onClick: () -> Unit): FailureActionUiModel =
+        copy(label = label, onClick = onClick, role = role)
+}

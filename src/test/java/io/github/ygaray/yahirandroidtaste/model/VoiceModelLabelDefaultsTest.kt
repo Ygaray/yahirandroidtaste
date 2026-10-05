@@ -1,5 +1,6 @@
 package io.github.ygaray.yahirandroidtaste.model
 
+import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
@@ -10,7 +11,9 @@ import org.junit.Test
  * compatibility of the voice models (Phase 15 / VI18N-04). Each model gained caller-localizable
  * `String` fields appended LAST with English defaults; the shipped v2.4.0 constructor and `copy`
  * arities must survive (`@JvmOverloads constructor` + a hand-written old-arity `copy`), which the
- * reflection tests below pin. Plan 15-03 extends this file for the remaining two models.
+ * reflection tests below pin. Plan 15-03 extends this file for the remaining two models, and
+ * Phase 16 (plan 16-02) extends it for the Failure models (`FailureActionUiModel.role`,
+ * `VoiceOutcomeUiState.Failure.body` / `semanticsPrefix`), which follow the same recipe.
  */
 class VoiceModelLabelDefaultsTest {
 
@@ -201,12 +204,64 @@ class VoiceModelLabelDefaultsTest {
         assertTrue(copyArities(ProposedItemUiModel::class.java).containsAll(listOf(7, 8)))
     }
 
+    // ---- FailureActionUiModel.role (Phase 16 / VFAIL-01) ----
+
+    @Test
+    fun `FailureActionUiModel role defaults to Neutral for the v2_4 two-argument shape`() {
+        val action = FailureActionUiModel("l", {})
+
+        assertEquals(ActionButtonDefaults.ActionButtonRole.Neutral, action.role)
+    }
+
+    @Test
+    fun `FailureActionUiModel carries an explicit role`() {
+        val action = FailureActionUiModel("l", {}, ActionButtonDefaults.ActionButtonRole.Destructive)
+
+        assertEquals(ActionButtonDefaults.ActionButtonRole.Destructive, action.role)
+    }
+
+    @Test
+    fun `FailureActionUiModel legacy two-argument copy preserves a custom role`() {
+        val action = FailureActionUiModel("l", {}, role = ActionButtonDefaults.ActionButtonRole.Destructive)
+
+        val copied = action.copy("m", {})
+
+        assertEquals(ActionButtonDefaults.ActionButtonRole.Destructive, copied.role)
+        assertEquals("m", copied.label)
+    }
+
+    @Test
+    fun `FailureActionUiModel partial named copy preserves a custom role`() {
+        val action = FailureActionUiModel("l", {}, role = ActionButtonDefaults.ActionButtonRole.Save)
+
+        val copied = action.copy(label = "x")
+
+        assertEquals(ActionButtonDefaults.ActionButtonRole.Save, copied.role)
+        assertEquals("x", copied.label)
+    }
+
+    @Test
+    fun `FailureActionUiModel models differing only in role are not equal`() {
+        val onClick: () -> Unit = {}
+        val a = FailureActionUiModel("l", onClick)
+        val b = FailureActionUiModel("l", onClick, ActionButtonDefaults.ActionButtonRole.Destructive)
+
+        assertNotEquals(a, b)
+    }
+
+    @Test
+    fun `FailureActionUiModel keeps the old two-arg and the new three-arg constructor and copy arities`() {
+        assertTrue(constructorArities(FailureActionUiModel::class.java).containsAll(listOf(2, 3)))
+        assertTrue(copyArities(FailureActionUiModel::class.java).containsAll(listOf(2, 3)))
+    }
+
     // ---- IN-02: legacy-arity copy drift guards (every field non-default) ----
 
     @Test
     fun `legacy-arity copy of every voice model carries every field forward`() {
         val onRemove: () -> Unit = {}
         val trailing: @androidx.compose.runtime.Composable () -> Unit = {}
+        val failureOnClick: () -> Unit = {}
 
         assertLegacyCopyCarriesEveryField(
             HandledByUiModel("Cloud", "ladder", "prov", "mod", 3, escalationsLabel = "Escalades :")
@@ -228,6 +283,9 @@ class VoiceModelLabelDefaultsTest {
         )
         assertLegacyCopyCarriesEveryField(
             UndoRowUiModel("1", "l", UndoRowState.Undone, undoneLabel = "Annulé")
+        )
+        assertLegacyCopyCarriesEveryField(
+            FailureActionUiModel("l", failureOnClick, role = ActionButtonDefaults.ActionButtonRole.Destructive)
         )
     }
 }

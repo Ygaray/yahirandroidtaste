@@ -1037,13 +1037,18 @@ package io.github.ygaray.yahirandroidtaste.model {
 
   public final class FailureActionUiModel {
     ctor public FailureActionUiModel(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick);
+    ctor public FailureActionUiModel(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role);
     method public String component1();
     method public kotlin.jvm.functions.Function0<kotlin.Unit> component2();
-    method public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel copy(optional String label, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClick);
+    method public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole component3();
+    method public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel copy(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick);
+    method public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel copy(optional String label, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role);
     method @InaccessibleFromKotlin public String getLabel();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnClick();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole getRole();
     property public String label;
     property public kotlin.jvm.functions.Function0<kotlin.Unit> onClick;
+    property public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role;
   }
 
   public final class HandledByUiModel {
