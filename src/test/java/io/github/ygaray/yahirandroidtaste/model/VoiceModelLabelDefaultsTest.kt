@@ -107,4 +107,40 @@ class VoiceModelLabelDefaultsTest {
         assertTrue(constructorArities(UndoRefusedUiModel::class.java).containsAll(listOf(2, 4)))
         assertTrue(copyArities(UndoRefusedUiModel::class.java).containsAll(listOf(2, 4)))
     }
+
+    // ---- HandledByUiModel.escalationsLabel ----
+
+    @Test
+    fun `HandledByUiModel escalationsLabel defaults to the English Escalations colon`() {
+        assertEquals("Escalations:", HandledByUiModel("Local").escalationsLabel)
+    }
+
+    @Test
+    fun `HandledByUiModel v2_4_0 construction shapes carry the default label`() {
+        val one = HandledByUiModel("Local")
+        val named = HandledByUiModel(tier = "Local", escalationCount = 3)
+        val full = HandledByUiModel("Local", "Hybrid", "OpenAI", "gpt-4", 2)
+
+        assertEquals("Escalations:", one.escalationsLabel)
+        assertEquals("Escalations:", named.escalationsLabel)
+        assertEquals("Escalations:", full.escalationsLabel)
+        assertEquals(3, named.escalationCount)
+    }
+
+    @Test
+    fun `HandledByUiModel legacy five-argument copy preserves a custom escalationsLabel`() {
+        val handledBy = HandledByUiModel("Local", null, null, null, 1, escalationsLabel = "Escalades :")
+
+        val copied = handledBy.copy("Cloud", "A", "P", "M", 4)
+
+        assertEquals("Escalades :", copied.escalationsLabel)
+        assertEquals("Cloud", copied.tier)
+        assertEquals(4, copied.escalationCount)
+    }
+
+    @Test
+    fun `HandledByUiModel keeps the old five-arg and the new six-arg constructor and copy arities`() {
+        assertTrue(constructorArities(HandledByUiModel::class.java).containsAll(listOf(5, 6)))
+        assertTrue(copyArities(HandledByUiModel::class.java).containsAll(listOf(5, 6)))
+    }
 }

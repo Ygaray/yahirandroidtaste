@@ -330,7 +330,7 @@ private fun HandledByRow(handledBy: HandledByUiModel) {
             handledBy.approach?.let { add(it) }
             handledBy.provider?.let { add(it) }
             handledBy.model?.let { add(it) }
-            handledBy.escalationCount?.let { add("Escalations: $it") }
+            handledBy.escalationCount?.let { add("${handledBy.escalationsLabel} $it") }
         }
         if (secondary.isNotEmpty()) {
             Text(text = secondary.joinToString(" · "), style = MaterialTheme.typography.labelSmall)

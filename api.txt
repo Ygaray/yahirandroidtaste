@@ -1047,20 +1047,29 @@ package io.github.ygaray.yahirandroidtaste.model {
   }
 
   public final class HandledByUiModel {
+    ctor public HandledByUiModel(String tier);
+    ctor public HandledByUiModel(String tier, optional String? approach);
+    ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider);
+    ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model);
     ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount);
+    ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount, optional String escalationsLabel);
     method public String component1();
     method public String? component2();
     method public String? component3();
     method public String? component4();
     method public Integer? component5();
-    method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel copy(optional String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount);
+    method public String component6();
+    method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel copy(String tier, String? approach, String? provider, String? model, Integer? escalationCount);
+    method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel copy(optional String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount, optional String escalationsLabel);
     method @InaccessibleFromKotlin public String? getApproach();
     method @InaccessibleFromKotlin public Integer? getEscalationCount();
+    method @InaccessibleFromKotlin public String getEscalationsLabel();
     method @InaccessibleFromKotlin public String? getModel();
     method @InaccessibleFromKotlin public String? getProvider();
     method @InaccessibleFromKotlin public String getTier();
     property public String? approach;
     property public Integer? escalationCount;
+    property public String escalationsLabel;
     property public String? model;
     property public String? provider;
     property public String tier;

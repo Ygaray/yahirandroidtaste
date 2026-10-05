@@ -96,6 +96,46 @@ class OutcomeSheetTest {
         composeTestRule.onNodeWithTag("outcome_sheet_handled_by").assertDoesNotExist()
     }
 
+    @Test
+    fun `handledBy renders a caller-supplied escalationsLabel in the secondary caption`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(
+                    summary = "Logged 1 item",
+                    handledBy = HandledByUiModel(
+                        tier = "Local",
+                        approach = "Hybride",
+                        provider = "OpenAI",
+                        model = "gpt-4",
+                        escalationCount = 2,
+                        escalationsLabel = "Escalades :"
+                    )
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Hybride · OpenAI · gpt-4 · Escalades : 2").assertExists()
+        composeTestRule.onAllNodesWithText("Escalations", substring = true).assertCountEquals(0)
+    }
+
+    @Test
+    fun `handledBy escalation caption keeps the English default when no label is supplied`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(
+                    summary = "Logged 1 item",
+                    handledBy = HandledByUiModel(tier = "Local", escalationCount = 2)
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Escalations: 2").assertExists()
+    }
+
     // ── VOUT-03: loud failure surface + optional action slot ───────────────
 
     @Test
