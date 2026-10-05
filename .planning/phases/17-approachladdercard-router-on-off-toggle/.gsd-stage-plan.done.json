@@ -1,0 +1,11 @@
+{
+  "stage": "plan",
+  "phase": "17",
+  "exit_kind": "plan-phase",
+  "anchor_mtime_at_write": 1791220201133.5442,
+  "head_sha": "9d87ff1",
+  "written_at": "2026-10-05T17:11:30.757Z",
+  "plan_set": [
+    "17-01-PLAN.md"
+  ]
+}

@@ -16,23 +16,23 @@
     {
       "number": "17",
       "name": "ApproachLadderCard Router ON/OFF toggle",
-      "status": "pending"
+      "status": "in_progress"
     },
     {
       "number": "18",
       "name": "Catalog integrity + API dump + docs",
-      "status": "pending"
+      "status": "in_progress"
     },
     {
       "number": "19",
       "name": "Cut v2.5.0",
-      "status": "pending"
+      "status": "in_progress"
     }
   ],
   "next": {
-    "command": "/gsd:progress --next",
-    "label": "Advance to the next step",
-    "reason": "Phase 17 of 5 · 20% · executing"
+    "command": "/gsd:new-milestone",
+    "label": "Start a new milestone",
+    "reason": "All phases complete — start a new milestone"
   },
-  "updated_at": "2026-10-05T15:35:08.933Z"
+  "updated_at": "2026-10-05T20:34:30.932Z"
 }
