@@ -6,7 +6,7 @@ status: planning
 last_updated: "2026-10-05T07:40:53.103Z"
 last_activity: 2026-10-05
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,23 +17,25 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-29)
+See: .planning/PROJECT.md (updated 2026-10-05)
 
 **Core value:** The hub stays a coherent design system — not merely a safe, ever-growing pile of domain-agnostic components — as more consumers contribute.
-**Current focus:** Phase 14 — Cut v2.4.0
+**Current focus:** Phase 15 — Voice-surface i18n label params
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-10-05 — Milestone v2.5 started
+Phase: 15 of 19 (Voice-surface i18n label params)
+Plan: — (roadmap just created; phases not yet planned)
+Status: Ready to plan
+Last activity: 2026-10-05 — Roadmap created for milestone v2.5 (Phases 15-19), scope locked to RECONVENE-BRIEF-R-v1.1
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
-**Velocity (milestone v2.4):**
+**Velocity (milestone v2.5):**
 
-- Total plans completed: 7
+- Total plans completed: 0
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -41,11 +43,11 @@ Last activity: 2026-10-05 — Milestone v2.5 started
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 10 | 2 | - | - |
-| 11 | 2 | - | - |
-| 12 | 1 | - | - |
-| 13 | 1 | - | - |
-| 14 | 1 | - | - |
+| 15 | TBD | - | - |
+| 16 | TBD | - | - |
+| 17 | TBD | - | - |
+| 18 | TBD | - | - |
+| 19 | TBD | - | - |
 
 **Recent Trend:**
 
@@ -53,12 +55,6 @@ Last activity: 2026-10-05 — Milestone v2.5 started
 - Trend: -
 
 *Updated after each plan completion*
-**Per-Plan Metrics:**
-
-| Plan | Duration | Tasks | Files |
-|------|----------|-------|-------|
-| Phase 13 P01 | 5 | 2 tasks | 5 files |
-| Phase 14 P01 | 25min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -67,14 +63,11 @@ Last activity: 2026-10-05 — Milestone v2.5 started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- v2.4: Admit the shared AI-voice UI (settings + outcome/failure surfaces) into the hub as generic, prop-driven presentational composables — no OkHttp, no engine dependency (§6.3 of the vae-bilingual contract). Apps map engine outcomes → props, keeping the one-way-dependency invariant clean.
-- Roadmap: Phases 10 (settings) and 11 (outcome sheet) are mutually independent (distinct composables) → parallelizable; Phase 12 (needs-confirmation) extends the outcome sheet, so it gates on 11.
-- Roadmap: VOUT-04 (generic needs-confirmation state) gets its own phase (Phase 12) for design room — one domain-neutral state must render BOTH SB's `MutationGate`/`VoiceConfirmGate` risk confirm AND CT's weak-match single/batch confirm.
-- Roadmap: CAT-01/API-01/INV-01 (catalog + API + one-way-dependency integrity) fold into the ship phase (Phase 13) — CATALOG-03's drift guard only fails in the FULL suite, and Metalava additive + engine-free are proven at the §11 ship gate.
-- [Phase 13]: Used the Metalava v2.3.0-swap-baseline apiCheck technique as the sole authoritative API-01 evidence, documenting classify-hub-change.sh's LANE 3 as a known ClearableTextField-additive-params false positive
-- [Phase 13]: Used HUB_LANE_OVERRIDE=2 (repo's documented escape hatch, not --no-verify) for the doc-drift commit, since the DS-05 append-only guard cannot distinguish a KDoc comment reword from a real behavior change
-- [Phase 14]: Cut and pushed v2.4.0 autonomously per A12 waiver; no checkpoint inserted for the irreversible tag push — Yahir-confirmed in-session waiver of the tag-cut human gate for this cross-repo effort (A12)
-- [Phase 14]: Fixed two bugs in the plan's literal verify scripts (unpeeled vs peeled tag SHA comparison; whitespace-intolerant JitPack JSON grep) rather than letting them false-fail a genuinely successful cut — Rule 1 auto-fix: both bugs were in detection logic, not the underlying tag/JitPack state, which was independently confirmed correct
+- v2.5 scope is LOCKED by `.planning/cross-repo/RECONVENE-BRIEF-R-v1.1.md` (`cb5f047`), ratified by the vae-bilingual orchestrator + Yahir — do not re-scope, add, drop, or re-order. All five items are strictly additive vs `v2.4.0`.
+- Roadmap: phase numbering continues from v2.4 (ended at Phase 14) → v2.5 is Phases 15-19 (never reset to 1).
+- Roadmap: Phases 15/16/17 all touch `ApproachLadderCard.kt` (i18n labels, a11y/semantics, router toggle), so they run sequentially (15 → 16 → 17) to avoid same-file conflicts; Phase 18 (catalog/API/docs) gates on all three; Phase 19 (tag cut) gates on a green Phase 18 — mirrors v2.4's Phase 13→14 split.
+- Roadmap: i18n shape is per-literal optional params / defaulted model fields (not a single labels-holder) — most additive, matches the `emptyProvidersReason`/`NeedsConfirmation` precedent (R-v1.1 §6 Q2 recommendation).
+- Roadmap: XR-175-02(e) is a Router ON/OFF policy-card toggle (`router`/`onRouterChange`, mirrors `offlineOnly`), NOT per-rung navigation — gesture collision resolved by SB at R-v1.1.
 
 ### Pending Todos
 
@@ -82,9 +75,10 @@ None yet.
 
 ### Blockers/Concerns
 
-- **A13 cross-repo reconvene gate:** per the HANDOFF, this milestone STOPs after research + discussion for a cross-repo reconvene before planning. Write `.planning/cross-repo/RECONVENE-BRIEF.md` and message the orchestrator (`yahir-gsd-control-plane-f2`) `R<n> ready: <path>`; wait for GO / GO-WITH-CHANGES / HOLD before planning Phase 10. Never run the `/gsd-milestone` umbrella (it skips the reconvene).
-- **Tag-cut human gate (SHIP-01):** the repo's CLAUDE.md makes shipping human-gated, but the HANDOFF states the tag-cut gate is WAIVED for this effort — cut `v2.4.0` on green verification, then message the orchestrator the §11 ledger row. Confirm the waiver stands with Yahir at kickoff before the Phase 13 tag cut.
-- **SHIP-02 stray-tag hazard:** milestone close must cut NO git tag — the only tag is the `v2.4.0` release coordinate. A bare `v2.2` milestone-marker tag already leaked into the JitPack coordinate namespace at the v2.0 close; do not repeat it.
+- **A13 reconvene protocol governs this slice:** R-v1.1 GO is already issued (scope locked to RECONVENE-BRIEF-R-v1.1, `cb5f047`); route version/tag/sequencing confirmations to the orchestrator `yahir-gsd-control-plane-6e` (of record per `xrepo/vae-bilingual/effort.json` @`87131d1`; prior `-f2` retired) first, not Yahir directly.
+- **Tag-cut human gate (SHIP-03 / Phase 19):** shipping is human-gated per root `CLAUDE.md`; the A12 tag-cut waiver is still pending Yahir's direct OK for this effort's YAT tag. Cut `v2.5.0` only on a green Phase 18, then relay the full §11 ledger row to the orchestrator. Confirm the waiver stands before the cut.
+- **SHIP-03 stray-tag hazard:** milestone close must cut NO git marker tag (`git.create_tag` false) — the only tag is the `v2.5.0` release coordinate. A bare `v2.2` milestone-marker tag already leaked into the JitPack coordinate namespace at the v2.0 close; do not repeat it.
+- **Strictly-additive guard (API-02 / INV-02):** every change is a new defaulted param/field or internal-only; re-confirm with `tools/verify-api-additive.sh` against a regenerated `api.txt`, keep detekt zero-baseline, preserve the one-way-dependency invariant (no engine/consumer import).
 
 ## Deferred Items
 
@@ -92,6 +86,8 @@ Items acknowledged and carried forward, most recent first:
 
 | Category | Item | Status | Deferred At | Milestone |
 |----------|------|--------|-------------|-----------|
+| Future | Two Gate-2-waived `ApproachLadderCard` UI-polish notes (KI-2026-10-01-01) | Deferred (future polish unless pulled into scope) | v2.5 requirements | v2.5 |
+| Future | Consumer repins onto `v2.5.0` (SB for 172/175/177; CT optional) | Deferred (Wave-1, consumers' own channels) | v2.5 requirements | v2.5 |
 | Future | Consumer wiring — SB/CT map engine outcomes → these composables' props | Deferred (Wave-1, consumers' own milestones) | v2.4 requirements | v2.4 |
 | Future | GOV-04: fail the build if a new public composable ships without a `Tier` | Deferred | v2.0 requirements | v2.0 |
 | Future | ECO-02: auto-repin tooling across all consumers | Deferred | v2.0 requirements | v2.0 |
@@ -99,10 +95,10 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-01T06:29:56.132Z
-Stopped at: Phase 14 complete — all phases complete
+Last session: 2026-10-05 — Roadmap created for milestone v2.5
+Stopped at: ROADMAP.md + STATE.md written (Phases 15-19); REQUIREMENTS.md traceability corrected to 15-19
 Resume file: None
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Plan the first phase with /gsd-plan-phase 15

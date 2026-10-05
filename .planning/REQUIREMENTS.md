@@ -53,20 +53,20 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VI18N-01 | Phase 1 | Pending |
-| VI18N-02 | Phase 1 | Pending |
-| VI18N-03 | Phase 1 | Pending |
-| VI18N-04 | Phase 1 | Pending |
-| VA11Y-01 | Phase 2 | Pending |
-| VFAIL-01 | Phase 2 | Pending |
-| VFAIL-02 | Phase 2 | Pending |
-| VFAIL-03 | Phase 2 | Pending |
-| VAPPR-04 | Phase 3 | Pending |
-| CAT-02 | Phase 4 | Pending |
-| API-02 | Phase 4 | Pending |
-| DOC-02 | Phase 4 | Pending |
-| INV-02 | Phase 4 | Pending |
-| SHIP-03 | Phase 5 | Pending |
+| VI18N-01 | Phase 15 | Pending |
+| VI18N-02 | Phase 15 | Pending |
+| VI18N-03 | Phase 15 | Pending |
+| VI18N-04 | Phase 15 | Pending |
+| VA11Y-01 | Phase 16 | Pending |
+| VFAIL-01 | Phase 16 | Pending |
+| VFAIL-02 | Phase 16 | Pending |
+| VFAIL-03 | Phase 16 | Pending |
+| VAPPR-04 | Phase 17 | Pending |
+| CAT-02 | Phase 18 | Pending |
+| API-02 | Phase 18 | Pending |
+| DOC-02 | Phase 18 | Pending |
+| INV-02 | Phase 18 | Pending |
+| SHIP-03 | Phase 19 | Pending |
 
 **Coverage:**
 - v2.5 requirements: 14 total
@@ -75,4 +75,4 @@
 
 ---
 *Requirements defined: 2026-10-05 (milestone v2.5, scope locked to RECONVENE-BRIEF-R-v1.1 cb5f047)*
-*Last updated: 2026-10-05 after initial definition*
+*Last updated: 2026-10-05 — traceability corrected to real phase numbers (15-19) after roadmap creation*
