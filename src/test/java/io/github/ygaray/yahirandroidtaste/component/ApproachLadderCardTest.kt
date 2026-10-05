@@ -1,6 +1,9 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -446,5 +449,256 @@ class ApproachLadderCardTest {
         composeTestRule.waitForIdle()
 
         assertEquals(true, lastValue)
+    }
+
+    @Test
+    fun `router true renders Router on selected and Router off not selected with the English defaults`() {
+        composeTestRule.setContent {
+            ApproachLadderCard(ladder = ladder, router = true, onRouterChange = {})
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithContentDescription("Router on, selected").assertExists()
+        composeTestRule.onNodeWithContentDescription("Router off, not selected").assertExists()
+    }
+
+    @Test
+    fun `router toggle is not rendered when the pair is null`() {
+        composeTestRule.setContent {
+            ApproachLadderCard(ladder = ladder, router = null, onRouterChange = null)
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("approach_ladder_card_router_toggle").assertDoesNotExist()
+        composeTestRule.onAllNodesWithContentDescription("Router", substring = true).assertCountEquals(0)
+        rungNodes().assertCountEquals(3)
+    }
+
+    @Test
+    fun `router toggle appears and disappears as the pair flips between null and non-null`() {
+        var state by mutableStateOf<Boolean?>(null)
+        composeTestRule.setContent {
+            val current = state
+            // Both args derive from the same read, so the pair stays consistent across the flip.
+            ApproachLadderCard(
+                ladder = ladder,
+                router = current,
+                onRouterChange = if (current != null) { _: Boolean -> } else null
+            )
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("approach_ladder_card_router_toggle").assertDoesNotExist()
+
+        composeTestRule.runOnIdle { state = false }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithContentDescription("Router off, selected").assertExists()
+
+        composeTestRule.runOnIdle { state = true }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithContentDescription("Router on, selected").assertExists()
+
+        composeTestRule.runOnIdle { state = null }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("approach_ladder_card_router_toggle").assertDoesNotExist()
+    }
+
+    @Test
+    fun `a non-null onRouterChange with a null router throws -- the pairing invariant is enforced`() {
+        assertThrows(IllegalArgumentException::class.java) {
+            composeTestRule.setContent {
+                ApproachLadderCard(ladder = ladder, router = null, onRouterChange = {})
+            }
+            composeTestRule.waitForIdle()
+        }
+    }
+
+    @Test
+    fun `a non-null router with a null onRouterChange throws -- the pairing invariant is enforced`() {
+        assertThrows(IllegalArgumentException::class.java) {
+            composeTestRule.setContent {
+                ApproachLadderCard(ladder = ladder, router = true, onRouterChange = null)
+            }
+            composeTestRule.waitForIdle()
+        }
+    }
+
+    @Test
+    fun `supplied router labels replace the Router on and Router off segments and still emit`() {
+        var lastValue: Boolean? = null
+        composeTestRule.setContent {
+            ApproachLadderCard(
+                ladder = ladder,
+                router = false,
+                onRouterChange = { lastValue = it },
+                routerOnLabel = "Routeur activé",
+                routerOffLabel = "Routeur désactivé"
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithContentDescription("Routeur désactivé, selected").assertExists()
+        composeTestRule.onAllNodesWithContentDescription("Router off, selected").assertCountEquals(0)
+
+        composeTestRule.onNodeWithContentDescription("Routeur activé, not selected").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, lastValue)
+    }
+
+    @Test
+    fun `tapping a router segment emits only onRouterChange while rung and offline taps emit only their own callbacks`() {
+        val tiers = mutableListOf<String>()
+        val offline = mutableListOf<Boolean>()
+        val routers = mutableListOf<Boolean>()
+        composeTestRule.setContent {
+            ApproachLadderCard(
+                ladder = ladder,
+                offlineOnly = false,
+                onOfflineOnlyChange = { offline += it },
+                maxTierId = "cloud",
+                onMaxTierChange = { tiers += it },
+                router = false,
+                onRouterChange = { routers += it }
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("approach_ladder_card_offline_toggle").assertExists()
+        composeTestRule.onNodeWithTag("approach_ladder_card_router_toggle").assertExists()
+
+        composeTestRule.onNodeWithText("Local").performClick()
+        composeTestRule.waitForIdle()
+        assertEquals(listOf("local"), tiers)
+        assertEquals(emptyList<Boolean>(), offline)
+        assertEquals(emptyList<Boolean>(), routers)
+
+        composeTestRule.onNodeWithContentDescription("Router on, not selected").performClick()
+        composeTestRule.waitForIdle()
+        assertEquals(listOf("local"), tiers)
+        assertEquals(emptyList<Boolean>(), offline)
+        assertEquals(listOf(true), routers)
+
+        composeTestRule.onNodeWithContentDescription("Offline only, not selected").performClick()
+        composeTestRule.waitForIdle()
+        assertEquals(listOf("local"), tiers)
+        assertEquals(listOf(true), offline)
+        assertEquals(listOf(true), routers)
+    }
+
+    @Test
+    fun `the router toggle sits below the offline toggle which sits below the last rung`() {
+        composeTestRule.setContent {
+            ApproachLadderCard(
+                ladder = ladder,
+                offlineOnly = false,
+                onOfflineOnlyChange = {},
+                maxTierId = "cloud",
+                onMaxTierChange = {},
+                router = false,
+                onRouterChange = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        val lastRungBottom = rungNodes()[2].fetchSemanticsNode().boundsInRoot.bottom
+        val offline = composeTestRule.onNodeWithTag("approach_ladder_card_offline_toggle")
+            .fetchSemanticsNode().boundsInRoot
+        val router = composeTestRule.onNodeWithTag("approach_ladder_card_router_toggle")
+            .fetchSemanticsNode().boundsInRoot
+        assertTrue(
+            "offline top ${offline.top} must be >= last rung bottom $lastRungBottom",
+            offline.top >= lastRungBottom
+        )
+        assertTrue(
+            "router top ${router.top} must be >= offline bottom ${offline.bottom}",
+            router.top >= offline.bottom
+        )
+        assertTrue("router top ${router.top} must be > offline top ${offline.top}", router.top > offline.top)
+    }
+
+    @Test
+    fun `toggling router leaves rung order capped and needs-network affordances and cap selection unchanged`() {
+        var routerState by mutableStateOf(false)
+        composeTestRule.setContent {
+            ApproachLadderCard(
+                ladder = ladder,
+                offlineOnly = true,
+                onOfflineOnlyChange = {},
+                maxTierId = "local",
+                onMaxTierChange = {},
+                router = routerState,
+                onRouterChange = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        fun tops() = (0..2).map { rungNodes()[it].fetchSemanticsNode().boundsInRoot.top }
+        fun assertRungsIntact() {
+            rungNodes().assertCountEquals(3)
+            rungNodes()[0].assert(hasText("Cloud"))
+            rungNodes()[1].assert(hasText("Hybrid"))
+            rungNodes()[2].assert(hasText("Local"))
+            rungNodes()[2].assertIsSelected()
+            composeTestRule.onAllNodesWithText("Capped").assertCountEquals(2)
+            composeTestRule.onAllNodesWithText("Needs network").assertCountEquals(1)
+        }
+
+        assertRungsIntact()
+        composeTestRule.onNodeWithContentDescription("Router off, selected").assertExists()
+        val topsBefore = tops()
+
+        composeTestRule.runOnIdle { routerState = true }
+        composeTestRule.waitForIdle()
+
+        assertRungsIntact()
+        composeTestRule.onNodeWithContentDescription("Router on, selected").assertExists()
+        assertEquals(topsBefore, tops())
+    }
+
+    @Test
+    fun `tapping the already-selected router segment re-emits its own value and a repeated tap emits the same target value`() {
+        val routers = mutableListOf<Boolean>()
+        composeTestRule.setContent {
+            // Router state is deliberately NOT updated by the callback: the caller owns it.
+            ApproachLadderCard(ladder = ladder, router = true, onRouterChange = { routers += it })
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithContentDescription("Router on, selected").performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithContentDescription("Router on, selected").performClick()
+        composeTestRule.waitForIdle()
+        assertEquals(listOf(true, true), routers)
+
+        composeTestRule.onNodeWithContentDescription("Router off, not selected").performClick()
+        composeTestRule.waitForIdle()
+        assertEquals(listOf(true, true, false), routers)
+    }
+
+    @Test
+    fun `two cards in one composition keep independent router callbacks`() {
+        val a = mutableListOf<Boolean>()
+        val b = mutableListOf<Boolean>()
+        composeTestRule.setContent {
+            Column {
+                ApproachLadderCard(ladder = ladder, router = false, onRouterChange = { a += it })
+                ApproachLadderCard(ladder = ladder, router = true, onRouterChange = { b += it })
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onAllNodesWithTag("approach_ladder_card_router_toggle").assertCountEquals(2)
+
+        // Only card A (router = false) exposes "Router on, not selected".
+        composeTestRule.onNodeWithContentDescription("Router on, not selected").performClick()
+        composeTestRule.waitForIdle()
+        assertEquals(listOf(true), a)
+        assertEquals(emptyList<Boolean>(), b)
+
+        // Only card B (router = true) exposes "Router off, not selected".
+        composeTestRule.onNodeWithContentDescription("Router off, not selected").performClick()
+        composeTestRule.waitForIdle()
+        assertEquals(listOf(true), a)
+        assertEquals(listOf(false), b)
     }
 }
