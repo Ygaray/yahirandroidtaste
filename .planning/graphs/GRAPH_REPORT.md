@@ -1,16 +1,16 @@
-# Graph Report - yahirandroidtaste  (2026-10-01)
+# Graph Report - yahirandroidtaste  (2026-10-05)
 
 ## Corpus Check
-- 496 files · ~2,044,364 words
+- 499 files · ~2,077,487 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 5495 nodes · 6621 edges · 679 communities (350 shown, 329 thin omitted)
-- Extraction: 87% EXTRACTED · 13% INFERRED · 0% AMBIGUOUS · INFERRED: 847 edges (avg confidence: 0.8)
+- 5532 nodes · 6660 edges · 674 communities (348 shown, 326 thin omitted)
+- Extraction: 87% EXTRACTED · 13% INFERRED · 0% AMBIGUOUS · INFERRED: 849 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `fae8f7cf`
+- Built from commit: `e8c95792`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -674,25 +674,20 @@
 - [[_COMMUNITY_Architecture Patterns|Architecture Patterns]]
 - [[_COMMUNITY_Code Examples|Code Examples]]
 - [[_COMMUNITY_Validation Architecture|Validation Architecture]]
-- [[_COMMUNITY_Standard Stack|Standard Stack]]
-- [[_COMMUNITY_User Constraints (from CONTEXT.md)|User Constraints (from CONTEXT.md)]]
-- [[_COMMUNITY_Sources|Sources]]
-- [[_COMMUNITY_Security Domain|Security Domain]]
-- [[_COMMUNITY_.v22StyleCallShapes_compileAgainstShowTagColorsSignatures|.v22StyleCallShapes_compileAgainstShowTagColorsSignatures]]
+- [[_COMMUNITY_VoiceCommandFamilyScreen.kt|VoiceCommandFamilyScreen.kt]]
+- [[_COMMUNITY_Reconvene brief — yahirandroidtaste (YAT) — R-v1.1|Reconvene brief — yahirandroidtaste (YAT) — R-v1.1]]
+- [[_COMMUNITY_GalleryDemoInteractionTest|GalleryDemoInteractionTest]]
+- [[_COMMUNITY_KeyFieldState|KeyFieldState]]
+- [[_COMMUNITY_HandledByUiModel|HandledByUiModel]]
 - [[_COMMUNITY_13-catalog-integrity-v2-4-0-ship|13-catalog-integrity-v2-4-0-ship.md]]
-- [[_COMMUNITY_MetricBar|MetricBar]]
-- [[_COMMUNITY_Section 11 Ledger Row — yahirandroidtaste v2.4.0|Section 11 Ledger Row — yahirandroidtaste v2.4.0]]
 - [[_COMMUNITY_titleSlotVisible|titleSlotVisible]]
 - [[_COMMUNITY_.v22StyleCallShapes_compileAgainstShowTagColorsSignatures|.v22StyleCallShapes_compileAgainstShowTagColorsSignatures]]
 - [[_COMMUNITY_NameAndTagsEditor|NameAndTagsEditor]]
-- [[_COMMUNITY_14-REVIEW|14-REVIEW.md]]
 - [[_COMMUNITY_AnimatedStatValue|AnimatedStatValue]]
 - [[_COMMUNITY_AlbumTitleConfirmSheet|AlbumTitleConfirmSheet]]
-- [[_COMMUNITY_MetricBar|MetricBar]]
-- [[_COMMUNITY_titleSlotVisible|titleSlotVisible]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `Communities (672 total, 323 thin omitted)` - 346 edges
+1. `Communities (670 total, 325 thin omitted)` - 342 edges
 2. `PlaceMapPickerTest` - 87 edges
 3. `SectionLabel()` - 55 edges
 4. `VoiceCardClipListTest` - 50 edges
@@ -700,7 +695,7 @@
 6. `YahirAndroidTasteTheme()` - 37 edges
 7. `TagPickerSheetContent()` - 35 edges
 8. `TagChipEditorContent()` - 34 edges
-9. `OutcomeSheet()` - 33 edges
+9. `OutcomeSheet()` - 31 edges
 10. `PlaceMapPicker()` - 31 edges
 
 ## Surprising Connections (you probably didn't know these)
@@ -718,11 +713,11 @@
 ## Import Cycles
 - None detected.
 
-## Communities (679 total, 329 thin omitted)
+## Communities (674 total, 326 thin omitted)
 
 ### Community 0 - "CardsFamilyScreen.kt"
 Cohesion: 0.01
-Nodes (346): Communities (672 total, 323 thin omitted), Community 0 - "CardsFamilyScreen.kt", Community 100 - "install.sh", Community 101 - "run-all.sh", Community 103 - "build.gradle.kts", Community 104 - "settings.gradle.kts", Community 105 - "Color.kt", Community 106 - "Type.kt" (+338 more)
+Nodes (342): Communities (670 total, 325 thin omitted), Community 0 - "CardsFamilyScreen.kt", Community 100 - "install.sh", Community 101 - "run-all.sh", Community 103 - "build.gradle.kts", Community 104 - "settings.gradle.kts", Community 105 - "Color.kt", Community 106 - "Type.kt" (+334 more)
 
 ### Community 1 - "TagPickerSheetContent"
 Cohesion: 0.17
@@ -733,20 +728,20 @@ Cohesion: 0.29
 Nodes (5): RelativeTimestampText(), UndoCenterScreen(), UndoHistoryRow(), UndoPreviewPeek(), UndoCenterScreenTest
 
 ### Community 3 - "ListCard"
-Cohesion: 0.18
-Nodes (28): ListItemUiModel, AnchoredDraggableState, Boolean, Color, Composable, Float, Int, List (+20 more)
+Cohesion: 0.06
+Nodes (42): titleSlotVisible(), CardQuickView(), ListCardBottomSheet(), ListPreviewItemRow(), CardQuickViewContent(), ExplorerFakeData, ListItemUiModel, ListCardTest (+34 more)
 
 ### Community 4 - "NameAndTagsEditor"
 Cohesion: 0.04
 Nodes (48): Anti-Patterns to Avoid, Applicable ASVS Categories, Architectural Responsibility Map, Architecture Patterns, Assumptions Log, Claude's Discretion, Code Examples, Common Pitfalls (+40 more)
 
 ### Community 5 - "ClearableTextField"
-Cohesion: 0.13
-Nodes (15): EditorItemRow(), ListCardBottomSheet(), ListPreviewItemRow(), SheetHeaderMenu(), EditorItemRowStatePreview(), KeyboardActions, KeyboardOptions, ClearableTextField() (+7 more)
+Cohesion: 0.20
+Nodes (3): SheetHeaderMenu(), TextCardBottomSheet(), TextCardImageIndicatorTest
 
 ### Community 6 - "RelatednessVisual"
-Cohesion: 0.20
-Nodes (10): Driver-mechanism note (carried forward from 01-05/06-03/07-01/08-01-SELF-UAT.md), Findings routed to gap-closure (Addendum), Findings routed to gap-closure (if any), Notes / anomalies (Addendum), Notes / anomalies (for the Gate-2 reviewer), Self-UAT Log — Phase 10 (Voice Command Settings Surfaces — Plans 01+02), Summary, Summary (Addendum) (+2 more)
+Cohesion: 0.05
+Nodes (43): Alternatives Considered, Applicable ASVS Categories, Architectural Responsibility Map, Architecture Patterns, Assumptions Log, Claude's Discretion, Code Examples, Common Pitfalls (+35 more)
 
 ### Community 7 - "AlbumCard"
 Cohesion: 0.06
@@ -774,7 +769,7 @@ Nodes (41): Alternatives Considered, Anti-Patterns to Avoid, Architectural Respo
 
 ### Community 13 - "VoiceCard"
 Cohesion: 0.12
-Nodes (23): downsample(), VoiceClipUiModel, formatDuration(), AnchoredDraggableState, Boolean, Color, Float, Int (+15 more)
+Nodes (20): formatDuration(), AnchoredDraggableState, Boolean, Color, Float, Int, List, Long (+12 more)
 
 ### Community 14 - "SheetsFamilyScreen.kt"
 Cohesion: 0.22
@@ -805,28 +800,28 @@ Cohesion: 0.11
 Nodes (17): 2026-09-27 — apiCheck KI disposition FINALIZED (operator, milestone plan stage), 2026-09-27 — v2.2.0 tag CUT (operator-approved, milestone execute stage), apicheck-ki, Canonical References, Deferred Ideas, Established Patterns, Existing Code Insights, Implementation Decisions (+9 more)
 
 ### Community 23 - "ThemeMode"
-Cohesion: 0.09
-Nodes (27): FlowRowScope, ChipBar(), ExpandableConfig, ExpandableFab(), FabActionRow(), SegmentedOptionSelector(), SortControl(), SectionLabel() (+19 more)
+Cohesion: 0.17
+Nodes (14): ExpandableFab(), FabActionRow(), SegmentedOptionSelector(), SectionLabel(), CycleSubTypeButtonVariants(), DynamicActionButtonVariants(), ExpandableFabVariants(), MicButtonVariants() (+6 more)
 
 ### Community 24 - "Architecture"
 Cohesion: 0.08
 Nodes (25): Anti-Pattern 1: Using `AttentionCue` for failure states, Anti-Pattern 2: A separate confirmation dialog/sibling for P12, Anti-Pattern 3: A `component/voice/` sub-package, Anti-Pattern 4: A `var` field on a shared model, Anti-Patterns, Architectural Patterns, Architecture Research, Build Order (P10 → P13) (+17 more)
 
 ### Community 25 - "CropOverlay"
-Cohesion: 0.12
-Nodes (15): Accomplishments, Actuals (#2632), Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+7 more)
+Cohesion: 0.09
+Nodes (22): 1. A provider/API-key settings card renders provider selection and API-key entry from props + callbacks — holding no key and making no network call in the library (ROADMAP SC1, VSET-01), 2. A model settings card renders the available/selected model(s) from props and emits the selection via callback (ROADMAP SC2, VSET-02), 3. A command-approach settings card displays the configured tier ladder (ordered approaches) from props (ROADMAP SC3, VAPPR-01), 4. The command-approach card's offline-only toggle reflects and emits offline-only state via props + callback (ROADMAP SC4, VAPPR-02), 5. The command-approach card's max-tier cap control reflects and emits the cap via props + callback (ROADMAP SC5, VAPPR-03), Addendum — 2026-10-01 re-verify re-drive (source materially changed since the 2026-09-30 run above), Criteria, Driver-mechanism note (carried forward from 01-05/06-03/07-01/08-01-SELF-UAT.md) (+14 more)
 
 ### Community 26 - "TextCardTest"
 Cohesion: 0.09
 Nodes (21): Architecture Approach, Confidence Assessment, Critical Pitfalls, Cross-cutting tension to resolve: composable naming vs. family/model naming, Executive Summary, Expected Features, Gaps to Address, Implications for Roadmap (+13 more)
 
 ### Community 27 - "ProviderKeyCard"
-Cohesion: 0.21
-Nodes (7): List, Modifier, String, ProviderDropdown(), ProviderKeyCard(), ProviderOptionUiModel, ProviderKeyCardTest
+Cohesion: 0.09
+Nodes (22): 2026-09-30 — Phase 10 UAT visual items deferred to milestone Gate-2 (orchestrator ruling), Canonical References, cap-control, Claude's Discretion, control-visibility, Cross-repo contract, Deferred Ideas, Established Patterns (+14 more)
 
 ### Community 28 - "AppChip"
-Cohesion: 0.20
-Nodes (6): accentGradient(), accentGradientStops(), accentTint(), contrastingForeground(), GradientSwatch(), ColorUtilsTest
+Cohesion: 0.14
+Nodes (12): CardBase(), accentGradient(), accentGradientStops(), accentTint(), contrastingForeground(), GradientSwatch(), CardBaseContent(), CardBasePreview() (+4 more)
 
 ### Community 29 - "CardEditorShellContent"
 Cohesion: 0.10
@@ -837,12 +832,12 @@ Cohesion: 0.11
 Nodes (18): Allowing @HiltAndroidApp in the library, Anti-Patterns, Architectural Constraints, Architecture, Circular dependency between Component and Feedback, Component Responsibilities, Cross-Cutting Concerns, Data Flow (+10 more)
 
 ### Community 31 - "TextCard"
-Cohesion: 0.09
-Nodes (17): TextCardBottomSheet(), cardTypeIcon(), TextCardImageIndicatorTest, AnchoredDraggableState, Boolean, Color, Composable, Int (+9 more)
+Cohesion: 0.13
+Nodes (14): AnchoredDraggableState, Boolean, Color, Composable, Int, List, Long, Modifier (+6 more)
 
 ### Community 32 - "TextListBottomSheetEditMenuSourceContractTest"
 Cohesion: 0.09
-Nodes (22): 2026-09-30 — Phase 10 UAT visual items deferred to milestone Gate-2 (orchestrator ruling), Canonical References, cap-control, Claude's Discretion, control-visibility, Cross-repo contract, Deferred Ideas, Established Patterns (+14 more)
+Nodes (22): batch-results, Canonical References, clarify-choices, Claude's Discretion, Cross-repo contract, Deferred Ideas, Established Patterns, Existing Code Insights (+14 more)
 
 ### Community 33 - "TextCardBottomSheet"
 Cohesion: 0.12
@@ -922,7 +917,7 @@ Nodes (15): Accomplishments, Actuals (#2632), Auto-fixed Issues, Decisions Made,
 
 ### Community 52 - "SortControl"
 Cohesion: 0.19
-Nodes (4): Modifier, OutcomeSheet(), ProposedItemUiModel, OutcomeSheetTest
+Nodes (3): OutcomeSheet(), ProposedItemUiModel, OutcomeSheetTest
 
 ### Community 54 - "ListCardBottomSheetReadOnlyPreviewSourceContractTest"
 Cohesion: 0.14
@@ -935,6 +930,10 @@ Nodes (13): 1. A tier-aware contribution litmus is documented: primitives get th
 ### Community 56 - "SegmentedOptionSelector"
 Cohesion: 0.24
 Nodes (3): CycleSubTypeButton(), nextSubType(), CycleSubTypeButtonTest
+
+### Community 57 - "ComponentRow"
+Cohesion: 0.21
+Nodes (3): VoiceClipUiModel, YahirAndroidTasteTheme(), VoiceClipRowsSection()
 
 ### Community 59 - ".VoiceCardFixture"
 Cohesion: 0.12
@@ -965,8 +964,8 @@ Cohesion: 0.15
 Nodes (12): Anti-Patterns Found, Behavioral Spot-Checks (this pass), Full re-verification: truth #7 (the closed gap), Human Verification Required, Observable Truths (full list, updated), Phase 3: Governance Gates Verification Report, Re-verification scope, Required Artifacts (+4 more)
 
 ### Community 67 - "SheetScaffold"
-Cohesion: 0.22
-Nodes (6): ClarificationBar(), List, Modifier, String, ClarificationOptionUiModel, ClarificationBarTest
+Cohesion: 0.09
+Nodes (22): 2026-09-30 — D-02 [additivity] provisional refreshed (ai-auto, dependency Phase 11 now complete), additivity, Canonical References, Claude's Discretion, confirm-crossrepo, confirm-ct-props (CT's real call-site, R1), confirm-sb-props (SB's real call-site, R1), confirm-scope (+14 more)
 
 ### Community 68 - "CardTagRow"
 Cohesion: 0.15
@@ -1014,7 +1013,7 @@ Nodes (11): Decision Map — v1.0 milestone, Gray Areas, Gray Areas, Gray Areas,
 
 ### Community 79 - "VoiceRenameTagsSheet"
 Cohesion: 0.14
-Nodes (28): AdaptiveMediaPreviewContent(), AdaptiveMediaPreviewSection(), AdaptiveMediaPreviewVariants(), AlbumCardContent(), AlbumCardPreview(), AlbumCardSection(), AlbumCardVariants(), CardBaseSection() (+20 more)
+Nodes (28): AdaptiveMediaPreviewContent(), AdaptiveMediaPreviewSection(), AdaptiveMediaPreviewVariants(), AlbumCardContent(), AlbumCardPreview(), AlbumCardSection(), AlbumCardVariants(), CardQuickViewSection() (+20 more)
 
 ### Community 80 - "PresetChip"
 Cohesion: 0.22
@@ -1025,8 +1024,8 @@ Cohesion: 0.14
 Nodes (9): TagChipEditorDoubleTapRemovalTest, Boolean, List, Modifier, name, String, tagId, Unit (+1 more)
 
 ### Community 82 - "FeedbackFamilyScreen"
-Cohesion: 0.14
-Nodes (17): android, AdaptiveMediaPreview(), MediaThumbnailCell, mosaicCellFraming(), ThumbnailCell(), AlbumCard(), AnchoredDraggableState, Boolean (+9 more)
+Cohesion: 0.06
+Nodes (23): android, AdaptiveMediaPreview(), MediaThumbnailCell, mosaicCellFraming(), ThumbnailCell(), cardTypeIcon(), VoiceAlbumEditMenuTest, AlbumCard() (+15 more)
 
 ### Community 83 - "DemoTagChipEditor"
 Cohesion: 0.22
@@ -1149,16 +1148,16 @@ Cohesion: 0.25
 Nodes (7): Certification — v1.0 milestone, Cross-Phase Integration, Gate Audit, Handoff, Non-blocking integration findings, Open gaps (4) and why each is human-gated, not auto-fixable, Verdict
 
 ### Community 114 - "AdaptiveMediaPreview"
-Cohesion: 0.11
-Nodes (12): CameraKey, canSubmitSearch(), handlePoint(), haversineMeters(), Boolean, Double, MapLifecycleGate, normalizeLongitude() (+4 more)
+Cohesion: 0.10
+Nodes (14): CameraKey, canSubmitSearch(), formatMeters(), handlePoint(), haversineMeters(), Boolean, Double, String (+6 more)
 
 ### Community 115 - "UndoCenterScreen"
 Cohesion: 0.32
 Nodes (4): CountBadge(), CountBadgeDefaultPreview(), CountBadgeVariants(), CountBadgeTest
 
 ### Community 116 - "RelatednessVisual"
-Cohesion: 0.12
-Nodes (16): Accomplishments, Actuals (#2632), Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+8 more)
+Cohesion: 0.09
+Nodes (21): All-val presentational model, `component/ClarificationBar.kt` (NEW), `component/OutcomeSheet.kt` (EXTEND — add `undo` rendering to `SuccessBody`), `ComponentRegistry` + `DomainVocabularyDriftGuardTest` dual gate, `explorer/VoiceCommandFamilyScreen.kt` (EXTEND — registry wiring), `feedback/UndoGroupTypes.kt` (NEW), `feedback/UndoHistoryEntry.kt` — ZERO CHANGES, `feedback/UndoHistoryStore.kt` (EXTEND — service/store) (+13 more)
 
 ### Community 117 - "UndoPreview"
 Cohesion: 0.15
@@ -1186,11 +1185,11 @@ Nodes (6): Fixed Issues, IN-01: `HeroStatCard`'s "Pressed / Selected" and "Focus
 
 ### Community 124 - "Milestone Run Log — v1.0"
 Cohesion: 0.14
-Nodes (13): Active, Constraints, Context, Core Value, Current Milestone: v2.4 AI-Voice Command UI, Current State, Evolution, Key Decisions (+5 more)
+Nodes (13): Active, Constraints, Context, Core Value, Current State, Evolution, Key Decisions, Next Milestone (+5 more)
 
 ### Community 127 - "ElevationBand"
-Cohesion: 0.13
-Nodes (14): Closing evidence (fix option 1 landed, Phase 9 Task 1, 2026-09-27), Evidence, Evidence, Impact, Impact, KI-2026-09-02-01 — `metalavaCheckCompatibilityDebug` fails: Dagger-generated `UndoHistoryStore_Factory` leaked into the tracked `api.txt` baseline, KI-2026-09-27-01 — `detekt` fails: `TextCard.kt`'s `CyclomaticComplexMethod` finding (25/25) breaches the zero-baseline gate, Known Issues — yahirandroidtaste (+6 more)
+Cohesion: 0.11
+Nodes (17): Closing evidence (fix option 1 landed, Phase 9 Task 1, 2026-09-27), Evidence, Evidence, Impact, Impact, KI-2026-09-02-01 — `metalavaCheckCompatibilityDebug` fails: Dagger-generated `UndoHistoryStore_Factory` leaked into the tracked `api.txt` baseline, KI-2026-09-27-01 — `detekt` fails: `TextCard.kt`'s `CyclomaticComplexMethod` finding (25/25) breaches the zero-baseline gate, KI-2026-10-01-01 — Future polish: ApproachLadderCard combined-subdued-label legibility (v2.4 Gate-2, waived) (+9 more)
 
 ### Community 128 - "downsample"
 Cohesion: 0.33
@@ -1217,8 +1216,8 @@ Cohesion: 0.33
 Nodes (5): IN-01: Consumer identifier disagrees between the two consumer tables in the same doc, IN-02: New matrix section doesn't cross-reference its relationship to the table directly above it, Info, Phase 04: Code Review Report, Summary
 
 ### Community 134 - "ElevationBand"
-Cohesion: 0.07
-Nodes (27): Active Milestone: v2.0 — Line Reunification, Backlog, Completed Milestones, Milestones, Phase 6: Forward-port reunification, Phase 7: Chip-color slot, Phase 8: MicButton hardening, Phase 999.1: Formalize reusable Gate-2 visualization harness APK (BACKLOG) (+19 more)
+Cohesion: 0.06
+Nodes (32): Active Milestone: v2.0 — Line Reunification, Backlog, Completed Milestones, Milestones, Phase 6: Forward-port reunification, Phase 7: Chip-color slot, Phase 8: MicButton hardening, Phase 999.1: Formalize reusable Gate-2 visualization harness APK (BACKLOG) (+24 more)
 
 ### Community 135 - "Phase 1 — Validation Strategy"
 Cohesion: 0.15
@@ -1230,7 +1229,7 @@ Nodes (12): Accomplishments, Decisions Made, Deviations from Plan, Files Created
 
 ### Community 137 - "downsample"
 Cohesion: 0.16
-Nodes (29): Alignment, GeoPoint, GradientDrawable, LifecycleOwner, MapView, Polygon, buildHandleIcon(), buildOvalIcon() (+21 more)
+Nodes (30): Alignment, Density, GeoPoint, GradientDrawable, LifecycleOwner, MapView, Polygon, buildHandleIcon() (+22 more)
 
 ### Community 140 - "CardTagRow"
 Cohesion: 0.15
@@ -1361,11 +1360,11 @@ Cohesion: 0.18
 Nodes (10): CR-01: MicButton exposes no accessibility semantics — TalkBack/keyboard users cannot activate it, Fixed Issues, IN-01: Duplicated three-way `when` for `containerColor`/`contentColor`, IN-02: KDoc describes the emit pair as "try/finally-shaped" but no `try`/`finally` exists, IN-03: Test helper name `notSetUp` reintroduces domain framing, IN-04: `pressAndHold_onDisabledMic_neverFiresOnTap` largely duplicates the prior test, Phase 08: Code Review Fix Report, Skipped Issues (+2 more)
 
 ### Community 250 - "Boolean"
-Cohesion: 0.05
-Nodes (43): Alternatives Considered, Applicable ASVS Categories, Architectural Responsibility Map, Architecture Patterns, Assumptions Log, Claude's Discretion, Code Examples, Common Pitfalls (+35 more)
+Cohesion: 0.11
+Nodes (18): Canonical References, Claude's Discretion, Cross-repo tag protocol, Deferred Ideas, doc-drift, Established Patterns, Existing Code Insights, family (+10 more)
 
 ### Community 251 - "PresetChip"
-Cohesion: 0.16
+Cohesion: 0.17
 Nodes (5): Boolean, Modifier, String, PresetChip(), PresetChipTest
 
 ### Community 252 - "TagChipWithContextMenu"
@@ -1377,36 +1376,40 @@ Cohesion: 0.11
 Nodes (5): MutableMap, GroupMeta, UndoHistoryStore, UndoHistoryStoreTest, StateFlow
 
 ### Community 254 - "Unit"
+Cohesion: 0.11
+Nodes (17): All-`val`, frozen-constructor, null-prop-hides model convention, `component/OutcomeSheet.kt` (component, request-response) — EXTEND, `explorer/VoiceCommandFamilyScreen.kt` (component/gallery fixture) — EXTEND, File Classification, Metadata, `model/ProposedItemUiModel.kt` (model, transform) — NEW FILE, `model/SelectionMode.kt` (model/enum, transform) — NEW FILE, `model/VoiceOutcomeUiState.kt` (model, transform) — EXTEND (+9 more)
+
+### Community 325 - "Boolean"
 Cohesion: 0.12
 Nodes (16): Accomplishments, Actuals (#2632) — pairs with the plan's estimate to calibrate future estimates., Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+8 more)
 
-### Community 325 - "Boolean"
-Cohesion: 0.09
-Nodes (22): batch-results, Canonical References, clarify-choices, Claude's Discretion, Cross-repo contract, Deferred Ideas, Established Patterns, Existing Code Insights (+14 more)
-
 ### Community 326 - "Float"
-Cohesion: 0.09
-Nodes (22): 2026-09-30 — D-02 [additivity] provisional refreshed (ai-auto, dependency Phase 11 now complete), additivity, Canonical References, Claude's Discretion, confirm-crossrepo, confirm-ct-props (CT's real call-site, R1), confirm-sb-props (SB's real call-site, R1), confirm-scope (+14 more)
+Cohesion: 0.12
+Nodes (16): Accomplishments, Actuals (#2632), Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+8 more)
 
 ### Community 327 - "List"
-Cohesion: 0.11
-Nodes (18): Canonical References, Claude's Discretion, Cross-repo tag protocol, Deferred Ideas, doc-drift, Established Patterns, Existing Code Insights, family (+10 more)
+Cohesion: 0.12
+Nodes (15): Accomplishments, Actuals (#2632) — pairs with the plan's estimate to calibrate future estimates., Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered, Metrics (+7 more)
 
 ### Community 328 - "Long"
 Cohesion: 0.11
 Nodes (17): Critical Pitfalls, Integration Gotchas, "Looks Done But Isn't" Checklist, Performance Traps, Pitfall 1: Leaking a domain assumption or noun into a "generic" composable, Pitfall 2: Designing the needs-confirmation prop shape too narrowly — it fits ONE consumer's confirm but not the other, Pitfall 3: Making the public API non-additive (the `copy()`/data-class ABI break, required params, changed signatures), Pitfall 4: Forgetting `ComponentRegistry` registration — and trusting scoped tests to catch it (the CATALOG-03 full-suite-only guard) (+9 more)
 
+### Community 329 - "String"
+Cohesion: 0.22
+Nodes (6): ClarificationBar(), List, Modifier, String, ClarificationOptionUiModel, ClarificationBarTest
+
 ### Community 349 - "Boolean"
-Cohesion: 0.15
-Nodes (7): BorderStroke, HeatSwatch(), trimmedLabel(), HeatTier, HeatVisual, hubNodeVisual(), HeatEncodingTest
+Cohesion: 0.14
+Nodes (8): BorderStroke, HeatSwatch(), trimmedLabel(), HeatTier, HeatVisual, hubNodeVisual(), HeatSwatchVariants(), HeatEncodingTest
 
 ### Community 350 - "List"
 Cohesion: 0.12
 Nodes (15): Accomplishments, Actuals (#2632) -- pairs with the plan's estimate to calibrate future estimates., Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+7 more)
 
 ### Community 351 - "Modifier"
-Cohesion: 0.13
-Nodes (14): Architectural Responsibility Map, Assumptions Log, Code Examples, Don't Hand-Roll, Environment Availability, Metadata, Open Questions (RESOLVED), Package Legitimacy Audit (+6 more)
+Cohesion: 0.12
+Nodes (15): Accomplishments, Actuals (#2632) -- pairs with the plan's estimate to calibrate future estimates., Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+7 more)
 
 ### Community 352 - "name"
 Cohesion: 0.05
@@ -1421,8 +1424,8 @@ Cohesion: 0.14
 Nodes (13): Alternatives Considered, Core Technologies (all already declared — no change), Development Tools (unchanged, already wired), Headline: NO new dependencies, Installation, Integration Points (reuse, don't reinvent), Material3 / Compose APIs available in Compose BOM `2026.04.01`, Recommended Stack (+5 more)
 
 ### Community 355 - "Unit"
-Cohesion: 0.15
-Nodes (12): Cost Observations, Cross-Milestone Trends, Cumulative Quality, Key Lessons, Milestone: v2.0 — Line Reunification, Patterns Established, Process Evolution, Project Retrospective (+4 more)
+Cohesion: 0.10
+Nodes (19): Cost Observations, Cost Observations, Cross-Milestone Trends, Cumulative Quality, Key Lessons, Key Lessons, Milestone: v2.0 — Line Reunification, Milestone: v2.4 — AI-Voice Command UI (+11 more)
 
 ### Community 356 - "ReminderIndicator"
 Cohesion: 0.18
@@ -1437,12 +1440,12 @@ Cohesion: 0.20
 Nodes (9): Milestone Summary, Milestone v1.0: Hub Stewardship — Tier Legibility → Coherence Audit → Governance → Repin Bookkeeping → Gardening, Overview, Phase 1: Tier Legibility — ✅ Complete (2026-09-01), Phase 2: Coherence Audit — ✅ Complete (2026-09-01), Phase 3: Governance Gates — ✅ Complete (2026-09-01), Phase 4: Repin Bookkeeping Hardening — ✅ Complete (2026-09-01), Phase 5: Gardening — Unify & Coordinated Repin — ◑ Unify shipped; repin deferred (2026-09-02) (+1 more)
 
 ### Community 359 - "FeedbackFamilyScreen"
-Cohesion: 0.09
-Nodes (21): All-val presentational model, `component/ClarificationBar.kt` (NEW), `component/OutcomeSheet.kt` (EXTEND — add `undo` rendering to `SuccessBody`), `ComponentRegistry` + `DomainVocabularyDriftGuardTest` dual gate, `explorer/VoiceCommandFamilyScreen.kt` (EXTEND — registry wiring), `feedback/UndoGroupTypes.kt` (NEW), `feedback/UndoHistoryEntry.kt` — ZERO CHANGES, `feedback/UndoHistoryStore.kt` (EXTEND — service/store) (+13 more)
+Cohesion: 0.12
+Nodes (15): Accomplishments, Actuals (#2632), Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+7 more)
 
 ### Community 361 - "Goal Achievement"
-Cohesion: 0.17
-Nodes (11): Anti-Patterns Found, Behavioral Spot-Checks, Deeper Verification — Code-Review Fixes (beyond plan's literal scope), Gaps Summary, Goal Achievement, Human Verification Required, Key Link Verification, Observable Truths (+3 more)
+Cohesion: 0.12
+Nodes (15): Accomplishments, Actuals (#2632), Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+7 more)
 
 ### Community 364 - "Int"
 Cohesion: 0.29
@@ -1450,47 +1453,47 @@ Nodes (7): SelectableChipColors, editorTagChipIsSelected(), Boolean, Color, opte
 
 ### Community 365 - "List"
 Cohesion: 0.13
-Nodes (14): Canonical References, Claude's Discretion, Cross-repo tag protocol, Deferred Ideas, Existing Code Insights, Implementation Decisions, Integration Points, Milestone planning (+6 more)
+Nodes (14): Architectural Responsibility Map, Assumptions Log, Code Examples, Don't Hand-Roll, Environment Availability, Metadata, Open Questions (RESOLVED), Package Legitimacy Audit (+6 more)
 
 ### Community 366 - "MicButton"
-Cohesion: 0.17
-Nodes (11): Architectural Responsibility Map, Assumptions Log, Don't Hand-Roll, Environment Availability, Metadata, Open Questions (RESOLVED), Package Legitimacy Audit, Phase 14: Cut v2.4.0 - Research (+3 more)
+Cohesion: 0.13
+Nodes (14): Architectural Responsibility Map, Assumptions Log, Don't Hand-Roll, Environment Availability, Metadata, Open Questions (RESOLVED), Package Legitimacy Audit, Phase 11: Voice outcome & failure sheet - Research (FORCE-REFRESH) (+6 more)
 
 ### Community 367 - "String"
-Cohesion: 0.18
-Nodes (11): Architecture Patterns, Component Responsibilities, Q1 — Masked API-key entry: additive change to `ClearableTextField`, Q2 — Provider/model selection: `ExposedDropdownMenuBox` (first in-tree use) + where `SegmentedOptionSelector` fits, Q3 — Command-approach card: ONE composable, three prop groups, swappable cap, Q4 — Prop / UI models: all-`val` immutables in `model/`, Q5 — Naming + drift guard: `PRIMITIVE_NOUN_ALLOWLIST` edit, Q6 — Registration: new tenth "Voice Command" family (+3 more)
+Cohesion: 0.13
+Nodes (14): 1. Entangled-Unavailable row + undo-refused substate — on-device visual check — ✅ RESOLVED (Gate-1), 2. ClarificationBar tap-to-resolve flow — on-device visual check — ✅ RESOLVED (Gate-1), Anti-Patterns Found, Behavioral Spot-Checks, Code Review Fix Cycle — All 6 Findings Confirmed Landed, Gaps Summary, Gate-1 Resolution (2026-09-30, post-initial-verification), Goal Achievement (+6 more)
 
 ### Community 391 - "List"
-Cohesion: 0.20
-Nodes (9): Accepted Risks Log, audited_head = git HEAD sha at audit time — freshness stamp. child-result re-checks it: if, implementation (outside .planning) changed since this sha, the audit is stale (INC-2026-08-06-04)., Phase 10 — Security, Security Audit Trail, Sign-Off, Threat Register, threats_open = count of OPEN threats at or above workflow.security_block_on severity (the blocking gate) (+1 more)
+Cohesion: 0.13
+Nodes (14): (10, not the 15+ blocker) rather than split: Task 2's checkpoint:decision freezes the, adding cross-plan/cross-wave orchestration risk without reducing the underlying file count, double-counting. 8 source files + 2 test files (DomainVocabularyDriftGuardTest.kt,, extends what Task 1 creates. Explicitly accepted as within the documented warning threshold, files (OutcomeSheet.kt, VoiceCommandFamilyScreen.kt, OutcomeSheetTest.kt) because Task 3, OutcomeSheetTest.kt) across 2 substantive tasks (tracer + auto) that intentionally share 3, scope_sanity (revision review, 2026-09-30): 10 distinct paths, verified accurate — no, STRIDE Threat Register (+6 more)
 
 ### Community 392 - "Map"
-Cohesion: 0.40
-Nodes (4): BLOCKING CONSTRAINTS — Read Before Anything Else, Critical Anti-Patterns, Infrastructure State, Required Reading (in order)
+Cohesion: 0.13
+Nodes (14): Architectural Responsibility Map, Assumptions Log, Don't Hand-Roll, Environment Availability, Metadata, Open Questions, Package Legitimacy Audit, Phase 12: Generic needs-confirmation state - Research (+6 more)
 
 ### Community 393 - "String"
 Cohesion: 0.15
 Nodes (12): A1 — ProviderKeyCard: masked-key reveal contrast/readability, A2 — ApproachLadderCard: cap interaction feel + hidden-vs-shown-disabled layout, A3 — Combined subdued-label legibility (now a LIVE gallery cell), B1 — OutcomeSheet (Phase 11) — `11-02-SELF-UAT.md`, B2 — ClarificationBar (Phase 11) — `11-02-SELF-UAT.md`, B3 — NeedsConfirmation state (Phase 12) — `12-01-SELF-UAT.md`, B4 — Catalog & ship (Phases 13–14) — no device review, Bucket A — Visual judgments that need your eyes (Phase 10, light AND dark) (+4 more)
 
 ### Community 399 - "Phase 10 Plan 02: Model Select + Approach Ladder Cards Summary"
-Cohesion: 0.12
-Nodes (15): Accomplishments, Actuals (#2632) — pairs with the plan's estimate to calibrate future estimates., Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered, Metrics (+7 more)
+Cohesion: 0.13
+Nodes (14): Canonical References, Claude's Discretion, Cross-repo tag protocol, Deferred Ideas, Existing Code Insights, Implementation Decisions, Integration Points, Milestone planning (+6 more)
 
 ### Community 400 - "Warnings"
-Cohesion: 0.20
-Nodes (9): IN-01 (carried forward, unfixed): Unmatched `selectedProviderId` silently renders a blank dropdown anchor, IN-02: Internal review-finding IDs ("WR-01", "WR-02", "WR-04") are now baked into shipped public KDoc, Info, Phase 10: Code Review Report, Summary, Warnings, WR-01: The `require()` pairing fix was applied to one prop pair but not its documented twin, WR-02 (carried forward, unfixed): A merely-`disabled` rung has no visible affordance at all (+1 more)
+Cohesion: 0.14
+Nodes (13): 1. Masked API-key reveal affordance contrast/readability (light/dark), 2. Tap-a-rung cap feel + hidden-vs-shown-disabled layout, now including the new "Unavailable" affordance (light/dark), Anti-Patterns Found, Behavioral Spot-Checks, Gaps Summary, Goal Achievement, Human Verification Required, Key Link Verification (+5 more)
 
 ### Community 401 - "Phase 11: Voice outcome & failure sheet - Research"
-Cohesion: 0.13
-Nodes (14): Architectural Responsibility Map, Assumptions Log, Don't Hand-Roll, Environment Availability, Metadata, Open Questions (RESOLVED), Package Legitimacy Audit, Phase 11: Voice outcome & failure sheet - Research (FORCE-REFRESH) (+6 more)
+Cohesion: 0.14
+Nodes (13): 1. An outcome/failure sheet renders a command outcome from props with no app-specific nouns (ROADMAP SC1, VOUT-01), 2. The sheet surfaces a "handled by: tier/approach" indicator identifying which tier/approach handled the command, from props (ROADMAP SC2, VOUT-02), 3. Failure states render prominently and visibly — loud, not silent or subtle — with an OPTIONAL prop-driven action slot; absent prop → no action rendered (ROADMAP SC3, VOUT-03), 4. The sheet renders a prop-driven "Undo all (N)" action alongside per-item Undo, and can represent a per-item-undo-unavailable state — an item entangled with another that cannot be undone alone (ROADMAP SC4, VUNDO-01) — HUMAN_VERIFICATION item 1, 5. An undo-refused / partial-undo state renders loudly with a reason, domain-neutral (ROADMAP SC5, VUNDO-01) — HUMAN_VERIFICATION item 1 (continued), 6. A prop-driven clarification-choices surface renders a question + pressable options (label + opaque id) with onSelect + dismiss — visually informative (not an error); tapping an option resolves without re-speaking (ROADMAP SC6, VCLAR-01) — HUMAN_VERIFICATION item 2, Criteria, Driver-mechanism note (+5 more)
 
 ### Community 416 - "List"
-Cohesion: 0.12
-Nodes (15): Accomplishments, Actuals (#2632) -- pairs with the plan's estimate to calibrate future estimates., Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+7 more)
+Cohesion: 0.14
+Nodes (13): Applicable ASVS Categories, audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117), Known Threat Patterns for this stack, Manual-Only Verifications, Per-Task Verification Map, Phase 11 — Validation Strategy, Sampling Rate, Security Domain (+5 more)
 
 ### Community 417 - "String"
-Cohesion: 0.13
-Nodes (14): 1. Entangled-Unavailable row + undo-refused substate — on-device visual check — ✅ RESOLVED (Gate-1), 2. ClarificationBar tap-to-resolve flow — on-device visual check — ✅ RESOLVED (Gate-1), Anti-Patterns Found, Behavioral Spot-Checks, Code Review Fix Cycle — All 6 Findings Confirmed Landed, Gaps Summary, Gate-1 Resolution (2026-09-30, post-initial-verification), Goal Achievement (+6 more)
+Cohesion: 0.14
+Nodes (13): `API.md` — doc-drift correction, header + table (role: config/doc, flow: transform), `CLAUDE.md` — doc-drift correction (role: config/doc, flow: transform), `ComponentRegistry.kt` KDoc — doc-drift correction (role: config/doc (KDoc), flow: transform), Doc house style (applies to all 4 doc-drift files), Evidence-capture artifact — API-01 additive proof (role: utility/test-evidence, flow: batch), File Classification, Metadata, No Analog Found (+5 more)
 
 ### Community 470 - "Int"
 Cohesion: 0.13
@@ -1505,8 +1508,8 @@ Cohesion: 0.17
 Nodes (11): Accumulated Context, Blockers/Concerns, Current Position, Decisions, Deferred Items, Operator Next Steps, Pending Todos, Performance Metrics (+3 more)
 
 ### Community 497 - "Requirements: yahirandroidtaste — Line Reunification (v2.0)"
-Cohesion: 0.18
-Nodes (10): Catalog & API integrity, Command-approach settings (NEW), Future Requirements, Out of Scope, Outcome / failure sheet, Requirements: yahirandroidtaste — Milestone v2.4 (AI-Voice Command UI), Settings surfaces, Ship / tag (+2 more)
+Cohesion: 0.21
+Nodes (7): List, Modifier, String, ProviderDropdown(), ProviderKeyCard(), ProviderOptionUiModel, ProviderKeyCardTest
 
 ### Community 498 - "Decision Map — v2.0 Line Reunification"
 Cohesion: 0.20
@@ -1533,12 +1536,12 @@ Cohesion: 0.20
 Nodes (9): Checker Sign-Off, Color, Copywriting Contract, Design System, Phase 07 — UI Design Contract, Registry Safety, Spacing Scale, Typography (+1 more)
 
 ### Community 505 - "PickersFamilyScreen.kt"
-Cohesion: 0.11
-Nodes (17): All-`val`, frozen-constructor, null-prop-hides model convention, `component/OutcomeSheet.kt` (component, request-response) — EXTEND, `explorer/VoiceCommandFamilyScreen.kt` (component/gallery fixture) — EXTEND, File Classification, Metadata, `model/ProposedItemUiModel.kt` (model, transform) — NEW FILE, `model/SelectionMode.kt` (model/enum, transform) — NEW FILE, `model/VoiceOutcomeUiState.kt` (model, transform) — EXTEND (+9 more)
+Cohesion: 0.15
+Nodes (12): CR-01: `NeedsConfirmation`'s own default `toString()` leaks `title`/`reason` — violates the phase's own privacy prohibition, Critical Issues, IN-01: Redundant explicit default value in the batch fixture, Info, Phase 12: Code Review Report, Summary, Warnings, WR-01: The library's own canonical gallery fixtures don't follow `NeedsConfirmation`'s own documented dismiss/cancel contract (+4 more)
 
 ### Community 506 - "RevealActionRow"
-Cohesion: 0.13
-Nodes (14): (10, not the 15+ blocker) rather than split: Task 2's checkpoint:decision freezes the, adding cross-plan/cross-wave orchestration risk without reducing the underlying file count, double-counting. 8 source files + 2 test files (DomainVocabularyDriftGuardTest.kt,, extends what Task 1 creates. Explicitly accepted as within the documented warning threshold, files (OutcomeSheet.kt, VoiceCommandFamilyScreen.kt, OutcomeSheetTest.kt) because Task 3, OutcomeSheetTest.kt) across 2 substantive tasks (tracer + auto) that intentionally share 3, scope_sanity (revision review, 2026-09-30): 10 distinct paths, verified accurate — no, STRIDE Threat Register (+6 more)
+Cohesion: 0.15
+Nodes (12): Anti-Patterns Found, Behavioral Spot-Checks (re-run fresh this session, at HEAD `0eae541`), Gaps Summary, Gate-1 Self-UAT Cross-Check (new evidence since prior verification), Goal Achievement, Human Verification Required, Key Link Verification, Observable Truths (+4 more)
 
 ### Community 507 - "Phase 6 Plan 2: PresetChip Forward-Port Summary"
 Cohesion: 0.20
@@ -1561,8 +1564,8 @@ Cohesion: 0.22
 Nodes (8): 1. Neutral parameterized content descriptions; no consumer microcopy (D1, MICBTN-01), 2. Latest-callback safety via rememberUpdatedState (D2, MICBTN-02), 3. Hub-vocabulary KDoc + sensible defaults (D3, MICBTN-03), 4. Backward-compatible; all hub gates green (D4), Current Test, Gaps, Summary, Tests
 
 ### Community 512 - ".onCreate"
-Cohesion: 0.17
-Nodes (11): PlaceMapSavedPlacesSection(), SavedPlaceChipItem, formatMeters(), String, Int, List, String, T (+3 more)
+Cohesion: 0.19
+Nodes (10): List, PlaceMapSavedPlacesSection(), SavedPlaceChipItem, Int, List, String, T, occurrenceIndices() (+2 more)
 
 ### Community 513 - "SourceContractTestSupport"
 Cohesion: 0.35
@@ -1573,28 +1576,28 @@ Cohesion: 0.22
 Nodes (8): Manual-Only Verifications, Per-Task Verification Map, Phase 08 — Validation Strategy, Sampling Rate, Test Infrastructure, Validation Audit 2026-09-27, Validation Sign-Off, Wave 0 Requirements
 
 ### Community 515 - "Self-UAT Log — Phase 13 Plan 01 (Catalog integrity & docs)"
-Cohesion: 0.18
-Nodes (10): 1. CAT-01 — Full test suite (incl. CATALOG-03 drift guard) green; every new public composable registered/allowlisted with full 4-cell states matrix, 2. API-01 — Metalava apiCheck confirms the public API is strictly additive vs v2.3.0, 3. INV-01 — No OkHttp/voice-action-engine dependency; composables are data+callback-only, 4. The stale "seven families" wording is corrected to "ten" in CLAUDE.md, README.md, ComponentRegistry KDoc, API.md, Criteria, Findings routed to gap-closure (if any), Notes / anomalies (for the Gate-2 reviewer), Scope determination (why this is doc/build-only, not device-drivable) (+2 more)
+Cohesion: 0.17
+Nodes (11): 1. The outcome sheet renders a needs-confirmation state from props: a reason string, proposed item(s), and confirm/cancel actions (ROADMAP SC1, VOUT-04), 2. The same composable renders both a single proposed item and a batch of proposed items (ROADMAP SC2, VOUT-04), 3. Confirm and cancel each emit via callback, domain-neutral — no app-specific nouns (ROADMAP SC3, VOUT-04), plus the Manual-Only destructive-styling + dismiss-as-decline items, 4. The prop shape satisfies both SB's `MutationGate`/`VoiceConfirmGate` risk confirm and CT's weak-match single/batch confirm without any library-side change (ROADMAP SC4, VOUT-04), plus the Manual-Only batch-remove-tap item, Criteria, Driver-mechanism note, Findings routed to gap-closure (if any), Notes / anomalies (for the Gate-2 reviewer) (+3 more)
 
 ### Community 516 - "ExplorerEntry"
 Cohesion: 0.22
 Nodes (8): Anti-Patterns Found, Gaps Summary, Goal Achievement, Governance Artifacts (Review / Security), Human Verification Required, Observable Truths (ROADMAP Success Criteria), Phase 9: Ship & coordinated repin — Verification Report, Requirements Coverage
 
 ### Community 518 - "Critical Issues"
-Cohesion: 0.20
-Nodes (9): CR-01: `API.md`'s per-family composable tables omit 6 real public composables and its summary counts are internally inconsistent, CR-02: `API.md`'s "Intentionally-unregistered" section miscounts itself and lists `CardBase` as unregistered when it is actually registered, CR-03: `README.md`'s composable totals are wrong and disagree with `API.md`'s (also wrong) numbers, Critical Issues, Phase 13: Code Review Report, Summary, Warnings, WR-01: `README.md` states a stale Compose BOM version that contradicts `CLAUDE.md` and the actual build config (+1 more)
+Cohesion: 0.17
+Nodes (11): Anti-Patterns Found, Behavioral Spot-Checks, Deeper Verification — Code-Review Fixes (beyond plan's literal scope), Gaps Summary, Goal Achievement, Human Verification Required, Key Link Verification, Observable Truths (+3 more)
 
 ### Community 519 - "Goal Achievement"
-Cohesion: 0.14
-Nodes (13): 1. Masked API-key reveal affordance contrast/readability (light/dark), 2. Tap-a-rung cap feel + hidden-vs-shown-disabled layout, now including the new "Unavailable" affordance (light/dark), Anti-Patterns Found, Behavioral Spot-Checks, Gaps Summary, Goal Achievement, Human Verification Required, Key Link Verification (+5 more)
+Cohesion: 0.17
+Nodes (11): Architectural Responsibility Map, Assumptions Log, Don't Hand-Roll, Environment Availability, Metadata, Open Questions (RESOLVED), Package Legitimacy Audit, Phase 14: Cut v2.4.0 - Research (+3 more)
 
 ### Community 520 - "ChipBar"
-Cohesion: 0.20
-Nodes (9): CR-01: `API.md`'s per-family composable tables omit 6 real public composables and its summary counts are internally inconsistent, CR-02: `API.md`'s "Intentionally-unregistered" section miscounts itself and lists `CardBase` as unregistered when it is actually registered, CR-03: `README.md`'s composable totals are wrong and disagree with `API.md`'s (also wrong) numbers, Fixed Issues, Phase 13: Code Review Fix Report, Skipped Issues, Warnings — Fixed, WR-01: `README.md` states a stale Compose BOM version that contradicts `CLAUDE.md` and the actual build config (+1 more)
+Cohesion: 0.17
+Nodes (11): Anti-Patterns Found, Behavioral Spot-Checks, Gaps Summary, Goal Achievement, Key Link Verification, Observable Truths, Override Applied (execute-stage orchestrator, 2026-10-01), Phase 14: Cut v2.4.0 Verification Report (+3 more)
 
 ### Community 522 - "CardBaseTest.kt"
-Cohesion: 0.18
-Nodes (20): `accent alone without tactileDepth never activates the depth chrome`(), `card_accent_spine is a matchParentSize overlay with a null-safe neutral fallback`(), `card_depth_container is tagged exactly once and only inside the tactileDepth true branch`(), CardBaseFixture(), `content slots compose in every param combination`(), countOccurrences(), `default params render no depth chrome and no wrapper node`(), matchingCloseBraceIndex() (+12 more)
+Cohesion: 0.22
+Nodes (17): `accent alone without tactileDepth never activates the depth chrome`(), `card_accent_spine is a matchParentSize overlay with a null-safe neutral fallback`(), `card_depth_container is tagged exactly once and only inside the tactileDepth true branch`(), CardBaseFixture(), `content slots compose in every param combination`(), countOccurrences(), `default params render no depth chrome and no wrapper node`(), matchingCloseBraceIndex() (+9 more)
 
 ### Community 523 - "RecordingBottomSheetContent"
 Cohesion: 0.25
@@ -1629,16 +1632,16 @@ Cohesion: 0.25
 Nodes (7): Accepted Risks Log, Phase 07 — Security, Security Audit Trail, Sign-Off, Threat Register, Trust Boundaries, Unregistered Flags (surfaced during this audit, not in the original plan-time register)
 
 ### Community 532 - "MetricBar"
-Cohesion: 0.24
-Nodes (4): Int, Modifier, ReminderIndicator(), ReminderIndicatorTest
+Cohesion: 0.17
+Nodes (11): Catalog & API integrity, Command-approach settings (NEW), Future Requirements, Out of Scope, Outcome / failure sheet, Requirements Archive: v2.4 AI-Voice Command UI, Requirements: yahirandroidtaste — Milestone v2.4 (AI-Voice Command UI), Settings surfaces (+3 more)
 
 ### Community 533 - "Phase 08 — Security"
 Cohesion: 0.29
 Nodes (6): Accepted Risks Log, Phase 06 — Security, Security Audit Trail, Sign-Off, Threat Register, Trust Boundaries
 
 ### Community 535 - "GalleryDemoInteractionTest"
-Cohesion: 0.15
-Nodes (11): CardQuickView(), CardQuickViewContent(), CardQuickViewSection(), CardQuickViewVariants(), CardTagRow(), List, Modifier, name (+3 more)
+Cohesion: 0.21
+Nodes (13): EmptyState(), EmptyStateVariants(), Pair, ComponentRow(), ExplorerFamilies, ExplorerIndexScreen(), ExplorerTopBar(), familyLabelFor() (+5 more)
 
 ### Community 537 - "Phase 08 — Validation Strategy"
 Cohesion: 0.33
@@ -1669,8 +1672,8 @@ Cohesion: 0.40
 Nodes (4): Notes, Phase 9 Plan 01 — Security Verdict, Threat Verification, Unregistered Flags
 
 ### Community 544 - "of"
-Cohesion: 0.50
-Nodes (3): Milestones — yahirandroidtaste (Hub Stewardship), v1.0 — Hub Stewardship ✅ SHIPPED 2026-09-02, v2.0 Line Reunification (Shipped: 2026-09-27)
+Cohesion: 0.40
+Nodes (4): Milestones — yahirandroidtaste (Hub Stewardship), v1.0 — Hub Stewardship ✅ SHIPPED 2026-09-02, v2.0 Line Reunification (Shipped: 2026-09-27), v2.4 AI-Voice Command UI (Shipped: 2026-10-01)
 
 ### Community 545 - "ListCardBottomSheet"
 Cohesion: 0.40
@@ -1681,24 +1684,24 @@ Cohesion: 0.21
 Nodes (5): Boolean, Modifier, String, MicButton(), MicButtonGestureTest
 
 ### Community 548 - "ComponentRow"
-Cohesion: 0.13
-Nodes (30): EmptyState(), CardsFamilyScreen(), CardsFamilyTopBar(), EmptyStateFamilyScreen(), EmptyStateFamilyTopBar(), EmptyStateVariants(), FeedbackFamilyScreen(), FeedbackFamilyTopBar() (+22 more)
+Cohesion: 0.16
+Nodes (22): CardsFamilyScreen(), CardsFamilyTopBar(), EmptyStateFamilyScreen(), EmptyStateFamilyTopBar(), FeedbackFamilyScreen(), FeedbackFamilyTopBar(), UndoCenterScreenVariants(), ProgressFamilyScreen() (+14 more)
 
 ### Community 549 - ".whenBlock"
 Cohesion: 0.50
 Nodes (3): Artifacts this phase produces, STRIDE Threat Register, Trust Boundaries
 
 ### Community 550 - "10-UAT.md"
-Cohesion: 0.25
-Nodes (7): 1. Masked API-key reveal affordance + provider dropdown (light/dark), 2. Tap-a-rung cap feel + hidden-vs-shown-disabled layout, now including the new "Unavailable" affordance (light/dark), Current Test, Deferred Follow-Ups, Gaps, Summary, Tests
+Cohesion: 0.18
+Nodes (11): Architecture Patterns, Component Responsibilities, Q1 — Masked API-key entry: additive change to `ClearableTextField`, Q2 — Provider/model selection: `ExposedDropdownMenuBox` (first in-tree use) + where `SegmentedOptionSelector` fits, Q3 — Command-approach card: ONE composable, three prop groups, swappable cap, Q4 — Prop / UI models: all-`val` immutables in `model/`, Q5 — Naming + drift guard: `PRIMITIVE_NOUN_ALLOWLIST` edit, Q6 — Registration: new tenth "Voice Command" family (+3 more)
 
 ### Community 551 - "ComponentRow"
 Cohesion: 0.23
 Nodes (12): Exception, Empty, Failed, FullyResolved, NothingToUndo, PartiallyResolved, Refused, Undoable (+4 more)
 
 ### Community 552 - "ExpandableFab"
-Cohesion: 0.14
-Nodes (13): Applicable ASVS Categories, audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117), Known Threat Patterns for this stack, Manual-Only Verifications, Per-Task Verification Map, Phase 11 — Validation Strategy, Sampling Rate, Security Domain (+5 more)
+Cohesion: 0.18
+Nodes (10): CR-01: `api.txt` was never regenerated for this phase's new public API, CR-02: `inFlight` is documented to disable undo controls, but `OutcomeSheet` never wires it there, Critical Issues, Phase 11: Code Review Report, Summary, Warnings, WR-01: `ApproachLadderCard`'s cap control can become clickable without a visible cap, WR-02: An unmatched `maxTierId` silently disables the cap with no signal (+2 more)
 
 ### Community 553 - "Narrative Findings (AI reviewer)"
 Cohesion: 0.50
@@ -1714,127 +1717,131 @@ Nodes (3): 06-01, 06-03, Phase 6 — Deferred Items
 
 ### Community 558 - "ChipBar"
 Cohesion: 0.17
-Nodes (10): Density, Boolean, Double, List, Modifier, query, Unit, PlaceMapCurrentLocationSection() (+2 more)
+Nodes (12): Boolean, Double, Modifier, query, Unit, PlaceMapCurrentLocationSection(), PlaceMapPicker(), PlaceMapSearchSection() (+4 more)
 
 ### Community 559 - "ReminderIndicator"
 Cohesion: 0.13
 Nodes (4): AccentColor, AccentColorPicker(), PickerExpansionTest, AccentColorPickerVariants()
 
 ### Community 564 - "ModelSelectCard"
-Cohesion: 0.24
-Nodes (7): List, Modifier, String, ModelDropdown(), ModelSelectCard(), ModelOptionUiModel, ModelSelectCardTest
+Cohesion: 0.18
+Nodes (10): CR-01: `NeedsConfirmation`'s own default `toString()` leaks `title`/`reason`, Fixed Issues, IN-01: Redundant explicit default value in the batch fixture, Phase 12: Code Review Fix Report, Skipped Issues, WR-01: The gallery's own fixtures don't follow `NeedsConfirmation`'s documented dismiss/cancel contract, WR-02: `amended` is modeled and exercised but never rendered or documented as intentional, WR-03: `trailingContent` has zero test/fixture coverage (+2 more)
 
 ### Community 565 - "RevealActionRow"
 Cohesion: 0.20
 Nodes (9): Decision Map — v2.4 AI-Voice Command UI, Gray Areas, Gray Areas, Gray Areas, Gray Areas, Phase 10: Voice command settings surfaces, Phase 11: Voice outcome & failure sheet, Phase 12: Generic needs-confirmation state (+1 more)
 
 ### Community 566 - "ThemeMode.kt"
-Cohesion: 0.25
-Nodes (7): by the shipped OutcomeSheet (commit 6a946d3, from the now-superseded original 11-01-PLAN.md)., confirmed live, not just RESEARCH.md's quotes):, STRIDE Threat Register, This plan's tasks do not re-implement them; see <objective> for the verified-live citation., Trust Boundaries, Verified source to mirror (read in full this planning session -- exact shapes/line numbers, VOUT-01/02/03 are carried here for phase-level traceability only -- they are ALREADY satisfied
+Cohesion: 0.18
+Nodes (10): audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117), Manual-Only Verifications, Per-Task Verification Map, Phase 12 — Validation Strategy, Sampling Rate, status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6), Test Infrastructure, Validation Audit 2026-09-30 (+2 more)
 
 ### Community 567 - "HANDOFF: yahirandroidtaste (YAT), multi-repo milestone effort "vae-bilingual""
-Cohesion: 0.20
-Nodes (9): Current state (2026-09-30), Dependencies, HANDOFF: yahirandroidtaste (YAT), multi-repo milestone effort "vae-bilingual", How this effort runs (same text in every repo), Peers, RECONVENE-BRIEF.md template, Repo facts, What Yahir confirmed (and where) (+1 more)
+Cohesion: 0.17
+Nodes (11): Current state (2026-09-30) — HISTORICAL (superseded by the 2026-10-04 block above), Current state (2026-10-04) — v2.4 SHIPPED + v2.4.1 hotfix CUT, Dependencies, HANDOFF: yahirandroidtaste (YAT), multi-repo milestone effort "vae-bilingual", How this effort runs (same text in every repo), Peers, Protocol notes (local addenda — survive resets), RECONVENE-BRIEF.md template (+3 more)
 
 ### Community 568 - "Reconvene brief — yahirandroidtaste (YAT) — R1"
 Cohesion: 0.22
 Nodes (8): 1. Phases (from ROADMAP), 2. Public surface this milestone adds or changes (strictly additive vs `v2.3.0`), 3. Assumptions about other repos (each needs a peer confirm/correct), 4. Contract drift found (code vs contract), 5. Proposed amendments, 6. Risks and open questions for Yahir (via the orchestrator), 7. Tag / repin intent, Reconvene brief — yahirandroidtaste (YAT) — R1
 
 ### Community 569 - "Phase 10 — Validation Strategy"
-Cohesion: 0.20
-Nodes (9): Gaps, Manual-Only Verifications, Per-Task Verification Map, Phase 10 — Validation Strategy, Sampling Rate, status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6), Test Infrastructure, Validation Sign-Off (+1 more)
+Cohesion: 0.18
+Nodes (10): 1. CAT-01 — Full test suite (incl. CATALOG-03 drift guard) green; every new public composable registered/allowlisted with full 4-cell states matrix, 2. API-01 — Metalava apiCheck confirms the public API is strictly additive vs v2.3.0, 3. INV-01 — No OkHttp/voice-action-engine dependency; composables are data+callback-only, 4. The stale "seven families" wording is corrected to "ten" in CLAUDE.md, README.md, ComponentRegistry KDoc, API.md, Criteria, Findings routed to gap-closure (if any), Notes / anomalies (for the Gate-2 reviewer), Scope determination (why this is doc/build-only, not device-drivable) (+2 more)
 
 ### Community 570 - "ComponentRegistry.kt"
 Cohesion: 0.18
-Nodes (10): CR-01: `NeedsConfirmation`'s own default `toString()` leaks `title`/`reason`, Fixed Issues, IN-01: Redundant explicit default value in the batch fixture, Phase 12: Code Review Fix Report, Skipped Issues, WR-01: The gallery's own fixtures don't follow `NeedsConfirmation`'s documented dismiss/cancel contract, WR-02: `amended` is modeled and exercised but never rendered or documented as intentional, WR-03: `trailingContent` has zero test/fixture coverage (+2 more)
+Nodes (10): audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117), Manual-Only Verifications, Per-Task Verification Map, Phase 13 — Validation Strategy, Sampling Rate, status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6), Test Infrastructure, Validation Audit 2026-09-30 (+2 more)
 
 ### Community 572 - "Architectural Patterns"
-Cohesion: 0.50
-Nodes (3): STRIDE Threat Register, Trust Boundaries, Verified source to mirror:
+Cohesion: 0.18
+Nodes (10): audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117), Manual-Only Verifications, Per-Task Verification Map, Phase 14 — Validation Strategy, Sampling Rate, status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6), Test Infrastructure, Validation Audit 2026-10-01 (+2 more)
 
 ### Community 573 - "10-02-PLAN.md"
-Cohesion: 0.33
-Nodes (5): ExposedDropdownMenuBox provider-dropdown shape, and the all-val model + STABLE convention. Read, its SUMMARY for the exact ProviderKeyCard/ClearableTextField shapes to mirror., Plan 01 established the family scaffold, the allowlist tokens (Provider/Model/Approach), the, STRIDE Threat Register, Trust Boundaries
+Cohesion: 0.20
+Nodes (9): IN-01 (carried forward, unfixed): Unmatched `selectedProviderId` silently renders a blank dropdown anchor, IN-02: Internal review-finding IDs ("WR-01", "WR-02", "WR-04") are now baked into shipped public KDoc, Info, Phase 10: Code Review Report, Summary, Warnings, WR-01: The `require()` pairing fix was applied to one prop pair but not its documented twin, WR-02 (carried forward, unfixed): A merely-`disabled` rung has no visible affordance at all (+1 more)
 
 ### Community 574 - "Common Pitfalls"
-Cohesion: 0.33
-Nodes (6): Common Pitfalls, Pitfall 1: Trailing-lambda break when appending params, Pitfall 2: Forgetting to register a new composable (build-red), Pitfall 3: Head token not allowlisted (build-red), Pitfall 4: A `var` in a prop model, Pitfall 5: Control shown-disabled instead of hidden
+Cohesion: 0.20
+Nodes (9): Fixed Issues, IN-01: Unmatched `selectedProviderId` silently renders a blank dropdown anchor, IN-02: Internal review-finding IDs baked into shipped public KDoc, Orchestrator Addendum — Post-Fix Build Verification, Phase 10: Code Review Fix Report, Skipped Issues, WR-01: The `require()` pairing fix was applied to one prop pair but not its documented twin, WR-02: A merely-`disabled` rung has no visible affordance at all (+1 more)
 
 ### Community 575 - "of"
 Cohesion: 0.33
 Nodes (6): Color, Double, Int, Long, String, of()
 
 ### Community 576 - "Validation Architecture"
-Cohesion: 0.40
-Nodes (5): Phase Requirements → Test Map, Sampling Rate, Test Framework, Validation Architecture, Wave 0 Gaps
+Cohesion: 0.20
+Nodes (9): Accepted Risks Log, audited_head = git HEAD sha at audit time — freshness stamp. child-result re-checks it: if, implementation (outside .planning) changed since this sha, the audit is stale (INC-2026-08-06-04)., Phase 10 — Security, Security Audit Trail, Sign-Off, Threat Register, threats_open = count of OPEN threats at or above workflow.security_block_on severity (the blocking gate) (+1 more)
 
 ### Community 577 - "Standard Stack"
-Cohesion: 0.50
-Nodes (4): Alternatives Considered, Core, Standard Stack, Supporting (in-repo, reuse)
+Cohesion: 0.20
+Nodes (9): Gaps, Manual-Only Verifications, Per-Task Verification Map, Phase 10 — Validation Strategy, Sampling Rate, status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6), Test Infrastructure, Validation Sign-Off (+1 more)
 
 ### Community 578 - "User Constraints (from CONTEXT.md)"
-Cohesion: 0.50
-Nodes (4): Claude's Discretion, Deferred Ideas (OUT OF SCOPE), Locked Decisions, User Constraints (from CONTEXT.md)
+Cohesion: 0.20
+Nodes (9): CR-01: `api.txt` was never regenerated for this phase's new public API, CR-02: `inFlight` is documented to disable undo controls, but `OutcomeSheet` never wires it there, Fixed Issues, Phase 11: Code Review Fix Report, Skipped Issues, WR-01: `ApproachLadderCard`'s cap control can become clickable without a visible cap, WR-02: An unmatched `maxTierId` silently disables the cap with no signal, WR-03: `ClarificationBar`'s option row has no scroll/wrap for more options than fit on screen (+1 more)
 
 ### Community 579 - "Sources"
-Cohesion: 0.50
-Nodes (4): Primary (HIGH confidence), Secondary (MEDIUM confidence), Sources, Tertiary (LOW confidence)
+Cohesion: 0.20
+Nodes (9): Accepted Risks Log, audited_head = git HEAD sha at audit time — freshness stamp. child-result re-checks it: if, implementation (outside .planning) changed since this sha, the audit is stale (INC-2026-08-06-04)., Phase 11 — Security, Security Audit Trail, Sign-Off, Threat Register, threats_open = count of OPEN threats at or above workflow.security_block_on severity (the blocking gate) (+1 more)
+
+### Community 580 - "10-01-PLAN.md"
+Cohesion: 0.20
+Nodes (9): Accepted Risks Log, audited_head = git HEAD sha at audit time — freshness stamp. child-result re-checks it: if, implementation (outside .planning) changed since this sha, the audit is stale (INC-2026-08-06-04)., Phase 12 — Security, Security Audit Trail, Sign-Off, Threat Register, threats_open = count of OPEN threats at or above workflow.security_block_on severity (the blocking gate) (+1 more)
 
 ### Community 581 - "Security Domain"
-Cohesion: 0.67
-Nodes (3): Applicable ASVS Categories, Known Threat Patterns for {Compose presentational key field}, Security Domain
+Cohesion: 0.20
+Nodes (9): CR-01: `API.md`'s per-family composable tables omit 6 real public composables and its summary counts are internally inconsistent, CR-02: `API.md`'s "Intentionally-unregistered" section miscounts itself and lists `CardBase` as unregistered when it is actually registered, CR-03: `README.md`'s composable totals are wrong and disagree with `API.md`'s (also wrong) numbers, Critical Issues, Phase 13: Code Review Report, Summary, Warnings, WR-01: `README.md` states a stale Compose BOM version that contradicts `CLAUDE.md` and the actual build config (+1 more)
 
 ### Community 583 - "Validation Architecture"
-Cohesion: 0.40
-Nodes (5): Phase Requirements → Test Map, Sampling Rate, Test Framework, Validation Architecture, Wave 0 Gaps
+Cohesion: 0.20
+Nodes (9): CR-01: `API.md`'s per-family composable tables omit 6 real public composables and its summary counts are internally inconsistent, CR-02: `API.md`'s "Intentionally-unregistered" section miscounts itself and lists `CardBase` as unregistered when it is actually registered, CR-03: `README.md`'s composable totals are wrong and disagree with `API.md`'s (also wrong) numbers, Fixed Issues, Phase 13: Code Review Fix Report, Skipped Issues, Warnings — Fixed, WR-01: `README.md` states a stale Compose BOM version that contradicts `CLAUDE.md` and the actual build config (+1 more)
 
 ### Community 584 - "Standard Stack"
-Cohesion: 0.50
-Nodes (4): Alternatives Considered, Core, Standard Stack, Supporting
+Cohesion: 0.20
+Nodes (9): Accepted Risks Log, audited_head = git HEAD sha at audit time — freshness stamp. child-result re-checks it: if, implementation (outside .planning) changed since this sha, the audit is stale (INC-2026-08-06-04)., Phase 14 — Security, Security Audit Trail, Sign-Off, Threat Register, threats_open = count of OPEN threats at or above workflow.security_block_on severity (the blocking gate) (+1 more)
 
 ### Community 585 - "Code Examples"
-Cohesion: 0.33
-Nodes (6): Clarification choices, reusing `AppChip` (VCLAR-01), Code Examples, Extending `OutcomeSheet.kt`'s `SuccessBody` (illustrative — exact diff is a planning decision), Recommended consumer-facing UI projection models (new, in `model/`), Recommended `UndoGroupTypes.kt` (NEW file) — sealed results, no `UndoStatus` member added, Recommended `UndoHistoryStore.kt` additions (illustrative skeleton)
+Cohesion: 0.22
+Nodes (8): Final Summary (Steps 1-4), Phase 14 — Ship-Gate Evidence (fresh, at the exact commit tagged `v2.4.0`), Pre-Tag Guard Check, Step 1 Evidence (full suite + detekt), Step 2 Evidence (API additive vs v2.3.0), Step 3 Evidence (tag + push), Step 4 Evidence (JitPack resolution), Summary (Steps 1-3)
 
 ### Community 586 - "User Constraints (from CONTEXT.md)"
-Cohesion: 0.50
-Nodes (4): Claude's Discretion, Deferred Ideas (OUT OF SCOPE), Locked Decisions, User Constraints (from CONTEXT.md)
+Cohesion: 0.16
+Nodes (12): EditorItemRow(), EditorItemRowStatePreview(), KeyboardActions, KeyboardOptions, ClearableTextField(), Boolean, Composable, Modifier (+4 more)
 
 ### Community 587 - "Common Pitfalls"
-Cohesion: 0.40
-Nodes (5): Common Pitfalls, Pitfall 1: Using `tryConsume()`/`consumedGuard` to claim group members (the D-01 trap), Pitfall 2: `clearSpent()`/eviction dropping one member of a still-partially-live group, Pitfall 3: `"Clarification"` (or whatever head token is chosen) failing `DomainVocabularyDriftGuardTest`, Pitfall 4: A concurrent per-item `attemptUndo(id)` racing a live `attemptUndoGroup(groupId)` on the same member
+Cohesion: 0.25
+Nodes (7): 1. Masked API-key reveal affordance + provider dropdown (light/dark), 2. Tap-a-rung cap feel + hidden-vs-shown-disabled layout, now including the new "Unavailable" affordance (light/dark), Current Test, Deferred Follow-Ups, Gaps, Summary, Tests
 
 ### Community 588 - "Sources"
-Cohesion: 0.50
-Nodes (4): Primary (HIGH confidence — read directly this session), Secondary (MEDIUM confidence), Sources, Tertiary (LOW confidence)
+Cohesion: 0.25
+Nodes (7): by the shipped OutcomeSheet (commit 6a946d3, from the now-superseded original 11-01-PLAN.md)., confirmed live, not just RESEARCH.md's quotes):, STRIDE Threat Register, This plan's tasks do not re-implement them; see <objective> for the verified-live citation., Trust Boundaries, Verified source to mirror (read in full this planning session -- exact shapes/line numbers, VOUT-01/02/03 are carried here for phase-level traceability only -- they are ALREADY satisfied
 
 ### Community 589 - "Security Domain"
-Cohesion: 0.67
-Nodes (3): Applicable ASVS Categories, Known Threat Patterns for this stack, Security Domain
+Cohesion: 0.25
+Nodes (8): `component/ConfirmationDialog.kt` — confirmed wrong tool (Claude's Discretion, verified), `component/DynamicActionButton.kt` — the existing severity primitive, `component/OutcomeSheet.kt` — the exhaustive `when` this phase extends, Cross-repo: CalTracker's real `VoiceLogUiState`/`VoiceResultSheet` (single + batch), Cross-repo: SecondBrain's real `MutationGate`/`VoiceConfirmGate` (single confirm), `explorer/ComponentRegistry.kt` + `DomainVocabularyDriftGuardTest.kt` — confirmed scan scope, `model/VoiceOutcomeUiState.kt` — the seam this phase extends, Verified Current Code (read in full this session)
 
 ### Community 590 - "Architecture Patterns"
-Cohesion: 0.67
-Nodes (3): Architecture Patterns, Component Responsibilities, System Architecture Diagram
+Cohesion: 0.29
+Nodes (6): Cross-phase integration, Milestone Audit — v2.4 AI-Voice Command UI, Phases, Requirements coverage (3-source cross-reference), Shipping, Tech debt (non-blocking)
 
 ### Community 591 - "String"
-Cohesion: 0.15
-Nodes (5): ExplorerFakeData, UndoHistoryEntry, UndoStatus, List, String
+Cohesion: 0.18
+Nodes (4): UndoHistoryEntry, UndoStatus, List, String
 
 ### Community 592 - "VoiceCommandFamilyScreen.kt"
-Cohesion: 0.23
-Nodes (12): ApproachLadderCardFixture(), ApproachLadderCardVariants(), ClarificationBarFixture(), ClarificationBarVariants(), Boolean, List, String, ModelSelectCardFixture() (+4 more)
+Cohesion: 0.29
+Nodes (6): Accepted Risks Log, Phase 13 — Security, Security Audit Trail, Sign-Off, Threat Register, Trust Boundaries
 
 ### Community 593 - "ReminderIndicator"
 Cohesion: 0.25
 Nodes (6): WaveformCanvas(), CornerRadius, Dimens, Elevation, Icons, SwipeReveal
 
 ### Community 595 - "VoiceAlbumEditMenuTest"
-Cohesion: 0.15
-Nodes (12): Anti-Patterns Found, Behavioral Spot-Checks (re-run fresh this session, at HEAD `0eae541`), Gaps Summary, Gate-1 Self-UAT Cross-Check (new evidence since prior verification), Goal Achievement, Human Verification Required, Key Link Verification, Observable Truths (+4 more)
+Cohesion: 0.29
+Nodes (6): API-01 Evidence, CAT-01 Evidence, INV-01 Evidence, Phase 13 — Ship-Gate Evidence (CAT-01 / API-01 / INV-01), Restore Confirmation, Summary
 
 ### Community 596 - "Prior plan in this phase (registry/allowlist append pattern already established there):"
-Cohesion: 0.40
-Nodes (4): Prior plan in this phase (registry/allowlist append pattern already established there):, STRIDE Threat Register, Trust Boundaries, Verified source to mirror:
+Cohesion: 0.29
+Nodes (7): Common Pitfalls, Pitfall 1: Declaring JitPack failure too early, Pitfall 2: Trusting Phase 13's captured evidence as proof for Phase 14's tagged commit, Pitfall 3: A stray milestone-marker tag leaking into the JitPack namespace (SHIP-02 / INC-2026-09-30-01), Pitfall 4: Confusing `apiCheck`'s "local sync" result with the swap-baseline result, Pitfall 5: Signing/annotation mismatch on the new tag, Pitfall 6: Not knowing what "message the orchestrator" means mechanically (A14)
 
 ### Community 597 - "FeedbackEvent"
 Cohesion: 0.24
@@ -1845,132 +1852,132 @@ Cohesion: 0.29
 Nodes (7): DialogProperties, BulkCreatePopup(), BulkCreatePopupContent(), ConfirmationDialog(), ConfirmationDialogDefaults, ConfirmStyle, ConfirmationDialogVariants()
 
 ### Community 599 - "listCompletionFraction"
-Cohesion: 0.40
-Nodes (5): `explorer/DomainVocabularyDriftGuardTest.kt` — current allowlist state, `feedback/UndoHistoryEntry.kt` (47 lines total), `feedback/UndoHistoryStore.kt` (122 lines total), `model/VoiceOutcomeUiState.kt`, `HandledByUiModel.kt`, `FailureActionUiModel.kt`, `BatchRowResultUiModel.kt`, `component/OutcomeSheet.kt`, Verified Current Code (read in full this session)
-
-### Community 600 - "CardTypeChip"
-Cohesion: 0.17
-Nodes (6): CardBase(), CardTypeChip(), CardBaseContent(), CardBasePreview(), CardTypeChipTest, RowScope
+Cohesion: 0.33
+Nodes (5): ExposedDropdownMenuBox provider-dropdown shape, and the all-val model + STABLE convention. Read, its SUMMARY for the exact ProviderKeyCard/ClearableTextField shapes to mirror., Plan 01 established the family scaffold, the allowlist tokens (Provider/Model/Approach), the, STRIDE Threat Register, Trust Boundaries
 
 ### Community 601 - "Warnings"
-Cohesion: 0.18
-Nodes (10): CR-01: `api.txt` was never regenerated for this phase's new public API, CR-02: `inFlight` is documented to disable undo controls, but `OutcomeSheet` never wires it there, Critical Issues, Phase 11: Code Review Report, Summary, Warnings, WR-01: `ApproachLadderCard`'s cap control can become clickable without a visible cap, WR-02: An unmatched `maxTierId` silently disables the cap with no signal (+2 more)
+Cohesion: 0.33
+Nodes (6): Common Pitfalls, Pitfall 1: Trailing-lambda break when appending params, Pitfall 2: Forgetting to register a new composable (build-red), Pitfall 3: Head token not allowlisted (build-red), Pitfall 4: A `var` in a prop model, Pitfall 5: Control shown-disabled instead of hidden
 
 ### Community 602 - "Agent Device-Testing Playbook — yahirandroidtaste"
 Cohesion: 0.20
 Nodes (9): Agent Device-Testing Playbook — yahirandroidtaste, D1 — Target + preflight, D2 — Build / install / launch (the harness mechanism), D3 — Act, D4 — Observe, D5 — Fixture/seed integrity, D6 — Ladder commands, D7 — Gotchas (+1 more)
 
 ### Community 603 - "Fixed Issues"
-Cohesion: 0.20
-Nodes (9): CR-01: `api.txt` was never regenerated for this phase's new public API, CR-02: `inFlight` is documented to disable undo controls, but `OutcomeSheet` never wires it there, Fixed Issues, Phase 11: Code Review Fix Report, Skipped Issues, WR-01: `ApproachLadderCard`'s cap control can become clickable without a visible cap, WR-02: An unmatched `maxTierId` silently disables the cap with no signal, WR-03: `ClarificationBar`'s option row has no scroll/wrap for more options than fit on screen (+1 more)
+Cohesion: 0.33
+Nodes (6): Clarification choices, reusing `AppChip` (VCLAR-01), Code Examples, Extending `OutcomeSheet.kt`'s `SuccessBody` (illustrative — exact diff is a planning decision), Recommended consumer-facing UI projection models (new, in `model/`), Recommended `UndoGroupTypes.kt` (NEW file) — sealed results, no `UndoStatus` member added, Recommended `UndoHistoryStore.kt` additions (illustrative skeleton)
 
 ### Community 604 - "Phase 11 — Security"
-Cohesion: 0.20
-Nodes (9): Accepted Risks Log, audited_head = git HEAD sha at audit time — freshness stamp. child-result re-checks it: if, implementation (outside .planning) changed since this sha, the audit is stale (INC-2026-08-06-04)., Phase 11 — Security, Security Audit Trail, Sign-Off, Threat Register, threats_open = count of OPEN threats at or above workflow.security_block_on severity (the blocking gate) (+1 more)
+Cohesion: 0.33
+Nodes (6): Common Pitfalls, Pitfall 1: Designing the confirm shape against CONTEXT.md's paraphrase instead of the real consumer code (now closed, verified this session), Pitfall 2: Treating "no new top-level composable" as "no registry work at all", Pitfall 3: `ProposedItemUiModel`'s default `data class` `toString()` leaking a subject's name into logs/crash reports, Pitfall 4: The ambient `OutcomeSheet.onDismissRequest` and `NeedsConfirmation.onCancel` silently diverging, Pitfall 5 (inherited from PITFALLS.md, re-verified against the real shapes this session): Designing the confirm shape too narrowly for one consumer
+
+### Community 605 - "CardTagRow"
+Cohesion: 0.33
+Nodes (5): Artifacts This Phase Produces, Edge Coverage -- Flagged Assumptions (spec-less probe, unresolved), Prohibition Recall Summary (spec-less probe), STRIDE Threat Register, Trust Boundaries
 
 ### Community 606 - "UndoPreview"
 Cohesion: 0.52
 Nodes (6): Card, Link, Photo, Tag, TagOnCard, UndoPreview
 
 ### Community 607 - "TactileTypeShowcaseVariants"
-Cohesion: 0.12
-Nodes (15): Accomplishments, Actuals (#2632), Auto-fixed Issues, Decisions Made, Dependency graph, Deviations from Plan, Files Created/Modified, Issues Encountered (+7 more)
+Cohesion: 0.33
+Nodes (6): Anti-Patterns to Avoid, Architecture Patterns, Pattern 1: Swap-baseline additive proof (Phase 13's proven technique — reuse verbatim), Pattern 2: Direct-HTTPS JitPack resolution check (this repo's own proven precedent, v2.2.0 and v2.3.0), Recommended Project Structure, System Architecture Diagram
 
 ### Community 608 - ".v22StyleCallShapes_compileAgainstShowTagColorsSignatures"
 Cohesion: 0.20
 Nodes (3): RelatednessTier, RelatednessVisual, RelatednessEncodingTest
 
 ### Community 610 - "Phase 12: Generic needs-confirmation state - Research"
-Cohesion: 0.13
-Nodes (14): Architectural Responsibility Map, Assumptions Log, Don't Hand-Roll, Environment Availability, Metadata, Open Questions, Package Legitimacy Audit, Phase 12: Generic needs-confirmation state - Research (+6 more)
+Cohesion: 0.40
+Nodes (5): Phase Requirements → Test Map, Sampling Rate, Test Framework, Validation Architecture, Wave 0 Gaps
 
 ### Community 611 - "HeroStatCard"
-Cohesion: 0.18
-Nodes (10): ElevationLadderVariants(), GradientSwatchVariants(), HeatSwatchVariants(), TactileFoundationFamilyScreen(), TactileFoundationFamilyTopBar(), TactileTypeShowcaseVariants(), ElevationBand(), ElevationLadder() (+2 more)
+Cohesion: 0.20
+Nodes (9): ElevationLadderVariants(), GradientSwatchVariants(), TactileFoundationFamilyScreen(), TactileFoundationFamilyTopBar(), TactileTypeShowcaseVariants(), ElevationBand(), ElevationLadder(), TactileTypeSample (+1 more)
 
 ### Community 612 - "Warnings"
-Cohesion: 0.15
-Nodes (12): CR-01: `NeedsConfirmation`'s own default `toString()` leaks `title`/`reason` — violates the phase's own privacy prohibition, Critical Issues, IN-01: Redundant explicit default value in the batch fixture, Info, Phase 12: Code Review Report, Summary, Warnings, WR-01: The library's own canonical gallery fixtures don't follow `NeedsConfirmation`'s own documented dismiss/cancel contract (+4 more)
+Cohesion: 0.40
+Nodes (4): BLOCKING CONSTRAINTS — Read Before Anything Else, Critical Anti-Patterns, Infrastructure State, Required Reading (in order)
 
 ### Community 613 - "GalleryDemoInteractionTest"
 Cohesion: 0.17
 Nodes (11): ComponentDetailScreen(), PlaygroundKnobs(), StatesMatrixSection(), ComponentSearch, ComponentRegistry, Entry, List, Map (+3 more)
 
 ### Community 614 - "OutcomeSheet.kt"
-Cohesion: 0.18
-Nodes (12): BatchResultsList(), FailureBody(), HandledByRow(), Boolean, List, NeedsConfirmationBody(), ProposedItemRow(), SuccessBody() (+4 more)
+Cohesion: 0.16
+Nodes (19): BatchResultsList(), FailureBody(), HandledByRow(), Boolean, List, Modifier, NeedsConfirmationActions(), NeedsConfirmationBody() (+11 more)
 
 ### Community 615 - "KeyFieldState"
-Cohesion: 0.18
-Nodes (11): 1. The outcome sheet renders a needs-confirmation state from props: a reason string, proposed item(s), and confirm/cancel actions (ROADMAP SC1, VOUT-04), 2. The same composable renders both a single proposed item and a batch of proposed items (ROADMAP SC2, VOUT-04), 3. Confirm and cancel each emit via callback, domain-neutral — no app-specific nouns (ROADMAP SC3, VOUT-04), plus the Manual-Only destructive-styling + dismiss-as-decline items, 4. The prop shape satisfies both SB's `MutationGate`/`VoiceConfirmGate` risk confirm and CT's weak-match single/batch confirm without any library-side change (ROADMAP SC4, VOUT-04), plus the Manual-Only batch-remove-tap item, Criteria, Driver-mechanism note, Findings routed to gap-closure (if any), Notes / anomalies (for the Gate-2 reviewer) (+3 more)
+Cohesion: 0.40
+Nodes (5): Common Pitfalls, Pitfall 1: Using `tryConsume()`/`consumedGuard` to claim group members (the D-01 trap), Pitfall 2: `clearSpent()`/eviction dropping one member of a still-partially-live group, Pitfall 3: `"Clarification"` (or whatever head token is chosen) failing `DomainVocabularyDriftGuardTest`, Pitfall 4: A concurrent per-item `attemptUndo(id)` racing a live `attemptUndoGroup(groupId)` on the same member
 
 ### Community 616 - "DynamicActionButton"
 Cohesion: 0.27
 Nodes (4): ActionButtonDefaults, ActionButtonRole, DynamicActionButton(), DynamicActionButtonTest
 
 ### Community 617 - "Fixed Issues"
-Cohesion: 0.20
-Nodes (9): Fixed Issues, IN-01: Unmatched `selectedProviderId` silently renders a blank dropdown anchor, IN-02: Internal review-finding IDs baked into shipped public KDoc, Orchestrator Addendum — Post-Fix Build Verification, Phase 10: Code Review Fix Report, Skipped Issues, WR-01: The `require()` pairing fix was applied to one prop pair but not its documented twin, WR-02: A merely-`disabled` rung has no visible affordance at all (+1 more)
+Cohesion: 0.40
+Nodes (5): `explorer/DomainVocabularyDriftGuardTest.kt` — current allowlist state, `feedback/UndoHistoryEntry.kt` (47 lines total), `feedback/UndoHistoryStore.kt` (122 lines total), `model/VoiceOutcomeUiState.kt`, `HandledByUiModel.kt`, `FailureActionUiModel.kt`, `BatchRowResultUiModel.kt`, `component/OutcomeSheet.kt`, Verified Current Code (read in full this session)
 
 ### Community 618 - "Phase 12 — Validation Strategy"
-Cohesion: 0.18
-Nodes (10): audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117), Manual-Only Verifications, Per-Task Verification Map, Phase 12 — Validation Strategy, Sampling Rate, status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6), Test Infrastructure, Validation Audit 2026-09-30 (+2 more)
+Cohesion: 0.40
+Nodes (5): Phase Requirements → Test Map, Sampling Rate, Test Framework, Validation Architecture, Wave 0 Gaps
 
 ### Community 619 - "Entries"
-Cohesion: 0.18
-Nodes (11): Entries, Phase 10 — voice-command-settings-surfaces (v2.4), Phase 11 — voice-outcome-failure-sheet (v2.4), Phase 12 — generic-needs-confirmation-state (v2.4), Phase 13 — catalog-integrity-v2-4-0-ship (v2.4), Phase 1 — tier-legibility (v1.0), Phase 2 — coherence-audit (v1.0), Phase 3 — governance-gates (v1.0) (+3 more)
+Cohesion: 0.15
+Nodes (12): Entries, Human UAT Pending, Phase 10 — voice-command-settings-surfaces (v2.4), Phase 11 — voice-outcome-failure-sheet (v2.4), Phase 12 — generic-needs-confirmation-state (v2.4), Phase 13 — catalog-integrity-v2-4-0-ship (v2.4), Phase 1 — tier-legibility (v1.0), Phase 2 — coherence-audit (v1.0) (+4 more)
 
 ### Community 620 - "Verified Current Code (read in full this session)"
-Cohesion: 0.25
-Nodes (8): `component/ConfirmationDialog.kt` — confirmed wrong tool (Claude's Discretion, verified), `component/DynamicActionButton.kt` — the existing severity primitive, `component/OutcomeSheet.kt` — the exhaustive `when` this phase extends, Cross-repo: CalTracker's real `VoiceLogUiState`/`VoiceResultSheet` (single + batch), Cross-repo: SecondBrain's real `MutationGate`/`VoiceConfirmGate` (single confirm), `explorer/ComponentRegistry.kt` + `DomainVocabularyDriftGuardTest.kt` — confirmed scan scope, `model/VoiceOutcomeUiState.kt` — the seam this phase extends, Verified Current Code (read in full this session)
+Cohesion: 0.40
+Nodes (4): Prior plan in this phase (registry/allowlist append pattern already established there):, STRIDE Threat Register, Trust Boundaries, Verified source to mirror:
 
 ### Community 621 - "MetricBar"
-Cohesion: 0.29
-Nodes (6): Accepted Risks Log, Phase 13 — Security, Security Audit Trail, Sign-Off, Threat Register, Trust Boundaries
-
-### Community 622 - "VoiceOutcomeUiState"
-Cohesion: 0.43
-Nodes (5): Failure, String, NeedsConfirmation, Success, VoiceOutcomeUiState
-
-### Community 623 - "Common Pitfalls"
-Cohesion: 0.33
-Nodes (6): Common Pitfalls, Pitfall 1: Designing the confirm shape against CONTEXT.md's paraphrase instead of the real consumer code (now closed, verified this session), Pitfall 2: Treating "no new top-level composable" as "no registry work at all", Pitfall 3: `ProposedItemUiModel`'s default `data class` `toString()` leaking a subject's name into logs/crash reports, Pitfall 4: The ambient `OutcomeSheet.onDismissRequest` and `NeedsConfirmation.onCancel` silently diverging, Pitfall 5 (inherited from PITFALLS.md, re-verified against the real shapes this session): Designing the confirm shape too narrowly for one consumer
-
-### Community 624 - "Verified source to mirror:"
 Cohesion: 0.40
 Nodes (4): Artifacts This Phase Produces, STRIDE Threat Register, Trust Boundaries, Verified source to mirror:
 
-### Community 625 - "User Constraints (from CONTEXT.md)"
+### Community 622 - "VoiceOutcomeUiState"
+Cohesion: 0.21
+Nodes (9): FlowRowScope, ChipBar(), ExpandableConfig, SortControl(), AppChipVariants(), ChipBarVariants(), PresetChipVariants(), SortControlVariants() (+1 more)
+
+### Community 623 - "Common Pitfalls"
 Cohesion: 0.40
 Nodes (5): Claude's Discretion, Deferred Ideas (OUT OF SCOPE), Locked Decisions, Runtime Decision (2026-09-30, D-02 provisional refreshed), User Constraints (from CONTEXT.md)
 
-### Community 626 - "Code Examples"
+### Community 624 - "Verified source to mirror:"
 Cohesion: 0.40
 Nodes (5): Code Examples, `component/OutcomeSheet.kt` extension (illustrative — exact diff is a planning decision), `model/ProposedItemUiModel.kt` (new file), `model/SelectionMode.kt` (new file), `model/VoiceOutcomeUiState.kt` addition (illustrative — exact field order/defaults are a planning decision)
+
+### Community 625 - "User Constraints (from CONTEXT.md)"
+Cohesion: 0.40
+Nodes (5): Phase Requirements → Test Map, Sampling Rate, Test Framework, Validation Architecture, Wave 0 Gaps
+
+### Community 626 - "Code Examples"
+Cohesion: 0.40
+Nodes (5): §11 Step 1 — full verification (exact commands, all four drift guards + zero-baseline detekt), §11 Step 2 — API additive vs v2.3.0, refresh + commit if needed, §11 Step 3 — tag and push, §11 Step 4 — confirm JitPack resolution (recommended: direct HTTPS, this repo's proven pattern), Code Examples
 
 ### Community 627 - "Validation Architecture"
 Cohesion: 0.40
 Nodes (5): Phase Requirements → Test Map, Sampling Rate, Test Framework, Validation Architecture, Wave 0 Gaps
 
 ### Community 628 - "Standard Stack"
-Cohesion: 0.50
-Nodes (4): Alternatives Considered, Core, Standard Stack, Supporting
+Cohesion: 0.40
+Nodes (4): §11 Step Verification Summary (full detail in the evidence file above), Closing SHIP-02 / D-02 Re-confirmation, Messaging Attempt (A14, Open Question #1 / Assumption A1), Section 11 Ledger Row — yahirandroidtaste v2.4.0
 
 ### Community 629 - "Sources"
-Cohesion: 0.50
-Nodes (4): Primary (HIGH confidence — read directly this session), Secondary (MEDIUM confidence), Sources, Tertiary (LOW confidence)
+Cohesion: 0.24
+Nodes (7): List, Modifier, String, ModelDropdown(), ModelSelectCard(), ModelOptionUiModel, ModelSelectCardTest
 
 ### Community 630 - "Phase 12 — Security"
-Cohesion: 0.20
-Nodes (9): Accepted Risks Log, audited_head = git HEAD sha at audit time — freshness stamp. child-result re-checks it: if, implementation (outside .planning) changed since this sha, the audit is stale (INC-2026-08-06-04)., Phase 12 — Security, Security Audit Trail, Sign-Off, Threat Register, threats_open = count of OPEN threats at or above workflow.security_block_on severity (the blocking gate) (+1 more)
+Cohesion: 0.50
+Nodes (4): Alternatives Considered, Core, Standard Stack, Supporting (in-repo, reuse)
 
 ### Community 631 - "Security Domain"
-Cohesion: 0.67
-Nodes (3): Applicable ASVS Categories, Known Threat Patterns for this stack, Security Domain
+Cohesion: 0.50
+Nodes (4): Claude's Discretion, Deferred Ideas (OUT OF SCOPE), Locked Decisions, User Constraints (from CONTEXT.md)
 
 ### Community 632 - "Architecture Patterns"
-Cohesion: 0.67
-Nodes (3): Architecture Patterns, Component Responsibilities, System Architecture Diagram
+Cohesion: 0.50
+Nodes (4): Primary (HIGH confidence), Secondary (MEDIUM confidence), Sources, Tertiary (LOW confidence)
 
 ### Community 633 - "HandledByUiModel"
 Cohesion: 0.28
@@ -1980,113 +1987,101 @@ Nodes (11): clampCropRect(), computeDisplayGeometry(), computeInitialCropRect(),
 Cohesion: 0.27
 Nodes (3): HeroStatCard(), HeroStatCardTest, Shape
 
+### Community 637 - "GalleryDemoInteractionTest"
+Cohesion: 0.50
+Nodes (3): STRIDE Threat Register, Trust Boundaries, Verified source to mirror:
+
 ### Community 638 - "ListItemUiModel"
 Cohesion: 0.20
 Nodes (7): RevealActionRow(), RevealAnchor, installedAnchors(), SwipeableActionRow(), SwipeAnchor, ThresholdSide, SwipeThresholdTest
 
 ### Community 639 - "Criteria"
-Cohesion: 0.29
-Nodes (7): 1. An outcome/failure sheet renders a command outcome from props with no app-specific nouns (ROADMAP SC1, VOUT-01), 2. The sheet surfaces a "handled by: tier/approach" indicator identifying which tier/approach handled the command, from props (ROADMAP SC2, VOUT-02), 3. Failure states render prominently and visibly — loud, not silent or subtle — with an OPTIONAL prop-driven action slot; absent prop → no action rendered (ROADMAP SC3, VOUT-03), 4. The sheet renders a prop-driven "Undo all (N)" action alongside per-item Undo, and can represent a per-item-undo-unavailable state — an item entangled with another that cannot be undone alone (ROADMAP SC4, VUNDO-01) — HUMAN_VERIFICATION item 1, 5. An undo-refused / partial-undo state renders loudly with a reason, domain-neutral (ROADMAP SC5, VUNDO-01) — HUMAN_VERIFICATION item 1 (continued), 6. A prop-driven clarification-choices surface renders a question + pressable options (label + opaque id) with onSelect + dismiss — visually informative (not an error); tapping an option resolves without re-speaking (ROADMAP SC6, VCLAR-01) — HUMAN_VERIFICATION item 2, Criteria
+Cohesion: 0.50
+Nodes (4): Alternatives Considered, Core, Standard Stack, Supporting
 
 ### Community 641 - "Criteria"
-Cohesion: 0.33
-Nodes (6): 1. A provider/API-key settings card renders provider selection and API-key entry from props + callbacks — holding no key and making no network call in the library (ROADMAP SC1, VSET-01), 2. A model settings card renders the available/selected model(s) from props and emits the selection via callback (ROADMAP SC2, VSET-02), 3. A command-approach settings card displays the configured tier ladder (ordered approaches) from props (ROADMAP SC3, VAPPR-01), 4. The command-approach card's offline-only toggle reflects and emits offline-only state via props + callback (ROADMAP SC4, VAPPR-02), 5. The command-approach card's max-tier cap control reflects and emits the cap via props + callback (ROADMAP SC5, VAPPR-03), Criteria
+Cohesion: 0.50
+Nodes (4): Claude's Discretion, Deferred Ideas (OUT OF SCOPE), Locked Decisions, User Constraints (from CONTEXT.md)
 
 ### Community 642 - "UndoRowUiModel.kt"
 Cohesion: 0.70
 Nodes (4): Available, Unavailable, Undone, UndoRowState
 
 ### Community 643 - "ProgressRing"
-Cohesion: 0.23
-Nodes (6): ProgressRing(), HeroStatCardVariants(), ProgressFamilyScreen(), ProgressFamilyTopBar(), ProgressRingVariants(), ProgressRingTest
+Cohesion: 0.15
+Nodes (9): MetricBand, MetricBar(), MetricBarDefaults, ProgressRing(), AnimatedStatValueVariants(), HeroStatCardVariants(), MetricBarVariants(), ProgressRingVariants() (+1 more)
 
 ### Community 644 - "Addendum — 2026-10-01 re-verify re-drive (source materially changed since the 2026-09-30 run above)"
-Cohesion: 0.33
-Nodes (6): Addendum — 2026-10-01 re-verify re-drive (source materially changed since the 2026-09-30 run above), New: the WR-02 "Unavailable" affordance renders live, and co-exists structurally with "Capped"/"Needs network" on the same rung (ROADMAP SC5 / VAPPR-03, expanded scope), Re-verified: Criterion 1 (VSET-01, ProviderKeyCard) at new HEAD, including the new `emptyProvidersReason` default, Re-verified: Criterion 2 (VSET-02, ModelSelectCard) at new HEAD, Re-verified: Criterion 3 (VAPPR-01, ladder list order) at new HEAD, Re-verified: Criterion 4 (VAPPR-02, offline-only toggle) and Criterion 5 (VAPPR-03, max-tier cap) at new HEAD
+Cohesion: 0.50
+Nodes (4): Primary (HIGH confidence — read directly this session), Secondary (MEDIUM confidence), Sources, Tertiary (LOW confidence)
 
 ### Community 646 - "Self-UAT Log — Phase 11 (Voice Outcome & Failure Sheet — Plans 01+02)"
-Cohesion: 0.33
-Nodes (6): Driver-mechanism note, Findings routed to gap-closure (if any), Notes / anomalies (for the Gate-2 reviewer), Self-UAT Log — Phase 11 (Voice Outcome & Failure Sheet — Plans 01+02), Summary, Verdict
-
-### Community 648 - ".assertNoClickActionsInSubtree"
-Cohesion: 0.44
-Nodes (3): Marker, PlaceMapHandleDragListener, PlaceMapPinDragListener
-
-### Community 650 - "Pattern Assignments"
-Cohesion: 0.14
-Nodes (13): `API.md` — doc-drift correction, header + table (role: config/doc, flow: transform), `CLAUDE.md` — doc-drift correction (role: config/doc, flow: transform), `ComponentRegistry.kt` KDoc — doc-drift correction (role: config/doc (KDoc), flow: transform), Doc house style (applies to all 4 doc-drift files), Evidence-capture artifact — API-01 additive proof (role: utility/test-evidence, flow: batch), File Classification, Metadata, No Analog Found (+5 more)
-
-### Community 651 - "Common Pitfalls"
-Cohesion: 0.29
-Nodes (7): Common Pitfalls, Pitfall 1: Declaring JitPack failure too early, Pitfall 2: Trusting Phase 13's captured evidence as proof for Phase 14's tagged commit, Pitfall 3: A stray milestone-marker tag leaking into the JitPack namespace (SHIP-02 / INC-2026-09-30-01), Pitfall 4: Confusing `apiCheck`'s "local sync" result with the swap-baseline result, Pitfall 5: Signing/annotation mismatch on the new tag, Pitfall 6: Not knowing what "message the orchestrator" means mechanically (A14)
-
-### Community 652 - "VoiceAlbumEditMenuTest"
-Cohesion: 0.18
-Nodes (10): audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117), Manual-Only Verifications, Per-Task Verification Map, Phase 14 — Validation Strategy, Sampling Rate, status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6), Test Infrastructure, Validation Audit 2026-10-01 (+2 more)
-
-### Community 653 - "Phase 13 — Validation Strategy"
-Cohesion: 0.18
-Nodes (10): audit-milestone §5.5 distinguishes NOT-VALIDATED (draft) from PARTIAL (validated + nyquist_compliant: false) (#2117), Manual-Only Verifications, Per-Task Verification Map, Phase 13 — Validation Strategy, Sampling Rate, status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6), Test Infrastructure, Validation Audit 2026-09-30 (+2 more)
-
-### Community 654 - "AdaptiveMediaPreview"
-Cohesion: 0.22
-Nodes (8): Final Summary (Steps 1-4), Phase 14 — Ship-Gate Evidence (fresh, at the exact commit tagged `v2.4.0`), Pre-Tag Guard Check, Step 1 Evidence (full suite + detekt), Step 2 Evidence (API additive vs v2.3.0), Step 3 Evidence (tag + push), Step 4 Evidence (JitPack resolution), Summary (Steps 1-3)
-
-### Community 655 - "Phase 13 — Ship-Gate Evidence (CAT-01 / API-01 / INV-01)"
-Cohesion: 0.29
-Nodes (6): API-01 Evidence, CAT-01 Evidence, INV-01 Evidence, Phase 13 — Ship-Gate Evidence (CAT-01 / API-01 / INV-01), Restore Confirmation, Summary
-
-### Community 656 - "KeyFieldState"
-Cohesion: 0.52
-Nodes (6): Empty, Entered, Invalid, KeyFieldState, Valid, Validating
-
-### Community 657 - "EmptyStateFamilyScreen"
-Cohesion: 0.17
-Nodes (11): Anti-Patterns Found, Behavioral Spot-Checks, Gaps Summary, Goal Achievement, Key Link Verification, Observable Truths, Override Applied (execute-stage orchestrator, 2026-10-01), Phase 14: Cut v2.4.0 Verification Report (+3 more)
-
-### Community 659 - "13-01-PLAN.md"
-Cohesion: 0.33
-Nodes (5): Artifacts This Phase Produces, Edge Coverage -- Flagged Assumptions (spec-less probe, unresolved), Prohibition Recall Summary (spec-less probe), STRIDE Threat Register, Trust Boundaries
-
-### Community 660 - "Architecture Patterns"
-Cohesion: 0.33
-Nodes (6): Anti-Patterns to Avoid, Architecture Patterns, Pattern 1: Swap-baseline additive proof (Phase 13's proven technique — reuse verbatim), Pattern 2: Direct-HTTPS JitPack resolution check (this repo's own proven precedent, v2.2.0 and v2.3.0), Recommended Project Structure, System Architecture Diagram
-
-### Community 661 - "Code Examples"
-Cohesion: 0.40
-Nodes (5): §11 Step 1 — full verification (exact commands, all four drift guards + zero-baseline detekt), §11 Step 2 — API additive vs v2.3.0, refresh + commit if needed, §11 Step 3 — tag and push, §11 Step 4 — confirm JitPack resolution (recommended: direct HTTPS, this repo's proven pattern), Code Examples
-
-### Community 662 - "Validation Architecture"
-Cohesion: 0.40
-Nodes (5): Phase Requirements → Test Map, Sampling Rate, Test Framework, Validation Architecture, Wave 0 Gaps
-
-### Community 663 - "Standard Stack"
 Cohesion: 0.50
 Nodes (4): Alternatives Considered, Core, Standard Stack, Supporting
 
-### Community 664 - "User Constraints (from CONTEXT.md)"
+### Community 647 - "HUMAN-UAT-PENDING.md"
 Cohesion: 0.50
-Nodes (4): Claude's Discretion, Deferred Ideas (OUT OF SCOPE), Locked Decisions, User Constraints (from CONTEXT.md)
+Nodes (4): Primary (HIGH confidence — read directly this session), Secondary (MEDIUM confidence), Sources, Tertiary (LOW confidence)
 
-### Community 665 - "Sources"
-Cohesion: 0.50
-Nodes (4): Primary (HIGH confidence — read/run directly this session), Secondary (MEDIUM confidence), Sources, Tertiary (LOW confidence)
+### Community 648 - ".assertNoClickActionsInSubtree"
+Cohesion: 0.40
+Nodes (3): Marker, PlaceMapHandleDragListener, PlaceMapPinDragListener
 
-### Community 666 - "Security Domain"
-Cohesion: 0.67
-Nodes (3): Applicable ASVS Categories, Known Threat Patterns for this phase, Security Domain
-
-### Community 667 - ".v22StyleCallShapes_compileAgainstShowTagColorsSignatures"
+### Community 650 - "Pattern Assignments"
 Cohesion: 0.50
 Nodes (3): Artifacts This Phase Produces, STRIDE Threat Register, Trust Boundaries
 
-### Community 669 - "MetricBar"
-Cohesion: 0.20
-Nodes (9): Accepted Risks Log, audited_head = git HEAD sha at audit time — freshness stamp. child-result re-checks it: if, implementation (outside .planning) changed since this sha, the audit is stale (INC-2026-08-06-04)., Phase 14 — Security, Security Audit Trail, Sign-Off, Threat Register, threats_open = count of OPEN threats at or above workflow.security_block_on severity (the blocking gate) (+1 more)
+### Community 651 - "Common Pitfalls"
+Cohesion: 0.50
+Nodes (4): Alternatives Considered, Core, Standard Stack, Supporting
 
-### Community 670 - "Section 11 Ledger Row — yahirandroidtaste v2.4.0"
-Cohesion: 0.40
-Nodes (4): §11 Step Verification Summary (full detail in the evidence file above), Closing SHIP-02 / D-02 Re-confirmation, Messaging Attempt (A14, Open Question #1 / Assumption A1), Section 11 Ledger Row — yahirandroidtaste v2.4.0
+### Community 652 - "VoiceAlbumEditMenuTest"
+Cohesion: 0.50
+Nodes (4): Claude's Discretion, Deferred Ideas (OUT OF SCOPE), Locked Decisions, User Constraints (from CONTEXT.md)
+
+### Community 653 - "Phase 13 — Validation Strategy"
+Cohesion: 0.50
+Nodes (4): Primary (HIGH confidence — read/run directly this session), Secondary (MEDIUM confidence), Sources, Tertiary (LOW confidence)
+
+### Community 655 - "Phase 13 — Ship-Gate Evidence (CAT-01 / API-01 / INV-01)"
+Cohesion: 0.67
+Nodes (3): Applicable ASVS Categories, Known Threat Patterns for {Compose presentational key field}, Security Domain
+
+### Community 656 - "KeyFieldState"
+Cohesion: 0.67
+Nodes (3): Applicable ASVS Categories, Known Threat Patterns for this stack, Security Domain
+
+### Community 657 - "EmptyStateFamilyScreen"
+Cohesion: 0.67
+Nodes (3): Architecture Patterns, Component Responsibilities, System Architecture Diagram
+
+### Community 658 - "AmplitudeBarsDecodeTest"
+Cohesion: 0.22
+Nodes (4): downsample(), AmplitudeBarsDecodeTest, writeAmplitudeSamplesFile(), readAmplitudeBars()
+
+### Community 659 - "13-01-PLAN.md"
+Cohesion: 0.67
+Nodes (3): Applicable ASVS Categories, Known Threat Patterns for this stack, Security Domain
+
+### Community 660 - "Architecture Patterns"
+Cohesion: 0.67
+Nodes (3): Architecture Patterns, Component Responsibilities, System Architecture Diagram
+
+### Community 661 - "Code Examples"
+Cohesion: 0.67
+Nodes (3): Applicable ASVS Categories, Known Threat Patterns for this phase, Security Domain
+
+### Community 663 - "VoiceCommandFamilyScreen.kt"
+Cohesion: 0.23
+Nodes (12): ApproachLadderCardFixture(), ApproachLadderCardVariants(), ClarificationBarFixture(), ClarificationBarVariants(), Boolean, List, String, ModelSelectCardFixture() (+4 more)
+
+### Community 664 - "Reconvene brief — yahirandroidtaste (YAT) — R-v1.1"
+Cohesion: 0.20
+Nodes (9): 0. Per-item verdict (what the orchestrator asked for), 1. Phases (proposed — for discuss-milestone to ratify), 2. Public surface this milestone adds or changes (strictly additive), 3. Assumptions about other repos (each needs peer confirm at R-v1.1), 4. Contract drift found (code vs contract), 5. Proposed amendments, 6. Risks and open questions for Yahir, 7. Tag / repin intent (+1 more)
+
+### Community 666 - "KeyFieldState"
+Cohesion: 0.52
+Nodes (6): Empty, Entered, Invalid, KeyFieldState, Valid, Validating
 
 ### Community 671 - "titleSlotVisible"
 Cohesion: 0.33
@@ -2096,33 +2091,25 @@ Nodes (5): Certification — v2.4 AI-Voice Command UI, Cross-Phase Integration, 
 Cohesion: 0.50
 Nodes (4): AttentionCue(), AttentionCueDefaults, Style, AttentionCueVariants()
 
-### Community 675 - "AnimatedStatValue"
-Cohesion: 0.31
-Nodes (3): AnimatedStatValue(), AnimatedStatValueVariants(), AnimatedStatValueTest
-
-### Community 677 - "MetricBar"
-Cohesion: 0.47
-Nodes (4): MetricBand, MetricBar(), MetricBarDefaults, MetricBarVariants()
-
 ## Knowledge Gaps
-- **2704 isolated node(s):** `Style`, `DateTimePickerPanel`, `StateCell`, `Tier`, `TokenSwatch` (+2699 more)
+- **2728 isolated node(s):** `Style`, `DateTimePickerPanel`, `StateCell`, `Tier`, `TokenSwatch` (+2723 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **329 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **326 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `SectionLabel()` connect `ThemeMode` to `.v22StyleCallShapes_compileAgainstShowTagColorsSignatures`, `AnimatedStatValue`, `ComponentRow`, `GalleryDemoInteractionTest`, `run-all.sh`, `ProgressRing`, `MetricBar`, `HeroStatCard`, `BulkCreatePopup`, `VoiceRenameTagsSheet`, `ReminderIndicator`, `VoiceCommandFamilyScreen.kt`, `UndoCenterScreen`, `DemoTagChipEditor`, `ConfirmationDialog`, `GalleryDemoInteractionTest`?**
+- **Why does `SectionLabel()` connect `ThemeMode` to `.v22StyleCallShapes_compileAgainstShowTagColorsSignatures`, `ProgressRing`, `ComponentRow`, `GalleryDemoInteractionTest`, `run-all.sh`, `HeroStatCard`, `BulkCreatePopup`, `VoiceOutcomeUiState`, `VoiceRenameTagsSheet`, `ReminderIndicator`, `ChipBar`, `UndoCenterScreen`, `DemoTagChipEditor`, `ConfirmationDialog`, `VoiceCommandFamilyScreen.kt`, `AppChip`, `Boolean`?**
   _High betweenness centrality (0.030) - this node is a cross-community bridge._
-- **Why does `VoiceCard()` connect `VoiceCard` to `titleSlotVisible`, `VoiceRenameTagsSheet`, `MetricBar`, `ListCardTest`, `GalleryDemoInteractionTest`, `CardTypeChip`, `ComponentRow`, `CardTagRow`, `ListItemUiModel`, `TextCard`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Why does `ClearableTextField()` connect `ClearableTextField` to `NameAndTagsEditor`, `ListCard`, `03-01-PLAN.md`, `BulkCreatePopup`, `ChipBar`, `MicButton`, `ListCardTest`, `ProviderKeyCard`, `TextCard`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `VoiceCard()` connect `VoiceCard` to `ListCard`, `VoiceRenameTagsSheet`, `FeedbackFamilyScreen`, `AmplitudeBarsDecodeTest`, `ListCardTest`, `CardTypeChip`, `ComponentRow`, `AppChip`, `ListItemUiModel`?**
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+- **Why does `YahirAndroidTasteTheme()` connect `ComponentRow` to `ListCardBottomSheet`, `HeroStatCard`, `ComponentRow`, `GalleryDemoInteractionTest`, `ProgressRing`, `CardBaseTest.kt`, `DemoTagChipEditor`, `.onCreate`, `GalleryDemoInteractionTest`, `CardTypeChip`?**
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **Are the 53 inferred relationships involving `SectionLabel()` (e.g. with `AdaptiveMediaPreviewSection()` and `AlbumCardSection()`) actually correct?**
   _`SectionLabel()` has 53 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 29 inferred relationships involving `UndoHistoryStore` (e.g. with `.aNullPreviewRow_respondsToHold_withAMessageOnlyPeek_withoutCrashing()` and `.holdingARow_showsThePeekOverlay()`) actually correct?**
   _`UndoHistoryStore` has 29 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Style`, `DateTimePickerPanel`, `StateCell` to the rest of the system?**
-  _2704 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _2728 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `CardsFamilyScreen.kt` be split into smaller, more focused modules?**
-  _Cohesion score 0.005780346820809248 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.005847953216374269 - nodes in this community are weakly interconnected._
