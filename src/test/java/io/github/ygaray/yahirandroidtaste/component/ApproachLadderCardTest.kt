@@ -1,8 +1,13 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasNoClickAction
+import androidx.compose.ui.test.assertIsNotSelected
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
@@ -305,5 +310,64 @@ class ApproachLadderCardTest {
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithContentDescription("Online, selected").assertExists()
+    }
+
+    // ── VA11Y-01 / D-01 / D-03: radio + selected semantics on the chosen cap rung ──
+
+    private val radioButtonRole = SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.RadioButton)
+
+    @Test
+    fun `the rung whose id equals maxTierId is Selected RadioButton and the others are unselected RadioButtons`() {
+        composeTestRule.setContent {
+            ApproachLadderCard(ladder = ladder, maxTierId = "hybrid", onMaxTierChange = {})
+        }
+        composeTestRule.waitForIdle()
+
+        rungNodes()[1].assertIsSelected()
+        rungNodes()[0].assertIsNotSelected()
+        rungNodes()[2].assertIsNotSelected()
+        (0..2).forEach { rungNodes()[it].assert(radioButtonRole) }
+    }
+
+    @Test
+    fun `selection follows the chosen cap id and never the above-cap capped state`() {
+        composeTestRule.setContent {
+            ApproachLadderCard(ladder = ladder, maxTierId = "local", onMaxTierChange = {})
+        }
+        composeTestRule.waitForIdle()
+
+        // Cloud + Hybrid sit ABOVE the "local" cap (they render "Capped") yet are NOT selected;
+        // only Local -- the rung the user actually chose -- is announced as selected (D-01).
+        composeTestRule.onAllNodesWithText("Capped").assertCountEquals(2)
+        rungNodes()[0].assertIsNotSelected()
+        rungNodes()[1].assertIsNotSelected()
+        rungNodes()[2].assertIsSelected()
+    }
+
+    @Test
+    fun `a stale maxTierId that matches no rung leaves every rung unselected without throwing`() {
+        composeTestRule.setContent {
+            ApproachLadderCard(ladder = ladder, maxTierId = "ghost", onMaxTierChange = {})
+        }
+        composeTestRule.waitForIdle()
+
+        (0..2).forEach {
+            rungNodes()[it].assertIsNotSelected()
+            rungNodes()[it].assert(radioButtonRole)
+        }
+    }
+
+    @Test
+    fun `a cap-less ladder exposes no role no selected state and no click action on any rung`() {
+        composeTestRule.setContent {
+            ApproachLadderCard(ladder = ladder)
+        }
+        composeTestRule.waitForIdle()
+
+        (0..2).forEach {
+            rungNodes()[it].assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.Role))
+            rungNodes()[it].assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.Selected))
+            rungNodes()[it].assertHasNoClickAction()
+        }
     }
 }

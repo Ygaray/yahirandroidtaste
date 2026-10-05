@@ -1,12 +1,12 @@
 package io.github.ygaray.yahirandroidtaste.component
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -51,7 +52,9 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  *   cap control entirely (D-05) — no rung is clickable when this is `null`. If non-null but it
  *   matches no [ApproachRungUiModel.id] in [ladder] (e.g. a stale id after the ladder changed),
  *   the cap silently falls back to "no cap at all" — no rung renders "Capped" and no assertion
- *   fires; this is a caller/integration bug the component does not detect.
+ *   fires; this is a caller/integration bug the component does not detect. When the cap is
+ *   selectable the rows are exposed to accessibility services as radio buttons: the rung whose
+ *   id equals [maxTierId] is announced as selected, and a stale id selects no rung.
  * @param onMaxTierChange Invoked with a rung's `id` when it is tapped as the new cap, or `null`
  *   to hide the cap control entirely (D-05) — must be non-null exactly when [maxTierId] is
  *   non-null (enforced via `require`; violating this pairing throws immediately rather than
@@ -118,6 +121,7 @@ fun ApproachLadderCard(
                         isEffective = isEffective,
                         needsNetwork = needsNetwork,
                         isCapped = isCapped,
+                        isSelected = onMaxTierChange != null && rung.id == maxTierId,
                         unavailableLabel = unavailableLabel,
                         cappedLabel = cappedLabel,
                         needsNetworkLabel = needsNetworkLabel,
@@ -148,6 +152,7 @@ private fun RungRow(
     isEffective: Boolean,
     needsNetwork: Boolean,
     isCapped: Boolean,
+    isSelected: Boolean,
     unavailableLabel: String,
     cappedLabel: String,
     needsNetworkLabel: String,
@@ -164,6 +169,7 @@ private fun RungRow(
     // rung is targeted in tests via its (fixture-unique) label text instead of a second tag.
     CapControl(
         onClick = onCapClick,
+        selected = isSelected,
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = Dimens.ContentSpacing)
@@ -203,14 +209,17 @@ private fun RungRow(
 
 /**
  * D-03 swap seam: the DEFAULT tap-a-rung cap control. Wraps [content] in a [Row] that is
- * [Modifier.clickable] ONLY when [onClick] is non-null — a `null` [onClick] renders no clickable
- * semantics node at all (never a disabled one, matching [HeroStatCard]'s `onClick` convention).
+ * [Modifier.selectable] with [Role.RadioButton] and a Selected state ([selected]) ONLY when
+ * [onClick] is non-null — a `null` [onClick] renders no role, no selected state and no click
+ * semantics at all (never a disabled one, matching [HeroStatCard]'s `onClick` convention), so a
+ * cap-less ladder is never announced as an empty radio group.
  * Swapping the cap-selection mechanism to `SingleChoiceSegmentedButtonRow` later means changing
  * only this composable's body, not the ladder [Column]'s shape or its callers.
  */
 @Composable
 private fun CapControl(
     onClick: (() -> Unit)?,
+    selected: Boolean,
     modifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit
 ) {
@@ -220,7 +229,13 @@ private fun CapControl(
             // the right a11y shape for a single tappable/readable rung, mirroring how Material3
             // clickable components merge their content).
             .semantics(mergeDescendants = true) {}
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
+            .then(
+                if (onClick != null) {
+                    Modifier.selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
+                } else {
+                    Modifier
+                }
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         content = content
