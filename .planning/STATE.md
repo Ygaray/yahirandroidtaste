@@ -25,7 +25,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-05)
 
 **Core value:** The hub stays a coherent design system — not merely a safe, ever-growing pile of domain-agnostic components — as more consumers contribute.
-**Current focus:** Phase 17 — ApproachLadderCard Router ON/OFF toggle
+**Current focus:** Phase 18 — Catalog integrity + API dump + docs
 
 ## Current Position
 
