@@ -4,38 +4,33 @@ DIR="$(cd "$(dirname "$0")/.." && pwd)"
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 cd "$TMP"; git init -q -b main; git config user.email t@t; git config user.name t
 mkdir -p tools/hooks src/main api
-cp "$DIR"/verify-additive-diff.sh "$DIR"/verify-api-additive.sh "$DIR"/verify-additive-surface.sh \
+cp "$DIR"/verify-additive-diff.sh "$DIR"/verify-additive-surface.sh \
    "$DIR"/classify-hub-change.sh tools/
 cp "$DIR"/hooks/pre-commit tools/hooks/pre-commit
 printf 'val x = 1\n' > src/main/A.kt; printf 'public fun a(): Unit\n' > api/hub.api
 git add -A; git commit -qm base; git tag v1.0.0
-export API_FILE="api/hub.api"
 ln -sf ../../tools/hooks/pre-commit .git/hooks/pre-commit; chmod +x tools/hooks/pre-commit 2>/dev/null || true
 
 pass=0; fail=0
 check(){ if [ "$1" = "$2" ]; then pass=$((pass+1)); else echo "FAIL: $3 (got $1 want $2)"; fail=$((fail+1)); fi; }
 
-# lane 1 additive commit -> allowed
+# (1) lane 1 additive commit -> allowed
 printf 'public fun b(): Unit\n' >> api/hub.api; printf 'val y=2\n' > src/main/B.kt; git add -A
 set +e; git commit -qm "additive"; check "$?" 0 "lane-1 commit allowed"; set -e
 
-# lane 3 (remove api line) -> blocked
+# (2) removing an api line with no src/main change is no longer a block (Metalava apiCheck and
+#     tools/verify-binary-abi.sh own the API surface, D-03) -> allowed, then reset away (HEAD~1 = "additive")
 sed -i 's/public fun a(): Unit//' api/hub.api; git add -A
-set +e; git commit -qm "break"; check "$?" 1 "lane-3 commit blocked"; set -e
+set +e; git commit -qm "api line removal"; check "$?" 0 "api-line removal alone allowed"; set -e
+git reset -q --hard HEAD~1
 
-# lane 3 with declared override -> allowed
-set +e; HUB_LANE_OVERRIDE=3 git commit -qm "declared break"; check "$?" 0 "declared lane-3 allowed"; set -e
-
-# lane 2: rewrite an EXISTING source line (api unchanged) -> blocked; override allows
-# Reset to the pre-lane-3 state so API is back to original
-git reset --hard HEAD~1
-git checkout -q -- .; git clean -fdq
+# (3) lane 2: rewrite an EXISTING source line -> blocked; override allows
 printf 'val x = 999\n' > src/main/A.kt   # A.kt started as 'val x = 1' at tag v1.0.0 -> line rewrite = lane 2
 git add -A
 set +e; git commit -qm "behavior change"; check "$?" 1 "lane-2 commit blocked"; set -e
 set +e; HUB_LANE_OVERRIDE=2 git commit -qm "declared behavior change"; check "$?" 0 "declared lane-2 allowed"; set -e
 
-# GOV-03 regression: the exact reproduced-bug shape. Right after a legitimate, override-landed
+# (4) GOV-03 regression: the exact reproduced-bug shape. Right after a legitimate, override-landed
 # src/main rewrite (the lane-2 commit above — poisoned history since the tag, mirroring the real
 # 5b01532 HeatSwatch.kt reword), commit an UNRELATED, non-src/main file with NO HUB_LANE_OVERRIDE
 # set. Pre-fix, the stale-tag-vs-working-tree comparison basis would inherit the earlier rewrite
@@ -44,18 +39,13 @@ set +e; HUB_LANE_OVERRIDE=2 git commit -qm "declared behavior change"; check "$?
 printf 'notes\n' > NOTES.md; git add -A
 set +e; git commit -qm "unrelated docs-only change"; check "$?" 0 "post-lane-2 unrelated commit unblocked (GOV-03 fix)"; set -e
 
-# classifier error: missing API_FILE -> hook fails closed (blocks commit)
-# HEAD~2 (not ~1): the GOV-03 regression case above added one more commit ("unrelated docs-only
-# change") on top of "declared behavior change" — reset past both to reach the pre-lane-2 "additive"
-# state this block expects.
-git reset --hard HEAD~2
-git checkout -q -- .; git clean -fdq
-rm api/hub.api
+# (5) fail-closed: with the fixture's verify-additive-diff.sh gone and a src/main edit staged, the
+# sub-guard exits 127, the classifier exits 1 and the hook blocks (exit 1).
+# HEAD~2: the GOV-03 case above added one commit on top of "declared behavior change"; reset past
+# both to reach the "additive" state.
+git reset -q --hard HEAD~2
+rm tools/verify-additive-diff.sh
 printf 'val x = 888\n' > src/main/A.kt; git add -A
 set +e; git commit -qm "error state"; check "$?" 1 "classifier error => hook fails closed"; set -e
-# Restore for cleanup
-git checkout -q -- .; git clean -fdq
-mkdir -p api
-printf 'public fun a(): Unit\n' > api/hub.api
 
 echo "PASS=$pass FAIL=$fail"; [ "$fail" -eq 0 ]
