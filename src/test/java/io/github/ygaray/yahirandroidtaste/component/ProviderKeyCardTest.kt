@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -184,6 +185,58 @@ class ProviderKeyCardTest {
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText("Add a provider to get started").assertExists()
+    }
+
+    // ── VI18N-01: caller-localizable provider dropdown label ──
+
+    @Test
+    fun `a supplied providerLabel replaces the dropdown label text`() {
+        composeTestRule.setContent {
+            ProviderKeyCard(
+                providers = providers,
+                selectedProviderId = "openai",
+                onProviderSelected = {},
+                keyValue = "",
+                onKeyChange = {},
+                keyState = KeyFieldState.Empty,
+                keyLabel = "API key",
+                providerLabel = "Fournisseur"
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        assertTrue(
+            "Supplied providerLabel must render in the dropdown's text-field label",
+            composeTestRule.onAllNodesWithText("Fournisseur", useUnmergedTree = true)
+                .fetchSemanticsNodes().isNotEmpty()
+        )
+        assertTrue(
+            "English default label must be absent when providerLabel is supplied",
+            composeTestRule.onAllNodesWithText("Provider", useUnmergedTree = true)
+                .fetchSemanticsNodes().isEmpty()
+        )
+    }
+
+    @Test
+    fun `omitting providerLabel keeps the English default Provider label`() {
+        composeTestRule.setContent {
+            ProviderKeyCard(
+                providers = providers,
+                selectedProviderId = "openai",
+                onProviderSelected = {},
+                keyValue = "",
+                onKeyChange = {},
+                keyState = KeyFieldState.Empty,
+                keyLabel = "API key"
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        assertTrue(
+            "Default providerLabel must remain the English \"Provider\"",
+            composeTestRule.onAllNodesWithText("Provider", useUnmergedTree = true)
+                .fetchSemanticsNodes().isNotEmpty()
+        )
     }
 
     @Test

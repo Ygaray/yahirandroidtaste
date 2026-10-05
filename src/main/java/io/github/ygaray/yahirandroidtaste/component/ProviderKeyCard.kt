@@ -56,6 +56,8 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * @param emptyProvidersReason Caption shown when [providers] is empty (e.g. "No providers
  *   configured yet") — never a blank control. Defaults to a generic caption so existing callers
  *   are source-compatible; callers with a more specific message should override it.
+ * @param providerLabel Caller-localizable label of the provider dropdown's text field. Defaults to
+ *   the English `"Provider"`; rendered verbatim as plain text (no formatting or templating).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,7 +70,8 @@ fun ProviderKeyCard(
     keyState: KeyFieldState,
     keyLabel: String,
     modifier: Modifier = Modifier,
-    emptyProvidersReason: String = "No providers configured yet"
+    emptyProvidersReason: String = "No providers configured yet",
+    providerLabel: String = "Provider"
 ) {
     Surface(
         shape = MaterialTheme.expressive.cardShapeLarge,
@@ -81,6 +84,7 @@ fun ProviderKeyCard(
                 selectedProviderId = selectedProviderId,
                 onProviderSelected = onProviderSelected,
                 emptyReason = emptyProvidersReason,
+                providerLabel = providerLabel,
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("provider_key_card_dropdown")
@@ -120,6 +124,7 @@ private fun ProviderDropdown(
     selectedProviderId: String?,
     onProviderSelected: (String) -> Unit,
     emptyReason: String,
+    providerLabel: String,
     modifier: Modifier = Modifier
 ) {
     if (providers.isEmpty()) {
@@ -144,7 +149,7 @@ private fun ProviderDropdown(
             value = selectedLabel,
             onValueChange = {},
             readOnly = true,
-            label = { Text("Provider") },
+            label = { Text(providerLabel) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = true)
