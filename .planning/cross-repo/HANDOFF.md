@@ -18,7 +18,7 @@ Generic **presentational** composables only: **no OkHttp, no engine dependency**
 - **Waiting on you:** SecondBrain and CalTracker UI adoption (your tag is an R2 trigger). Current pins: SB `v2.3.0`, CT `v2.1.0` (deliberate); both repin to your new tag in Wave 1.
 
 ## What Yahir confirmed (and where)
-- **⚠ A12 + §11 are NOT yet accepted in this repo.** Your CLAUDE.md makes shipping human-gated. **Yahir must confirm A12 (tag cut waived for this effort's YAT tag) directly in this session**; ask him at kickoff if he doesn't say it. Until then, treat the tag as human-gated.
+- **✅ A12 GRANTED for the v2.5.0 tag (Yahir, direct in-session, 2026-10-05)** — recorded in `.planning/v2.5-DECISION-MAP.md` § Phase 19 [tag-gate] + `19-CONTEXT.md` D-01. The agent may cut `v2.5.0` autonomously once Phase 18 verification is green (the verification gate still applies; only the human gate is waived, for this tag within the vae-bilingual effort). This did NOT change the repo's standing human-gated shipping policy for other tags. (History: A12 + §11 were NOT accepted in-repo through v2.4 — the v2.4.0/v2.4.1 cuts stayed human-gated; see `CLAUDE.md`.)
 - Start the milestone now: Yahir, 2026-09-29, via the orchestrator; he'll say go in-session at kickoff.
 
 ## Repo facts
