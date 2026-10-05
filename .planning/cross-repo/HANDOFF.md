@@ -136,6 +136,16 @@ history). Consumers resolve the immutable TAGS (all pushed + JitPack-live), so n
 **Next action (on resume):** nothing in-flight — milestone closed, v2.4.1 shipped. Re-read this
 HANDOFF and WAIT for an orchestrator dispatch; no pending phase to resume.
 
+## Protocol notes (local addenda — survive resets)
+
+- **Tooling defects → `gsd-technician` seed, NOT `/incident`** (new rule, `templates/COMMON.md`
+  @`9355847`, relayed by orchestrator `yahir-gsd-control-plane-6e` 2026-10-05). `/incident` is now
+  technician-only (control-plane `c0`) and refuses writes elsewhere. On a GSD / xrepo / deps /
+  install defect, fire-and-forget a seed and carry on — no ack, no resend:
+  `python3 ~/Projects/yahir-agentic-tools/yahir-gsd-control-plane/.claude/skills/xrepo/xrepo.py tech "<one line>" --evidence <path|sha|file>`
+  If the defect **BLOCKS** the run, also message the orchestrator. **YAT product bugs still go to
+  YAT's own tracker (GitHub issues)** — this rule is tooling/infra defects only.
+
 ---
 
 ## Current state (2026-09-30) — HISTORICAL (superseded by the 2026-10-04 block above)
