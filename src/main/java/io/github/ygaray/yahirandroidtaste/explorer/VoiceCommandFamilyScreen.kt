@@ -311,6 +311,22 @@ private val fixtureLadderCombinedAffordance = listOf(
 @Composable
 private fun ApproachLadderCardFixture(
     initialOfflineOnly: Boolean = false,
+    initialMaxTierId: String = fixtureLadder.first().id
+) {
+    // Router starts OFF for every registry cell. This two-parameter shape is kept as the entry
+    // point on purpose: the registry lambdas reach it through a Kotlin synthetic accessor whose JVM
+    // descriptor must not change (the Phase 17 binary ABI gate diffs it against v2.4.1).
+    ApproachLadderCardFixture(
+        initialOfflineOnly = initialOfflineOnly,
+        initialRouter = false,
+        initialMaxTierId = initialMaxTierId
+    )
+}
+
+/** Router-aware fixture (Phase 17 D-02): same hoisted state plus the router demo state. */
+@Composable
+private fun ApproachLadderCardFixture(
+    initialOfflineOnly: Boolean = false,
     initialRouter: Boolean = false,
     initialMaxTierId: String = fixtureLadder.first().id
 ) {
