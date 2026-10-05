@@ -2,7 +2,7 @@
 
 - **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.5 (Voice UI Localization & Accessibility)
-- **Gate 1 self-UAT log:** to be added by the post-execute Gate-1 verify step (no self-UAT evidence exists yet; unit tests + apiCheck + javap binary gate are recorded in `17-01-SUMMARY.md`).
+- **Gate 1 self-UAT log:** [`.planning/phases/17-approachladdercard-router-on-off-toggle/17-01-SELF-UAT.md`](phases/17-approachladdercard-router-on-off-toggle/17-01-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device Samsung SM-S908U tester rig R5CT10XNKQN, library AAR md5 `ac172bfed07386fabb11a92f67f6f7de` @ `5b0de39`, harness APK md5 `2ec074296d3f4627346e6c5ee26f0681`, 2026-10-05). Router toggle driven in the real Explorer gallery (light + dark) and a direct-call harness: state reflected, emitted values read back, null hides it, both half-pair directions throw on-device, rung tap selects only the cap.
 - **Items covered (5 ROADMAP success criteria + decisions):**
   - **SC1 — VAPPR-04 router toggle renders and reflects state.** With `router` + `onRouterChange` set, a Router ON/OFF segmented toggle shows the current state (OFF = first segment, ON = second).
   - **SC2 — tap emits the new boolean.** Tapping the non-selected segment invokes `onRouterChange` with the target value.
@@ -16,4 +16,5 @@
   2. Toggle Router on and off, in light and dark theme.
   3. Judge the two stacked segmented toggles at the card bottom: spacing between them, card height growth, selected-segment contrast.
   4. Tap a rung and confirm it still only picks the cap (no router or navigation side effect).
+  5. With TalkBack on, focus each router segment: expect "Router on, selected" / "Router off, not selected" (present as content-desc on the device; the spoken form is not audible to the Gate-1 tester).
 - **Note:** No schema or persistence. Additive at source level; v2.4.1-compiled consumers keep linking through the untouched hidden v2.4.1 shim, proven by the javap binary gate. The accessibility state words "selected" / "not selected" stay English (announced by `SegmentedOptionSelector`; declared residual from Phase 15).
