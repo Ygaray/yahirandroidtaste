@@ -2,20 +2,20 @@
 gsd_state_version: "1.0"
 milestone: v2.5
 milestone_name: Voice UI Localization & Accessibility
-current_phase: 16
-current_phase_name: A11y + Failure enrichment
-status: verifying
-stopped_at: Completed 16-03-PLAN.md
-last_updated: "2026-10-05T10:16:46.410Z"
+current_phase: 17
+current_phase_name: ApproachLadderCard Router ON/OFF toggle
+status: planning
+stopped_at: Phase 16 complete, ready to plan Phase 17
+last_updated: "2026-10-05T10:37:08.599Z"
 last_activity: 2026-10-05
-last_activity_desc: Phase 16 execution started
-state_head: 385719c13aa8d8dbbc52402795181b6d929c5b01
+last_activity_desc: Phase 16 complete, transitioned to Phase 17
+state_head: f8bdb79f684f9a2139fd39abb498f5c37e2c320a
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 6
   completed_plans: 6
-  percent: 0
+  percent: 20
 ---
 
 # Project State
@@ -29,18 +29,18 @@ See: .planning/PROJECT.md (updated 2026-10-05)
 
 ## Current Position
 
-Phase: 16 (A11y + Failure enrichment) — EXECUTING
-Plan: 3 of 3
-Status: Phase complete — ready for verification
-Last activity: 2026-10-05 — Phase 16 execution started
+Phase: 17 — ApproachLadderCard Router ON/OFF toggle
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-10-05 — Phase 16 complete, transitioned to Phase 17
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity (milestone v2.5):**
 
-- Total plans completed: 3
+- Total plans completed: 6
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -49,7 +49,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 15 | 3 | - | - |
-| 16 | TBD | - | - |
+| 16 | 3 | - | - |
 | 17 | TBD | - | - |
 | 18 | TBD | - | - |
 | 19 | TBD | - | - |
@@ -116,7 +116,7 @@ Items acknowledged and carried forward, most recent first:
 ## Session Continuity
 
 Last session: 2026-10-05T10:16:46.378Z
-Stopped at: Completed 16-03-PLAN.md
+Stopped at: Phase 16 complete, ready to plan Phase 17
 Resume file: None
 
 ## Operator Next Steps

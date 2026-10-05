@@ -18,7 +18,7 @@ of the `vae-bilingual` effort (orchestrator `yahir-gsd-control-plane-6e`). Phase
 from v2.4 (which ended at Phase 14).
 
 - [x] **Phase 15: Voice-surface i18n label params** - Caller-overridable English-default labels on the settings cards + voice-surface composables (VI18N-01..04) (completed 2026-10-05)
-- [ ] **Phase 16: A11y + Failure enrichment** - Approach-row min interactive size + selected semantics; `Failure` action role + body slot + semantics prefix (VA11Y-01, VFAIL-01..03)
+- [x] **Phase 16: A11y + Failure enrichment** - Approach-row min interactive size + selected semantics; `Failure` action role + body slot + semantics prefix (VA11Y-01, VFAIL-01..03) (completed 2026-10-05)
 - [ ] **Phase 17: ApproachLadderCard Router ON/OFF toggle** - Additive `router`/`onRouterChange` pair mirroring the `offlineOnly` pattern (VAPPR-04)
 - [ ] **Phase 18: Catalog integrity + API dump + docs** - Registry drift guard green, regenerated `api.txt`, docs updated, invariants preserved — cuts NO tag (CAT-02, API-02, DOC-02, INV-02)
 - [ ] **Phase 19: Cut v2.5.0** - Immutable `v2.5.0` tag via §11 (human-gated), ledger relayed, no stray marker tag (SHIP-03)
