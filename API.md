@@ -239,3 +239,18 @@ shipped constructor arity via `@JvmOverloads` plus a hand-written old-arity `cop
   against v2.4.x and run against the v2.5.0 AAR can fail with `NoSuchMethodError`.
 - **Consumers must recompile** when repinning to v2.5.0 (the standard rebuild-from-an-immutable-tag
   repin, `ECOSYSTEM.md` §7) — never mix a prebuilt v2.4.x consumer binary with the v2.5.0 AAR.
+
+**Voice label fragments — how the sheet joins them (v2.5.0, VI18N-04).** The label fields are plain
+text fragments; `OutcomeSheet` composes them with fixed separators: a single ASCII space between a
+label and the value that follows it (`"<refusedPrefix> <reason>"`, `"<escalationsLabel> <count>"`),
+and a literal `", "` before the optional changed-item fragment
+(`", <changedItem> <changedSinceSuffix>"`). Consequences for callers localizing:
+
+- **Punctuation belongs to the label.** The English defaults carry their colon (`"Couldn't undo:"`,
+  `"Escalations:"`); a language that needs a different or full-width colon supplies it inside the
+  label (note the separating space is still inserted after it).
+- **Do not pass a blank label to mean "no lead-in"** — it renders a leading space. Fold the text
+  into the value instead.
+- The `", "` list separator and the label-then-value order are fixed. A language that needs a
+  different order or a non-ASCII separator should fold the item into `reason` and pass
+  `changedItem = null` (see `UndoRefusedUiModel`).
