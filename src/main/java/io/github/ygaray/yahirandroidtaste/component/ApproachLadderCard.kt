@@ -31,8 +31,9 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * (VAPPR-01 — never re-sorted by [ApproachRungUiModel.rank]), with an optional offline-only
  * toggle (VAPPR-02) and an optional max-tier cap (VAPPR-03). Every control is hideable-by-null-
  * prop, never shown-disabled (D-05): a `null` [offlineOnly]/[onOfflineOnlyChange] pair hides the
- * toggle entirely, and a `null` [maxTierId]/[onMaxTierChange] pair hides the cap control entirely
- * (no rung becomes clickable).
+ * toggle entirely, a `null` [maxTierId]/[onMaxTierChange] pair hides the cap control entirely
+ * (no rung becomes clickable), and a `null` [router]/[onRouterChange] pair hides the router toggle
+ * entirely.
  *
  * Per-rung effective visual state is derived IN this composable from plain primitives (D-06 —
  * `rung.enabled && (!offlineOnly || rung.offlineCapable) && rung.rank <= capRank`); the library
