@@ -26,72 +26,87 @@ from v2.4 (which ended at Phase 14).
 ## Phase Details
 
 ### Phase 15: Voice-surface i18n label params
+
 **Goal**: Every hardcoded label on the voice-command settings cards and voice-surface composables becomes caller-overridable — via optional defaulted params or additive defaulted model fields — so a consumer can pass localized strings. English defaults preserved; the hub itself localizes nothing (INV-01).
 **Depends on**: Phase 14 (milestone v2.4 — library `v2.4.0` baseline)
 **Requirements**: VI18N-01, VI18N-02, VI18N-03, VI18N-04
 **Success Criteria** (what must be TRUE):
+
   1. A caller can pass `providerLabel` to `ProviderKeyCard` and `modelLabel` to `ModelSelectCard`, and the dropdown labels render the supplied text; omitting them shows "Provider"/"Model" exactly as today (VI18N-01).
   2. `ClarificationBar` renders a caller-supplied `dismissLabel`, defaulting to "Dismiss" (VI18N-02).
   3. `ApproachLadderCard`'s rung-state + toggle literals (`unavailableLabel`, `cappedLabel`, `needsNetworkLabel`, `onlineLabel`, `offlineOnlyLabel`) render caller-supplied text, each defaulting to today's English (VI18N-03).
   4. `OutcomeSheet`'s embedded literals ("Escalations:", "Undone", "Couldn't undo:", the "Remove" content description) render caller-supplied values via additive defaulted model fields on `HandledByUiModel`, the undo models, and `ProposedItemUiModel` — English defaults preserved (VI18N-04).
   5. Every existing caller that passes none of the new params/fields observes byte-identical English behavior — the change is strictly additive (no param/field removed or reshaped).
+
 **Plans**: 3 plans
 **UI hint**: yes
 
 Plans:
 
-- [ ] 15-01-PLAN.md — Composable label params: ProviderKeyCard/ModelSelectCard/ClarificationBar/ApproachLadderCard, ProviderKeyCard tracer + apiCheck/apiDump/lane-3 flow (VI18N-01, VI18N-02, VI18N-03)
+- [x] 15-01-PLAN.md — Composable label params: ProviderKeyCard/ModelSelectCard/ClarificationBar/ApproachLadderCard, ProviderKeyCard tracer + apiCheck/apiDump/lane-3 flow (VI18N-01, VI18N-02, VI18N-03)
 - [ ] 15-02-PLAN.md — Undo-model label fields via `@JvmOverloads` + old-arity `copy` recipe: UndoRowUiModel.undoneLabel tracer + UndoRefusedUiModel prefix/suffix through OutcomeSheet (VI18N-04)
 - [ ] 15-03-PLAN.md — HandledByUiModel.escalationsLabel + ProposedItemUiModel.removeContentDescription, v2.4.0 call-shape compile fixture, and the phase closing gate vs the released v2.4.1 api.txt (VI18N-04)
 
 ### Phase 16: A11y + Failure enrichment
+
 **Goal**: `ApproachLadderCard` rung rows meet the minimum interactive-size and selected-semantics accessibility bar (internal/semantics only), and `VoiceOutcomeUiState.Failure` can carry a caller-chosen action role, an optional body content slot, and an optional accessibility semantics prefix.
 **Depends on**: Phase 15
 **Requirements**: VA11Y-01, VFAIL-01, VFAIL-02, VFAIL-03
 **Success Criteria** (what must be TRUE):
+
   1. Each `ApproachLadderCard` rung row presents at least the minimum interactive target size and announces selected state to accessibility services (capped rung = selected, RadioButton role) — with no public API change (VA11Y-01).
   2. A caller can set `FailureActionUiModel.role` (default `Neutral`) and the Failure action button renders with that role/severity; omitting it keeps today's hardcoded `Neutral` (VFAIL-01).
   3. A caller can pass `VoiceOutcomeUiState.Failure.body` (an optional `@Composable` slot) and the content renders inside the error surface; a null body renders today's surface unchanged (VFAIL-02).
   4. A caller can pass `VoiceOutcomeUiState.Failure.semanticsPrefix` and the failure's accessibility announcement is prefixed with it; null announces today's text (VFAIL-03).
   5. All additions are strictly additive — existing `Failure` callers are unchanged and no public API is removed or reshaped.
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 17: ApproachLadderCard Router ON/OFF toggle
+
 **Goal**: `ApproachLadderCard` can surface a Router ON/OFF policy toggle driven by an additive `router: Boolean? = null` + `onRouterChange: ((Boolean) -> Unit)? = null` pair, `require()`-paired exactly like the existing `offlineOnly`/`onOfflineOnlyChange`. Null hides it. This is a policy-card toggle, NOT per-rung navigation.
 **Depends on**: Phase 16
 **Requirements**: VAPPR-04
 **Success Criteria** (what must be TRUE):
+
   1. When a caller passes both `router` (non-null Boolean) and `onRouterChange`, the card renders a Router ON/OFF toggle reflecting the boolean state (VAPPR-04).
   2. Toggling the control invokes `onRouterChange` with the new boolean value.
   3. When `router`/`onRouterChange` are both null (the default), no toggle renders and the card is byte-identical to today.
   4. Passing exactly one of the pair fails the `require()`-paired contract (both null or both non-null), exactly like `offlineOnly`/`onOfflineOnlyChange`.
   5. Row-click still selects the tier cap — no per-rung navigation is introduced (no gesture collision).
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 18: Catalog integrity + API dump + docs
+
 **Goal**: Prove the milestone's additions are registry-clean, API-additive, documented, and invariant-preserving across the full suite — with NO tag cut (mirrors v2.4's Phase 13→14 split so the cut follows a green catalog).
 **Depends on**: Phase 15, Phase 16, Phase 17
 **Requirements**: CAT-02, API-02, DOC-02, INV-02
 **Success Criteria** (what must be TRUE):
+
   1. Every new/changed public composable stays registered in `ComponentRegistry` (or allowlisted in `INTENTIONALLY_UNREGISTERED`), and the CATALOG drift guard is green in the full suite (CAT-02).
   2. `api.txt` is regenerated and `tools/verify-api-additive.sh` passes — the public API is strictly additive vs `v2.4.x` (API-02).
   3. `API.md` and `INTEGRATION.md` are updated for the new label params, the Failure enrichment, and the router toggle (DOC-02).
   4. The one-way-dependency invariant holds — no engine/consumer import is added (INV-01 holds) — and detekt is green at zero baseline (INV-02).
   5. No git tag is cut in this phase.
+
 **Plans**: TBD
 
 ### Phase 19: Cut v2.5.0
+
 **Goal**: Cut the immutable `v2.5.0` library tag via the §11 protocol after a green Phase 18 — human-gated (A12 waiver pending Yahir's direct OK), with the §11 ledger row relayed to the orchestrator and no stray milestone-marker tag.
 **Depends on**: Phase 18
 **Requirements**: SHIP-03
 **Success Criteria** (what must be TRUE):
+
   1. `v2.5.0` is cut via the §11 protocol only after Phase 18 verification is green and the API is additive (verification green, seams honored).
   2. The tag is pushed and JitPack builds it — `com.github.Ygaray:yahirandroidtaste:v2.5.0` resolves.
   3. The full §11 ledger row is relayed to the orchestrator (`yahir-gsd-control-plane-6e`).
   4. The cut proceeds only on Yahir's direct OK (A12 tag-cut waiver confirmation) — human-gated.
   5. No stray milestone-marker tag is created (`git.create_tag` false) — the only tag is the `v2.5.0` release coordinate (SHIP-03).
+
 **Plans**: TBD
 
 ## Completed Milestones
@@ -188,7 +203,7 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 15. Voice-surface i18n label params | v2.5 | 0/TBD | Not started | - |
+| 15. Voice-surface i18n label params | v2.5 | 1/3 | In Progress|  |
 | 16. A11y + Failure enrichment | v2.5 | 0/TBD | Not started | - |
 | 17. ApproachLadderCard Router ON/OFF toggle | v2.5 | 0/TBD | Not started | - |
 | 18. Catalog integrity + API dump + docs | v2.5 | 0/TBD | Not started | - |
