@@ -23,6 +23,26 @@ class VoiceModelLabelDefaultsTest {
             .map { it.parameterCount }
             .toSet()
 
+    /**
+     * Drift guard (IN-02): invokes the SHORTEST non-synthetic `copy` (the hand-written legacy arity)
+     * with the instance's own leading component values and asserts the result still equals the
+     * original. [original] must have EVERY field set to a non-default value, so a legacy copy that
+     * resets or drops a (later-appended) field makes the equality fail.
+     */
+    private fun assertLegacyCopyCarriesEveryField(original: Any) {
+        val cls = original.javaClass
+        val legacyCopy = cls.declaredMethods
+            .filter { it.name == "copy" && !it.isSynthetic }
+            .minByOrNull { it.parameterCount }!!
+        val args = (1..legacyCopy.parameterCount).map { n ->
+            cls.getMethod("component$n").invoke(original)
+        }.toTypedArray()
+
+        val copied = legacyCopy.invoke(original, *args)
+
+        assertEquals(original, copied)
+    }
+
     // ---- UndoRowUiModel.undoneLabel ----
 
     @Test
@@ -179,5 +199,35 @@ class VoiceModelLabelDefaultsTest {
     fun `ProposedItemUiModel keeps the old seven-arg and the new eight-arg constructor and copy arities`() {
         assertTrue(constructorArities(ProposedItemUiModel::class.java).containsAll(listOf(7, 8)))
         assertTrue(copyArities(ProposedItemUiModel::class.java).containsAll(listOf(7, 8)))
+    }
+
+    // ---- IN-02: legacy-arity copy drift guards (every field non-default) ----
+
+    @Test
+    fun `legacy-arity copy of every voice model carries every field forward`() {
+        val onRemove: () -> Unit = {}
+        val trailing: @androidx.compose.runtime.Composable () -> Unit = {}
+
+        assertLegacyCopyCarriesEveryField(
+            HandledByUiModel("Cloud", "ladder", "prov", "mod", 3, escalationsLabel = "Escalades :")
+        )
+        assertLegacyCopyCarriesEveryField(
+            ProposedItemUiModel(
+                id = "1",
+                title = "t",
+                subtitle = "s",
+                confidenceCue = "c",
+                amended = true,
+                onRemove = onRemove,
+                trailingContent = trailing,
+                removeContentDescription = "Supprimer"
+            )
+        )
+        assertLegacyCopyCarriesEveryField(
+            UndoRefusedUiModel("r", "item", refusedPrefix = "Impossible :", changedSinceSuffix = "modifié")
+        )
+        assertLegacyCopyCarriesEveryField(
+            UndoRowUiModel("1", "l", UndoRowState.Undone, undoneLabel = "Annulé")
+        )
     }
 }
