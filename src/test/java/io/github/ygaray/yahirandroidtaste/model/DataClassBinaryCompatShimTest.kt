@@ -246,4 +246,58 @@ class DataClassBinaryCompatShimTest {
         assertEquals("r3", original.copy(reason = "r3").reason)
         assertEquals(original, original.copy())
     }
+
+    // UndoRowUiModel and FailureActionUiModel had no defaulted parameter in v2.4.1, so no
+    // DefaultConstructorMarker constructor shipped for them; only copy$default needs restoring.
+
+    @Test
+    fun undoRowUiModel_v241CopyDefault_behavesLikeV241() {
+        val str = String::class.java
+        val stateCls = UndoRowState::class.java
+
+        val copy = copyDefault(UndoRowUiModel::class.java, str, str, stateCls)
+        val original = UndoRowUiModel("1", "Card", UndoRowState.Undone, "Deshecho")
+        val idOnly = copy.invoke(null, original, "2", null, null, 0b110, null) as UndoRowUiModel
+        assertEquals(original.copy(id = "2"), idOnly)
+        assertEquals("Deshecho", idOnly.undoneLabel)
+        assertEquals(original, copy.invoke(null, original, null, null, null, 0b111, null))
+        // Mixed mask: bits 0 and 1 keep the receiver's values; bit 2 binds the new state.
+        val newState = UndoRowState.Unavailable("entangled")
+        val mixedCopy = copy.invoke(null, original, "IGNORED", "IGNORED", newState, 0b011, null) as UndoRowUiModel
+        assertEquals(original.copy(state = newState), mixedCopy)
+        assertEquals("Deshecho", mixedCopy.undoneLabel)
+
+        // Source-shape pins: these call shapes must resolve without ambiguity.
+        assertEquals(
+            UndoRowUiModel("1", "Card", UndoRowState.Undone, "Undone"),
+            UndoRowUiModel("1", "Card", UndoRowState.Undone)
+        )
+        assertEquals("3", original.copy(id = "3").id)
+        assertEquals(original, original.copy())
+    }
+
+    @Test
+    fun failureActionUiModel_v241CopyDefault_behavesLikeV241() {
+        val str = String::class.java
+        val fn0 = Function0::class.java
+        val cb: () -> Unit = {}
+        val otherCb: () -> Unit = {}
+
+        val copy = copyDefault(FailureActionUiModel::class.java, str, fn0)
+        val original = FailureActionUiModel("l", cb, ActionButtonDefaults.ActionButtonRole.Destructive)
+        val labelOnly = copy.invoke(null, original, "m", null, 0b10, null) as FailureActionUiModel
+        assertEquals(original.copy(label = "m"), labelOnly)
+        assertEquals(ActionButtonDefaults.ActionButtonRole.Destructive, labelOnly.role)
+        assertSame(cb, labelOnly.onClick)
+        assertEquals(original, copy.invoke(null, original, null, null, 0b11, null))
+        // Mixed mask: bit 0 keeps the receiver's label; bit 1 binds the new callback.
+        val mixedCopy = copy.invoke(null, original, "IGNORED", otherCb, 0b01, null) as FailureActionUiModel
+        assertEquals("l", mixedCopy.label)
+        assertSame(otherCb, mixedCopy.onClick)
+        assertEquals(ActionButtonDefaults.ActionButtonRole.Destructive, mixedCopy.role)
+
+        // Source-shape pins: these call shapes must resolve without ambiguity.
+        assertEquals("m", original.copy(label = "m").label)
+        assertEquals(original, original.copy())
+    }
 }
