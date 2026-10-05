@@ -103,6 +103,15 @@ run 1 "(g) no argument exit 1" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/ba
 run 1 "(g) hyphen-leading tag exit 1" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/same.aar" \
   bash tools/verify-binary-abi.sh -v0.0.0
 
+# (g2) dirty artifact inputs (WR-03): an UNTRACKED file under src/ would be compiled into the AAR -> exit 1
+#      before any build is attempted (no SKIP_BUILD here, so the dirty-input check is the code under test).
+mkdir -p src/main; printf 'val u = 1\n' > src/main/Untracked.kt
+run 1 "(g2) untracked src file exit 1" env MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/same.aar" \
+  bash tools/verify-binary-abi.sh v0.0.0
+check_grep "$ERR" 'artifact inputs are dirty' "(g2) stderr says artifact inputs are dirty"
+check_grep "$ERR" 'src/main/Untracked\.kt' "(g2) stderr names the untracked file"
+rm -rf src
+
 # (h) baseline cannot be obtained -> exit 2
 run 2 "(h) BASELINE_AAR missing file exit 2" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/does-not-exist.aar" HEAD_AAR="$FX/same.aar" \
   bash tools/verify-binary-abi.sh v0.0.0

@@ -53,9 +53,13 @@ W="$(mktemp -d)"; trap 'rm -rf "$W"' EXIT
 
 # Build the HEAD release AAR (unless a seam supplies it); refuse if artifact inputs are dirty.
 if [ -z "${SKIP_BUILD:-}" ]; then
-  DIRTY="$(git status --porcelain --untracked-files=no -- src build.gradle.kts settings.gradle.kts gradle.properties gradle config api.txt jitpack.yml)"
+  DIRTY="$(git status --porcelain --untracked-files=all -- src build.gradle.kts settings.gradle.kts gradle.properties gradle config api.txt jitpack.yml)"
   [ -z "$DIRTY" ] || die 1 "artifact inputs are dirty; the AAR would not reflect the commit:
 $DIRTY"
+  # Gradle compiles ignored files under src/ too; they are invisible to `git status` but still reach the AAR.
+  IGNORED="$(git ls-files --others --ignored --exclude-standard -- src)"
+  [ -z "$IGNORED" ] || die 1 "ignored files under src/ would be compiled into the AAR:
+$IGNORED"
   ./gradlew assembleRelease -q >&2 || die 2 "./gradlew assembleRelease failed"
 fi
 echo "HEAD=$(git rev-parse HEAD)"
