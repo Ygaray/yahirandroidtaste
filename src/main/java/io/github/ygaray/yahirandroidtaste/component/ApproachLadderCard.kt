@@ -10,6 +10,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -212,7 +213,9 @@ private fun RungRow(
  * [Modifier.selectable] with [Role.RadioButton] and a Selected state ([selected]) ONLY when
  * [onClick] is non-null — a `null` [onClick] renders no role, no selected state and no click
  * semantics at all (never a disabled one, matching [HeroStatCard]'s `onClick` convention), so a
- * cap-less ladder is never announced as an empty radio group.
+ * cap-less ladder is never announced as an empty radio group. The row also gets the minimum
+ * interactive size only when [onClick] is non-null, so cap-less rows stay compact
+ * (conditional-render-no-dead-space; D-03/D-04 — locked reading of research item A4).
  * Swapping the cap-selection mechanism to `SingleChoiceSegmentedButtonRow` later means changing
  * only this composable's body, not the ladder [Column]'s shape or its callers.
  */
@@ -225,6 +228,9 @@ private fun CapControl(
 ) {
     Row(
         modifier = modifier
+            // D-04: grow the interactive target to the minimum size INSIDE the caller's outer
+            // padding. The resulting row-pitch growth is accepted (Gate-2 visual check).
+            .then(if (onClick != null) Modifier.minimumInteractiveComponentSize() else Modifier)
             // Merge this row's label + affordance Text children into ONE semantics node (also
             // the right a11y shape for a single tappable/readable rung, mirroring how Material3
             // clickable components merge their content).

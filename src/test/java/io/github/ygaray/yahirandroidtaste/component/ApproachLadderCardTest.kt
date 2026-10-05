@@ -1,5 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
@@ -17,9 +19,12 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -369,5 +374,57 @@ class ApproachLadderCardTest {
             rungNodes()[it].assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.Selected))
             rungNodes()[it].assertHasNoClickAction()
         }
+    }
+
+    // ── VA11Y-01 / D-04: minimum interactive size on the interactive wrapper only ──
+
+    @Test
+    fun `rung touch targets do not overlap and are at least the minimum interactive size when the cap is selectable`() {
+        var density: Density? = null
+        composeTestRule.setContent {
+            density = LocalDensity.current
+            ApproachLadderCard(ladder = ladder, maxTierId = "hybrid", onMaxTierChange = {})
+        }
+        composeTestRule.waitForIdle()
+
+        // Measures touch-bounds OVERLAP, not assertTouchHeightIsEqualTo / assertHeightIsAtLeast:
+        // the framework already expands a clickable's touch bounds to 48dp, so the former passes
+        // without the fix; the latter measures node bounds that exclude the min-size slack
+        // (RESEARCH Pitfall 3). The real pre-fix defect is adjacent targets overlapping.
+        val touch = (0..2).map { rungNodes()[it].fetchSemanticsNode().touchBoundsInRoot }
+        val minHeightPx = with(density!!) { 48.dp.toPx() }
+        println("VA11Y-01 touchBoundsInRoot (px): $touch; 48dp = $minHeightPx px")
+        touch.forEachIndexed { i, b ->
+            assertTrue("rung $i touch height ${b.height} must be >= $minHeightPx", b.height >= minHeightPx)
+        }
+        for (i in 0..1) {
+            assertTrue(
+                "rung $i bottom ${touch[i].bottom} must not be below rung ${i + 1} top ${touch[i + 1].top}",
+                touch[i].bottom <= touch[i + 1].top
+            )
+        }
+    }
+
+    @Test
+    fun `a cap-less ladder keeps its compact row pitch -- the minimum size is only on the interactive wrapper`() {
+        composeTestRule.setContent {
+            Column {
+                ApproachLadderCard(ladder = ladder)
+                // Cap at the top rung ("cloud"): no row renders the "Capped" affordance, so the
+                // two ladders' rows differ ONLY by the interactive wrapper (no text-height confound).
+                ApproachLadderCard(ladder = ladder, maxTierId = "cloud", onMaxTierChange = {})
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        rungNodes().assertCountEquals(6)
+        fun top(i: Int) = rungNodes()[i].fetchSemanticsNode().boundsInRoot.top
+        val caplessPitch = top(1) - top(0)
+        val selectablePitch = top(4) - top(3)
+        println("VA11Y-01 row pitch (px): cap-less=$caplessPitch cap-selectable=$selectablePitch")
+        assertTrue(
+            "cap-less pitch $caplessPitch must be strictly smaller than cap-selectable pitch $selectablePitch",
+            caplessPitch < selectablePitch
+        )
     }
 }
