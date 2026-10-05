@@ -40,6 +40,19 @@ If Gradle fails with `Already watching path`, rerun with `-Dorg.gradle.vfs.watch
 
 Populated by the planner from PLAN.md task `<automated>` commands (see each PLAN.md). Requirements: VI18N-01 (ProviderKeyCard/ModelSelectCard labels), VI18N-02 (ClarificationBar dismissLabel), VI18N-03 (ApproachLadderCard rung/toggle labels), VI18N-04 (OutcomeSheet model fields).
 
+Every task below uses the same additive-gate tail: `F=$(mktemp) && cp api.txt "$F" && ./gradlew apiDump && cmp "$F" api.txt && ./gradlew apiCheck` (api.txt freshness + Metalava). Within each task `./gradlew apiCheck` is ALSO run before `apiDump` (authoritative additive gate, D-01). Each task writes its own new tests first (tdd), so the new test files/cases are created inside the task rather than in a separate Wave 0.
+
+| Task ID | Plan | Wave | Requirement | Test Type | Automated Command (head; additive-gate tail above unless noted) | Status |
+|---------|------|------|-------------|-----------|------------------------------------------------------------------|--------|
+| 15-01-01 | 01 | 1 | VI18N-01 | Compose UI (tracer) | `./gradlew testDebugUnitTest --tests '*ProviderKeyCardTest' detekt` | pending |
+| 15-01-02 | 01 | 1 | VI18N-01, VI18N-02 | Compose UI | `./gradlew testDebugUnitTest --tests '*ModelSelectCardTest' --tests '*ClarificationBarTest' --tests '*ProviderKeyCardTest' detekt` | pending |
+| 15-01-03 | 01 | 1 | VI18N-03 | Compose UI + full-suite wave gate | `./gradlew testDebugUnitTest detekt` | pending |
+| 15-02-01 | 02 | 2 | VI18N-04 | JVM + Compose UI (tracer) | `./gradlew testDebugUnitTest --tests '*VoiceModelLabelDefaultsTest' --tests '*OutcomeSheetTest' detekt` | pending |
+| 15-02-02 | 02 | 2 | VI18N-04 | JVM + Compose UI + full-suite wave gate | `./gradlew testDebugUnitTest detekt` | pending |
+| 15-03-01 | 03 | 3 | VI18N-04 | JVM + Compose UI (tracer) | `./gradlew testDebugUnitTest --tests '*VoiceModelLabelDefaultsTest' --tests '*OutcomeSheetTest' detekt` | pending |
+| 15-03-02 | 03 | 3 | VI18N-04 | JVM + Compose UI | `./gradlew testDebugUnitTest --tests '*VoiceModelLabelDefaultsTest' --tests '*OutcomeSheetTest' detekt` | pending |
+| 15-03-03 | 03 | 3 | VI18N-01..04 (SC5, D-03, INV-01) | compile-only fixture + closing gate | `./gradlew testDebugUnitTest detekt`; apiCheck against released v2.4.1 `api.txt`; removed-line allowlist; untouched-path + import checks (see 15-03-PLAN.md Task 3) | pending |
+
 *Status: pending*
 
 ---

@@ -35,8 +35,14 @@ from v2.4 (which ended at Phase 14).
   3. `ApproachLadderCard`'s rung-state + toggle literals (`unavailableLabel`, `cappedLabel`, `needsNetworkLabel`, `onlineLabel`, `offlineOnlyLabel`) render caller-supplied text, each defaulting to today's English (VI18N-03).
   4. `OutcomeSheet`'s embedded literals ("Escalations:", "Undone", "Couldn't undo:", the "Remove" content description) render caller-supplied values via additive defaulted model fields on `HandledByUiModel`, the undo models, and `ProposedItemUiModel` — English defaults preserved (VI18N-04).
   5. Every existing caller that passes none of the new params/fields observes byte-identical English behavior — the change is strictly additive (no param/field removed or reshaped).
-**Plans**: TBD
+**Plans**: 3 plans
 **UI hint**: yes
+
+Plans:
+
+- [ ] 15-01-PLAN.md — Composable label params: ProviderKeyCard/ModelSelectCard/ClarificationBar/ApproachLadderCard, ProviderKeyCard tracer + apiCheck/apiDump/lane-3 flow (VI18N-01, VI18N-02, VI18N-03)
+- [ ] 15-02-PLAN.md — Undo-model label fields via `@JvmOverloads` + old-arity `copy` recipe: UndoRowUiModel.undoneLabel tracer + UndoRefusedUiModel prefix/suffix through OutcomeSheet (VI18N-04)
+- [ ] 15-03-PLAN.md — HandledByUiModel.escalationsLabel + ProposedItemUiModel.removeContentDescription, v2.4.0 call-shape compile fixture, and the phase closing gate vs the released v2.4.1 api.txt (VI18N-04)
 
 ### Phase 16: A11y + Failure enrichment
 **Goal**: `ApproachLadderCard` rung rows meet the minimum interactive-size and selected-semantics accessibility bar (internal/semantics only), and `VoiceOutcomeUiState.Failure` can carry a caller-chosen action role, an optional body content slot, and an optional accessibility semantics prefix.
