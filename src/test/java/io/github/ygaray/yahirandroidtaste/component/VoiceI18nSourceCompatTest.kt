@@ -12,6 +12,7 @@ import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -28,6 +29,9 @@ import org.junit.Test
  * `VoiceOutcomeUiState.Failure` and `FailureActionUiModel` gained fields appended after the former
  * last property, so every v2.4 call shape (positional, named, destructuring, legacy `copy`) binds
  * the same values and carries the defaults.
+ *
+ * It is also the v2.4.0 trailing-lambda evidence for INC-2026-10-05-02 F1b: the
+ * `FailureActionUiModel("l") { }` shape still binds the lambda to `onClick` (not `role`).
  */
 class VoiceI18nSourceCompatTest {
 
@@ -155,5 +159,34 @@ class VoiceI18nSourceCompatTest {
         assertEquals(ActionButtonDefaults.ActionButtonRole.Neutral, plainAction.copy("m", {}).role)
         val destructive = FailureActionUiModel("l", {}, ActionButtonDefaults.ActionButtonRole.Destructive)
         assertEquals(ActionButtonDefaults.ActionButtonRole.Destructive, destructive.copy("m", {}).role)
+    }
+
+    @Test
+    fun v240TrailingLambdaActionShape_compilesAndDefaultsNeutral() {
+        // v2.4.0 trailing-lambda shape: the lambda must bind to onClick, and role stays Neutral.
+        var clicked = false
+        val trailing = FailureActionUiModel("l") { clicked = true }
+        assertEquals("l", trailing.label)
+        assertEquals(ActionButtonDefaults.ActionButtonRole.Neutral, trailing.role)
+        trailing.onClick()
+        assertTrue("Trailing lambda must be the onClick callback", clicked)
+
+        // Named label plus trailing lambda.
+        val namedTrailing = FailureActionUiModel(label = "l") { }
+        assertEquals(ActionButtonDefaults.ActionButtonRole.Neutral, namedTrailing.role)
+
+        // Two positional / two named arguments keep Neutral; an explicit role is kept.
+        assertEquals(ActionButtonDefaults.ActionButtonRole.Neutral, FailureActionUiModel("l", {}).role)
+        assertEquals(
+            ActionButtonDefaults.ActionButtonRole.Neutral,
+            FailureActionUiModel(label = "l", onClick = {}).role
+        )
+        assertEquals(
+            ActionButtonDefaults.ActionButtonRole.Destructive,
+            FailureActionUiModel("l", {}, ActionButtonDefaults.ActionButtonRole.Destructive).role
+        )
+
+        // JVM: the v2.4.1 (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V constructor persists.
+        FailureActionUiModel::class.java.getConstructor(String::class.java, Function0::class.java)
     }
 }
