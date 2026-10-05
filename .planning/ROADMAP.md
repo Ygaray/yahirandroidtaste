@@ -45,7 +45,7 @@ Plans:
 
 - [x] 15-01-PLAN.md — Composable label params: ProviderKeyCard/ModelSelectCard/ClarificationBar/ApproachLadderCard, ProviderKeyCard tracer + apiCheck/apiDump/lane-3 flow (VI18N-01, VI18N-02, VI18N-03)
 - [x] 15-02-PLAN.md — Undo-model label fields via `@JvmOverloads` + old-arity `copy` recipe: UndoRowUiModel.undoneLabel tracer + UndoRefusedUiModel prefix/suffix through OutcomeSheet (VI18N-04)
-- [ ] 15-03-PLAN.md — HandledByUiModel.escalationsLabel + ProposedItemUiModel.removeContentDescription, v2.4.0 call-shape compile fixture, and the phase closing gate vs the released v2.4.1 api.txt (VI18N-04)
+- [x] 15-03-PLAN.md — HandledByUiModel.escalationsLabel + ProposedItemUiModel.removeContentDescription, v2.4.0 call-shape compile fixture, and the phase closing gate vs the released v2.4.1 api.txt (VI18N-04)
 
 ### Phase 16: A11y + Failure enrichment
 
@@ -203,7 +203,7 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 15. Voice-surface i18n label params | v2.5 | 2/3 | In Progress|  |
+| 15. Voice-surface i18n label params | v2.5 | 3/3 | In Progress|  |
 | 16. A11y + Failure enrichment | v2.5 | 0/TBD | Not started | - |
 | 17. ApproachLadderCard Router ON/OFF toggle | v2.5 | 0/TBD | Not started | - |
 | 18. Catalog integrity + API dump + docs | v2.5 | 0/TBD | Not started | - |

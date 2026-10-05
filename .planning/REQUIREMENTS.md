@@ -12,7 +12,7 @@
 - [x] **VI18N-01**: `ProviderKeyCard` exposes an optional `providerLabel: String = "Provider"` and `ModelSelectCard` an optional `modelLabel: String = "Model"`, so the caller can localize the dropdown labels (XR-172-01). Additive; existing callers unchanged.
 - [x] **VI18N-02**: `ClarificationBar` exposes an optional `dismissLabel: String = "Dismiss"` (XR-175-02 a,b).
 - [x] **VI18N-03**: `ApproachLadderCard` exposes optional label params for its rung-state + toggle literals (`unavailableLabel`, `cappedLabel`, `needsNetworkLabel`, `onlineLabel`, `offlineOnlyLabel`), each defaulting to today's English text (XR-175-02 a,b).
-- [ ] **VI18N-04**: `OutcomeSheet`'s embedded literals become caller-overridable via additive, defaulted model fields — `HandledByUiModel` ("Escalations:"), the undo models ("Undone", "Couldn't undo:"), and `ProposedItemUiModel` ("Remove" content description) (XR-175-02 a,b). English defaults preserved.
+- [x] **VI18N-04**: `OutcomeSheet`'s embedded literals become caller-overridable via additive, defaulted model fields — `HandledByUiModel` ("Escalations:"), the undo models ("Undone", "Couldn't undo:"), and `ProposedItemUiModel` ("Remove" content description) (XR-175-02 a,b). English defaults preserved.
 
 ### Accessibility
 
@@ -56,7 +56,7 @@
 | VI18N-01 | Phase 15 | Complete |
 | VI18N-02 | Phase 15 | Complete |
 | VI18N-03 | Phase 15 | Complete |
-| VI18N-04 | Phase 15 | Pending |
+| VI18N-04 | Phase 15 | Complete |
 | VA11Y-01 | Phase 16 | Pending |
 | VFAIL-01 | Phase 16 | Pending |
 | VFAIL-02 | Phase 16 | Pending |
