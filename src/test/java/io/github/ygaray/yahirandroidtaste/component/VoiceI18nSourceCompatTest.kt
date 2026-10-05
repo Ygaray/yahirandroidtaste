@@ -8,7 +8,6 @@ import io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRowState
 import io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Test
 
 /**
@@ -23,6 +22,7 @@ import org.junit.Test
  */
 class VoiceI18nSourceCompatTest {
 
+    @Suppress("UNUSED_VARIABLE")
     @Test
     fun v240PositionalComposableCallShapes_compileAgainstV25Signatures() {
         // Fully positional through the former last parameter (emptyProvidersReason).
@@ -60,10 +60,9 @@ class VoiceI18nSourceCompatTest {
             )
         }
 
-        assertNotNull(providerKeyCard)
-        assertNotNull(modelSelectCard)
-        assertNotNull(clarificationBar)
-        assertNotNull(approachLadderCard)
+        // Compile-only: the lambdas above are intentionally never invoked. The test's value is that
+        // these v2.4.0 call shapes still COMPILE; asserting non-null on a just-assigned lambda would
+        // be vacuous. Runtime default-label rendering is covered by the per-component tests.
     }
 
     @Test
