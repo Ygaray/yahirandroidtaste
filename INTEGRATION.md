@@ -128,7 +128,9 @@ The composable labels are optional parameters: `providerLabel` on `ProviderKeyCa
 `escalationsLabel` on `HandledByUiModel`, `undoneLabel` on `UndoRowUiModel`, `refusedPrefix` and
 `changedSinceSuffix` on `UndoRefusedUiModel`, `removeContentDescription` on `ProposedItemUiModel`,
 and `semanticsPrefix` on `VoiceOutcomeUiState.Failure`. Omitting any of them keeps the English
-default. The segmented toggles' accessibility state words ("selected" / "not selected") stay English.
+default. Two residuals stay English and are not yet overridable: the segmented toggles' accessibility state
+words ("selected" / "not selected"), and the `ProviderKeyCard` key field's reveal / hide toggle and
+clear control ("Show key", "Hide key", "Clear text").
 When moving to v2.5.0, pass `trailingContent` on `ProposedItemUiModel` as a named argument.
 
 ```kotlin

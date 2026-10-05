@@ -177,9 +177,12 @@ rendered):**
 
 Five data-and-callback composables for a voice-command settings and outcome surface: the provider /
 API-key card, the model dropdown, the command-approach ladder, the outcome / undo / confirmation
-sheet and the tap-to-clarify bar. They are domain-agnostic: the hub localizes nothing, so every
-user-visible literal is a defaulted, caller-overridable parameter or model field whose default is the
-English text, and callers pass already-localized strings. Props that default to `null` hide their
+sheet and the tap-to-clarify bar. They are domain-agnostic: the hub localizes nothing, so the
+user-visible literals are defaulted, caller-overridable parameters or model fields whose default is
+the English text, and callers pass already-localized strings, with two documented residuals that stay
+English and are not yet overridable: the segmented toggles' "selected" / "not selected" state words
+(`ApproachLadderCard`), and the `ProviderKeyCard` key field's reveal / hide toggle and clear control,
+announced as "Show key", "Hide key" and "Clear text". Props that default to `null` hide their
 control entirely, with no reserved space (conditional-render-no-dead-space).
 
 | Composable | Purpose | Key parameters |
