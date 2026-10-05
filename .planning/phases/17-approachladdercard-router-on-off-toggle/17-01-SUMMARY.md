@@ -243,3 +243,7 @@ None - no external service configuration required.
 ---
 *Phase: 17-approachladdercard-router-on-off-toggle*
 *Completed: 2026-10-05*
+
+## Self-Check: PASSED
+
+All created files exist on disk (`ApproachLadderRouterCompatTest.kt`, `ApproachLadderCardGalleryDemoTest.kt`, the UAT fragment, this SUMMARY); all five task commits (`b7a4e48`, `902d030`, `1b1974e`, `ebddac2`, `26b66a1`) and the SUMMARY commit `15a5ed9` are present in `git log`; `commits: 5` is measured from `git rev-list --count 2d355c3..HEAD` at SUMMARY write time (the SUMMARY and state commits follow it).

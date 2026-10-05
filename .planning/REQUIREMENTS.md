@@ -26,7 +26,7 @@
 
 ### Command-approach card
 
-- [ ] **VAPPR-04**: `ApproachLadderCard` gains a Router ON/OFF toggle via `router: Boolean? = null` + `onRouterChange: ((Boolean) -> Unit)? = null`, `require()`-paired (both null or both non-null) exactly like `offlineOnly`/`onOfflineOnlyChange`; `null` hides the toggle (XR-175-02 e, SB 177 SC3). No per-rung navigation.
+- [x] **VAPPR-04**: `ApproachLadderCard` gains a Router ON/OFF toggle via `router: Boolean? = null` + `onRouterChange: ((Boolean) -> Unit)? = null`, `require()`-paired (both null or both non-null) exactly like `offlineOnly`/`onOfflineOnlyChange`; `null` hides the toggle (XR-175-02 e, SB 177 SC3). No per-rung navigation.
 
 ### Catalog integrity & additive ship
 
@@ -61,7 +61,7 @@
 | VFAIL-01 | Phase 16 | Complete |
 | VFAIL-02 | Phase 16 | Complete |
 | VFAIL-03 | Phase 16 | Complete |
-| VAPPR-04 | Phase 17 | Pending |
+| VAPPR-04 | Phase 17 | Complete |
 | CAT-02 | Phase 18 | Pending |
 | API-02 | Phase 18 | Pending |
 | DOC-02 | Phase 18 | Pending |

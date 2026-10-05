@@ -3,18 +3,18 @@ gsd_state_version: "1.0"
 milestone: v2.5
 milestone_name: Voice UI Localization & Accessibility
 current_phase: 17
-current_phase_name: approachladdercard-router-on-off-toggle
-status: executing
-stopped_at: Phase 16 complete, ready to plan Phase 17
-last_updated: "2026-10-05T17:11:27.030Z"
+current_phase_name: ApproachLadderCard Router ON/OFF toggle
+status: verifying
+stopped_at: Completed 17-01-PLAN.md
+last_updated: "2026-10-05T17:25:46.986Z"
 last_activity: 2026-10-05
-last_activity_desc: Phase 16 complete, transitioned to Phase 17
-state_head: 60a0bae81c30b4c524e4334ba79c687998b2047f
+last_activity_desc: Phase 17 execution started
+state_head: 15a5ed9491be0270ca0ffc975f94b9bca562503d
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 0
   total_plans: 7
-  completed_plans: 6
+  completed_plans: 7
   percent: 0
 ---
 
@@ -29,10 +29,10 @@ See: .planning/PROJECT.md (updated 2026-10-05)
 
 ## Current Position
 
-Phase: 17 (approachladdercard-router-on-off-toggle) — READY TO EXECUTE
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-10-05 - Completed quick task 261005-eyu: F4 binary-compat rule docs
+Phase: 17 (ApproachLadderCard Router ON/OFF toggle) — EXECUTING
+Plan: 1 of 1
+Status: Phase complete — ready for verification
+Last activity: 2026-10-05 — Phase 17 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -70,6 +70,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 16 P01 | 4 min | 2 tasks | 2 files |
 | Phase 16 P02 | 8 min | 2 tasks | 7 files |
 | Phase 16 P03 | 2 min | 2 tasks | 2 files |
+| Phase 17 P01 | 12 min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -88,6 +89,8 @@ Recent decisions affecting current work:
 - [Phase 15]: [15-02] Model-field append recipe: @JvmOverloads constructor + hand-written old-arity copy (Metalava-safe); commits use HUB_LANE_OVERRIDE=2 (hook-detected lane)
 - [Phase 16]: 16-01: rung Selected derives from rung.id == maxTierId (D-01); Role.RadioButton/min-size only when cap selectable (D-03, A4 locked: min-size gated on onClick != null) — Cap-less ladders stay compact and are never announced as an empty radio group; ~58dp pitch growth accepted (D-04), Gate-2 visual check
 - [Phase 16]: 16-02: Failure.body placed after handledBy/before action (no wrapper); semanticsPrefix joined by one ASCII space, blank treated as null; merge-only semantics, no live region; commits used HUB_LANE_OVERRIDE=2 (hook-detected lane), not 3
+- [Phase 17]: ApproachLadderCard router toggle emits the tapped segment's target value (index == 1), option order listOf(routerOff, routerOn); card stays stateless display+emit — Idempotent re-taps cannot flip policy; matches the offline toggle convention
+- [Phase 17]: Explorer fixture keeps its two-parameter ApproachLadderCardFixture as a wrapper and adds a router-aware overload — Preserves the Kotlin synthetic access$ descriptor so the javap binary gate vs v2.4.1 reports missing=0
 
 ### Pending Todos
 
@@ -123,8 +126,8 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-05T10:16:46.378Z
-Stopped at: Phase 16 complete, ready to plan Phase 17
+Last session: 2026-10-05T17:25:46.951Z
+Stopped at: Completed 17-01-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

@@ -81,7 +81,7 @@ Plans:
 
 Plans:
 
-- [ ] 17-01-PLAN.md — Router toggle tracer (require()-paired `router`/`onRouterChange` + `routerOnLabel`/`routerOffLabel`, tests, apiCheck→apiDump same commit), Explorer fixture router demo state + registry-reached render tests, and the closing gate vs the released v2.4.1 api.txt (VAPPR-04)
+- [x] 17-01-PLAN.md — Router toggle tracer (require()-paired `router`/`onRouterChange` + `routerOnLabel`/`routerOffLabel`, tests, apiCheck→apiDump same commit), Explorer fixture router demo state + registry-reached render tests, and the closing gate vs the released v2.4.1 api.txt (VAPPR-04)
 
 ### Phase 18: Catalog integrity + API dump + docs
 
@@ -209,6 +209,6 @@ Plans:
 |-------|-----------|----------------|--------|-----------|
 | 15. Voice-surface i18n label params | v2.5 | 3/3 | In Progress|  |
 | 16. A11y + Failure enrichment | v2.5 | 3/3 | In Progress|  |
-| 17. ApproachLadderCard Router ON/OFF toggle | v2.5 | 0/TBD | Not started | - |
+| 17. ApproachLadderCard Router ON/OFF toggle | v2.5 | 1/1 | In Progress|  |
 | 18. Catalog integrity + API dump + docs | v2.5 | 0/TBD | Not started | - |
 | 19. Cut v2.5.0 | v2.5 | 0/TBD | Not started | - |
