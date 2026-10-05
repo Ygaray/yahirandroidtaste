@@ -76,8 +76,12 @@ Plans:
   4. Passing exactly one of the pair fails the `require()`-paired contract (both null or both non-null), exactly like `offlineOnly`/`onOfflineOnlyChange`.
   5. Row-click still selects the tier cap — no per-rung navigation is introduced (no gesture collision).
 
-**Plans**: TBD
+**Plans**: 1 plan
 **UI hint**: yes
+
+Plans:
+
+- [ ] 17-01-PLAN.md — Router toggle tracer (require()-paired `router`/`onRouterChange` + `routerOnLabel`/`routerOffLabel`, tests, apiCheck→apiDump same commit), Explorer fixture router demo state + registry-reached render tests, and the closing gate vs the released v2.4.1 api.txt (VAPPR-04)
 
 ### Phase 18: Catalog integrity + API dump + docs
 
