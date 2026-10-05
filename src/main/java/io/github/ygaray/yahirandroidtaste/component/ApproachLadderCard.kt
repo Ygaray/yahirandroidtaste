@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -112,7 +113,13 @@ fun ApproachLadderCard(
         modifier = modifier.testTag("approach_ladder_card_surface")
     ) {
         Column(modifier = Modifier.padding(Dimens.HorizontalPadding)) {
-            Column(verticalArrangement = Arrangement.spacedBy(Dimens.HairlineSpacing)) {
+            Column(
+                // VA11Y-01 review fix (WR-02): the rungs are Role.RadioButton + Selected only when the
+                // cap is selectable, so only then expose them as a radio group (position/group context
+                // for accessibility services). A cap-less ladder is not announced as a group.
+                modifier = if (onMaxTierChange != null) Modifier.selectableGroup() else Modifier,
+                verticalArrangement = Arrangement.spacedBy(Dimens.HairlineSpacing)
+            ) {
                 ladder.forEach { rung ->
                     val needsNetwork = effectiveOfflineOnly && !rung.offlineCapable
                     val isCapped = rung.rank > capRank
