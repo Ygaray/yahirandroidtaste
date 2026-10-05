@@ -16,7 +16,7 @@
 
 ### Accessibility
 
-- [ ] **VA11Y-01**: `ApproachLadderCard` rung rows enforce a minimum interactive size and expose selected semantics for the capped rung (XR-175-02 c). Internal + semantics only — no public API change.
+- [x] **VA11Y-01**: `ApproachLadderCard` rung rows enforce a minimum interactive size and expose selected semantics for the capped rung (XR-175-02 c). Internal + semantics only — no public API change.
 
 ### Failure enrichment
 
@@ -57,7 +57,7 @@
 | VI18N-02 | Phase 15 | Complete |
 | VI18N-03 | Phase 15 | Complete |
 | VI18N-04 | Phase 15 | Complete |
-| VA11Y-01 | Phase 16 | Pending |
+| VA11Y-01 | Phase 16 | Complete |
 | VFAIL-01 | Phase 16 | Complete |
 | VFAIL-02 | Phase 16 | Complete |
 | VFAIL-03 | Phase 16 | Complete |
