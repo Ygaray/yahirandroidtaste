@@ -30,10 +30,10 @@
 
 ### Catalog integrity & additive ship
 
-- [ ] **CAT-02**: Every new/changed public composable stays registered in `ComponentRegistry` (or allowlisted); the CATALOG drift guard is green in the full suite.
-- [ ] **API-02**: The public API is strictly additive vs `v2.4.x`; `api.txt` is regenerated and `tools/verify-api-additive.sh` passes.
+- [x] **CAT-02**: Every new/changed public composable stays registered in `ComponentRegistry` (or allowlisted); the CATALOG drift guard is green in the full suite.
+- [x] **API-02**: The public API is strictly additive vs `v2.4.x`; `api.txt` is regenerated and `tools/verify-api-additive.sh` passes.
 - [x] **DOC-02**: `API.md` / `INTEGRATION.md` updated for the new label params, Failure enrichment, and router toggle.
-- [ ] **INV-02**: One-way-dependency invariant preserved — no engine/consumer import added (INV-01 holds); detekt zero-baseline green.
+- [x] **INV-02**: One-way-dependency invariant preserved — no engine/consumer import added (INV-01 holds); detekt zero-baseline green.
 - [ ] **SHIP-03**: Immutable tag `v2.5.0` cut via the §11 protocol (verification green, API additive, seams honored, pushed, JitPack builds it), the ledger row relayed to the orchestrator; human-gated (A12 waiver pending Yahir's direct OK), no stray marker tag (`git.create_tag` false).
 
 ## Future Requirements
@@ -62,10 +62,10 @@
 | VFAIL-02 | Phase 16 | Complete |
 | VFAIL-03 | Phase 16 | Complete |
 | VAPPR-04 | Phase 17 | Complete |
-| CAT-02 | Phase 18 | Pending |
-| API-02 | Phase 18 | Pending |
+| CAT-02 | Phase 18 | Complete |
+| API-02 | Phase 18 | Complete |
 | DOC-02 | Phase 18 | Complete |
-| INV-02 | Phase 18 | Pending |
+| INV-02 | Phase 18 | Complete |
 | SHIP-03 | Phase 19 | Pending |
 
 **Coverage:**
