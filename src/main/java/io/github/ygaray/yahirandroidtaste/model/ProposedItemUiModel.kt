@@ -1,6 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.model
 
 import androidx.compose.runtime.Composable
+import kotlin.jvm.internal.DefaultConstructorMarker
 
 /**
  * One proposed item inside a [VoiceOutcomeUiState.NeedsConfirmation] (VOUT-04, D-01/D-04/D-06). A
@@ -66,6 +67,58 @@ data class ProposedItemUiModel @JvmOverloads constructor(
         trailingContent = trailingContent,
         removeContentDescription = removeContentDescription
     )
+
+    // v2.4.x binary-compatibility shims (INC-2026-10-05-02 F1c): re-emit the v2.4.1 compiler-generated
+    // default-argument constructor and static `copy$default`. Mask bit i means v2.4.1 parameter i
+    // took its default. See HandledByUiModel for the full rationale. Hidden from Kotlin and Java
+    // source: do not call them or document them as API.
+    @Deprecated("Binary compatibility with v2.4.x", level = DeprecationLevel.HIDDEN)
+    constructor(
+        id: String,
+        title: String,
+        subtitle: String?,
+        confidenceCue: String?,
+        amended: Boolean,
+        onRemove: (() -> Unit)?,
+        trailingContent: (@Composable () -> Unit)?,
+        mask: Int,
+        marker: DefaultConstructorMarker?
+    ) : this(
+        id = id,
+        title = title,
+        subtitle = if (mask and (1 shl 2) != 0) null else subtitle,
+        confidenceCue = if (mask and (1 shl 3) != 0) null else confidenceCue,
+        amended = if (mask and (1 shl 4) != 0) false else amended,
+        onRemove = if (mask and (1 shl 5) != 0) null else onRemove,
+        trailingContent = if (mask and (1 shl 6) != 0) null else trailingContent
+    )
+
+    private companion object {
+        @Deprecated("Binary compatibility with v2.4.x", level = DeprecationLevel.HIDDEN)
+        @JvmStatic
+        @JvmName("copy\$default")
+        fun legacyCopyDefault(
+            self: ProposedItemUiModel,
+            id: String?,
+            title: String?,
+            subtitle: String?,
+            confidenceCue: String?,
+            amended: Boolean,
+            onRemove: (() -> Unit)?,
+            trailingContent: (@Composable () -> Unit)?,
+            mask: Int,
+            marker: Any?
+        ): ProposedItemUiModel = self.copy(
+            id = if (mask and (1 shl 0) != 0) self.id else requireNotNull(id),
+            title = if (mask and (1 shl 1) != 0) self.title else requireNotNull(title),
+            subtitle = if (mask and (1 shl 2) != 0) self.subtitle else subtitle,
+            confidenceCue = if (mask and (1 shl 3) != 0) self.confidenceCue else confidenceCue,
+            amended = if (mask and (1 shl 4) != 0) self.amended else amended,
+            onRemove = if (mask and (1 shl 5) != 0) self.onRemove else onRemove,
+            trailingContent = if (mask and (1 shl 6) != 0) self.trailingContent else trailingContent,
+            removeContentDescription = self.removeContentDescription
+        )
+    }
 
     override fun toString(): String = "ProposedItemUiModel(id=$id, amended=$amended)"
 }

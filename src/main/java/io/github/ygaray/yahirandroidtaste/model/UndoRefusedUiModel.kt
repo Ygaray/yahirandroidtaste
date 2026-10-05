@@ -1,5 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.model
 
+import kotlin.jvm.internal.DefaultConstructorMarker
+
 /**
  * Loud undo-refused/partial substate fed from
  * [io.github.ygaray.yahirandroidtaste.feedback.UndoGroupResult.Refused] (VUNDO-01, D-01) —
@@ -36,4 +38,37 @@ data class UndoRefusedUiModel @JvmOverloads constructor(
         refusedPrefix = refusedPrefix,
         changedSinceSuffix = changedSinceSuffix
     )
+
+    // v2.4.x binary-compatibility shims (INC-2026-10-05-02 F1c): re-emit the v2.4.1 compiler-generated
+    // default-argument constructor and static `copy$default`. Mask bit i means v2.4.1 parameter i
+    // took its default. See HandledByUiModel for the full rationale. Hidden from Kotlin and Java
+    // source: do not call them or document them as API.
+    @Deprecated("Binary compatibility with v2.4.x", level = DeprecationLevel.HIDDEN)
+    constructor(
+        reason: String,
+        changedItem: String?,
+        mask: Int,
+        marker: DefaultConstructorMarker?
+    ) : this(
+        reason = reason,
+        changedItem = if (mask and (1 shl 1) != 0) null else changedItem
+    )
+
+    private companion object {
+        @Deprecated("Binary compatibility with v2.4.x", level = DeprecationLevel.HIDDEN)
+        @JvmStatic
+        @JvmName("copy\$default")
+        fun legacyCopyDefault(
+            self: UndoRefusedUiModel,
+            reason: String?,
+            changedItem: String?,
+            mask: Int,
+            marker: Any?
+        ): UndoRefusedUiModel = self.copy(
+            reason = if (mask and (1 shl 0) != 0) self.reason else requireNotNull(reason),
+            changedItem = if (mask and (1 shl 1) != 0) self.changedItem else changedItem,
+            refusedPrefix = self.refusedPrefix,
+            changedSinceSuffix = self.changedSinceSuffix
+        )
+    }
 }

@@ -2,6 +2,7 @@ package io.github.ygaray.yahirandroidtaste.model
 
 import androidx.compose.runtime.Composable
 import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
+import kotlin.jvm.internal.DefaultConstructorMarker
 
 /**
  * Render-only outcome state for a voice command result
@@ -94,6 +95,43 @@ sealed interface VoiceOutcomeUiState {
                 body = body,
                 semanticsPrefix = semanticsPrefix
             )
+
+        // v2.4.x binary-compatibility shims (INC-2026-10-05-02 F1c): re-emit the v2.4.1 compiler-generated
+        // default-argument constructor and static `copy$default`. Mask bit i means v2.4.1 parameter i
+        // took its default. See HandledByUiModel for the full rationale. Hidden from Kotlin and Java
+        // source: do not call them or document them as API.
+        @Deprecated("Binary compatibility with v2.4.x", level = DeprecationLevel.HIDDEN)
+        constructor(
+            reason: String,
+            handledBy: HandledByUiModel?,
+            action: FailureActionUiModel?,
+            mask: Int,
+            marker: DefaultConstructorMarker?
+        ) : this(
+            reason = reason,
+            handledBy = if (mask and (1 shl 1) != 0) null else handledBy,
+            action = if (mask and (1 shl 2) != 0) null else action
+        )
+
+        private companion object {
+            @Deprecated("Binary compatibility with v2.4.x", level = DeprecationLevel.HIDDEN)
+            @JvmStatic
+            @JvmName("copy\$default")
+            fun legacyCopyDefault(
+                self: Failure,
+                reason: String?,
+                handledBy: HandledByUiModel?,
+                action: FailureActionUiModel?,
+                mask: Int,
+                marker: Any?
+            ): Failure = self.copy(
+                reason = if (mask and (1 shl 0) != 0) self.reason else requireNotNull(reason),
+                handledBy = if (mask and (1 shl 1) != 0) self.handledBy else handledBy,
+                action = if (mask and (1 shl 2) != 0) self.action else action,
+                body = self.body,
+                semanticsPrefix = self.semanticsPrefix
+            )
+        }
     }
 
     /**
