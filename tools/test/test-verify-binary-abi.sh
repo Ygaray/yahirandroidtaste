@@ -179,6 +179,30 @@ run 2 "(h) no cache + dead JitPack exit 2" env SKIP_BUILD=1 MIN_LINES=1 HEAD_AAR
   bash tools/verify-binary-abi.sh v0.0.0
 check_grep "$ERR" 'BASELINE_AAR' "(h) failure message names the BASELINE_AAR fallback"
 
+# (h2) baseline resolution branches (IN-03): Gradle cache copy, and a successful JitPack download
+#      (JITPACK_BASE=file://... exercises the curl success path offline; with the seam set the https-only
+#      proto flags are intentionally dropped, so the default https path itself is not covered here).
+GC="$TMP/gradle-cache"; mkdir -p "$GC/caches/modules-2/files-2.1/com.github.Ygaray/yahirandroidtaste/v0.0.0/deadbeef"
+cp "$FX/base.aar" "$GC/caches/modules-2/files-2.1/com.github.Ygaray/yahirandroidtaste/v0.0.0/deadbeef/yahirandroidtaste-v0.0.0.aar"
+run 0 "(h2) gradle-cache baseline exit 0" env SKIP_BUILD=1 MIN_LINES=1 HEAD_AAR="$FX/same.aar" GRADLE_USER_HOME="$GC" \
+  bash tools/verify-binary-abi.sh v0.0.0
+check_grep "$OUT" '^BASELINE_AAR sha256=[0-9a-f]{64} source=gradle-cache$' "(h2) source=gradle-cache reported"
+JP="$TMP/jitpack"; mkdir -p "$JP/com/github/Ygaray/yahirandroidtaste/v0.0.0"
+cp "$FX/base.aar" "$JP/com/github/Ygaray/yahirandroidtaste/v0.0.0/yahirandroidtaste-v0.0.0.aar"
+run 0 "(h2) jitpack download baseline exit 0" env SKIP_BUILD=1 MIN_LINES=1 HEAD_AAR="$FX/same.aar" \
+  GRADLE_USER_HOME="$TMP/empty-gradle" JITPACK_BASE="file://$JP" \
+  bash tools/verify-binary-abi.sh v0.0.0
+check_grep "$OUT" '^BASELINE_AAR sha256=[0-9a-f]{64} source=jitpack$' "(h2) source=jitpack reported"
+
+# (h3) the sanity floor applies to the BASELINE listing on its own: floor = base lines + 1 (<= head lines,
+#      since add.aar only adds) must fail on the baseline side only.
+run 0 "(h3) probe base/head line counts" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/add.aar" \
+  bash tools/verify-binary-abi.sh v0.0.0
+NB="$(sed -n 's/^base=\([0-9]*\) head=.*/\1/p' "$OUT")"
+run 2 "(h3) baseline-only sanity floor exit 2" env SKIP_BUILD=1 MIN_LINES="$((NB+1))" BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/add.aar" \
+  bash tools/verify-binary-abi.sh v0.0.0
+check_grep "$ERR" "sanity floor $((NB+1)) not met \\(base=$NB " "(h3) stderr shows the baseline is below the floor"
+
 # (i) changed descriptor b(int) -> b(long) is a removal of the old descriptor -> exit 3
 run 3 "(i) changed descriptor exit 3" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/chg.aar" \
   bash tools/verify-binary-abi.sh v0.0.0

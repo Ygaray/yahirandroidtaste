@@ -17,12 +17,14 @@ check(){ if [ "$1" = "$2" ]; then pass=$((pass+1)); else echo "FAIL: $3 (got $1 
 # (1) lane 1 additive commit -> allowed
 printf 'public fun b(): Unit\n' >> api/hub.api; printf 'val y=2\n' > src/main/B.kt; git add -A
 set +e; git commit -qm "additive"; check "$?" 0 "lane-1 commit allowed"; set -e
+# Tag the "additive" state so later resets do not depend on how many earlier commits succeeded (IN-03).
+git tag t-additive
 
 # (2) removing an api line with no src/main change is no longer a block (Metalava apiCheck and
-#     tools/verify-binary-abi.sh own the API surface, D-03) -> allowed, then reset away (HEAD~1 = "additive")
+#     tools/verify-binary-abi.sh own the API surface, D-03) -> allowed, then reset back to the t-additive tag
 sed -i 's/public fun a(): Unit//' api/hub.api; git add -A
 set +e; git commit -qm "api line removal"; check "$?" 0 "api-line removal alone allowed"; set -e
-git reset -q --hard HEAD~1
+git reset -q --hard t-additive
 
 # (3) lane 2: rewrite an EXISTING source line -> blocked; override allows
 printf 'val x = 999\n' > src/main/A.kt   # A.kt started as 'val x = 1' at tag v1.0.0 -> line rewrite = lane 2
@@ -41,9 +43,9 @@ set +e; git commit -qm "unrelated docs-only change"; check "$?" 0 "post-lane-2 u
 
 # (5) fail-closed: with the fixture's verify-additive-diff.sh gone and a src/main edit staged, the
 # sub-guard exits 127, the classifier exits 1 and the hook blocks (exit 1).
-# HEAD~2: the GOV-03 case above added one commit on top of "declared behavior change"; reset past
-# both to reach the "additive" state.
-git reset -q --hard HEAD~2
+# Reset to the t-additive tag (not a relative HEAD~N offset, which silently tests a different state if an
+# earlier commit was blocked).
+git reset -q --hard t-additive
 rm tools/verify-additive-diff.sh
 printf 'val x = 888\n' > src/main/A.kt; git add -A
 set +e; git commit -qm "error state"; check "$?" 1 "classifier error => hook fails closed"; set -e
