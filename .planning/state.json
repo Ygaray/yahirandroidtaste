@@ -2,11 +2,37 @@
   "contract": "1.0.0",
   "flavor": "core",
   "milestone": "v2.5 — Voice UI Localization & Accessibility",
-  "phases": [],
+  "phases": [
+    {
+      "number": "15",
+      "name": "Voice-surface i18n label params",
+      "status": "in_progress"
+    },
+    {
+      "number": "16",
+      "name": "A11y + Failure enrichment",
+      "status": "in_progress"
+    },
+    {
+      "number": "17",
+      "name": "ApproachLadderCard Router ON/OFF toggle",
+      "status": "pending"
+    },
+    {
+      "number": "18",
+      "name": "Catalog integrity + API dump + docs",
+      "status": "pending"
+    },
+    {
+      "number": "19",
+      "name": "Cut v2.5.0",
+      "status": "pending"
+    }
+  ],
   "next": {
-    "command": "/gsd:discuss-phase",
-    "label": "Discuss the first phase",
-    "reason": "Project initialized — plan your first phase"
+    "command": "/gsd:progress --next",
+    "label": "Advance to the next step",
+    "reason": "Phase 17 of 5 · 20% · executing"
   },
-  "updated_at": "2026-10-05T07:40:53.108Z"
+  "updated_at": "2026-10-05T15:35:08.933Z"
 }
