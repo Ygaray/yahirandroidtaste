@@ -1,10 +1,15 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composer
 import androidx.compose.runtime.currentComposer
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.filter
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithTag
@@ -75,15 +80,21 @@ class ApproachLadderRouterCompatTest {
 
         composeTestRule.setContent {
             Column {
-                // v2.4 caller shape: maxTierId, onMaxTierChange, modifier defaulted -> 0b111000.
-                shim.invoke(null, ladder, false, noOpOffline, null, null, null, currentComposer, 0, 0b111000)
-                // A direct current-overload card with a router makes the router absence through
-                // the shim non-vacuous: a router leaking through the shim would double the counts.
-                ApproachLadderCard(
-                    ladder = listOf(ApproachRungUiModel(id = "nube", label = "Nube", rank = 1)),
-                    router = false,
-                    onRouterChange = {}
-                )
+                // Each card is wrapped in its own tagged Box so the router assertions can be
+                // scoped to the shim card instead of inferred from global counts.
+                Box(Modifier.testTag("shim_card")) {
+                    // v2.4 caller shape: maxTierId, onMaxTierChange, modifier defaulted -> 0b111000.
+                    shim.invoke(null, ladder, false, noOpOffline, null, null, null, currentComposer, 0, 0b111000)
+                }
+                // A direct current-overload card with a router keeps the global counts honest: the
+                // router toggle must exist under the direct card and nowhere under the shim card.
+                Box(Modifier.testTag("direct_card")) {
+                    ApproachLadderCard(
+                        ladder = listOf(ApproachRungUiModel(id = "nube", label = "Nube", rank = 1)),
+                        router = false,
+                        onRouterChange = {}
+                    )
+                }
             }
         }
         composeTestRule.waitForIdle()
@@ -92,7 +103,20 @@ class ApproachLadderRouterCompatTest {
         composeTestRule.onNodeWithText("Hybrid").assertExists()
         composeTestRule.onNodeWithText("Local").assertExists()
         composeTestRule.onAllNodesWithTag("approach_ladder_card_offline_toggle").assertCountEquals(1)
-        composeTestRule.onAllNodesWithTag("approach_ladder_card_router_toggle").assertCountEquals(1)
+        // The shim card renders its offline toggle but no router toggle and no "Router" semantics.
+        composeTestRule.onAllNodesWithTag("approach_ladder_card_offline_toggle")
+            .filter(hasAnyAncestor(hasTestTag("shim_card")))
+            .assertCountEquals(1)
+        composeTestRule.onAllNodesWithTag("approach_ladder_card_router_toggle")
+            .filter(hasAnyAncestor(hasTestTag("shim_card")))
+            .assertCountEquals(0)
+        composeTestRule.onAllNodesWithContentDescription("Router", substring = true)
+            .filter(hasAnyAncestor(hasTestTag("shim_card")))
+            .assertCountEquals(0)
+        // The direct card carries the one and only router toggle.
+        composeTestRule.onAllNodesWithTag("approach_ladder_card_router_toggle")
+            .filter(hasAnyAncestor(hasTestTag("direct_card")))
+            .assertCountEquals(1)
         composeTestRule.onAllNodesWithContentDescription("Router off, selected").assertCountEquals(1)
     }
 
