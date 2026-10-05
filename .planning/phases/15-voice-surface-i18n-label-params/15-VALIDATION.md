@@ -1,9 +1,9 @@
 ---
 phase: "15"
 slug: "voice-surface-i18n-label-params"
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: "2026-10-05"
 ---
 
@@ -44,30 +44,49 @@ Every task below uses the same additive-gate tail: `F=$(mktemp) && cp api.txt "$
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command (head; additive-gate tail above unless noted) | Status |
 |---------|------|------|-------------|-----------|------------------------------------------------------------------|--------|
-| 15-01-01 | 01 | 1 | VI18N-01 | Compose UI (tracer) | `./gradlew testDebugUnitTest --tests '*ProviderKeyCardTest' detekt` | pending |
-| 15-01-02 | 01 | 1 | VI18N-01, VI18N-02 | Compose UI | `./gradlew testDebugUnitTest --tests '*ModelSelectCardTest' --tests '*ClarificationBarTest' --tests '*ProviderKeyCardTest' detekt` | pending |
-| 15-01-03 | 01 | 1 | VI18N-03 | Compose UI + full-suite wave gate | `./gradlew testDebugUnitTest detekt` | pending |
-| 15-02-01 | 02 | 2 | VI18N-04 | JVM + Compose UI (tracer) | `./gradlew testDebugUnitTest --tests '*VoiceModelLabelDefaultsTest' --tests '*OutcomeSheetTest' detekt` | pending |
-| 15-02-02 | 02 | 2 | VI18N-04 | JVM + Compose UI + full-suite wave gate | `./gradlew testDebugUnitTest detekt` | pending |
-| 15-03-01 | 03 | 3 | VI18N-04 | JVM + Compose UI (tracer) | `./gradlew testDebugUnitTest --tests '*VoiceModelLabelDefaultsTest' --tests '*OutcomeSheetTest' detekt` | pending |
-| 15-03-02 | 03 | 3 | VI18N-04 | JVM + Compose UI | `./gradlew testDebugUnitTest --tests '*VoiceModelLabelDefaultsTest' --tests '*OutcomeSheetTest' detekt` | pending |
-| 15-03-03 | 03 | 3 | VI18N-01..04 (SC5, D-03, INV-01) | compile-only fixture + closing gate | `./gradlew testDebugUnitTest detekt`; apiCheck against released v2.4.1 `api.txt`; removed-line allowlist; untouched-path + import checks (see 15-03-PLAN.md Task 3) | pending |
+| 15-01-01 | 01 | 1 | VI18N-01 | Compose UI (tracer) | `./gradlew testDebugUnitTest --tests '*ProviderKeyCardTest' detekt` | ✅ green |
+| 15-01-02 | 01 | 1 | VI18N-01, VI18N-02 | Compose UI | `./gradlew testDebugUnitTest --tests '*ModelSelectCardTest' --tests '*ClarificationBarTest' --tests '*ProviderKeyCardTest' detekt` | ✅ green |
+| 15-01-03 | 01 | 1 | VI18N-03 | Compose UI + full-suite wave gate | `./gradlew testDebugUnitTest detekt` | ✅ green |
+| 15-02-01 | 02 | 2 | VI18N-04 | JVM + Compose UI (tracer) | `./gradlew testDebugUnitTest --tests '*VoiceModelLabelDefaultsTest' --tests '*OutcomeSheetTest' detekt` | ✅ green |
+| 15-02-02 | 02 | 2 | VI18N-04 | JVM + Compose UI + full-suite wave gate | `./gradlew testDebugUnitTest detekt` | ✅ green |
+| 15-03-01 | 03 | 3 | VI18N-04 | JVM + Compose UI (tracer) | `./gradlew testDebugUnitTest --tests '*VoiceModelLabelDefaultsTest' --tests '*OutcomeSheetTest' detekt` | ✅ green |
+| 15-03-02 | 03 | 3 | VI18N-04 | JVM + Compose UI | `./gradlew testDebugUnitTest --tests '*VoiceModelLabelDefaultsTest' --tests '*OutcomeSheetTest' detekt` | ✅ green |
+| 15-03-03 | 03 | 3 | VI18N-01..04 (SC5, D-03, INV-01) | compile-only fixture + closing gate | `./gradlew testDebugUnitTest detekt`; apiCheck against released v2.4.1 `api.txt`; removed-line allowlist; untouched-path + import checks (see 15-03-PLAN.md Task 3) | ✅ green |
 
-*Status: pending*
+*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
 ---
 
 ## Wave 0 Requirements
 
-- [ ] Override tests (non-English sentinels) in the five existing component test classes — VI18N-01..04
-- [ ] Model default + old-arity `copy` equivalence test in `src/test/.../model/` — VI18N-04
-- [ ] Optional compile-only source-compat fixture modeled on `ShowTagColorsSourceCompatTest`
+- [x] Override tests (non-English sentinels) in the five existing component test classes — VI18N-01..04
+- [x] Model default + old-arity `copy` equivalence test in `src/test/.../model/` — VI18N-04
+- [x] Optional compile-only source-compat fixture modeled on `ShowTagColorsSourceCompatTest`
 
 ---
 
 ## Manual-Only Verifications
 
-All phase behaviors have automated verification.
+All phase behaviors have automated verification. (Gate-2 spot check, non-blocking, deferred to the owner via
+`.planning/uat-pending/15-voice-surface-i18n-label-params.md`: real long localized strings do not truncate in the
+dropdown labels, segmented toggle, or sheet rows. This is a visual judgement, not an automatable gap.)
+
+---
+
+## Validation Audit 2026-10-05
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+All four requirements (VI18N-01..04) are COVERED by green automated tests: `ProviderKeyCardTest`,
+`ModelSelectCardTest`, `ClarificationBarTest`, `ApproachLadderCardTest`, `OutcomeSheetTest`
+(override + English-default pins), `VoiceModelLabelDefaultsTest` (model defaults, old-arity `copy`,
+drift guard), and `VoiceI18nSourceCompatTest` (v2.4.0 call shapes). Full `testDebugUnitTest detekt apiCheck`
+green on HEAD after the code-review fixes (689 tests, 0 failures); `15-VERIFICATION.md` passed 5/5 and
+`15-03-SELF-UAT.md` (Gate-1) is all_pass. No test generation was required.
 
 ---
 
@@ -76,11 +95,11 @@ All phase behaviors have automated verification.
 > **Plan-time state is a DRAFT.** Leave frontmatter `status: draft` and `nyquist_compliant: false`.
 > These are finalized ONLY post-execution by the Nyquist finalizer.
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 120s
-- [ ] _(finalizer-only, post-execution)_ `nyquist_compliant` — leave `false` at plan time
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 120s
+- [x] _(finalizer-only, post-execution)_ `nyquist_compliant: true` — gap analysis found zero automatable gaps
 
-**Approval:** pending
+**Approval:** verified 2026-10-05 — finalized by the execute-phase Nyquist finalizer (auto mode)
