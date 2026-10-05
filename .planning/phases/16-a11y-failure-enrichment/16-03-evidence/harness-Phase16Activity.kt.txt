@@ -1,0 +1,108 @@
+package io.github.ygaray.yahirandroidtasteharness
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
+import io.github.ygaray.yahirandroidtaste.component.ApproachLadderCard
+import io.github.ygaray.yahirandroidtaste.component.OutcomeSheet
+import io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel
+import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
+import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
+import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
+
+/**
+ * Gate-1 harness for Phase 16 (throwaway, never committed). Direct-call seeds for the states the
+ * hub gallery has no fixture for. Intent extra "sheet": 0 none, 1 legacy v2.4 Failure (all new
+ * fields null/default), 2 Destructive role + body + prefix + handledBy, 3 Save role only.
+ */
+class Phase16Activity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val sheet = intent.getIntExtra("sheet", 0)
+        setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    var clicks by remember { mutableStateOf(0) }
+                    var cap by remember { mutableStateOf("hybrid") }
+                    var open by remember { mutableStateOf(sheet) }
+                    val ladder = listOf(
+                        ApproachRungUiModel("cloud", "Cloud", 3, enabled = true, offlineCapable = false),
+                        ApproachRungUiModel("hybrid", "Hybrid", 2, enabled = true, offlineCapable = true),
+                        ApproachRungUiModel("local", "Local", 1, enabled = true, offlineCapable = true)
+                    )
+                    Column(
+                        modifier = Modifier.verticalScroll(rememberScrollState()).padding(16.dp)
+                    ) {
+                        Text("CAPPED-LADDER cap=$cap clicks=$clicks")
+                        ApproachLadderCard(
+                            ladder = ladder,
+                            maxTierId = cap,
+                            onMaxTierChange = { cap = it },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Text("CAPLESS-LADDER")
+                        ApproachLadderCard(ladder = ladder, modifier = Modifier.fillMaxWidth())
+                        Text("STALE-ID-LADDER")
+                        ApproachLadderCard(
+                            ladder = ladder,
+                            maxTierId = "ghost",
+                            onMaxTierChange = {},
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    when (open) {
+                        1 -> OutcomeSheet(
+                            outcome = VoiceOutcomeUiState.Failure(
+                                reason = "LEGACY-REASON no key",
+                                handledBy = HandledByUiModel(tier = "Cloud"),
+                                action = FailureActionUiModel("LEGACY-ACTION", { clicks++ })
+                            ),
+                            onDismissRequest = { open = 0 }
+                        )
+                        2 -> OutcomeSheet(
+                            outcome = VoiceOutcomeUiState.Failure(
+                                reason = "NEW-REASON key rejected",
+                                handledBy = HandledByUiModel(tier = "Cloud"),
+                                action = FailureActionUiModel(
+                                    "DESTRUCT-ACTION",
+                                    { clicks++ },
+                                    ActionButtonDefaults.ActionButtonRole.Destructive
+                                ),
+                                body = { Text("BODY-SLOT-MARKER extra detail") },
+                                semanticsPrefix = "PREFIX-ERROR:"
+                            ),
+                            onDismissRequest = { open = 0 }
+                        )
+                        3 -> OutcomeSheet(
+                            outcome = VoiceOutcomeUiState.Failure(
+                                reason = "SAVE-REASON",
+                                action = FailureActionUiModel(
+                                    "SAVE-ACTION",
+                                    { clicks++ },
+                                    ActionButtonDefaults.ActionButtonRole.Save
+                                )
+                            ),
+                            onDismissRequest = { open = 0 }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
