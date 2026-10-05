@@ -41,4 +41,25 @@ data class FailureActionUiModel(
     // rejected because it would cost Compose all-val stability.
     fun copy(label: String, onClick: () -> Unit): FailureActionUiModel =
         copy(label = label, onClick = onClick, role = role)
+
+    // v2.4.x binary-compatibility shim (INC-2026-10-05-02 F1c): re-emits the v2.4.1 compiler-generated
+    // static `copy$default` (v2.4.1 had no defaulted ctor parameter, so no default-ctor synthetic).
+    // Mask bit i means v2.4.1 parameter i took its default. See HandledByUiModel for the full
+    // rationale. Hidden from Kotlin and Java source: do not call it or document it as API.
+    private companion object {
+        @Deprecated("Binary compatibility with v2.4.x", level = DeprecationLevel.HIDDEN)
+        @JvmStatic
+        @JvmName("copy\$default")
+        fun legacyCopyDefault(
+            self: FailureActionUiModel,
+            label: String?,
+            onClick: (() -> Unit)?,
+            mask: Int,
+            marker: Any?
+        ): FailureActionUiModel = self.copy(
+            label = if (mask and (1 shl 0) != 0) self.label else requireNotNull(label),
+            onClick = if (mask and (1 shl 1) != 0) self.onClick else requireNotNull(onClick),
+            role = self.role
+        )
+    }
 }
