@@ -7,12 +7,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel
+import io.github.ygaray.yahirandroidtaste.model.ClarificationOptionUiModel
+import io.github.ygaray.yahirandroidtaste.model.KeyFieldState
+import io.github.ygaray.yahirandroidtaste.model.ModelOptionUiModel
+import io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel
 import java.lang.reflect.Method
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -57,6 +63,9 @@ class VoiceBinaryCompatShimTest {
         assertTrue("$facade.$name v2.4.1 shim must be static", JModifier.isStatic(method.modifiers))
         return method
     }
+
+    private fun unmergedTextCount(text: String): Int =
+        composeTestRule.onAllNodesWithText(text, useUnmergedTree = true).fetchSemanticsNodes().size
 
     @Test
     fun approachLadderCard_v241Descriptor_rendersThroughWithEnglishDefaults() {
@@ -123,5 +132,170 @@ class VoiceBinaryCompatShimTest {
         composeTestRule.waitForIdle()
 
         assertEquals(true, recorded)
+    }
+
+    @Test
+    fun clarificationBar_v241Descriptor_rendersThroughWithEnglishDefaults() {
+        val shim = facadeMethod(
+            "ClarificationBarKt",
+            "ClarificationBar",
+            String::class.java,
+            List::class.java,
+            Function1::class.java,
+            Function0::class.java,
+            Modifier::class.java
+        )
+        var selected: String? = null
+        var dismissed = false
+        val onSelect: (String) -> Unit = { selected = it }
+        val onDismiss: () -> Unit = { dismissed = true }
+
+        composeTestRule.setContent {
+            Column {
+                // v2.4 caller shape: modifier defaulted -> $default bit 4 = 0b10000.
+                shim.invoke(
+                    null,
+                    "Which list?",
+                    listOf(ClarificationOptionUiModel(id = "groceries", label = "Groceries")),
+                    onSelect,
+                    onDismiss,
+                    null,
+                    currentComposer,
+                    0,
+                    0b10000
+                )
+                ClarificationBar(
+                    question = "¿Qué lista?",
+                    options = listOf(ClarificationOptionUiModel(id = "mercado", label = "Mercado")),
+                    onSelect = {},
+                    onDismiss = {},
+                    modifier = Modifier,
+                    dismissLabel = "Descartar"
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Which list?").assertExists()
+        composeTestRule.onNodeWithText("Groceries").assertExists()
+        composeTestRule.onNodeWithText("¿Qué lista?").assertExists()
+        composeTestRule.onNodeWithText("Descartar").assertExists()
+        composeTestRule.onAllNodesWithText("Dismiss").assertCountEquals(1)
+
+        composeTestRule.onNodeWithText("Dismiss").performClick()
+        composeTestRule.waitForIdle()
+
+        assertTrue("Dismiss through the shim must reach onDismiss", dismissed)
+        assertNull("Dismiss must not route to onSelect (callbacks swapped)", selected)
+    }
+
+    @Test
+    fun modelSelectCard_v241Descriptor_rendersThroughWithEnglishDefaults() {
+        val shim = facadeMethod(
+            "ModelSelectCardKt",
+            "ModelSelectCard",
+            List::class.java,
+            String::class.java,
+            Function1::class.java,
+            String::class.java,
+            Modifier::class.java
+        )
+        val models = listOf(
+            ModelOptionUiModel(id = "gpt-4", label = "GPT-4"),
+            ModelOptionUiModel(id = "claude", label = "Claude")
+        )
+        val onModelSelected: (String) -> Unit = {}
+
+        composeTestRule.setContent {
+            Column {
+                // v2.4 caller shape: modifier defaulted -> $default bit 4 = 0b10000.
+                shim.invoke(
+                    null,
+                    models,
+                    "gpt-4",
+                    onModelSelected,
+                    "No models",
+                    null,
+                    currentComposer,
+                    0,
+                    0b10000
+                )
+                ModelSelectCard(
+                    models = models,
+                    selectedModelId = "claude",
+                    onModelSelected = {},
+                    emptyReason = "Sin modelos",
+                    modifier = Modifier,
+                    modelLabel = "Modelo"
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("GPT-4").assertExists()
+        assertTrue("Custom modelLabel must render", unmergedTextCount("Modelo") > 0)
+        assertEquals("English default Model label exactly once (shim path)", 1, unmergedTextCount("Model"))
+    }
+
+    @Test
+    fun providerKeyCard_v241Descriptor_rendersThroughWithEnglishDefaults() {
+        val shim = facadeMethod(
+            "ProviderKeyCardKt",
+            "ProviderKeyCard",
+            List::class.java,
+            String::class.java,
+            Function1::class.java,
+            String::class.java,
+            Function1::class.java,
+            KeyFieldState::class.java,
+            String::class.java,
+            Modifier::class.java,
+            String::class.java
+        )
+        val providers = listOf(
+            ProviderOptionUiModel(id = "openai", label = "OpenAI"),
+            ProviderOptionUiModel(id = "anthropic", label = "Anthropic")
+        )
+        val onProviderSelected: (String) -> Unit = {}
+        val onKeyChange: (String) -> Unit = {}
+
+        composeTestRule.setContent {
+            Column {
+                // v2.4 caller shape: modifier + emptyProvidersReason defaulted -> $default bits 7-8.
+                shim.invoke(
+                    null,
+                    providers,
+                    "openai",
+                    onProviderSelected,
+                    "",
+                    onKeyChange,
+                    KeyFieldState.Empty,
+                    "API key",
+                    null,
+                    null,
+                    currentComposer,
+                    0,
+                    0b110000000
+                )
+                ProviderKeyCard(
+                    providers = providers,
+                    selectedProviderId = "anthropic",
+                    onProviderSelected = {},
+                    keyValue = "",
+                    onKeyChange = {},
+                    keyState = KeyFieldState.Empty,
+                    keyLabel = "Clave API",
+                    modifier = Modifier,
+                    emptyProvidersReason = "Sin proveedores",
+                    providerLabel = "Proveedor"
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("OpenAI").assertExists()
+        assertTrue("Shim keyLabel must render", unmergedTextCount("API key") > 0)
+        assertTrue("Custom providerLabel must render", unmergedTextCount("Proveedor") > 0)
+        assertEquals("English default Provider label exactly once (shim path)", 1, unmergedTextCount("Provider"))
     }
 }
