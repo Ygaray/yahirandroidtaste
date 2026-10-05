@@ -84,3 +84,5 @@ None — discussion stayed within phase scope.
 ## Runtime Decisions
 
 - **invariant-check** (provisional, Depends-on Phase 17, re-resolved at execute-milestone time 2026-10-05, source: ai-auto): explicit import-inspection step over all src/main diffs v2.4.1..HEAD (Phases 15–17 plus binary-compat quicks 261005-dmc/e2e); no new test this milestone. Pre-check at refresh: 12 files changed, no +import outside androidx/kotlin/java/own package.
+
+- **proposed-item-trailing-lambda** (orchestrator yahir-gsd-control-plane-3b ruling, 2026-10-05): **document only, no code fix.** Appending `removeContentDescription` made the v2.4 trailing-lambda shape `ProposedItemUiModel("1", "t") { … }` (bound to `trailingContent`) stop compiling. API.md gets a caveat in the v2.3.0 `showTagColors` style: pass `trailingContent` by name. Consumer evidence: SB `VoiceConfirmSheetModels.kt:52` uses named args without trailingContent; CT `VoiceOutcomeMapper.kt:250/303/374` use named `trailingContent = {…}`. VAE and stt do not use it, so no positional trailing-lambda caller exists. Binary compat is already covered by F1c (variant K).
