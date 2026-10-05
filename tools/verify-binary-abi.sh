@@ -10,7 +10,7 @@
 # Usage:   tools/verify-binary-abi.sh <baseline-tag>        e.g. tools/verify-binary-abi.sh v2.4.1
 # Exit codes:
 #   0  PASS    zero baseline descriptors are missing at HEAD
-#   1  usage / precondition (no argument, malformed or unresolvable tag, dirty artifact inputs when this
+#   1  usage / precondition (no argument, malformed tag or a name that is not an existing git tag, dirty artifact inputs when this
 #      script builds)
 #   2  tool, sanity-floor, javap-error, unsafe-entry-name or baseline-resolution failure
 #   3  lane 3: at least one public descriptor present in the baseline is missing at HEAD. STOP, never waive.
@@ -43,7 +43,9 @@ printf '%s' "$TAG" | grep -Eq '^[A-Za-z0-9][A-Za-z0-9._/-]*$' || die 1 "malforme
 
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || die 1 "not inside a git repository"
 cd "$ROOT"
-git rev-parse --verify --quiet "$TAG^{commit}" >/dev/null || die 1 "baseline tag '$TAG' does not resolve"
+# Must be a real tag (refs/tags/), never a branch or HEAD: JitPack resolves the literal string as the version
+# and moving refs are forbidden as baselines.
+git rev-parse --verify --quiet "refs/tags/$TAG^{commit}" >/dev/null || die 1 "baseline '$TAG' is not an existing git tag"
 for t in javap unzip curl sha256sum; do
   command -v "$t" >/dev/null || die 2 "$t not found (need a JDK 17 + unzip + curl)"
 done
@@ -75,7 +77,7 @@ if [ -n "$BASE_AAR" ]; then
   [ -f "$BASE_AAR" ] || die 2 "BASELINE_AAR '$BASE_AAR' is not an existing file"
   BASE_SRC="override"
 else
-  BASE_AAR="$(ls "${GRADLE_USER_HOME:-$HOME/.gradle}"/caches/modules-2/files-2.1/com.github.Ygaray/yahirandroidtaste/"$TAG"/*/yahirandroidtaste-"$TAG".aar 2>/dev/null | head -1 || true)"
+  BASE_AAR="$(ls "${GRADLE_USER_HOME:-$HOME/.gradle}"/caches/modules-2/files-2.1/com.github.Ygaray/yahirandroidtaste/"$TAG"/*/yahirandroidtaste-"$TAG".aar 2>/dev/null | sort | head -1 || true)"
   if [ -n "$BASE_AAR" ]; then
     BASE_SRC="gradle-cache"
   else
