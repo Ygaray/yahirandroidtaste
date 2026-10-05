@@ -173,6 +173,50 @@ rendered):**
 - `HeatTier`, `HeatVisual`, `heatTier`, `heatVisual`, `hubNodeVisual` (`component/RelatednessEncoding.kt`)
   — the independent Heat ramp's types and pure functions `HeatSwatch` demos.
 
+## 10. Voice Command
+
+Five data-and-callback composables for a voice-command settings and outcome surface: the provider /
+API-key card, the model dropdown, the command-approach ladder, the outcome / undo / confirmation
+sheet and the tap-to-clarify bar. They are domain-agnostic: the hub localizes nothing, so every
+user-visible literal is a defaulted, caller-overridable parameter or model field whose default is the
+English text, and callers pass already-localized strings. Props that default to `null` hide their
+control entirely, with no reserved space (conditional-render-no-dead-space).
+
+| Composable | Purpose | Key parameters |
+|-----------|---------|----------------|
+| `ProviderKeyCard` | Provider dropdown plus a hoisted API-key field; the card stores, validates and transmits nothing | `providers, selectedProviderId, onProviderSelected, keyValue, onKeyChange, keyState, keyLabel, modifier, emptyProvidersReason`, `providerLabel = "Provider"` |
+| `ModelSelectCard` | Model dropdown over the caller's model list, with a disabled reason caption when the list is empty | `models, selectedModelId, onModelSelected, emptyReason, modifier`, `modelLabel = "Model"` |
+| `ApproachLadderCard` | Command-approach settings card: the caller's tier ladder in list order, an optional offline-only toggle, an optional max-tier cap and an optional router toggle | `ladder, offlineOnly, onOfflineOnlyChange, maxTierId, onMaxTierChange, modifier`, `unavailableLabel = "Unavailable"`, `cappedLabel = "Capped"`, `needsNetworkLabel = "Needs network"`, `onlineLabel = "Online"`, `offlineOnlyLabel = "Offline only"`, `router: Boolean? = null`, `onRouterChange: ((Boolean) -> Unit)? = null`, `routerOnLabel = "Router on"`, `routerOffLabel = "Router off"` |
+| `OutcomeSheet` | Bottom sheet rendering a command outcome (success, failure or needs-confirmation) with its undo affordances | `outcome: VoiceOutcomeUiState, onDismissRequest, modifier` — the overridable strings live on the models in the table below |
+| `ClarificationBar` | Tap-to-clarify bar: a question, option chips in exact list order and a dismiss control; renders nothing for an empty option list | `question, options, onSelect, onDismiss, modifier`, `dismissLabel = "Dismiss"` |
+
+**`ApproachLadderCard` behaviour (v2.5.0):**
+
+- **Router toggle.** Rendered below the offline-only toggle. It emits the tapped segment's target
+  value (`true` means ON), never a negation of the current state, so re-tapping the selected segment
+  re-emits its own value. A `null` `router` / `onRouterChange` pair hides it with no reserved space.
+  Exactly one of the pair non-null throws through `require()`, exactly like the `offlineOnly` /
+  `onOfflineOnlyChange` pair. It is a policy toggle, not per-rung navigation: it never changes rung
+  order or state, and tapping a rung still selects the cap.
+- **Rung accessibility (VA11Y-01, no signature change).** When the cap is selectable (`maxTierId` and
+  `onMaxTierChange` non-null) the rung rows are exposed as radio buttons; the rung whose id equals
+  `maxTierId` is announced as selected and a stale id selects none. The minimum interactive size
+  applies only in that case, so cap-less ladders stay compact. The segmented toggles' state words
+  "selected" / "not selected" are announced by `SegmentedOptionSelector` and stay English, a
+  documented residual the hub does not localize.
+
+**Appended model fields (v2.5.0).** Each is defaulted and appended as the last field; see
+"Voice label fragments" below for how `OutcomeSheet` joins the label fields.
+
+| Model | Appended field | Behaviour |
+|-------|----------------|-----------|
+| `HandledByUiModel` | `escalationsLabel = "Escalations:"` | Prefix of the escalation caption, rendered as `"<escalationsLabel> <escalationCount>"`; plain text. |
+| `UndoRowUiModel` | `undoneLabel = "Undone"` | Text of a row whose state is `UndoRowState.Undone`; plain text. |
+| `UndoRefusedUiModel` | `refusedPrefix = "Couldn't undo:"` and `changedSinceSuffix = "changed since"` | Lead-in rendered before `reason`, and the fragment rendered after `changedItem` when it is non-null; plain text, no templating. The apostrophe in the default is an ASCII apostrophe. |
+| `ProposedItemUiModel` | `removeContentDescription = "Remove"` | Accessibility description of the row's remove control; set it on every item that supplies `onRemove`. Its `toString` deliberately omits this label along with the other display fields. |
+| `FailureActionUiModel` | `role = ActionButtonDefaults.ActionButtonRole.Neutral` | Button role of the failure action (VFAIL-01). Reuses the existing public enum, no new type. The explicit two-argument `(label, onClick)` constructor keeps the v2.4.0 shapes working with role Neutral. |
+| `VoiceOutcomeUiState.Failure` | `body: (@Composable () -> Unit)? = null` and `semanticsPrefix: String? = null` | `body` (VFAIL-02) renders inside the error surface after the handled-by row and before the action; `null` renders no node and no space; equality is by lambda reference. `semanticsPrefix` (VFAIL-03) is prepended to the reason in the accessibility announcement, joined by a single ASCII space so any punctuation belongs to the prefix; `null` or blank leaves the announcement unchanged; plain text, no templating. Static UI copy only, never sensitive text, because the generated `toString` of this class includes it. |
+
 ---
 
 ## Intentionally-unregistered sub-parts (5)
