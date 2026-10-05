@@ -1313,16 +1313,21 @@ package io.github.ygaray.yahirandroidtaste.model {
 
   public final class UndoRowUiModel {
     ctor public UndoRowUiModel(String id, String label, io.github.ygaray.yahirandroidtaste.model.UndoRowState state);
+    ctor public UndoRowUiModel(String id, String label, io.github.ygaray.yahirandroidtaste.model.UndoRowState state, optional String undoneLabel);
     method public String component1();
     method public String component2();
     method public io.github.ygaray.yahirandroidtaste.model.UndoRowState component3();
-    method public io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel copy(optional String id, optional String label, optional io.github.ygaray.yahirandroidtaste.model.UndoRowState state);
+    method public String component4();
+    method public io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel copy(String id, String label, io.github.ygaray.yahirandroidtaste.model.UndoRowState state);
+    method public io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel copy(optional String id, optional String label, optional io.github.ygaray.yahirandroidtaste.model.UndoRowState state, optional String undoneLabel);
     method @InaccessibleFromKotlin public String getId();
     method @InaccessibleFromKotlin public String getLabel();
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.UndoRowState getState();
+    method @InaccessibleFromKotlin public String getUndoneLabel();
     property public String id;
     property public String label;
     property public io.github.ygaray.yahirandroidtaste.model.UndoRowState state;
+    property public String undoneLabel;
   }
 
   public final class VoiceClipUiModel {

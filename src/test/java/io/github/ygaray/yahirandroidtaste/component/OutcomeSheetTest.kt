@@ -13,6 +13,7 @@ import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -201,6 +202,37 @@ class OutcomeSheetTest {
         rows.assertCountEquals(1)
         rows[0].assert(hasText("Card deleted"))
         rows[0].assert(hasText("Undone"))
+        rows[0].assertHasNoClickAction()
+    }
+
+    @Test
+    fun `an Undone row renders a caller-supplied undoneLabel instead of the English default`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(
+                    summary = "Logged 1 item",
+                    undo = UndoAffordanceUiModel(
+                        allLabel = "Undo all (0)",
+                        rows = listOf(
+                            UndoRowUiModel(
+                                id = "1",
+                                label = "Card deleted",
+                                state = UndoRowState.Undone,
+                                undoneLabel = "Annulé"
+                            )
+                        )
+                    )
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        val rows = composeTestRule.onAllNodesWithTag("outcome_sheet_undo_row")
+        rows.assertCountEquals(1)
+        rows[0].assert(hasText("Card deleted"))
+        rows[0].assert(hasText("Annulé"))
+        composeTestRule.onAllNodesWithText("Undone").assertCountEquals(0)
         rows[0].assertHasNoClickAction()
     }
 

@@ -189,7 +189,8 @@ private fun UndoAffordanceBody(undo: UndoAffordanceUiModel, locked: Boolean) {
  * (mirrors [ApproachLadderCard][io.github.ygaray.yahirandroidtaste.component.ApproachLadderCard]'s
  * shared-tag-per-row convention for ordered indexed test access). [UndoRowState.Available] wraps
  * the row in a clickable modifier invoking its own `onUndo`; [UndoRowState.Undone] renders trailing
- * muted "Undone" text with no click; [UndoRowState.Unavailable] renders its reason as trailing
+ * muted [UndoRowUiModel.undoneLabel] text (default "Undone") with no click;
+ * [UndoRowState.Unavailable] renders its reason as trailing
  * `labelSmall` text, never clickable and never counted toward [UndoAffordanceUiModel.allLabel]'s
  * number.
  *
@@ -227,7 +228,7 @@ private fun UndoRowItem(row: UndoRowUiModel, locked: Boolean) {
         when (state) {
             is UndoRowState.Available -> Unit
             is UndoRowState.Undone -> Text(
-                text = "Undone",
+                text = row.undoneLabel,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
