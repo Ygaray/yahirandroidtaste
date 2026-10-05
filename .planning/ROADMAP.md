@@ -116,7 +116,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 19-01-PLAN.md — F3 binary ABI gate (D-03): TDD `tools/verify-binary-abi.sh` + offline fixture test, proven on the real v2.4.1 baseline; unwire the raw-line `api.txt` check from hook + classifier + tests; retire `verify-api-additive.sh`; update `tools/README-api-guard.md` and API.md "The binary-compatibility rule"
+- [x] 19-01-PLAN.md — F3 binary ABI gate (D-03): TDD `tools/verify-binary-abi.sh` + offline fixture test, proven on the real v2.4.1 baseline; unwire the raw-line `api.txt` check from hook + classifier + tests; retire `verify-api-additive.sh`; update `tools/README-api-guard.md` and API.md "The binary-compatibility rule"
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -220,4 +220,4 @@ Plans:
 | 16. A11y + Failure enrichment | v2.5 | 3/3 | In Progress|  |
 | 17. ApproachLadderCard Router ON/OFF toggle | v2.5 | 1/1 | In Progress|  |
 | 18. Catalog integrity + API dump + docs | v2.5 | 2/2 | In Progress|  |
-| 19. Cut v2.5.0 | v2.5 | 0/TBD | Not started | - |
+| 19. Cut v2.5.0 | v2.5 | 1/2 | In Progress|  |

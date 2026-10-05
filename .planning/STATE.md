@@ -3,19 +3,19 @@ gsd_state_version: "1.0"
 milestone: v2.5
 milestone_name: Voice UI Localization & Accessibility
 current_phase: 19
-current_phase_name: cut-v2-5-0
+current_phase_name: Cut v2.5.0
 status: executing
-stopped_at: Phase 18 complete, ready to plan Phase 19
-last_updated: "2026-10-05T19:50:47.767Z"
+stopped_at: Completed 19-01-PLAN.md
+last_updated: "2026-10-05T19:57:04.576Z"
 last_activity: 2026-10-05
-last_activity_desc: Phase 18 complete, transitioned to Phase 19
-state_head: b52f873710bd05881be78c082fb6ccefe3a8bf3f
+last_activity_desc: Phase 19 execution started
+state_head: 4b2a22f98942f002d4d17a89892f621889b46423
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 0
   total_plans: 11
-  completed_plans: 9
-  percent: 20
+  completed_plans: 10
+  percent: 0
 ---
 
 # Project State
@@ -25,16 +25,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-05)
 
 **Core value:** The hub stays a coherent design system — not merely a safe, ever-growing pile of domain-agnostic components — as more consumers contribute.
-**Current focus:** Phase 18 — Catalog integrity + API dump + docs
+**Current focus:** Phase 19 — Cut v2.5.0
 
 ## Current Position
 
-Phase: 19 (cut-v2-5-0) — READY TO EXECUTE
-Plan: Not started
+Phase: 19 (Cut v2.5.0) — EXECUTING
+Plan: 2 of 2
 Status: Ready to execute
-Last activity: 2026-10-05 — Phase 18 complete, transitioned to Phase 19
+Last activity: 2026-10-05 — Phase 19 execution started
 
-Progress: [██░░░░░░░░] 20%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -73,6 +73,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 17 P01 | 12 min | 3 tasks | 7 files |
 | Phase 18 P01 | 2 min | 3 tasks | 2 files |
 | Phase 18 P02 | ~25min | 3 tasks | 1 files |
+| Phase 19 P01 | 75min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -94,6 +95,7 @@ Recent decisions affecting current work:
 - [Phase 17]: ApproachLadderCard router toggle emits the tapped segment's target value (index == 1), option order listOf(routerOff, routerOn); card stays stateless display+emit — Idempotent re-taps cannot flip policy; matches the offline toggle convention
 - [Phase 17]: Explorer fixture keeps its two-parameter ApproachLadderCardFixture as a wrapper and adds a router-aware overload — Preserves the Kotlin synthetic access$ descriptor so the javap binary gate vs v2.4.1 reports missing=0
 - [Phase 18]: [Phase 18-02]: D-01 reading applied - Metalava apiCheck green + current api.txt is API-02 pass; raw-line exit 3 (10 lines) recorded as known false positive, not overridden
+- [Phase 19]: Phase 19-01: D-03 binary ABI gate tools/verify-binary-abi.sh added; raw-line api.txt check removed (verify-api-additive.sh retired, hook override narrowed to lane 2)
 
 ### Pending Todos
 
@@ -129,8 +131,8 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-05T18:26:12.468Z
-Stopped at: Phase 18 complete, ready to plan Phase 19
+Last session: 2026-10-05T19:57:04.351Z
+Stopped at: Completed 19-01-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
