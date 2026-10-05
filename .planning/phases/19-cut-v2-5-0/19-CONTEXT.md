@@ -19,6 +19,14 @@ Cut the immutable `v2.5.0` JitPack tag via the §11 protocol, isolated so the cu
 ### cut-mechanism
 - **D-02 [cut-mechanism]:** Cut via the orchestrator's `xrepo build`, one repo at a time (orchestrator directive). Resolution (human). Relay the full §11 ledger row to `yahir-gsd-control-plane-6e`; never write the §11 ledger here. `git.create_tag` stays false (no stray marker tag — SHIP-02 guard).
 
+### binary-abi-gate (LOCKED — orchestrator yahir-gsd-control-plane-3b ruling, 2026-10-05, F3 of the binary-compat fix plan)
+- **D-03 [binary-abi-gate]:** Before the `v2.5.0` tag:
+  - **Add the script.** Add `tools/verify-binary-abi.sh <baseline-tag>`, invoked here as `tools/verify-binary-abi.sh v2.4.1`. It builds the release AAR at HEAD and gets the baseline AAR (the tag's JitPack artifact or a cached/worktree build). It runs `javap -public -s` over every class in each `classes.jar` and normalizes the output to sorted `class#member descriptor` lines. It then does an append-only diff.
+  - **The gate.** **Zero missing public descriptors** at HEAD versus the baseline. Exclude Dagger `*_Factory` / `*_MembersInjector` and `ComposableSingletons$*`. Keep a baseline line-count sanity floor so an empty javap run can't pass. The proven command and its output are in the quick 261005-dmc / 261005-e2e SUMMARYs (v2.4.1 baseline = 2526 lines; missing=0 at `0956d79`). It **must be green on the exact tagged HEAD before the tag is cut**. Any missing descriptor is lane 3: STOP, never waive.
+  - **Hook change.** Delete the raw-line `api.txt` check (`tools/verify-api-additive.sh` invocation / `API_FILE` path, INC-2026-10-05-02, seed S-003) from `tools/hooks/pre-commit`. Metalava `apiCheck` stays as the per-commit source-level gate.
+  - **Docs.** Update `tools/README-api-guard.md` and API.md § "The binary-compatibility rule" to point at the script.
+  - The control plane closes INC-2026-10-05-02 when F3 runs green on the tag. _(source: orchestrator ruling — not revisitable by the planner)_
+
 ### Claude's Discretion
 - If `xrepo build` is unavailable/undefined at cut time, fall back to the in-repo manual annotated-tag+push precedent (v2.2.0/v2.4.1) after confirming with the orchestrator.
 
