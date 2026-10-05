@@ -425,4 +425,26 @@ class ApproachLadderCardTest {
             caplessPitch < selectablePitch
         )
     }
+
+    // ── VAPPR-04 / Phase 17: Router ON/OFF policy toggle ──
+
+    @Test
+    fun `toggling router emits onRouterChange with the new value`() {
+        var lastValue: Boolean? = null
+        composeTestRule.setContent {
+            ApproachLadderCard(
+                ladder = ladder,
+                router = false,
+                onRouterChange = { lastValue = it }
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("approach_ladder_card_router_toggle").assertExists()
+        composeTestRule.onNodeWithContentDescription("Router off, selected").assertExists()
+        composeTestRule.onNodeWithContentDescription("Router on, not selected").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, lastValue)
+    }
 }

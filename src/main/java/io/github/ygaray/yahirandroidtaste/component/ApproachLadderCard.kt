@@ -39,6 +39,10 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * never depends on any voice-action-engine `TierPolicy` type. The card DISPLAYS + EMITS only — it
  * never enforces, reorders, or executes the ladder.
  *
+ * The optional router toggle (VAPPR-04) is a policy toggle rendered below the offline-only toggle.
+ * It is NOT per-rung navigation: it never re-orders, filters or changes any rung, and tapping a
+ * rung still selects the cap.
+ *
  * Mirrors [ProviderKeyCard]/[ModelSelectCard]'s card shape (required content params first, then
  * [modifier]), wrapped in a [Surface] + [Column] body with [Dimens] padding.
  *
@@ -75,6 +79,16 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * @param offlineOnlyLabel Caller-localizable text of the toggle's "offline only" segment. Defaults
  *   to the English `"Offline only"`. The toggle's accessibility state words ("selected" /
  *   "not selected") are announced by [SegmentedOptionSelector] and stay English.
+ * @param router Current router state (`true` = ON), or `null` to hide the router toggle entirely.
+ * @param onRouterChange Invoked with the tapped segment's target value (`true` = ON) when the
+ *   router toggle is tapped, or `null` to hide the toggle entirely — must be non-null exactly when
+ *   [router] is non-null (enforced via `require`, exactly like the offline-only pair).
+ * @param routerOnLabel Caller-localizable text of the router toggle's "on" segment. Defaults to
+ *   the English `"Router on"`; rendered verbatim. The toggle's accessibility state words
+ *   ("selected" / "not selected") are announced by [SegmentedOptionSelector] and stay English.
+ * @param routerOffLabel Caller-localizable text of the router toggle's "off" segment. Defaults to
+ *   the English `"Router off"`; rendered verbatim. The toggle's accessibility state words
+ *   ("selected" / "not selected") are announced by [SegmentedOptionSelector] and stay English.
  */
 @Composable
 fun ApproachLadderCard(
@@ -88,7 +102,11 @@ fun ApproachLadderCard(
     cappedLabel: String = "Capped",
     needsNetworkLabel: String = "Needs network",
     onlineLabel: String = "Online",
-    offlineOnlyLabel: String = "Offline only"
+    offlineOnlyLabel: String = "Offline only",
+    router: Boolean? = null,
+    onRouterChange: ((Boolean) -> Unit)? = null,
+    routerOnLabel: String = "Router on",
+    routerOffLabel: String = "Router off"
 ) {
     // Both optional prop pairs below are gated by `require()` rather than left to fail silently:
     // an earlier revision only guarded the maxTierId/onMaxTierChange pair, leaving a caller that
@@ -103,6 +121,10 @@ fun ApproachLadderCard(
         "ApproachLadderCard: offlineOnly and onOfflineOnlyChange must both be null or both be " +
             "non-null (got offlineOnly=$offlineOnly, onOfflineOnlyChange=" +
             "${if (onOfflineOnlyChange == null) "null" else "non-null"})"
+    }
+    require((router == null) == (onRouterChange == null)) {
+        "ApproachLadderCard: router and onRouterChange must both be null or both be non-null " +
+            "(got router=$router, onRouterChange=${if (onRouterChange == null) "null" else "non-null"})"
     }
     val effectiveOfflineOnly = offlineOnly == true
     val capRank = maxTierId?.let { id -> ladder.firstOrNull { it.id == id }?.rank } ?: Int.MAX_VALUE
@@ -147,6 +169,18 @@ fun ApproachLadderCard(
                         .fillMaxWidth()
                         .padding(top = Dimens.ContentSpacing)
                         .testTag("approach_ladder_card_offline_toggle")
+                )
+            }
+
+            if (router != null && onRouterChange != null) {
+                SegmentedOptionSelector(
+                    selectedIndex = if (router) 1 else 0,
+                    options = listOf(routerOffLabel, routerOnLabel),
+                    onSelect = { index -> onRouterChange(index == 1) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = Dimens.ContentSpacing)
+                        .testTag("approach_ladder_card_router_toggle")
                 )
             }
         }
