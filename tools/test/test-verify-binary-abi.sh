@@ -79,7 +79,7 @@ run 0 "(b) additive head exit 0" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/
 # (c) head removes Alpha.a() -> exit 3 naming the descriptor
 run 3 "(c) removed method exit 3" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/rm.aar" \
   bash tools/verify-binary-abi.sh v0.0.0
-check_grep "$ERR" 'ABI-ADDITIVE FAIL \(lane 3\).*p\.Alpha#a \(\)V' "(c) stderr names p.Alpha#a ()V"
+check_grep "$ERR" 'ABI-ADDITIVE FAIL \(lane 3\).*p\.Alpha#a\(\)V' "(c) stderr names p.Alpha#a()V"
 
 # (d) ComposableSingletons class dropped -> pass, counted as filtered
 run 0 "(d) ComposableSingletons loss ignored" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/nocs.aar" \
