@@ -111,7 +111,16 @@ Plans:
   4. The cut proceeds only on Yahir's direct OK (A12 tag-cut waiver confirmation) — human-gated.
   5. No stray milestone-marker tag is created (`git.create_tag` false) — the only tag is the `v2.5.0` release coordinate (SHIP-03).
 
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 19-01-PLAN.md — F3 binary ABI gate (D-03): TDD `tools/verify-binary-abi.sh` + offline fixture test, proven on the real v2.4.1 baseline; unwire the raw-line `api.txt` check from hook + classifier + tests; retire `verify-api-additive.sh`; update `tools/README-api-guard.md` and API.md "The binary-compatibility rule"
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 19-02-PLAN.md — The v2.5.0 cut (D-01/D-02/D-03): record GATED_HEAD, fresh battery + swap-baseline Metalava + ABI gate on it, annotated tag by SHA, push the tag only, JitPack confirmation + non-gating published-AAR ABI check, relay-bannered ledger row + evidence committed after the tag (SHIP-03)
 
 ## Completed Milestones
 
