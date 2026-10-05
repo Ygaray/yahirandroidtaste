@@ -36,6 +36,14 @@ gen_src(){ # <srcdir> <variant>
   { echo 'package p;'; echo 'public class Prot {'
     [ "$v" = noprot ] || echo '  protected void prot(int x) {}'
     echo '  public void keep() {}'; echo '}'; } > "$s/p/Prot.java"
+  # Class-header facts with no members of their own (WR-01): a member-less marker interface, a class that
+  # implements it, and an open (non-final) class.
+  [ "$v" = rmmarker ] || printf 'package p;\npublic interface Marker {}\n' > "$s/p/Marker.java"
+  { echo 'package p;'
+    if [ "$v" = rmmarker ] || [ "$v" = nosuper ]; then echo 'public class Sub extends Alpha {}'
+    else echo 'public class Sub extends Alpha implements Marker {}'; fi; } > "$s/p/Sub.java"
+  if [ "$v" = final ]; then printf 'package p;\npublic final class Open {}\n' > "$s/p/Open.java"
+  else printf 'package p;\npublic class Open {}\n' > "$s/p/Open.java"; fi
   [ "$v" = nofactory ] || printf 'package p;\npublic class Foo_Factory { public void make() {} }\n' > "$s/p/Foo_Factory.java"
   [ "$v" = nocs ] || printf 'package p;\npublic class ComposableSingletons$FooKt { public void lam() {} }\n' > "$s/p/ComposableSingletons\$FooKt.java"
   [ "$v" = add ] && printf 'package p;\npublic class Beta { public void z() {} }\n' > "$s/p/Beta.java"
@@ -60,6 +68,9 @@ build_aar nofactory nofactory
 build_aar chg chg
 build_aar nohid nohid
 build_aar noprot noprot
+build_aar rmmarker rmmarker
+build_aar nosuper nosuper
+build_aar final final
 build_aar hostile hostile
 build_aar corrupt corrupt
 
@@ -98,6 +109,22 @@ check_grep "$ERR" 'ABI-ADDITIVE FAIL \(lane 3\).*p\.Hidden#hid\(\)V' "(c2) stder
 run 3 "(c3) removed protected method exit 3" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/noprot.aar" \
   bash tools/verify-binary-abi.sh v0.0.0
 check_grep "$ERR" 'ABI-ADDITIVE FAIL \(lane 3\).*p\.Prot#prot\(I\)V' "(c3) stderr names p.Prot#prot(I)V"
+
+# (c4) WR-01: class-header facts are compared even when the class has no members
+run 3 "(c4) removed member-less interface exit 3" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/rmmarker.aar" \
+  bash tools/verify-binary-abi.sh v0.0.0
+check_grep "$ERR" 'ABI-ADDITIVE FAIL \(lane 3\).*p\.Marker#@interface' "(c4) stderr names p.Marker#@interface"
+run 3 "(c4) dropped supertype exit 3" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/nosuper.aar" \
+  bash tools/verify-binary-abi.sh v0.0.0
+check_grep "$ERR" 'ABI-ADDITIVE FAIL \(lane 3\).*p\.Sub#@super p\.Marker' "(c4) stderr names the dropped supertype"
+run 3 "(c4) open class made final exit 3" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/final.aar" \
+  bash tools/verify-binary-abi.sh v0.0.0
+check_grep "$ERR" 'ABI-ADDITIVE FAIL \(lane 3\).*p\.Open#@nonfinal' "(c4) stderr names p.Open#@nonfinal"
+# the reverse direction (final -> open, supertype added) is additive and must pass
+run 0 "(c4) final class opened up exit 0" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/final.aar" HEAD_AAR="$FX/base.aar" \
+  bash tools/verify-binary-abi.sh v0.0.0
+run 0 "(c4) supertype added exit 0" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/nosuper.aar" HEAD_AAR="$FX/base.aar" \
+  bash tools/verify-binary-abi.sh v0.0.0
 
 # (d) ComposableSingletons class dropped -> pass, counted as filtered
 run 0 "(d) ComposableSingletons loss ignored" env SKIP_BUILD=1 MIN_LINES=1 BASELINE_AAR="$FX/base.aar" HEAD_AAR="$FX/nocs.aar" \

@@ -4,7 +4,7 @@
 # Why: Metalava apiCheck is a SOURCE-level gate and is blind to Compose $default / $changed synthetics and
 # data-class synthetics (INC-2026-10-05-02). This gate runs `javap -protected -s` (public AND protected members) over every class in the
 # release AAR's classes.jar at HEAD and in the baseline tag's AAR, normalizes both to sorted unique
-# `class#member descriptor` lines, and diffs append-only: every public or protected descriptor present in the
+# `class#member descriptor` lines (plus `class#@...` class-header facts, see normalize), and diffs append-only: every public or protected descriptor present in the
 # baseline must still exist at HEAD (protected members are binary API for consumers that subclass).
 #
 # Usage:   tools/verify-binary-abi.sh <baseline-tag>        e.g. tools/verify-binary-abi.sh v2.4.1
@@ -113,8 +113,25 @@ normalize() { # <aar> <out-listing>
   javap -protected -s -cp "$d/classes.jar" "${names[@]}" >"$d/javap.out" 2>"$d/javap.err" || rc=$?
   [ "$rc" -eq 0 ] || die 2 "javap exited $rc on $aar: $(head -3 "$d/javap.err")"
   [ ! -s "$d/javap.err" ] || die 2 "javap wrote to stderr on $aar: $(head -3 "$d/javap.err")"
+  # Member lines: `class#name descriptor`. Class-header lines (WR-01), all prefixed `class#@` so they can never
+  # collide with a member: `@class|@interface` (presence), `@public`, `@nonfinal` (class that is not final),
+  # `@concrete` (class that is not abstract) and one `@super <erased type>` per extends/implements entry.
+  # A baseline header line missing at HEAD is binary-breaking (class removed, supertype dropped, class made
+  # final/abstract/non-public) even for a class with zero members. Generic arguments are erased.
   awk '
-    /^([a-z]+ )*(class|interface) [^ ]+.*\{$/ { match($0, /(class|interface) [^ <{]+/); s=substr($0, RSTART, RLENGTH); sub(/^(class|interface) /, "", s); cls=s }
+    /^([a-z]+ )*(class|interface) [^ ]+.*\{$/ {
+      hdr=$0
+      match(hdr, /(class|interface) [^ <{]+/)
+      mods=substr(hdr, 1, RSTART-1); rest=substr(hdr, RSTART+RLENGTH)
+      s=substr(hdr, RSTART, RLENGTH); kind=s; sub(/ .*/, "", kind); sub(/^(class|interface) /, "", s); cls=s
+      while (gsub(/<[^<>]*>/, "", rest)) { }
+      sub(/ *\{$/, "", rest); gsub(/(^| )(extends|implements) /, ",", rest); gsub(/ /, "", rest)
+      print cls "#@" kind
+      if (mods ~ /(^| )public /) print cls "#@public"
+      if (kind == "class" && mods !~ /(^| )final /) print cls "#@nonfinal"
+      if (kind == "class" && mods !~ /(^| )abstract /) print cls "#@concrete"
+      m=split(rest, sup, ","); for (q=1; q<=m; q++) if (sup[q] != "") print cls "#@super " sup[q]
+    }
     /descriptor:/ {
       if (cls == "") { print "descriptor line before any class header: " $0 > "/dev/stderr"; exit 2 }
       n=prev; sub(/\(.*/, "", n); k=split(n, a, " "); print cls "#" a[k] $2 }
