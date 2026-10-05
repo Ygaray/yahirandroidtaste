@@ -89,6 +89,25 @@ fun ModelSelectCard(
     }
 }
 
+// v2.4.x binary-compatibility shim (INC-2026-10-05-02 F1): restores the pre-v2.5 JVM descriptor for
+// consumers compiled against v2.4.x. Hidden from Kotlin and Java source -- do not call it or
+// document it as API.
+@Deprecated("Binary compatibility with v2.4.x", level = DeprecationLevel.HIDDEN)
+@Composable
+fun ModelSelectCard(
+    models: List<ModelOptionUiModel>,
+    selectedModelId: String?,
+    onModelSelected: (String) -> Unit,
+    emptyReason: String,
+    modifier: Modifier = Modifier
+) = ModelSelectCard(
+    models = models,
+    selectedModelId = selectedModelId,
+    onModelSelected = onModelSelected,
+    emptyReason = emptyReason,
+    modifier = modifier
+)
+
 /**
  * Private model-selection dropdown — reuses the [ExposedDropdownMenuBox] shape [ProviderKeyCard]
  * established (RESEARCH.md Q2, canonical Material 3 pattern): a read-only [OutlinedTextField]

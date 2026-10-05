@@ -97,3 +97,22 @@ fun ClarificationBar(
         }
     }
 }
+
+// v2.4.x binary-compatibility shim (INC-2026-10-05-02 F1): restores the pre-v2.5 JVM descriptor for
+// consumers compiled against v2.4.x. Hidden from Kotlin and Java source -- do not call it or
+// document it as API.
+@Deprecated("Binary compatibility with v2.4.x", level = DeprecationLevel.HIDDEN)
+@Composable
+fun ClarificationBar(
+    question: String,
+    options: List<ClarificationOptionUiModel>,
+    onSelect: (String) -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) = ClarificationBar(
+    question = question,
+    options = options,
+    onSelect = onSelect,
+    onDismiss = onDismiss,
+    modifier = modifier
+)

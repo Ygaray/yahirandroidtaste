@@ -110,6 +110,33 @@ fun ProviderKeyCard(
     }
 }
 
+// v2.4.x binary-compatibility shim (INC-2026-10-05-02 F1): restores the pre-v2.5 JVM descriptor for
+// consumers compiled against v2.4.x. Hidden from Kotlin and Java source -- do not call it or
+// document it as API.
+@Deprecated("Binary compatibility with v2.4.x", level = DeprecationLevel.HIDDEN)
+@Composable
+fun ProviderKeyCard(
+    providers: List<ProviderOptionUiModel>,
+    selectedProviderId: String?,
+    onProviderSelected: (String) -> Unit,
+    keyValue: String,
+    onKeyChange: (String) -> Unit,
+    keyState: KeyFieldState,
+    keyLabel: String,
+    modifier: Modifier = Modifier,
+    emptyProvidersReason: String = "No providers configured yet"
+) = ProviderKeyCard(
+    providers = providers,
+    selectedProviderId = selectedProviderId,
+    onProviderSelected = onProviderSelected,
+    keyValue = keyValue,
+    onKeyChange = onKeyChange,
+    keyState = keyState,
+    keyLabel = keyLabel,
+    modifier = modifier,
+    emptyProvidersReason = emptyProvidersReason
+)
+
 /**
  * Private provider-selection dropdown — first in-tree [ExposedDropdownMenuBox] use (RESEARCH.md
  * Q2, canonical Material 3 shape): a read-only [OutlinedTextField] anchor + [ExposedDropdownMenu]
