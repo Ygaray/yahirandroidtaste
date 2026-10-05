@@ -347,7 +347,10 @@ Never change a **tagged** public signature in place. Metalava `apiCheck` is only
 default arguments compile to, so a clean `apiCheck` does not prove binary compatibility. The
 **binary** gate is the `javap` descriptor diff of the release AAR against the previous tag's AAR:
 zero missing public descriptors (Dagger `*_Factory` / `*_MembersInjector` and
-`ComposableSingletons$*` excluded). It becomes `tools/verify-binary-abi.sh` at the v2.5.0 cut.
+`ComposableSingletons$*` excluded). The command is `tools/verify-binary-abi.sh <previous-tag>` (for
+v2.5.0 that is `v2.4.1`). It exits 0 on pass, 3 when a public descriptor is missing (lane 3: STOP,
+never waived), 2 on a tool, sanity-floor or baseline-resolution failure, and 1 on usage. Run it on
+the exact tagged HEAD before tagging; see `tools/README-api-guard.md`.
 
 - **Composables:** append new parameters as the last parameter (source compat). Keep the tagged
   signature as a `@Deprecated("…", level = DeprecationLevel.HIDDEN) @Composable` overload with the

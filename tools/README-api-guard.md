@@ -1,21 +1,22 @@
 # Hub additive guards
 
-## Declaring non-additive (lane-2/3) changes
+## Declaring non-additive (lane-2) changes
 
-The pre-commit hook (`tools/hooks/pre-commit`) runs the lane classifier to detect whether a commit is additive (lane 1, fast path) or non-additive (lane 2: behavior change, lane 3: API break).
+The pre-commit hook (`tools/hooks/pre-commit`) runs the lane classifier to detect whether a commit rewrites an existing `src/main` line: lane 1 (fast path) is append-only and allowed, lane 2 (a source-line rewrite, i.e. a behavior change) is blocked unless declared.
 
-Lane 2/3 changes are blocked by default because they require coordination (hub mutex, semantic versioning bump). To land a deliberately non-additive change, re-run your commit with the `HUB_LANE_OVERRIDE` environment variable set to the detected lane:
+A lane-2 change is blocked by default because it requires coordination (hub mutex, semantic versioning bump). To land a deliberately non-additive change, re-run your commit with the `HUB_LANE_OVERRIDE` environment variable set to the detected lane:
 
 ```bash
-HUB_LANE_OVERRIDE=2 git commit …   # Behavior change (source-only modification, API append-only)
-HUB_LANE_OVERRIDE=3 git commit …   # API break (public symbol removed/renamed)
+HUB_LANE_OVERRIDE=2 git commit …   # Behavior change (an existing source line was rewritten)
 ```
 
-The hook will then allow the commit with the explicit declaration. This ensures that non-additive changes are intentional and coordinated, not accidental.
+The hook will then allow the commit with the explicit declaration. This ensures that non-additive changes are intentional and coordinated, not accidental. The hook fails closed: if the classifier cannot classify the commit, the commit is blocked.
+
+API-surface checks are not done by the hook: Metalava `apiCheck` is the source-level gate and `tools/verify-binary-abi.sh` is the binary gate (below).
 
 ## API dump discipline
 
-On every additive change, run `./gradlew apiDump` and commit the updated `$API_FILE` in the same commit — otherwise the `.api` is stale and the pre-commit guard sees no new symbols.
+On every change to the public API, run `./gradlew apiDump` and commit the updated `api.txt` in the same commit, so `./gradlew apiCheck` (the source-level Metalava gate, run in the release battery and whenever public API changes) stays green.
 
 Before any release, run the full guard test suite:
 
@@ -23,18 +24,34 @@ Before any release, run the full guard test suite:
 bash tools/test/run-all.sh
 ```
 
-This ensures all additive-detection guards pass (verify-api-additive, verify-additive-diff, classify-hub-change, and precommit-hook).
+This ensures the remaining guards pass (verify-additive-diff, classify-hub-change, precommit-hook, and verify-binary-abi).
 
 ## Installation
 
 Run `bash tools/hooks/install.sh` to symlink the pre-commit hook into your `.git/hooks/` directory.
+
+## Binary ABI gate
+
+Metalava `apiCheck` models Kotlin signatures, not the JVM descriptors that Compose `$default` / `$changed` parameters and data-class synthetics compile to, so a clean `apiCheck` does not prove binary compatibility. `tools/verify-binary-abi.sh` is the binary gate.
+
+```bash
+tools/verify-binary-abi.sh <previous-tag>     # for the v2.5.0 cut: tools/verify-binary-abi.sh v2.4.1
+```
+
+- **What it compares:** `javap -public -s` descriptors of every class in the release AAR built at HEAD versus the baseline tag's AAR, normalized to sorted unique `class#member descriptor` lines and diffed append-only. Every baseline descriptor must still exist at HEAD; additions are fine.
+- **Exit codes:** `0` pass (zero missing public descriptors); `1` usage or precondition (no argument, malformed or unresolvable tag, dirty artifact inputs when the script builds); `2` tool, sanity-floor, javap-error, unsafe-entry-name or baseline-resolution failure; `3` lane 3, at least one public descriptor from the baseline is missing at HEAD. Exit 3 means STOP and is never waived.
+- **Baseline resolution order:** `BASELINE_AAR` (an existing file, no fall-through), then the Gradle cache copy of the tag, then an HTTPS download from JitPack. Both AAR hashes and the baseline source are printed so the evidence names the exact bytes.
+- **Exclusions:** Dagger `*_Factory` and `*_MembersInjector` classes are not compared; missing `ComposableSingletons$*` lines are ignored and counted (`filtered_ComposableSingletons`).
+- **Sanity floor:** both normalized listings must hold at least `MIN_LINES` lines (default 2000, the v2.4.1 baseline has 2526), and any javap stderr output or non-zero javap exit is a hard failure, so an empty or partial javap run can never pass.
+- **Seams:** `BASELINE_AAR`, `HEAD_AAR`, `SKIP_BUILD`, `MIN_LINES` and `JITPACK_BASE` exist for the offline fixture test and diagnostics only. The first output line is `SEAMS: none` or names the seams set; a release cut must show `SEAMS: none`.
+- **When to run:** at every release cut, on the exact tagged HEAD, before tagging; and whenever a tagged public signature is touched.
 
 ## ABI-dump mechanism (Task 1 spike, 2026-08-27)
 
 **Chosen mechanism: Metalava** (mechanism 3 of the spike order), via the community
 `me.tylerbwong.gradle.metalava` Gradle plugin (v0.5.0).
 
-**`$API_FILE` = `api.txt`** (repo root — root-as-module, so this is the module root too).
+**The committed signature file is `api.txt`** (repo root — root-as-module, so this is the module root too).
 
 Mechanisms 1 and 2 were tried first per the spike order and both failed on this exact stack
 (AGP 9.2.1 built-in Kotlin support + Kotlin 2.3.20 + `com.android.library` + Compose):
@@ -103,8 +120,8 @@ a real Java/ABI-sensitive caller. This is not new to `TagChipUiModel.color` spec
 inherent to this project's Metalava configuration for any public property/function whose signature
 touches a Compose `Color` (or any other Kotlin value class, e.g. `Dp`).
 
-**Mitigation for now:** when a diff adds/changes a public member whose signature involves a value
-class, additionally verify with `javap` (or `abidiff`) on the compiled `.class`, not just
-`api.txt`, per the review that surfaced this (07-REVIEW-02.md, Phase 07). No code/tooling change
-has been made to close this gap yet — tracked here as a backlog item for a future pass on the
-Metalava/ABI-guard tooling itself.
+**Mitigation (historical finding, now closed):** at the time, the advice was to verify such members
+with `javap` (or `abidiff`) on the compiled `.class`, not just `api.txt`, per the review that
+surfaced this (07-REVIEW-02.md, Phase 07). The javap gate in "Binary ABI gate" above
+(`tools/verify-binary-abi.sh`) now closes this gap: it diffs every public JVM descriptor, including
+the compiler-mangled value-class accessors, against the previous tag's AAR.
