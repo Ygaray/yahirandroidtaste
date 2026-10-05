@@ -393,7 +393,6 @@ class ApproachLadderCardTest {
         // (RESEARCH Pitfall 3). The real pre-fix defect is adjacent targets overlapping.
         val touch = (0..2).map { rungNodes()[it].fetchSemanticsNode().touchBoundsInRoot }
         val minHeightPx = with(density!!) { 48.dp.toPx() }
-        println("VA11Y-01 touchBoundsInRoot (px): $touch; 48dp = $minHeightPx px")
         touch.forEachIndexed { i, b ->
             assertTrue("rung $i touch height ${b.height} must be >= $minHeightPx", b.height >= minHeightPx)
         }
@@ -421,7 +420,6 @@ class ApproachLadderCardTest {
         fun top(i: Int) = rungNodes()[i].fetchSemanticsNode().boundsInRoot.top
         val caplessPitch = top(1) - top(0)
         val selectablePitch = top(4) - top(3)
-        println("VA11Y-01 row pitch (px): cap-less=$caplessPitch cap-selectable=$selectablePitch")
         assertTrue(
             "cap-less pitch $caplessPitch must be strictly smaller than cap-selectable pitch $selectablePitch",
             caplessPitch < selectablePitch
