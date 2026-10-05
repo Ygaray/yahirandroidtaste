@@ -272,7 +272,8 @@ defaults, byte-identical to the literals they replaced) as the LAST parameter of
 shipped constructor arity via `@JvmOverloads` plus a hand-written old-arity `copy`).
 
 - It is **source-compatible**: every v2.4.x call shape (positional, named, partial, `copy(...)`,
-  destructuring) still compiles — pinned by the committed `VoiceI18nSourceCompatTest` fixture — and
+  destructuring) still compiles, except the `ProposedItemUiModel` trailing-lambda call below —
+  pinned by the committed `VoiceI18nSourceCompatTest` fixture for the other shapes — and
   Metalava `apiCheck` passes (it tracks only the public, non-synthetic surface).
 - It is **binary-compatible with v2.4.x** (binary-compat fix, 2026-10-05). Every v2.4.1 public
   JVM descriptor is still present in the v2.5.0 AAR. The four composables keep a
@@ -285,8 +286,39 @@ shipped constructor arity via `@JvmOverloads` plus a hand-written old-arity `cop
   JitPack AAR that shows zero missing descriptors.
 - `FailureActionUiModel("l") { … }` (the v2.4.0 trailing-lambda shape) compiles again through an
   explicit `(label, onClick)` constructor.
+- It is **NOT source-compatible** for a **trailing-lambda** call of `ProposedItemUiModel`. The v2.4.x
+  call `ProposedItemUiModel(id, title) { … }` bound its lambda to `trailingContent`, which was the
+  last constructor parameter. v2.5.0 appended `removeContentDescription: String` after it, so Kotlin
+  now binds a trailing lambda to that `String` and the call no longer compiles. Pass the slot as the
+  named argument `trailingContent = { … }` when moving to v2.5.0. Metalava's `api.txt` check does not
+  cover call syntax. It is a source-level break only: v2.4.x-compiled binaries still link, per the
+  binary-compatibility bullet above. A sweep of the known call sites on 2026-10-05 (SecondBrain,
+  CalTracker, hub-internal) found only the named form, so none breaks. It is the same hazard class as
+  the v2.3.0 `showTagColors` addition. Every other appended-last addition is unaffected because its
+  former last parameter was not a function type, and `FailureActionUiModel` (whose former last
+  parameter `onClick` is a function type) is covered by its explicit two-argument constructor.
 - Consumers still rebuild from an immutable tag on every repin (`ECOSYSTEM.md` §7). Binary
   compatibility is a safety net for prebuilt dependents, not a reason to skip the rebuild.
+
+**Appending the Failure enrichment and router toggle (v2.5.0, VFAIL-01..03, VAPPR-04) — the precise
+compatibility scope.** v2.5.0 appended `role` to `FailureActionUiModel`, `body` and `semanticsPrefix`
+to `VoiceOutcomeUiState.Failure`, and `router`, `onRouterChange`, `routerOnLabel` and `routerOffLabel`
+as the last four parameters of `ApproachLadderCard`. Every one is defaulted (see section 10 for the
+defaults and behaviour).
+
+- It is **source-compatible** for positional, named, partial, `copy(...)` and destructuring shapes.
+  `FailureActionUiModel(label, onClick)` and the trailing-lambda `FailureActionUiModel("l") { … }`
+  bind to `onClick` with `role` Neutral through the explicit two-argument constructor, and a
+  hand-written legacy-arity `copy` on `FailureActionUiModel` and on `Failure` keeps the old `copy`
+  shapes working.
+- **Binary compatibility** follows the mechanism described above: the hidden v2.4.1
+  `ApproachLadderCard` overload passes `router = null`, and the `FailureActionUiModel` and `Failure`
+  synthetics are among the six restored. That claim rests on the `javap` proof and is re-proven at
+  the v2.5.0 cut; it is not asserted here as freshly verified.
+- The rung accessibility change (VA11Y-01) is behaviour only, with no signature change; it is
+  documented in section 10.
+- `semanticsPrefix` is static UI copy only, never sensitive text, because the generated `toString`
+  of `Failure` includes it.
 
 **Voice label fragments — how the sheet joins them (v2.5.0, VI18N-04).** The label fields are plain
 text fragments; `OutcomeSheet` composes them with fixed separators: a single ASCII space between a
