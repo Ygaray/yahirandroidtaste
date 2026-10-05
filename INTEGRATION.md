@@ -12,7 +12,7 @@ surface it references is in **`API.md`**; the deeper reuse doctrine is in **`CLA
   (`@HiltAndroidApp class MyApp : Application()`) so its `SingletonComponent` aggregates the library's
   `@Singleton` bindings. **Without a Hilt application host, injection of the library's singletons fails
   at the consumer** (no component to install the bindings into). See §3.
-- **A Compose BOM aligned with the library's.** The library builds against **Compose BOM 2026.02.01**.
+- **A Compose BOM aligned with the library's.** The library builds against **Compose BOM 2026.04.01**.
   Your consumer must align its own Compose BOM so the Compose runtime/UI/material3 versions match and
   there is no duplicate/mismatched Compose on the classpath (a mismatch surfaces as
   `NoSuchMethodError` / composition crashes at runtime, not at compile time). See §4.
@@ -91,7 +91,7 @@ Match the library's Compose BOM so a single, consistent Compose is on the classp
 
 ```kotlin
 // build.gradle.kts (consumer)
-implementation(platform("androidx.compose:compose-bom:2026.02.01"))   // align with the library
+implementation(platform("androidx.compose:compose-bom:2026.04.01"))   // align with the library
 ```
 
 Then wrap your UI in the library theme — every component assumes it renders inside it:
@@ -99,7 +99,7 @@ Then wrap your UI in the library theme — every component assumes it renders in
 ```kotlin
 setContent {
     YahirAndroidTasteTheme {
-        // …call the seven-family components (see API.md)…
+        // …call the ten-family components (see API.md)…
     }
 }
 ```
@@ -117,6 +117,32 @@ YahirAndroidTasteTheme {
     ConfirmationDialog(title = "Delete?", body = "This can't be undone", onDismissRequest = { /* … */ })
 }
 ```
+
+### Localizing the voice surface (optional)
+
+The hub ships English defaults and localizes nothing, so pass your own already-localized strings.
+The composable labels are optional parameters: `providerLabel` on `ProviderKeyCard`, `modelLabel` on
+`ModelSelectCard`, `dismissLabel` on `ClarificationBar`, and `unavailableLabel`, `cappedLabel`,
+`needsNetworkLabel`, `onlineLabel`, `offlineOnlyLabel`, `routerOnLabel`, `routerOffLabel` on
+`ApproachLadderCard`. The outcome-sheet texts are defaulted fields on the models you already build:
+`escalationsLabel` on `HandledByUiModel`, `undoneLabel` on `UndoRowUiModel`, `refusedPrefix` and
+`changedSinceSuffix` on `UndoRefusedUiModel`, `removeContentDescription` on `ProposedItemUiModel`,
+and `semanticsPrefix` on `VoiceOutcomeUiState.Failure`. Omitting any of them keeps the English
+default. The segmented toggles' accessibility state words ("selected" / "not selected") stay English.
+When moving to v2.5.0, pass `trailingContent` on `ProposedItemUiModel` as a named argument.
+
+```kotlin
+ClarificationBar(
+    question = question,
+    options = options,
+    onSelect = { id -> /* … */ },
+    onDismiss = { /* … */ },
+    dismissLabel = stringResource(R.string.dismiss)   // your own string resource
+)
+```
+
+The full parameter list and the compatibility scope live in `API.md` section 10 and its v2.5.0
+compatibility notes.
 
 ## 6. (Optional) The component gallery
 
