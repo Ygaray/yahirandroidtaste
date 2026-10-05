@@ -94,6 +94,48 @@ class ClarificationBarTest {
         assertNull(selected)
     }
 
+    // ── VI18N-02: caller-localizable dismiss label ───────────────────────────
+
+    @Test
+    fun `a supplied dismissLabel replaces the dismiss text and tapping it still invokes onDismiss`() {
+        var dismissed = false
+        var selected: String? = null
+        composeTestRule.setContent {
+            ClarificationBar(
+                question = "Which list?",
+                options = listOf(ClarificationOptionUiModel(id = "groceries", label = "Groceries")),
+                onSelect = { selected = it },
+                onDismiss = { dismissed = true },
+                dismissLabel = "Fermer"
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Fermer").assertExists()
+        composeTestRule.onNodeWithText("Dismiss").assertDoesNotExist()
+
+        composeTestRule.onNodeWithTag("clarification_bar_dismiss").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, dismissed)
+        assertNull(selected)
+    }
+
+    @Test
+    fun `omitting dismissLabel keeps the English default Dismiss text`() {
+        composeTestRule.setContent {
+            ClarificationBar(
+                question = "Which list?",
+                options = listOf(ClarificationOptionUiModel(id = "groceries", label = "Groceries")),
+                onSelect = {},
+                onDismiss = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Dismiss").assertExists()
+    }
+
     // ── VCLAR-01 edge hardening (Phase 11 Plan 02, Task 2) ───────────────────
 
     @Test

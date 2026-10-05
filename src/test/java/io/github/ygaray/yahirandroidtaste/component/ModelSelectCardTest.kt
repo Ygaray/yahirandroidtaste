@@ -1,11 +1,13 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import io.github.ygaray.yahirandroidtaste.model.ModelOptionUiModel
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -86,5 +88,51 @@ class ModelSelectCardTest {
 
         composeTestRule.onNodeWithText("Set a provider and key first").assertExists()
         composeTestRule.onNodeWithTag("model_select_card_dropdown").assertDoesNotExist()
+    }
+
+    // ── VI18N-01: caller-localizable model dropdown label ──
+
+    @Test
+    fun `a supplied modelLabel replaces the dropdown label text`() {
+        composeTestRule.setContent {
+            ModelSelectCard(
+                models = models,
+                selectedModelId = "claude",
+                onModelSelected = {},
+                emptyReason = "Set a provider and key first",
+                modelLabel = "Modèle"
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        assertTrue(
+            "Supplied modelLabel must render in the dropdown's text-field label",
+            composeTestRule.onAllNodesWithText("Modèle", useUnmergedTree = true)
+                .fetchSemanticsNodes().isNotEmpty()
+        )
+        assertTrue(
+            "English default label must be absent when modelLabel is supplied",
+            composeTestRule.onAllNodesWithText("Model", useUnmergedTree = true)
+                .fetchSemanticsNodes().isEmpty()
+        )
+    }
+
+    @Test
+    fun `omitting modelLabel keeps the English default Model label`() {
+        composeTestRule.setContent {
+            ModelSelectCard(
+                models = models,
+                selectedModelId = "claude",
+                onModelSelected = {},
+                emptyReason = "Set a provider and key first"
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        assertTrue(
+            "Default modelLabel must remain the English \"Model\"",
+            composeTestRule.onAllNodesWithText("Model", useUnmergedTree = true)
+                .fetchSemanticsNodes().isNotEmpty()
+        )
     }
 }

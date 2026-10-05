@@ -46,6 +46,8 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * @param emptyReason Caption shown when [models] is empty (e.g. "Set a provider and key first")
  *   — never a blank control.
  * @param modifier Applied to the outer [Surface].
+ * @param modelLabel Caller-localizable label of the model dropdown's text field. Defaults to the
+ *   English `"Model"`; rendered verbatim as plain text. Only visible when [models] is non-empty.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +56,8 @@ fun ModelSelectCard(
     selectedModelId: String?,
     onModelSelected: (String) -> Unit,
     emptyReason: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    modelLabel: String = "Model"
 ) {
     Surface(
         shape = MaterialTheme.expressive.cardShapeLarge,
@@ -76,6 +79,7 @@ fun ModelSelectCard(
                     models = models,
                     selectedModelId = selectedModelId,
                     onModelSelected = onModelSelected,
+                    modelLabel = modelLabel,
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("model_select_card_dropdown")
@@ -96,6 +100,7 @@ private fun ModelDropdown(
     models: List<ModelOptionUiModel>,
     selectedModelId: String?,
     onModelSelected: (String) -> Unit,
+    modelLabel: String,
     modifier: Modifier = Modifier
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -109,7 +114,7 @@ private fun ModelDropdown(
             value = selectedLabel,
             onValueChange = {},
             readOnly = true,
-            label = { Text("Model") },
+            label = { Text(modelLabel) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = true)

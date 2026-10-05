@@ -47,6 +47,8 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  *   verbatim, never normalized/case-folded -- only in direct response to a chip tap.
  * @param onDismiss Invoked only in direct response to a tap on the trailing dismiss control.
  * @param modifier Applied to the outer [Surface].
+ * @param dismissLabel Caller-localizable text of the trailing dismiss button. Defaults to the
+ *   English `"Dismiss"`; rendered verbatim as plain text.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -55,7 +57,8 @@ fun ClarificationBar(
     options: List<ClarificationOptionUiModel>,
     onSelect: (String) -> Unit,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    dismissLabel: String = "Dismiss"
 ) {
     if (options.isEmpty()) return
 
@@ -89,7 +92,7 @@ fun ClarificationBar(
                 onClick = onDismiss,
                 modifier = Modifier.testTag("clarification_bar_dismiss")
             ) {
-                Text("Dismiss")
+                Text(dismissLabel)
             }
         }
     }
