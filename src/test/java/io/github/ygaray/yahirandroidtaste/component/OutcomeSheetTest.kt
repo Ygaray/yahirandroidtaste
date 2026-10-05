@@ -954,6 +954,16 @@ class OutcomeSheetTest {
     }
 
     @Test
+    fun `Failure semanticsPrefix surrounding whitespace is trimmed so exactly one space joins prefix and reason`() {
+        composeTestRule.setContent {
+            OutcomeSheetContent(VoiceOutcomeUiState.Failure(reason = "Network down", semanticsPrefix = "  Erreur :  "))
+        }
+        composeTestRule.waitForIdle()
+
+        failureSurface().assertContentDescriptionEquals("Erreur : Network down")
+    }
+
+    @Test
     fun `Failure null semanticsPrefix leaves the surface contentDescription undefined`() {
         composeTestRule.setContent {
             OutcomeSheetContent(VoiceOutcomeUiState.Failure(reason = "Network down", semanticsPrefix = null))

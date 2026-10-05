@@ -298,13 +298,13 @@ private fun FailureBody(failure: VoiceOutcomeUiState.Failure) {
             .fillMaxWidth()
             .testTag("outcome_sheet_failure_surface")
             // VFAIL-03 / D-02: a non-blank caller prefix is announced by a combined description on
-            // the surface's merged node — the prefix, one ASCII space, then the reason (plain
+            // the surface's merged node — the (trimmed) prefix, one ASCII space, then the reason (plain
             // concatenation, no format parsing; punctuation belongs to the prefix). Merge-only, so
             // the action button stays its own focusable, clickable node. Null/blank adds nothing.
             .then(
                 if (!failure.semanticsPrefix.isNullOrBlank()) {
                     Modifier.semantics(mergeDescendants = true) {
-                        contentDescription = "${failure.semanticsPrefix} ${failure.reason}"
+                        contentDescription = "${failure.semanticsPrefix.trim()} ${failure.reason}"
                     }
                 } else {
                     Modifier
