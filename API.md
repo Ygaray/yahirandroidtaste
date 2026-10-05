@@ -219,3 +219,23 @@ already ended with a function-typed parameter (`onSortModeChange` on the first t
 - This ecosystem relies on every consumer rebuilding from an **immutable tag** on each repin
   (never mixing prebuilt binaries across tags), which is why such an addition ships as a minor
   version bump.
+
+**Appending label fields to the voice models and composables (v2.5.0, VI18N-01..04) — the precise
+compatibility scope.** v2.5.0 appended caller-localizable `String` label parameters (English
+defaults, byte-identical to the literals they replaced) as the LAST parameter of `ProviderKeyCard`,
+`ModelSelectCard`, `ClarificationBar` and `ApproachLadderCard`, and as appended constructor fields on
+`HandledByUiModel`, `ProposedItemUiModel`, `UndoRefusedUiModel` and `UndoRowUiModel` (each keeps its
+shipped constructor arity via `@JvmOverloads` plus a hand-written old-arity `copy`).
+
+- It is **source-compatible**: every v2.4.x call shape (positional, named, partial, `copy(...)`,
+  destructuring) still compiles — pinned by the committed `VoiceI18nSourceCompatTest` fixture — and
+  Metalava `apiCheck` passes (it tracks only the public, non-synthetic surface).
+- It is **NOT binary-compatible** for Kotlin call sites that rely on default arguments:
+  `HandledByUiModel("Local")` and `item.copy(title = "x")` link to the synthetic
+  `(…, int, DefaultConstructorMarker)` constructor and `copy$default(…, int, Object)` members, whose
+  arity and mask change when a field is appended; the five composables' `$default` and Composer
+  changed-mask signatures change the same way. Metalava's `api.txt` does not see synthetic members,
+  so a clean `apiCheck` is **not** proof of binary compatibility. A consumer artifact compiled
+  against v2.4.x and run against the v2.5.0 AAR can fail with `NoSuchMethodError`.
+- **Consumers must recompile** when repinning to v2.5.0 (the standard rebuild-from-an-immutable-tag
+  repin, `ECOSYSTEM.md` §7) — never mix a prebuilt v2.4.x consumer binary with the v2.5.0 AAR.
