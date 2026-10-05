@@ -433,7 +433,7 @@ private fun ProposedItemRow(item: ProposedItemUiModel) {
                 onClick = onRemove,
                 modifier = Modifier.testTag("outcome_sheet_confirmation_item_remove")
             ) {
-                Icon(Icons.Default.Close, contentDescription = "Remove")
+                Icon(Icons.Default.Close, contentDescription = item.removeContentDescription)
             }
         }
     }

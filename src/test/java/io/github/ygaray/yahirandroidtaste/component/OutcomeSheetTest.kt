@@ -12,6 +12,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
@@ -679,6 +680,46 @@ class OutcomeSheetTest {
         assertEquals(false, row0Removed)
         assertEquals(true, row1Removed)
         assertEquals(false, row2Removed)
+    }
+
+    @Test
+    fun `remove controls announce a caller-supplied removeContentDescription instead of the English default`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "2 items parsed.",
+                    items = listOf(
+                        ProposedItemUiModel(id = "1", title = "Apple", onRemove = {}, removeContentDescription = "Supprimer"),
+                        ProposedItemUiModel(id = "2", title = "Banana", onRemove = {}, removeContentDescription = "Supprimer")
+                    ),
+                    onConfirm = {},
+                    onCancel = {}
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onAllNodesWithContentDescription("Supprimer", useUnmergedTree = true).assertCountEquals(2)
+        composeTestRule.onAllNodesWithContentDescription("Remove", useUnmergedTree = true).assertCountEquals(0)
+    }
+
+    @Test
+    fun `remove control keeps the English Remove description when no override is supplied`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                    reason = "1 item parsed.",
+                    items = listOf(ProposedItemUiModel(id = "1", title = "Apple", onRemove = {})),
+                    onConfirm = {},
+                    onCancel = {}
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onAllNodesWithContentDescription("Remove", useUnmergedTree = true).assertCountEquals(1)
     }
 
     @Test

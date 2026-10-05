@@ -143,4 +143,41 @@ class VoiceModelLabelDefaultsTest {
         assertTrue(constructorArities(HandledByUiModel::class.java).containsAll(listOf(5, 6)))
         assertTrue(copyArities(HandledByUiModel::class.java).containsAll(listOf(5, 6)))
     }
+
+    // ---- ProposedItemUiModel.removeContentDescription ----
+
+    @Test
+    fun `ProposedItemUiModel removeContentDescription defaults to the English word Remove`() {
+        assertEquals("Remove", ProposedItemUiModel(id = "1", title = "t").removeContentDescription)
+    }
+
+    @Test
+    fun `ProposedItemUiModel legacy seven-argument copy preserves a custom removeContentDescription`() {
+        val item = ProposedItemUiModel(id = "1", title = "t", removeContentDescription = "Supprimer")
+
+        val copied = item.copy("2", "u", null, null, true, null, null)
+
+        assertEquals("Supprimer", copied.removeContentDescription)
+        assertEquals("2", copied.id)
+        assertEquals(true, copied.amended)
+    }
+
+    @Test
+    fun `ProposedItemUiModel toString with a custom removeContentDescription still prints only id and amended`() {
+        val item = ProposedItemUiModel(
+            id = "x",
+            title = "Secret title",
+            subtitle = "Secret subtitle",
+            confidenceCue = "Secret cue",
+            removeContentDescription = "Supprimer"
+        )
+
+        assertEquals("ProposedItemUiModel(id=x, amended=false)", item.toString())
+    }
+
+    @Test
+    fun `ProposedItemUiModel keeps the old seven-arg and the new eight-arg constructor and copy arities`() {
+        assertTrue(constructorArities(ProposedItemUiModel::class.java).containsAll(listOf(7, 8)))
+        assertTrue(copyArities(ProposedItemUiModel::class.java).containsAll(listOf(7, 8)))
+    }
 }

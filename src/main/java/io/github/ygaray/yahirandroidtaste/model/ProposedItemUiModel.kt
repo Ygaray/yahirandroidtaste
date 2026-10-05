@@ -29,16 +29,44 @@ import androidx.compose.runtime.Composable
  * @param trailingContent An opaque per-item slot the library never interprets (D-01) -- e.g.
  *   SecondBrain's risk badge or CalTracker's `AmountEditor`/`ItemCorrectionDropdown`. `null`
  *   renders nothing.
+ * @param removeContentDescription Caller-localizable accessibility description of this row's remove
+ *   control; English default `"Remove"`, plain text. Set it on every item that supplies [onRemove]
+ *   (VI18N-04). Never printed by [toString].
  */
-data class ProposedItemUiModel(
+data class ProposedItemUiModel @JvmOverloads constructor(
     val id: String,
     val title: String,
     val subtitle: String? = null,
     val confidenceCue: String? = null,
     val amended: Boolean = false,
     val onRemove: (() -> Unit)? = null,
-    val trailingContent: (@Composable () -> Unit)? = null
+    val trailingContent: (@Composable () -> Unit)? = null,
+    val removeContentDescription: String = "Remove"
 ) {
+    // Hand-written pre-v2.5 `copy` arity. Without it Metalava reports the shipped JVM seven-parameter
+    // `copy` as a removed method once [removeContentDescription] is appended (the compiler only
+    // generates the full-arity copy). Delegates with the CURRENT removeContentDescription so a legacy
+    // seven-argument copy never resets a caller's custom label. A body `var` is rejected because it
+    // would cost Compose all-val stability.
+    fun copy(
+        id: String,
+        title: String,
+        subtitle: String?,
+        confidenceCue: String?,
+        amended: Boolean,
+        onRemove: (() -> Unit)?,
+        trailingContent: (@Composable () -> Unit)?
+    ): ProposedItemUiModel = copy(
+        id = id,
+        title = title,
+        subtitle = subtitle,
+        confidenceCue = confidenceCue,
+        amended = amended,
+        onRemove = onRemove,
+        trailingContent = trailingContent,
+        removeContentDescription = removeContentDescription
+    )
+
     override fun toString(): String = "ProposedItemUiModel(id=$id, amended=$amended)"
 }
 

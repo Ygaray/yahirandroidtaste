@@ -1140,7 +1140,13 @@ package io.github.ygaray.yahirandroidtaste.model {
   }
 
   public final class ProposedItemUiModel {
+    ctor public ProposedItemUiModel(String id, String title);
+    ctor public ProposedItemUiModel(String id, String title, optional String? subtitle);
+    ctor public ProposedItemUiModel(String id, String title, optional String? subtitle, optional String? confidenceCue);
+    ctor public ProposedItemUiModel(String id, String title, optional String? subtitle, optional String? confidenceCue, optional boolean amended);
+    ctor public ProposedItemUiModel(String id, String title, optional String? subtitle, optional String? confidenceCue, optional boolean amended, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onRemove);
     ctor public ProposedItemUiModel(String id, String title, optional String? subtitle, optional String? confidenceCue, optional boolean amended, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onRemove, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingContent);
+    ctor public ProposedItemUiModel(String id, String title, optional String? subtitle, optional String? confidenceCue, optional boolean amended, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onRemove, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingContent, optional String removeContentDescription);
     method public String component1();
     method public String component2();
     method public String? component3();
@@ -1148,11 +1154,14 @@ package io.github.ygaray.yahirandroidtaste.model {
     method public boolean component5();
     method public kotlin.jvm.functions.Function0<kotlin.Unit>? component6();
     method public kotlin.jvm.functions.Function0<kotlin.Unit>? component7();
-    method public io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel copy(optional String id, optional String title, optional String? subtitle, optional String? confidenceCue, optional boolean amended, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onRemove, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingContent);
+    method public String component8();
+    method public io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel copy(String id, String title, String? subtitle, String? confidenceCue, boolean amended, kotlin.jvm.functions.Function0<kotlin.Unit>? onRemove, kotlin.jvm.functions.Function0<kotlin.Unit>? trailingContent);
+    method public io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel copy(optional String id, optional String title, optional String? subtitle, optional String? confidenceCue, optional boolean amended, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onRemove, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingContent, optional String removeContentDescription);
     method @InaccessibleFromKotlin public boolean getAmended();
     method @InaccessibleFromKotlin public String? getConfidenceCue();
     method @InaccessibleFromKotlin public String getId();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getOnRemove();
+    method @InaccessibleFromKotlin public String getRemoveContentDescription();
     method @InaccessibleFromKotlin public String? getSubtitle();
     method @InaccessibleFromKotlin public String getTitle();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getTrailingContent();
@@ -1160,6 +1169,7 @@ package io.github.ygaray.yahirandroidtaste.model {
     property public String? confidenceCue;
     property public String id;
     property public kotlin.jvm.functions.Function0<kotlin.Unit>? onRemove;
+    property public String removeContentDescription;
     property public String? subtitle;
     property public String title;
     property public kotlin.jvm.functions.Function0<kotlin.Unit>? trailingContent;
