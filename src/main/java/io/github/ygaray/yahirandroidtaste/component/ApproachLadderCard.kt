@@ -153,6 +153,27 @@ fun ApproachLadderCard(
     }
 }
 
+// v2.4.x binary-compatibility shim (INC-2026-10-05-02 F1): restores the pre-v2.5 JVM descriptor for
+// consumers compiled against v2.4.x. Hidden from Kotlin and Java source -- do not call it or
+// document it as API.
+@Deprecated("Binary compatibility with v2.4.x", level = DeprecationLevel.HIDDEN)
+@Composable
+fun ApproachLadderCard(
+    ladder: List<ApproachRungUiModel>,
+    offlineOnly: Boolean? = null,
+    onOfflineOnlyChange: ((Boolean) -> Unit)? = null,
+    maxTierId: String? = null,
+    onMaxTierChange: ((String) -> Unit)? = null,
+    modifier: Modifier = Modifier
+) = ApproachLadderCard(
+    ladder = ladder,
+    offlineOnly = offlineOnly,
+    onOfflineOnlyChange = onOfflineOnlyChange,
+    maxTierId = maxTierId,
+    onMaxTierChange = onMaxTierChange,
+    modifier = modifier
+)
+
 /** One rendered ladder rung — the label, plus visible-but-subdued capped/needs-network affordances. */
 @Composable
 private fun RungRow(
