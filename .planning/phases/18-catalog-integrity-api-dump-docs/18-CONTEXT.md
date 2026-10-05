@@ -80,3 +80,7 @@ None — discussion stayed within phase scope.
 
 *Phase: 18-catalog-integrity-api-dump-docs*
 *Context gathered: 2026-10-05*
+
+## Runtime Decisions
+
+- **invariant-check** (provisional, Depends-on Phase 17, re-resolved at execute-milestone time 2026-10-05, source: ai-auto): explicit import-inspection step over all src/main diffs v2.4.1..HEAD (Phases 15–17 plus binary-compat quicks 261005-dmc/e2e); no new test this milestone. Pre-check at refresh: 12 files changed, no +import outside androidx/kotlin/java/own package.
