@@ -73,3 +73,7 @@ None — discussion stayed within phase scope.
 
 *Phase: 17-approachladdercard-router-on-off-toggle*
 *Context gathered: 2026-10-05*
+
+## Runtime Decisions
+
+- **router-copy** (provisional, Depends-on Phase 15 — resolved at execute-milestone time, 2026-10-05, source: human/Yahir in-session): The router toggle's two segment labels are **caller-localizable overridable params** — add `routerOnLabel: String = "Router on"` and `routerOffLabel: String = "Router off"` to `ApproachLadderCard`, mirroring Phase 15's `offlineOnlyLabel`/`onlineLabel` pattern (those DID become overridable). Strictly additive; defaults are English.
