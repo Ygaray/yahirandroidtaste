@@ -311,9 +311,11 @@ private val fixtureLadderCombinedAffordance = listOf(
 @Composable
 private fun ApproachLadderCardFixture(
     initialOfflineOnly: Boolean = false,
+    initialRouter: Boolean = false,
     initialMaxTierId: String = fixtureLadder.first().id
 ) {
     var offlineOnly by remember { mutableStateOf(initialOfflineOnly) }
+    var router by remember { mutableStateOf(initialRouter) }
     var maxTierId by remember { mutableStateOf(initialMaxTierId) }
     ApproachLadderCard(
         ladder = fixtureLadder,
@@ -321,6 +323,8 @@ private fun ApproachLadderCardFixture(
         onOfflineOnlyChange = { offlineOnly = it },
         maxTierId = maxTierId,
         onMaxTierChange = { maxTierId = it },
+        router = router,
+        onRouterChange = { router = it },
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
     )
 }
@@ -350,6 +354,9 @@ private fun ApproachLadderCardVariants() {
         onMaxTierChange = {},
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
     )
+
+    SectionLabel("ApproachLadderCard — router on")
+    ApproachLadderCardFixture(initialRouter = true)
 }
 
 /** Fixture outcomes -- explorer-only, never registered (explorer/ is drift-guard denylisted). */
