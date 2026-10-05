@@ -1,13 +1,17 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.ui.Modifier
+import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
 import io.github.ygaray.yahirandroidtaste.model.KeyFieldState
 import io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRowState
 import io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel
+import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Test
 
 /**
@@ -19,6 +23,11 @@ import org.junit.Test
  * Mirrors [ShowTagColorsSourceCompatTest]: the composable calls live inside non-invoked
  * `@Composable () -> Unit` lambdas (they only have to COMPILE), while the model shapes are plain
  * JVM objects with runtime assertions.
+ *
+ * This file is also the compile-only evidence behind success criterion 5 of Phase 16 (VFAIL-01..03):
+ * `VoiceOutcomeUiState.Failure` and `FailureActionUiModel` gained fields appended after the former
+ * last property, so every v2.4 call shape (positional, named, destructuring, legacy `copy`) binds
+ * the same values and carries the defaults.
  */
 class VoiceI18nSourceCompatTest {
 
@@ -60,6 +69,12 @@ class VoiceI18nSourceCompatTest {
             )
         }
 
+        // Phase 16 (SC5): a v2.4-shaped Failure (two positional arguments) positionally through
+        // `modifier`.
+        val outcomeSheet: @androidx.compose.runtime.Composable () -> Unit = {
+            OutcomeSheet(VoiceOutcomeUiState.Failure("r", null), {}, Modifier)
+        }
+
         // Compile-only: the lambdas above are intentionally never invoked. The test's value is that
         // these v2.4.0 call shapes still COMPILE; asserting non-null on a just-assigned lambda would
         // be vacuous. Runtime default-label rendering is covered by the per-component tests.
@@ -90,5 +105,55 @@ class VoiceI18nSourceCompatTest {
         val item = ProposedItemUiModel("1", "t", null, null, false, null, null)
         assertEquals("Remove", item.removeContentDescription)
         assertEquals("Remove", item.copy("2", "u", null, null, true, null, null).removeContentDescription)
+    }
+
+    @Test
+    fun v24FailureAndActionShapes_compileAndCarryDefaults() {
+        // Positional / named construction at every v2.4 arity binds the same values.
+        val one = VoiceOutcomeUiState.Failure("r")
+        val two = VoiceOutcomeUiState.Failure("r", null)
+        val three = VoiceOutcomeUiState.Failure("r", null, null)
+        val named = VoiceOutcomeUiState.Failure(reason = "r", action = null)
+        listOf(one, two, three, named).forEach {
+            assertEquals("r", it.reason)
+            assertNull(it.handledBy)
+            assertNull(it.action)
+            assertNull(it.body)
+            assertNull(it.semanticsPrefix)
+        }
+
+        // Positional destructuring of the first three components still compiles and yields the
+        // original values (the appended components are component4/component5).
+        val handledBy = HandledByUiModel("Local")
+        val action = FailureActionUiModel("l", {})
+        val (reason, destructuredHandledBy, destructuredAction) =
+            VoiceOutcomeUiState.Failure("r", handledBy, action)
+        assertEquals("r", reason)
+        assertSame(handledBy, destructuredHandledBy)
+        assertSame(action, destructuredAction)
+
+        // Legacy three-argument copy: a plain Failure keeps null body/prefix; one with a custom body
+        // (ONE lambda instance) and prefix preserves both.
+        val plainCopy = three.copy("r2", handledBy, action)
+        assertNull(plainCopy.body)
+        assertNull(plainCopy.semanticsPrefix)
+        val customBody: @androidx.compose.runtime.Composable () -> Unit = {}
+        val custom = VoiceOutcomeUiState.Failure("r", null, null, customBody, "Error:")
+        val customCopy = custom.copy("r3", handledBy, action)
+        assertEquals("r3", customCopy.reason)
+        assertSame(customBody, customCopy.body)
+        assertEquals("Error:", customCopy.semanticsPrefix)
+
+        // FailureActionUiModel: two-argument construction defaults the role to Neutral.
+        val plainAction = FailureActionUiModel("l", {})
+        assertEquals(ActionButtonDefaults.ActionButtonRole.Neutral, plainAction.role)
+        val (label, onClick) = plainAction
+        assertEquals("l", label)
+        assertSame(plainAction.onClick, onClick)
+
+        // Legacy two-argument copy keeps Neutral, and keeps a custom role.
+        assertEquals(ActionButtonDefaults.ActionButtonRole.Neutral, plainAction.copy("m", {}).role)
+        val destructive = FailureActionUiModel("l", {}, ActionButtonDefaults.ActionButtonRole.Destructive)
+        assertEquals(ActionButtonDefaults.ActionButtonRole.Destructive, destructive.copy("m", {}).role)
     }
 }

@@ -1017,6 +1017,33 @@ class OutcomeSheetTest {
         assertEquals(true, clicked)
     }
 
+    // ── SC5 / Phase 16: a v2.4-shaped Failure renders unchanged through FailureBody ───────────
+
+    @Test
+    fun `v2_4-shaped Failure renders unchanged - surface, reason, handled-by, one action, no description`() {
+        var clicked = false
+        composeTestRule.setContent {
+            OutcomeSheetContent(
+                VoiceOutcomeUiState.Failure(
+                    "Network down",
+                    HandledByUiModel("Local"),
+                    FailureActionUiModel("Retry", { clicked = true })
+                )
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        failureSurface().assertExists()
+        failureSurface().assert(noContentDescription())
+        composeTestRule.onNodeWithText("Network down").assertExists()
+        composeTestRule.onNodeWithTag("outcome_sheet_handled_by").assertExists()
+        composeTestRule.onAllNodesWithTag("outcome_sheet_action_button").assertCountEquals(1)
+        composeTestRule.onNodeWithTag("outcome_sheet_action_button").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(true, clicked)
+    }
+
     private fun assertRoleRendersOneClickableActionButton(role: ActionButtonDefaults.ActionButtonRole) {
         var clicked = false
         composeTestRule.setContent {
