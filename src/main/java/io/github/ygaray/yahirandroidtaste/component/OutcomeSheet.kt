@@ -173,9 +173,11 @@ private fun UndoAffordanceBody(undo: UndoAffordanceUiModel, locked: Boolean) {
                     .padding(top = Dimens.ContentSpacing)
                     .testTag("outcome_sheet_undo_refused")
             ) {
-                val suffix = refused.changedItem?.let { ", $it changed since" } ?: ""
+                val suffix = refused.changedItem
+                    ?.let { ", $it ${refused.changedSinceSuffix}" }
+                    ?: ""
                 Text(
-                    text = "Couldn't undo: ${refused.reason}$suffix",
+                    text = "${refused.refusedPrefix} ${refused.reason}$suffix",
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(Dimens.HorizontalPadding)
                 )

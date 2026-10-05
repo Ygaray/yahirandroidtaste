@@ -65,4 +65,46 @@ class VoiceModelLabelDefaultsTest {
         assertTrue(constructorArities(UndoRowUiModel::class.java).containsAll(listOf(3, 4)))
         assertTrue(copyArities(UndoRowUiModel::class.java).containsAll(listOf(3, 4)))
     }
+
+    // ---- UndoRefusedUiModel.refusedPrefix / changedSinceSuffix ----
+
+    @Test
+    fun `UndoRefusedUiModel label fields default to the English fragments`() {
+        val refused = UndoRefusedUiModel("r")
+
+        assertEquals("Couldn't undo:", refused.refusedPrefix)
+        assertEquals("changed since", refused.changedSinceSuffix)
+    }
+
+    @Test
+    fun `UndoRefusedUiModel v2_4_0 one and two argument construction shapes carry the defaults`() {
+        val one = UndoRefusedUiModel("r")
+        val two = UndoRefusedUiModel("r", "item")
+
+        assertEquals("Couldn't undo:", one.refusedPrefix)
+        assertEquals("changed since", two.changedSinceSuffix)
+        assertEquals("item", two.changedItem)
+    }
+
+    @Test
+    fun `UndoRefusedUiModel legacy two-argument copy preserves custom label fields`() {
+        val refused = UndoRefusedUiModel(
+            "r",
+            "item",
+            refusedPrefix = "Impossible d'annuler :",
+            changedSinceSuffix = "modifié depuis"
+        )
+
+        val copied = refused.copy("r2", null)
+
+        assertEquals("Impossible d'annuler :", copied.refusedPrefix)
+        assertEquals("modifié depuis", copied.changedSinceSuffix)
+        assertEquals("r2", copied.reason)
+    }
+
+    @Test
+    fun `UndoRefusedUiModel keeps the old two-arg and the new four-arg constructor and copy arities`() {
+        assertTrue(constructorArities(UndoRefusedUiModel::class.java).containsAll(listOf(2, 4)))
+        assertTrue(copyArities(UndoRefusedUiModel::class.java).containsAll(listOf(2, 4)))
+    }
 }

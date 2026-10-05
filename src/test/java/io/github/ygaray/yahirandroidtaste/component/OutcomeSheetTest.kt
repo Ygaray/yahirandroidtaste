@@ -411,6 +411,61 @@ class OutcomeSheetTest {
         composeTestRule.onNodeWithText("Couldn't undo: Item changed").assertExists()
     }
 
+    @Test
+    fun `a refused with caller-supplied prefix and suffix renders them instead of the English fragments`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(
+                    summary = "Logged 1 item",
+                    undo = UndoAffordanceUiModel(
+                        allLabel = "Undo all (1)",
+                        refused = UndoRefusedUiModel(
+                            reason = "Élément modifié",
+                            changedItem = "Carte 1",
+                            refusedPrefix = "Impossible d'annuler :",
+                            changedSinceSuffix = "modifié depuis"
+                        )
+                    )
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule
+            .onNodeWithText("Impossible d'annuler : Élément modifié, Carte 1 modifié depuis")
+            .assertExists()
+        composeTestRule.onAllNodesWithText("Couldn't undo", substring = true).assertCountEquals(0)
+        composeTestRule.onAllNodesWithText("changed since", substring = true).assertCountEquals(0)
+    }
+
+    @Test
+    fun `a refused with a custom prefix and a null changedItem renders no suffix text`() {
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = VoiceOutcomeUiState.Success(
+                    summary = "Logged 1 item",
+                    undo = UndoAffordanceUiModel(
+                        allLabel = "Undo all (1)",
+                        refused = UndoRefusedUiModel(
+                            reason = "Élément modifié",
+                            changedItem = null,
+                            refusedPrefix = "Impossible d'annuler :",
+                            changedSinceSuffix = "modifié depuis"
+                        )
+                    )
+                ),
+                onDismissRequest = {}
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Impossible d'annuler : Élément modifié").assertExists()
+        composeTestRule.onAllNodesWithText("modifié depuis", substring = true).assertCountEquals(0)
+        composeTestRule.onAllNodesWithText("Couldn't undo", substring = true).assertCountEquals(0)
+        composeTestRule.onAllNodesWithText("changed since", substring = true).assertCountEquals(0)
+    }
+
     // ── VOUT-04: NeedsConfirmation -- single-item confirm/cancel (Plan 01 Task 1) ──
 
     @Test

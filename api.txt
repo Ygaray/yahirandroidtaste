@@ -1278,14 +1278,24 @@ package io.github.ygaray.yahirandroidtaste.model {
   }
 
   public final class UndoRefusedUiModel {
+    ctor public UndoRefusedUiModel(String reason);
     ctor public UndoRefusedUiModel(String reason, optional String? changedItem);
+    ctor public UndoRefusedUiModel(String reason, optional String? changedItem, optional String refusedPrefix);
+    ctor public UndoRefusedUiModel(String reason, optional String? changedItem, optional String refusedPrefix, optional String changedSinceSuffix);
     method public String component1();
     method public String? component2();
-    method public io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel copy(optional String reason, optional String? changedItem);
+    method public String component3();
+    method public String component4();
+    method public io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel copy(String reason, String? changedItem);
+    method public io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel copy(optional String reason, optional String? changedItem, optional String refusedPrefix, optional String changedSinceSuffix);
     method @InaccessibleFromKotlin public String? getChangedItem();
+    method @InaccessibleFromKotlin public String getChangedSinceSuffix();
     method @InaccessibleFromKotlin public String getReason();
+    method @InaccessibleFromKotlin public String getRefusedPrefix();
     property public String? changedItem;
+    property public String changedSinceSuffix;
     property public String reason;
+    property public String refusedPrefix;
   }
 
   public sealed exhaustive interface UndoRowState {
