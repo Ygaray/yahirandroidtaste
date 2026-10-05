@@ -315,8 +315,10 @@ private fun ApproachLadderCardFixture(
 ) {
     // Router starts OFF for every registry cell. This two-parameter shape is kept as the entry
     // point on purpose: the registry lambdas reach it through a Kotlin synthetic accessor whose JVM
-    // descriptor must not change (the Phase 17 binary ABI gate diffs it against v2.4.1).
-    ApproachLadderCardFixture(
+    // descriptor must not change (the Phase 17 binary ABI gate diffs it against v2.4.1). The
+    // router-aware body lives under a distinct name so no call site depends on Kotlin's
+    // fewest-defaults overload ranking to pick between two same-named all-default functions.
+    ApproachLadderCardRouterFixture(
         initialOfflineOnly = initialOfflineOnly,
         initialRouter = false,
         initialMaxTierId = initialMaxTierId
@@ -325,7 +327,7 @@ private fun ApproachLadderCardFixture(
 
 /** Router-aware fixture (Phase 17 D-02): same hoisted state plus the router demo state. */
 @Composable
-private fun ApproachLadderCardFixture(
+private fun ApproachLadderCardRouterFixture(
     initialOfflineOnly: Boolean = false,
     initialRouter: Boolean = false,
     initialMaxTierId: String = fixtureLadder.first().id
@@ -372,7 +374,7 @@ private fun ApproachLadderCardVariants() {
     )
 
     SectionLabel("ApproachLadderCard — router on")
-    ApproachLadderCardFixture(initialRouter = true)
+    ApproachLadderCardRouterFixture(initialRouter = true)
 }
 
 /** Fixture outcomes -- explorer-only, never registered (explorer/ is drift-guard denylisted). */
