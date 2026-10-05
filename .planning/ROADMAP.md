@@ -204,7 +204,7 @@ Plans:
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 15. Voice-surface i18n label params | v2.5 | 3/3 | In Progress|  |
-| 16. A11y + Failure enrichment | v2.5 | 1/3 | In Progress|  |
+| 16. A11y + Failure enrichment | v2.5 | 2/3 | In Progress|  |
 | 17. ApproachLadderCard Router ON/OFF toggle | v2.5 | 0/TBD | Not started | - |
 | 18. Catalog integrity + API dump + docs | v2.5 | 0/TBD | Not started | - |
 | 19. Cut v2.5.0 | v2.5 | 0/TBD | Not started | - |

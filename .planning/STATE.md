@@ -5,16 +5,16 @@ milestone_name: Voice UI Localization & Accessibility
 current_phase: 16
 current_phase_name: A11y + Failure enrichment
 status: executing
-stopped_at: Completed 16-01-PLAN.md
-last_updated: "2026-10-05T10:05:24.933Z"
+stopped_at: Completed 16-02-PLAN.md
+last_updated: "2026-10-05T10:13:21.271Z"
 last_activity: 2026-10-05
 last_activity_desc: Phase 16 execution started
-state_head: 52ff36583df2dbd9cd83fd19adf9b79001c51fde
+state_head: 42d845894b0db69fb67f444b03b1e84e4c6f92f3
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 6
-  completed_plans: 4
+  completed_plans: 5
   percent: 0
 ---
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-10-05)
 ## Current Position
 
 Phase: 16 (A11y + Failure enrichment) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-10-05 — Phase 16 execution started
 
@@ -68,6 +68,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 15 P02 | 8min | 2 tasks | 6 files |
 | Phase 15 P03 | 15min | 3 tasks | 7 files |
 | Phase 16 P01 | 4 min | 2 tasks | 2 files |
+| Phase 16 P02 | 8 min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -85,6 +86,7 @@ Recent decisions affecting current work:
 - [Phase 15]: Phase 15-01: SegmentedOptionSelector a11y state words (selected/not selected) remain English - out of VI18N-01..04, Phase 18 docs note candidate
 - [Phase 15]: [15-02] Model-field append recipe: @JvmOverloads constructor + hand-written old-arity copy (Metalava-safe); commits use HUB_LANE_OVERRIDE=2 (hook-detected lane)
 - [Phase 16]: 16-01: rung Selected derives from rung.id == maxTierId (D-01); Role.RadioButton/min-size only when cap selectable (D-03, A4 locked: min-size gated on onClick != null) — Cap-less ladders stay compact and are never announced as an empty radio group; ~58dp pitch growth accepted (D-04), Gate-2 visual check
+- [Phase 16]: 16-02: Failure.body placed after handledBy/before action (no wrapper); semanticsPrefix joined by one ASCII space, blank treated as null; merge-only semantics, no live region; commits used HUB_LANE_OVERRIDE=2 (hook-detected lane), not 3
 
 ### Pending Todos
 
@@ -112,8 +114,8 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-05T10:05:24.904Z
-Stopped at: Completed 16-01-PLAN.md
+Last session: 2026-10-05T10:13:21.229Z
+Stopped at: Completed 16-02-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

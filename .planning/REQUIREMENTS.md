@@ -20,9 +20,9 @@
 
 ### Failure enrichment
 
-- [ ] **VFAIL-01**: `FailureActionUiModel` gains an optional `role: ActionButtonDefaults.ActionButtonRole = Neutral`, wired to the Failure action button (today hardcoded `Neutral`) (XR-175-02 d).
-- [ ] **VFAIL-02**: `VoiceOutcomeUiState.Failure` gains an optional `body: (@Composable () -> Unit)? = null` content slot, rendered inside the error surface (XR-175-02 d).
-- [ ] **VFAIL-03**: `VoiceOutcomeUiState.Failure` gains an optional `semanticsPrefix: String? = null` for the failure's accessibility announcement (XR-175-02 d).
+- [x] **VFAIL-01**: `FailureActionUiModel` gains an optional `role: ActionButtonDefaults.ActionButtonRole = Neutral`, wired to the Failure action button (today hardcoded `Neutral`) (XR-175-02 d).
+- [x] **VFAIL-02**: `VoiceOutcomeUiState.Failure` gains an optional `body: (@Composable () -> Unit)? = null` content slot, rendered inside the error surface (XR-175-02 d).
+- [x] **VFAIL-03**: `VoiceOutcomeUiState.Failure` gains an optional `semanticsPrefix: String? = null` for the failure's accessibility announcement (XR-175-02 d).
 
 ### Command-approach card
 
@@ -58,9 +58,9 @@
 | VI18N-03 | Phase 15 | Complete |
 | VI18N-04 | Phase 15 | Complete |
 | VA11Y-01 | Phase 16 | Pending |
-| VFAIL-01 | Phase 16 | Pending |
-| VFAIL-02 | Phase 16 | Pending |
-| VFAIL-03 | Phase 16 | Pending |
+| VFAIL-01 | Phase 16 | Complete |
+| VFAIL-02 | Phase 16 | Complete |
+| VFAIL-03 | Phase 16 | Complete |
 | VAPPR-04 | Phase 17 | Pending |
 | CAT-02 | Phase 18 | Pending |
 | API-02 | Phase 18 | Pending |
