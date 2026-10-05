@@ -120,7 +120,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 19-02-PLAN.md — The v2.5.0 cut (D-01/D-02/D-03): record GATED_HEAD, fresh battery + swap-baseline Metalava + ABI gate on it, annotated tag by SHA, push the tag only, JitPack confirmation + non-gating published-AAR ABI check, relay-bannered ledger row + evidence committed after the tag (SHIP-03)
+- [x] 19-02-PLAN.md — The v2.5.0 cut (D-01/D-02/D-03): record GATED_HEAD, fresh battery + swap-baseline Metalava + ABI gate on it, annotated tag by SHA, push the tag only, JitPack confirmation + non-gating published-AAR ABI check, relay-bannered ledger row + evidence committed after the tag (SHIP-03)
 
 ## Completed Milestones
 
@@ -220,4 +220,4 @@ Plans:
 | 16. A11y + Failure enrichment | v2.5 | 3/3 | In Progress|  |
 | 17. ApproachLadderCard Router ON/OFF toggle | v2.5 | 1/1 | In Progress|  |
 | 18. Catalog integrity + API dump + docs | v2.5 | 2/2 | In Progress|  |
-| 19. Cut v2.5.0 | v2.5 | 1/2 | In Progress|  |
+| 19. Cut v2.5.0 | v2.5 | 2/2 | In Progress|  |
