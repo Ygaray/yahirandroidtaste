@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# verify-binary-abi.sh <baseline-tag> - binary (JVM descriptor) additivity gate for the release AAR (D-03).
+# verify-binary-abi.sh <baseline-tag> - binary (JVM descriptor) additivity check for the release AAR. OPTIONAL and INFORMATIONAL, not a release gate (source compatibility is the library's bar; see API.md "Compatibility rule").
 #
 # Why: Metalava apiCheck is a SOURCE-level gate and is blind to Compose $default / $changed synthetics and
 # data-class synthetics (INC-2026-10-05-02). This gate runs `javap -protected -s` (public AND protected members) over every class in the
@@ -13,7 +13,7 @@
 #   1  usage / precondition (no argument, malformed tag or a name that is not an existing git tag, dirty artifact inputs when this
 #      script builds)
 #   2  tool, sanity-floor, javap-error, unsafe-entry-name or baseline-resolution failure
-#   3  lane 3: at least one public descriptor present in the baseline is missing at HEAD. STOP, never waive.
+#   3  at least one public descriptor present in the baseline is missing at HEAD (informational; expected after a deliberate signature change).
 #
 # Baseline AAR resolution order: BASELINE_AAR (must be an existing file, no fall-through) ->
 #   Gradle cache copy of the tag -> HTTPS download from JitPack.

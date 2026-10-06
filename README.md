@@ -1,10 +1,13 @@
 # yahirandroidtaste
 
-A reusable, JitPack-published **Jetpack Compose + Hilt design-system library** for Android:
-a curated catalog of production UI components — cards, chips, sheets, buttons/FAB, pickers,
-feedback, and empty-state surfaces — plus a self-launching component gallery
-(`ExplorerActivity`) that browses every component with a live States / Variants / Playground
-detail page. Extracted from [SecondBrain](https://github.com/Ygaray) as a self-contained module.
+Yahir's **personal Jetpack Compose + Hilt widget library** for Android. It exists so his apps,
+and the agents building them, never code a widget from scratch that he already reuses: cards,
+chips, sheets, buttons/FAB, pickers, feedback, empty-state, voice-command surfaces, and a
+self-launching component gallery (`ExplorerActivity`) with a live States / Variants / Playground
+detail page for every component. It is published on JitPack only as a convenient pinning
+mechanism for his own apps. It has no outside consumers and is not a public release product, and
+the long-term plan is a cross-platform rewrite (likely Kotlin Multiplatform / Compose
+Multiplatform).
 
 The library owns the visual language (theme tokens, component archetypes, interaction
 conventions such as reveal-confirm swipe and standardized snackbar feedback). It ships
@@ -22,13 +25,13 @@ library's bindings into its `SingletonComponent`. See **[`INTEGRATION.md`](INTEG
 - **[`ECOSYSTEM.md`](ECOSYSTEM.md)** — the hub-and-consumers constitution (who owns what, where new
   components go, the repin ritual).
 - **[`CLAUDE.md`](CLAUDE.md)** — the reuse invariants and the (human-gated) tag → JitPack → repin flow.
-- Reference wiring: [`SecondBrain`](https://github.com/Ygaray) is the first (pending) consumer,
-  repinned in a later phase.
+- Consumers: SecondBrain and CalTracker, both Yahir's own apps. Each rebuilds from an immutable tag on
+  every repin.
 
 ## Install (JitPack)
 
-> **The tag is not cut yet.** The immutable JitPack tag is cut in **Phase 102** (LIB, tag-cut is
-> human-gated). Until then, no published coordinate exists. When it lands, wire it as below.
+> **Current release: `v2.5.0`** (`com.github.Ygaray:yahirandroidtaste:v2.5.0`). Tags are immutable
+> and cutting one is human-gated; see `CLAUDE.md`.
 
 Add the JitPack repository in your **`settings.gradle.kts`** (inside
 `dependencyResolutionManagement { repositories { … } }`):
@@ -48,7 +51,7 @@ Then depend on it in your module's **`build.gradle.kts`**. Pin an immutable rele
 commit-SHA) — never `main-SNAPSHOT`:
 
 ```kotlin
-implementation("com.github.Ygaray:yahirandroidtaste:<tag>")   // <tag> cut in Phase 102
+implementation("com.github.Ygaray:yahirandroidtaste:v2.5.0")
 ```
 
 ## Usage

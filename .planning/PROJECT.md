@@ -2,19 +2,27 @@
 
 ## What This Is
 
-A GSD project that governs the reusable `yahirandroidtaste` Compose UI hub **as an artifact** —
-its coherence, structure, and long-term health — distinct from the feature/component work that
-consumer apps drive into it. **Consumers (SecondBrain, CalTracker) remain the primary editors**:
-they grow the catalog additively through their own give-legs. This project owns the stewardship
-that channel structurally *can't* do: pruning additive-duplicate accretion, making the latent
-primitives/patterns tiering legible, curating the design language, and hardening ecosystem
-governance.
+`yahirandroidtaste` is Yahir's **personal reusable widget library**. Its job is to keep his agents
+from coding, from scratch, widgets he already reuses across his own apps (SecondBrain, CalTracker,
+and future ones). Those consumers are his and recompile from an immutable tag on every repin. There
+are no outside consumers, and it is not a public release product. JitPack is just the pinning
+mechanism. The long-term direction is a cross-platform rewrite (likely Kotlin Multiplatform /
+Compose Multiplatform), not a public Android release.
+
+This GSD project governs the library **as an artifact**: its coherence, structure and long-term
+health. That is distinct from the feature/component work consumer apps drive into it. Consumers
+remain the primary editors and grow the catalog additively through their own give-legs. This
+project owns what that channel structurally can't do: pruning additive-duplicate accretion, keeping
+the primitives/patterns tiering legible, and curating the design language.
 
 ## Core Value
 
-The hub stays a **coherent** design system — not merely a safe, ever-growing pile of
-domain-agnostic components — as more consumers contribute. If all else fails, this must keep the
-catalog legible and prunable.
+An agent building one of Yahir's apps finds the widget it needs already here, coherent and legible,
+and drops it in instead of writing a new one. If all else fails, the catalog must stay legible and
+prunable, so reuse stays cheaper than rewriting.
+
+**Compatibility bar:** source compatibility for Yahir's own consumers (they recompile on every
+repin). Binary compatibility is not a goal (see API.md § "Compatibility rule").
 
 ## Current State
 

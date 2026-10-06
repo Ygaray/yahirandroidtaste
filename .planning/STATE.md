@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-10-05)
 Phase: 19
 Plan: Not started
 Status: All phases complete
-Last activity: 2026-10-05 — Phase 19 complete
+Last activity: 2026-10-05 - Completed quick task 261005-qcp: personal-library reframe, source-only compat rule
 
 Progress: [██░░░░░░░░] 20%
 
@@ -116,6 +116,7 @@ None yet.
 | 261005-dmc | F1+F1b binary-compat: hidden v2.4.1 composable overloads + FailureActionUiModel trailing-lambda ctor | 2026-10-05 | 2d803be | [261005-dmc-f1-f1b-binary-compat-hidden-v2-4-1-compo](./quick/261005-dmc-f1-f1b-binary-compat-hidden-v2-4-1-compo/) |
 | 261005-e2e | F1c binary-compat: variant K (hidden synthetic-shaped default ctor + copy$default) for 6 data classes; javap vs v2.4.1 missing=0 | 2026-10-05 | 0956d79 | [261005-e2e-f1c-binary-compat-hidden-secondary-ctors](./quick/261005-e2e-f1c-binary-compat-hidden-secondary-ctors/) |
 | 261005-eyu | F4 binary-compat rule docs (API.md, CONVENTIONS, P15 D-01 correction, P17 D-03 K wording; CLAUDE.md pending Yahir) | 2026-10-05 | (this commit) | [261005-eyu-f4-binary-compat-rule-docs-api-md-conven](./quick/261005-eyu-f4-binary-compat-rule-docs-api-md-conven/) |
+| 261005-qcp | Reframe YAT as personal reuse lib; compat rule relaxed to source-only; verify-binary-abi.sh informational | 2026-10-05 | (this commit) | [261005-qcp-reframe-yat-as-personal-reuse-lib-relax-](./quick/261005-qcp-reframe-yat-as-personal-reuse-lib-relax-/) |
 
 ## Deferred Items
 

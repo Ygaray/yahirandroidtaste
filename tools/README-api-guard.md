@@ -12,7 +12,7 @@ HUB_LANE_OVERRIDE=2 git commit …   # Behavior change (an existing source line 
 
 The hook will then allow the commit with the explicit declaration. This ensures that non-additive changes are intentional and coordinated, not accidental. The hook fails closed: if the classifier cannot classify the commit, the commit is blocked.
 
-API-surface checks are not done by the hook: Metalava `apiCheck` is the source-level gate and `tools/verify-binary-abi.sh` is the binary gate (below).
+API-surface checks are not done by the hook. Metalava `apiCheck` is the per-commit source-level gate. `tools/verify-binary-abi.sh` is an optional, informational binary check (below), not a release gate.
 
 ## API dump discipline
 
@@ -24,27 +24,27 @@ Before any release, run the full guard test suite:
 bash tools/test/run-all.sh
 ```
 
-This ensures the remaining guards pass (verify-additive-diff, classify-hub-change, precommit-hook, and verify-binary-abi).
+This ensures the remaining guards pass (verify-additive-diff, classify-hub-change, precommit-hook, and the verify-binary-abi fixture test).
 
 ## Installation
 
 Run `bash tools/hooks/install.sh` to symlink the pre-commit hook into your `.git/hooks/` directory.
 
-## Binary ABI gate
+## Binary ABI check (optional, informational)
 
-Metalava `apiCheck` models Kotlin signatures, not the JVM descriptors that Compose `$default` / `$changed` parameters and data-class synthetics compile to, so a clean `apiCheck` does not prove binary compatibility. `tools/verify-binary-abi.sh` is the binary gate.
+This is a personal library whose consumers recompile on every repin, so **binary compatibility is not required** (API.md § "Compatibility rule"). Metalava `apiCheck` models Kotlin signatures, not the JVM descriptors that Compose `$default` / `$changed` parameters and data-class synthetics compile to. `tools/verify-binary-abi.sh` reports binary differences for information only. It is not a release gate.
 
 ```bash
 tools/verify-binary-abi.sh <previous-tag>     # for the v2.5.0 cut: tools/verify-binary-abi.sh v2.4.1
 ```
 
 - **What it compares:** `javap -protected -s` descriptors (public and protected members; protected members are binary API for subclassing consumers) of every class in the release AAR built at HEAD versus the baseline tag's AAR, normalized to sorted unique `class#member descriptor` lines and diffed append-only. Each class also contributes header lines (`class#@class`/`@interface`, `@public`, `@nonfinal`, `@concrete`, and one `@super <type>` per extends/implements entry, generics erased), so removing a member-less class or dropping a supertype, `public`, `open` or non-`abstract` fails too. Adding or opening is fine; replacing a direct supertype with an intermediate one is reported as missing (strict by design). Every baseline descriptor must still exist at HEAD; additions are fine.
-- **Exit codes:** `0` pass (zero missing public or protected descriptors); `1` usage or precondition (no argument, malformed or unresolvable tag, dirty artifact inputs when the script builds); `2` tool, sanity-floor, javap-error, unsafe-entry-name or baseline-resolution failure; `3` lane 3, at least one public or protected descriptor from the baseline is missing at HEAD. Exit 3 means STOP and is never waived.
+- **Exit codes:** `0` pass (zero missing public or protected descriptors); `1` usage or precondition (no argument, malformed or unresolvable tag, dirty artifact inputs when the script builds); `2` tool, sanity-floor, javap-error, unsafe-entry-name or baseline-resolution failure; `3` lane 3, at least one public or protected descriptor from the baseline is missing at HEAD. Exit 3 is informational: it lists removed descriptors, which is expected after a deliberate signature change, and does not block a tag.
 - **Baseline resolution order:** `BASELINE_AAR` (an existing file, no fall-through), then the Gradle cache copy of the tag, then an HTTPS download from JitPack. Both AAR hashes and the baseline source are printed so the evidence names the exact bytes.
 - **Exclusions:** Dagger `*_Factory` and `*_MembersInjector` classes are not compared; missing `ComposableSingletons$*` lines are ignored and counted (`filtered_ComposableSingletons`).
 - **Sanity floor:** both normalized listings must hold at least `MIN_LINES` lines (default 2000, the v2.4.1 baseline has 3885), and any javap stderr output or non-zero javap exit is a hard failure, so an empty or partial javap run can never pass.
 - **Seams:** `BASELINE_AAR`, `HEAD_AAR`, `SKIP_BUILD`, `MIN_LINES` and `JITPACK_BASE` exist for the offline fixture test and diagnostics only. The first output line is `SEAMS: none` or names the seams set; a release cut must show `SEAMS: none`.
-- **When to run:** at every release cut, on the exact tagged HEAD, before tagging; and whenever a tagged public signature is touched.
+- **When to run:** optional. Run it when you want to know whether a prebuilt binary compiled against the previous tag would still link. It does not block a cut.
 
 ## ABI-dump mechanism (Task 1 spike, 2026-08-27)
 

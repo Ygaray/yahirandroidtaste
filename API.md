@@ -340,35 +340,24 @@ and a literal `", "` before the optional changed-item fragment
   different order or a non-ASCII separator should fold the item into `reason` and pass
   `changedItem = null` (see `UndoRefusedUiModel`).
 
-### The binary-compatibility rule (applies to every change from v2.5 on)
+### Compatibility rule (personal library; source compatibility only)
 
-Never change a **tagged** public signature in place. Metalava `apiCheck` is only the
-**source-level** gate. It models Kotlin signatures, not the JVM descriptors that Compose and
-default arguments compile to, so a clean `apiCheck` does not prove binary compatibility. The
-**binary** gate is the `javap` descriptor diff of the release AAR against the previous tag's AAR:
-zero missing public or protected descriptors (Dagger `*_Factory` / `*_MembersInjector` and
-`ComposableSingletons$*` excluded). The command is `tools/verify-binary-abi.sh <previous-tag>` (for
-v2.5.0 that is `v2.4.1`). It exits 0 on pass, 3 when a public or protected descriptor is missing (lane 3: STOP,
-never waived), 2 on a tool, sanity-floor or baseline-resolution failure, and 1 on usage. Run it on
-the exact tagged HEAD before tagging; see `tools/README-api-guard.md`.
+This is Yahir's personal library. Its only consumers are his own apps, and each recompiles from an
+immutable tag on every repin. So the bar is **source compatibility** for those consumers:
 
-- **Composables:** append new parameters as the last parameter (source compat). Keep the tagged
-  signature as a `@Deprecated("…", level = DeprecationLevel.HIDDEN) @Composable` overload with the
-  exact tagged parameters and defaults, delegating to the current one by **named** arguments. Add
-  one test per shim that resolves the tagged JVM descriptor (`…, Composer, int, int`) by reflection
-  and renders through it with the `$default` mask a tagged caller would pass.
-- **Data classes:** `@JvmOverloads` plus a visible legacy-arity `copy` keep **Java** callers and
-  Metalava happy, but **Kotlin** callers that omit defaulted arguments link to compiler synthetics.
-  Restore those synthetics with "variant K":
-  - Add a `@Deprecated(HIDDEN)` constructor declared with the tagged synthetic parameters
-    (`…, mask: Int, marker: DefaultConstructorMarker?`). Only add it if the tagged primary had a
-    default.
-  - Add a private companion with `@JvmStatic @JvmName("copy\$default")`.
-  - Give each a reflection test plus a behavioural test with non-zero masks.
-  - Do not hide the legacy `copy` and do not drop `@JvmOverloads`. Both remove `api.txt` lines and
-    break Java source callers.
-  - The full recipe and its pitfalls are in `.planning/quick/261005-e2e-*/261005-e2e-SUMMARY.md`
-    (§ K recipe).
-- **Only tagged shapes get shims.** Inside one unreleased milestone, intermediate shapes need none.
-  Add the shims for a release at its cut, and keep exactly one hidden shim per published signature.
-- A deliberate break is a lane-3 release that bumps the major version, not a waived gate.
+- New parameters and properties are appended with **defaults**, so existing call sites keep
+  compiling.
+- **Trailing lambdas stay last.** Never append a parameter after a function-typed parameter that
+  callers may pass as a trailing lambda. If a new parameter must go there, document the caveat
+  (pass the lambda by name), as with v2.3.0's `showTagColors` and v2.5.0's `ProposedItemUiModel`.
+- **Metalava `apiCheck`** is the per-commit source-level gate. Run `./gradlew apiDump` and commit
+  `api.txt` with every public API change.
+- **Binary compatibility is NOT required.** Do not add new `@Deprecated(HIDDEN)` overloads or new
+  variant-K synthetic members for old signatures. The shims that shipped in v2.5.0 (four hidden
+  v2.4.1 composable overloads and the variant-K members on six data classes) stay as they are. Do
+  not remove them.
+- `tools/verify-binary-abi.sh <previous-tag>` (a `javap` AAR descriptor diff) is an **optional,
+  informational** check, not a release gate. A missing descriptor is expected after a deliberate
+  signature change and does not block a tag. See `tools/README-api-guard.md`.
+- A deliberate source break is fine when Yahir's consumers are updated in the same repin. Note it
+  in this file and bump the version accordingly.
