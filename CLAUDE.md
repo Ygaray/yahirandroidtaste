@@ -3,17 +3,21 @@
 You are working in a **reusable, domain-agnostic Android UI library**: a curated Jetpack Compose
 component catalog (cards, chips, sheets, buttons/FAB, pickers, feedback, empty-state), its theme
 tokens, its interaction conventions, and a self-launching `ExplorerActivity` gallery, that
-independent consumer apps (SecondBrain, and future apps) import via **JitPack**. This repo names
+Yahir's own apps (SecondBrain, CalTracker, future apps) import via **JitPack**. This repo names
 **no app-specific concepts** — every component takes its content + callbacks as parameters.
+
+**Why it exists:** this is a **personal** hub. Its job is to let Yahir's agents reach for an
+existing widget instead of coding the ones he reuses from scratch. It has **no outside consumers**:
+every consumer recompiles it from a tag on repin, and it is not built for public release (a future
+public version would be a cross-platform rewrite, e.g. Kotlin/Compose Multiplatform). Favor
+breadth, consistency and ease of reuse over release-engineering ceremony.
 
 - **Import root:** `io.github.ygaray.yahirandroidtaste` (publisher-owned, consumer-name-free;
   renamed to this publisher-owned root in Phase 101 / LIB-03).
-- **JitPack coordinate:** `com.github.Ygaray:yahirandroidtaste:<tag>` (tags `v1.5.0`…`v2.3.0` are
-  cut and pushed; `v2.3.0` — additive opt-in tag color for pickers and editor strips
-  (`TAGCOLOR-02`) on top of `v2.2.0`'s milestone v2.0 "Line Reunification" — is the current release
-  and resolves on JitPack).
+- **JitPack coordinate:** `com.github.Ygaray:yahirandroidtaste:<tag>` (current release: `v2.5.0`,
+  voice UI localization + a11y + Failure enrichment + router toggle; see `API.md`).
 - **Public repo:** `github.com/Ygaray/yahirandroidtaste`
-- **First consumer (pending repin, Phase 103):** SecondBrain.
+- **Consumers:** SecondBrain, CalTracker (both repin by tag and recompile).
 
 **Read `API.md` for the public surface and `INTEGRATION.md` to wire a new app.** The essentials of
 how this library relates to its consumers:
@@ -39,6 +43,12 @@ how this library relates to its consumers:
 - **Interaction conventions travel with the components.** Reveal-confirm destructive swipe
   (left=delete, right=edit), standardized snackbar/undo feedback, and conditional-render-no-dead-
   space are library-wide conventions realized in these components — preserve them.
+- **Source-compatible, not binary-compatible.** Consumers always recompile, so a change only has to
+  keep existing *call sites* compiling: append new params with defaults, keep trailing lambdas
+  last, and never append a param after a trailing lambda. Binary compatibility is **not** required:
+  don't add new `@Deprecated(HIDDEN)` overloads or hand-written `copy$default`/default-ctor
+  synthetics (the v2.5.0 shims stay; don't add more). Metalava `apiCheck` is the per-commit gate;
+  `tools/verify-binary-abi.sh` is informational only. Details: `API.md`, `CONVENTIONS.md`.
 
 ## Changes here ripple to every consumer — and shipping is human-gated
 
