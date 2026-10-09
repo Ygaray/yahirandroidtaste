@@ -45,8 +45,8 @@ independent apps that consume it:
 <!-- repin-matrix:begin -->
 | Consumer | Pinned | Latest | Status |
 |---|---|---|---|
-| CalTracker_Android | v2.4.1 | v2.4.1 | current |
-| SecondBrain | v2.4.1 | v2.4.1 | current |
+| CalTracker_Android | v2.5.0 | v2.5.0 | current |
+| SecondBrain | v2.5.0 | v2.5.0 | current |
 <!-- repin-matrix:end -->
 
 ### Completed repins (Wave 1 → `v2.4.0`)
