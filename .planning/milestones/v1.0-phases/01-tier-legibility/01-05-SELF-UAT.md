@@ -1,4 +1,15 @@
 ---
+status: complete
+result: all_pass
+gate: 1
+phase: 01-tier-legibility
+source:
+  - "01-ROADMAP success criteria #2"
+  - "01-VERIFICATION.md human_verification #1"
+  - "01-UAT.md #1"
+device: Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN, Android 15)
+apk: yahirandroidtaste-1.10.0.aar (md5 18e493e666f8bcaeed23b2c22953fadb @ 87561ff) hosted via throwaway uat-harness app-debug.apk (md5 c8dff9ca01856a2f5a098a224dc7080d)
+run: 2026-09-02T00:23:00Z
 audit_acknowledged:
   milestone: v2.0
   at: 2026-09-27

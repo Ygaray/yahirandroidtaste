@@ -1,4 +1,15 @@
 ---
+status: complete
+result: all_pass
+gate: 1
+phase: 06-forward-port-reunification
+source:
+  - "ROADMAP.md Phase 6 Success Criteria #1-5"
+  - "06-VERIFICATION.md human_verification #1-3"
+  - "06-01/06-02/06-03-SUMMARY.md D1 human_judgment items"
+device: Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN, Android 15)
+apk: yahirandroidtaste-1.10.0.aar (md5 52917361d23adb55c3b43e5919df6cd9 @ 6bf7017) hosted via throwaway uat-harness app-debug.apk (md5 63c4f1a9cfc39656f2570a7baa81fb5e)
+run: 2026-09-27T07:36:30Z
 audit_acknowledged:
   milestone: v2.0
   at: 2026-09-27

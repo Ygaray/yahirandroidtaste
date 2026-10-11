@@ -1,4 +1,16 @@
 ---
+status: complete
+result: all_pass
+gate: 1
+phase: 08-micbutton-hardening
+source:
+  - "ROADMAP.md Phase 8 Success Criteria #1-4"
+  - "08-01-PLAN.md must_haves"
+  - "08-01-SUMMARY.md coverage D1-D4"
+  - "08-VERIFICATION.md re-verification of CR-01 semantics OnClick"
+device: Samsung SM-S908U / yahirs-s22-ultra-2 (R5CT10XNKQN via USB adb, Android 15)
+apk: yahirandroidtaste-1.10.0.aar (md5 10457c8251ec04bbc6011a53c03077c1 @ e9c7eda) hosted via throwaway uat-harness app-debug.apk (md5 6993ab67a4081bfc202a52ab601d9cf6)
+run: 2026-09-27T16:27:00Z
 audit_acknowledged:
   milestone: v2.0
   at: 2026-09-27
