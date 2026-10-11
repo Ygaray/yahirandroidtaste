@@ -12,10 +12,10 @@ requires:
       no group-undo-related conflicts to merge)
 provides:
   - ClarificationOptionUiModel (opaque id + label presentational model)
-  - ClarificationBar: standalone, prop-driven "tap-to-clarify choices" composable (question +
+  - "ClarificationBar: standalone, prop-driven \"tap-to-clarify choices\" composable (question +
     pressable AppChip options + onSelect(id)/onDismiss), registered in the Voice Command family
     with a 4-cell states matrix (Disabled/Focused documented N/A) and a duplicate-label-edge
-    gallery fixture
+    gallery fixture"
   - DomainVocabularyDriftGuardTest's PRIMITIVE_NOUN_ALLOWLIST widened with "Clarification"
 affects: [12-voice-confirm-clarify-sheet (may reuse this composable), 13-voice-ship-gate (tags v2.4.0)]
 

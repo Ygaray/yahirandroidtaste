@@ -13,7 +13,7 @@ provides:
   - Machine-reconciled repin-matrix block showing v2.2.0 as Latest for both consumers
   - ECOSYSTEM.md Section 1 narrative corrected -- no stale "current tag" claim remains
   - A new v2.2.0 tag-cut record in the established per-tag format
-  - "Pending repins (post-v2.2.0)" subsection naming each consumer's exact bump path
+  - "\"Pending repins (post-v2.2.0)\" subsection naming each consumer's exact bump path"
 affects: []
 
 actuals:
