@@ -91,7 +91,24 @@ Plans:
   5. `ReceiptRow` is registered in its family screen with a gallery state whose single-open accordion is held in demo state, not in the row. The registry integrity test and the CATALOG drift guard are green, and `apiCheck` is green on the regenerated `api.txt`.
 
 **Notes**: The `receipt_row_*` tags may land with the row. VTAG-01 acceptance belongs to Phase 22.
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 21-01-PLAN.md — Tracer: `SheetScaffold(shape)` end to end (signature, forward, api.txt, source contract, recording-shape probe, shaped-sheet gallery demo) (VSHEET-01)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 21-02-PLAN.md — `SegmentedOptionSelector` Pill style + `disabledOptions` above the byte-identical Material block, parity contract, Pill/German 360dp/disabled tests, gallery demos (VSEG-01)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 21-03-PLAN.md — `ReceiptRow` end to end (Y-2 signature, 92dp anatomy, merge-domain semantics, motion seams, Cards entry + vocabulary acknowledgment), line-height probe, geometry/semantics/source-contract tests (VROW-01, VROW-02)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 21-04-PLAN.md — Motion proof (200ms chevron/dim/expand), 360dp German overflow + extreme-value edge, single-open accordion demo + registry render, phase gate and Gate-1 handoff (VROW-01)
 **UI hint**: yes
 
 ### Phase 22: OutcomeSheet Receipt style
