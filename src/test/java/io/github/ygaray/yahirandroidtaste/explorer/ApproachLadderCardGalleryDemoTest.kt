@@ -18,13 +18,17 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.text.TextLayoutResult
+import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.GraphicsMode
 
 /**
  * Renders the [ComponentRegistry]'s OWN `ApproachLadderCard` entry (Phase 17 D-02, VAPPR-04): the
@@ -90,26 +94,57 @@ class ApproachLadderCardGalleryDemoTest {
         composeTestRule.onAllNodesWithContentDescription("Router off, selected").assertCountEquals(1)
     }
 
+    /**
+     * G-15-1 Gate-2 cell guard (WR-01). Needs real text measurement (`GraphicsMode.NATIVE`) and the
+     * Gate-2 width class (`w360dp`): under the legacy shadow measurement the German labels never
+     * wrap, so this test passed against the pre-fix layout. The assertion that matters is the
+     * German cell's Cloud name keeping a nonzero, unellipsized width -- the collapse G-15-1 reported.
+     */
     @Test
+    @GraphicsMode(GraphicsMode.Mode.NATIVE)
+    @Config(qualifiers = "w360dp-h800dp")
     fun variantsContent_includesLongGermanLabelCell_withBoundedAffordanceWrapping() {
         // Scrollable so every Variants cell gets its natural height instead of being squeezed.
         composeTestRule.setContent {
-            Column(Modifier.verticalScroll(rememberScrollState())) { variantsContent().invoke() }
+            YahirAndroidTasteTheme {
+                Column(Modifier.verticalScroll(rememberScrollState())) { variantsContent().invoke() }
+            }
         }
         composeTestRule.waitForIdle()
+
+        // "Cloud" names a rung in every cell: the German cell's is the first one below its label.
+        val sectionTop = composeTestRule
+            .onNodeWithText("ApproachLadderCard — long localized labels (German)", useUnmergedTree = true)
+            .fetchSemanticsNode().positionInRoot.y
+        val clouds = composeTestRule.onAllNodesWithText("Cloud", useUnmergedTree = true).fetchSemanticsNodes()
+        val germanCloud = clouds.filter { it.positionInRoot.y > sectionTop }.minBy { it.positionInRoot.y }
+        assertTrue(
+            "German cell's Cloud name width must be > 0, was ${germanCloud.size.width}",
+            germanCloud.size.width > 0
+        )
+        assertFalse(
+            "German cell's Cloud name must not be ellipsized",
+            textLayout(germanCloud).isLineEllipsized(0)
+        )
 
         listOf("Derzeit nicht verfügbar", "Netzwerkverbindung erforderlich").forEach { label ->
             val matches = composeTestRule.onAllNodesWithText(label, useUnmergedTree = true)
             matches.assertCountEquals(1)
             val node = matches[0].fetchSemanticsNode()
             assertTrue("\"$label\" width must be > 0, was ${node.size.width}", node.size.width > 0)
-            val layouts = mutableListOf<TextLayoutResult>()
-            node.config[SemanticsActions.GetTextLayoutResult].action?.invoke(layouts)
-            val lines = layouts.single().lineCount
+            val lines = textLayout(node).lineCount
             assertTrue("\"$label\" must render on <= 2 lines, rendered on $lines", lines <= 2)
         }
         composeTestRule.onAllNodesWithContentDescription("Ausschließlich offline, selected")
             .assertCountEquals(1)
+    }
+
+    private fun textLayout(node: androidx.compose.ui.semantics.SemanticsNode): TextLayoutResult {
+        val layouts = mutableListOf<TextLayoutResult>()
+        checkNotNull(node.config[SemanticsActions.GetTextLayoutResult].action) {
+            "node has no GetTextLayoutResult action"
+        }.invoke(layouts)
+        return layouts.single()
     }
 
     @Test
