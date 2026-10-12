@@ -197,10 +197,14 @@ internal fun buildUndoCenterRows(
     return rows
 }
 
-/** Stable LazyColumn key of a row: `group-` plus the groupId for a header, the entry id otherwise. */
+/**
+ * Stable LazyColumn key of a row. Both kinds are namespaced (`g:` plus the groupId for a header,
+ * `e:` plus the entry id for an entry), so a header key can never equal an entry key whatever ids
+ * the caller chose.
+ */
 internal fun undoCenterRowKey(row: UndoCenterRow): String = when (row) {
-    is UndoCenterRow.Group -> "group-${row.group.groupId}"
-    is UndoCenterRow.Entry -> row.entry.id
+    is UndoCenterRow.Group -> "g:${row.group.groupId}"
+    is UndoCenterRow.Entry -> "e:${row.entry.id}"
 }
 
 /** `1 item` for one, otherwise the number plus ` items`. English-only library text (D-06). */

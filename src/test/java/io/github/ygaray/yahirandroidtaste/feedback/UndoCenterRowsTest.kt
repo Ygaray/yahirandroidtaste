@@ -48,7 +48,16 @@ class UndoCenterRowsTest {
         val entries = listOf(entry("x"), entry("m1"), entry("m2"))
         val rows = buildUndoCenterRows(entries, listOf(group("g", "m1", "m2")))
         val keys = rows.map { undoCenterRowKey(it) }
-        assertEquals(listOf("x", "group-g", "m1", "m2"), keys)
+        assertEquals(listOf("e:x", "g:g", "e:m1", "e:m2"), keys)
+        assertEquals(keys.size, keys.toSet().size)
+    }
+
+    @Test
+    fun `an entry id that looks like a header key does not collide with the header`() {
+        val entries = listOf(entry("group-g"), entry("g:g"), entry("m1"))
+        val rows = buildUndoCenterRows(entries, listOf(group("g", "m1")))
+        val keys = rows.map { undoCenterRowKey(it) }
+        assertEquals(4, rows.size)
         assertEquals(keys.size, keys.toSet().size)
     }
 
