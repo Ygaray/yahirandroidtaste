@@ -3,19 +3,19 @@ gsd_state_version: "1.0"
 milestone: v2.6
 milestone_name: Receipt voice surfaces + ProviderKeyCard lifecycle
 current_phase: 24
-current_phase_name: catalog-docs-explorer-demos-cut-v2-6-0
+current_phase_name: Catalog, docs, Explorer demos & cut v2.6.0
 status: executing
-stopped_at: Phase 23 complete, ready to plan Phase 24
-last_updated: "2026-10-12T18:40:40.806Z"
+stopped_at: Completed 24-01-PLAN.md
+last_updated: "2026-10-12T18:58:06.551Z"
 last_activity: 2026-10-12
-last_activity_desc: Phase 23 complete, transitioned to Phase 24
-state_head: cffad79fd9124eb176e69fcb43e30b85c337d924
+last_activity_desc: Phase 24 execution started
+state_head: 5257d86446f48767eb2f92114b04e927dbd527f9
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 19
-  completed_plans: 15
-  percent: 79
+  completed_plans: 16
+  percent: 80
 ---
 
 # Project State
@@ -25,16 +25,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-11)
 
 **Core value:** An agent building one of Yahir's apps finds the widget it needs already here, coherent and legible, and drops it in instead of writing a new one.
-**Current focus:** Phase 23 — ProviderKeyCard lifecycle & Undo Center groups
+**Current focus:** Phase 24 — Catalog, docs, Explorer demos & cut v2.6.0
 
 ## Current Position
 
-Phase: 24 (catalog-docs-explorer-demos-cut-v2-6-0) — READY TO EXECUTE
-Plan: Not started
+Phase: 24 (Catalog, docs, Explorer demos & cut v2.6.0) — EXECUTING
+Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-10-12 — Phase 23 complete, transitioned to Phase 24
+Last activity: 2026-10-12 — Phase 24 execution started
 
-Progress: [████████░░] 79%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
@@ -60,6 +60,11 @@ Progress: [████████░░] 79%
 - Trend: -
 
 *Updated after each plan completion*
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 24 P01 | 17 min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -76,6 +81,7 @@ Recent decisions affecting current work:
 - Roadmap: the Y-14 tags on atoms and rows may land with their components in Phases 20-21. VTAG-01 acceptance (the per-Receipt-state tag test) belongs to Phase 22.
 - Carried from v2.5: commits that re-signature a composable are classified lane 2 by the pre-commit hook, so use `HUB_LANE_OVERRIDE=2` (the detected lane). Regenerate `api.txt` in the same commit as the signature change.
 - Carried from v2.5 (G-15-1): `SegmentedOptionSelector`'s Material layout (label wraps to 2 lines, check-icon slot reserve) and the private `RungLabelLayout` are the v2.5.1 parity baseline. Phase 21's Pill style must leave the Material path untouched.
+- [Phase 24]: 24-01: count editor offers Few/Many (SegmentedOptionSelector requires exactly 2 options); HubSchemeScope re-wraps Receipt and tone demos in the hub static scheme (owner flag); Undo group demo boxes are 680dp
 
 ### Pending Todos
 
@@ -111,8 +117,8 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-11 — Roadmap created for milestone v2.6
-Stopped at: Phase 23 complete, ready to plan Phase 24
+Last session: 2026-10-12T18:58:06.484Z
+Stopped at: Completed 24-01-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
