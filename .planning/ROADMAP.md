@@ -46,7 +46,7 @@ Plans:
 - [x] 15-01-PLAN.md — Composable label params: ProviderKeyCard/ModelSelectCard/ClarificationBar/ApproachLadderCard, ProviderKeyCard tracer + apiCheck/apiDump/lane-3 flow (VI18N-01, VI18N-02, VI18N-03)
 - [x] 15-02-PLAN.md — Undo-model label fields via `@JvmOverloads` + old-arity `copy` recipe: UndoRowUiModel.undoneLabel tracer + UndoRefusedUiModel prefix/suffix through OutcomeSheet (VI18N-04)
 - [x] 15-03-PLAN.md — HandledByUiModel.escalationsLabel + ProposedItemUiModel.removeContentDescription, v2.4.0 call-shape compile fixture, and the phase closing gate vs the released v2.4.1 api.txt (VI18N-04)
-- [ ] 15-04-PLAN.md — Gap closure G-15-1 (v2.5.1 patch): RungRow long-label layout (rung name keeps >=40%, affordances wrap <=2 lines) + SegmentedOptionSelector label wraps inside segment, German regression tests + long-label gallery cell, 15-VERIFICATION.md line 60 correction + API.md note; api.txt byte-identical to v2.5.0 (VI18N-03, VI18N-04)
+- [x] 15-04-PLAN.md — Gap closure G-15-1 (v2.5.1 patch): RungRow long-label layout (rung name keeps >=40%, affordances wrap <=2 lines) + SegmentedOptionSelector label wraps inside segment, German regression tests + long-label gallery cell, 15-VERIFICATION.md line 60 correction + API.md note; api.txt byte-identical to v2.5.0 (VI18N-03, VI18N-04)
 
 ### Phase 16: A11y + Failure enrichment
 
@@ -217,7 +217,7 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 15. Voice-surface i18n label params | v2.5 | 3/3 | In Progress|  |
+| 15. Voice-surface i18n label params | v2.5 | 4/4 | In Progress|  |
 | 16. A11y + Failure enrichment | v2.5 | 3/3 | In Progress|  |
 | 17. ApproachLadderCard Router ON/OFF toggle | v2.5 | 1/1 | In Progress|  |
 | 18. Catalog integrity + API dump + docs | v2.5 | 2/2 | In Progress|  |
