@@ -389,7 +389,7 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public final class SheetScaffoldKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void SheetScaffold(kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, optional androidx.compose.ui.Modifier modifier, optional androidx.compose.material3.SheetState sheetState, optional kotlin.jvm.functions.Function0<kotlin.Unit>? dragHandle, optional kotlin.jvm.functions.Function0<androidx.compose.foundation.layout.WindowInsets> contentWindowInsets, kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit> content);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void SheetScaffold(kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, optional androidx.compose.ui.Modifier modifier, optional androidx.compose.material3.SheetState sheetState, optional kotlin.jvm.functions.Function0<kotlin.Unit>? dragHandle, optional kotlin.jvm.functions.Function0<androidx.compose.foundation.layout.WindowInsets> contentWindowInsets, optional androidx.compose.ui.graphics.Shape shape, kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit> content);
   }
 
   public final class SortControlKt {

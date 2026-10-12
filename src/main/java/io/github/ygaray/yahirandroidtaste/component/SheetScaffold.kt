@@ -11,6 +11,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 
 /**
  * Canonical bottom-sheet chrome wrapper (CANON-01, Family B) — the single shared implementation
@@ -42,6 +43,9 @@ import androidx.compose.ui.Modifier
  *   [BottomSheetDefaults.DragHandle]; pass null to omit it.
  * @param contentWindowInsets Window insets applied by [ModalBottomSheet] itself. Defaults to
  *   [BottomSheetDefaults.windowInsets].
+ * @param shape Shape of the sheet container. Defaults to [BottomSheetDefaults.ExpandedShape], the
+ *   shape [ModalBottomSheet] itself defaults to, so a call that passes no shape renders as before;
+ *   pass `RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)` for 24dp top corners.
  * @param content The sheet's body, rendered inside the scaffold's single `.imePadding()`
  *   `Column`.
  */
@@ -53,6 +57,7 @@ fun SheetScaffold(
     sheetState: SheetState = rememberModalBottomSheetState(),
     dragHandle: @Composable (() -> Unit)? = { BottomSheetDefaults.DragHandle() },
     contentWindowInsets: @Composable () -> WindowInsets = { BottomSheetDefaults.windowInsets },
+    shape: Shape = BottomSheetDefaults.ExpandedShape,
     content: @Composable ColumnScope.() -> Unit
 ) {
     ModalBottomSheet(
@@ -60,7 +65,8 @@ fun SheetScaffold(
         modifier = modifier,
         sheetState = sheetState,
         dragHandle = dragHandle,
-        contentWindowInsets = contentWindowInsets
+        contentWindowInsets = contentWindowInsets,
+        shape = shape
     ) {
         Column(modifier = Modifier.imePadding()) {  // D-05: once, at content root; callers do not re-apply
             content()
