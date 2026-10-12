@@ -31,7 +31,7 @@
 
 ### Rows, selectors & sheet frame
 
-- [ ] **VROW-01**: A new stateless `ReceiptRow` with the sketch's Y-2 signature and layout:
+- [x] **VROW-01**: A new stateless `ReceiptRow` with the sketch's Y-2 signature and layout:
   - **Summary:** a `Row` of a title column (weight 1f; title, subtitle, supporting content, cue pill), a value column (wraps, min 56dp, end-aligned), a chevron (only when `onClick != null && trailingAction == null`), then `trailingAction`.
   - **Overflow:** title, subtitle and value are single-line with ellipsis. When space runs out, the value wins and the title ellipsizes. This is verified with a long localized title at 360dp.
   - **Expanded content:** `expandedContent` renders full width below the summary.
@@ -39,12 +39,12 @@
   - **Chevron:** rotates 0→180° in 200ms.
   - **`dimmed`:** 38% alpha plus strikethrough, with a 200ms fade.
   - **Collapsed height:** with all lines and no cue, 92dp ±1dp.
-- [ ] **VROW-02**: `ReceiptRow` semantics. The summary is one merged node containing title, subtitle, value, caption and cue. When `onClick != null` it is `clickable(role = Button, onClickLabel)` with an expanded/collapsed `stateDescription` from the caller labels. `trailingAction` and `expandedContent` stay separate nodes. The hub ships no accordion logic; single-open state is the consumer's, shown in an Explorer demo (Y-2).
-- [ ] **VSEG-01**: `SegmentedOptionSelector` gains `disabledOptions: Set<Int> = emptySet()` and `style: SegmentedOptionStyle = SegmentedOptionStyle.Material`, with a new `enum class SegmentedOptionStyle { Material, Pill }`.
+- [x] **VROW-02**: `ReceiptRow` semantics. The summary is one merged node containing title, subtitle, value, caption and cue. When `onClick != null` it is `clickable(role = Button, onClickLabel)` with an expanded/collapsed `stateDescription` from the caller labels. `trailingAction` and `expandedContent` stay separate nodes. The hub ships no accordion logic; single-open state is the consumer's, shown in an Explorer demo (Y-2).
+- [x] **VSEG-01**: `SegmentedOptionSelector` gains `disabledOptions: Set<Int> = emptySet()` and `style: SegmentedOptionStyle = SegmentedOptionStyle.Material`, with a new `enum class SegmentedOptionStyle { Material, Pill }`.
   - **Pill:** one full-radius outlined container. The selected segment is `primary`/`onPrimary` with no check icon. Labels are single-line `bodyMedium` with ellipsis, 40dp tall.
   - **Disabled options:** a disabled option renders at 38% alpha and never fires; the others stay enabled.
   - **Default:** `Material` with an empty set is exactly v2.5.1, including the G-15-1 layout. The KDoc warns that long localized labels truncate in Pill (Y-11).
-- [ ] **VSHEET-01**: `SheetScaffold` gains `shape: Shape = BottomSheetDefaults.ExpandedShape`, inserted before the trailing `content` lambda. The default keeps the M3 28dp shape (Y-13).
+- [x] **VSHEET-01**: `SheetScaffold` gains `shape: Shape = BottomSheetDefaults.ExpandedShape`, inserted before the trailing `content` lambda. The default keeps the M3 28dp shape (Y-13).
 
 ### Receipt outcome sheet
 
@@ -160,10 +160,10 @@
 | VBAR-01 | Phase 20 | Complete |
 | VCARD-01 | Phase 20 | Complete |
 | VCHIP-01 | Phase 20 | Complete |
-| VROW-01 | Phase 21 | Pending |
-| VROW-02 | Phase 21 | Pending |
-| VSEG-01 | Phase 21 | Pending |
-| VSHEET-01 | Phase 21 | Pending |
+| VROW-01 | Phase 21 | Complete |
+| VROW-02 | Phase 21 | Complete |
+| VSEG-01 | Phase 21 | Complete |
+| VSHEET-01 | Phase 21 | Complete |
 | VRCPT-01 | Phase 22 | Pending |
 | VRCPT-02 | Phase 22 | Pending |
 | VRCPT-03 | Phase 22 | Pending |
