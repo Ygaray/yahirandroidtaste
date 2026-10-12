@@ -2,13 +2,19 @@
 
 package io.github.ygaray.yahirandroidtaste.explorer
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.AppChip
 import io.github.ygaray.yahirandroidtaste.component.ChipBar
 import io.github.ygaray.yahirandroidtaste.component.ExpandableConfig
+import io.github.ygaray.yahirandroidtaste.component.PillChip
 import io.github.ygaray.yahirandroidtaste.component.PresetChip
 import io.github.ygaray.yahirandroidtaste.component.SortControl
 import io.github.ygaray.yahirandroidtaste.component.TagChipWithContextMenu
@@ -237,6 +244,37 @@ internal val chipsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
             )
         },
         tier = ComponentRegistry.Tier.PATTERN
+    ),
+    ComponentRegistry.Entry(
+        name = "PillChip",
+        family = ExplorerFamilies.CHIPS,
+        states = listOf(
+            // Default: label with a leading date icon and a trailing dropdown arrow.
+            ComponentRegistry.StateCell("Default") {
+                PillChip(
+                    label = "Today",
+                    onClick = {},
+                    leadingIcon = Icons.Filled.DateRange,
+                    trailingIcon = Icons.Filled.ArrowDropDown
+                )
+            },
+            // PillChip has no selected param — N/A.
+            ComponentRegistry.StateCell("Pressed / Selected"),
+            // Disabled: 38% alpha, ignores taps, node reports not-enabled.
+            ComponentRegistry.StateCell("Disabled") {
+                PillChip(
+                    label = "Today",
+                    onClick = {},
+                    leadingIcon = Icons.Filled.DateRange,
+                    trailingIcon = Icons.Filled.ArrowDropDown,
+                    enabled = false
+                )
+            },
+            // PillChip has no focus-visual override beyond the default clickable focus handling — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { PillChipVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     )
 )
 
@@ -420,6 +458,54 @@ private fun PresetChipVariants() {
         },
         modifier = Modifier.padding(horizontal = 16.dp)
     )
+}
+
+/**
+ * PillChip's demo — label only, each icon position, both icons, a long label that ellipsizes
+ * inside a 200dp container, and a disabled chip.
+ */
+@Composable
+private fun PillChipVariants() {
+    SectionLabel("PillChip - label only / leading icon / trailing icon / both")
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        PillChip(label = "Today", onClick = {})
+        PillChip(label = "Today", onClick = {}, leadingIcon = Icons.Filled.DateRange)
+        PillChip(label = "Today", onClick = {}, trailingIcon = Icons.Filled.ArrowDropDown)
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        PillChip(
+            label = "Today",
+            onClick = {},
+            leadingIcon = Icons.Filled.DateRange,
+            trailingIcon = Icons.Filled.ArrowDropDown
+        )
+    }
+
+    SectionLabel("PillChip - long label ellipsizes in 200dp")
+    Row(modifier = Modifier.padding(horizontal = 16.dp)) {
+        PillChip(
+            label = "Alle ausstehenden Aenderungen jetzt speichern",
+            onClick = {},
+            modifier = Modifier.width(200.dp),
+            leadingIcon = Icons.Filled.DateRange,
+            trailingIcon = Icons.Filled.ArrowDropDown
+        )
+    }
+
+    SectionLabel("PillChip - disabled")
+    Row(modifier = Modifier.padding(horizontal = 16.dp)) {
+        PillChip(label = "Today", onClick = {}, leadingIcon = Icons.Filled.DateRange, enabled = false)
+    }
 }
 
 /**

@@ -336,7 +336,10 @@ class DomainVocabularyDriftGuardTest {
             "Tone",
             // Phase 20 (VBTN-02): "Round" is RoundIconButton's head token — a generic shape
             // descriptor (circular outline), not consumer-domain vocabulary.
-            "Round"
+            "Round",
+            // Phase 20 (VCHIP-01): "Pill" is PillChip's head token — a generic shape descriptor
+            // (fully rounded chip), not consumer-domain vocabulary.
+            "Pill"
         )
 
         /**
