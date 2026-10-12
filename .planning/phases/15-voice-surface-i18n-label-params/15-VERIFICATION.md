@@ -1,9 +1,10 @@
 ---
 phase: 15-voice-surface-i18n-label-params
 verified: 2026-10-12T01:20:00Z
-status: human_needed
+status: passed
 score: 13/13 must-haves verified
 covered_files:
+
   - ".planning/REQUIREMENTS.md#VI18N-01"
   - ".planning/REQUIREMENTS.md#VI18N-02"
   - ".planning/REQUIREMENTS.md#VI18N-03"
@@ -29,7 +30,8 @@ covered_files:
   - "src/main/java/io/github/ygaray/yahirandroidtaste/model/ProposedItemUiModel.kt"
   - "src/main/java/io/github/ygaray/yahirandroidtaste/model/UndoRefusedUiModel.kt"
   - "src/main/java/io/github/ygaray/yahirandroidtaste/model/UndoRowUiModel.kt"
-covered_digest: "v1:sha256:2c2613ebcb621bec5524b418dbc4c27b5654c806b68b9eafaf0a484741fafefa"
+
+covered_digest: "v1:sha256:fe75c31f82e60afffc6a0bd98536483d83892de509c31bb8139548a32033d9fc"
 behavior_unverified: 0
 overrides_applied: 0
 re_verification:
@@ -44,10 +46,13 @@ re_verification:
   regressions: []
 coincidental_reliance_items: []
 warnings:
+
   - "15-04-PLAN.md (key_links[0], Task 1 Step B, Task 3 API.md text, threat T-15-04-01) and 15-04-SUMMARY.md (headline, Accomplishments, tech-stack pattern, Files) still describe the private Modifier.maxWidthFraction 60% FlowRow cap. That mechanism was replaced by the private RungLabelLayout in c877c9d (CR-01). maxWidthFraction no longer exists in the code. The truths still hold against the final code (see below), but the SUMMARY is not an accurate record of what shipped."
   - "The previous report's warning 'NOT binary-compatible for Kotlin default-arg call sites' is stale. The 2026-10-05 binary-compat fix added @Deprecated(HIDDEN) v2.4.1 composable overloads and variant-K synthetics (visible in ApproachLadderCard.kt:201-220; documented in API.md). Project policy is now source-compatibility only (API.md 'Compatibility rule'). The same stale sentence is in .planning/uat-pending/15-voice-surface-i18n-label-params.md line 15."
   - "The v2.5.1 tag and the SecondBrain/CalTracker repins are human-gated and not done. API.md already labels the layout fix 'v2.5.1'; no v2.5.1 tag exists (only v2.5.0). 28 local commits on main are ahead of origin/main."
+
 human_verification:
+
   - test: "Gate-2 on the personal device: open the YAT v2.5 Gate-2 harness 'P15: LONG German labels', then Explorer > Voice Command > ApproachLadderCard > 'long localized labels (German)', in light and dark."
     expected: "The Cloud rung name is fully visible. The three German affordances (Derzeit nicht verfügbar / Durch Obergrenze eingeschränkt / Netzwerkverbindung erforderlich) sit right-aligned, at most 2 lines each, with no character-per-line wrapping and no overlap with the name. 'Onlineverarbeitung' / 'Ausschließlich offline' wrap inside their segments without clipping at the card edge, and both segments are the same height. The OutcomeSheet German rows from the harness still render."
     why_human: "Visual legibility on real hardware with real fonts. Robolectric NATIVE geometry tests pin the numbers, not the look. Note: under the final RungLabelLayout the German affordances get more width than in the 15-04 build that the original UAT plan described, so they may stack differently."

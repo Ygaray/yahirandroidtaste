@@ -14,7 +14,8 @@ updated: 2026-10-12T01:24:46Z
 
 ### 1. Long localized labels render without breaking layout
 expected: On personal, open the YAT v2.5 Gate-2 app, tap "P15: LONG German labels". Every overridden label shows the German text (no English leak) and nothing is clipped mid-word, overlapping, or pushing controls off-screen: ProviderKeyCard/ModelSelectCard dropdown labels (Anbieter für Spracherkennung / Sprachmodell für Befehlsverarbeitung), ClarificationBar dismiss (Verwerfen und schließen), ApproachLadderCard rung-state labels + Onlineverarbeitung / Ausschließlich offline toggle; then Open sheet A (Eskalationen an höhere Stufe: 1, Rückgängig gemacht, Konnte nicht rückgängig gemacht werden: ... wurde seitdem geändert). Graceful wrap or ellipsis is fine.
-result: issue
+result: pass
+original_result: issue
 reported: "there are bugs in the ui, you can see one of the side by side texts is all crammed"
 severity: major
 resolved_by_retest: 15 (pass, 2026-10-11; gap G-15-1 resolved by 15-04 + review fixes)
@@ -115,8 +116,8 @@ source: gate2 (15-VERIFICATION human_verification #3, WR-03)
 ## Summary
 
 total: 17
-passed: 16
-issues: 1
+passed: 17
+issues: 0
 pending: 0
 skipped: 0
 blocked: 0
