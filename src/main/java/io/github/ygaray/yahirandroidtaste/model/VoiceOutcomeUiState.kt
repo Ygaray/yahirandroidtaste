@@ -42,6 +42,13 @@ sealed interface VoiceOutcomeUiState {
      *   rows, built by the CONSUMER from [io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore]
      *   reads. `null` renders no undo section at all; undo lives ON [Success] rather than a new
      *   top-level sealed arm so the top-level type stays additive-ready for Phase 12.
+     * @param badge Status badge for the Receipt title row (VRCPT-03). Drawn only by the Receipt
+     *   style; the Classic style ignores it (D-06).
+     * @param titleActions An optional composable slot at the end of the Receipt title row. Receipt
+     *   only. Equality is by lambda reference, so remember the lambda.
+     * @param startAction Receipt actions row, start slot (typically a Text action). Receipt only.
+     * @param endAction Receipt actions row, end slot (typically a Filled action). Receipt only.
+     *   While [inFlight] every action except one with `activeWhileInFlight = true` is disabled.
      */
     data class Success(
         val summary: String,
@@ -49,7 +56,11 @@ sealed interface VoiceOutcomeUiState {
         val editableContent: (@Composable () -> Unit)? = null,
         val inFlight: Boolean = false,
         val batchResults: List<BatchRowResultUiModel> = emptyList(),
-        val undo: UndoAffordanceUiModel? = null
+        val undo: UndoAffordanceUiModel? = null,
+        val badge: OutcomeBadge? = null,
+        val titleActions: (@Composable () -> Unit)? = null,
+        val startAction: SheetActionUiModel? = null,
+        val endAction: SheetActionUiModel? = null
     ) : VoiceOutcomeUiState
 
     /**
@@ -71,16 +82,44 @@ sealed interface VoiceOutcomeUiState {
      * @param semanticsPrefix Optional caller-localized text prepended to [reason] in the error
      *   surface's accessibility announcement (VFAIL-03, D-02), joined by a single ASCII space so any
      *   punctuation belongs to the prefix (e.g. `"Error:"`). `null` or blank leaves the announcement
-     *   unchanged. Plain text, no templating. Static UI copy only — never put sensitive text here
-     *   (this class uses the generated `toString`).
+     *   unchanged. Plain text, no templating. Static UI copy only.
+     * @param title Receipt title-row headline (Receipt only). `null` lets the sheet fall back to its
+     *   default title behavior.
+     * @param transcript The spoken text, shown as the transcript line in the Receipt style only.
+     * @param tone The hue of the failure (D-09). Honored by both styles: Receipt picks the
+     *   `ToneCard` hue, Classic paints the warn tone for [FailureTone.Warn]. Defaults to
+     *   [FailureTone.Error], today's rendering.
+     * @param tip An optional composable rendered under the Receipt card (Receipt only). Equality is
+     *   by lambda reference, so remember the lambda.
+     * @param secondaryAction Receipt pinned bar, start slot (Receipt only).
+     * @param badge Receipt title-row status badge (Receipt only).
+     * @param undo A grouped undo affordance (XR-178-01 b, VXR-02) rendered with the same undo block
+     *   as [Success.undo] in BOTH styles. `null` renders nothing.
      */
     data class Failure @JvmOverloads constructor(
         val reason: String,
         val handledBy: HandledByUiModel? = null,
         val action: FailureActionUiModel? = null,
         val body: (@Composable () -> Unit)? = null,
-        val semanticsPrefix: String? = null
+        val semanticsPrefix: String? = null,
+        val title: String? = null,
+        val transcript: String? = null,
+        val tone: FailureTone = FailureTone.Error,
+        val tip: (@Composable () -> Unit)? = null,
+        val secondaryAction: SheetActionUiModel? = null,
+        val badge: OutcomeBadge? = null,
+        val undo: UndoAffordanceUiModel? = null
     ) : VoiceOutcomeUiState {
+        /**
+         * Privacy-safe representation (mirrors [NeedsConfirmation]'s own `toString()`) --
+         * deliberately omits [reason], [title], [transcript] and [semanticsPrefix], all
+         * caller-formatted free text ([transcript] is user speech). Prints only the [tone] and
+         * whether each optional slot is present (T-22-01, T-12-01).
+         */
+        override fun toString(): String =
+            "Failure(tone=$tone, hasAction=${action != null}, hasSecondaryAction=${secondaryAction != null}, " +
+                "hasUndo=${undo != null}, hasBody=${body != null}, hasTip=${tip != null})"
+
         // Hand-written pre-v2.5 `copy` arity. Without it Metalava reports the shipped JVM
         // `copy(String, HandledByUiModel, FailureActionUiModel)` as a removed method once [body] and
         // [semanticsPrefix] are appended (the compiler only generates the full-arity copy).
@@ -165,7 +204,12 @@ sealed interface VoiceOutcomeUiState {
      * @param cancelLabel The cancel button's label. Defaults to "Cancel".
      * @param topLevelContent An optional sheet-level content slot rendered ONCE regardless of
      *   [items]'s size (D-06) -- e.g. CalTracker's single shared date-picker row for a batch.
-     *   `null` renders nothing (null-prop-hides).
+     *   `null` renders nothing (null-prop-hides). [items] may be empty when this slot renders the
+     *   rows itself (Y-4).
+     * @param confirmEnabled While `false` the confirm node is disabled and [onConfirm] never fires,
+     *   in both styles (D-07). Defaults to `true`.
+     * @param titleActions An optional composable slot at the end of the Receipt title row (Receipt
+     *   only). Equality is by lambda reference, so remember the lambda.
      * @param onConfirm Invoked exactly once on an explicit Confirm-button tap. Never invoked on
      *   composition/recomposition or on a timeout (all of SecondBrain's `ConfirmSubject` arms are
      *   destructive).
@@ -182,6 +226,8 @@ sealed interface VoiceOutcomeUiState {
         val confirmLabel: String = "Confirm",
         val cancelLabel: String = "Cancel",
         val topLevelContent: (@Composable () -> Unit)? = null,
+        val confirmEnabled: Boolean = true,
+        val titleActions: (@Composable () -> Unit)? = null,
         val onConfirm: () -> Unit,
         val onCancel: () -> Unit
     ) : VoiceOutcomeUiState

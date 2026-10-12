@@ -164,9 +164,9 @@ class VoiceModelLabelDefaultsTest {
     }
 
     @Test
-    fun `HandledByUiModel keeps the old five-arg and the new six-arg constructor and copy arities`() {
+    fun `HandledByUiModel keeps the old five and six-arg constructors and the legacy five and full eight-arg copy`() {
         assertTrue(constructorArities(HandledByUiModel::class.java).containsAll(listOf(5, 6)))
-        assertTrue(copyArities(HandledByUiModel::class.java).containsAll(listOf(5, 6)))
+        assertTrue(copyArities(HandledByUiModel::class.java).containsAll(listOf(5, 8)))
     }
 
     // ---- ProposedItemUiModel.removeContentDescription ----
@@ -252,9 +252,9 @@ class VoiceModelLabelDefaultsTest {
     }
 
     @Test
-    fun `FailureActionUiModel keeps the old two-arg and the new three-arg constructor and copy arities`() {
-        assertTrue(constructorArities(FailureActionUiModel::class.java).containsAll(listOf(2, 3)))
-        assertTrue(copyArities(FailureActionUiModel::class.java).containsAll(listOf(2, 3)))
+    fun `FailureActionUiModel keeps the old two-arg and the new full four-arg constructor and copy arities`() {
+        assertTrue(constructorArities(FailureActionUiModel::class.java).containsAll(listOf(2, 4)))
+        assertTrue(copyArities(FailureActionUiModel::class.java).containsAll(listOf(2, 4)))
     }
 
     // ---- VoiceOutcomeUiState.Failure.body / semanticsPrefix (Phase 16 / VFAIL-02, VFAIL-03) ----
@@ -283,9 +283,9 @@ class VoiceModelLabelDefaultsTest {
     }
 
     @Test
-    fun `Failure keeps every old constructor arity and the new copy arities`() {
+    fun `Failure keeps every old constructor arity and the legacy three and full twelve-arg copy`() {
         assertTrue(constructorArities(VoiceOutcomeUiState.Failure::class.java).containsAll(listOf(1, 2, 3, 4, 5)))
-        assertTrue(copyArities(VoiceOutcomeUiState.Failure::class.java).containsAll(listOf(3, 5)))
+        assertTrue(copyArities(VoiceOutcomeUiState.Failure::class.java).containsAll(listOf(3, 12)))
     }
 
     // ---- IN-02: legacy-arity copy drift guards (every field non-default) ----

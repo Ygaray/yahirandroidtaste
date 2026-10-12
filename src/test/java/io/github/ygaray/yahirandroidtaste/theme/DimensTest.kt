@@ -111,4 +111,23 @@ class DimensTest {
         assertEquals(4.dp, Dimens.ReceiptRow.CueVerticalPadding)
         assertEquals(24.dp, Dimens.ReceiptRow.ChevronSize)
     }
+
+    @Test
+    fun `OutcomeReceipt tokens equal their phase 22 values`() {
+        assertEquals(24.dp, Dimens.OutcomeReceipt.CornerRadius)
+        assertEquals(32.dp, Dimens.OutcomeReceipt.BadgeSize)
+        assertEquals(18.dp, Dimens.OutcomeReceipt.BadgeIconSize)
+        assertEquals(8.dp, Dimens.OutcomeReceipt.TitleRowGap)
+        assertEquals(4.dp, Dimens.OutcomeReceipt.BodyTopPadding)
+        assertEquals(4.dp, Dimens.OutcomeReceipt.TranscriptTopPadding)
+        assertEquals(8.dp, Dimens.OutcomeReceipt.TranscriptBottomPadding)
+        assertEquals(12.dp, Dimens.OutcomeReceipt.BarTopPadding)
+        assertEquals(16.dp, Dimens.OutcomeReceipt.BarBottomPadding)
+        assertEquals(24.dp, Dimens.OutcomeReceipt.SuccessActionsTopPadding)
+        assertEquals(16.dp, Dimens.OutcomeReceipt.SuccessActionsBottomPadding)
+        assertEquals(4.dp, Dimens.OutcomeReceipt.PillVerticalPadding)
+        assertEquals(12.dp, Dimens.OutcomeReceipt.PillHorizontalPadding)
+        assertEquals(6.dp, Dimens.OutcomeReceipt.DotSize)
+        assertEquals(6.dp, Dimens.OutcomeReceipt.DotGap)
+    }
 }

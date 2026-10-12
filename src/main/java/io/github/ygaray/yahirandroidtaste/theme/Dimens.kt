@@ -274,4 +274,57 @@ object Dimens {
         /** Size of the expand chevron. */
         val ChevronSize: Dp = 24.dp
     }
+
+    /**
+     * `OutcomeSheet` Receipt-style dimensions (Phase 22, D-05, D-10). Named `OutcomeReceipt` rather
+     * than `OutcomeSheet` so call sites never shadow the composable. The 16dp horizontal padding,
+     * 4dp content spacing and 1dp hairline reuse [HorizontalPadding], [ContentSpacing] and
+     * [HairlineBorder].
+     */
+    object OutcomeReceipt {
+        /** Top corner radius of the Receipt sheet shape. */
+        val CornerRadius: Dp = 24.dp
+
+        /** Diameter of the status badge circle. */
+        val BadgeSize: Dp = 32.dp
+
+        /** Size of the glyph inside the status badge. */
+        val BadgeIconSize: Dp = 18.dp
+
+        /** Horizontal gap between the badge, the title and the title actions. */
+        val TitleRowGap: Dp = 8.dp
+
+        /** Top padding of the body below the title row. */
+        val BodyTopPadding: Dp = 4.dp
+
+        /** Top padding above the transcript line. */
+        val TranscriptTopPadding: Dp = 4.dp
+
+        /** Bottom padding below the transcript line. */
+        val TranscriptBottomPadding: Dp = 8.dp
+
+        /** Top padding of the pinned action bar, below its divider. */
+        val BarTopPadding: Dp = 12.dp
+
+        /** Bottom padding of the pinned action bar. */
+        val BarBottomPadding: Dp = 16.dp
+
+        /** Space above the Success actions row at the end of the scroll content. */
+        val SuccessActionsTopPadding: Dp = 24.dp
+
+        /** Space below the Success actions row. */
+        val SuccessActionsBottomPadding: Dp = 16.dp
+
+        /** Vertical padding inside the handled-by pill. */
+        val PillVerticalPadding: Dp = 4.dp
+
+        /** Horizontal padding inside the handled-by pill. */
+        val PillHorizontalPadding: Dp = 12.dp
+
+        /** Diameter of the dot at the start of the handled-by pill. */
+        val DotSize: Dp = 6.dp
+
+        /** Gap between the pill dot and its text. */
+        val DotGap: Dp = 6.dp
+    }
 }

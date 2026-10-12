@@ -303,8 +303,27 @@ package io.github.ygaray.yahirandroidtaste.component {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void NameAndTagsEditor(optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit> header, String name, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNameChange, String nameLabel, kotlin.jvm.functions.Function0<kotlin.Unit> tagsContent, kotlin.jvm.functions.Function0<kotlin.Unit> onSave, kotlin.jvm.functions.Function0<kotlin.Unit> onDismiss, String saveLabel, optional String dismissLabel, optional boolean dismissDestructive, optional boolean enabled, optional androidx.compose.ui.Modifier modifier);
   }
 
+  @androidx.compose.runtime.Immutable public final class OutcomeSheetColors {
+    ctor public OutcomeSheetColors(io.github.ygaray.yahirandroidtaste.theme.ToneColors warnTone, io.github.ygaray.yahirandroidtaste.theme.ToneColors errorTone);
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.theme.ToneColors getErrorTone();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.theme.ToneColors getWarnTone();
+    property public io.github.ygaray.yahirandroidtaste.theme.ToneColors errorTone;
+    property public io.github.ygaray.yahirandroidtaste.theme.ToneColors warnTone;
+  }
+
+  public final class OutcomeSheetDefaults {
+    method @KotlinOnly @androidx.compose.runtime.Composable public io.github.ygaray.yahirandroidtaste.component.OutcomeSheetColors colors(optional io.github.ygaray.yahirandroidtaste.theme.ToneColors warnTone, optional io.github.ygaray.yahirandroidtaste.theme.ToneColors errorTone);
+    property public androidx.compose.ui.text.TextStyle ReceiptTitleStyle;
+    field public static final io.github.ygaray.yahirandroidtaste.component.OutcomeSheetDefaults INSTANCE;
+  }
+
   public final class OutcomeSheetKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void OutcomeSheet(io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState outcome, kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, optional androidx.compose.ui.Modifier modifier);
+  }
+
+  public enum OutcomeSheetStyle {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.OutcomeSheetStyle Classic;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.OutcomeSheetStyle Receipt;
   }
 
   public final class PillChipKt {
@@ -1079,18 +1098,26 @@ package io.github.ygaray.yahirandroidtaste.model {
 
   public final class FailureActionUiModel {
     ctor public FailureActionUiModel(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick);
-    ctor public FailureActionUiModel(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role);
+    ctor public FailureActionUiModel(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role, optional androidx.compose.ui.graphics.vector.ImageVector? icon);
     method public String component1();
     method public kotlin.jvm.functions.Function0<kotlin.Unit> component2();
     method public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole component3();
+    method public androidx.compose.ui.graphics.vector.ImageVector? component4();
     method public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel copy(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick);
-    method public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel copy(optional String label, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role);
+    method public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel copy(optional String label, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role, optional androidx.compose.ui.graphics.vector.ImageVector? icon);
+    method @InaccessibleFromKotlin public androidx.compose.ui.graphics.vector.ImageVector? getIcon();
     method @InaccessibleFromKotlin public String getLabel();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnClick();
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole getRole();
+    property public androidx.compose.ui.graphics.vector.ImageVector? icon;
     property public String label;
     property public kotlin.jvm.functions.Function0<kotlin.Unit> onClick;
     property public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role;
+  }
+
+  public enum FailureTone {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.FailureTone Error;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.FailureTone Warn;
   }
 
   public final class HandledByUiModel {
@@ -1100,24 +1127,32 @@ package io.github.ygaray.yahirandroidtaste.model {
     ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model);
     ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount);
     ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount, optional String escalationsLabel);
+    ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount, optional String escalationsLabel, optional String prefixLabel);
+    ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount, optional String escalationsLabel, optional String prefixLabel, optional boolean onDevice);
     method public String component1();
     method public String? component2();
     method public String? component3();
     method public String? component4();
     method public Integer? component5();
     method public String component6();
+    method public String component7();
+    method public boolean component8();
     method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel copy(String tier, String? approach, String? provider, String? model, Integer? escalationCount);
-    method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel copy(optional String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount, optional String escalationsLabel);
+    method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel copy(optional String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount, optional String escalationsLabel, optional String prefixLabel, optional boolean onDevice);
     method @InaccessibleFromKotlin public String? getApproach();
     method @InaccessibleFromKotlin public Integer? getEscalationCount();
     method @InaccessibleFromKotlin public String getEscalationsLabel();
     method @InaccessibleFromKotlin public String? getModel();
+    method @InaccessibleFromKotlin public boolean getOnDevice();
+    method @InaccessibleFromKotlin public String getPrefixLabel();
     method @InaccessibleFromKotlin public String? getProvider();
     method @InaccessibleFromKotlin public String getTier();
     property public String? approach;
     property public Integer? escalationCount;
     property public String escalationsLabel;
     property public String? model;
+    property public boolean onDevice;
+    property public String prefixLabel;
     property public String? provider;
     property public String tier;
   }
@@ -1184,6 +1219,13 @@ package io.github.ygaray.yahirandroidtaste.model {
     property public String id;
     property public String label;
     property public String? subtitle;
+  }
+
+  public enum OutcomeBadge {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.OutcomeBadge Error;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.OutcomeBadge Reverted;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.OutcomeBadge Success;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.OutcomeBadge Warn;
   }
 
   public final class ProposedItemUiModel {
@@ -1253,6 +1295,32 @@ package io.github.ygaray.yahirandroidtaste.model {
   public enum SelectionMode {
     enum_constant public static final io.github.ygaray.yahirandroidtaste.model.SelectionMode AllOrNothing;
     enum_constant public static final io.github.ygaray.yahirandroidtaste.model.SelectionMode PerItem;
+  }
+
+  @androidx.compose.runtime.Immutable public final class SheetActionUiModel {
+    ctor public SheetActionUiModel(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis emphasis, optional boolean enabled, optional androidx.compose.ui.graphics.vector.ImageVector? icon, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role, optional boolean activeWhileInFlight);
+    method public String component1();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit> component2();
+    method public io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis component3();
+    method public boolean component4();
+    method public androidx.compose.ui.graphics.vector.ImageVector? component5();
+    method public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole component6();
+    method public boolean component7();
+    method public io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel copy(optional String label, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis emphasis, optional boolean enabled, optional androidx.compose.ui.graphics.vector.ImageVector? icon, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role, optional boolean activeWhileInFlight);
+    method @InaccessibleFromKotlin public boolean getActiveWhileInFlight();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis getEmphasis();
+    method @InaccessibleFromKotlin public boolean getEnabled();
+    method @InaccessibleFromKotlin public androidx.compose.ui.graphics.vector.ImageVector? getIcon();
+    method @InaccessibleFromKotlin public String getLabel();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnClick();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole getRole();
+    property public boolean activeWhileInFlight;
+    property public io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis emphasis;
+    property public boolean enabled;
+    property public androidx.compose.ui.graphics.vector.ImageVector? icon;
+    property public String label;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit> onClick;
+    property public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role;
   }
 
   public final class TagChipUiModel {
@@ -1432,30 +1500,60 @@ package io.github.ygaray.yahirandroidtaste.model {
     ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action);
     ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body);
     ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body, optional String? semanticsPrefix);
+    ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body, optional String? semanticsPrefix, optional String? title);
+    ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body, optional String? semanticsPrefix, optional String? title, optional String? transcript);
+    ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body, optional String? semanticsPrefix, optional String? title, optional String? transcript, optional io.github.ygaray.yahirandroidtaste.model.FailureTone tone);
+    ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body, optional String? semanticsPrefix, optional String? title, optional String? transcript, optional io.github.ygaray.yahirandroidtaste.model.FailureTone tone, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tip);
+    ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body, optional String? semanticsPrefix, optional String? title, optional String? transcript, optional io.github.ygaray.yahirandroidtaste.model.FailureTone tone, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tip, optional io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? secondaryAction);
+    ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body, optional String? semanticsPrefix, optional String? title, optional String? transcript, optional io.github.ygaray.yahirandroidtaste.model.FailureTone tone, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tip, optional io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? secondaryAction, optional io.github.ygaray.yahirandroidtaste.model.OutcomeBadge? badge);
+    ctor public VoiceOutcomeUiState.Failure(String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body, optional String? semanticsPrefix, optional String? title, optional String? transcript, optional io.github.ygaray.yahirandroidtaste.model.FailureTone tone, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tip, optional io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? secondaryAction, optional io.github.ygaray.yahirandroidtaste.model.OutcomeBadge? badge, optional io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? undo);
     method public String component1();
+    method public io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? component10();
+    method public io.github.ygaray.yahirandroidtaste.model.OutcomeBadge? component11();
+    method public io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? component12();
     method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? component2();
     method public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? component3();
     method public kotlin.jvm.functions.Function0<kotlin.Unit>? component4();
     method public String? component5();
+    method public String? component6();
+    method public String? component7();
+    method public io.github.ygaray.yahirandroidtaste.model.FailureTone component8();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit>? component9();
     method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.Failure copy(String reason, io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action);
-    method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.Failure copy(optional String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body, optional String? semanticsPrefix);
+    method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.Failure copy(optional String reason, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action, optional kotlin.jvm.functions.Function0<kotlin.Unit>? body, optional String? semanticsPrefix, optional String? title, optional String? transcript, optional io.github.ygaray.yahirandroidtaste.model.FailureTone tone, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tip, optional io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? secondaryAction, optional io.github.ygaray.yahirandroidtaste.model.OutcomeBadge? badge, optional io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? undo);
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? getAction();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.OutcomeBadge? getBadge();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getBody();
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? getHandledBy();
     method @InaccessibleFromKotlin public String getReason();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? getSecondaryAction();
     method @InaccessibleFromKotlin public String? getSemanticsPrefix();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getTip();
+    method @InaccessibleFromKotlin public String? getTitle();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.FailureTone getTone();
+    method @InaccessibleFromKotlin public String? getTranscript();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? getUndo();
     property public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel? action;
+    property public io.github.ygaray.yahirandroidtaste.model.OutcomeBadge? badge;
     property public kotlin.jvm.functions.Function0<kotlin.Unit>? body;
     property public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy;
     property public String reason;
+    property public io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? secondaryAction;
     property public String? semanticsPrefix;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit>? tip;
+    property public String? title;
+    property public io.github.ygaray.yahirandroidtaste.model.FailureTone tone;
+    property public String? transcript;
+    property public io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? undo;
   }
 
   public static final class VoiceOutcomeUiState.NeedsConfirmation implements io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState {
-    ctor public VoiceOutcomeUiState.NeedsConfirmation(String reason, java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> items, optional io.github.ygaray.yahirandroidtaste.model.SelectionMode selectionMode, optional String? title, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole severity, optional String? reversibilityHint, optional String confirmLabel, optional String cancelLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? topLevelContent, kotlin.jvm.functions.Function0<kotlin.Unit> onConfirm, kotlin.jvm.functions.Function0<kotlin.Unit> onCancel);
+    ctor public VoiceOutcomeUiState.NeedsConfirmation(String reason, java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> items, optional io.github.ygaray.yahirandroidtaste.model.SelectionMode selectionMode, optional String? title, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole severity, optional String? reversibilityHint, optional String confirmLabel, optional String cancelLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? topLevelContent, optional boolean confirmEnabled, optional kotlin.jvm.functions.Function0<kotlin.Unit>? titleActions, kotlin.jvm.functions.Function0<kotlin.Unit> onConfirm, kotlin.jvm.functions.Function0<kotlin.Unit> onCancel);
     method public String component1();
-    method public kotlin.jvm.functions.Function0<kotlin.Unit> component10();
-    method public kotlin.jvm.functions.Function0<kotlin.Unit> component11();
+    method public boolean component10();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit>? component11();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit> component12();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit> component13();
     method public java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> component2();
     method public io.github.ygaray.yahirandroidtaste.model.SelectionMode component3();
     method public String? component4();
@@ -1464,8 +1562,9 @@ package io.github.ygaray.yahirandroidtaste.model {
     method public String component7();
     method public String component8();
     method public kotlin.jvm.functions.Function0<kotlin.Unit>? component9();
-    method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.NeedsConfirmation copy(optional String reason, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> items, optional io.github.ygaray.yahirandroidtaste.model.SelectionMode selectionMode, optional String? title, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole severity, optional String? reversibilityHint, optional String confirmLabel, optional String cancelLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? topLevelContent, optional kotlin.jvm.functions.Function0<kotlin.Unit> onConfirm, optional kotlin.jvm.functions.Function0<kotlin.Unit> onCancel);
+    method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.NeedsConfirmation copy(optional String reason, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> items, optional io.github.ygaray.yahirandroidtaste.model.SelectionMode selectionMode, optional String? title, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole severity, optional String? reversibilityHint, optional String confirmLabel, optional String cancelLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? topLevelContent, optional boolean confirmEnabled, optional kotlin.jvm.functions.Function0<kotlin.Unit>? titleActions, optional kotlin.jvm.functions.Function0<kotlin.Unit> onConfirm, optional kotlin.jvm.functions.Function0<kotlin.Unit> onCancel);
     method @InaccessibleFromKotlin public String getCancelLabel();
+    method @InaccessibleFromKotlin public boolean getConfirmEnabled();
     method @InaccessibleFromKotlin public String getConfirmLabel();
     method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> getItems();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnCancel();
@@ -1475,8 +1574,10 @@ package io.github.ygaray.yahirandroidtaste.model {
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.SelectionMode getSelectionMode();
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole getSeverity();
     method @InaccessibleFromKotlin public String? getTitle();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getTitleActions();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getTopLevelContent();
     property public String cancelLabel;
+    property public boolean confirmEnabled;
     property public String confirmLabel;
     property public java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> items;
     property public kotlin.jvm.functions.Function0<kotlin.Unit> onCancel;
@@ -1486,29 +1587,42 @@ package io.github.ygaray.yahirandroidtaste.model {
     property public io.github.ygaray.yahirandroidtaste.model.SelectionMode selectionMode;
     property public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole severity;
     property public String? title;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit>? titleActions;
     property public kotlin.jvm.functions.Function0<kotlin.Unit>? topLevelContent;
   }
 
   public static final class VoiceOutcomeUiState.Success implements io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState {
-    ctor public VoiceOutcomeUiState.Success(String summary, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional kotlin.jvm.functions.Function0<kotlin.Unit>? editableContent, optional boolean inFlight, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel> batchResults, optional io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? undo);
+    ctor public VoiceOutcomeUiState.Success(String summary, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional kotlin.jvm.functions.Function0<kotlin.Unit>? editableContent, optional boolean inFlight, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel> batchResults, optional io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? undo, optional io.github.ygaray.yahirandroidtaste.model.OutcomeBadge? badge, optional kotlin.jvm.functions.Function0<kotlin.Unit>? titleActions, optional io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? startAction, optional io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? endAction);
     method public String component1();
+    method public io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? component10();
     method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? component2();
     method public kotlin.jvm.functions.Function0<kotlin.Unit>? component3();
     method public boolean component4();
     method public java.util.List<io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel> component5();
     method public io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? component6();
-    method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.Success copy(optional String summary, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional kotlin.jvm.functions.Function0<kotlin.Unit>? editableContent, optional boolean inFlight, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel> batchResults, optional io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? undo);
+    method public io.github.ygaray.yahirandroidtaste.model.OutcomeBadge? component7();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit>? component8();
+    method public io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? component9();
+    method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.Success copy(optional String summary, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional kotlin.jvm.functions.Function0<kotlin.Unit>? editableContent, optional boolean inFlight, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel> batchResults, optional io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? undo, optional io.github.ygaray.yahirandroidtaste.model.OutcomeBadge? badge, optional kotlin.jvm.functions.Function0<kotlin.Unit>? titleActions, optional io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? startAction, optional io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? endAction);
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.OutcomeBadge? getBadge();
     method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel> getBatchResults();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getEditableContent();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? getEndAction();
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? getHandledBy();
     method @InaccessibleFromKotlin public boolean getInFlight();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? getStartAction();
     method @InaccessibleFromKotlin public String getSummary();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getTitleActions();
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? getUndo();
+    property public io.github.ygaray.yahirandroidtaste.model.OutcomeBadge? badge;
     property public java.util.List<io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel> batchResults;
     property public kotlin.jvm.functions.Function0<kotlin.Unit>? editableContent;
+    property public io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? endAction;
     property public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy;
     property public boolean inFlight;
+    property public io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel? startAction;
     property public String summary;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit>? titleActions;
     property public io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel? undo;
   }
 
@@ -1597,6 +1711,25 @@ package io.github.ygaray.yahirandroidtaste.theme {
     property public androidx.compose.ui.unit.Dp MenuButton;
     property public androidx.compose.ui.unit.Dp MenuIcon;
     field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.Icons INSTANCE;
+  }
+
+  public static final class Dimens.OutcomeReceipt {
+    property public androidx.compose.ui.unit.Dp BadgeIconSize;
+    property public androidx.compose.ui.unit.Dp BadgeSize;
+    property public androidx.compose.ui.unit.Dp BarBottomPadding;
+    property public androidx.compose.ui.unit.Dp BarTopPadding;
+    property public androidx.compose.ui.unit.Dp BodyTopPadding;
+    property public androidx.compose.ui.unit.Dp CornerRadius;
+    property public androidx.compose.ui.unit.Dp DotGap;
+    property public androidx.compose.ui.unit.Dp DotSize;
+    property public androidx.compose.ui.unit.Dp PillHorizontalPadding;
+    property public androidx.compose.ui.unit.Dp PillVerticalPadding;
+    property public androidx.compose.ui.unit.Dp SuccessActionsBottomPadding;
+    property public androidx.compose.ui.unit.Dp SuccessActionsTopPadding;
+    property public androidx.compose.ui.unit.Dp TitleRowGap;
+    property public androidx.compose.ui.unit.Dp TranscriptBottomPadding;
+    property public androidx.compose.ui.unit.Dp TranscriptTopPadding;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.OutcomeReceipt INSTANCE;
   }
 
   public static final class Dimens.PillChip {
