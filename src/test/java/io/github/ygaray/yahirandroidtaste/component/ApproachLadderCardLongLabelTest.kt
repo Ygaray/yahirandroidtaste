@@ -7,6 +7,7 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.text.TextLayoutResult
 import io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel
@@ -151,6 +152,19 @@ class ApproachLadderCardLongLabelTest {
                 left >= nameRight
             )
         }
+    }
+
+    @Test
+    fun `German offline-only toggle label stays inside its selected segment`() {
+        setCard(german = true)
+
+        val labelRight = text(OFFLINE_ONLY_DE).edges().second
+        val segmentRight = composeTestRule.onNodeWithContentDescription("$OFFLINE_ONLY_DE, selected")
+            .edges().second
+        assertTrue(
+            "\"$OFFLINE_ONLY_DE\" right edge $labelRight must be <= its segment's right edge $segmentRight",
+            labelRight <= segmentRight
+        )
     }
 
     @Test
