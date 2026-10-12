@@ -2,6 +2,7 @@ package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
@@ -180,6 +181,26 @@ class StackedProgressBarTest {
         val widths = widthsDp()
         assertEquals(1, widths.size)
         assertEquals(75f, widths[0], 1f)
+    }
+
+    @Test
+    fun `shrinking a mutable state list in place recomposes without crashing and redraws the new widths`() {
+        val segments = mutableStateListOf(BarSegment(0.4f, first), BarSegment(0.3f, second))
+        composeTestRule.setContent {
+            Box(Modifier.width(300.dp)) {
+                StackedProgressBar(segments = segments, trackColor = trackColor)
+            }
+        }
+        composeTestRule.waitForIdle()
+        assertEquals(2, widthsDp().size)
+
+        composeTestRule.runOnIdle { segments.removeAt(1) }
+        composeTestRule.waitForIdle()
+        assertEquals(listOf(120f), widthsDp().map { Math.round(it).toFloat() })
+
+        composeTestRule.runOnIdle { segments[0] = BarSegment(0.5f, first) }
+        composeTestRule.waitForIdle()
+        assertEquals(listOf(150f), widthsDp().map { Math.round(it).toFloat() })
     }
 
     @Test

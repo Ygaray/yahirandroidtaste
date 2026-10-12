@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -87,7 +86,11 @@ fun StackedProgressBar(
     modifier: Modifier = Modifier,
     height: Dp = Dimens.StackedProgressBar.Height
 ) {
-    val fractions = remember(segments) { clampSegmentFractions(segments.map { it.fraction }) }
+    // Not cached with remember(segments): a caller may mutate the list in place (SnapshotStateList,
+    // ArrayList), which would leave a stale cache keyed on the same instance. The clamp is a single
+    // pass over a few floats. The colors are read from the same snapshot so the two never disagree.
+    val snapshot = segments.toList()
+    val fractions = clampSegmentFractions(snapshot.map { it.fraction })
     val rest = 1f - fractions.sum()
     Box(
         modifier = modifier
@@ -105,7 +108,7 @@ fun StackedProgressBar(
                         Modifier
                             .weight(fraction)
                             .fillMaxHeight()
-                            .background(segments[index].color)
+                            .background(snapshot[index].color)
                             .testTag("stacked_progress_bar_segment")
                     )
                 }
