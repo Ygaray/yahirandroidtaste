@@ -17,8 +17,9 @@ import org.junit.Test
  * character removed, computed on `git show v2.5.1:.../OutcomeSheet.kt` with a faithful port of
  * [SourceContractTestSupport.functionBody]. They are NOT derived from HEAD, so a change to one of
  * these bodies fails here instead of re-baselining itself. The extraction starts at `fun`, so the
- * declaration visibility is not part of any pin (22-02 made `ProposedItemRow` internal, 22-04
- * changes more visibilities); this test deliberately pins no visibility.
+ * declaration visibility is not part of any digest (22-02 made `ProposedItemRow` internal, 22-04
+ * made `UndoAffordanceBody` and `BatchResultsList` internal); visibility is pinned separately by
+ * one dedicated test below.
  */
 class OutcomeSheetClassicParitySourceContractTest {
 
@@ -173,6 +174,26 @@ class OutcomeSheetClassicParitySourceContractTest {
         assertTrue(
             stripped.contains("private fun FailureBody(failure: VoiceOutcomeUiState.Failure, colors: OutcomeSheetColors)")
         )
+    }
+
+    // -- Visibility pin (22-04, T-22-12) ---------------------------------------------------------
+
+    @Test
+    fun `the shared blocks are internal and every other Classic block stays private`() {
+        val file = squash(stripped)
+        listOf("UndoAffordanceBody(", "BatchResultsList(", "ProposedItemRow(").forEach { name ->
+            assertTrue("$name must be internal", file.contains("internalfun$name"))
+        }
+        listOf(
+            "FailureBody(",
+            "SuccessBody(",
+            "HandledByRow(",
+            "NeedsConfirmationBody(",
+            "NeedsConfirmationActions(",
+            "UndoRowItem("
+        ).forEach { name ->
+            assertTrue("$name must stay private", file.contains("privatefun$name"))
+        }
     }
 
     // -- Dispatch line stays untouched -----------------------------------------------------------

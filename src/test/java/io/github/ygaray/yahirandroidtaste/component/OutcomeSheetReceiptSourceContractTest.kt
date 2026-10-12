@@ -103,6 +103,63 @@ class OutcomeSheetReceiptSourceContractTest {
         assertTrue(receiptSource.compact().contains("hasStart&&hasEnd->Arrangement.SpaceBetween"))
     }
 
+    // ---- Success (22-04, D-08, D-10) ------------------------------------------------------------
+
+    @Test
+    fun `the pill is one annotated Text`() {
+        val body = receiptBody("fun ReceiptHandledByPill(")
+        assertTrue(body.contains("buildAnnotatedString{"))
+        assertTrue(body.contains("withStyle("))
+        assertEquals("exactly one Text call", 1, SourceContractTestSupport.countOccurrences(body, "Text("))
+        assertTrue(body.contains("weight(1f,fill=false)"))
+        assertTrue(body.contains("\"outcome_sheet_handled_by\""))
+        assertTrue(body.contains("semantics(mergeDescendants=true)"))
+    }
+
+    @Test
+    fun `the Success body keeps the D-08 order and the shared blocks`() {
+        val body = receiptBody("fun ReceiptSuccessBody(")
+        assertTrue(body.contains("UndoAffordanceBody(it,locked=success.inFlight)"))
+        assertTrue(body.contains("takeIf{!success.inFlight}"))
+        val order = listOf(
+            "ReceiptTitleRow(",
+            "ReceiptHandledByPill(",
+            "success.editableContent",
+            "BatchResultsList(",
+            "UndoAffordanceBody(",
+            "ReceiptSuccessActions("
+        ).map { body.indexOf(it) }
+        assertTrue("every section must be present: $order", order.all { it >= 0 })
+        assertEquals("sections must appear in order", order.sorted(), order)
+    }
+
+    @Test
+    fun `the Success actions are neither pinned nor tagged as the bar`() {
+        val actions = receiptBody("fun ReceiptSuccessActions(")
+        val body = receiptBody("fun ReceiptSuccessBody(")
+        assertFalse(actions.contains("outcome_sheet_action_bar"))
+        assertFalse(body.contains("outcome_sheet_action_bar"))
+        assertTrue(actions.contains("actionEnabled("))
+        assertTrue(actions.contains("\"outcome_sheet_action_start\""))
+        assertTrue(actions.contains("\"outcome_sheet_action_end\""))
+        assertTrue(actions.contains("Dimens.OutcomeReceipt.SuccessActionsTopPadding"))
+        assertTrue(
+            "the pinned `when` keeps Success as Unit",
+            receiptBody("fun OutcomeSheetReceiptContent(").contains("isVoiceOutcomeUiState.Success->Unit")
+        )
+    }
+
+    @Test
+    fun `actionEnabled follows the in-flight rule`() {
+        // Expression-bodied, so the brace-based functionBody extractor does not apply.
+        assertTrue(
+            receiptSource.compact().contains(
+                "internalfunactionEnabled(action:SheetActionUiModel,inFlight:Boolean):Boolean=" +
+                    "action.enabled&&(!inFlight||action.activeWhileInFlight)"
+            )
+        )
+    }
+
     // ---- Public surface -----------------------------------------------------------------------
 
     @Test

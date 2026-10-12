@@ -110,4 +110,20 @@ class OutcomeSheetReceiptBarGeometryTest {
             .assertIsDisplayed()
             .assertHeightIsAtLeast(40.dp)
     }
+
+    @Test
+    fun `at 384dp the Success start action starts at 16dp and the end action ends at 368dp`() {
+        setContent(
+            OutcomeFixtures.success(
+                startAction = OutcomeFixtures.sheetAction(label = "Undo"),
+                endAction = OutcomeFixtures.sheetAction(label = "Done")
+            )
+        )
+
+        val (startLeft, _) = tagged("outcome_sheet_action_start").edges()
+        val (_, endRight) = tagged("outcome_sheet_action_end").edges()
+
+        assertEquals("Success start edge", 16f * density, startLeft, 1f)
+        assertEquals("Success end edge", 368f * density, endRight, 1f)
+    }
 }
