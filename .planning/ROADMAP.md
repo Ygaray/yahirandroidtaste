@@ -5,11 +5,125 @@
 - ✅ **v1.0 — Hub Stewardship** — Phases 1-5 (shipped 2026-09-02, library `v2.0.0`)
 - ✅ **v2.0 — Line Reunification** — Phases 6-9 (shipped 2026-09-27, library `v2.2.0`)
 - ✅ **v2.4 — AI-Voice Command UI** — Phases 10-14 (shipped 2026-10-01, library `v2.4.0`)
-- ✅ **v2.5 — Voice UI Localization & Accessibility** — Phases 15-19 (shipped 2026-10-11, library `v2.5.0`; the G-15-1 long-label fix is pending as `v2.5.1`)
+- ✅ **v2.5 — Voice UI Localization & Accessibility** — Phases 15-19 (shipped 2026-10-11, library `v2.5.0`; the G-15-1 long-label fix shipped as patch `v2.5.1` on 2026-10-11)
+- 🚧 **v2.6 — Receipt voice surfaces + ProviderKeyCard lifecycle** — Phases 20-24 (in progress, ships library `v2.6.0`)
 
 ## Phases
 
-_No milestone in progress. Start the next one with `/gsd-new-milestone` (phase numbering continues at 20)._
+### 🚧 v2.6 — Receipt voice surfaces + ProviderKeyCard lifecycle (In Progress)
+
+**Milestone Goal:** Ship library `v2.6.0`, an additive, opt-in minor: an opt-in "Receipt" rendering
+of the voice outcome sheet plus the atoms it needs, and the full key lifecycle on `ProviderKeyCard`.
+Every default reproduces today's pixels, so SecondBrain stays on Classic, unchanged, and recompiles
+with no edits. Decision record: `.planning/seams/v2.6.0-SKETCH.md` (`105255d`; signed off by CT and
+SB with no signature deltas; P1-P3 rulings applied). Inputs: CT `76-UI-SPEC.md` Y-1..Y-15
+(`0a1da128`), SB `178-XR-01.md`. Phase numbering continues from v2.5 (which ended at Phase 19).
+
+**Rules for every phase:**
+
+- **Source compatibility only (P1).** New params and fields have defaults. No new
+  `@Deprecated(HIDDEN)` overloads, hand-written old-arity `copy`, hidden ctors or `copy$default`
+  shims. Composable params go after `modifier`, or before a trailing lambda, never after one.
+  `NeedsConfirmation` fields go before `onConfirm`/`onCancel`.
+- **New behavior uses new enums.** No existing enum gains constants.
+- **Strings and tokens come from the caller.** No consumer nouns, colors or types in the hub.
+- **Parity is structural plus Robolectric (P3).** No Roborazzi. Receipt pixels are proven by the
+  owner's TESTER screencap review in Phase 24.
+- **Register in the same phase.** A phase that adds a public composable registers it in its
+  `ComponentRegistry` family screen in that phase (the drift guard fails otherwise). A phase that
+  changes a public signature regenerates `api.txt` in the same commit and keeps `./gradlew apiCheck`
+  green.
+
+- [ ] **Phase 20: Tone foundation & atoms** - Tone tokens, button emphasis + `RoundIconButton`, `StackedProgressBar`, `ToneCard`, `PillChip` (Y-1, Y-8, Y-9, Y-10, Y-12)
+- [ ] **Phase 21: Receipt row, Pill selector & sheet shape** - `ReceiptRow`, `SegmentedOptionSelector` Pill style + per-option disable, `SheetScaffold` shape (Y-2, Y-11, Y-13)
+- [ ] **Phase 22: OutcomeSheet Receipt style** - Receipt frame + NeedsConfirmation/Success/Failure/handled-by additions, stable test tags, in-flight action, XR-178-01 a/b (Y-3..Y-7, Y-14)
+- [ ] **Phase 23: ProviderKeyCard lifecycle & Undo Center groups** - Per-provider saved-key summary with Save/Update/Clear/Cancel, plus the Undo Center group row (sketch §1, XR-178-01 c)
+- [ ] **Phase 24: Catalog, docs, Explorer demos & cut v2.6.0** - Registry/API/docs/invariant gate, Explorer demos + TESTER screencaps, then the owner-gated `v2.6.0` cut (Y-15)
+
+## Phase Details
+
+### Phase 20: Tone foundation & atoms
+
+**Goal**: A caller can color surfaces with tone tokens, drop in four new atoms (round icon button, stacked progress bar, tone card, pill chip), and pick a button's emphasis separately from its role, while every existing `DynamicActionButton` call looks exactly as it does in v2.5.1.
+**Depends on**: Phase 19 (milestone v2.5; library `v2.5.1` baseline, `b6c363c`)
+**Requirements**: VTONE-01, VBTN-01, VBTN-02, VBAR-01, VCARD-01, VCHIP-01
+**Success Criteria** (what must be TRUE):
+
+  1. `ToneDefaults.error()` and `ToneDefaults.warn()` resolve `errorContainer`/`error` and `tertiaryContainer`/`onTertiaryContainer` from the active `ColorScheme`, and `ToneColors` compares by value. A `ToneCard` on either default tone has 12dp corners, 12dp × 16dp padding, 4dp child spacing and content-on-container contrast ≥ 4.5:1 (Robolectric color + bounds assertions under the hub's light and dark schemes) (VTONE-01, VCARD-01).
+  2. `DynamicActionButton` renders each `ActionButtonEmphasis` as its Y-8 widget in the role's hue and shows `icon` when given, and `TextSmall` keeps a ≥ 48dp touch target. With `emphasis = null` and `icon = null`, the defaulted call renders exactly as v2.5.1 (same code path; Robolectric state assertions), and the existing `DynamicActionButton` tests pass unedited (VBTN-01).
+  3. `RoundIconButton` (40dp circle, 1dp `outlineVariant` border, 20dp `onSurface` icon) and `PillChip` (32dp tall, single-line `bodySmall` label, 18dp icons) each expose a ≥ 48dp touch target and their content description/label, and a click with `enabled = false` never fires the callback (Robolectric semantics + bounds tests). The `AppChip` and `PresetChip` tests pass unchanged (VBTN-02, VCHIP-01).
+  4. `StackedProgressBar` draws segments left to right inside a fully rounded track. A segment list summing to more than 1 is clamped to ≤ 1, and a negative fraction draws as 0 (a unit test on the clamp + Robolectric per-segment width assertions) (VBAR-01).
+  5. `RoundIconButton`, `StackedProgressBar`, `ToneCard` and `PillChip` are registered in their family screens (suggested: Buttons/FAB, Progress, Cards, Chips). The registry integrity test and the CATALOG drift guard are green, and `apiCheck` is green on the `api.txt` regenerated in the same commit.
+
+**Notes**: The atoms may carry their Y-14 tags (`round_icon_button`, `stacked_progress_bar`, `tone_card`, `pill_chip`) from the start. VTAG-01 acceptance (the per-Receipt-state tag test) belongs to Phase 22.
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 21: Receipt row, Pill selector & sheet shape
+
+**Goal**: A caller can build receipt-style lists with a stateless, accessible `ReceiptRow`, offer a Pill-style segmented choice with individually disabled options, and give any `SheetScaffold` a custom shape, while default selector and sheet calls look exactly as they do in v2.5.1.
+**Depends on**: Phase 20 (`ContentTone`, `ToneColors`, `ToneDefaults.warn()`)
+**Requirements**: VROW-01, VROW-02, VSEG-01, VSHEET-01
+**Success Criteria** (what must be TRUE):
+
+  1. At 360dp with a long German title, `ReceiptRow` shows the value in full and ellipsizes the title. The chevron renders only when `onClick != null && trailingAction == null` and rotates 0→180° over 200ms. `dimmed` applies 38% alpha plus strikethrough. `expandedContent` renders full width below the summary. With all lines and no cue, the collapsed row measures 92dp ±1dp (Robolectric bounds + semantics tests) (VROW-01).
+  2. The `ReceiptRow` summary is one merged semantics node holding title, subtitle, value, caption and cue. With `onClick` it is a `Role.Button` carrying the caller's `onClickLabel`, and its `stateDescription` switches between the caller's expanded and collapsed labels. `trailingAction` and `expandedContent` stay separate nodes (semantics-tree test) (VROW-02).
+  3. In `SegmentedOptionStyle.Pill`, the selected segment paints `primary`/`onPrimary` with no check icon, and labels are single-line at 40dp tall (a German 360dp test pins the documented truncation). An option in `disabledOptions` renders at 38% alpha and never fires `onSelect`, while its siblings still do (Robolectric tests) (VSEG-01).
+  4. `SheetScaffold` applies a caller-supplied `shape`. For `SegmentedOptionSelector` (Material, empty set) and `SheetScaffold` (M3 `ExpandedShape`), the defaulted call renders exactly as v2.5.1 (same code path; Robolectric state assertions), and the G-15-1 long-label tests pass unedited (VSEG-01, VSHEET-01).
+  5. `ReceiptRow` is registered in its family screen with a gallery state whose single-open accordion is held in demo state, not in the row. The registry integrity test and the CATALOG drift guard are green, and `apiCheck` is green on the regenerated `api.txt`.
+
+**Notes**: The `receipt_row_*` tags may land with the row. VTAG-01 acceptance belongs to Phase 22.
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 22: OutcomeSheet Receipt style
+
+**Goal**: A caller can opt `OutcomeSheet` into the Receipt style and get the Y-3 frame for confirm, success and failure. That includes the richer model fields, stable test tags, an action that stays usable while in flight, a refused-undo surface that TalkBack announces, and undo on failures. The 3-arg Classic call still renders exactly as it does in v2.5.1.
+**Depends on**: Phase 20 (tones, `ToneCard`, `ActionButtonEmphasis`), Phase 21 (`SheetScaffold(shape)`, `ReceiptRow`)
+**Requirements**: VRCPT-01, VRCPT-02, VRCPT-03, VRCPT-04, VRCPT-05, VTAG-01, VXR-01, VXR-02
+**Success Criteria** (what must be TRUE):
+
+  1. For the 3-arg `OutcomeSheet(outcome, onDismissRequest, modifier)` with each `VoiceOutcomeUiState` arm built from v2.5.1 args only, the defaulted call renders exactly as v2.5.1 (same code path; Robolectric state assertions). Classic ignores `badge`, `titleActions` and the start/end actions, `HandledByRow` is unchanged, and the existing `OutcomeSheet` tests pass unedited. Classic with `FailureTone.Warn` paints `colors.warnTone` (VRCPT-01, VRCPT-03, VRCPT-04, VRCPT-05).
+  2. In Receipt, `NeedsConfirmation` and `Failure` pin the action bar under a 1dp divider. In a 384dp-wide sheet, the start action's start edge is at 16dp and the end action's end edge is at 368dp. The bar stays on screen with an over-long body (the v2.4.1 `weight(1f, fill = false)` body). With `confirmEnabled = false`, the confirm node is disabled and `onConfirm` never fires. The Failure card is a `ToneCard` holding `reason` + `body`, with the tip below it, `action` at the end (Filled, in its role hue) and `secondaryAction` at the start (Robolectric bounds + click tests) (VRCPT-01, VRCPT-02, VRCPT-04).
+  3. Receipt `Success` renders in this order: title row → handled-by pill → `editableContent` → `batchResults`/`undo` → actions row (node-order assertion). With `inFlight = true`, every action is disabled except one marked `activeWhileInFlight`, which still fires (SB's in-flight Cancel). `OutcomeBadge.Reverted` uses `Icons.AutoMirrored.Filled.Undo`. The handled-by pill reads "Handled by Local grammar · offline", with the `warnTone.content` dot when `onDevice = true` (VRCPT-03, VRCPT-05).
+  4. A tag test asserts each applicable Y-14 tag in each Receipt state (confirm single/batch, success single/batch/all-undone, failure error/warn). The Receipt confirm bar keeps `outcome_sheet_confirmation_cancel`/`_confirm`, the Classic tags are unchanged, and a source grep finds no `testTagsAsResourceId` in `src/main` (VTAG-01).
+  5. The refused/partial undo surface reports `liveRegion = LiveRegionMode.Assertive` in the semantics tree, with no visual change. A `Failure` carrying `undo` renders the same undo block as `Success` (undo-all + per-item rows) in both Classic and Receipt (semantics + render tests) (VXR-01, VXR-02).
+
+**Notes**: This phase widens six signatures (`OutcomeSheet`, `NeedsConfirmation`, `Success`, `Failure`, `FailureActionUiModel`, `HandledByUiModel`). Each commit keeps `apiCheck` green on the regenerated `api.txt`. The Receipt action-bar and pill labels get a long German ~360dp check before layout sign-off (the long-localized-label lesson). If a new public top-level composable appears, it is registered or allowlisted in this phase.
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 23: ProviderKeyCard lifecycle & Undo Center groups
+
+**Goal**: A caller can let `ProviderKeyCard` show each provider's saved key as a fingerprint-only summary with Save/Update/Clear/Cancel actions, and can show grouped undo entries in `UndoCenterScreen` with one "Undo all", while default calls of both look exactly as they do in v2.5.1.
+**Depends on**: Phase 20 (`DynamicActionButton` emphasis for the action row only)
+**Requirements**: VKEY-01, VKEY-02, VUNDO-02
+**Success Criteria** (what must be TRUE):
+
+  1. For `ProviderKeyCard` with an empty `savedKeys` and `actions = null`, and for `UndoCenterScreen` without the group params (today's flat list), the defaulted call renders exactly as v2.5.1 (same code path; Robolectric state assertions), and the existing tests for both pass unedited (VKEY-01, VUNDO-02).
+  2. With a saved key for the selected provider and `editingSavedKey = false`, the field is replaced by `provider_key_saved_summary`, which reads "Saved · sk-ant-…abcd" and offers Update | Clear. Otherwise the field shows with Save, plus Cancel when `onCancelEdit != null`. `inFlight = true` disables every action, and each action carries its `provider_key_action_{save,update,clear,cancel}` tag (Robolectric semantics + click tests) (VKEY-01, VKEY-02).
+  3. Switching `selectedProviderId` across 3 providers shows each provider's own summary or field, and providers in `savedKeys` show `labels.savedMarker` in the dropdown. With a raw `keyValue` set while the summary shows, a semantics-tree scan finds that raw key nowhere (VKEY-02).
+  4. `UndoCenterScreen` renders one group row for entries that share an `UndoHistoryStore` group, showing the group label, member count and status, and its "Undo all" invokes the caller's callback for that group. The new params sit before the trailing `onClear`, so existing trailing-lambda call sites still compile (Robolectric test + compile fixture) (VUNDO-02).
+
+**Notes**: Logically independent of Phases 21-22, but it runs after 22 in numeric order because every phase rewrites the shared `api.txt`. No new public composable is expected. If one appears, it is registered or allowlisted in this phase. `apiCheck` is green on the regenerated `api.txt`. The card stays presentational: no persistence, validation or network (Out of Scope, INV-01).
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 24: Catalog, docs, Explorer demos & cut v2.6.0
+
+**Goal**: Prove the whole milestone is registry-clean, source-compatible, documented and invariant-clean; demo every new surface in the Explorer with TESTER screencaps for the owner; then, after the owner reviews those screencaps, cut the immutable `v2.6.0` tag.
+**Depends on**: Phase 20, Phase 21, Phase 22, Phase 23
+**Requirements**: CAT-03, API-03, DOC-03, INV-03, DEMO-01, SHIP-04
+**Success Criteria** (what must be TRUE):
+
+  1. The full suite is green with `ReceiptRow`, `ToneCard`, `StackedProgressBar`, `PillChip` and `RoundIconButton` registered, including the registry integrity test and the CATALOG drift guard. The one-way-dependency invariant holds: no engine or consumer import, and no consumer nouns or colors (domain-vocabulary guard). Detekt is green at zero baseline, and there is no `@HiltAndroidApp` (CAT-03, INV-03).
+  2. On a freshly regenerated `api.txt`, `./gradlew apiCheck` and `bash tools/test/run-all.sh` pass, and a v2.5.1 call-site canary test source set (SB + CT call shapes and the Explorer) compiles unchanged. The diff shows no public symbol removed, no required param added and every existing enum constant intact. `tools/verify-binary-abi.sh v2.5.1` runs and its result is recorded as information only (API-03).
+  3. `API.md` (including a stable-test-tags section listing every Y-14 and `provider_key_*` tag), `INTEGRATION.md` and the KDoc cover Y-1..Y-14, the ProviderKeyCard lifecycle and XR-178-01 a/b/c, checked item by item against the sketch (DOC-03).
+  4. The Explorer shows every DEMO-01 demo, each reached by a registry render test: Receipt confirm (single open, batch collapsed, batch with an attention row); a count editor with a disabled Pill segment and a warn `ToneCard`; Success single/batch/all-undone; Failure error/warn; the ProviderKeyCard lifecycle (3 providers, one saved, edit and clear flows); and an Undo Center group row. Screencaps are captured on the TESTER (`R5CT10XNKQN`) only and kept for the owner (DEMO-01).
+  5. Only after the owner signs off on the screencaps is the annotated `v2.6.0` tag cut via §11 on the gated commit, pushed, and its JitPack build confirmed. Tag sha, commit, coordinate and build status are reported to the teamlead. There is no stray marker tag (`git.create_tag` false), and no consumer is repinned from the hub (SHIP-04).
+
+**Notes**: The tag cut is the last step and waits on the owner's screencap review. Shipping is human-gated (root `CLAUDE.md`), and tag/sequencing confirmations go to the orchestrator first. Before pushing the tag, check `git log origin/main..v2.6.0`: a tag push publishes every unpushed commit reachable from it.
+**Plans**: TBD
 
 ## Completed Milestones
 
@@ -129,3 +243,15 @@ Plans:
 | v2.0 | 6-9 | 7/7 | Complete | 2026-09-27 |
 | v2.4 | 10-14 | — | Complete | 2026-10-01 |
 | v2.5 | 15-19 | 12/12 | Complete | 2026-10-11 |
+| v2.6 | 20-24 | 0/TBD | In progress | - |
+
+**v2.6 execution order:** Phases execute in numeric order: 20 → 21 → 22 → 23 → 24. (Phase 23 depends
+only on Phase 20, but it runs after 22 because every phase rewrites the shared `api.txt`.)
+
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 20. Tone foundation & atoms | v2.6 | 0/TBD | Not started | - |
+| 21. Receipt row, Pill selector & sheet shape | v2.6 | 0/TBD | Not started | - |
+| 22. OutcomeSheet Receipt style | v2.6 | 0/TBD | Not started | - |
+| 23. ProviderKeyCard lifecycle & Undo Center groups | v2.6 | 0/TBD | Not started | - |
+| 24. Catalog, docs, Explorer demos & cut v2.6.0 | v2.6 | 0/TBD | Not started | - |

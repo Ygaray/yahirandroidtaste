@@ -3,10 +3,10 @@ gsd_state_version: "1.0"
 milestone: v2.6
 milestone_name: Receipt voice surfaces + ProviderKeyCard lifecycle
 status: planning
-last_updated: "2026-10-12T05:52:34.442Z"
+last_updated: "2026-10-12T05:56:00.000Z"
 last_activity: 2026-10-11
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -19,21 +19,23 @@ progress:
 
 See: .planning/PROJECT.md (updated 2026-10-11)
 
-**Core value:** The hub stays a coherent design system — not merely a safe, ever-growing pile of domain-agnostic components — as more consumers contribute.
-**Current focus:** Planning next milestone (v2.5 shipped; v2.5.1 G-15-1 patch tag pending human go-ahead)
+**Core value:** An agent building one of Yahir's apps finds the widget it needs already here, coherent and legible, and drops it in instead of writing a new one.
+**Current focus:** Phase 20 — Tone foundation & atoms (milestone v2.6, ships library `v2.6.0`)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-10-11 — Milestone v2.6 started
+Phase: 20 of 24 (Tone foundation & atoms)
+Plan: — (roadmap just created; phases not yet planned)
+Status: Ready to plan
+Last activity: 2026-10-11 — Roadmap created for milestone v2.6 (Phases 20-24), from the signed-off `.planning/seams/v2.6.0-SKETCH.md` (`105255d`)
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
-**Velocity (milestone v2.5):**
+**Velocity (milestone v2.6):**
 
-- Total plans completed: 12
+- Total plans completed: 0
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -41,11 +43,11 @@ Last activity: 2026-10-11 — Milestone v2.6 started
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 15 | 4 | - | - |
-| 16 | 3 | - | - |
-| 17 | 1 | - | - |
-| 18 | 2 | - | - |
-| 19 | 2 | - | - |
+| 20 | TBD | - | - |
+| 21 | TBD | - | - |
+| 22 | TBD | - | - |
+| 23 | TBD | - | - |
+| 24 | TBD | - | - |
 
 **Recent Trend:**
 
@@ -53,21 +55,6 @@ Last activity: 2026-10-11 — Milestone v2.6 started
 - Trend: -
 
 *Updated after each plan completion*
-**Per-Plan Metrics:**
-
-| Plan | Duration | Tasks | Files |
-|------|----------|-------|-------|
-| Phase 15 P01 | 6min | 3 tasks | 9 files |
-| Phase 15 P02 | 8min | 2 tasks | 6 files |
-| Phase 15 P03 | 15min | 3 tasks | 7 files |
-| Phase 16 P01 | 4 min | 2 tasks | 2 files |
-| Phase 16 P02 | 8 min | 2 tasks | 7 files |
-| Phase 16 P03 | 2 min | 2 tasks | 2 files |
-| Phase 17 P01 | 12 min | 3 tasks | 7 files |
-| Phase 18 P01 | 2 min | 3 tasks | 2 files |
-| Phase 18 P02 | ~25min | 3 tasks | 1 files |
-| Phase 19 P01 | 75min | 3 tasks | 10 files |
-| Phase 19 P02 | 45min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -76,22 +63,14 @@ Last activity: 2026-10-11 — Milestone v2.6 started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- v2.5 scope is LOCKED by `.planning/cross-repo/RECONVENE-BRIEF-R-v1.1.md` (`cb5f047`), ratified by the vae-bilingual orchestrator + Yahir — do not re-scope, add, drop, or re-order. All five items are strictly additive vs `v2.4.0`.
-- Roadmap: phase numbering continues from v2.4 (ended at Phase 14) → v2.5 is Phases 15-19 (never reset to 1).
-- Roadmap: Phases 15/16/17 all touch `ApproachLadderCard.kt` (i18n labels, a11y/semantics, router toggle), so they run sequentially (15 → 16 → 17) to avoid same-file conflicts; Phase 18 (catalog/API/docs) gates on all three; Phase 19 (tag cut) gates on a green Phase 18 — mirrors v2.4's Phase 13→14 split.
-- Roadmap: i18n shape is per-literal optional params / defaulted model fields (not a single labels-holder) — most additive, matches the `emptyProvidersReason`/`NeedsConfirmation` precedent (R-v1.1 §6 Q2 recommendation).
-- Roadmap: XR-175-02(e) is a Router ON/OFF policy-card toggle (`router`/`onRouterChange`, mirrors `offlineOnly`), NOT per-rung navigation — gesture collision resolved by SB at R-v1.1.
-- [Phase 15]: Phase 15-01: pre-commit hook classifies re-signatured composable commits as lane 2; commits use HUB_LANE_OVERRIDE=2 (detected lane), not 3 as planned
-- [Phase 15]: Phase 15-01: SegmentedOptionSelector a11y state words (selected/not selected) remain English - out of VI18N-01..04, Phase 18 docs note candidate
-- [Phase 15]: [15-02] Model-field append recipe: @JvmOverloads constructor + hand-written old-arity copy (Metalava-safe); commits use HUB_LANE_OVERRIDE=2 (hook-detected lane)
-- [Phase 16]: 16-01: rung Selected derives from rung.id == maxTierId (D-01); Role.RadioButton/min-size only when cap selectable (D-03, A4 locked: min-size gated on onClick != null) — Cap-less ladders stay compact and are never announced as an empty radio group; ~58dp pitch growth accepted (D-04), Gate-2 visual check
-- [Phase 16]: 16-02: Failure.body placed after handledBy/before action (no wrapper); semanticsPrefix joined by one ASCII space, blank treated as null; merge-only semantics, no live region; commits used HUB_LANE_OVERRIDE=2 (hook-detected lane), not 3
-- [Phase 17]: ApproachLadderCard router toggle emits the tapped segment's target value (index == 1), option order listOf(routerOff, routerOn); card stays stateless display+emit — Idempotent re-taps cannot flip policy; matches the offline toggle convention
-- [Phase 17]: Explorer fixture keeps its two-parameter ApproachLadderCardFixture as a wrapper and adds a router-aware overload — Preserves the Kotlin synthetic access$ descriptor so the javap binary gate vs v2.4.1 reports missing=0
-- [Phase 18]: [Phase 18-02]: D-01 reading applied - Metalava apiCheck green + current api.txt is API-02 pass; raw-line exit 3 (10 lines) recorded as known false positive, not overridden
-- [Phase 19]: Phase 19-01: D-03 binary ABI gate tools/verify-binary-abi.sh added; raw-line api.txt check removed (verify-api-additive.sh retired, hook override narrowed to lane 2)
-- [Phase 15]: 15-04 (G-15-1 gap closure, 2026-10-11): ApproachLadderCard rung row uses private RungLabelLayout — name keeps min(intrinsic, 40%), affordances get the rest (≤2 lines each); SegmentedOptionSelector reserves ~2dp for the check-icon slot (pinned 8dp M3 spacing). Replaced the 15-04 fixed 60% cap after code-review CR-01 (it stacked short English labels). Layout-only, api.txt byte-identical to v2.5.0 → ships as v2.5.1 (tag human-gated)
-- [Phase 19]: 19-02: v2.5.0 cut in-repo (xrepo unavailable), annotated tag by SHA 7101516e, all gates green; ledger row relayed via file (no messaging tool)
+- v2.6 scope comes from the signed-off decision record `.planning/seams/v2.6.0-SKETCH.md` (`105255d`). CT and SB signed it off with no signature deltas, and the P1-P3 rulings are applied. Don't re-litigate the signatures there.
+- Roadmap: phase numbering continues from v2.5 (ended at Phase 19), so v2.6 is Phases 20-24. The 5-phase split was set by the orchestrator: 20 tone + atoms, 21 row/selector/sheet shape, 22 Receipt `OutcomeSheet`, 23 ProviderKeyCard lifecycle + Undo Center groups, 24 catalog/docs/demos + the cut.
+- Roadmap: phases run in numeric order. Phase 23 only needs Phase 20 (button emphasis), but every phase rewrites the shared `api.txt` (and family screens), so it runs after 22 rather than in parallel.
+- Roadmap: a phase that adds a public composable registers it in its `ComponentRegistry` family screen in the same phase (drift guard). Phase 24's CAT-03 is the milestone-wide confirmation, not the first registration.
+- Roadmap: every phase that widens an existing signature (20, 21, 22, 23) carries the success criterion "the defaulted call renders exactly as v2.5.1 (same code path; Robolectric state assertions)". No Roborazzi (P3). Receipt pixels are proven by the owner's TESTER screencap review in Phase 24.
+- Roadmap: the Y-14 tags on atoms and rows may land with their components in Phases 20-21. VTAG-01 acceptance (the per-Receipt-state tag test) belongs to Phase 22.
+- Carried from v2.5: commits that re-signature a composable are classified lane 2 by the pre-commit hook, so use `HUB_LANE_OVERRIDE=2` (the detected lane). Regenerate `api.txt` in the same commit as the signature change.
+- Carried from v2.5 (G-15-1): `SegmentedOptionSelector`'s Material layout (label wraps to 2 lines, check-icon slot reserve) and the private `RungLabelLayout` are the v2.5.1 parity baseline. Phase 21's Pill style must leave the Material path untouched.
 
 ### Pending Todos
 
@@ -99,10 +78,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- **A13 reconvene protocol governs this slice:** R-v1.1 GO is already issued (scope locked to RECONVENE-BRIEF-R-v1.1, `cb5f047`); route version/tag/sequencing confirmations to the orchestrator `yahir-gsd-control-plane-6e` (of record per `xrepo/vae-bilingual/effort.json` @`87131d1`; prior `-f2` retired) first, not Yahir directly.
-- **Tag-cut human gate (SHIP-03 / Phase 19):** shipping is human-gated per root `CLAUDE.md`; the A12 tag-cut waiver is still pending Yahir's direct OK for this effort's YAT tag. Cut `v2.5.0` only on a green Phase 18, then relay the full §11 ledger row to the orchestrator. Confirm the waiver stands before the cut.
-- **SHIP-03 stray-tag hazard:** milestone close must cut NO git marker tag (`git.create_tag` false) — the only tag is the `v2.5.0` release coordinate. A bare `v2.2` milestone-marker tag already leaked into the JitPack coordinate namespace at the v2.0 close; do not repeat it.
-- **Strictly-additive guard (API-02 / INV-02):** every change is a new defaulted param/field or internal-only; re-confirm with `tools/verify-api-additive.sh` against a regenerated `api.txt`, keep detekt zero-baseline, preserve the one-way-dependency invariant (no engine/consumer import).
+- **Owner-gated cut (SHIP-04 / Phase 24):** shipping is human-gated per root `CLAUDE.md`. The `v2.6.0` tag waits on the owner's review of the TESTER (`R5CT10XNKQN`) screencaps. Route tag/version/sequencing confirmations to the orchestrator first, not Yahir directly.
+- **Stray-tag hazard:** milestone close must cut NO git marker tag (`git.create_tag` false). The only tag is the `v2.6.0` release coordinate.
+- **Tag push publishes unpushed commits:** before pushing `v2.6.0`, check `git log origin/main..v2.6.0` and confirm big ranges first.
+- **Source-compat gate (API-03):** `verify-api-additive.sh` is retired (Phase 19). The gate is `./gradlew apiCheck` on a regenerated `api.txt`, `bash tools/test/run-all.sh` and a v2.5.1 call-site compile canary. `tools/verify-binary-abi.sh v2.5.1` is information only (exit 3 is expected once params are appended). No new `@Deprecated(HIDDEN)` overloads or `copy$default` shims (P1).
+- **Long localized labels:** caller-overridable labels need a long German/Spanish ~360dp check before layout sign-off (`ReceiptRow` title, Pill segments, Receipt action bar). English defaults hide overflow.
 
 ### Quick Tasks Completed
 
@@ -116,9 +96,9 @@ Items acknowledged and carried forward, most recent first:
 | Category | Item | Status | Deferred At | Milestone |
 |----------|------|--------|-------------|-----------|
 | uat_gaps | 16/16-03-SELF-UAT.md | partial (0 open scenarios) — superseded by Phase 16 Gate-2 sign-off | 2026-10-11 | v2.5 |
-| Release | v2.5.1 patch tag for G-15-1 long-label fix (+ SB/CT repins) | Pending human go-ahead (route via orchestrator) | 2026-10-11 | v2.5 |
+| Release | v2.5.1 patch tag for G-15-1 long-label fix (+ SB/CT repins) | Done: `v2.5.1` cut 2026-10-11 at `b6c363c`, JitPack-confirmed, SB + CT repinned | 2026-10-11 | v2.5 |
 | Future | Two Gate-2-waived `ApproachLadderCard` UI-polish notes (KI-2026-10-01-01) | Deferred (future polish unless pulled into scope) | v2.5 requirements | v2.5 |
-| Future | Consumer repins onto `v2.5.0` (SB for 172/175/177; CT optional) | Deferred (Wave-1, consumers' own channels) | v2.5 requirements | v2.5 |
+| Future | Consumer repins onto `v2.5.0` (SB for 172/175/177; CT optional) | Superseded: both consumers are on `v2.5.1` | v2.5 requirements | v2.5 |
 | Future | Consumer wiring — SB/CT map engine outcomes → these composables' props | Deferred (Wave-1, consumers' own milestones) | v2.4 requirements | v2.4 |
 | Future | GOV-04: fail the build if a new public composable ships without a `Tier` | Deferred | v2.0 requirements | v2.0 |
 | Future | ECO-02: auto-repin tooling across all consumers | Deferred | v2.0 requirements | v2.0 |
@@ -126,11 +106,10 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-11
-Stopped at: Phase 15 Gate-2 re-verified (17/17) after G-15-1 gap closure — all phases complete; v2.5 milestone close in progress (/gsd-verify-milestone)
+Last session: 2026-10-11 — Roadmap created for milestone v2.6
+Stopped at: ROADMAP.md + STATE.md written (Phases 20-24); REQUIREMENTS.md traceability filled (27/27)
 Resume file: None
 
 ## Operator Next Steps
 
-- Cut `v2.5.1` (G-15-1 layout fix) + SB/CT repins after go-ahead (route via orchestrator `yahir-gsd-control-plane-6e` first)
-- Start the next milestone with /gsd-new-milestone
+- Phase 20 is a UI phase: run /gsd-ui-phase 20 (UI-SPEC), then /gsd-plan-phase 20

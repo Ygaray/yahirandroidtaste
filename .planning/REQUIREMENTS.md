@@ -152,11 +152,39 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
+| VTONE-01 | Phase 20 | Pending |
+| VBTN-01 | Phase 20 | Pending |
+| VBTN-02 | Phase 20 | Pending |
+| VBAR-01 | Phase 20 | Pending |
+| VCARD-01 | Phase 20 | Pending |
+| VCHIP-01 | Phase 20 | Pending |
+| VROW-01 | Phase 21 | Pending |
+| VROW-02 | Phase 21 | Pending |
+| VSEG-01 | Phase 21 | Pending |
+| VSHEET-01 | Phase 21 | Pending |
+| VRCPT-01 | Phase 22 | Pending |
+| VRCPT-02 | Phase 22 | Pending |
+| VRCPT-03 | Phase 22 | Pending |
+| VRCPT-04 | Phase 22 | Pending |
+| VRCPT-05 | Phase 22 | Pending |
+| VTAG-01 | Phase 22 | Pending |
+| VXR-01 | Phase 22 | Pending |
+| VXR-02 | Phase 22 | Pending |
+| VKEY-01 | Phase 23 | Pending |
+| VKEY-02 | Phase 23 | Pending |
+| VUNDO-02 | Phase 23 | Pending |
+| CAT-03 | Phase 24 | Pending |
+| API-03 | Phase 24 | Pending |
+| DOC-03 | Phase 24 | Pending |
+| INV-03 | Phase 24 | Pending |
+| DEMO-01 | Phase 24 | Pending |
+| SHIP-04 | Phase 24 | Pending |
 
 **Coverage:**
 - v2.6 requirements: 27 total
-- Mapped to phases: (filled by roadmap)
+- Mapped to phases: 27 (Phase 20: 6, Phase 21: 4, Phase 22: 8, Phase 23: 3, Phase 24: 6)
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-10-11*
-*Last updated: 2026-10-11 after the milestone v2.6 definition*
+*Last updated: 2026-10-12 after the milestone v2.6 roadmap (Phases 20-24)*
