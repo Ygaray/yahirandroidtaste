@@ -1,6 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.explorer
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
@@ -60,5 +61,35 @@ class ToneAtomsRegistryRenderTest {
         // Default cell + Variants, rendered twice (light and dark): 1 + 2 cards per theme.
         val count = composeTestRule.onAllNodesWithTag("tone_card").fetchSemanticsNodes().size
         assertTrue("expected tone cards from cells and Variants, found $count", count >= 2 * 3)
+    }
+
+    @Test
+    fun `DynamicActionButton keeps its Buttons family entry and renders cells and Variants in both themes`() {
+        val button = entry("DynamicActionButton")
+        assertEquals(ExplorerFamilies.BUTTONS_FAB, button.family)
+        assertEquals(canonicalLabels, button.states.map { it.label })
+        assertNotNull(button.states.first { it.label == "Default" }.render)
+        assertNotNull(button.states.first { it.label == "Disabled" }.render)
+        assertNotNull(button.content)
+
+        renderEverything(button)
+
+        val clickable = composeTestRule.onAllNodes(hasClickAction()).fetchSemanticsNodes().size
+        // Per theme: 2 cells + 3 legacy + 12 emphasis x role + 2 icon buttons.
+        assertTrue("expected at least ${2 * 19} click targets, found $clickable", clickable >= 2 * 19)
+    }
+
+    @Test
+    fun `DynamicActionButton Variants render the legacy trio, 12 emphasis buttons and 2 icon buttons`() {
+        val content = checkNotNull(entry("DynamicActionButton").content)
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme(themeMode = ThemeMode.LIGHT, dynamicColor = false) {
+                Column { content() }
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        val clickable = composeTestRule.onAllNodes(hasClickAction()).fetchSemanticsNodes().size
+        assertTrue("expected at least 17 click targets in Variants, found $clickable", clickable >= 3 + 12 + 2)
     }
 }

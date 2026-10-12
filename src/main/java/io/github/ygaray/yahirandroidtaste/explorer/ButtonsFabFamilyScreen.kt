@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
+import io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis
 import io.github.ygaray.yahirandroidtaste.component.CycleSubTypeButton
 import io.github.ygaray.yahirandroidtaste.component.DynamicActionButton
 import io.github.ygaray.yahirandroidtaste.component.ExpandableFab
@@ -234,6 +236,60 @@ private fun DynamicActionButtonVariants() {
             label = "Save",
             role = ActionButtonDefaults.ActionButtonRole.Save,
             onClick = {}
+        )
+    }
+    SectionLabel("DynamicActionButton - emphasis x role (Y-8)")
+    ActionButtonEmphasis.entries.forEach { emphasis -> EmphasisRoleRow(emphasis) }
+    SectionLabel("DynamicActionButton - leading icon (Filled and Text)")
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        DynamicActionButton(
+            label = "Done",
+            role = ActionButtonDefaults.ActionButtonRole.Save,
+            onClick = {},
+            emphasis = ActionButtonEmphasis.Filled,
+            icon = Icons.Filled.Check
+        )
+        DynamicActionButton(
+            label = "Done",
+            role = ActionButtonDefaults.ActionButtonRole.Neutral,
+            onClick = {},
+            emphasis = ActionButtonEmphasis.Text,
+            icon = Icons.Filled.Check
+        )
+    }
+}
+
+/** One gallery row: the same [emphasis] in the Neutral, Save and Destructive hues. */
+@Composable
+private fun EmphasisRoleRow(emphasis: ActionButtonEmphasis) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        DynamicActionButton(
+            label = "Skip",
+            role = ActionButtonDefaults.ActionButtonRole.Neutral,
+            onClick = {},
+            emphasis = emphasis
+        )
+        DynamicActionButton(
+            label = "Save",
+            role = ActionButtonDefaults.ActionButtonRole.Save,
+            onClick = {},
+            emphasis = emphasis
+        )
+        DynamicActionButton(
+            label = "Delete",
+            role = ActionButtonDefaults.ActionButtonRole.Destructive,
+            onClick = {},
+            emphasis = emphasis
         )
     }
 }

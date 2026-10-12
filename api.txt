@@ -29,6 +29,13 @@ package io.github.ygaray.yahirandroidtaste.component {
     enum_constant public static final io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole Save;
   }
 
+  public enum ActionButtonEmphasis {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis Filled;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis Text;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis TextSmall;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis Tonal;
+  }
+
   public final class AdaptiveMediaPreviewKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void AdaptiveMediaPreview(java.util.List<io.github.ygaray.yahirandroidtaste.component.MediaThumbnailCell> cells, kotlin.jvm.functions.Function1<java.lang.Integer,kotlin.Unit> onCellTap, kotlin.jvm.functions.Function0<kotlin.Unit> onOverflowTap, optional androidx.compose.ui.Modifier modifier, optional int totalImageCount);
   }
@@ -155,7 +162,7 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public final class DynamicActionButtonKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void DynamicActionButton(String label, io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional boolean enabled, optional androidx.compose.ui.Modifier modifier);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void DynamicActionButton(String label, io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional boolean enabled, optional androidx.compose.ui.Modifier modifier, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis? emphasis, optional androidx.compose.ui.graphics.vector.ImageVector? icon);
   }
 
   public final class EditorItemRowKt {
