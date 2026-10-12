@@ -102,18 +102,26 @@ fun SegmentedOptionSelector(
 
 /**
  * Keeps a segment label inside its segment (G-15-1). Material3 1.4.0's
- * `SegmentedButtonContentMeasurePolicy` measures the label at the FULL content width, then places
- * it after the icon slot (`SegmentedButtonDefaults.IconSize` + `ButtonDefaults.IconSpacing`, at
- * most 26dp; shifted back by half that when the check icon is hidden), so a label that fills its
- * segment ran past the segment's right edge and was clipped under the selected check icon's shift.
- * Shrinking the label's bounded max width by that slot keeps it inside the segment, check icon or
- * not. Unbounded constraints pass through; the label reports its own size and is placed with
- * `placeRelative` so RTL mirrors.
+ * `SegmentedButtonContentMeasurePolicy` measures the label at the FULL content width (the segment
+ * minus `SegmentedButtonDefaults.ContentPadding` on each side), then lays the icon slot
+ * (`SegmentedButtonDefaults.IconSize` + `ButtonDefaults.IconSpacing`, 26dp) in front of it, and
+ * the content `Box` centers that wider row inside the padded segment. A full-width label therefore
+ * overflows each side by half of `slot - horizontal padding`, so only that difference (about 2dp)
+ * has to come off the label's max width to keep it inside the segment, check icon or not (WR-03).
+ * Reserving the whole 26dp slot instead wrapped short labels at large font scales that fit on one
+ * line in v2.5.0. The trade-off: a label that fills its segment lets the selected check icon reach
+ * the segment's edge, as in v2.5.0. Unbounded constraints pass through; the label reports its own
+ * size and is placed with `placeRelative` so RTL mirrors.
  */
 private fun Modifier.reserveSegmentIconSlot(): Modifier = layout { measurable, constraints ->
     val childConstraints = if (constraints.hasBoundedWidth) {
-        val slot = (SegmentedButtonDefaults.IconSize + ButtonDefaults.IconSpacing).roundToPx()
-        constraints.copy(minWidth = 0, maxWidth = (constraints.maxWidth - slot).coerceAtLeast(0))
+        val slot = SegmentedButtonDefaults.IconSize.roundToPx() + ButtonDefaults.IconSpacing.roundToPx()
+        val padding = SegmentedButtonDefaults.ContentPadding.let {
+            it.calculateLeftPadding(layoutDirection).roundToPx() +
+                it.calculateRightPadding(layoutDirection).roundToPx()
+        }
+        val reserve = (slot - padding).coerceAtLeast(0)
+        constraints.copy(minWidth = 0, maxWidth = (constraints.maxWidth - reserve).coerceAtLeast(0))
     } else {
         constraints
     }

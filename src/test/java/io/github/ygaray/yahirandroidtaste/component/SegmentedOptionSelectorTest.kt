@@ -3,7 +3,10 @@ package io.github.ygaray.yahirandroidtaste.component
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -11,6 +14,8 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import org.junit.Assert.assertEquals
@@ -39,11 +44,23 @@ class SegmentedOptionSelectorTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private fun setSelector(options: List<String>, selectedIndex: Int, onSelect: (Int) -> Unit = {}) {
+    private fun setSelector(
+        options: List<String>,
+        selectedIndex: Int,
+        onSelect: (Int) -> Unit = {},
+        width: Dp? = null,
+        fontScale: Float? = null
+    ) {
         composeTestRule.setContent {
-            YahirAndroidTasteTheme {
-                Box(Modifier.fillMaxWidth().padding(16.dp)) {
-                    SegmentedOptionSelector(selectedIndex = selectedIndex, options = options, onSelect = onSelect)
+            val density = LocalDensity.current
+            CompositionLocalProvider(
+                LocalDensity provides Density(density.density, fontScale ?: density.fontScale)
+            ) {
+                YahirAndroidTasteTheme {
+                    val host = if (width != null) Modifier.width(width) else Modifier.fillMaxWidth().padding(16.dp)
+                    Box(host) {
+                        SegmentedOptionSelector(selectedIndex = selectedIndex, options = options, onSelect = onSelect)
+                    }
                 }
             }
         }
@@ -118,6 +135,39 @@ class SegmentedOptionSelectorTest {
         segment("Offline only", selected = false).assertExists().performClick()
         composeTestRule.waitForIdle()
         assertEquals(1, selected)
+    }
+
+    /**
+     * WR-03: the check-icon reservation must not wrap short labels that fit on one line in v2.5.0.
+     * At fontScale 2.0, "Router off" / "Router on" in the gallery card's 296dp toggle and
+     * "Online" / "Offline only" in a 328dp toggle each stayed on one line in v2.5.0; they must
+     * still do so, inside their segment, selected or not.
+     */
+    @Test
+    fun `router labels stay single-line inside their segment at fontScale 2 in a 296dp toggle`() {
+        assertSingleLineInsideSegments(listOf("Router off", "Router on"), selectedIndex = 0, width = 296.dp)
+    }
+
+    @Test
+    fun `offline toggle labels stay single-line inside their segment at fontScale 2 in a 328dp toggle`() {
+        assertSingleLineInsideSegments(listOf("Online", "Offline only"), selectedIndex = 1, width = 328.dp)
+    }
+
+    private fun assertSingleLineInsideSegments(options: List<String>, selectedIndex: Int, width: Dp) {
+        setSelector(options, selectedIndex, width = width, fontScale = 2f)
+        options.forEachIndexed { index, text ->
+            assertEquals("\"$text\" line count at fontScale 2", 1, label(text).textLayout().lineCount)
+            val (labelLeft, labelRight) = label(text).edges()
+            val (segmentLeft, segmentRight) = segment(text, selected = index == selectedIndex).edges()
+            assertTrue(
+                "\"$text\" right edge $labelRight must be <= its segment's right edge $segmentRight",
+                labelRight <= segmentRight + EDGE_TOLERANCE_PX
+            )
+            assertTrue(
+                "\"$text\" left edge $labelLeft must be >= its segment's left edge $segmentLeft",
+                labelLeft >= segmentLeft
+            )
+        }
     }
 
     private companion object {
