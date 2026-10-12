@@ -1,0 +1,846 @@
+{
+  "schema": "gsd.uat-run/v1",
+  "run_id": "uatr-20261012T230611Z-4dbe72cf",
+  "status": "finished",
+  "phase": "24",
+  "plan": "03",
+  "prefix": "24-03",
+  "surface": "android",
+  "required_surface": {
+    "surface": "android",
+    "source": "marker:AGENT-DEVICE-TESTING.md"
+  },
+  "surface_override": null,
+  "device": {
+    "addr": "R5CT10XNKQN",
+    "serial": "R5CT10XNKQN",
+    "model": "SM-S908U",
+    "label": null
+  },
+  "app": {
+    "package": "io.github.ygaray.yahirandroidtasteharness",
+    "apk_path": "/data/app/~~YfyGc0bbghnV50dJ0KS2CA==/io.github.ygaray.yahirandroidtasteharness-hHvbBfzEaJFTIHKmAqnD9Q==/base.apk",
+    "apk_sha256": "7b095cd78ec73ba5813ebf717eb4fdeb236a8648345fe8ffc7cce31b3f131b03"
+  },
+  "head_at_start": "13039d1203abb14e0da287b4d9c5613d4bd7931f",
+  "started_at": "2026-10-12T23:06:11.471Z",
+  "finished_at": "2026-10-12T23:33:57.945Z",
+  "capture_count": 90,
+  "captures": [
+    {
+      "label": "p01-receipt-confirm-single-open-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "01-p01-receipt-confirm-single-open-light-ui.xml",
+      "sha256": "98899b91509484dd6e0173f4f3a3a959218f6e4fc8610e6209c561fbc57ed2d1",
+      "bytes": 17319,
+      "at": "2026-10-12T23:07:18.940Z"
+    },
+    {
+      "label": "p01-receipt-confirm-single-open-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "02-p01-receipt-confirm-single-open-light-screen.png",
+      "sha256": "647a8f1d0e0d783ed015a60b840b69aec946c13026a6e2bde2e0e965bbc7b3d6",
+      "bytes": 212745,
+      "at": "2026-10-12T23:07:19.478Z"
+    },
+    {
+      "label": "p01-receipt-confirm-single-open-light-expanded-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "03-p01-receipt-confirm-single-open-light-expanded-ui.xml",
+      "sha256": "6d22ddccd20a623a2c74d5c3a802c4501b47ab1968a430044ea79620fa833118",
+      "bytes": 17314,
+      "at": "2026-10-12T23:09:42.912Z"
+    },
+    {
+      "label": "p01-receipt-confirm-single-open-light-expanded-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "04-p01-receipt-confirm-single-open-light-expanded-screen.png",
+      "sha256": "2704a0690d046db4ce7f33c0b6dc5afcfc0a8315ccc06769db22ad90d1865161",
+      "bytes": 200433,
+      "at": "2026-10-12T23:09:43.534Z"
+    },
+    {
+      "label": "p01-receipt-confirm-single-open-dark-expanded-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "05-p01-receipt-confirm-single-open-dark-expanded-ui.xml",
+      "sha256": "6d22ddccd20a623a2c74d5c3a802c4501b47ab1968a430044ea79620fa833118",
+      "bytes": 17314,
+      "at": "2026-10-12T23:10:01.600Z"
+    },
+    {
+      "label": "p01-receipt-confirm-single-open-dark-expanded-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "06-p01-receipt-confirm-single-open-dark-expanded-screen.png",
+      "sha256": "77cf1686850cf02a794bbc6f5bd85e846b83123529c88c8a64e66d5a779e047b",
+      "bytes": 199167,
+      "at": "2026-10-12T23:10:02.112Z"
+    },
+    {
+      "label": "p01-receipt-confirm-single-open-dark-expanded-retake-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "07-p01-receipt-confirm-single-open-dark-expanded-retake-ui.xml",
+      "sha256": "6d22ddccd20a623a2c74d5c3a802c4501b47ab1968a430044ea79620fa833118",
+      "bytes": 17314,
+      "at": "2026-10-12T23:11:03.304Z"
+    },
+    {
+      "label": "p01-receipt-confirm-single-open-dark-expanded-retake-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "08-p01-receipt-confirm-single-open-dark-expanded-retake-screen.png",
+      "sha256": "32319eeaf4814b49ebafd8473de9ad6d0fac69bcff3bf5f24af1f55c0171fdf7",
+      "bytes": 201426,
+      "at": "2026-10-12T23:11:04.343Z"
+    },
+    {
+      "label": "p02-receipt-confirm-batch-collapsed-dark-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "09-p02-receipt-confirm-batch-collapsed-dark-ui.xml",
+      "sha256": "63a16b3dc68edc8d3777d48cd35b2ab1531aaa824f8c309be3285fab417b140b",
+      "bytes": 17617,
+      "at": "2026-10-12T23:11:39.415Z"
+    },
+    {
+      "label": "p02-receipt-confirm-batch-collapsed-dark-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "10-p02-receipt-confirm-batch-collapsed-dark-screen.png",
+      "sha256": "2cac4d32ed8c56ac4ae3d6966e72612e03bc2cb290d2756199c0bbef43bc5a7f",
+      "bytes": 196387,
+      "at": "2026-10-12T23:11:40.071Z"
+    },
+    {
+      "label": "p03-receipt-confirm-batch-attention-before-dark-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "11-p03-receipt-confirm-batch-attention-before-dark-ui.xml",
+      "sha256": "0a38a4697dc632f0ad8e2ac7aaf536f7f93559df169c122996a5f3cc56fe6fb1",
+      "bytes": 18321,
+      "at": "2026-10-12T23:12:06.170Z"
+    },
+    {
+      "label": "p03-receipt-confirm-batch-attention-before-dark-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "12-p03-receipt-confirm-batch-attention-before-dark-screen.png",
+      "sha256": "a5ac54d4b6d9afd3ecf6a598113f1df044f804bbb6f6d9669a4f818d1ef7e1a5",
+      "bytes": 197336,
+      "at": "2026-10-12T23:12:06.745Z"
+    },
+    {
+      "label": "p06-receipt-success-single-dark-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "13-p06-receipt-success-single-dark-ui.xml",
+      "sha256": "56d2f2f597ef407c7a198a2b36c41423ece0724c56030ca3617a8627a4635878",
+      "bytes": 8172,
+      "at": "2026-10-12T23:12:49.208Z"
+    },
+    {
+      "label": "p06-receipt-success-single-dark-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "14-p06-receipt-success-single-dark-screen.png",
+      "sha256": "1a1f91a86c4f26170253ae474a8e76db8ef0dac419795a5ebc3a6fd1b68c03bf",
+      "bytes": 180050,
+      "at": "2026-10-12T23:12:50.007Z"
+    },
+    {
+      "label": "p06-receipt-success-all-undone-dark-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "15-p06-receipt-success-all-undone-dark-ui.xml",
+      "sha256": "02cec626eded7e61091435e6213069f7c63ab5a04dfc33804c2e03415d6f946c",
+      "bytes": 9217,
+      "at": "2026-10-12T23:13:04.205Z"
+    },
+    {
+      "label": "p06-receipt-success-all-undone-dark-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "16-p06-receipt-success-all-undone-dark-screen.png",
+      "sha256": "0328bdd25e47f3b3aaf09f46ceb529a30e22ad75ad204ebd7094acf57f279112",
+      "bytes": 171104,
+      "at": "2026-10-12T23:13:05.242Z"
+    },
+    {
+      "label": "p07-receipt-failure-error-dark-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "17-p07-receipt-failure-error-dark-ui.xml",
+      "sha256": "f45ad289eef4cae25b4aaa888ceaf5ec729309bb2de4bbfadaf64949f0671bd0",
+      "bytes": 10679,
+      "at": "2026-10-12T23:13:34.145Z"
+    },
+    {
+      "label": "p07-receipt-failure-error-dark-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "18-p07-receipt-failure-error-dark-screen.png",
+      "sha256": "6118bab287f019cdc79ed7758cf6b14e69cb56c2a5ceb1477ce9f5229c67ec84",
+      "bytes": 192455,
+      "at": "2026-10-12T23:13:34.738Z"
+    },
+    {
+      "label": "p07-receipt-failure-warn-dark-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "19-p07-receipt-failure-warn-dark-ui.xml",
+      "sha256": "b0c29100a78614a9788e597942d87163c77704a013a82d3bb4e7fe3ebe059fd3",
+      "bytes": 10686,
+      "at": "2026-10-12T23:13:48.063Z"
+    },
+    {
+      "label": "p07-receipt-failure-warn-dark-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "20-p07-receipt-failure-warn-dark-screen.png",
+      "sha256": "5ba9c4ba7d652a340ed69956346a56cdaa5bfd2721e5f60f4c11f36fd2c2c256",
+      "bytes": 193542,
+      "at": "2026-10-12T23:13:48.624Z"
+    },
+    {
+      "label": "p02-receipt-confirm-batch-collapsed-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "21-p02-receipt-confirm-batch-collapsed-light-ui.xml",
+      "sha256": "63a16b3dc68edc8d3777d48cd35b2ab1531aaa824f8c309be3285fab417b140b",
+      "bytes": 17617,
+      "at": "2026-10-12T23:14:27.157Z"
+    },
+    {
+      "label": "p02-receipt-confirm-batch-collapsed-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "22-p02-receipt-confirm-batch-collapsed-light-screen.png",
+      "sha256": "147dc25e24091ccd992f75abc5abe7aef2b81adeab85ff525857518f465456ca",
+      "bytes": 168969,
+      "at": "2026-10-12T23:14:27.920Z"
+    },
+    {
+      "label": "p02-receipt-confirm-batch-item-c-open-single-open-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "23-p02-receipt-confirm-batch-item-c-open-single-open-light-ui.xml",
+      "sha256": "87214c8070ff995d984ff0f822b426f6bd483b929c184c1da0131c8fae2fc2de",
+      "bytes": 18670,
+      "at": "2026-10-12T23:14:48.482Z"
+    },
+    {
+      "label": "p02-receipt-confirm-batch-item-c-open-single-open-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "24-p02-receipt-confirm-batch-item-c-open-single-open-light-screen.png",
+      "sha256": "63b714f39a295b38ae02e37a55ec25c706cd0c05c555482639925b8f3f8800f4",
+      "bytes": 171143,
+      "at": "2026-10-12T23:14:49.165Z"
+    },
+    {
+      "label": "p03-receipt-confirm-batch-attention-before-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "25-p03-receipt-confirm-batch-attention-before-light-ui.xml",
+      "sha256": "0a38a4697dc632f0ad8e2ac7aaf536f7f93559df169c122996a5f3cc56fe6fb1",
+      "bytes": 18321,
+      "at": "2026-10-12T23:15:23.974Z"
+    },
+    {
+      "label": "p03-receipt-confirm-batch-attention-before-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "26-p03-receipt-confirm-batch-attention-before-light-screen.png",
+      "sha256": "a2b343834caf4b3eff9e17fe2aceabca508c38cbab021250fd716343ed0b3b37",
+      "bytes": 169170,
+      "at": "2026-10-12T23:15:24.560Z"
+    },
+    {
+      "label": "p03-receipt-confirm-batch-attention-b-expanded-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "27-p03-receipt-confirm-batch-attention-b-expanded-light-ui.xml",
+      "sha256": "2367713733621c6d5db6e825dfa68d15886c16e3525df8a4b37b52df0347e913",
+      "bytes": 20058,
+      "at": "2026-10-12T23:15:38.009Z"
+    },
+    {
+      "label": "p03-receipt-confirm-batch-attention-b-expanded-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "28-p03-receipt-confirm-batch-attention-b-expanded-light-screen.png",
+      "sha256": "435115aa6324809d09d439c09bf8a536aa40054c076c918af9420a74f928bb5f",
+      "bytes": 169695,
+      "at": "2026-10-12T23:15:38.543Z"
+    },
+    {
+      "label": "p03-receipt-confirm-batch-attention-after-mark-checked-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "29-p03-receipt-confirm-batch-attention-after-mark-checked-light-ui.xml",
+      "sha256": "aa3ff54156db28731141ccdd0562dc06224deaeb47c321a207b57ed486d16cb1",
+      "bytes": 19353,
+      "at": "2026-10-12T23:15:47.000Z"
+    },
+    {
+      "label": "p03-attention-after-mark-checked-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "30-p03-attention-after-mark-checked-light-screen.png",
+      "sha256": "be2ab5ec8eb951037500aaceefb3bf714f0d0a17f1c43135417412fadb28df6d",
+      "bytes": 167163,
+      "at": "2026-10-12T23:15:53.329Z"
+    },
+    {
+      "label": "p06-receipt-success-single-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "31-p06-receipt-success-single-light-ui.xml",
+      "sha256": "56d2f2f597ef407c7a198a2b36c41423ece0724c56030ca3617a8627a4635878",
+      "bytes": 8172,
+      "at": "2026-10-12T23:16:29.701Z"
+    },
+    {
+      "label": "p06-receipt-success-single-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "32-p06-receipt-success-single-light-screen.png",
+      "sha256": "343963c390fa042c8321c9a0b60f2a203f0326d7d8eaecb1c747c39ee68e9cbb",
+      "bytes": 176713,
+      "at": "2026-10-12T23:16:30.480Z"
+    },
+    {
+      "label": "p06-receipt-success-batch-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "33-p06-receipt-success-batch-light-ui.xml",
+      "sha256": "98af36175328a98a7f31a6ba5d4abdf8629eee870c7a39e9afa107a3ed0ecfeb",
+      "bytes": 10612,
+      "at": "2026-10-12T23:16:44.188Z"
+    },
+    {
+      "label": "p06-receipt-success-batch-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "34-p06-receipt-success-batch-light-screen.png",
+      "sha256": "02c02e1f7e2935834a7115ddeb6190c80af8d4843e0dcc4189ba65c14ac969c8",
+      "bytes": 173725,
+      "at": "2026-10-12T23:16:44.849Z"
+    },
+    {
+      "label": "p06-receipt-success-all-undone-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "35-p06-receipt-success-all-undone-light-ui.xml",
+      "sha256": "02cec626eded7e61091435e6213069f7c63ab5a04dfc33804c2e03415d6f946c",
+      "bytes": 9217,
+      "at": "2026-10-12T23:16:58.309Z"
+    },
+    {
+      "label": "p06-receipt-success-all-undone-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "36-p06-receipt-success-all-undone-light-screen.png",
+      "sha256": "c35a2c501937c6b64ce0d027173a5f5912a1126f0bbb7dc62c068f33c6c1c5af",
+      "bytes": 168510,
+      "at": "2026-10-12T23:16:58.912Z"
+    },
+    {
+      "label": "p07-receipt-failure-error-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "37-p07-receipt-failure-error-light-ui.xml",
+      "sha256": "f45ad289eef4cae25b4aaa888ceaf5ec729309bb2de4bbfadaf64949f0671bd0",
+      "bytes": 10679,
+      "at": "2026-10-12T23:17:28.865Z"
+    },
+    {
+      "label": "p07-receipt-failure-error-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "38-p07-receipt-failure-error-light-screen.png",
+      "sha256": "ecef6ee329357e867ca810347a3f05d5944250bc4d509db66ad182959b6016c3",
+      "bytes": 188450,
+      "at": "2026-10-12T23:17:29.449Z"
+    },
+    {
+      "label": "p07-receipt-failure-warn-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "39-p07-receipt-failure-warn-light-ui.xml",
+      "sha256": "b0c29100a78614a9788e597942d87163c77704a013a82d3bb4e7fe3ebe059fd3",
+      "bytes": 10686,
+      "at": "2026-10-12T23:17:42.598Z"
+    },
+    {
+      "label": "p07-receipt-failure-warn-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "40-p07-receipt-failure-warn-light-screen.png",
+      "sha256": "2d136550f3a3742d2e4850d94bf4d743170e542955ac9fe9958455f9e47629ec",
+      "bytes": 190118,
+      "at": "2026-10-12T23:17:43.114Z"
+    },
+    {
+      "label": "p04-receipt-confirm-german-native384-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "41-p04-receipt-confirm-german-native384-light-ui.xml",
+      "sha256": "385314e8676f3ab90c2bf7ff5627f081e77f9bee6f2a7e0bc494b4f7b7c4dd5e",
+      "bytes": 17791,
+      "at": "2026-10-12T23:18:08.128Z"
+    },
+    {
+      "label": "p04-receipt-confirm-german-native384-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "42-p04-receipt-confirm-german-native384-light-screen.png",
+      "sha256": "b96829812d40cf9ace31995cacde5da05d891347f67708fc03005d950f8a8b88",
+      "bytes": 199398,
+      "at": "2026-10-12T23:18:08.973Z"
+    },
+    {
+      "label": "p08-key-lifecycle-summary-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "43-p08-key-lifecycle-summary-light-ui.xml",
+      "sha256": "41bf25a0a942e2e9bd36c0f0858c6c247fb977880ffa3529adb89a3d7775c107",
+      "bytes": 25008,
+      "at": "2026-10-12T23:19:04.620Z"
+    },
+    {
+      "label": "p08-key-lifecycle-summary-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "44-p08-key-lifecycle-summary-light-screen.png",
+      "sha256": "299d03292e9c40c8cd13ccb46d454b709db4626824fad6dd9041fa34676b0f44",
+      "bytes": 177026,
+      "at": "2026-10-12T23:19:05.135Z"
+    },
+    {
+      "label": "p08-key-lifecycle-dropdown-open-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "45-p08-key-lifecycle-dropdown-open-light-ui.xml",
+      "sha256": "0b49b6db21bf1151d6257553f8f8fd85557a01347e5d5082860b92b2bce5c8d3",
+      "bytes": 3968,
+      "at": "2026-10-12T23:19:27.985Z"
+    },
+    {
+      "label": "p08-key-lifecycle-dropdown-open-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "46-p08-key-lifecycle-dropdown-open-light-screen.png",
+      "sha256": "cf4bafdccebf3524013c198275319a0f9a6010ea3c9330f2e64a13800a9a2555",
+      "bytes": 164219,
+      "at": "2026-10-12T23:19:28.531Z"
+    },
+    {
+      "label": "p08-key-lifecycle-edit-empty-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "47-p08-key-lifecycle-edit-empty-light-ui.xml",
+      "sha256": "643fccb45b7c42cd95a1c34aad64d363ef5700047909046a730b92e33393f0e2",
+      "bytes": 26721,
+      "at": "2026-10-12T23:19:48.815Z"
+    },
+    {
+      "label": "p08-key-lifecycle-edit-empty-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "48-p08-key-lifecycle-edit-empty-light-screen.png",
+      "sha256": "456c9d63bc4238fd86208dc3cc04c5b41524ba80d36dce654c8f1cf51110b454",
+      "bytes": 169702,
+      "at": "2026-10-12T23:19:49.584Z"
+    },
+    {
+      "label": "p08-key-lifecycle-edit-typed-masked-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "49-p08-key-lifecycle-edit-typed-masked-light-ui.xml",
+      "sha256": "e3802f33ec8acf845f97706e9f62d54f2c1684414baa99f5d55a782e7648b6c6",
+      "bytes": 27791,
+      "at": "2026-10-12T23:20:18.627Z"
+    },
+    {
+      "label": "p08-key-lifecycle-edit-typed-masked-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "50-p08-key-lifecycle-edit-typed-masked-light-screen.png",
+      "sha256": "f424bf785d268a9c5e34833447ca502ddda91cbf356c8508af829593b6e9ae2f",
+      "bytes": 254332,
+      "at": "2026-10-12T23:20:19.445Z"
+    },
+    {
+      "label": "p08-key-lifecycle-provider-a-field-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "51-p08-key-lifecycle-provider-a-field-light-ui.xml",
+      "sha256": "680d6de38b37cd655b3041fb23c161f07baaa3de5c524b6b457e0429844f04a1",
+      "bytes": 25676,
+      "at": "2026-10-12T23:20:44.302Z"
+    },
+    {
+      "label": "p08-key-lifecycle-back-on-b-summary-no-raw-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "52-p08-key-lifecycle-back-on-b-summary-no-raw-light-ui.xml",
+      "sha256": "5900dd17556316f54c1fe175261bc162b858e96067dea7745fc73240ca36c616",
+      "bytes": 25007,
+      "at": "2026-10-12T23:20:54.287Z"
+    },
+    {
+      "label": "p08-key-lifecycle-back-on-b-summary-no-raw-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "53-p08-key-lifecycle-back-on-b-summary-no-raw-light-screen.png",
+      "sha256": "efd9c75fded3c60a3352d303852ee6ad677f3b331b01aa555ceea971a204fa5a",
+      "bytes": 177062,
+      "at": "2026-10-12T23:20:54.811Z"
+    },
+    {
+      "label": "p08-positive-control-revealed-sentinel-visible-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "54-p08-positive-control-revealed-sentinel-visible-ui.xml",
+      "sha256": "4280cfd5a9ccfebd803a95b99452414baab0d32e0a776803763c909f198ecbf5",
+      "bytes": 27785,
+      "at": "2026-10-12T23:21:34.124Z"
+    },
+    {
+      "label": "p08-key-lifecycle-edit-abcd1234-typed-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "55-p08-key-lifecycle-edit-abcd1234-typed-light-ui.xml",
+      "sha256": "ef764b935be4f0f1d3f4ef6cc87c1f9eb1438c7b4ac7d2451745412e304bf9b3",
+      "bytes": 27771,
+      "at": "2026-10-12T23:21:59.570Z"
+    },
+    {
+      "label": "p08-key-lifecycle-edit-abcd1234-typed-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "56-p08-key-lifecycle-edit-abcd1234-typed-light-screen.png",
+      "sha256": "04ffee8d6efc1e162dca35747189c8badb1da9070b80c107044d72fd88f4cab6",
+      "bytes": 176104,
+      "at": "2026-10-12T23:22:00.344Z"
+    },
+    {
+      "label": "p08-key-lifecycle-edit-masked-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "57-p08-key-lifecycle-edit-masked-light-ui.xml",
+      "sha256": "906c6306c785f7851320de5ec1450e9b15191c36833312f7bf1b01758ebc3224",
+      "bytes": 27787,
+      "at": "2026-10-12T23:22:24.601Z"
+    },
+    {
+      "label": "p08-key-lifecycle-edit-masked-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "58-p08-key-lifecycle-edit-masked-light-screen.png",
+      "sha256": "d3cc847ba2040adebc161a0b9fb72960488c36ee842c151386c4948b8451c255",
+      "bytes": 170050,
+      "at": "2026-10-12T23:22:25.628Z"
+    },
+    {
+      "label": "p08-key-lifecycle-saved-after-update-1234-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "59-p08-key-lifecycle-saved-after-update-1234-light-ui.xml",
+      "sha256": "364ad1178a523a2ec7c4090112739f267a8f47a57b46d9ef7388376186ea99cd",
+      "bytes": 25008,
+      "at": "2026-10-12T23:22:45.347Z"
+    },
+    {
+      "label": "p08-key-lifecycle-clear-flow-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "60-p08-key-lifecycle-clear-flow-light-ui.xml",
+      "sha256": "6c63115aa79b5235bbed6d3c88b54f1ec3ae5037dc09295741c2969c66a296e3",
+      "bytes": 25677,
+      "at": "2026-10-12T23:23:02.202Z"
+    },
+    {
+      "label": "p08-key-lifecycle-clear-flow-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "61-p08-key-lifecycle-clear-flow-light-screen.png",
+      "sha256": "67cc2144264498d2aae2b7651f2a7002168a281248a4523a4135b8abfea371c3",
+      "bytes": 166166,
+      "at": "2026-10-12T23:23:02.733Z"
+    },
+    {
+      "label": "p08-key-lifecycle-dropdown-after-clear-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "62-p08-key-lifecycle-dropdown-after-clear-light-ui.xml",
+      "sha256": "47980cc103fdf6f2e791627706f117066556ebca0d39d3193b45f164ff22617a",
+      "bytes": 3959,
+      "at": "2026-10-12T23:23:14.431Z"
+    },
+    {
+      "label": "p09-key-lifecycle-german-summary-native384-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "63-p09-key-lifecycle-german-summary-native384-light-ui.xml",
+      "sha256": "6365dad67577fae5eacc6f59531abd4ea5071c27cced2d44d4c3aec082d93816",
+      "bytes": 25316,
+      "at": "2026-10-12T23:23:36.448Z"
+    },
+    {
+      "label": "p09-key-lifecycle-german-summary-native384-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "64-p09-key-lifecycle-german-summary-native384-light-screen.png",
+      "sha256": "b76ad8d5eb9c8e0ff883f953c2a2d9027064a18b2248630bb70d2b838aa586d6",
+      "bytes": 168093,
+      "at": "2026-10-12T23:23:37.023Z"
+    },
+    {
+      "label": "p09-key-lifecycle-german-edit-native384-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "65-p09-key-lifecycle-german-edit-native384-light-ui.xml",
+      "sha256": "9816e073e01fd27abe9feed484e6343c9f3ecee9d98da19267dd4ea666f8bb11",
+      "bytes": 26668,
+      "at": "2026-10-12T23:23:47.140Z"
+    },
+    {
+      "label": "p09-key-lifecycle-german-edit-native384-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "66-p09-key-lifecycle-german-edit-native384-light-screen.png",
+      "sha256": "cb63a8e39fa2e8349dd3032e58a9af3a89569ff79f327933f40f32430b5cba7e",
+      "bytes": 160987,
+      "at": "2026-10-12T23:23:47.680Z"
+    },
+    {
+      "label": "p05-count-editor-initial-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "67-p05-count-editor-initial-light-ui.xml",
+      "sha256": "12a323ddddfd63837f74274a8c264afcbc60d3b520628d15a1590eaafd0daf45",
+      "bytes": 31406,
+      "at": "2026-10-12T23:24:36.874Z"
+    },
+    {
+      "label": "p05-count-editor-initial-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "68-p05-count-editor-initial-light-screen.png",
+      "sha256": "ce02188e05fe520297814cb25af509107a6304e08ca3559f5713c6cb3d47227d",
+      "bytes": 224678,
+      "at": "2026-10-12T23:24:37.494Z"
+    },
+    {
+      "label": "p05-count-editor-after-tap-many-unchanged-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "69-p05-count-editor-after-tap-many-unchanged-light-ui.xml",
+      "sha256": "12a323ddddfd63837f74274a8c264afcbc60d3b520628d15a1590eaafd0daf45",
+      "bytes": 31406,
+      "at": "2026-10-12T23:25:06.230Z"
+    },
+    {
+      "label": "p05-count-editor-after-tap-few-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "70-p05-count-editor-after-tap-few-light-ui.xml",
+      "sha256": "12a323ddddfd63837f74274a8c264afcbc60d3b520628d15a1590eaafd0daf45",
+      "bytes": 31406,
+      "at": "2026-10-12T23:25:12.199Z"
+    },
+    {
+      "label": "p05-count-editor-dark-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "71-p05-count-editor-dark-ui.xml",
+      "sha256": "a53a609650378580709aae5e0880cb8dbaede00e4b1a1655e0a41d188c38a342",
+      "bytes": 31407,
+      "at": "2026-10-12T23:25:26.523Z"
+    },
+    {
+      "label": "p05-count-editor-dark-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "72-p05-count-editor-dark-screen.png",
+      "sha256": "b9203e740dba6ff67788992f9efd58f1550962b79aae33346b327c259d1d872c",
+      "bytes": 220370,
+      "at": "2026-10-12T23:25:27.321Z"
+    },
+    {
+      "label": "p05-count-editor-dark-settled-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "73-p05-count-editor-dark-settled-screen.png",
+      "sha256": "b9203e740dba6ff67788992f9efd58f1550962b79aae33346b327c259d1d872c",
+      "bytes": 220370,
+      "at": "2026-10-12T23:25:37.603Z"
+    },
+    {
+      "label": "p10-undo-groups-undoable-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "74-p10-undo-groups-undoable-light-ui.xml",
+      "sha256": "fb55d36f8331a07cb201ae13f1a06ef20a167d598c9a970f3e587f4a1e253f18",
+      "bytes": 28904,
+      "at": "2026-10-12T23:27:33.314Z"
+    },
+    {
+      "label": "p10-undo-groups-undoable-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "75-p10-undo-groups-undoable-light-screen.png",
+      "sha256": "1d3f89ccedf721e98b000bfe975ec36ba67f703ba4e3e11d3d499e5e97d5bf65",
+      "bytes": 186280,
+      "at": "2026-10-12T23:27:34.089Z"
+    },
+    {
+      "label": "p10-undo-groups-resolved-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "76-p10-undo-groups-resolved-light-ui.xml",
+      "sha256": "796c343e529516c6fb1663a2b8864604f58296b4d3823708422f3de6e9dfbcc2",
+      "bytes": 25787,
+      "at": "2026-10-12T23:27:52.805Z"
+    },
+    {
+      "label": "p10-undo-groups-resolved-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "77-p10-undo-groups-resolved-light-screen.png",
+      "sha256": "c52b4bf500392d3ab002b9800949ce585fa31c5aab815c467abc7b3b6fb0c9a3",
+      "bytes": 182905,
+      "at": "2026-10-12T23:27:53.677Z"
+    },
+    {
+      "label": "p11-undo-groups-german-native384-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "78-p11-undo-groups-german-native384-light-ui.xml",
+      "sha256": "93a8eae5e363a26d4a04de84c0d2a7c8eba2b22e3ca61421304192637d5cc857",
+      "bytes": 28951,
+      "at": "2026-10-12T23:28:19.191Z"
+    },
+    {
+      "label": "p11-undo-groups-german-native384-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "79-p11-undo-groups-german-native384-light-screen.png",
+      "sha256": "c509e4b410af239548bb68bb28471bd468e8918013f42a0506d12ce4210cec64",
+      "bytes": 192069,
+      "at": "2026-10-12T23:28:19.925Z"
+    },
+    {
+      "label": "p12-receipt-row-default-cell-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "80-p12-receipt-row-default-cell-light-ui.xml",
+      "sha256": "2c9424f4dc3b283f40b073c5cb375ab4849b5ab3c283a9733b2d4c386a1259e6",
+      "bytes": 22612,
+      "at": "2026-10-12T23:29:00.506Z"
+    },
+    {
+      "label": "p12-receipt-row-default-cell-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "81-p12-receipt-row-default-cell-light-screen.png",
+      "sha256": "5e3c11bad5ccc3f672d253f87df90d436d3ecc7263f13aa9b42537ab40a5bd60",
+      "bytes": 155197,
+      "at": "2026-10-12T23:29:01.031Z"
+    },
+    {
+      "label": "p11-undo-groups-german-360dp-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "82-p11-undo-groups-german-360dp-light-ui.xml",
+      "sha256": "07a5f31640dda546f1992c63bb63df4f2273f1cf9b5e71b7fb3455db5653390c",
+      "bytes": 28912,
+      "at": "2026-10-12T23:30:12.732Z"
+    },
+    {
+      "label": "p11-undo-groups-german-360dp-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "83-p11-undo-groups-german-360dp-light-screen.png",
+      "sha256": "703f87bed51989d3b0e94c0703ced1832f56066305e97482ba9e8750537c7799",
+      "bytes": 198302,
+      "at": "2026-10-12T23:30:13.265Z"
+    },
+    {
+      "label": "p09-key-lifecycle-german-summary-360dp-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "84-p09-key-lifecycle-german-summary-360dp-light-ui.xml",
+      "sha256": "4c146f27c6535f0daf02f83b9effe7a528412400447ca9d8f232ec52b56db03b",
+      "bytes": 24652,
+      "at": "2026-10-12T23:31:32.588Z"
+    },
+    {
+      "label": "p09-key-lifecycle-german-summary-360dp-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "85-p09-key-lifecycle-german-summary-360dp-light-screen.png",
+      "sha256": "d71a54fefe0aa926b3d6f481cd3fd3b32ee3fd95e79de2be894343d2414e7eaa",
+      "bytes": 181376,
+      "at": "2026-10-12T23:31:33.115Z"
+    },
+    {
+      "label": "p09-key-lifecycle-german-edit-360dp-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "86-p09-key-lifecycle-german-edit-360dp-light-ui.xml",
+      "sha256": "7cdca26cb2c91f255e08df680b58c62352a58b7d469933d13583d8775c43e676",
+      "bytes": 26000,
+      "at": "2026-10-12T23:31:43.181Z"
+    },
+    {
+      "label": "p09-key-lifecycle-german-edit-360dp-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "87-p09-key-lifecycle-german-edit-360dp-light-screen.png",
+      "sha256": "04d09c85616a37ac593f2e921a731a31b6911ef88c1005bb1f5e95068cac2759",
+      "bytes": 172424,
+      "at": "2026-10-12T23:31:43.692Z"
+    },
+    {
+      "label": "p04-receipt-confirm-german-360dp-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "88-p04-receipt-confirm-german-360dp-light-ui.xml",
+      "sha256": "79657f56b36d99bd45225c9ce42786917f596f1282c458fe5fb39ee5bb4099b5",
+      "bytes": 17786,
+      "at": "2026-10-12T23:32:32.969Z"
+    },
+    {
+      "label": "p04-receipt-confirm-german-360dp-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "89-p04-receipt-confirm-german-360dp-light-screen.png",
+      "sha256": "3ca5029b8c4a7741b28308dfe5ea1389a042445a5ad9d149fb57fa52096a55a8",
+      "bytes": 199849,
+      "at": "2026-10-12T23:32:33.439Z"
+    },
+    {
+      "label": "p13-logcat-fatal-check-all-probes",
+      "kind": "log",
+      "source": "cli",
+      "file": "90-p13-logcat-fatal-check-all-probes.log",
+      "sha256": "629f5c99a8c152fb8fc472f83ecb0cea3af783a9c1f2c7a3480e46d02ae1a1e8",
+      "bytes": 63,
+      "at": "2026-10-12T23:32:49.573Z",
+      "empty": true
+    }
+  ],
+  "sig": {
+    "alg": "HMAC-SHA256",
+    "value": "778308d403e91ce174756920f0f04294678d1dacb06ce9f91f8bb82d852ec777"
+  }
+}
