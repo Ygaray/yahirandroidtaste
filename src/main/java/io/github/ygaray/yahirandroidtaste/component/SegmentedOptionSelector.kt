@@ -187,7 +187,9 @@ enum class SegmentedOptionStyle { Material, Pill }
  * The [SegmentedOptionStyle.Pill] branch of [SegmentedOptionSelector] (D-07, D-08): one clipped,
  * 1dp `outlineVariant` outlined full-radius container; the selected segment's `primary` fill is
  * full-bleed inside it. A segment in [disabledOptions] (or every segment when [enabled] is false)
- * renders at 38% alpha and never fires [onSelect]. Segment semantics keep the Material strings.
+ * renders at 38% alpha and never fires [onSelect]. A disabled control dims the whole container
+ * (outline included) once; a disabled option dims only its own segment. Segment semantics keep the
+ * Material strings.
  */
 @Composable
 private fun PillSegmentedOptionSelector(
@@ -204,6 +206,8 @@ private fun PillSegmentedOptionSelector(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min)
+                // Whole-control disable dims the container too, so the outline dims with the segments.
+                .alpha(if (enabled) 1f else DISABLED_CONTENT_ALPHA)
                 .clip(CircleShape)
                 .border(Dimens.HairlineBorder, MaterialTheme.colorScheme.outlineVariant, CircleShape)
                 .selectableGroup(),
@@ -216,7 +220,8 @@ private fun PillSegmentedOptionSelector(
                         .weight(1f)
                         .fillMaxHeight()
                         .heightIn(min = Dimens.SegmentedPill.Height)
-                        .alpha(if (segmentEnabled) 1f else DISABLED_CONTENT_ALPHA)
+                        // Only a per-option disable dims here; a disabled control is dimmed on the Row.
+                        .alpha(if (enabled && index in disabledOptions) DISABLED_CONTENT_ALPHA else 1f)
                         .background(if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
                         .selectable(
                             selected = selected,
