@@ -333,7 +333,13 @@ class DomainVocabularyDriftGuardTest {
             "Clarification",
             // Phase 20 (VCARD-01): "Tone" is ToneCard's head token — a generic descriptor for a
             // tinted surface (error/warn tone), not consumer-domain vocabulary.
-            "Tone"
+            "Tone",
+            // Phase 20 (VBTN-02): "Round" is RoundIconButton's head token — a generic shape
+            // descriptor (circular outline), not consumer-domain vocabulary.
+            "Round",
+            // Phase 20 (VCHIP-01): "Pill" is PillChip's head token — a generic shape descriptor
+            // (fully rounded chip), not consumer-domain vocabulary.
+            "Pill"
         )
 
         /**

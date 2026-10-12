@@ -3,12 +3,15 @@ package io.github.ygaray.yahirandroidtaste.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.unit.Density
@@ -137,7 +140,59 @@ class ToneAtomsLongLabelTest {
         assertEquals("short label line count", 1, layout.lineCount)
     }
 
+    private fun renderPill(label: String) {
+        composeTestRule.setContent {
+            density = LocalDensity.current
+            YahirAndroidTasteTheme(themeMode = ThemeMode.LIGHT, dynamicColor = false) {
+                Column(Modifier.fillMaxWidth()) {
+                    PillChip(
+                        label = label,
+                        onClick = {},
+                        leadingIcon = Icons.Filled.DateRange,
+                        trailingIcon = Icons.Filled.ArrowDropDown
+                    )
+                }
+            }
+        }
+        composeTestRule.waitForIdle()
+    }
+
+    @Test
+    fun `PillChip keeps a long German label on one ellipsized line inside 360dp`() {
+        renderPill(LONG_DE)
+        val windowPx = 360 * density.density
+        val chip = composeTestRule.onNodeWithTag("pill_chip")
+        val chipRight = chip.rightEdge()
+        assertTrue("chip right edge $chipRight must be <= window $windowPx", chipRight <= windowPx)
+
+        val text = composeTestRule.onNodeWithText(LONG_DE, useUnmergedTree = true)
+        val layout = text.textLayout()
+        assertEquals("label line count", 1, layout.lineCount)
+        assertTrue("line 0 must be ellipsized", layout.isLineEllipsized(0))
+
+        // 8dp end padding + 18dp icon + 4dp gap must stay free to the right of the label.
+        val reservePx = 30 * density.density
+        val tolerancePx = 1 * density.density
+        val textRight = text.rightEdge()
+        assertTrue(
+            "label right edge $textRight must leave $reservePx for the trailing icon (chip right $chipRight)",
+            textRight <= chipRight - reservePx + tolerancePx
+        )
+    }
+
+    @Test
+    fun `PillChip short German label is not ellipsized and the chip is 32dp tall`() {
+        renderPill(SHORT_PILL_DE)
+        val layout = composeTestRule.onNodeWithText(SHORT_PILL_DE, useUnmergedTree = true).textLayout()
+        assertEquals("short label line count", 1, layout.lineCount)
+        assertFalse("short label must not be ellipsized", layout.isLineEllipsized(0))
+
+        val heightPx = composeTestRule.onNodeWithTag("pill_chip").fetchSemanticsNode().size.height
+        assertEquals("chip height", 32 * density.density, heightPx.toFloat(), 0.5f * density.density)
+    }
+
     private companion object {
+        const val SHORT_PILL_DE = "Heute"
         const val LONG_DE = "Alle ausstehenden Änderungen jetzt speichern und die Aufnahme anschließend fortsetzen"
         const val SHORT_DE = "Speichern"
     }
