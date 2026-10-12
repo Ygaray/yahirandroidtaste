@@ -531,8 +531,11 @@ defaulted.
   "Resolved") are English-only library text; only `UndoGroupRowUiModel.undoAllLabel` is overridable.
 - Guards that keep this true: `V251CallSiteCanaryTest` compiles verbatim v2.5.1 call shapes of the nine
   affected surfaces (consumer and Explorer call sites), `tools/verify-api-source-additive.sh <tag>`
-  reviews `api.txt` against the baseline tag (no removed symbol, no changed required parameter, enum
-  constants intact), and `CatalogDocsDriftGuardTest` keeps this file's counts, symbols and tags true.
+  reviews `api.txt` against the baseline tag (no removed symbol, no changed required parameter, no
+  parameter inserted before an existing one, none appended after a trailing lambda, no changed return
+  or property type, no enum constant added or removed; the three positional breaks listed above are
+  its reviewed, printed exceptions), and `CatalogDocsDriftGuardTest` keeps this file's counts, symbols
+  and tags true.
 
 **Voice label fragments — how the sheet joins them (v2.5.0, VI18N-04).** The label fields are plain
 text fragments; `OutcomeSheet` composes them with fixed separators: a single ASCII space between a

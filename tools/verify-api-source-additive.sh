@@ -5,25 +5,43 @@
 # `git diff v2.5.1 -- api.txt` is unreliable because a literal append-only text diff is impossible
 # (sketch P2): appending a defaulted parameter REWRITES the old overload line, and adding or inserting
 # defaulted fields before the two required lambdas of a model reorders its component functions.
-# The question that matters to a consumer that recompiles is "does every call that compiled before
-# still compile", and for this library that reduces to four mechanical rules, checked on the parsed
-# signature files instead of the text:
+# So the tool parses the baseline and head signature files and checks eight mechanical rules.
+#
+# What a green `API SOURCE-ADDITIVE OK` PROVES (for every baseline signature, on the api.txt text):
 #   R1  every public or protected class present in the baseline still exists
 #   R2  every (class, kind, member name) triple present in the baseline still exists
 #       (kinds: ctor, method, property, field; a constructor's name is the class simple name)
 #   R3  every baseline enum constant still exists
-#   R4  for every baseline method or constructor signature, at least one current signature of the same
-#       class, kind and name has an IDENTICAL ordered list of REQUIRED (non-optional) parameter types.
-#       Appending or inserting `optional` parameters therefore passes; adding a required parameter,
-#       removing one, or changing a required parameter type fails.
-# Additions (classes, members, overloads) are never a violation.
+#   R4  some current signature of the same class, kind and name has an IDENTICAL ordered list of
+#       REQUIRED (non-optional) parameters, type and name
+#   R5  ... and its full parameter list (type and name, optional or not) STARTS WITH the baseline's, so
+#       nothing is inserted before an existing parameter and a positional call keeps binding
+#   R6  ... and its return type is unchanged (a property or field keeps its declared type)
+#   R7  ... and, when the baseline's last parameter is a function type (a trailing lambda), nothing is
+#       appended after it
+#   R8  no enum constant is added to an existing enum (it breaks an exhaustive `when`)
+# Appending an `optional` parameter after a non-lambda parameter, adding classes, members and overloads
+# are never violations.
+#
+# REVIEWED EXCEPTIONS: ACCEPTED_EXCEPTIONS in the .py waives named rules for exact signatures, keyed by
+# the baseline label. For v2.5.1 it holds exactly the three documented, accepted v2.6.0 positional
+# breaks (SheetScaffold, UndoCenterScreen, NeedsConfirmation incl. its copy/component10/component11);
+# each is printed as an `ACCEPTED ...` line and counted in `accepted_exceptions=<n>`. A green line with
+# a non-zero count means "every call compiles EXCEPT the accepted, documented shapes", not "every call".
+#
+# What it does NOT prove (the call-site canary V251CallSiteCanaryTest covers the shapes consumers
+# write): a new abstract member on an interface or a new subclass of a sealed type, a changed
+# modifier (open/final/suspend/visibility narrowing of a kept member), changed generics bounds or
+# supertypes, a changed default value, behaviour, binary compatibility (see verify-binary-abi.sh), or
+# anything Metalava does not dump (internal members, value-class-mangled accessors).
 #
 # Usage:   tools/verify-api-source-additive.sh <baseline-tag>        e.g. tools/verify-api-source-additive.sh v2.5.1
-# Output:  line 1 is `SEAMS: none` (or the seams that are set); then either one `FAIL R<n>: ...` line per
-#          violation plus a `API SOURCE-ADDITIVE FAILED ...` summary, or `API SOURCE-ADDITIVE OK baseline=<tag>
-#          removed_classes=0 removed_members=0 enum_constants_intact=<n> required_param_changes=0 added_classes=<n> added_members=<n>`.
+# Output:  line 1 is `SEAMS: none` (or the seams that are set); then any `ACCEPTED R<n> ...` lines, then either
+#          one `FAIL R<n>: ...` line per violation plus a `API SOURCE-ADDITIVE FAILED ...` summary, or
+#          `API SOURCE-ADDITIVE OK baseline=<tag> removed_classes=0 removed_members=0 enum_constants_intact=<n>
+#          required_param_changes=0 added_classes=<n> added_members=<n> signature_changes=0 accepted_exceptions=<n>`.
 # Exit codes:
-#   0  PASS    none of R1 to R4 is violated
+#   0  PASS    none of R1 to R8 is violated (apart from the reviewed exceptions)
 #   1  FAIL    at least one rule is violated (every violation is printed)
 #   2  usage or tooling error: no argument, malformed tag or a name that is not an existing git tag,
 #      unreadable or empty api file, python3 missing
