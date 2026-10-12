@@ -2,11 +2,37 @@
   "contract": "1.0.0",
   "flavor": "core",
   "milestone": "v2.6 — Receipt voice surfaces + ProviderKeyCard lifecycle",
-  "phases": [],
+  "phases": [
+    {
+      "number": "20",
+      "name": "Tone foundation & atoms",
+      "status": "pending"
+    },
+    {
+      "number": "21",
+      "name": "Receipt row, Pill selector & sheet shape",
+      "status": "pending"
+    },
+    {
+      "number": "22",
+      "name": "OutcomeSheet Receipt style",
+      "status": "pending"
+    },
+    {
+      "number": "23",
+      "name": "ProviderKeyCard lifecycle & Undo Center groups",
+      "status": "pending"
+    },
+    {
+      "number": "24",
+      "name": "Catalog, docs, Explorer demos & cut v2.6.0",
+      "status": "pending"
+    }
+  ],
   "next": {
-    "command": "/gsd:discuss-phase",
-    "label": "Discuss the first phase",
-    "reason": "Project initialized — plan your first phase"
+    "command": "/gsd:progress --next",
+    "label": "Advance to the next step",
+    "reason": "Phase 20 of 5 · 0% · executing"
   },
-  "updated_at": "2026-10-12T05:52:34.450Z"
+  "updated_at": "2026-10-12T10:31:38.925Z"
 }

@@ -56,7 +56,25 @@ SB with no signature deltas; P1-P3 rulings applied). Inputs: CT `76-UI-SPEC.md` 
   5. `RoundIconButton`, `StackedProgressBar`, `ToneCard` and `PillChip` are registered in their family screens (suggested: Buttons/FAB, Progress, Cards, Chips). The registry integrity test and the CATALOG drift guard are green, and `apiCheck` is green on the `api.txt` regenerated in the same commit.
 
 **Notes**: The atoms may carry their Y-14 tags (`round_icon_button`, `stacked_progress_bar`, `tone_card`, `pill_chip`) from the start. VTAG-01 acceptance (the per-Receipt-state tag test) belongs to Phase 22.
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 20-01-PLAN.md — Tracer: tone tokens + `ToneCard` end to end (registry, allowlist, api.txt), phase Dimens token groups, structural proof and pixel-capture probe (VTONE-01, VCARD-01)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 20-02-PLAN.md — `DynamicActionButton` emphasis/icon axis above the untouched legacy path, legacy-path contract test, long German label at 360dp (VBTN-01)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 20-03-PLAN.md — `RoundIconButton` and `PillChip` slices with registry entries, allowlist and tests (VBTN-02, VCHIP-01)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 20-04-PLAN.md — `StackedProgressBar` slice, phase invariants test and the phase gate (VBAR-01)
+
 **UI hint**: yes
 
 ### Phase 21: Receipt row, Pill selector & sheet shape
@@ -250,7 +268,7 @@ only on Phase 20, but it runs after 22 because every phase rewrites the shared `
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 20. Tone foundation & atoms | v2.6 | 0/TBD | Not started | - |
+| 20. Tone foundation & atoms | v2.6 | 0/4 | Planned | - |
 | 21. Receipt row, Pill selector & sheet shape | v2.6 | 0/TBD | Not started | - |
 | 22. OutcomeSheet Receipt style | v2.6 | 0/TBD | Not started | - |
 | 23. ProviderKeyCard lifecycle & Undo Center groups | v2.6 | 0/TBD | Not started | - |
