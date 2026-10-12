@@ -100,4 +100,15 @@ class DimensTest {
         assertEquals(40.dp, Dimens.SegmentedPill.Height)
         assertEquals(12.dp, Dimens.SegmentedPill.LabelHorizontalPadding)
     }
+
+    @Test
+    fun `ReceiptRow tokens equal their phase 21 values`() {
+        assertEquals(12.dp, Dimens.ReceiptRow.VerticalPadding)
+        assertEquals(8.dp, Dimens.ReceiptRow.ColumnGap)
+        assertEquals(4.dp, Dimens.ReceiptRow.LineGap)
+        assertEquals(56.dp, Dimens.ReceiptRow.ValueMinWidth)
+        assertEquals(8.dp, Dimens.ReceiptRow.CueHorizontalPadding)
+        assertEquals(4.dp, Dimens.ReceiptRow.CueVerticalPadding)
+        assertEquals(24.dp, Dimens.ReceiptRow.ChevronSize)
+    }
 }
