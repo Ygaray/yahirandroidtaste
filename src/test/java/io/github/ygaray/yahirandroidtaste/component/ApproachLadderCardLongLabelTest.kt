@@ -9,6 +9,7 @@ import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -55,7 +56,13 @@ class ApproachLadderCardLongLabelTest {
         ApproachRungUiModel(id = "local", label = "Local", rank = 1, offlineCapable = true)
     )
 
-    private fun setCard(german: Boolean, horizontalPadding: Dp = 0.dp, fontScale: Float? = null) {
+    private fun setCard(
+        german: Boolean,
+        horizontalPadding: Dp = 0.dp,
+        fontScale: Float? = null,
+        ladder: List<ApproachRungUiModel> = this.ladder,
+        unavailableLabel: String = UNAVAILABLE_DE
+    ) {
         composeTestRule.setContent {
             val density = LocalDensity.current
             CompositionLocalProvider(
@@ -71,7 +78,7 @@ class ApproachLadderCardLongLabelTest {
                             maxTierId = "local",
                             onMaxTierChange = {},
                             modifier = cardModifier,
-                            unavailableLabel = UNAVAILABLE_DE,
+                            unavailableLabel = unavailableLabel,
                             cappedLabel = CAPPED_DE,
                             needsNetworkLabel = NEEDS_NETWORK_DE,
                             onlineLabel = ONLINE_DE,
@@ -179,6 +186,42 @@ class ApproachLadderCardLongLabelTest {
         )
     }
 
+    /**
+     * IN-01: the 40% name floor is 40% of the WHOLE row; the name-affordance gap comes out of the
+     * affordances' share, not the name's. With a rung name too long for the row and an affordance
+     * label (one unbreakable compound word) that fills every pixel offered to it, the name still
+     * keeps at least 40% of the row. A fixed 60% affordance cap left it 40% minus the 4dp gap.
+     */
+    @Test
+    fun `a long rung name next to a row-filling affordance keeps at least 40 percent of the row`() {
+        val longName = "Lokale Verarbeitung ausschließlich auf diesem Gerät"
+        val rowFillingLabel = "Verarbeitungsdienstverfügbarkeitsprüfungsfehlschlagsmeldung"
+        setCard(
+            german = true,
+            ladder = listOf(
+                ApproachRungUiModel(id = "cloud", label = longName, rank = 3, enabled = false, offlineCapable = false),
+                ApproachRungUiModel(id = "local", label = "Local", rank = 1, offlineCapable = true)
+            ),
+            unavailableLabel = rowFillingLabel
+        )
+
+        val rowWidth = composeTestRule.onAllNodesWithTag("approach_ladder_card_rung")[0]
+            .fetchSemanticsNode().size.width
+        val nameWidth = text(longName).fetchSemanticsNode().size.width
+        assertTrue(
+            "long name width $nameWidth must be >= 40% of the row width $rowWidth",
+            nameWidth >= rowWidth * NAME_FLOOR_FRACTION
+        )
+        val nameRight = text(longName).edges().second
+        listOf(rowFillingLabel, CAPPED_DE, NEEDS_NETWORK_DE).forEach { label ->
+            val left = cloudRowNode(label).edges().first
+            assertTrue("\"$label\" left edge $left must be >= the name's right edge $nameRight", left >= nameRight)
+        }
+    }
+
+    /** The topmost match for [label] -- the first rung row (Cloud) in these fixtures. */
+    private fun cloudRowNode(label: String) = allText(label).minBy { it.top() }
+
     @Test
     fun `English default labels at 360dp stay single-line and share one line with the Cloud name`() {
         setCard(german = false)
@@ -223,6 +266,7 @@ class ApproachLadderCardLongLabelTest {
     }
 
     private companion object {
+        const val NAME_FLOOR_FRACTION = 0.4f
         const val UNAVAILABLE_DE = "Derzeit nicht verfügbar"
         const val CAPPED_DE = "Durch Obergrenze eingeschränkt"
         const val NEEDS_NETWORK_DE = "Netzwerkverbindung erforderlich"
