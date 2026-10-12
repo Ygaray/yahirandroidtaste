@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,9 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel
+import io.github.ygaray.yahirandroidtaste.model.FailureTone
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
 import io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel
@@ -32,6 +36,7 @@ import io.github.ygaray.yahirandroidtaste.model.UndoRowState
 import io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
+import io.github.ygaray.yahirandroidtaste.theme.ToneColors
 import io.github.ygaray.yahirandroidtaste.theme.expressive
 
 /**
@@ -75,7 +80,7 @@ fun OutcomeSheet(
         return
     }
     SheetScaffold(onDismissRequest = onDismissRequest, modifier = modifier) {
-        OutcomeSheetContent(outcome)
+        OutcomeSheetContent(outcome, colors = colors)
     }
 }
 
@@ -99,7 +104,11 @@ fun OutcomeSheet(
  * the public Metalava API surface (api dump unchanged).
  */
 @Composable
-internal fun OutcomeSheetContent(outcome: VoiceOutcomeUiState, modifier: Modifier = Modifier) {
+internal fun OutcomeSheetContent(
+    outcome: VoiceOutcomeUiState,
+    modifier: Modifier = Modifier,
+    colors: OutcomeSheetColors = OutcomeSheetDefaults.colors()
+) {
     Column(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -108,7 +117,15 @@ internal fun OutcomeSheetContent(outcome: VoiceOutcomeUiState, modifier: Modifie
         ) {
             when (outcome) {
                 is VoiceOutcomeUiState.Success -> SuccessBody(outcome)
-                is VoiceOutcomeUiState.Failure -> FailureBody(outcome)
+                is VoiceOutcomeUiState.Failure -> {
+                    FailureBody(outcome, colors)
+                    // D-11: the surface is edge-to-edge, so the undo block brings its own inset.
+                    outcome.undo?.let { undo ->
+                        Box(Modifier.padding(horizontal = Dimens.HorizontalPadding)) {
+                            UndoAffordanceBody(undo, locked = false)
+                        }
+                    }
+                }
                 is VoiceOutcomeUiState.NeedsConfirmation -> NeedsConfirmationBody(outcome)
             }
         }
@@ -183,6 +200,8 @@ private fun UndoAffordanceBody(undo: UndoAffordanceUiModel, locked: Boolean) {
                     .fillMaxWidth()
                     .padding(top = Dimens.ContentSpacing)
                     .testTag("outcome_sheet_undo_refused")
+                    // TalkBack announces the surface when it appears; semantics only (VXR-01, D-12).
+                    .semantics { liveRegion = LiveRegionMode.Assertive }
             ) {
                 val suffix = refused.changedItem
                     ?.let { ", $it ${refused.changedSinceSuffix}" }
@@ -297,12 +316,14 @@ private fun BatchResultsList(rows: List<BatchRowResultUiModel>) {
  * [AttentionCue][io.github.ygaray.yahirandroidtaste.component.AttentionCue] and never an implicit
  * default action). A non-blank [VoiceOutcomeUiState.Failure.semanticsPrefix] is prepended to the
  * reason in the surface's merged accessibility description (VFAIL-03, D-02).
+ * Tone [FailureTone.Warn] paints the caller's warn tone, [FailureTone.Error] keeps the error-container look.
  */
 @Composable
-private fun FailureBody(failure: VoiceOutcomeUiState.Failure) {
+private fun FailureBody(failure: VoiceOutcomeUiState.Failure, colors: OutcomeSheetColors) {
+    val surface = classicFailureSurfaceColors(failure.tone, colors, MaterialTheme.colorScheme)
     Surface(
-        color = MaterialTheme.colorScheme.errorContainer,
-        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        color = surface.container,
+        contentColor = surface.content,
         shape = MaterialTheme.expressive.cardShapeLarge,
         modifier = Modifier
             .fillMaxWidth()
@@ -343,6 +364,23 @@ private fun FailureBody(failure: VoiceOutcomeUiState.Failure) {
             }
         }
     }
+}
+
+/**
+ * The Classic failure surface colors (D-06). [FailureTone.Warn] paints the caller's
+ * [OutcomeSheetColors.warnTone]; every other tone keeps the v2.5.1 error-container look. The Error
+ * branch reads the [scheme] roles directly because the [OutcomeSheetColors] error tone uses a
+ * different content color and would change v2.5.1 pixels.
+ */
+internal fun classicFailureSurfaceColors(
+    tone: FailureTone,
+    colors: OutcomeSheetColors,
+    scheme: ColorScheme
+): ToneColors {
+    if (tone == FailureTone.Warn) {
+        return colors.warnTone
+    }
+    return ToneColors(scheme.errorContainer, scheme.onErrorContainer)
 }
 
 /**
@@ -428,6 +466,7 @@ private fun NeedsConfirmationActions(confirmation: VoiceOutcomeUiState.NeedsConf
             label = confirmation.confirmLabel,
             role = confirmation.severity,
             onClick = confirmation.onConfirm,
+            enabled = confirmation.confirmEnabled,
             modifier = Modifier.testTag("outcome_sheet_confirmation_confirm")
         )
     }
