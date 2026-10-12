@@ -73,7 +73,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 20-04-PLAN.md — `StackedProgressBar` slice, phase invariants test and the phase gate (VBAR-01)
+- [x] 20-04-PLAN.md — `StackedProgressBar` slice, phase invariants test and the phase gate (VBAR-01)
 
 **UI hint**: yes
 
@@ -268,7 +268,7 @@ only on Phase 20, but it runs after 22 because every phase rewrites the shared `
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 20. Tone foundation & atoms | v2.6 | 3/4 | Planned |  |
+| 20. Tone foundation & atoms | v2.6 | 4/4 | Planned |  |
 | 21. Receipt row, Pill selector & sheet shape | v2.6 | 0/TBD | Not started | - |
 | 22. OutcomeSheet Receipt style | v2.6 | 0/TBD | Not started | - |
 | 23. ProviderKeyCard lifecycle & Undo Center groups | v2.6 | 0/TBD | Not started | - |
