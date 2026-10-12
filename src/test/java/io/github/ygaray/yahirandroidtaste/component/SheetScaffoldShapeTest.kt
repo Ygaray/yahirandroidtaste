@@ -1,7 +1,16 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry
+import io.github.ygaray.yahirandroidtaste.explorer.ExplorerFamilies
+import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
+import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -18,6 +27,9 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35])
 class SheetScaffoldShapeTest {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
 
     private val stripped: String = SourceContractTestSupport.stripComments(
         SourceContractTestSupport.source("SheetScaffold.kt")
@@ -58,5 +70,26 @@ class SheetScaffoldShapeTest {
     fun `exactly one SheetScaffold function exists so no overload or shim was added`() {
         val flat = stripped.filterNot { it.isWhitespace() }
         assertEquals(1, SourceContractTestSupport.countOccurrences(flat, "funSheetScaffold("))
+    }
+
+    @Test
+    fun `gallery keeps SheetScaffold as a Sheets primitive and shows both demo buttons`() {
+        val entry = ComponentRegistry.entries.first { it.name == "SheetScaffold" }
+        assertEquals(ExplorerFamilies.SHEETS, entry.family)
+        assertEquals(ComponentRegistry.Tier.PRIMITIVE, entry.tier)
+        assertEquals(listOf("Default", "Pressed / Selected", "Disabled", "Focused"), entry.states.map { it.label })
+        val content = checkNotNull(entry.content)
+        assertNotNull(content)
+
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme(themeMode = ThemeMode.LIGHT, dynamicColor = false) {
+                Column { content() }
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        // The sheet window cannot be driven in this harness, so only the launcher buttons are asserted.
+        composeTestRule.onNodeWithText("SheetScaffold — generic chrome").assertExists()
+        composeTestRule.onNodeWithText("SheetScaffold — custom shape (24dp top corners)").assertExists()
     }
 }

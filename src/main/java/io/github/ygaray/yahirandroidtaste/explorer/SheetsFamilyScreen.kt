@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -798,6 +799,19 @@ private fun SheetScaffoldSection() {
         SheetScaffold(onDismissRequest = { show = false }) {
             Text(
                 text = "Generic SheetScaffold content",
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
+    var showShaped by remember { mutableStateOf(false) }
+    ShowSheetButton("SheetScaffold — custom shape (24dp top corners)") { showShaped = true }
+    if (showShaped) {
+        SheetScaffold(
+            onDismissRequest = { showShaped = false },
+            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+        ) {
+            Text(
+                text = "Shaped SheetScaffold content",
                 modifier = Modifier.padding(16.dp)
             )
         }
