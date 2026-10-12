@@ -1,0 +1,837 @@
+{
+  "schema": "gsd.uat-run/v1",
+  "run_id": "uatr-20261012T223815Z-1f8b52e0",
+  "status": "finished",
+  "phase": "23",
+  "plan": "02",
+  "prefix": "23-02",
+  "surface": "android",
+  "required_surface": {
+    "surface": "android",
+    "source": "marker:AGENT-DEVICE-TESTING.md"
+  },
+  "surface_override": null,
+  "device": {
+    "addr": "R5CT10XNKQN",
+    "serial": "R5CT10XNKQN",
+    "model": "SM-S908U",
+    "label": null
+  },
+  "app": {
+    "package": "io.github.ygaray.yahirandroidtasteharness",
+    "apk_path": "/data/app/~~G512USFGg86M0fWetaCe1w==/io.github.ygaray.yahirandroidtasteharness-8R2K03maxGmBMiVrFyxVuA==/base.apk",
+    "apk_sha256": "8599ce51950acf13610716435ffe6d71d43298f0f216cd99d38c0a81830cde89"
+  },
+  "head_at_start": "deae92379990f5f6ec01f6a94d5915b8f4415732",
+  "started_at": "2026-10-12T22:38:15.832Z",
+  "finished_at": "2026-10-12T22:49:06.713Z",
+  "capture_count": 89,
+  "captures": [
+    {
+      "label": "sc2-p01-pk-a-summary-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "01-sc2-p01-pk-a-summary-ui.xml",
+      "sha256": "a98fc18597be4bde1133e9ea30d9408dd4f6b093862004249128b62e4573e798",
+      "bytes": 9033,
+      "at": "2026-10-12T22:38:38.573Z"
+    },
+    {
+      "label": "sc2-p01-pk-a-summary-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "02-sc2-p01-pk-a-summary-screen.png",
+      "sha256": "f4b379588090ebe13b2752ebb70bec643bfe84f115d5eff58f9e94c894d4af7e",
+      "bytes": 74600,
+      "at": "2026-10-12T22:38:39.084Z"
+    },
+    {
+      "label": "sc2-p02-pk-after-update-tap-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "03-sc2-p02-pk-after-update-tap-ui.xml",
+      "sha256": "17d935d28a86f63bb80653175b4a1e1f029e5fc1fd4bbd304b7c32bff008c59a",
+      "bytes": 10731,
+      "at": "2026-10-12T22:38:50.191Z"
+    },
+    {
+      "label": "sc2-p02-pk-after-update-tap-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "04-sc2-p02-pk-after-update-tap-screen.png",
+      "sha256": "f69668e39fd0e79860d70d3f9618453ad51b02897ac1eebb16eee91291571127",
+      "bytes": 73224,
+      "at": "2026-10-12T22:38:54.735Z"
+    },
+    {
+      "label": "sc2-p02-pk-after-save-tap-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "05-sc2-p02-pk-after-save-tap-ui.xml",
+      "sha256": "17b9d5ff06bb65cedb30b456e0969c81a72119cbcbc87f3a9dcbb7bba14edbcc",
+      "bytes": 10731,
+      "at": "2026-10-12T22:38:59.013Z"
+    },
+    {
+      "label": "sc2-p02-pk-after-cancel-tap-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "06-sc2-p02-pk-after-cancel-tap-ui.xml",
+      "sha256": "377a6d09016fd6818215543e0a86e9e568ca1604e643c6dd6be1ba07d380c5c0",
+      "bytes": 9033,
+      "at": "2026-10-12T22:39:03.167Z"
+    },
+    {
+      "label": "sc2-p03-pk-after-clear-tap-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "07-sc2-p03-pk-after-clear-tap-ui.xml",
+      "sha256": "0c7160792e592df4c90c9b521c1349255e28f988284b14aa9ef4ac57605fd1a3",
+      "bytes": 9667,
+      "at": "2026-10-12T22:39:16.151Z"
+    },
+    {
+      "label": "sc2-p04-pk-b-field-save-only-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "08-sc2-p04-pk-b-field-save-only-ui.xml",
+      "sha256": "6e82cdfa2b1631eef8e596137281e61de28c347e5f7e9003d365d026c60b40f0",
+      "bytes": 9664,
+      "at": "2026-10-12T22:39:22.210Z"
+    },
+    {
+      "label": "sc2-p04-pk-b-field-with-cancel-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "09-sc2-p04-pk-b-field-with-cancel-ui.xml",
+      "sha256": "3fe9bb99775a29020878232e1349c1305433024aaf4279f55cfa26e2c0895730",
+      "bytes": 10729,
+      "at": "2026-10-12T22:39:28.366Z"
+    },
+    {
+      "label": "sc3-p05-pk-dropdown-open-a-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "10-sc3-p05-pk-dropdown-open-a-ui.xml",
+      "sha256": "91d452398d9bd63e1dac81fd0924e10d87ed8a0a8be721cd6f5e811070eaced2",
+      "bytes": 3946,
+      "at": "2026-10-12T22:39:41.070Z"
+    },
+    {
+      "label": "sc3-p05-pk-dropdown-open-a-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "11-sc3-p05-pk-dropdown-open-a-screen.png",
+      "sha256": "5cafdf98a23425772747513724c4e0aeb058a0634c76e285694773a7dca3f041",
+      "bytes": 75763,
+      "at": "2026-10-12T22:39:41.587Z"
+    },
+    {
+      "label": "sc3-p05-pk-switch-b-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "12-sc3-p05-pk-switch-b-ui.xml",
+      "sha256": "6edfc3f2e6ed58d09770b390da83f5c8828cc45815550adb97d3bd98a6af68c4",
+      "bytes": 9663,
+      "at": "2026-10-12T22:39:53.379Z"
+    },
+    {
+      "label": "sc3-p05-pk-dropdown-open-b-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "13-sc3-p05-pk-dropdown-open-b-ui.xml",
+      "sha256": "91d452398d9bd63e1dac81fd0924e10d87ed8a0a8be721cd6f5e811070eaced2",
+      "bytes": 3946,
+      "at": "2026-10-12T22:40:05.199Z"
+    },
+    {
+      "label": "sc3-p05-pk-switch-c-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "14-sc3-p05-pk-switch-c-ui.xml",
+      "sha256": "69fd5959c661eae375e58c5d601cc812b1f0f5000d84f2d09a1f89cea95f0437",
+      "bytes": 9026,
+      "at": "2026-10-12T22:40:10.583Z"
+    },
+    {
+      "label": "sc3-p05-pk-switch-a-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "15-sc3-p05-pk-switch-a-ui.xml",
+      "sha256": "07ca24281c86bf0d55c9f2abbcc21131c008dd1edb5c96a09169051f5afcd9e4",
+      "bytes": 9032,
+      "at": "2026-10-12T22:40:18.914Z"
+    },
+    {
+      "label": "sc2-p06-pk-inflight-summary-after-taps-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "16-sc2-p06-pk-inflight-summary-after-taps-ui.xml",
+      "sha256": "29c54aefcabdec5dddda25837512700436737cdbbc5eb52a799ef2a89648476a",
+      "bytes": 8695,
+      "at": "2026-10-12T22:40:36.450Z"
+    },
+    {
+      "label": "sc2-p06-pk-inflight-summary-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "17-sc2-p06-pk-inflight-summary-screen.png",
+      "sha256": "e0ab984e73f1423e941b3d4114fa587f53f6617daab0bd6e2e48a20d26328551",
+      "bytes": 72910,
+      "at": "2026-10-12T22:40:36.952Z"
+    },
+    {
+      "label": "sc2-p06-pk-inflight-field-after-taps-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "18-sc2-p06-pk-inflight-field-after-taps-ui.xml",
+      "sha256": "e3a69c31affe5750d6bbcc67be2d199268672a46c467f5ed632f4f73e1b167a9",
+      "bytes": 10391,
+      "at": "2026-10-12T22:40:46.411Z"
+    },
+    {
+      "label": "sc2-p07-pk-save-gated-empty-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "19-sc2-p07-pk-save-gated-empty-ui.xml",
+      "sha256": "1891924c954bab7089c6c3e45bbf868c16e739dcf1dc2725dafac6e49dd78221",
+      "bytes": 9666,
+      "at": "2026-10-12T22:41:00.931Z"
+    },
+    {
+      "label": "sc2-p07-pk-save-gated-typed-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "20-sc2-p07-pk-save-gated-typed-ui.xml",
+      "sha256": "1e787d3de3677e80539ef104e1063bc8152c8f4f22e9a1dbb82ecd5068b8dec1",
+      "bytes": 10703,
+      "at": "2026-10-12T22:41:08.338Z"
+    },
+    {
+      "label": "sc2-p07-pk-save-gated-pre-tap-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "21-sc2-p07-pk-save-gated-pre-tap-ui.xml",
+      "sha256": "1e787d3de3677e80539ef104e1063bc8152c8f4f22e9a1dbb82ecd5068b8dec1",
+      "bytes": 10703,
+      "at": "2026-10-12T22:41:16.553Z"
+    },
+    {
+      "label": "sc2-p07-pk-save-gated-after-tap-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "22-sc2-p07-pk-save-gated-after-tap-ui.xml",
+      "sha256": "c5d72dca5c51f4d8dc91d5a53ee529a161316b4d41fe92920a48adf0fff7af44",
+      "bytes": 10703,
+      "at": "2026-10-12T22:41:20.694Z"
+    },
+    {
+      "label": "sc3-p08-pk-b-field-typed-raw-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "23-sc3-p08-pk-b-field-typed-raw-ui.xml",
+      "sha256": "a17bfe0a0571833021b4174a19aee362fb18eee6c63c2d48da62f046103a92d5",
+      "bytes": 10746,
+      "at": "2026-10-12T22:41:42.873Z"
+    },
+    {
+      "label": "sc3-p08-pk-summary-while-raw-keyvalue-held-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "24-sc3-p08-pk-summary-while-raw-keyvalue-held-ui.xml",
+      "sha256": "a3c384382c0a110165312a702ed93334e2feaa9442c231d3cbf8609aba95aa1d",
+      "bytes": 9033,
+      "at": "2026-10-12T22:41:52.721Z"
+    },
+    {
+      "label": "sc3-p08-pk-b-raw-masked-control-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "25-sc3-p08-pk-b-raw-masked-control-ui.xml",
+      "sha256": "35ac0506adf55fee98642e460356a8df636e574b4ae756a2e905cd9198175496",
+      "bytes": 10747,
+      "at": "2026-10-12T22:42:04.079Z"
+    },
+    {
+      "label": "sc3-p08-pk-b-raw-revealed-positive-control-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "26-sc3-p08-pk-b-raw-revealed-positive-control-ui.xml",
+      "sha256": "e0b76d0ec9539257de91ae0bc17016da12ee9edd140b5ca5f5cb15708f1553fb",
+      "bytes": 10717,
+      "at": "2026-10-12T22:42:13.741Z"
+    },
+    {
+      "label": "sc3-p08-pk-a-summary-with-raw-preset-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "27-sc3-p08-pk-a-summary-with-raw-preset-ui.xml",
+      "sha256": "5559f0927de99eca654133279d5f8a18380c528d25f35f759a5e3f3747f886e3",
+      "bytes": 9034,
+      "at": "2026-10-12T22:42:26.349Z"
+    },
+    {
+      "label": "sc2-p09-pk-noactions-summary-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "28-sc2-p09-pk-noactions-summary-ui.xml",
+      "sha256": "66dc5e3d18672d0d82a6ae9fb55baaaf9698a61530987d3fd7979ea2a2d87793",
+      "bytes": 6905,
+      "at": "2026-10-12T22:42:37.829Z"
+    },
+    {
+      "label": "sc2-p09-pk-noactions-field-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "29-sc2-p09-pk-noactions-field-ui.xml",
+      "sha256": "f6e2e42d68bc52de7835791329a3a381f7b179b4792fd02a0a7c591c66ae401a",
+      "bytes": 8603,
+      "at": "2026-10-12T22:42:43.824Z"
+    },
+    {
+      "label": "sc2-p10-pk-de-360-summary-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "30-sc2-p10-pk-de-360-summary-ui.xml",
+      "sha256": "4e23ed1f0621d1a2a40ce457461416f4f617caa730a6933e650bd28491c3b0a1",
+      "bytes": 9049,
+      "at": "2026-10-12T22:42:49.765Z"
+    },
+    {
+      "label": "sc2-p10-pk-de-360-summary-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "31-sc2-p10-pk-de-360-summary-screen.png",
+      "sha256": "324cd24a722e0538435f488d9e076cbeddbde3bcecde18385bed1e3a66ce7d60",
+      "bytes": 75722,
+      "at": "2026-10-12T22:42:50.298Z"
+    },
+    {
+      "label": "sc2-p10-pk-de-360-field-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "32-sc2-p10-pk-de-360-field-ui.xml",
+      "sha256": "4b62ae3eb9cfa81d27ddd411eb3cbf7467fc992416d80dfc1bf287a28c132912",
+      "bytes": 10736,
+      "at": "2026-10-12T22:43:01.340Z"
+    },
+    {
+      "label": "sc2-p10-pk-de-360-field-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "33-sc2-p10-pk-de-360-field-screen.png",
+      "sha256": "bde00bbb7a9503b1fecff4c32dd942abe016127f543ee4c21c70b5a26c553538",
+      "bytes": 74267,
+      "at": "2026-10-12T22:43:01.854Z"
+    },
+    {
+      "label": "sc3-p10-pk-de-360-dropdown-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "34-sc3-p10-pk-de-360-dropdown-ui.xml",
+      "sha256": "678d613803492d5b0bae380df772d75252f47c4809ffde9ee72d725370579a34",
+      "bytes": 3958,
+      "at": "2026-10-12T22:43:07.307Z"
+    },
+    {
+      "label": "sc2-p10-pk-es-360-summary-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "35-sc2-p10-pk-es-360-summary-ui.xml",
+      "sha256": "f634dc035005d6df3096ac7a211f90a304644a280dff8ab9dbd81ef264eb18c3",
+      "bytes": 9040,
+      "at": "2026-10-12T22:43:13.937Z"
+    },
+    {
+      "label": "sc2-p02b-pk-update-typed-before-save-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "36-sc2-p02b-pk-update-typed-before-save-ui.xml",
+      "sha256": "f2cb50853d2ab06ecfb772f10f153fc6c1a1b0757e47bc8dc56aef7f4d66ee38",
+      "bytes": 11791,
+      "at": "2026-10-12T22:43:37.284Z"
+    },
+    {
+      "label": "sc2-p02b-pk-after-save-commit-summary-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "37-sc2-p02b-pk-after-save-commit-summary-ui.xml",
+      "sha256": "450e5af4b430034eec909a22b0fcf0923f85a8c614a4285e19befef3d77dca6b",
+      "bytes": 9033,
+      "at": "2026-10-12T22:43:42.269Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-empty-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "38-sc1-p11-d-pk-empty-head-ui.xml",
+      "sha256": "da02effe5a6176ddc12d3034d3371fb03b1dd32673322be9c35e4478f4efd0e1",
+      "bytes": 8211,
+      "at": "2026-10-12T22:43:57.061Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-empty-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "39-sc1-p11-d-pk-empty-head-screen.png",
+      "sha256": "bde8e86f85213386b01cc2459a8ae33a6b93b66fefb52c3f9aaa24d9d8617499",
+      "bytes": 56209,
+      "at": "2026-10-12T22:43:57.557Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-empty-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "40-sc1-p11-d-pk-empty-v251-ui.xml",
+      "sha256": "cd5327dc7a2ef5074f38dfa7a6b00c363f39a9df35fce6ad3c7171e54cda740d",
+      "bytes": 8234,
+      "at": "2026-10-12T22:44:03.611Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-empty-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "41-sc1-p11-d-pk-empty-v251-screen.png",
+      "sha256": "8b416732128e3efad0e7ca74e70f7df335ee49e4c304c8fbd96c9c855e317cec",
+      "bytes": 56244,
+      "at": "2026-10-12T22:44:04.128Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-typed-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "42-sc1-p11-d-pk-typed-head-ui.xml",
+      "sha256": "79263c529b3da79cedb1b7bc0be8e63416b1e343d1ba78c3eb842a57789ea8a1",
+      "bytes": 9287,
+      "at": "2026-10-12T22:44:10.176Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-typed-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "43-sc1-p11-d-pk-typed-head-screen.png",
+      "sha256": "7fcd135ad597b4a2cce295f3689c0d6fcd1bbc61bbc63bd97a394bd01f8d2325",
+      "bytes": 56316,
+      "at": "2026-10-12T22:44:10.681Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-typed-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "44-sc1-p11-d-pk-typed-v251-ui.xml",
+      "sha256": "356e4bca849484b309f00ed63f33cff02d0c4dc6c38e5895e3e5194352f573f2",
+      "bytes": 9313,
+      "at": "2026-10-12T22:44:16.688Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-typed-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "45-sc1-p11-d-pk-typed-v251-screen.png",
+      "sha256": "932cac24919fbe7c8367deed44693b4dc2ce2de12ef060749a50f86984f4d598",
+      "bytes": 56050,
+      "at": "2026-10-12T22:44:17.217Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-invalid-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "46-sc1-p11-d-pk-invalid-head-ui.xml",
+      "sha256": "44cdc4250fa85111569377a54fa0a2a4b7b5fa29dabdfbb47288e4245007b5ce",
+      "bytes": 8583,
+      "at": "2026-10-12T22:44:23.299Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-invalid-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "47-sc1-p11-d-pk-invalid-head-screen.png",
+      "sha256": "b1c5fdba0395f27ec0ecb92079e803ad85563794df9d9c1b9f96e57c03e0bcc8",
+      "bytes": 63394,
+      "at": "2026-10-12T22:44:23.842Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-invalid-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "48-sc1-p11-d-pk-invalid-v251-ui.xml",
+      "sha256": "2c5eb4c8c9222866e8337b083682ae901b79fb6170b7ba390de43fe95d54c3d5",
+      "bytes": 8607,
+      "at": "2026-10-12T22:44:30.053Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-invalid-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "49-sc1-p11-d-pk-invalid-v251-screen.png",
+      "sha256": "16728fed175560c4a80e84c6af7db689e1afb93c9c7b4d0ecb40df9a92fca9d4",
+      "bytes": 63112,
+      "at": "2026-10-12T22:44:30.578Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-noproviders-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "50-sc1-p11-d-pk-noproviders-head-ui.xml",
+      "sha256": "c995707533449642780a2ba74aa58a63dde08752196c313ce64d56124f1c74ab",
+      "bytes": 6512,
+      "at": "2026-10-12T22:44:36.627Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-noproviders-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "51-sc1-p11-d-pk-noproviders-head-screen.png",
+      "sha256": "f24edd2df1c28882b297786dfd38da3918b5ed19d3145e84db1215360b817a14",
+      "bytes": 56309,
+      "at": "2026-10-12T22:44:37.149Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-noproviders-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "52-sc1-p11-d-pk-noproviders-v251-ui.xml",
+      "sha256": "7f893866b7529b62fb5e4db60669c46964e438d26b36f36b264ee7b42eac2ed2",
+      "bytes": 6530,
+      "at": "2026-10-12T22:44:43.153Z"
+    },
+    {
+      "label": "sc1-p11-d-pk-noproviders-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "53-sc1-p11-d-pk-noproviders-v251-screen.png",
+      "sha256": "f24edd2df1c28882b297786dfd38da3918b5ed19d3145e84db1215360b817a14",
+      "bytes": 56309,
+      "at": "2026-10-12T22:44:43.674Z"
+    },
+    {
+      "label": "sc1-p19-d-uc-three-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "54-sc1-p19-d-uc-three-head-ui.xml",
+      "sha256": "6f65089725c54eb1b92e9c87ef0f2f94fbb961b968f427224c39c174bd39f3a3",
+      "bytes": 13199,
+      "at": "2026-10-12T22:45:02.324Z"
+    },
+    {
+      "label": "sc1-p19-d-uc-three-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "55-sc1-p19-d-uc-three-head-screen.png",
+      "sha256": "dc9801c74e6cff5fe14675c1fe0ada70a8f2ff978d8f97c8495fb7445d0543c6",
+      "bytes": 95023,
+      "at": "2026-10-12T22:45:02.843Z"
+    },
+    {
+      "label": "sc1-p19-d-uc-three-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "56-sc1-p19-d-uc-three-v251-ui.xml",
+      "sha256": "3b3d98fb19ce1dbf17ad8086f90b472bd48d7b6fa1aa5a016bd5cf9076bb26de",
+      "bytes": 13236,
+      "at": "2026-10-12T22:45:08.996Z"
+    },
+    {
+      "label": "sc1-p19-d-uc-three-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "57-sc1-p19-d-uc-three-v251-screen.png",
+      "sha256": "1460c67647e682e1c96e6f1b8f88a605b1db86ab7af3cacc4edc4121a63b1e8c",
+      "bytes": 94696,
+      "at": "2026-10-12T22:45:09.523Z"
+    },
+    {
+      "label": "sc1-p19-d-uc-one-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "58-sc1-p19-d-uc-one-head-ui.xml",
+      "sha256": "cf146eadb9df61df2d6c07813e082033dae1ab2586b68747b0b821de4a121572",
+      "bytes": 8533,
+      "at": "2026-10-12T22:45:15.603Z"
+    },
+    {
+      "label": "sc1-p19-d-uc-one-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "59-sc1-p19-d-uc-one-head-screen.png",
+      "sha256": "a61c7b89b39e3627e5913eb086c05f011ad95b938378451bf94405420b3e053b",
+      "bytes": 56922,
+      "at": "2026-10-12T22:45:16.125Z"
+    },
+    {
+      "label": "sc1-p19-d-uc-one-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "60-sc1-p19-d-uc-one-v251-ui.xml",
+      "sha256": "d6434b386c9f1faa06b8aa1a18e0ed907241235f83963dfc181fbaa06c085a3d",
+      "bytes": 8557,
+      "at": "2026-10-12T22:45:22.218Z"
+    },
+    {
+      "label": "sc1-p19-d-uc-one-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "61-sc1-p19-d-uc-one-v251-screen.png",
+      "sha256": "5ae082c8190523cbfa6aad20dc19b313dd356037b496d32cac3ada5ac38f46b2",
+      "bytes": 56658,
+      "at": "2026-10-12T22:45:22.750Z"
+    },
+    {
+      "label": "sc1-p19-d-uc-empty-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "62-sc1-p19-d-uc-empty-head-ui.xml",
+      "sha256": "110e4124e99110a33a151865eebdd8778f26d87317494d4c065b367d2967b7e4",
+      "bytes": 6452,
+      "at": "2026-10-12T22:45:28.711Z"
+    },
+    {
+      "label": "sc1-p19-d-uc-empty-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "63-sc1-p19-d-uc-empty-head-screen.png",
+      "sha256": "101b09d8723f1dcb0b164070bb35a10511426109e41f48e52d58341f23807423",
+      "bytes": 66326,
+      "at": "2026-10-12T22:45:29.248Z"
+    },
+    {
+      "label": "sc1-p19-d-uc-empty-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "64-sc1-p19-d-uc-empty-v251-ui.xml",
+      "sha256": "fdea631ebd1451090204b899fd9a2e4d1e9ded0bffd10f17859be735b1a7c0c3",
+      "bytes": 6470,
+      "at": "2026-10-12T22:45:35.181Z"
+    },
+    {
+      "label": "sc1-p19-d-uc-empty-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "65-sc1-p19-d-uc-empty-v251-screen.png",
+      "sha256": "101b09d8723f1dcb0b164070bb35a10511426109e41f48e52d58341f23807423",
+      "bytes": 66326,
+      "at": "2026-10-12T22:45:35.715Z"
+    },
+    {
+      "label": "sc4-p12-uc-group-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "66-sc4-p12-uc-group-ui.xml",
+      "sha256": "c4c0a373d70d332eb5b21ab65be5113a0cccd0f892c7159d8f4eb2533bb3a70a",
+      "bytes": 23581,
+      "at": "2026-10-12T22:45:51.622Z"
+    },
+    {
+      "label": "sc4-p12-uc-group-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "67-sc4-p12-uc-group-screen.png",
+      "sha256": "9a9a91090e5ad0f07c9f36ea42ca2fc34980deeef7d1abc773aea4f7e20b54fd",
+      "bytes": 152638,
+      "at": "2026-10-12T22:45:52.162Z"
+    },
+    {
+      "label": "sc4-p13-uc-after-undo-all-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "68-sc4-p13-uc-after-undo-all-ui.xml",
+      "sha256": "bdcef1be69661a24913641ebf1987b407db28d970417f91b1d46628555ff0e6f",
+      "bytes": 21507,
+      "at": "2026-10-12T22:46:08.454Z"
+    },
+    {
+      "label": "sc4-p13-uc-after-undo-all-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "69-sc4-p13-uc-after-undo-all-screen.png",
+      "sha256": "616c3a4d55d858f56ff773a21cf2e0b83b2314f4f3813897b172fd94ee9ff1c9",
+      "bytes": 159846,
+      "at": "2026-10-12T22:46:08.996Z"
+    },
+    {
+      "label": "sc4-p14-uc-after-one-member-undo-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "70-sc4-p14-uc-after-one-member-undo-ui.xml",
+      "sha256": "3ce06f2e5754500bfa22670804dc555d79056939f1b5ba712974e56ace2a1dcd",
+      "bytes": 23949,
+      "at": "2026-10-12T22:46:17.655Z"
+    },
+    {
+      "label": "sc4-p14-uc-partial-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "71-sc4-p14-uc-partial-screen.png",
+      "sha256": "62bb730edddce6aafba0efd7869f4632a2b31241d22974df875539d64f6ffc2b",
+      "bytes": 158507,
+      "at": "2026-10-12T22:46:18.208Z"
+    },
+    {
+      "label": "sc4-p14-uc-undo-all-from-partial-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "72-sc4-p14-uc-undo-all-from-partial-ui.xml",
+      "sha256": "147bacb872d0c559661fa30f96c913615d7139ac14b0879af7c94b7ecd165671",
+      "bytes": 21507,
+      "at": "2026-10-12T22:46:28.618Z"
+    },
+    {
+      "label": "sc4-p15-uc-refused-after-undo-all-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "73-sc4-p15-uc-refused-after-undo-all-ui.xml",
+      "sha256": "19db6861ef934f677c4e203fffe0ea827dbd518d7bb7c80aeb5deb163b6834da",
+      "bytes": 23629,
+      "at": "2026-10-12T22:46:37.276Z"
+    },
+    {
+      "label": "sc4-p15-uc-refused-second-try-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "74-sc4-p15-uc-refused-second-try-ui.xml",
+      "sha256": "9b6cc8fa4627fb9caa9b8f4714acd0c1118ad61e2d0544f250954dc112261d21",
+      "bytes": 23633,
+      "at": "2026-10-12T22:46:42.317Z"
+    },
+    {
+      "label": "sc4-p16-uc-hold-member-row-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "75-sc4-p16-uc-hold-member-row-ui.xml",
+      "sha256": "7ac174a86ce437e2bd105c5df3bc406c92a5032bd0efa68ac2df6fcee8ea56bf",
+      "bytes": 23629,
+      "at": "2026-10-12T22:46:57.080Z"
+    },
+    {
+      "label": "sc4-p16-uc-hold-group-header-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "76-sc4-p16-uc-hold-group-header-ui.xml",
+      "sha256": "2be40bcf6fb0f66617749e33ee210856147a7a8cb52a5802bf341a19f23409ae",
+      "bytes": 23581,
+      "at": "2026-10-12T22:47:10.735Z"
+    },
+    {
+      "label": "sc4-p17-uc-nocallback-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "77-sc4-p17-uc-nocallback-ui.xml",
+      "sha256": "0cf98fefc68221c75f9615f6502dc90a98dfbad43627f0d4093f2b4238f2f8cd",
+      "bytes": 22508,
+      "at": "2026-10-12T22:47:29.059Z"
+    },
+    {
+      "label": "sc4-p17-uc-nocallback-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "78-sc4-p17-uc-nocallback-screen.png",
+      "sha256": "9f2d6302bebf519b02c27e543737e62f532f92016a36a222ad17a6c81947dcb8",
+      "bytes": 149530,
+      "at": "2026-10-12T22:47:29.675Z"
+    },
+    {
+      "label": "sc4-p18-uc-de-360-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "79-sc4-p18-uc-de-360-ui.xml",
+      "sha256": "da1dc772978f01f58037d8085e94019603aab18c6597c4de0d08dbe1be74f5cc",
+      "bytes": 23576,
+      "at": "2026-10-12T22:47:36.098Z"
+    },
+    {
+      "label": "sc4-p18-uc-de-360-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "80-sc4-p18-uc-de-360-screen.png",
+      "sha256": "a281ff35c032092e975c9c62a31b140aa16d2086d50696d6482a70d5243917b5",
+      "bytes": 156152,
+      "at": "2026-10-12T22:47:36.697Z"
+    },
+    {
+      "label": "sc4-p18-uc-de-360-longlabel-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "81-sc4-p18-uc-de-360-longlabel-ui.xml",
+      "sha256": "a30922549a333651ab77922a3e981172dd79c211284d9c470c634025a9692776",
+      "bytes": 23638,
+      "at": "2026-10-12T22:47:43.202Z"
+    },
+    {
+      "label": "sc4-p18-uc-de-360-longlabel-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "82-sc4-p18-uc-de-360-longlabel-screen.png",
+      "sha256": "845e2696116a4055aff56ec2cb81336ee0ba13d8e327df5ef1589f0286f179b3",
+      "bytes": 165502,
+      "at": "2026-10-12T22:47:43.778Z"
+    },
+    {
+      "label": "sc4-p18-uc-es-360-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "83-sc4-p18-uc-es-360-ui.xml",
+      "sha256": "d61b95a0e106de9e4b7a05015ae961a0bcb1b291b06946ac4eafc7ef0b37a67c",
+      "bytes": 23565,
+      "at": "2026-10-12T22:47:50.268Z"
+    },
+    {
+      "label": "sc4-p21-uc-two-groups-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "84-sc4-p21-uc-two-groups-ui.xml",
+      "sha256": "dbb2fbe26839307ff8730922a92bf37f5f2c634f745236a691064559c424b0ae",
+      "bytes": 28245,
+      "at": "2026-10-12T22:48:05.624Z"
+    },
+    {
+      "label": "sc4-p21-uc-two-groups-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "85-sc4-p21-uc-two-groups-screen.png",
+      "sha256": "d4744211b21be0235f95e56fd49c742829fbbc30405520dbc129c50630e34419",
+      "bytes": 180875,
+      "at": "2026-10-12T22:48:06.156Z"
+    },
+    {
+      "label": "sc4-p21-uc-two-groups-after-undo-all-g2-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "86-sc4-p21-uc-two-groups-after-undo-all-g2-ui.xml",
+      "sha256": "508d75073650b34f385cf2d6e6bce19ede1b22510efead87d207f84e88373d1d",
+      "bytes": 26863,
+      "at": "2026-10-12T22:48:15.758Z"
+    },
+    {
+      "label": "sc4-p22-uc-flat-with-grouped-entries-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "87-sc4-p22-uc-flat-with-grouped-entries-ui.xml",
+      "sha256": "359b403fdda4f8af84048b3ba87152b64d7703f8853250bfea1d1689186a5064",
+      "bytes": 21410,
+      "at": "2026-10-12T22:48:21.967Z"
+    },
+    {
+      "label": "sc4-p22-uc-flat-with-grouped-entries-ui-2",
+      "kind": "ui",
+      "source": "cli",
+      "file": "88-sc4-p22-uc-flat-with-grouped-entries-ui-2.xml",
+      "sha256": "359b403fdda4f8af84048b3ba87152b64d7703f8853250bfea1d1689186a5064",
+      "bytes": 21410,
+      "at": "2026-10-12T22:48:24.552Z"
+    },
+    {
+      "label": "logcat-fatal-check-all-probe-launches",
+      "kind": "log",
+      "source": "cli",
+      "file": "89-logcat-fatal-check-all-probe-launches.log",
+      "sha256": "629f5c99a8c152fb8fc472f83ecb0cea3af783a9c1f2c7a3480e46d02ae1a1e8",
+      "bytes": 63,
+      "at": "2026-10-12T22:48:54.012Z",
+      "empty": true
+    }
+  ],
+  "sig": {
+    "alg": "HMAC-SHA256",
+    "value": "ee609d2d5ec6bd6f8db947a9875eeb0a324486bcc59300dee73183e4ebe2cf30"
+  }
+}
