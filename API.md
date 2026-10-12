@@ -207,11 +207,13 @@ control entirely, with no reserved space (conditional-render-no-dead-space).
   applies only in that case, so cap-less ladders stay compact. The segmented toggles' state words
   "selected" / "not selected" are announced by `SegmentedOptionSelector` and stay English, a
   documented residual the hub does not localize.
-- **Long labels (v2.5.1, layout only, no signature change).** The rung name always keeps at least
-  40% of the row width. The unavailable / capped / needs-network affordance labels share the
-  remaining 60% or less: each wraps at word boundaries to at most two lines, then ellipsizes, and
-  they stack right-aligned when they don't fit side by side. Short labels (including the English
-  defaults) render exactly as in v2.5.0. The offline-only and router toggles get the
+- **Long labels (v2.5.1, layout only, no signature change).** The unavailable / capped /
+  needs-network affordance labels get whatever row width the rung name does not need. The name
+  always keeps its full width or 40% of the row, whichever is smaller, so the affordances never
+  take more than 60%. Each affordance wraps at word boundaries to at most two lines, then
+  ellipsizes, and they stack right-aligned when they don't fit side by side. Short labels
+  (including the English defaults) render exactly as in v2.5.0: all affordances on one line next
+  to the name. The offline-only and router toggles get the
   `SegmentedOptionSelector` long-label behaviour (section 5): wrap to at most two lines inside the
   segment, equal segment heights.
 

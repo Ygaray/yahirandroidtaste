@@ -17,12 +17,14 @@ import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.MultiContentMeasurePolicy
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
@@ -78,8 +80,10 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * @param needsNetworkLabel Caller-localizable text of the affordance shown on an
  *   offline-incapable rung while offline-only is on. Defaults to the English `"Needs network"`;
  *   rendered verbatim as plain text.
- *   Long labels never hide the rung name: the name keeps at least 40% of the row, and each of the
- *   three affordance labels wraps to at most two lines, then ellipsizes.
+ *   Long labels never hide the rung name: the affordances use whatever width the name does not
+ *   need, but the name always keeps its full width or at least 40% of the row, whichever is
+ *   smaller. Each of the three affordance labels wraps to at most two lines, then ellipsizes.
+ *   Short labels (the English defaults) stay on one line next to the name.
  * @param onlineLabel Caller-localizable text of the toggle's "online" segment. Defaults to the
  *   English `"Online"`. The toggle's accessibility state words ("selected" / "not selected") are
  *   announced by [SegmentedOptionSelector] and stay English.
@@ -246,81 +250,124 @@ private fun RungRow(
             .padding(vertical = Dimens.ContentSpacing)
             .testTag("approach_ladder_card_rung")
     ) {
-        Text(
-            text = rung.label,
-            color = contentColor,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+        // G-15-1 / CR-01: the name and the affordance group share ONE private Layout that hands the
+        // affordances whatever the name does not need, and only falls back to the 40% name floor
+        // when the name itself would be squeezed. Short labels (the English defaults) therefore
+        // stay on one line next to the name exactly as in v2.5.0, while long localized labels can
+        // no longer starve the name to 0 width. Composition order (name, then affordances) keeps
+        // the merged a11y announcement order unchanged.
+        RungLabelLayout(
+            showAffordances = !rung.enabled || isCapped || needsNetwork,
+            name = {
+                Text(
+                    text = rung.label,
+                    color = contentColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            },
+            affordances = {
+                // Stacks the affordances right-aligned when they don't fit side by side; each wraps
+                // at word boundaries to at most two lines, then ellipsizes.
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.HairlineSpacing)
+                ) {
+                    if (!rung.enabled) {
+                        AffordanceText(unavailableLabel)
+                    }
+                    if (isCapped) {
+                        AffordanceText(cappedLabel)
+                    }
+                    if (needsNetwork) {
+                        AffordanceText(needsNetworkLabel, Modifier.padding(start = Dimens.ContentSpacing))
+                    }
+                }
+            },
             modifier = Modifier.weight(1f)
         )
-        // G-15-1: Row measures unweighted children first, so long (localized) affordance labels
-        // used to take the whole row -- the weight(1f) name starved to 0 width and the last
-        // affordance wrapped one character per line. The affordances now share ONE capped FlowRow
-        // (the name keeps the rest of the row) that stacks them right-aligned when they don't fit
-        // side by side. Rendered only when an affordance applies, so affordance-free rows gain no
-        // CapControl spacing (conditional-render-no-dead-space). Short labels make the FlowRow
-        // exactly as wide as its content, so those rows look as before.
-        if (!rung.enabled || isCapped || needsNetwork) {
-            FlowRow(
-                modifier = Modifier.maxWidthFraction(AFFORDANCE_MAX_WIDTH_FRACTION),
-                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End),
-                verticalArrangement = Arrangement.spacedBy(Dimens.HairlineSpacing)
-            ) {
-                if (!rung.enabled) {
-                    Text(
-                        text = unavailableLabel,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.End
-                    )
-                }
-                if (isCapped) {
-                    Text(
-                        text = cappedLabel,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.End
-                    )
-                }
-                if (needsNetwork) {
-                    Text(
-                        text = needsNetworkLabel,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.End,
-                        modifier = Modifier.padding(start = Dimens.ContentSpacing)
-                    )
-                }
-            }
-        }
     }
 }
 
+/** A subdued rung-state affordance label (unavailable / capped / needs network). */
+@Composable
+private fun AffordanceText(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis,
+        textAlign = TextAlign.End,
+        modifier = modifier
+    )
+}
+
 /**
- * Upper bound on the share of a rung row the affordance labels may take; the rung name keeps at
- * least the remaining 40% of the row (G-15-1).
+ * Upper bound on the share of a rung row the affordance labels may take when the rung name needs
+ * more; the name then keeps at least the remaining 40% of the row (G-15-1, CR-01).
  */
 private const val AFFORDANCE_MAX_WIDTH_FRACTION = 0.6f
 
+/** Space between the rung name and the affordance group (the former CapControl row spacing). */
+private val NameAffordanceGap = 4.dp
+
 /**
- * Caps the child's max width at [fraction] of the incoming bounded max width (min width relaxed to
- * 0); unbounded constraints pass through unchanged. Reports the child's own size and places it with
- * [placeRelative][androidx.compose.ui.layout.Placeable.PlacementScope.placeRelative] so RTL mirrors.
+ * Lays out the rung [name] at the start and, when [showAffordances], the [affordances] group at the
+ * end of the row (CR-01). The affordances get every pixel the name does not need; the name only
+ * reserves its full need, capped at 40% of the row ([AFFORDANCE_MAX_WIDTH_FRACTION]). The name then
+ * fills the remaining width (ellipsizing only past that floor), mirroring the former weight(1f).
+ * Both children are vertically centered; placement is relative, so RTL mirrors (name at the right,
+ * affordances at the left). No affordance child is composed when [showAffordances] is false, so
+ * affordance-free rows gain no gap (conditional-render-no-dead-space).
  */
-private fun Modifier.maxWidthFraction(fraction: Float): Modifier = layout { measurable, constraints ->
-    val childConstraints = if (constraints.hasBoundedWidth) {
-        constraints.copy(minWidth = 0, maxWidth = (constraints.maxWidth * fraction).toInt())
+@Composable
+private fun RungLabelLayout(
+    showAffordances: Boolean,
+    name: @Composable () -> Unit,
+    affordances: @Composable () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Layout(
+        contents = listOf(name, { if (showAffordances) affordances() }),
+        modifier = modifier,
+        measurePolicy = RungLabelMeasurePolicy
+    )
+}
+
+private val RungLabelMeasurePolicy = MultiContentMeasurePolicy { measurables, constraints ->
+    val (nameMeasurables, affordanceMeasurables) = measurables
+    val gap = NameAffordanceGap.roundToPx()
+    val name = nameMeasurables.single()
+    val affordanceGroup = affordanceMeasurables.firstOrNull()
+    val nameNeed = name.maxIntrinsicWidth(constraints.maxHeight)
+    val rowWidth = if (constraints.hasBoundedWidth) {
+        constraints.maxWidth
     } else {
-        constraints
+        // Unbounded (e.g. a horizontally scrolling host): no squeeze to arbitrate, so the name
+        // takes its need and the affordances lay out at their natural width.
+        (nameNeed + gap + (affordanceGroup?.maxIntrinsicWidth(constraints.maxHeight) ?: 0))
+            .coerceAtLeast(constraints.minWidth)
     }
-    val placeable = measurable.measure(childConstraints)
-    layout(placeable.width, placeable.height) { placeable.placeRelative(0, 0) }
+    val nameFloor = minOf(nameNeed, rowWidth - (rowWidth * AFFORDANCE_MAX_WIDTH_FRACTION).toInt())
+    val affordancePlaceable = affordanceGroup?.measure(
+        Constraints(
+            maxWidth = (rowWidth - nameFloor - gap).coerceAtLeast(0),
+            maxHeight = constraints.maxHeight
+        )
+    )
+    val nameWidth = (rowWidth - (affordancePlaceable?.let { it.width + gap } ?: 0)).coerceAtLeast(0)
+    val namePlaceable = name.measure(
+        Constraints(minWidth = nameWidth, maxWidth = nameWidth, maxHeight = constraints.maxHeight)
+    )
+    val height = maxOf(namePlaceable.height, affordancePlaceable?.height ?: 0)
+        .coerceIn(constraints.minHeight, constraints.maxHeight)
+    layout(rowWidth, height) {
+        namePlaceable.placeRelative(0, (height - namePlaceable.height) / 2)
+        affordancePlaceable?.let {
+            it.placeRelative(rowWidth - it.width, (height - it.height) / 2)
+        }
+    }
 }
 
 /**
