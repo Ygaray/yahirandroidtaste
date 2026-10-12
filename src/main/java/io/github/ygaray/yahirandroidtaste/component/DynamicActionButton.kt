@@ -53,8 +53,12 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  *   content description is always null; the label carries the meaning.
  *
  * With no [emphasis] and no [icon] the role-to-widget mapping is exactly the earlier one. An
- * explicit [emphasis] picks the widget independent of [role]; an [icon] alone keeps the legacy
- * role mapping (Save -> filled, otherwise text) and adds the icon.
+ * explicit [emphasis] picks the widget independent of [role]. An [icon] alone keeps the legacy
+ * role-to-hue mapping (Save -> filled, otherwise text) but is **not** a pixel-identical render of
+ * the no-icon button: any call with an icon (or an emphasis) goes through the emphasis styling,
+ * so the label is `labelLarge` SemiBold, Save is a pill (`CircleShape`) with 20dp horizontal
+ * padding (the M3 default is 24dp), and the button reserves a 48dp touch target. Leave both
+ * parameters unset to keep the earlier button exactly.
  */
 @Composable
 fun DynamicActionButton(
