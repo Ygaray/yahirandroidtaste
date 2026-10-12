@@ -3,13 +3,13 @@ gsd_state_version: "1.0"
 milestone: v2.6
 milestone_name: Receipt voice surfaces + ProviderKeyCard lifecycle
 current_phase: 20
-current_phase_name: tone-foundation-atoms
+current_phase_name: Tone foundation & atoms
 status: executing
 stopped_at: ROADMAP.md + STATE.md written (Phases 20-24); REQUIREMENTS.md traceability filled (27/27)
-last_updated: "2026-10-12T10:31:38.906Z"
-last_activity: 2026-10-11
-last_activity_desc: Roadmap created for milestone v2.6 (Phases 20-24), from the signed-off `.planning/seams/v2.6.0-SKETCH.md` (`105255d`)
-state_head: 1e06c5edf6603e27002faec35587223f2eaffa13
+last_updated: "2026-10-12T10:34:03.450Z"
+last_activity: 2026-10-12
+last_activity_desc: Phase 20 execution started
+state_head: 83f5559430a35ded3299f51efb8906c4a0bea9bd
 progress:
   total_phases: 5
   completed_phases: 0
@@ -25,14 +25,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-11)
 
 **Core value:** An agent building one of Yahir's apps finds the widget it needs already here, coherent and legible, and drops it in instead of writing a new one.
-**Current focus:** Phase 20 — Tone foundation & atoms (milestone v2.6, ships library `v2.6.0`)
+**Current focus:** Phase 20 — Tone foundation & atoms
 
 ## Current Position
 
-Phase: 20 (tone-foundation-atoms) — READY TO EXECUTE
-Plan: — (roadmap just created; phases not yet planned)
-Status: Ready to execute
-Last activity: 2026-10-11 — Roadmap created for milestone v2.6 (Phases 20-24), from the signed-off `.planning/seams/v2.6.0-SKETCH.md` (`105255d`)
+Phase: 20 (Tone foundation & atoms) — EXECUTING
+Plan: 1 of 4
+Status: Executing Phase 20
+Last activity: 2026-10-12 — Phase 20 execution started
 
 Progress: [░░░░░░░░░░] 0%
 

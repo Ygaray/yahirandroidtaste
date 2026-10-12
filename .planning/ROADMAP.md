@@ -61,7 +61,7 @@ SB with no signature deltas; P1-P3 rulings applied). Inputs: CT `76-UI-SPEC.md` 
 Plans:
 **Wave 1**
 
-- [ ] 20-01-PLAN.md — Tracer: tone tokens + `ToneCard` end to end (registry, allowlist, api.txt), phase Dimens token groups, structural proof and pixel-capture probe (VTONE-01, VCARD-01)
+- [x] 20-01-PLAN.md — Tracer: tone tokens + `ToneCard` end to end (registry, allowlist, api.txt), phase Dimens token groups, structural proof and pixel-capture probe (VTONE-01, VCARD-01)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -268,7 +268,7 @@ only on Phase 20, but it runs after 22 because every phase rewrites the shared `
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 20. Tone foundation & atoms | v2.6 | 0/4 | Planned | - |
+| 20. Tone foundation & atoms | v2.6 | 1/4 | Planned |  |
 | 21. Receipt row, Pill selector & sheet shape | v2.6 | 0/TBD | Not started | - |
 | 22. OutcomeSheet Receipt style | v2.6 | 0/TBD | Not started | - |
 | 23. ProviderKeyCard lifecycle & Undo Center groups | v2.6 | 0/TBD | Not started | - |
