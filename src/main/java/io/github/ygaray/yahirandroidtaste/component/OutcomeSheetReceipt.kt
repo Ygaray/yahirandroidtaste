@@ -256,6 +256,13 @@ private fun ReceiptNeedsConfirmationBar(confirmation: VoiceOutcomeUiState.NeedsC
     )
 }
 
+/** Two actions spread to both edges; a lone end action stays at the end edge. */
+private fun barArrangement(hasStart: Boolean, hasEnd: Boolean): Arrangement.Horizontal = when {
+    hasStart && hasEnd -> Arrangement.SpaceBetween
+    hasEnd -> Arrangement.End
+    else -> Arrangement.Start
+}
+
 /** A 1dp divider above a start / end action row. */
 @Composable
 private fun ReceiptActionBar(
@@ -278,11 +285,13 @@ private fun ReceiptActionBar(
                     top = Dimens.OutcomeReceipt.BarTopPadding,
                     bottom = Dimens.OutcomeReceipt.BarBottomPadding
                 ),
+            horizontalArrangement = barArrangement(hasStart = start != null, hasEnd = end != null),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            start?.invoke()
-            Spacer(Modifier.weight(1f))
-            end?.invoke()
+            // P7 escape hatch: each slot shares the row (weight 1f, fill = false) so a long localized
+            // label wraps instead of squeezing the other action out of the window.
+            start?.let { Box(Modifier.weight(1f, fill = false)) { it() } }
+            end?.let { Box(Modifier.weight(1f, fill = false)) { it() } }
         }
     }
 }
