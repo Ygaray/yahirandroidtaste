@@ -13,6 +13,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
@@ -172,5 +173,29 @@ class OutcomeSheetReceiptLongLabelTest {
 
         val layout = tagged("outcome_sheet_title").textLayout()
         assertTrue("summary line count ${layout.lineCount} must be at most 2", layout.lineCount <= 2)
+    }
+
+    // ---- Receipt Failure (22-05, T-22-06) -------------------------------------------------------
+
+    private val longRetryAction = "Erneut versuchen und Aufnahme wiederholen"
+    private val longCloseAction = "Schließen und Vorgang abbrechen"
+
+    @Test
+    fun `long German Failure bar labels stay inside the window and unellipsized`() {
+        setContent(
+            OutcomeFixtures.failure(
+                action = FailureActionUiModel(label = longRetryAction, onClick = {}),
+                secondaryAction = OutcomeFixtures.sheetAction(label = longCloseAction)
+            )
+        )
+
+        assertInsideWindow(tagged("outcome_sheet_action_end"), "failure action")
+        assertInsideWindow(tagged("outcome_sheet_action_start"), "failure secondary")
+        assertNoEllipsizedLine("failure action label", longRetryAction)
+        assertNoEllipsizedLine("failure secondary label", longCloseAction)
+
+        val bar = tagged("outcome_sheet_action_bar").fetchSemanticsNode()
+        val barBottom = bar.positionInRoot.y + bar.size.height
+        assertTrue("bar bottom $barBottom must be inside the window height ${windowHeightPx()}", barBottom <= windowHeightPx() + 1f)
     }
 }

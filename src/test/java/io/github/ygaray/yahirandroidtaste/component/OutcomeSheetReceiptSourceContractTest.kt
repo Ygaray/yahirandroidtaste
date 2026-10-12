@@ -172,4 +172,77 @@ class OutcomeSheetReceiptSourceContractTest {
         assertFalse(receiptSource.contains("testTagsAsResourceId"))
         assertFalse(receiptSource.contains("Color(0x"))
     }
+
+    // ---- Failure and the final contract (22-05, D-09, D-11, D-13) -------------------------------
+
+    @Test
+    fun `the Receipt file contains every stable Y-14 tag literal`() {
+        val tags = listOf(
+            "outcome_sheet_title",
+            "outcome_sheet_badge",
+            "outcome_sheet_title_actions",
+            "outcome_sheet_transcript",
+            "outcome_sheet_action_bar",
+            "outcome_sheet_action_start",
+            "outcome_sheet_action_end",
+            "outcome_sheet_failure_surface",
+            "outcome_sheet_failure_tip",
+            "outcome_sheet_handled_by",
+            "outcome_sheet_confirmation_cancel",
+            "outcome_sheet_confirmation_confirm",
+            "outcome_sheet_confirmation_top_level_content"
+        )
+        val missing = tags.filterNot { receiptSource.contains("\"$it\"") }
+        assertTrue("tag literals missing from OutcomeSheetReceipt.kt: $missing", missing.isEmpty())
+    }
+
+    @Test
+    fun `the Failure bar keeps the role hue and the icon on a Filled action`() {
+        val body = receiptBody("fun ReceiptFailureBar(")
+        assertTrue(body.contains("ActionButtonEmphasis.Filled"))
+        assertTrue(body.contains("role=it.role"))
+        assertTrue(body.contains("icon=it.icon"))
+        assertTrue(body.contains("\"outcome_sheet_action_end\""))
+        assertTrue(body.contains("\"outcome_sheet_action_start\""))
+        assertTrue("start is the secondary action", body.contains("start=secondary?.let"))
+        assertTrue("no bar without an action", body.contains("if(action==null&&secondary==null)return"))
+    }
+
+    @Test
+    fun `the Failure body is a ToneCard with the body in the body medium style and the undo after the tip`() {
+        val body = receiptBody("fun ReceiptFailureBody(")
+        assertTrue(body.contains("ToneCard("))
+        assertTrue(body.contains("failureToneColors(failure.tone,colors)"))
+        assertTrue(body.contains("ProvideTextStyle("))
+        assertTrue(body.contains("MaterialTheme.typography.bodyMedium"))
+        assertTrue(body.contains("FontWeight.SemiBold"))
+        assertTrue(body.contains("MaterialTheme.colorScheme.onSurface"))
+        assertTrue(body.contains("semanticsPrefix"))
+        val tip = body.indexOf("\"outcome_sheet_failure_tip\"")
+        val undo = body.indexOf("UndoAffordanceBody(")
+        assertTrue("tip tag must exist", tip >= 0)
+        assertTrue("the undo block ($undo) must follow the tip ($tip)", undo > tip)
+        assertTrue("undo is not locked in Failure", body.contains("UndoAffordanceBody(it,locked=false)"))
+    }
+
+    @Test
+    fun `the pinned bar follows a Failure only when it has an action`() {
+        val content = receiptBody("fun OutcomeSheetReceiptContent(")
+        assertTrue(content.contains("is VoiceOutcomeUiState.Failure->ReceiptFailureBar(outcome)".compact()))
+        assertTrue(content.contains("valbarFollows=receiptHasBar(outcome)"))
+        // Expression-bodied, so the brace-based functionBody extractor does not apply.
+        val compact = receiptSource.compact()
+        assertTrue(compact.contains("privatefunreceiptHasBar(outcome:VoiceOutcomeUiState):Boolean=when(outcome){"))
+        assertTrue(compact.contains("isVoiceOutcomeUiState.Failure->outcome.action!=null||outcome.secondaryAction!=null"))
+    }
+
+    @Test
+    fun `failureToneColors maps Warn to the warn tone and the rest to the error tone`() {
+        assertTrue(
+            receiptSource.compact().contains(
+                "internalfunfailureToneColors(tone:FailureTone,colors:OutcomeSheetColors):ToneColors=" +
+                    "if(tone==FailureTone.Warn)colors.warnToneelsecolors.errorTone"
+            )
+        )
+    }
 }
