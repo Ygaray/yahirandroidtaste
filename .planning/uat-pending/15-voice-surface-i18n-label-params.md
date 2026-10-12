@@ -1,6 +1,6 @@
 ### Phase 15 — voice-surface-i18n-label-params (v2.5)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir, 2026-10-12`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.5 (Voice UI Localization & Accessibility)
 - **Gate 1 self-UAT log:** [`.planning/phases/15-voice-surface-i18n-label-params/15-03-SELF-UAT.md`](phases/15-voice-surface-i18n-label-params/15-03-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device Samsung SM-S908U tester rig `R5CT10XNKQN`, library AAR md5 `a5e6946417d793080cc7fed523a76677` @ `83169fe`, 2026-10-05). Defaults rendered on the real gallery match the v2.4.1 literals; overrides rendered on the real device via a throwaway harness activity; 105 targeted unit tests + apiCheck green.
 - **Items covered (5 ROADMAP success criteria):**

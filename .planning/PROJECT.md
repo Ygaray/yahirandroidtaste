@@ -26,44 +26,36 @@ repin). Binary compatibility is not a goal (see API.md § "Compatibility rule").
 
 ## Current State
 
-**Shipped: milestone v2.4 — AI-Voice Command UI (2026-10-01) → library `v2.4.0`.** The hub now carries
-a shared, domain-neutral AI-voice UI layer as its tenth "Voice Command" `ComponentRegistry` family:
-`ProviderKeyCard` + `ModelSelectCard` (provider/key + model settings), `ApproachLadderCard`
-(tier-ladder + offline-only toggle + max-tier cap), `OutcomeSheet` (a "handled by: tier/approach"
-indicator, loud failure states, a generic undo affordance, and a domain-neutral needs-confirmation
-state covering SB risk-confirm and CT weak-match/batch confirm), and `ClarificationBar` (tap-to-clarify
-choices). All prop-driven and engine-free (no OkHttp, no `voice-action-engine` dependency — INV-01),
-strictly additive versus `v2.3.0`, cut as `v2.4.0`. 16/16 requirements satisfied; Gate-2 signed off
-(Yahir, 2026-10-01). Wave 0, §6.3 of the `vae-bilingual` cross-repo effort.
+**Shipped: milestone v2.5 — Voice UI Localization & Accessibility (2026-10-11) → library `v2.5.0`.**
 
-**Next concrete follow-on (Wave 1, each consumer's own channel):** SecondBrain (`v2.3.0`→`v2.4.0`) and
-CalTracker (`v2.1.0`→`v2.4.0`) repin onto `v2.4.0` and adopt the voice UI, gated by the orchestrator's
-R2 reconvene. Two Gate-2-waived `ApproachLadderCard` UI-polish notes are tracked as future polish
-(`KNOWN-ISSUES.md` KI-2026-10-01-01).
+- **Localization.** Every label on the AI-voice settings cards and voice-surface composables can now
+  be set by the caller. Composables take defaulted label params; the `OutcomeSheet` literals come from
+  defaulted model fields. English defaults are preserved.
+- **Accessibility.** `ApproachLadderCard` rung rows meet the minimum interactive size and expose
+  selected-radio semantics.
+- **Failure enrichment.** `VoiceOutcomeUiState.Failure` gains an action role, a body slot and a
+  semantics prefix.
+- **Router toggle.** `ApproachLadderCard` gains a `require()`-paired Router ON/OFF toggle.
+- **Status.** All of it is strictly additive. Requirements: 14/14. Gate-2 is signed off for all five
+  phases (Yahir).
+
+**Pending patch `v2.5.1` (human-gated):** Gate-2 found G-15-1: long localized (German) labels crammed
+the rung rows and clipped the segmented toggle. It was fixed on `main` after the immutable `v2.5.0` tag.
+The fix is layout-only: a private `RungLabelLayout`, with `api.txt` unchanged. It reaches consumers
+only through a `v2.5.1` tag plus SecondBrain/CalTracker repins, confirmed through the orchestrator
+first.
 
 **Prior milestones:** v1.0 — Hub Stewardship (2026-09-02, `v2.0.0`); v2.0 — Line Reunification
-(2026-09-27, `v2.2.0`, + `TAGCOLOR-02` follow-on `v2.3.0`). See `.planning/MILESTONES.md`.
+(2026-09-27, `v2.2.0`, + `TAGCOLOR-02` follow-on `v2.3.0`); v2.4 — AI-Voice Command UI (2026-10-01,
+`v2.4.0`, + `v2.4.1` OutcomeSheet hotfix). See `.planning/MILESTONES.md`.
 
-## Current Milestone: v2.5 — Voice UI Localization & Accessibility
+## Next Milestone Goals
 
-**Goal:** Make the AI-voice UI surface fully caller-localizable and more accessible — strictly
-additively, with no behavior change for existing callers.
-
-**Target features:**
-- i18n label params — settings-card labels (XR-172-01: Provider/Model) + voice-surface literals
-  (XR-175-02 a,b: ClarificationBar / OutcomeSheet / HandledBy / ApproachLadderCard), some via
-  additive model fields
-- A11y + Failure enrichment — approach-row minimum interactive size + selected semantics
-  (XR-175-02 c); `VoiceOutcomeUiState.Failure` action role + body slot + semantics prefix (XR-175-02 d)
-- `ApproachLadderCard` Router ON/OFF toggle (XR-175-02 e) — `router`/`onRouterChange`, the
-  `offlineOnly` pattern
-- Catalog integrity + regenerated `api.txt` + docs (no tag), then cut `v2.5.0` (isolated, follows a green catalog)
-
-**Cross-repo:** Wave 0, §6.3 of the `vae-bilingual` effort; orchestrator `yahir-gsd-control-plane-6e`
-(of record per `xrepo/vae-bilingual/effort.json` @`87131d1`; prior `-f2` retired). R-v1.1 GO issued;
-scope locked to `.planning/cross-repo/RECONVENE-BRIEF-R-v1.1.md` (`cb5f047`). The tag cut goes through
-`xrepo build` and stays human-gated (A12 waiver pending Yahir's direct OK). The A13 reconvene protocol
-governs this slice.
+- Cut `v2.5.1` (the G-15-1 fix) and repin the consumers, once you give the go-ahead.
+- Wave-1 consumer adoption of the voice UI happens in SB/CT's own channels.
+- Candidate hub work: backlog 999.1 (a committed Gate-2 harness APK, so device installs stop
+  re-deriving it), a combined long-label + router + radio test, and the `ApproachLadderCard`
+  polish notes (KI-2026-10-01-01).
 
 ## Context
 
@@ -149,16 +141,15 @@ governs this slice.
   family (CATALOG-03 drift guard green in the full suite), API strictly additive vs `v2.3.0`, engine-free
   (INV-01), cut as `v2.4.0` via the §11 protocol with the ledger row relayed to the orchestrator —
   validated milestone v2.4 (CAT-01, API-01, INV-01, SHIP-01/02)
+- ✓ Caller-localizable labels on the settings cards + voice-surface composables (XR-172-01, XR-175-02 a,b), English defaults preserved — v2.5 (VI18N-01..04; long-label layout hardened by G-15-1, ships `v2.5.1`)
+- ✓ Approach-ladder rows: minimum interactive size + selected semantics (XR-175-02 c) — v2.5 (VA11Y-01)
+- ✓ `VoiceOutcomeUiState.Failure` action role + body slot + a11y semantics prefix (XR-175-02 d) — v2.5 (VFAIL-01..03)
+- ✓ `ApproachLadderCard` Router ON/OFF toggle, `require()`-paired like `offlineOnly` (XR-175-02 e) — v2.5 (VAPPR-04)
+- ✓ Catalog integrity + regenerated `api.txt` + docs, then the additive `v2.5.0` cut (§11) — v2.5 (CAT-02, API-02, DOC-02, INV-02, SHIP-03)
 
 ### Active
 
-<!-- Milestone v2.5 — Voice UI Localization & Accessibility (scope locked by RECONVENE-BRIEF-R-v1.1, cb5f047). REQ-IDs defined in REQUIREMENTS.md. All strictly additive vs v2.4.0. -->
-
-- [ ] Caller-localizable labels on the settings cards + voice-surface composables (XR-172-01, XR-175-02 a,b) — English defaults preserved
-- [ ] Accessibility on approach-ladder rows: minimum interactive size + selected semantics (XR-175-02 c)
-- [ ] `VoiceOutcomeUiState.Failure` enrichment: action role + optional body slot + a11y semantics prefix (XR-175-02 d)
-- [ ] `ApproachLadderCard` Router ON/OFF toggle — `router`/`onRouterChange`, mirrors `offlineOnly` (XR-175-02 e)
-- [ ] Catalog integrity + regenerated `api.txt` + docs, then additive `v2.5.0` cut (§11, human-gated)
+_None. Define the next milestone's requirements with `/gsd-new-milestone`._
 
 ### Out of Scope
 
@@ -177,6 +168,8 @@ governs this slice.
 | v2.0: reunify FORWARD onto `main` (not a v1.14.0 additive cherry-pick) + admit the chip-color feature onto the same tag | Kills the standing v1.x/v2.x divergence liability instead of perpetuating it; one unified `v2.2.0` = one SB repin. Keeping ChipBar consolidation (not restoring standalone FilterBar) preserves the coherence-audit gain | ✓ Good — shipped v2.2.0 (2026-09-27) |
 | v2.4: admit the shared AI-voice UI (settings + outcome/failure surfaces) into the hub as generic, prop-driven presentational composables — no OkHttp, no engine dependency | §6.3 of the vae-bilingual contract: SB + CT both need the same voice-command settings/outcome UI; putting the domain-neutral shell in the hub (apps map engine outcomes → props) keeps the one-way-dependency invariant clean and gives both consumers one surface | ✓ Good — shipped `v2.4.0` (2026-10-01), 16/16 reqs, one-way-dependency invariant held (INV-01) |
 | v2.4: cut the immutable `v2.4.0` tag autonomously on green verification (A12 human-gate waiver) rather than pausing for a human tag gate | The vae-bilingual effort waived per-repo human tag gates (A12, Yahir) so the five coordinated repos can ship without serialized human checkpoints; the agent owns tag correctness via §11 steps 1–4 + the orchestrator's ledger re-check (A14) | ✓ Good — `v2.4.0` cut + JitPack-confirmed; §11 ledger relayed; no stray marker tag (SHIP-02) |
+| v2.5: ship the G-15-1 long-label layout fix as a post-tag `v2.5.1` patch, not by re-cutting `v2.5.0` | Tags are immutable JitPack coordinates. The fix is layout-only (`api.txt` unchanged), so a patch tag is the clean path | — Pending (tag + repins human-gated) |
+| v2.5: make rung-row label width depend on what the name needs, not a fixed 60% cap (CR-01) | A fixed cap stacked short English labels and broke the identical-to-v2.5.0 promise; the name now keeps whichever is smaller, its full width or 40%, and the affordances get the rest | ✓ Good. English one-line and German no-clip both verified on device (Gate-2 17/17) |
 
 ## Evolution
 
@@ -196,4 +189,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-05 — started milestone v2.5 (Voice UI Localization & Accessibility; vae-bilingual R-v1.1 GO, scope locked to RECONVENE-BRIEF-R-v1.1 cb5f047, all additive). Prior: v2.4 AI-Voice Command UI shipped as `v2.4.0` (2026-10-01, Gate-2 signed off, 16/16 reqs; a v2.4.1 OutcomeSheet hotfix followed). SB + CT repinned to v2.4.0 (→ v2.4.1 in their own channels). Earlier: v1.0 → v2.0.0 (2026-09-02); v2.0 Line Reunification → v2.2.0 (2026-09-27), TAGCOLOR-02 → v2.3.0.*
+*Last updated: 2026-10-11 after the v2.5 milestone (Voice UI Localization & Accessibility shipped as `v2.5.0`; the G-15-1 long-label fix is pending as `v2.5.1`). Prior: v2.4 → `v2.4.0`/`v2.4.1`; v2.0 → `v2.2.0`/`v2.3.0`; v1.0 → `v2.0.0`.*

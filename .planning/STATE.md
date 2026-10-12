@@ -2,38 +2,36 @@
 gsd_state_version: "1.0"
 milestone: v2.5
 milestone_name: Voice UI Localization & Accessibility
-current_phase: 15
-status: completed
-stopped_at: Phase 15 complete — all phases complete
-last_updated: "2026-10-12T01:26:08.974Z"
+status: Awaiting next milestone
+stopped_at: v2.5 milestone archived (2026-10-11); awaiting next milestone — v2.5.1 tag pending go-ahead
+last_updated: "2026-10-12T01:32:40.163Z"
 last_activity: 2026-10-11
-last_activity_desc: Phase 15 complete
-state_head: f6a97ad01cd5d4b8407a1f160df361b2002f99e4
+last_activity_desc: Milestone v2.5 completed and archived
+state_head: 3b83426289811f788c6c1a21536e73a90667840a
 progress:
   total_phases: 5
   completed_phases: 5
   total_plans: 12
   completed_plans: 12
   percent: 100
+current_phase: 15
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-10-05)
+See: .planning/PROJECT.md (updated 2026-10-11)
 
 **Core value:** The hub stays a coherent design system — not merely a safe, ever-growing pile of domain-agnostic components — as more consumers contribute.
-**Current focus:** v2.5 milestone close (all 5 phases complete; Gate-2 ledger drain → audit → complete → cleanup)
+**Current focus:** Planning next milestone (v2.5 shipped; v2.5.1 G-15-1 patch tag pending human go-ahead)
 
 ## Current Position
 
-Phase: 15
-Plan: Not started
-Status: All phases complete
-Last activity: 2026-10-11 — Phase 15 complete
-
-Progress: [██████████] 100%
+Phase: Milestone v2.5 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-10-11 — Milestone v2.5 completed and archived
 
 ## Performance Metrics
 
@@ -114,10 +112,6 @@ None yet.
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
-| 261005-dmc | F1+F1b binary-compat: hidden v2.4.1 composable overloads + FailureActionUiModel trailing-lambda ctor | 2026-10-05 | 2d803be | [261005-dmc-f1-f1b-binary-compat-hidden-v2-4-1-compo](./quick/261005-dmc-f1-f1b-binary-compat-hidden-v2-4-1-compo/) |
-| 261005-e2e | F1c binary-compat: variant K (hidden synthetic-shaped default ctor + copy$default) for 6 data classes; javap vs v2.4.1 missing=0 | 2026-10-05 | 0956d79 | [261005-e2e-f1c-binary-compat-hidden-secondary-ctors](./quick/261005-e2e-f1c-binary-compat-hidden-secondary-ctors/) |
-| 261005-eyu | F4 binary-compat rule docs (API.md, CONVENTIONS, P15 D-01 correction, P17 D-03 K wording; CLAUDE.md pending Yahir) | 2026-10-05 | (this commit) | [261005-eyu-f4-binary-compat-rule-docs-api-md-conven](./quick/261005-eyu-f4-binary-compat-rule-docs-api-md-conven/) |
-| 261005-qcp | Reframe YAT as personal reuse lib; compat rule relaxed to source-only; verify-binary-abi.sh informational | 2026-10-05 | (this commit) | [261005-qcp-reframe-yat-as-personal-reuse-lib-relax-](./quick/261005-qcp-reframe-yat-as-personal-reuse-lib-relax-/) |
 
 ## Deferred Items
 
@@ -142,4 +136,5 @@ Resume file: None
 
 ## Operator Next Steps
 
-- Finish /gsd-verify-milestone (ledger drain → audit → complete → cleanup); then human-gated v2.5.1 tag + consumer repins (route to orchestrator first)
+- Cut `v2.5.1` (G-15-1 layout fix) + SB/CT repins after go-ahead (route via orchestrator `yahir-gsd-control-plane-6e` first)
+- Start the next milestone with /gsd-new-milestone

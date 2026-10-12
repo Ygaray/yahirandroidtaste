@@ -1,5 +1,30 @@
 # Milestones — yahirandroidtaste (Hub Stewardship)
 
+## v2.5 Voice UI Localization & Accessibility (Shipped: 2026-10-11)
+
+**Phases completed:** 5 phases, 12 plans, 17 tasks
+
+**Key accomplishments:**
+
+- Four settings/voice-surface composables (ProviderKeyCard, ModelSelectCard, ClarificationBar, ApproachLadderCard) now take caller-localizable defaulted `String` label params (8 total) appended last, with every English default preserved and apiCheck/detekt/full suite green.
+- OutcomeSheet's "Undone" row text and "Couldn't undo: ... changed since" refused message are now caller-overridable through defaulted fields on `UndoRowUiModel` and `UndoRefusedUiModel`, using a `@JvmOverloads` + old-arity `copy` recipe that keeps Metalava `apiCheck` green.
+- `HandledByUiModel.escalationsLabel` and `ProposedItemUiModel.removeContentDescription` are now caller-overridable via the proven `@JvmOverloads` + old-arity `copy` recipe, English byte-identical, and the phase-wide additive gate (apiCheck against released v2.4.1) is green.
+- Rung names stay visible with long localized labels (G-15-1, reopened at Gate-2). A private `RungLabelLayout` keeps the name at whichever is smaller, its full width or 40% of the row; the affordances get the rest, at most 2 lines each. This replaced 15-04's fixed 60% cap after code-review CR-01. Segmented labels reserve about 2dp for the check icon and wrap inside their segment. Layout-only: api.txt is byte-identical to v2.5.0, and the fix ships as `v2.5.1`.
+- Rung rows now announce the user's chosen cap as the selected radio button (`Modifier.selectable(role = Role.RadioButton)`, `rung.id == maxTierId`) and, when interactive, grow to the minimum interactive size inside the unchanged outer padding; strictly private, `api.txt` byte-identical.
+- `VoiceOutcomeUiState.Failure` now takes an optional `body` slot and `semanticsPrefix`, and `FailureActionUiModel` takes an optional `role`, all appended through the Phase 15 `@JvmOverloads` + legacy-`copy` recipe so v2.4 callers and `apiCheck` are untouched.
+- A v2.4-shaped `Failure` / `FailureActionUiModel` consumer is now pinned end to end (compile shapes, defaults, legacy copy, unchanged render), and the phase closing gate proves Phase 16 strictly additive over the released v2.4.1 api.txt.
+- Router ON/OFF segmented toggle on ApproachLadderCard via a require()-paired `router` / `onRouterChange` pair plus localizable `routerOnLabel` / `routerOffLabel`, appended last so v2.4.1-compiled consumers still link (javap diff vs the v2.4.1 AAR: missing = 0).
+- tools/verify-binary-abi.sh (javap descriptor diff of the release AAR vs the previous tag) added test-first and proven on the real v2.4.1 baseline (base=2526, head=2584, missing=0), with the dead raw-line api.txt check removed from the whole lane pipeline.
+- Annotated tag `v2.5.0` cut by SHA on the commit that passed a fresh battery, the v2.4.1 swap-baseline Metalava check, run-all.sh and the zero-missing binary ABI gate; JitPack built it and the published AAR re-passed the ABI check.
+
+
+**Gate-2:** all five phases human-signed-off (Yahir). Phase 15 was reopened by G-15-1, fixed by 15-04 plus the code-review fixes, and re-verified 17/17 on the personal device on 2026-10-11. Phases 16–18 were signed off 2026-10-11. Audit: 14/14 requirements, integration WIRED, Nyquist compliant, status `tech_debt` (accepted).
+
+**Closeout type:** verified_closeout. The phase 16–19 verification fingerprints went stale after the post-tag Phase 15 fix; the audit integration check re-confirmed every verdict at HEAD `0047e3d` before the fingerprints were refreshed. **Known verification overrides:** 1 newly acknowledged (Phase 16 `16-03-SELF-UAT.md` partial, superseded by Gate-2), 3 carried forward from a prior close (see STATE.md Deferred Items).
+
+**Follow-up (human-gated):** `v2.5.0` does not contain the G-15-1 fix. Cut `v2.5.1` (layout-only) and repin SecondBrain/CalTracker, confirming through the orchestrator first. Tech debt: no test combines German labels, the router toggle and radio semantics; the long-label a11y assertions only cover short labels.
+---
+
 ## v2.4 AI-Voice Command UI (Shipped: 2026-10-01)
 
 **Phases completed:** 5 phases, 7 plans, 15 tasks
