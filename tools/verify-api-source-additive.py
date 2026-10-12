@@ -19,7 +19,10 @@ import re
 import sys
 
 MEMBER_KINDS = ("ctor", "method", "property", "field", "enum_constant")
-HEADER_RE = re.compile(r"^(?:public|protected)\b.*?\b(class|interface|enum|@interface)\s+([\w.$]+)")
+# Class headers may carry leading annotations, e.g. `@androidx.compose.runtime.Immutable public final class X {`.
+HEADER_RE = re.compile(
+    r"^(?:@[\w.$]+(?:\([^)]*\))?\s+)*(?:public|protected)\b.*?\b(class|interface|enum|@interface)\s+([\w.$]+)"
+)
 
 
 def strip_annotations(text):
@@ -149,6 +152,11 @@ def parse_api(path):
             if match and text.endswith("{"):
                 current = package + "." + match.group(2) if package else match.group(2)
                 classes.add(current)
+            elif text.endswith("{"):
+                # A block opener that is neither a package nor a member nor a recognised class header:
+                # silently skipping it would attribute the next members to the wrong class.
+                sys.stderr.write("API-ADDITIVE ERROR: %s:%d: unrecognised class header: %s\n" % (path, number, text))
+                sys.exit(2)
     return classes, triples, signatures, enum_constants
 
 

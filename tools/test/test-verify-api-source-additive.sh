@@ -145,6 +145,23 @@ write_api "$HEAD" "  public final class Alpha {" \
   "    property public String id;" "  }" "" "${ENUM_E[@]}"
 run_case "required parameter turned optional fails (R4, strict by design)" 1 "FAIL R4: " "$BASE" "$HEAD"
 
+# 14b. annotated class headers (`@androidx.compose.runtime.Immutable public final class ...`) are real classes:
+#      removing one is R1, removing one of its members is R2 and is attributed to that class
+GAMMA=("  @androidx.compose.runtime.Immutable public final class Gamma {"
+       "    ctor @KotlinOnly public Gamma(float size);"
+       "    method public float component1();"
+       "    property public float size;"
+       "  }")
+write_api "$BASE" "${CLASS_A[@]}" "" "${GAMMA[@]}" "" "${ENUM_E[@]}"
+write_api "$HEAD" "${CLASS_A[@]}" "" "${ENUM_E[@]}"
+run_case "removed annotated class fails (R1)" 1 "FAIL R1: class removed: $P.Gamma" "$BASE" "$HEAD"
+write_api "$HEAD" "${CLASS_A[@]}" "" "  @androidx.compose.runtime.Immutable public final class Gamma {" \
+  "    ctor @KotlinOnly public Gamma(float size);" "    property public float size;" "  }" "" "${ENUM_E[@]}"
+run_case "removed member of an annotated class fails (R2, right class)" 1 "FAIL R2: member removed: $P.Gamma method component1" "$BASE" "$HEAD"
+write_api "$HEAD" "${CLASS_A[@]}" "" "${GAMMA[@]}" "" "${ENUM_E[@]}"
+run_case "annotated class kept passes" 0 "API SOURCE-ADDITIVE OK" "$BASE" "$HEAD"
+write_api "$BASE" "${CLASS_A[@]}" "" "${ENUM_E[@]}"
+
 # 15-17. tooling errors exit 2
 set +e
 out="$(bash "$TOOL" no-such-tag-xyz 2>&1)"; rc=$?
@@ -168,6 +185,13 @@ set +e
 out="$(BASELINE_API_FILE="$TMP/empty.api" HEAD_API_FILE="$TMP/empty.api" bash "$TOOL" fixture 2>&1)"; rc=$?
 set -e
 if [ "$rc" = 2 ]; then echo "PASS: empty api files exit 2"; pass=$((pass+1)); else echo "FAIL: empty api files (exit $rc)"; fail=$((fail+1)); fi
+
+# 19. an unrecognised block opener is a tooling error, never silently skipped
+{ echo "// Signature format: 4.0"; echo "package $P {"; echo; echo "  public final weird Delta {"; echo "    ctor public Delta();"; echo "  }"; echo; echo "}"; } > "$TMP/weird.api"
+set +e
+out="$(BASELINE_API_FILE="$TMP/weird.api" HEAD_API_FILE="$TMP/weird.api" bash "$TOOL" fixture 2>&1)"; rc=$?
+set -e
+if [ "$rc" = 2 ] && printf '%s\n' "$out" | grep -q "unrecognised class header"; then echo "PASS: unrecognised class header exits 2"; pass=$((pass+1)); else echo "FAIL: unrecognised class header (exit $rc)"; fail=$((fail+1)); fi
 
 echo "cases passed=$pass failed=$fail"
 if [ "$fail" -ne 0 ]; then exit 1; fi
