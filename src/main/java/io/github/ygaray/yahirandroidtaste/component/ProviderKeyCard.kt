@@ -73,9 +73,13 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  *   `false`) the key field is replaced by a summary showing the fingerprint only, never the raw key.
  *   Empty (the default) renders today's card.
  * @param editingSavedKey `true` shows the key field even though the selected provider has a saved
- *   key (the consumer's "Update" flow).
+ *   key (the consumer's "Update" flow). It is one flag for the whole card, not per provider: it
+ *   applies to whichever provider is selected, so the consumer must set it back to `false` (and
+ *   clear its typed [keyValue]) when [onProviderSelected] fires, or the newly selected provider
+ *   shows the field instead of its own summary.
  * @param actions The Save / Update / Clear / Cancel callbacks and gating, or `null` (the default)
- *   for no button row. A summary shown with `actions == null` renders no buttons.
+ *   for no button row. A summary shown with `actions == null` renders no buttons. While
+ *   [ProviderKeyActions.inFlight] is `true` the provider dropdown is disabled as well.
  * @param labels Caller-localizable button, summary and dropdown-marker text. Defaults to English.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -110,6 +114,7 @@ fun ProviderKeyCard(
                 providerLabel = providerLabel,
                 savedIds = savedKeys.keys,
                 labels = labels,
+                enabled = actions?.inFlight != true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("provider_key_card_dropdown")
@@ -301,7 +306,8 @@ private fun FieldActionRow(actions: ProviderKeyActions, labels: ProviderKeyLabel
  * listing [providers] in list order. When [providers] is empty, renders [emptyReason] as a caption
  * instead (never a blank, still-tappable anchor) — mirrors [ModelSelectCard]'s empty-list
  * convention. Menu rows of providers in [savedIds] read the label, a middle dot and
- * [ProviderKeyLabels.savedMarker]; the anchor keeps the plain label.
+ * [ProviderKeyLabels.savedMarker]; the anchor keeps the plain label. [enabled] is `false` while a
+ * save is in flight, so the provider cannot change under an in-progress request.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -313,6 +319,7 @@ private fun ProviderDropdown(
     providerLabel: String,
     savedIds: Set<String>,
     labels: ProviderKeyLabels,
+    enabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     if (providers.isEmpty()) {
@@ -329,7 +336,7 @@ private fun ProviderDropdown(
     var expanded by rememberSaveable { mutableStateOf(false) }
     val selectedLabel = providers.firstOrNull { it.id == selectedProviderId }?.label ?: ""
     ExposedDropdownMenuBox(
-        expanded = expanded,
+        expanded = expanded && enabled,
         onExpandedChange = { expanded = it },
         modifier = modifier
     ) {
@@ -337,13 +344,14 @@ private fun ProviderDropdown(
             value = selectedLabel,
             onValueChange = {},
             readOnly = true,
+            enabled = enabled,
             label = { Text(providerLabel) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded && enabled) },
             modifier = Modifier
-                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = true)
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled = enabled)
                 .fillMaxWidth()
         )
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        ExposedDropdownMenu(expanded = expanded && enabled, onDismissRequest = { expanded = false }) {
             providers.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(providerMenuLabel(option, savedIds, labels)) },

@@ -132,6 +132,30 @@ class ProviderKeyCardPerProviderTest {
     }
 
     @Test
+    fun `the provider dropdown does not open while a save is in flight`() {
+        // The enabled control is `dropdown marks saved providers...` above: the same tap opens the menu.
+        composeTestRule.setContent {
+            ProviderKeyCard(
+                providers = providers,
+                selectedProviderId = "a",
+                onProviderSelected = { picked = it },
+                keyValue = "",
+                onKeyChange = {},
+                keyState = KeyFieldState.Empty,
+                keyLabel = "API key",
+                savedKeys = saved,
+                actions = ProviderKeyActions(onSave = {}, onUpdate = {}, onClear = {}, inFlight = true)
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("provider_key_card_dropdown").performClick()
+        composeTestRule.waitForIdle()
+        assertEquals(0, composeTestRule.onAllNodesWithText("Gamma · saved").fetchSemanticsNodes().size)
+        assertEquals(1, composeTestRule.onAllNodesWithText("Alpha").fetchSemanticsNodes().size)
+    }
+
+    @Test
     fun `the reveal flag survives a summary and field flip`() {
         selected = "b"
         setCard()

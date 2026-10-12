@@ -16,7 +16,8 @@ import androidx.compose.runtime.Immutable
  * @param onUpdate Invoked when Update is tapped in summary mode. `null` hides Update.
  * @param onClear Invoked when Clear is tapped in summary mode. `null` hides Clear.
  * @param onCancelEdit Invoked when Cancel is tapped in field mode. `null` hides Cancel.
- * @param inFlight `true` disables every action while a save is in progress.
+ * @param inFlight `true` disables every action, and the provider dropdown, while a save is in
+ *   progress.
  */
 @Immutable
 data class ProviderKeyActions(
