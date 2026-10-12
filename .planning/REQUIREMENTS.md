@@ -48,7 +48,7 @@
 
 ### Receipt outcome sheet
 
-- [ ] **VRCPT-01**: `OutcomeSheet` gains `style: OutcomeSheetStyle = OutcomeSheetStyle.Classic` and `colors: OutcomeSheetColors = OutcomeSheetDefaults.colors()`. New types:
+- [x] **VRCPT-01**: `OutcomeSheet` gains `style: OutcomeSheetStyle = OutcomeSheetStyle.Classic` and `colors: OutcomeSheetColors = OutcomeSheetDefaults.colors()`. New types:
   - `enum class OutcomeSheetStyle { Classic, Receipt }`;
   - `OutcomeSheetColors(warnTone, errorTone)`;
   - `OutcomeSheetDefaults.colors(...)` and `OutcomeSheetDefaults.ReceiptTitleStyle`.
@@ -59,19 +59,19 @@
   - a pinned action bar for NeedsConfirmation and Failure, under a 1dp divider, with the start action at 16dp and the end action at 368dp in a 384dp-wide sheet;
   - Success actions at the end of the scroll content;
   - the v2.4.1 `weight(1f, fill = false)` body, so the bar never starves.
-- [ ] **VRCPT-02**: `NeedsConfirmation` gains `confirmEnabled: Boolean = true` and `titleActions: (@Composable () -> Unit)? = null`, inserted before `onConfirm`. While `confirmEnabled = false` the confirm node is `enabled = false` and `onConfirm` never fires. In Receipt:
+- [x] **VRCPT-02**: `NeedsConfirmation` gains `confirmEnabled: Boolean = true` and `titleActions: (@Composable () -> Unit)? = null`, inserted before `onConfirm`. While `confirmEnabled = false` the confirm node is `enabled = false` and `onConfirm` never fires. In Receipt:
   - `reason` renders as the transcript;
   - the start action is `cancelLabel` (Text);
   - the end action is `confirmLabel` (Filled, hue from `severity`).
 
   The KDoc documents that `items` may be empty when `topLevelContent` renders the rows (Y-4).
-- [ ] **VRCPT-03**: `Success` gains:
+- [x] **VRCPT-03**: `Success` gains:
   - `badge: OutcomeBadge? = null`, `titleActions = null`, `startAction: SheetActionUiModel? = null` and `endAction: SheetActionUiModel? = null`;
   - new `enum class OutcomeBadge { Success, Reverted, Error, Warn }` (Reverted uses `Icons.AutoMirrored.Filled.Undo`);
   - new `data class SheetActionUiModel(label, onClick, emphasis, enabled = true, icon = null, role = Neutral, activeWhileInFlight = false)`.
 
   Receipt order: title row → handled-by pill → `editableContent` → `batchResults`/`undo` → the actions row. `inFlight` disables every action except those with `activeWhileInFlight = true`, so SB can show an in-flight Cancel. Classic ignores the new fields (Y-5 + SB dispatch note 3).
-- [ ] **VRCPT-04**: `Failure` gains:
+- [x] **VRCPT-04**: `Failure` gains:
   - `title = null`, `transcript = null`, `tone: FailureTone = FailureTone.Error`, `tip = null`, `secondaryAction: SheetActionUiModel? = null` and `badge: OutcomeBadge? = null`;
   - new `enum class FailureTone { Error, Warn }`;
   - `FailureActionUiModel` gains `icon: ImageVector? = null`.
@@ -84,11 +84,11 @@
   - `secondaryAction` is at the start.
 
   Classic keeps today's card and honors `FailureTone.Warn` by painting `colors.warnTone`. The default Error is unchanged (Y-6).
-- [ ] **VRCPT-05**: `HandledByUiModel` gains `prefixLabel: String = "Handled by"` and `onDevice: Boolean = false`.
+- [x] **VRCPT-05**: `HandledByUiModel` gains `prefixLabel: String = "Handled by"` and `onDevice: Boolean = false`.
   - **Receipt** renders a pill: `surfaceContainerHighest`, full radius, 4dp × 12dp padding, `bodySmall`. It shows a 6dp dot (`primary`, or `warnTone.content` when `onDevice`), then `"{prefixLabel} "`, then the tier in SemiBold, then `" · {approach/provider/model}"`.
   - **Text check:** `tier = "Local grammar", provider = "offline", onDevice = true` renders "Handled by Local grammar · offline".
   - **Classic:** `HandledByRow` is unchanged (Y-7).
-- [ ] **VTAG-01**: Receipt nodes expose the Y-14 stable test tags:
+- [x] **VTAG-01**: Receipt nodes expose the Y-14 stable test tags:
   - `outcome_sheet_title`, `outcome_sheet_badge`, `outcome_sheet_title_actions`, `outcome_sheet_transcript`;
   - `outcome_sheet_action_bar`, `outcome_sheet_action_start`, `outcome_sheet_action_end`;
   - `outcome_sheet_failure_surface`, `outcome_sheet_failure_tip`, `outcome_sheet_handled_by`;
@@ -96,8 +96,8 @@
   - `stacked_progress_bar`, `tone_card`, `round_icon_button`, `pill_chip`.
 
   The Receipt NeedsConfirmation bar keeps the existing `outcome_sheet_confirmation_cancel`/`_confirm` tags, and Classic tags are unchanged. A test asserts each tag in each Receipt state. The hub never sets `testTagsAsResourceId`.
-- [ ] **VXR-01**: The refused/partial undo surface on `OutcomeSheet` carries `liveRegion = LiveRegionMode.Assertive`, so TalkBack announces it when it appears (XR-178-01 a). This is semantics only, with no visual change.
-- [ ] **VXR-02**: `VoiceOutcomeUiState.Failure` gains `undo: UndoAffordanceUiModel? = null`, rendered by the same undo block as `Success` in both styles (XR-178-01 b). SB can then retire its local `FailureUndoBody`.
+- [x] **VXR-01**: The refused/partial undo surface on `OutcomeSheet` carries `liveRegion = LiveRegionMode.Assertive`, so TalkBack announces it when it appears (XR-178-01 a). This is semantics only, with no visual change.
+- [x] **VXR-02**: `VoiceOutcomeUiState.Failure` gains `undo: UndoAffordanceUiModel? = null`, rendered by the same undo block as `Success` in both styles (XR-178-01 b). SB can then retire its local `FailureUndoBody`.
 
 ### Key lifecycle & undo center
 
@@ -164,14 +164,14 @@
 | VROW-02 | Phase 21 | Complete |
 | VSEG-01 | Phase 21 | Complete |
 | VSHEET-01 | Phase 21 | Complete |
-| VRCPT-01 | Phase 22 | Pending |
-| VRCPT-02 | Phase 22 | Pending |
-| VRCPT-03 | Phase 22 | Pending |
-| VRCPT-04 | Phase 22 | Pending |
-| VRCPT-05 | Phase 22 | Pending |
-| VTAG-01 | Phase 22 | Pending |
-| VXR-01 | Phase 22 | Pending |
-| VXR-02 | Phase 22 | Pending |
+| VRCPT-01 | Phase 22 | Complete |
+| VRCPT-02 | Phase 22 | Complete |
+| VRCPT-03 | Phase 22 | Complete |
+| VRCPT-04 | Phase 22 | Complete |
+| VRCPT-05 | Phase 22 | Complete |
+| VTAG-01 | Phase 22 | Complete |
+| VXR-01 | Phase 22 | Complete |
+| VXR-02 | Phase 22 | Complete |
 | VKEY-01 | Phase 23 | Pending |
 | VKEY-02 | Phase 23 | Pending |
 | VUNDO-02 | Phase 23 | Pending |
