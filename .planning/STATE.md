@@ -2,20 +2,20 @@
 gsd_state_version: "1.0"
 milestone: v2.6
 milestone_name: Receipt voice surfaces + ProviderKeyCard lifecycle
-current_phase: 20
-current_phase_name: Tone foundation & atoms
-status: executing
-stopped_at: ROADMAP.md + STATE.md written (Phases 20-24); REQUIREMENTS.md traceability filled (27/27)
-last_updated: "2026-10-12T10:34:03.450Z"
+current_phase: 21
+current_phase_name: Receipt row, Pill selector & sheet shape
+status: planning
+stopped_at: Phase 20 complete, ready to plan Phase 21
+last_updated: "2026-10-12T11:35:42.480Z"
 last_activity: 2026-10-12
-last_activity_desc: Phase 20 execution started
-state_head: 83f5559430a35ded3299f51efb8906c4a0bea9bd
+last_activity_desc: Phase 20 complete, transitioned to Phase 21
+state_head: e87af51c67b7a698e5c704c618dddd602e6efa34
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 0
-  percent: 0
+  completed_plans: 4
+  percent: 20
 ---
 
 # Project State
@@ -29,18 +29,18 @@ See: .planning/PROJECT.md (updated 2026-10-11)
 
 ## Current Position
 
-Phase: 20 (Tone foundation & atoms) — EXECUTING
-Plan: 1 of 4
-Status: Executing Phase 20
-Last activity: 2026-10-12 — Phase 20 execution started
+Phase: 21 — Receipt row, Pill selector & sheet shape
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-10-12 — Phase 20 complete, transitioned to Phase 21
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity (milestone v2.6):**
 
-- Total plans completed: 0
+- Total plans completed: 4
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -48,7 +48,7 @@ Progress: [░░░░░░░░░░] 0%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 20 | TBD | - | - |
+| 20 | 4 | - | - |
 | 21 | TBD | - | - |
 | 22 | TBD | - | - |
 | 23 | TBD | - | - |
@@ -112,7 +112,7 @@ Items acknowledged and carried forward, most recent first:
 ## Session Continuity
 
 Last session: 2026-10-11 — Roadmap created for milestone v2.6
-Stopped at: ROADMAP.md + STATE.md written (Phases 20-24); REQUIREMENTS.md traceability filled (27/27)
+Stopped at: Phase 20 complete, ready to plan Phase 21
 Resume file: None
 
 ## Operator Next Steps

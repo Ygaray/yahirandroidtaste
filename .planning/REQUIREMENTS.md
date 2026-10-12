@@ -4,12 +4,14 @@
 **Core Value:** An agent building one of Yahir's apps finds the widget it needs already here, coherent and legible, and drops it in instead of writing a new one.
 **Milestone goal:** Ship library `v2.6.0`, an additive, opt-in minor: a "Receipt" rendering of the voice outcome sheet plus the atoms it needs, and the full key lifecycle on `ProviderKeyCard`. Every default reproduces today's pixels (SecondBrain stays on Classic, unchanged).
 **Scope source:**
+
 - Decision record: `.planning/seams/v2.6.0-SKETCH.md` (`105255d`). CT and SB signed it off with no signature deltas; the P1-P3 rulings are applied.
 - CT `76-UI-SPEC.md` § "YAT Evolution Asks", Y-1..Y-15 (`0a1da128`).
 - SB `.planning/cross-repo/178-XR-01.md`.
 - Teamlead dispatch, 2026-10-11.
 
 **Rules for every requirement:**
+
 - **Source compatibility only.** New params and fields have defaults. No new `@Deprecated(HIDDEN)` overloads, hand-written old-arity `copy`, hidden ctors or `copy$default` shims (P1).
 - **New behavior uses new enums.** No existing enum gains constants.
 - **Strings come from the caller.** Every user-visible string is a caller-supplied param; English defaults only where the hub already has the precedent.
@@ -20,12 +22,12 @@
 
 ### Tone foundation & atoms
 
-- [ ] **VTONE-01**: `theme/` exposes `@Immutable class ToneColors(container, content)` (value equality), `ToneDefaults.error()` (`errorContainer`/`error`) and `ToneDefaults.warn()` (`tertiaryContainer`/`onTertiaryContainer`), both resolved from the active `ColorScheme`, plus `enum class ContentTone { Default, Muted, Warn, Error }` (Y-1). The KDoc tells consumers to pass their own tokens when dynamic color makes `tertiary` non-amber.
-- [ ] **VBTN-01**: `DynamicActionButton` gains `emphasis: ActionButtonEmphasis? = null` and `icon: ImageVector? = null`, with a new `enum class ActionButtonEmphasis { Filled, Tonal, Text, TextSmall }`. `role` picks the hue and `emphasis` picks the widget, per the Y-8 specs. `TextSmall` keeps a 48dp touch target. With `emphasis = null` and `icon = null`, the role→widget mapping is exactly today's (Y-8).
-- [ ] **VBTN-02**: A new `RoundIconButton(icon, contentDescription, onClick, modifier, enabled = true, size = 40.dp)`: a circle with a 1dp `outlineVariant` border, a transparent container and a 20dp `onSurface` icon, inside a 48dp touch target (Y-8).
-- [ ] **VBAR-01**: A new `StackedProgressBar(segments: List<BarSegment>, trackColor: Color, modifier, height = 6.dp)` with `@Immutable data class BarSegment(fraction, color)`. Segments draw left to right, clamp so the sum is ≤ 1 (negative fractions clamp to 0) and clip to a fully rounded track. `trackColor` is required (Y-9).
-- [ ] **VCARD-01**: A new `ToneCard(tone: ToneColors, modifier, content: ColumnScope.() -> Unit)`: a `Surface` on `tone.container`/`tone.content` with 12dp corners, 12dp × 16dp padding and children spaced 4dp. The default tones give content-on-container contrast ≥ 4.5:1 (Y-10).
-- [ ] **VCHIP-01**: A new `PillChip(label, onClick, modifier, leadingIcon = null, trailingIcon = null, enabled = true, contentDescription = null)`: 32dp tall, full radius, 1dp `outlineVariant` border, a transparent container, a single-line `bodySmall` label, 18dp icons and a 48dp touch target. `AppChip` and `PresetChip` are unchanged (Y-12).
+- [x] **VTONE-01**: `theme/` exposes `@Immutable class ToneColors(container, content)` (value equality), `ToneDefaults.error()` (`errorContainer`/`error`) and `ToneDefaults.warn()` (`tertiaryContainer`/`onTertiaryContainer`), both resolved from the active `ColorScheme`, plus `enum class ContentTone { Default, Muted, Warn, Error }` (Y-1). The KDoc tells consumers to pass their own tokens when dynamic color makes `tertiary` non-amber.
+- [x] **VBTN-01**: `DynamicActionButton` gains `emphasis: ActionButtonEmphasis? = null` and `icon: ImageVector? = null`, with a new `enum class ActionButtonEmphasis { Filled, Tonal, Text, TextSmall }`. `role` picks the hue and `emphasis` picks the widget, per the Y-8 specs. `TextSmall` keeps a 48dp touch target. With `emphasis = null` and `icon = null`, the role→widget mapping is exactly today's (Y-8).
+- [x] **VBTN-02**: A new `RoundIconButton(icon, contentDescription, onClick, modifier, enabled = true, size = 40.dp)`: a circle with a 1dp `outlineVariant` border, a transparent container and a 20dp `onSurface` icon, inside a 48dp touch target (Y-8).
+- [x] **VBAR-01**: A new `StackedProgressBar(segments: List<BarSegment>, trackColor: Color, modifier, height = 6.dp)` with `@Immutable data class BarSegment(fraction, color)`. Segments draw left to right, clamp so the sum is ≤ 1 (negative fractions clamp to 0) and clip to a fully rounded track. `trackColor` is required (Y-9).
+- [x] **VCARD-01**: A new `ToneCard(tone: ToneColors, modifier, content: ColumnScope.() -> Unit)`: a `Surface` on `tone.container`/`tone.content` with 12dp corners, 12dp × 16dp padding and children spaced 4dp. The default tones give content-on-container contrast ≥ 4.5:1 (Y-10).
+- [x] **VCHIP-01**: A new `PillChip(label, onClick, modifier, leadingIcon = null, trailingIcon = null, enabled = true, contentDescription = null)`: 32dp tall, full radius, 1dp `outlineVariant` border, a transparent container, a single-line `bodySmall` label, 18dp icons and a 48dp touch target. `AppChip` and `PresetChip` are unchanged (Y-12).
 
 ### Rows, selectors & sheet frame
 
@@ -152,12 +154,12 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VTONE-01 | Phase 20 | Pending |
-| VBTN-01 | Phase 20 | Pending |
-| VBTN-02 | Phase 20 | Pending |
-| VBAR-01 | Phase 20 | Pending |
-| VCARD-01 | Phase 20 | Pending |
-| VCHIP-01 | Phase 20 | Pending |
+| VTONE-01 | Phase 20 | Complete |
+| VBTN-01 | Phase 20 | Complete |
+| VBTN-02 | Phase 20 | Complete |
+| VBAR-01 | Phase 20 | Complete |
+| VCARD-01 | Phase 20 | Complete |
+| VCHIP-01 | Phase 20 | Complete |
 | VROW-01 | Phase 21 | Pending |
 | VROW-02 | Phase 21 | Pending |
 | VSEG-01 | Phase 21 | Pending |
@@ -181,6 +183,7 @@
 | SHIP-04 | Phase 24 | Pending |
 
 **Coverage:**
+
 - v2.6 requirements: 27 total
 - Mapped to phases: 27 (Phase 20: 6, Phase 21: 4, Phase 22: 8, Phase 23: 3, Phase 24: 6)
 - Unmapped: 0 ✓

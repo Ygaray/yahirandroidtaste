@@ -34,7 +34,7 @@ SB with no signature deltas; P1-P3 rulings applied). Inputs: CT `76-UI-SPEC.md` 
   changes a public signature regenerates `api.txt` in the same commit and keeps `./gradlew apiCheck`
   green.
 
-- [ ] **Phase 20: Tone foundation & atoms** - Tone tokens, button emphasis + `RoundIconButton`, `StackedProgressBar`, `ToneCard`, `PillChip` (Y-1, Y-8, Y-9, Y-10, Y-12)
+- [x] **Phase 20: Tone foundation & atoms** - Tone tokens, button emphasis + `RoundIconButton`, `StackedProgressBar`, `ToneCard`, `PillChip` (Y-1, Y-8, Y-9, Y-10, Y-12) (completed 2026-10-12)
 - [ ] **Phase 21: Receipt row, Pill selector & sheet shape** - `ReceiptRow`, `SegmentedOptionSelector` Pill style + per-option disable, `SheetScaffold` shape (Y-2, Y-11, Y-13)
 - [ ] **Phase 22: OutcomeSheet Receipt style** - Receipt frame + NeedsConfirmation/Success/Failure/handled-by additions, stable test tags, in-flight action, XR-178-01 a/b (Y-3..Y-7, Y-14)
 - [ ] **Phase 23: ProviderKeyCard lifecycle & Undo Center groups** - Per-provider saved-key summary with Save/Update/Clear/Cancel, plus the Undo Center group row (sketch §1, XR-178-01 c)
