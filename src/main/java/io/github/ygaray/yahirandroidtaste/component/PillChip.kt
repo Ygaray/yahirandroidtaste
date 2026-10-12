@@ -26,8 +26,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 
-/** Content alpha applied to the whole chip while it is disabled (Material disabled emphasis). */
-private const val DISABLED_ALPHA = 0.38f
+/**
+ * Content alpha applied to a whole Phase 20 atom ([PillChip], [RoundIconButton]) while it is
+ * disabled (Material disabled emphasis).
+ */
+internal const val DISABLED_CONTENT_ALPHA = 0.38f
 
 /**
  * A fully rounded, outlined chip with a single-line label and optional leading and trailing icons
@@ -86,7 +89,7 @@ fun PillChip(
             .minimumInteractiveComponentSize()
             .heightIn(min = Dimens.PillChip.Height)
             .testTag("pill_chip")
-            .alpha(if (enabled) 1f else DISABLED_ALPHA)
+            .alpha(if (enabled) 1f else DISABLED_CONTENT_ALPHA)
             .clip(CircleShape)
             .border(Dimens.HairlineBorder, MaterialTheme.colorScheme.outlineVariant, CircleShape)
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)

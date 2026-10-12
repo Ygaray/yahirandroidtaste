@@ -21,9 +21,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 
-/** Content alpha applied to the whole button while it is disabled (Material disabled emphasis). */
-private const val DISABLED_ALPHA = 0.38f
-
 /**
  * A round, outlined icon button: a transparent circle with a 1dp `outlineVariant` border and a
  * 20dp `onSurface` icon (sketch Y-8). It is built by hand rather than from the Material outlined
@@ -60,7 +57,7 @@ fun RoundIconButton(
             .minimumInteractiveComponentSize()
             .size(size)
             .testTag("round_icon_button")
-            .alpha(if (enabled) 1f else DISABLED_ALPHA)
+            .alpha(if (enabled) 1f else DISABLED_CONTENT_ALPHA)
             .clip(CircleShape)
             .border(Dimens.HairlineBorder, MaterialTheme.colorScheme.outlineVariant, CircleShape)
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
