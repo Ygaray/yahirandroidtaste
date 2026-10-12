@@ -83,7 +83,7 @@ class UndoCenterScreenLongLabelTest {
     /**
      * Same proof as the ProviderKeyCard long-label test: `hasVisualOverflow` reads true for any
      * wrap-content label narrower than its slot here, so the proof is no ellipsized line, no height
-     * overflow, laid-out width within its constraint and an unclipped right edge inside the window.
+     * overflow and a single line (a laid-out width within its constraint is always true, so it is not asserted).
      */
     private fun assertNoVisualOverflow(name: String, text: String) {
         val node = composeTestRule.onNodeWithText(text, useUnmergedTree = true)
@@ -92,10 +92,6 @@ class UndoCenterScreenLongLabelTest {
             assertFalse("$name: \"$text\" line $line must not be ellipsized", layout.isLineEllipsized(line))
         }
         assertFalse("$name: \"$text\" must not overflow height", layout.didOverflowHeight)
-        assertTrue(
-            "$name: \"$text\" laid-out width ${layout.size.width} must fit ${layout.layoutInput.constraints.maxWidth}",
-            layout.size.width <= layout.layoutInput.constraints.maxWidth
-        )
         assertTrue("$name: \"$text\" one line expected, got ${layout.lineCount}", layout.lineCount == 1)
     }
 

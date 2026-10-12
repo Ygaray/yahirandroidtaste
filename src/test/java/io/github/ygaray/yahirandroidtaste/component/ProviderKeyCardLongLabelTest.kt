@@ -99,8 +99,9 @@ class ProviderKeyCardLongLabelTest {
     /**
      * `TextLayoutResult.hasVisualOverflow` / `didOverflowWidth` read true for ANY wrap-content label
      * narrower than its max width in this NATIVE setup (a 59px "Cancelar" in a 136px slot), so they
-     * prove nothing. The overflow proof is: no ellipsized line, no height overflow, the laid-out text
-     * fits its constraint, and its unclipped right edge is inside the 360dp window.
+     * prove nothing. The overflow proof is: no ellipsized line, no height overflow, and an unclipped right
+     * edge inside the 360dp window. (A laid-out width <= its max-width constraint is always true, so it
+     * is deliberately not asserted.)
      */
     private fun assertNoVisualOverflow(name: String, text: String) {
         val node = composeTestRule.onNodeWithText(text, useUnmergedTree = true)
@@ -109,10 +110,6 @@ class ProviderKeyCardLongLabelTest {
             assertFalse("$name: \"$text\" line $line must not be ellipsized", layout.isLineEllipsized(line))
         }
         assertFalse("$name: \"$text\" must not overflow height", layout.didOverflowHeight)
-        assertTrue(
-            "$name: \"$text\" laid-out width ${layout.size.width} must fit ${layout.layoutInput.constraints.maxWidth}",
-            layout.size.width <= layout.layoutInput.constraints.maxWidth
-        )
         val windowPx = 360 * density.density
         val right = node.fetchSemanticsNode().let { it.positionInRoot.x + it.size.width }
         assertTrue("$name: \"$text\" right edge $right must be <= window $windowPx", right <= windowPx)
