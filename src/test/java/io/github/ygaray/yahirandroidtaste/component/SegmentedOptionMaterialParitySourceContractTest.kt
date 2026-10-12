@@ -79,7 +79,15 @@ class SegmentedOptionMaterialParitySourceContractTest {
         const val MATERIAL_COLUMN_START =
             "Column(modifier=modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(4.dp)){"
 
-        /** v2.5.1 Material block, whitespace-stripped, with the one inserted shadow line. */
+        /**
+         * v2.5.1 Material block, whitespace-stripped, with the one inserted shadow line.
+         *
+         * To update: this literal is intentionally brittle, since the point is that the Material
+         * path stays the v2.5.1 text. If a deliberate edit to the Material block is approved, copy
+         * the new block from `SegmentedOptionSelector.kt` (from the `Column(modifier = modifier
+         * .fillMaxWidth(), ...)` line to the end of the function), strip all whitespace, and paste
+         * it here.
+         */
         const val EXPECTED_MATERIAL_BLOCK =
             "Column(modifier=modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(4.dp)){" +
                 "SingleChoiceSegmentedButtonRow(modifier=Modifier.fillMaxWidth().height(IntrinsicSize.Min)){" +
