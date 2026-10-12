@@ -143,8 +143,135 @@ ClarificationBar(
 )
 ```
 
-The full parameter list and the compatibility scope live in `API.md` section 10 and its v2.5.0
-compatibility notes.
+The full parameter list and the compatibility scope live in `API.md` sections 10 and 11, its
+"Stable test tags (documented API)" section and its v2.5.0 and v2.6.0 compatibility notes.
+
+### 5b. Wiring the v2.6.0 Receipt, key-lifecycle and Undo Center additions (optional)
+
+Everything in this subsection is opt-in. A call site that compiled against v2.5.1 recompiles and
+renders as before, with one exception: a positional four-argument `UndoCenterScreen` call (see
+(iii)). The full signatures are in `API.md` sections 10 and 11; the test tags a UI test may rely on
+are in its "Stable test tags (documented API)" section.
+
+**(i) The Receipt `OutcomeSheet`.** Pass `style = OutcomeSheetStyle.Receipt` and, if your theme uses
+dynamic color, your own tone tokens, because the default warn tone is `tertiaryContainer` over
+`onTertiaryContainer` and is not amber under Material You:
+
+```kotlin
+val amber = ToneColors(container = MyColors.AmberContainer, content = MyColors.OnAmberContainer)
+
+OutcomeSheet(
+    outcome = VoiceOutcomeUiState.NeedsConfirmation(
+        reason = "You said: “…”",
+        items = emptyList(),                       // the rows come from topLevelContent
+        title = "Review these",
+        confirmLabel = "Confirm all",
+        topLevelContent = {
+            ReceiptRow(
+                title = "Item A", subtitle = "2 units", value = "12", valueCaption = "total",
+                attentionCue = "Check this one",   // the Warn cue
+                expanded = openIndex == 0,         // the row is stateless: YOU hold the accordion
+                onClick = { openIndex = if (openIndex == 0) null else 0 },
+                expandedContent = { /* your own editor */ },
+            )
+        },
+        confirmEnabled = nothingNeedsAttention,    // false disables Confirm; onConfirm never fires
+        onConfirm = { /* … */ },
+        onCancel = { /* … */ },
+    ),
+    onDismissRequest = { /* the same decline logic as onCancel */ },
+    style = OutcomeSheetStyle.Receipt,
+    colors = OutcomeSheetDefaults.colors(warnTone = amber),
+)
+```
+
+- `Success` takes `badge`, `titleActions` and the `startAction` / `endAction` pair
+  (`SheetActionUiModel`); mark a Cancel with `activeWhileInFlight = true` so it stays usable while
+  `inFlight` locks the others. The badge is decorative, so put the status in the `summary` text.
+- `Failure` takes `title`, `transcript`, `tone = FailureTone.Warn`, a `tip` slot, a
+  `secondaryAction` and `undo`. `Failure.undo` renders the same grouped undo block as `Success`, so a
+  consumer that kept a local failure-undo body can retire it.
+- `HandledByUiModel(prefixLabel = …, onDevice = true)` localizes the Receipt pill prefix and tints its dot.
+- The library never sets `testTagsAsResourceId`. To let UI Automator see the stable tags, set
+  `Modifier.semantics { testTagsAsResourceId = true }` on your own root composable.
+
+**(ii) The `ProviderKeyCard` key lifecycle.** The card stays stateless: you own persistence and the
+typed text, and you pass fingerprints only, never a raw key. The fingerprint is a short display string
+(the placeholder form is `key-…c3d4`: the text key, a dash, an ellipsis and four characters).
+
+```kotlin
+ProviderKeyCard(
+    providers = providers,
+    selectedProviderId = selected,
+    onProviderSelected = { id -> selected = id; typed = ""; editing = false },  // reset on a provider switch
+    keyValue = typed,
+    onKeyChange = { typed = it },
+    keyState = keyState,
+    keyLabel = "API key",
+    savedKeys = mapOf("provider-b" to SavedKeyUiModel("key-…c3d4")),           // providerId -> fingerprint
+    editingSavedKey = editing,
+    actions = ProviderKeyActions(
+        onSave = { save(selected, typed) },
+        saveEnabled = typed.isNotBlank(),
+        onUpdate = { editing = true },
+        onClear = { clear(selected) },
+        onCancelEdit = { editing = false; typed = "" },
+        inFlight = saving,                                                      // disables every action
+    ),
+)
+```
+
+- A provider with an entry in `savedKeys` shows the summary `"Saved · <fingerprint>"` with Update and
+  Clear instead of the field; `editingSavedKey = true` brings the field back for the Update flow. It is
+  one flag for the whole card, so reset it (and the typed text) in `onProviderSelected`.
+- A `null` callback in `ProviderKeyActions` hides that button, and `null` `actions` renders no button row.
+- **What a consumer can delete.** CalTracker can drop its dead provider dropdown
+  (`onProviderSelected = {}`) and its own Save, Cancel and "key configured" rows, pass the real provider
+  list and let the card draw them. SecondBrain is unchanged: with `savedKeys` empty and `actions` null the
+  card renders exactly as before, and it keeps its own Save row.
+
+**(iii) Undo Center groups.** Register a group once per batch, append its members with the group id,
+and project the groups into rows from the store on each recomposition:
+
+```kotlin
+store.openGroup(groupId = batchId, label = "Batch edit") { revertWholeBatch(batchId) }  // ONE atomic undo
+store.append("Renamed item A", groupId = batchId) { revertOne(itemA) }                  // a member
+
+val groups = entries
+    .mapNotNull { store.groupIdOf(it.id) }.distinct()
+    .mapNotNull { id ->
+        val label = store.groupLabel(id) ?: return@mapNotNull null
+        UndoGroupRowUiModel(
+            groupId = id,
+            label = label,
+            memberIds = store.group(id).map { it.id },
+            status = store.groupStatus(id),
+        )
+    }
+
+UndoCenterScreen(
+    entries = entries,
+    onNavigateBack = { navController.navigateUp() },
+    onUndo = viewModel::onUndo,
+    groups = groups,
+    onUndoGroup = { id -> viewModel.onUndoGroup(id) },   // calls store.attemptUndoGroup(id)
+    onClear = viewModel::onClear,
+)
+```
+
+- `onUndoGroup` should call `UndoHistoryStore.attemptUndoGroup(groupId)`. It runs your registered
+  `undoAll` exactly once; throw `UndoGroupRefusedException` from it to refuse without writing anything
+  (the members stay Available and a retry can succeed).
+- **Positional-call note.** `UndoCenterScreen(entries, onNavigateBack, onUndo, onClear)` with four
+  positional arguments no longer compiles, because `groups` and `onUndoGroup` now sit before the
+  trailing `onClear`. Name it (`onClear = …`) or pass it as the trailing lambda; every named and
+  trailing-lambda form compiles.
+- The member count and status words of a group row ("3 items", "Undoable", "Resolved") are
+  English-only library text; only `undoAllLabel` is overridable.
+
+**(iv) Seeing it work.** The Explorer gallery has demos for all of the above: the Receipt `OutcomeSheet`
+states under `OutcomeSheet`, the count editor under `SegmentedOptionSelector`, the key lifecycle under
+`ProviderKeyCard` and the group rows under `UndoCenterScreen`.
 
 ## 6. (Optional) The component gallery
 
