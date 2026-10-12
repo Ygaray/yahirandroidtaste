@@ -221,7 +221,7 @@ object Dimens {
 
     /** `PillChip` dimensions (Phase 20 VCHIP-01). */
     object PillChip {
-        /** Fixed drawn height of the chip. */
+        /** Minimum drawn height of the chip (it grows with font scale). */
         val Height: Dp = 32.dp
 
         /** Horizontal padding when the chip shows a label only. */
