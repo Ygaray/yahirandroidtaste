@@ -2,8 +2,11 @@ package io.github.ygaray.yahirandroidtaste.explorer
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasContentDescription
@@ -11,9 +14,11 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.text.TextLayoutResult
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -77,11 +82,34 @@ class ApproachLadderCardGalleryDemoTest {
         composeTestRule.setContent { Column { variantsContent().invoke() } }
         composeTestRule.waitForIdle()
 
-        // Default fixture (OFF) + the appended "router on" cell; the every-control-hidden and
-        // combined-subdued-labels cells pass no router and render none.
+        // Default fixture (OFF) + the appended "router on" cell; the every-control-hidden,
+        // combined-subdued-labels and long-localized-labels (German) cells pass no router and
+        // render none.
         composeTestRule.onAllNodesWithTag("approach_ladder_card_router_toggle").assertCountEquals(2)
         composeTestRule.onAllNodesWithContentDescription("Router on, selected").assertCountEquals(1)
         composeTestRule.onAllNodesWithContentDescription("Router off, selected").assertCountEquals(1)
+    }
+
+    @Test
+    fun variantsContent_includesLongGermanLabelCell_withBoundedAffordanceWrapping() {
+        // Scrollable so every Variants cell gets its natural height instead of being squeezed.
+        composeTestRule.setContent {
+            Column(Modifier.verticalScroll(rememberScrollState())) { variantsContent().invoke() }
+        }
+        composeTestRule.waitForIdle()
+
+        listOf("Derzeit nicht verfügbar", "Netzwerkverbindung erforderlich").forEach { label ->
+            val matches = composeTestRule.onAllNodesWithText(label, useUnmergedTree = true)
+            matches.assertCountEquals(1)
+            val node = matches[0].fetchSemanticsNode()
+            assertTrue("\"$label\" width must be > 0, was ${node.size.width}", node.size.width > 0)
+            val layouts = mutableListOf<TextLayoutResult>()
+            node.config[SemanticsActions.GetTextLayoutResult].action?.invoke(layouts)
+            val lines = layouts.single().lineCount
+            assertTrue("\"$label\" must render on <= 2 lines, rendered on $lines", lines <= 2)
+        }
+        composeTestRule.onAllNodesWithContentDescription("Ausschließlich offline, selected")
+            .assertCountEquals(1)
     }
 
     @Test

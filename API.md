@@ -118,7 +118,7 @@ these render its body) plus the shared scaffolding and editor rows.
 | `PlaceMapPicker` | Map-based place/radius picker (search, saved places, current-location, pin + radius) | `pinLatitude: Double?, pinLongitude: Double?, onPinChange, radiusMeters: Float, onRadiusChange, minRadiusMeters, maxRadiusMeters, defaultRadiusMeters, userAgent: String, …` search/saved-places callbacks — the hub never geocodes; the caller resolves and reports back |
 | `IconPickerGrid` | Module/tag icon grid picker | `selectedIcon: String, onIconSelected: (String) -> Unit` — public parameters unchanged; the grid includes a built-in live case-insensitive name-substring search field with an empty-state when nothing matches |
 | `CropOverlay` | Crop-rectangle overlay for image editing | `bitmapWidth, bitmapHeight, aspectRatio: Float?, …` |
-| `SegmentedOptionSelector` | Two-option segmented toggle with an always-visible disabled+reason affordance | `selectedIndex: Int, options: List<String>, onSelect: (Int) -> Unit, enabled: Boolean, disabledReason: String?` |
+| `SegmentedOptionSelector` | Two-option segmented toggle with an always-visible disabled+reason affordance; labels too long for their half wrap to at most two lines, then ellipsize, staying inside the segment (never under the selected check icon); both segments keep equal height (v2.5.1) | `selectedIndex: Int, options: List<String>, onSelect: (Int) -> Unit, enabled: Boolean, disabledReason: String?` |
 
 ## 6. Feedback
 
@@ -207,6 +207,13 @@ control entirely, with no reserved space (conditional-render-no-dead-space).
   applies only in that case, so cap-less ladders stay compact. The segmented toggles' state words
   "selected" / "not selected" are announced by `SegmentedOptionSelector` and stay English, a
   documented residual the hub does not localize.
+- **Long labels (v2.5.1, layout only, no signature change).** The rung name always keeps at least
+  40% of the row width. The unavailable / capped / needs-network affordance labels share the
+  remaining 60% or less: each wraps at word boundaries to at most two lines, then ellipsizes, and
+  they stack right-aligned when they don't fit side by side. Short labels (including the English
+  defaults) render exactly as in v2.5.0. The offline-only and router toggles get the
+  `SegmentedOptionSelector` long-label behaviour (section 5): wrap to at most two lines inside the
+  segment, equal segment heights.
 
 **Appended model fields (v2.5.0).** Each is defaulted and appended as the last field; see
 "Voice label fragments" below for how `OutcomeSheet` joins the label fields.
