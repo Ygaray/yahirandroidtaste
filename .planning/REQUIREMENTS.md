@@ -101,14 +101,14 @@
 
 ### Key lifecycle & undo center
 
-- [ ] **VKEY-01**: `ProviderKeyCard` gains the sketch §1 key-lifecycle params, all appended after `providerLabel`: `savedKeys: Map<String, SavedKeyUiModel> = emptyMap()`, `editingSavedKey: Boolean = false`, `actions: ProviderKeyActions? = null` and `labels: ProviderKeyLabels = ProviderKeyDefaults.labels()`.
+- [x] **VKEY-01**: `ProviderKeyCard` gains the sketch §1 key-lifecycle params, all appended after `providerLabel`: `savedKeys: Map<String, SavedKeyUiModel> = emptyMap()`, `editingSavedKey: Boolean = false`, `actions: ProviderKeyActions? = null` and `labels: ProviderKeyLabels = ProviderKeyDefaults.labels()`.
   - **Field:** the single key field follows `selectedProviderId`.
   - **Saved key:** when a key is saved for the selected provider and you're not editing, the field is replaced by a summary showing the fingerprint only ("Saved · sk-ant-…abcd"), plus Update | Clear.
   - **No saved key:** otherwise you get the field plus Save, and Cancel when `onCancelEdit != null`.
   - **Actions:** `inFlight` disables all of them.
   - **Default:** with an empty `savedKeys` and `actions = null`, the card is exactly today's, so SB is unchanged.
-- [ ] **VKEY-02**: Each provider keeps its own saved key: switching providers shows that provider's summary or field. Providers present in `savedKeys` get `labels.savedMarker` in the dropdown. The raw key never renders anywhere. Stable tags: `provider_key_saved_summary` and `provider_key_action_{save,update,clear,cancel}`.
-- [ ] **VUNDO-02**: `UndoCenterScreen` can render a group row for entries that share an `UndoHistoryStore` group: the group label, member count and status, with an "Undo all" that invokes a caller callback. This takes optional params inserted before the trailing `onClear`. The default is today's flat list (XR-178-01 c).
+- [x] **VKEY-02**: Each provider keeps its own saved key: switching providers shows that provider's summary or field. Providers present in `savedKeys` get `labels.savedMarker` in the dropdown. The raw key never renders anywhere. Stable tags: `provider_key_saved_summary` and `provider_key_action_{save,update,clear,cancel}`.
+- [x] **VUNDO-02**: `UndoCenterScreen` can render a group row for entries that share an `UndoHistoryStore` group: the group label, member count and status, with an "Undo all" that invokes a caller callback. This takes optional params inserted before the trailing `onClear`. The default is today's flat list (XR-178-01 c).
 
 ### Catalog, docs, demos & ship
 
@@ -172,9 +172,9 @@
 | VTAG-01 | Phase 22 | Complete |
 | VXR-01 | Phase 22 | Complete |
 | VXR-02 | Phase 22 | Complete |
-| VKEY-01 | Phase 23 | Pending |
-| VKEY-02 | Phase 23 | Pending |
-| VUNDO-02 | Phase 23 | Pending |
+| VKEY-01 | Phase 23 | Complete |
+| VKEY-02 | Phase 23 | Complete |
+| VUNDO-02 | Phase 23 | Complete |
 | CAT-03 | Phase 24 | Pending |
 | API-03 | Phase 24 | Pending |
 | DOC-03 | Phase 24 | Pending |

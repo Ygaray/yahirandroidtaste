@@ -2,20 +2,20 @@
 gsd_state_version: "1.0"
 milestone: v2.6
 milestone_name: Receipt voice surfaces + ProviderKeyCard lifecycle
-current_phase: 23
-current_phase_name: ProviderKeyCard lifecycle & Undo Center groups
-status: executing
-stopped_at: Phase 22 complete, ready to plan Phase 23
-last_updated: "2026-10-12T16:06:22.086Z"
+current_phase: 24
+current_phase_name: Catalog, docs, Explorer demos & cut v2.6.0
+status: planning
+stopped_at: Phase 23 complete, ready to plan Phase 24
+last_updated: "2026-10-12T17:46:20.612Z"
 last_activity: 2026-10-12
-last_activity_desc: Phase 23 execution started
-state_head: 92febe1a0ffd89f5f2bf382d644874800cf0856e
+last_activity_desc: Phase 23 complete, transitioned to Phase 24
+state_head: d670bb6979edc6fbd608684b98abce31dce6cbd0
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 15
-  completed_plans: 13
-  percent: 60
+  completed_plans: 15
+  percent: 80
 ---
 
 # Project State
@@ -29,18 +29,18 @@ See: .planning/PROJECT.md (updated 2026-10-11)
 
 ## Current Position
 
-Phase: 23 (ProviderKeyCard lifecycle & Undo Center groups) — EXECUTING
-Plan: 1 of 2
-Status: Executing Phase 23
-Last activity: 2026-10-12 — Phase 23 execution started
+Phase: 24 — Catalog, docs, Explorer demos & cut v2.6.0
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-10-12 — Phase 23 complete, transitioned to Phase 24
 
-Progress: [██████░░░░] 60%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity (milestone v2.6):**
 
-- Total plans completed: 13
+- Total plans completed: 15
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -51,7 +51,7 @@ Progress: [██████░░░░] 60%
 | 20 | 4 | - | - |
 | 21 | 4 | - | - |
 | 22 | 5 | - | - |
-| 23 | TBD | - | - |
+| 23 | 2 | - | - |
 | 24 | TBD | - | - |
 
 **Recent Trend:**
@@ -112,7 +112,7 @@ Items acknowledged and carried forward, most recent first:
 ## Session Continuity
 
 Last session: 2026-10-11 — Roadmap created for milestone v2.6
-Stopped at: Phase 22 complete, ready to plan Phase 23
+Stopped at: Phase 23 complete, ready to plan Phase 24
 Resume file: None
 
 ## Operator Next Steps
