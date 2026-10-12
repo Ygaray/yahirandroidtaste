@@ -23,10 +23,12 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -144,7 +146,8 @@ internal fun receiptRowToneColor(
  * @param modifier Applied to the root column.
  * @param subtitle Optional second line. Single line, ellipsized.
  * @param subtitleTone Tone of [subtitle].
- * @param supportingContent Optional third line, rendered in `bodySmall`.
+ * @param supportingContent Optional third line, rendered in `bodySmall` with `onSurfaceVariant` as the
+ *   default content color.
  * @param value Optional end-aligned value. Single line, ellipsized.
  * @param valueCaption Optional small line under [value].
  * @param valueTone Tone of [value].
@@ -343,7 +346,10 @@ private fun ReceiptRowTitleColumn(modifier: Modifier, text: ReceiptRowText, pale
             )
         }
         if (text.supportingContent != null) {
-            ProvideTextStyle(typography.bodySmall.receiptRowLine()) { text.supportingContent.invoke() }
+            // Theme-safe default color for a plain Text in the slot; a caller can still set its own.
+            CompositionLocalProvider(LocalContentColor provides palette.caption) {
+                ProvideTextStyle(typography.bodySmall.receiptRowLine()) { text.supportingContent.invoke() }
+            }
         }
         if (text.attentionCue != null) {
             ReceiptRowCue(cue = text.attentionCue, tone = palette.warn)
