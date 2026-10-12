@@ -6,6 +6,9 @@ package io.github.ygaray.yahirandroidtaste.model
  * ([io.github.ygaray.yahirandroidtaste.component.OutcomeSheetStyle.Receipt], VRCPT-03). Set it on
  * [VoiceOutcomeUiState.Success.badge] or [VoiceOutcomeUiState.Failure.badge].
  *
+ * The badge is decorative: it has no content description, so the title or reason text must state
+ * the status in words for screen-reader users.
+ *
  * Only the Receipt style draws a badge; the Classic style ignores it, so a defaulted `null` renders
  * exactly like v2.5.1.
  */

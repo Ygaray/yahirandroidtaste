@@ -43,7 +43,9 @@ sealed interface VoiceOutcomeUiState {
      *   reads. `null` renders no undo section at all; undo lives ON [Success] rather than a new
      *   top-level sealed arm so the top-level type stays additive-ready for Phase 12.
      * @param badge Status badge for the Receipt title row (VRCPT-03). Drawn only by the Receipt
-     *   style; the Classic style ignores it (D-06).
+     *   style; the Classic style ignores it (D-06). The badge is decorative and has no text
+     *   alternative, so a screen-reader user cannot tell a Success badge from a Reverted one:
+     *   [summary] must itself state the status (for example "Reverted: 2 entries").
      * @param titleActions An optional composable slot at the end of the Receipt title row. Receipt
      *   only. Equality is by lambda reference, so remember the lambda.
      * @param startAction Receipt actions row, start slot (typically a Text action). Receipt only.
@@ -92,7 +94,8 @@ sealed interface VoiceOutcomeUiState {
      * @param tip An optional composable rendered under the Receipt card (Receipt only). Equality is
      *   by lambda reference, so remember the lambda.
      * @param secondaryAction Receipt pinned bar, start slot (Receipt only).
-     * @param badge Receipt title-row status badge (Receipt only).
+     * @param badge Receipt title-row status badge (Receipt only). Decorative, with no text
+     *   alternative: [reason] (and [title], when set) must carry the status in words.
      * @param undo A grouped undo affordance (XR-178-01 b, VXR-02) rendered with the same undo block
      *   as [Success.undo] in BOTH styles. `null` renders nothing.
      */
