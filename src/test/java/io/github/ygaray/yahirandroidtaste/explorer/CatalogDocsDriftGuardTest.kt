@@ -268,6 +268,19 @@ class CatalogDocsDriftGuardTest {
     // ---------------------------------------------------------------------------------------
 
     @Test
+    fun `the compatibility lead-ins list the same three positional source breaks`() {
+        val breaks = listOf("UndoCenterScreen", "NeedsConfirmation", "SheetScaffold")
+        val apiLead = doc("API.md").substringAfter("## 11. Tone foundation and Receipt types (v2.6.0)").substringBefore("### New types")
+        val integrationLead = doc("INTEGRATION.md").substringAfter("### 5b. Wiring the v2.6.0").substringBefore("**(i)")
+        assertTrue("API.md section 11 lead-in not found (vacuity guard)", apiLead.length in 200..3000)
+        assertTrue("INTEGRATION.md 5b lead-in not found (vacuity guard)", integrationLead.length in 200..3000)
+        breaks.forEach { name ->
+            assertTrue("the API.md section 11 lead-in must name the positional break $name", apiLead.contains(name))
+            assertTrue("the INTEGRATION.md 5b lead-in must name the positional break $name", integrationLead.contains(name))
+        }
+    }
+
+    @Test
     fun `INTEGRATION md names the v2_6_0 entry points`() {
         val integration = doc("INTEGRATION.md")
         listOf(

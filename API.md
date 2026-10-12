@@ -240,10 +240,13 @@ control entirely, with no reserved space (conditional-render-no-dead-space).
 
 v2.6.0 adds five composables (`ToneCard`, `ReceiptRow`, `PillChip`, `RoundIconButton`,
 `StackedProgressBar`, listed in their family tables above) and the non-composable types below.
-Everything is additive and opt-in: each new parameter or field defaults to the earlier behaviour, so
-a call that compiled against v2.5.1 still compiles, and `OutcomeSheet` keeps rendering the Classic
-look unless a caller passes `OutcomeSheetStyle.Receipt`. The precise compatibility scope is in
-"Adding / changing components" below. Wiring examples are in `INTEGRATION.md` section 5b.
+Everything is opt-in and defaulted, and the named and trailing-lambda call shapes of v2.5.1 still
+compile. Three positional shapes do not: `UndoCenterScreen` with four positional arguments,
+`NeedsConfirmation` constructed or destructured positionally (and its `copy`), and `SheetScaffold`
+with `content` passed as the sixth positional argument instead of as the trailing lambda. Each is a
+deliberate, documented source break with a one-line fix, listed in "Adding / changing components"
+below. `OutcomeSheet` keeps rendering the Classic look unless a caller passes
+`OutcomeSheetStyle.Receipt`. Wiring examples are in `INTEGRATION.md` section 5b.
 
 ### New types
 
@@ -502,14 +505,17 @@ defaulted.
   were added. The v2.5.0 shims stay. Binary compatibility is not claimed for any v2.6.0 signature;
   consumers recompile from an immutable tag on every repin.
 - New composable parameters are appended after `modifier`. `SheetScaffold.shape` is inserted before the
-  trailing `content` lambda, which stays last, so every trailing-content call still binds.
+  trailing `content` lambda, which stays last, so every trailing-content call and every call that
+  names `content` still binds. The one shape that no longer compiles is passing `content` as the
+  sixth positional argument (it now binds to `shape`): use the trailing lambda or `content = …`.
   `DynamicActionButton`, `SegmentedOptionSelector`, `OutcomeSheet` and `ProviderKeyCard` end in
   non-function parameters, so no former trailing lambda is displaced.
 - `NeedsConfirmation` is the one data class whose new fields (`confirmEnabled`, `titleActions`) are
   inserted **before** its two required lambdas `onConfirm` and `onCancel` instead of appended. Both
   known consumers construct it with named arguments, which still compile. A positional construction
-  does not, and destructuring shifts: `component10()` and `component11()` are now `confirmEnabled`
-  and `titleActions`, and the two lambdas are `component12()` and `component13()`.
+  (or a positional `copy(...)` that reaches the lambdas) does not, and destructuring shifts:
+  `component10()` and `component11()` are now `confirmEnabled` and `titleActions`, and the two
+  lambdas are `component12()` and `component13()`.
 - The **positional four-argument call `UndoCenterScreen(entries, onNavigateBack, onUndo, onClear)` no
   longer compiles**: `groups` and `onUndoGroup` now sit before the trailing `onClear`, so the fourth
   positional argument binds to `groups`. Name it (`onClear = …`) or pass it as the trailing lambda.

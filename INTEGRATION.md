@@ -149,9 +149,13 @@ The full parameter list and the compatibility scope live in `API.md` sections 10
 ### 5b. Wiring the v2.6.0 Receipt, key-lifecycle and Undo Center additions (optional)
 
 Everything in this subsection is opt-in. A call site that compiled against v2.5.1 recompiles and
-renders as before, with one exception: a positional four-argument `UndoCenterScreen` call (see
-(iii)). The full signatures are in `API.md` sections 10 and 11; the test tags a UI test may rely on
-are in its "Stable test tags (documented API)" section.
+renders as before, with three positional exceptions: a four-argument positional `UndoCenterScreen`
+call (see (iii)), a `NeedsConfirmation` constructed or destructured positionally (or its `copy`
+called positionally), and a `SheetScaffold` that passes `content` as the sixth positional argument
+instead of as the trailing lambda. Named and trailing-lambda calls are unaffected; the one-line fix
+for each is in `API.md` "Adding / changing components". The full signatures are in `API.md`
+sections 10 and 11; the test tags a UI test may rely on are in its "Stable test tags (documented
+API)" section.
 
 **(i) The Receipt `OutcomeSheet`.** Pass `style = OutcomeSheetStyle.Receipt` and, if your theme uses
 dynamic color, your own tone tokens, because the default warn tone is `tertiaryContainer` over
