@@ -14,7 +14,9 @@ import androidx.compose.runtime.Immutable
  * @param onSave Invoked when Save is tapped in field mode.
  * @param saveEnabled `false` disables Save (for example while the typed key is empty).
  * @param onUpdate Invoked when Update is tapped in summary mode. `null` hides Update.
- * @param onClear Invoked when Clear is tapped in summary mode. `null` hides Clear.
+ * @param onClear Invoked when Clear is tapped in summary mode. `null` hides Clear. The card does not
+ *   confirm: Clear fires immediately, so wrap this callback in a confirmation dialog or an undo
+ *   snackbar.
  * @param onCancelEdit Invoked when Cancel is tapped in field mode. `null` hides Cancel.
  * @param inFlight `true` disables every action, and the provider dropdown, while a save is in
  *   progress.
