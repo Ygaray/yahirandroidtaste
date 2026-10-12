@@ -147,7 +147,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 22-05-PLAN.md — Receipt Failure (ToneCard, tip, undo, pinned bar), full Y-14 tag matrix across every Receipt state, phase gate and Gate-1 handoff (VRCPT-04, VTAG-01, VXR-01, VXR-02)
+- [x] 22-05-PLAN.md — Receipt Failure (ToneCard, tip, undo, pinned bar), full Y-14 tag matrix across every Receipt state, phase gate and Gate-1 handoff (VRCPT-04, VTAG-01, VXR-01, VXR-02)
 
 **UI hint**: yes
 
@@ -310,6 +310,6 @@ only on Phase 20, but it runs after 22 because every phase rewrites the shared `
 |-------|-----------|----------------|--------|-----------|
 | 20. Tone foundation & atoms | v2.6 | 4/4 | Planned |  |
 | 21. Receipt row, Pill selector & sheet shape | v2.6 | 4/4 | Not started |  |
-| 22. OutcomeSheet Receipt style | v2.6 | 4/5 | Not started |  |
+| 22. OutcomeSheet Receipt style | v2.6 | 5/5 | Not started |  |
 | 23. ProviderKeyCard lifecycle & Undo Center groups | v2.6 | 0/TBD | Not started | - |
 | 24. Catalog, docs, Explorer demos & cut v2.6.0 | v2.6 | 0/TBD | Not started | - |
