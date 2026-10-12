@@ -29,6 +29,7 @@ import io.github.ygaray.yahirandroidtaste.component.DateTimePicker
 import io.github.ygaray.yahirandroidtaste.component.IconPickerGrid
 import io.github.ygaray.yahirandroidtaste.component.PlaceMapPicker
 import io.github.ygaray.yahirandroidtaste.component.SegmentedOptionSelector
+import io.github.ygaray.yahirandroidtaste.component.SegmentedOptionStyle
 import io.github.ygaray.yahirandroidtaste.model.SavedPlaceUiModel
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
@@ -456,6 +457,43 @@ private fun SegmentedOptionSelectorVariants() {
         options = listOf("Option A", "Option B"),
         onSelect = { selectedIndex = it },
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
+    var pillIndex by remember { mutableStateOf(0) }
+    SectionLabel("SegmentedOptionSelector — Pill style")
+    SegmentedOptionSelector(
+        selectedIndex = pillIndex,
+        options = listOf("Pill one", "Pill two"),
+        onSelect = { pillIndex = it },
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        style = SegmentedOptionStyle.Pill
+    )
+    var pillDisabledIndex by remember { mutableStateOf(1) }
+    SectionLabel("SegmentedOptionSelector — Pill, first option disabled")
+    SegmentedOptionSelector(
+        selectedIndex = pillDisabledIndex,
+        options = listOf("Alpha", "Beta"),
+        onSelect = { pillDisabledIndex = it },
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        disabledOptions = setOf(0),
+        style = SegmentedOptionStyle.Pill
+    )
+    var materialDisabledIndex by remember { mutableStateOf(0) }
+    SectionLabel("SegmentedOptionSelector — Material, second option disabled")
+    SegmentedOptionSelector(
+        selectedIndex = materialDisabledIndex,
+        options = listOf("Gamma", "Delta"),
+        onSelect = { materialDisabledIndex = it },
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        disabledOptions = setOf(1)
+    )
+    var pillLongIndex by remember { mutableStateOf(0) }
+    SectionLabel("SegmentedOptionSelector — Pill, long German labels (truncate)")
+    SegmentedOptionSelector(
+        selectedIndex = pillLongIndex,
+        options = listOf("Onlineverarbeitung", "Ausschließlich lokal ohne Netzwerkverbindung verarbeiten"),
+        onSelect = { pillLongIndex = it },
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        style = SegmentedOptionStyle.Pill
     )
 }
 

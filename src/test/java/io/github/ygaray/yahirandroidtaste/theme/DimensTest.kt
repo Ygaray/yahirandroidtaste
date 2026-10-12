@@ -94,4 +94,10 @@ class DimensTest {
     fun `StackedProgressBar tokens equal their phase 20 values`() {
         assertEquals(6.dp, Dimens.StackedProgressBar.Height)
     }
+
+    @Test
+    fun `SegmentedPill tokens equal their phase 21 values`() {
+        assertEquals(40.dp, Dimens.SegmentedPill.Height)
+        assertEquals(12.dp, Dimens.SegmentedPill.LabelHorizontalPadding)
+    }
 }
