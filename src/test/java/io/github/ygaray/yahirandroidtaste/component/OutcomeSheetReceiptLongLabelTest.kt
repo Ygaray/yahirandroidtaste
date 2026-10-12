@@ -99,6 +99,66 @@ class OutcomeSheetReceiptLongLabelTest {
         assertTrue("bar bottom $barBottom must be inside the window height ${windowHeightPx()}", barBottom <= windowHeightPx() + 1f)
     }
 
+    // ---- WR-01: unused slot space is redistributed -------------------------------------------------
+
+    private fun lineCountOf(text: String): Int =
+        composeTestRule.onNodeWithText(text, useUnmergedTree = true).textLayout().lineCount
+
+    @Test
+    fun `a short cancel leaves its spare width to a long confirm which then wraps to at most two lines`() {
+        val shortCancel = "Abbrechen"
+        setContent(OutcomeFixtures.needsConfirmation(cancelLabel = shortCancel, confirmLabel = longConfirm))
+
+        val cancel = tagged("outcome_sheet_confirmation_cancel").fetchSemanticsNode()
+        val confirm = tagged("outcome_sheet_confirmation_confirm").fetchSemanticsNode()
+        val rowWidthPx = (360f - 32f) * composeTestRule.density.density
+
+        assertTrue(
+            "confirm (${confirm.size.width}px) must get more than half of the ${rowWidthPx}px row " +
+                "when the cancel button (${cancel.size.width}px) leaves space unused",
+            confirm.size.width > rowWidthPx / 2f + 1f
+        )
+        assertTrue(
+            "confirm label wrapped to ${lineCountOf(longConfirm)} lines, expected at most 2",
+            lineCountOf(longConfirm) <= 2
+        )
+        assertNoEllipsizedLine("confirm label", longConfirm)
+        assertInsideWindow(tagged("outcome_sheet_confirmation_cancel"), "cancel button")
+        assertInsideWindow(tagged("outcome_sheet_confirmation_confirm"), "confirm button")
+    }
+
+    @Test
+    fun `a short confirm leaves its spare width to a long cancel`() {
+        setContent(OutcomeFixtures.needsConfirmation(cancelLabel = longCancel, confirmLabel = "OK"))
+
+        val cancel = tagged("outcome_sheet_confirmation_cancel").fetchSemanticsNode()
+        val rowWidthPx = (360f - 32f) * composeTestRule.density.density
+
+        assertTrue(
+            "cancel (${cancel.size.width}px) must get more than half of the ${rowWidthPx}px row",
+            cancel.size.width > rowWidthPx / 2f + 1f
+        )
+        assertNoEllipsizedLine("cancel label", longCancel)
+        assertInsideWindow(tagged("outcome_sheet_confirmation_confirm"), "confirm button")
+    }
+
+    @Test
+    fun `two short bar labels keep the start and end edges of the row`() {
+        setContent(OutcomeFixtures.needsConfirmation())
+
+        val cancel = tagged("outcome_sheet_confirmation_cancel").fetchSemanticsNode()
+        val confirm = tagged("outcome_sheet_confirmation_confirm").fetchSemanticsNode()
+        val margin = 16f * composeTestRule.density.density
+
+        assertEquals("cancel sits on the start edge", margin, cancel.positionInRoot.x, 1f)
+        assertEquals(
+            "confirm sits on the end edge",
+            windowWidthPx() - margin,
+            confirm.positionInRoot.x + confirm.size.width,
+            1f
+        )
+    }
+
     @Test
     fun `short bar labels are not ellipsized`() {
         setContent(OutcomeFixtures.needsConfirmation())

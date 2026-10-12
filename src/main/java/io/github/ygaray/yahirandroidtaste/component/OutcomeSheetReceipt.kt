@@ -31,6 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -41,6 +43,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.model.FailureTone
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
@@ -455,11 +459,82 @@ private fun ReceiptNeedsConfirmationBar(confirmation: VoiceOutcomeUiState.NeedsC
     )
 }
 
-/** Two actions spread to both edges; a lone end action stays at the end edge. */
-private fun barArrangement(hasStart: Boolean, hasEnd: Boolean): Arrangement.Horizontal = when {
-    hasStart && hasEnd -> Arrangement.SpaceBetween
-    hasEnd -> Arrangement.End
-    else -> Arrangement.Start
+/**
+ * Splits [available] px between a start and an end action whose natural (single-line, capped at
+ * [available]) widths are [startNatural] and [endNatural]. When both fit, each keeps its natural
+ * width. Otherwise an action that needs no more than half the row keeps its natural width and the
+ * other takes everything that is left; if both need more than half, each gets half. Space one action
+ * leaves unused is therefore never stranded (WR-01), and a short sibling never makes a long label
+ * wrap early.
+ */
+internal fun receiptActionSlotWidths(available: Int, startNatural: Int, endNatural: Int): Pair<Int, Int> {
+    val half = available / 2
+    return when {
+        startNatural + endNatural <= available -> startNatural to endNatural
+        startNatural <= half -> startNatural to (available - startNatural)
+        endNatural <= half -> (available - endNatural) to endNatural
+        else -> half to (available - half)
+    }
+}
+
+/**
+ * The start / end action row shared by the pinned bar and the Success actions row. Two actions spread
+ * to both edges; a lone end action stays at the end edge. Each slot is measured at its natural width
+ * first and the row only constrains an action when the two do not fit together
+ * ([receiptActionSlotWidths]), so a long localized label wraps instead of squeezing the other action
+ * out of the window (P7 escape hatch) without wasting the space a short sibling leaves free.
+ */
+@Composable
+private fun ReceiptActionRow(
+    start: (@Composable () -> Unit)?,
+    end: (@Composable () -> Unit)?,
+    modifier: Modifier = Modifier
+) {
+    val hasStart = start != null
+    val hasEnd = end != null
+    Layout(
+        content = {
+            start?.let { Box { it() } }
+            end?.let { Box { it() } }
+        },
+        modifier = modifier.fillMaxWidth()
+    ) { measurables, constraints ->
+        val available = if (constraints.hasBoundedWidth) constraints.maxWidth else Constraints.Infinity
+        val startMeasurable = if (hasStart) measurables.first() else null
+        val endMeasurable = if (hasEnd) measurables.last() else null
+        // Natural widths come from the intrinsics: a Measurable may only be measured once per pass.
+        val startNatural = startMeasurable?.maxIntrinsicWidth(Constraints.Infinity)?.coerceAtMost(available)
+        val endNatural = endMeasurable?.maxIntrinsicWidth(Constraints.Infinity)?.coerceAtMost(available)
+        val (startMax, endMax) = when {
+            available == Constraints.Infinity -> Constraints.Infinity to Constraints.Infinity
+            startNatural != null && endNatural != null -> receiptActionSlotWidths(available, startNatural, endNatural)
+            else -> available to available
+        }
+        val startPlaceable = startMeasurable?.measure(
+            Constraints(maxWidth = startMax, maxHeight = constraints.maxHeight)
+        )
+        val endPlaceable = endMeasurable?.measure(
+            Constraints(maxWidth = endMax, maxHeight = constraints.maxHeight)
+        )
+
+        val rowWidth = if (available == Constraints.Infinity) {
+            (startPlaceable?.width ?: 0) + (endPlaceable?.width ?: 0)
+        } else {
+            available
+        }
+        val rowHeight = maxOf(startPlaceable?.height ?: 0, endPlaceable?.height ?: 0)
+            .coerceIn(constraints.minHeight, constraints.maxHeight)
+        val rtl = layoutDirection == LayoutDirection.Rtl
+        layout(rowWidth, rowHeight) {
+            // Logical x is measured from the start edge; mirror it for RTL.
+            fun place(p: Placeable, logicalX: Int) {
+                val x = if (rtl) rowWidth - logicalX - p.width else logicalX
+                p.place(x, (rowHeight - p.height) / 2)
+            }
+            startPlaceable?.let { place(it, 0) }
+            endPlaceable?.let { place(it, rowWidth - it.width) }
+        }
+    }
 }
 
 /** A 1dp divider above a start / end action row. */
@@ -485,24 +560,5 @@ private fun ReceiptActionBar(
                 bottom = Dimens.OutcomeReceipt.BarBottomPadding
             )
         )
-    }
-}
-
-/** The start / end action row shared by the pinned bar and the Success actions row. */
-@Composable
-private fun ReceiptActionRow(
-    start: (@Composable () -> Unit)?,
-    end: (@Composable () -> Unit)?,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = barArrangement(hasStart = start != null, hasEnd = end != null),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // P7 escape hatch: each slot shares the row (weight 1f, fill = false) so a long localized
-        // label wraps instead of squeezing the other action out of the window.
-        start?.let { Box(Modifier.weight(1f, fill = false)) { it() } }
-        end?.let { Box(Modifier.weight(1f, fill = false)) { it() } }
     }
 }

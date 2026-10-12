@@ -95,12 +95,13 @@ class OutcomeSheetReceiptSourceContractTest {
         assertTrue(body.contains("thickness=Dimens.HairlineBorder"))
         // 22-04 extracted the row into ReceiptActionRow so the pinned bar and the Success actions share it.
         assertTrue(body.contains("ReceiptActionRow("))
-        // P7 escape hatch: both slots share the row, no Spacer(weight 1f).
+        // P7 escape hatch (WR-01): a measured Layout gives each slot its natural width and only
+        // constrains an action when the two do not fit, so no equal-weight slots and no Spacer.
         val row = receiptBody("fun ReceiptActionRow(")
-        assertTrue(row.contains("barArrangement("))
-        assertEquals(2, SourceContractTestSupport.countOccurrences(row, "weight(1f,fill=false)"))
-        assertFalse("no Spacer may combine with weighted actions", row.contains("Spacer("))
-        assertTrue(receiptSource.compact().contains("hasStart&&hasEnd->Arrangement.SpaceBetween"))
+        assertTrue(row.contains("Layout("))
+        assertTrue(row.contains("receiptActionSlotWidths("))
+        assertFalse("equal weights strand unused space (WR-01)", row.contains("weight("))
+        assertFalse("no Spacer may combine with the measured row", row.contains("Spacer("))
     }
 
     // ---- Success (22-04, D-08, D-10) ------------------------------------------------------------
