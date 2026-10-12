@@ -2,7 +2,9 @@ package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.ui.Modifier
 import io.github.ygaray.yahirandroidtaste.model.KeyFieldState
+import io.github.ygaray.yahirandroidtaste.model.ProviderKeyActions
 import io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel
+import io.github.ygaray.yahirandroidtaste.model.SavedKeyUiModel
 import org.junit.Test
 
 /**
@@ -70,5 +72,35 @@ class ProviderKeyCardSourceCompatV251Test {
                 "Provider"
             )
         }
+    }
+
+    @Suppress("UNUSED_VARIABLE")
+    @Test
+    fun v260NamedLifecycleCallShape_compiles() {
+        val call: @androidx.compose.runtime.Composable () -> Unit = {
+            ProviderKeyCard(
+                providers = emptyList(),
+                selectedProviderId = null,
+                onProviderSelected = { _: String -> },
+                keyValue = "",
+                onKeyChange = { _: String -> },
+                keyState = KeyFieldState.Empty,
+                keyLabel = "API key",
+                modifier = Modifier,
+                emptyProvidersReason = "No providers",
+                providerLabel = "Provider",
+                savedKeys = mapOf("p" to SavedKeyUiModel("fp")),
+                editingSavedKey = false,
+                actions = ProviderKeyActions(onSave = {}),
+                labels = ProviderKeyDefaults.labels()
+            )
+        }
+    }
+
+    @Suppress("UNUSED_VARIABLE")
+    @Test
+    fun v260LabelsDefaultsNamedSubset_compiles() {
+        val labels = ProviderKeyDefaults.labels(save = "Guardar", savedMarker = "guardada")
+        val actions = ProviderKeyActions(onSave = {}, onClear = {})
     }
 }
