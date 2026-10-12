@@ -17,7 +17,7 @@ findings:
   warning: 4
   info: 3
   total: 8
-status: issues_found
+status: resolved
 ---
 
 # Phase 15: Code Review Report (gap closure 15-04, G-15-1)
