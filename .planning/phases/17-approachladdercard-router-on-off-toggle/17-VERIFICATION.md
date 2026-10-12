@@ -13,7 +13,8 @@ covered_files:
   - src/test/java/io/github/ygaray/yahirandroidtaste/component/ApproachLadderCardTest.kt
   - src/test/java/io/github/ygaray/yahirandroidtaste/component/ApproachLadderRouterCompatTest.kt
   - src/test/java/io/github/ygaray/yahirandroidtaste/explorer/ApproachLadderCardGalleryDemoTest.kt
-covered_digest: "v1:sha256:546ef6249011c5daad118f0b59ad341db4bac726af6cba7091106d2aec0c9062"
+covered_digest: "v1:sha256:2a450300ff5f9c9f0f27f6234fe0e83bc0f6ecbe05fdae8414a1e7cd2e112bd2"
+fingerprint_refreshed: "2026-10-11 — covered files changed post-verification by P15 gap closure 15-04 (G-15-1); verdict re-confirmed at HEAD 0047e3d by the v2.5 audit integration check (CapControl/router wiring unchanged, api.txt == v2.5.0, 767/0 suite)"
 behavior_unverified: 0
 overrides_applied: 0
 ---

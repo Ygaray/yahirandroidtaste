@@ -10,7 +10,8 @@ covered_files:
   - .planning/phases/19-cut-v2-5-0/19-02-PLAN.md
   - .planning/phases/19-cut-v2-5-0/19-02-SUMMARY.md
   - tools/verify-binary-abi.sh
-covered_digest: "v1:sha256:9c1299616893c528cd9b63f6126e31cf5533f49c3977529f6c060f1cba4aa0c3"
+covered_digest: "v1:sha256:73bdbdf73191863156c485d0de23d171eea3fb2be190443e3599411b7be40d71"
+fingerprint_refreshed: "2026-10-11 — covered files changed post-verification by P15 gap closure 15-04 (G-15-1); verdict re-confirmed at HEAD 0047e3d by the v2.5 audit integration check (CapControl/router wiring unchanged, api.txt == v2.5.0, 767/0 suite)"
 behavior_unverified: 0
 overrides_applied: 0
 ---

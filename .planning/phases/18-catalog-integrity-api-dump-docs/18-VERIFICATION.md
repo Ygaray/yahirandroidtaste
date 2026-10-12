@@ -12,7 +12,8 @@ covered_files:
   - .planning/phases/18-catalog-integrity-api-dump-docs/18-SHIP-GATE-EVIDENCE.md
   - API.md
   - INTEGRATION.md
-covered_digest: "v1:sha256:0b7bafc76161e7ce4841c26e26f2159393e7ede407a86f317f14e8969c698e6e"
+covered_digest: "v1:sha256:92bd82c7567e83c46aab3f70c13fb6dd27059a275ddad94d288e536484446873"
+fingerprint_refreshed: "2026-10-11 — covered files changed post-verification by P15 gap closure 15-04 (G-15-1); verdict re-confirmed at HEAD 0047e3d by the v2.5 audit integration check (CapControl/router wiring unchanged, api.txt == v2.5.0, 767/0 suite)"
 behavior_unverified: 0
 overrides_applied: 0
 re_verification: false

@@ -16,7 +16,8 @@ covered_files:
   - "src/main/java/io/github/ygaray/yahirandroidtaste/component/OutcomeSheet.kt"
   - "src/main/java/io/github/ygaray/yahirandroidtaste/model/FailureActionUiModel.kt"
   - "src/main/java/io/github/ygaray/yahirandroidtaste/model/VoiceOutcomeUiState.kt"
-covered_digest: "v1:sha256:41cb6e62d71b3000052cf3abf2014bda3786128288faa0c61685856acf3f917c"
+covered_digest: "v1:sha256:999b719bfcd9da279da47f24688a4d914b147e981b13b4acd1c590b0543dd132"
+fingerprint_refreshed: "2026-10-11 — covered files changed post-verification by P15 gap closure 15-04 (G-15-1); verdict re-confirmed at HEAD 0047e3d by the v2.5 audit integration check (CapControl/router wiring unchanged, api.txt == v2.5.0, 767/0 suite)"
 behavior_unverified: 0
 overrides_applied: 0
 gate2_deferred_notes:
