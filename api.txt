@@ -403,6 +403,10 @@ package io.github.ygaray.yahirandroidtaste.component {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void TextCard(String id, String title, String? content, String? categoryPath, long createdAt, long updatedAt, boolean isPinned, boolean isFavorite, kotlin.jvm.functions.Function0<kotlin.Unit> onEdit, kotlin.jvm.functions.Function0<kotlin.Unit> onDelete, kotlin.jvm.functions.Function0<kotlin.Unit> onTogglePin, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleFavorite, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onConfirmRename, androidx.compose.runtime.MutableState<androidx.compose.foundation.gestures.AnchoredDraggableState<io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor>?> openRowState, optional androidx.compose.ui.Modifier modifier, optional boolean showBottomSheet, optional kotlin.jvm.functions.Function0<kotlin.Unit> onShowBottomSheet, optional kotlin.jvm.functions.Function0<kotlin.Unit> onDismissBottomSheet, optional kotlin.jvm.functions.Function0<kotlin.Unit>? tagContent, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> tags, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTagClick, optional kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCloseSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagEdit, optional kotlin.jvm.functions.Function2<java.lang.String,java.lang.String,kotlin.Unit>? onTagDelete, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagRemoveFromCard, optional int imageCount, optional int reminderCount, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onEditRequest, optional androidx.compose.ui.graphics.Color? accent, optional boolean tactileDepth);
   }
 
+  public final class ToneCardKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ToneCard(io.github.ygaray.yahirandroidtaste.theme.ToneColors tone, optional androidx.compose.ui.Modifier modifier, kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit> content);
+  }
+
   public final class VoiceCardKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void VoiceCard(String id, String title, long durationMs, String? samplesPath, String? categoryPath, boolean isPinned, boolean isFavorite, kotlin.jvm.functions.Function0<kotlin.Unit> onTap, kotlin.jvm.functions.Function0<kotlin.Unit> onDelete, kotlin.jvm.functions.Function0<kotlin.Unit> onTogglePin, kotlin.jvm.functions.Function0<kotlin.Unit> onToggleFavorite, kotlin.jvm.functions.Function0<kotlin.Unit> onRenameOrTagsRequest, androidx.compose.runtime.MutableState<androidx.compose.foundation.gestures.AnchoredDraggableState<io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor>?> openRowState, optional androidx.compose.ui.Modifier modifier, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onManageLinks, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> tags, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTagClick, optional kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCloseSiblingsClick, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagEdit, optional kotlin.jvm.functions.Function2<java.lang.String,java.lang.String,kotlin.Unit>? onTagDelete, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onTagRemoveFromCard, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.VoiceClipUiModel> clips, optional androidx.compose.ui.graphics.Color? accent, optional boolean tactileDepth, optional int reminderCount);
   }
@@ -1498,6 +1502,13 @@ package io.github.ygaray.yahirandroidtaste.modifier {
 
 package io.github.ygaray.yahirandroidtaste.theme {
 
+  public enum ContentTone {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.theme.ContentTone Default;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.theme.ContentTone Error;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.theme.ContentTone Muted;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.theme.ContentTone Warn;
+  }
+
   public final class Dimens {
     property public androidx.compose.ui.unit.Dp AccentSpineWidth;
     property public androidx.compose.ui.unit.Dp BottomPadding;
@@ -1510,6 +1521,18 @@ package io.github.ygaray.yahirandroidtaste.theme {
     property public androidx.compose.ui.unit.Dp TopPadding;
     property public androidx.compose.ui.unit.Dp TouchTarget;
     field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens INSTANCE;
+  }
+
+  public static final class Dimens.ActionButton {
+    property public androidx.compose.ui.unit.Dp ContentVerticalPadding;
+    property public androidx.compose.ui.unit.Dp FilledHorizontalPadding;
+    property public androidx.compose.ui.unit.Dp FilledMinHeight;
+    property public androidx.compose.ui.unit.Dp IconGap;
+    property public androidx.compose.ui.unit.Dp IconSize;
+    property public androidx.compose.ui.unit.Dp TextHorizontalPadding;
+    property public androidx.compose.ui.unit.Dp TextSmallHorizontalPadding;
+    property public androidx.compose.ui.unit.Dp TextSmallVerticalPadding;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.ActionButton INSTANCE;
   }
 
   public static final class Dimens.CornerRadius {
@@ -1536,6 +1559,24 @@ package io.github.ygaray.yahirandroidtaste.theme {
     property public androidx.compose.ui.unit.Dp MenuButton;
     property public androidx.compose.ui.unit.Dp MenuIcon;
     field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.Icons INSTANCE;
+  }
+
+  public static final class Dimens.PillChip {
+    property public androidx.compose.ui.unit.Dp Height;
+    property public androidx.compose.ui.unit.Dp IconSideHorizontalPadding;
+    property public androidx.compose.ui.unit.Dp LabelOnlyHorizontalPadding;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.PillChip INSTANCE;
+  }
+
+  public static final class Dimens.RoundIconButton {
+    property public androidx.compose.ui.unit.Dp IconSize;
+    property public androidx.compose.ui.unit.Dp Size;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.RoundIconButton INSTANCE;
+  }
+
+  public static final class Dimens.StackedProgressBar {
+    property public androidx.compose.ui.unit.Dp Height;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.StackedProgressBar INSTANCE;
   }
 
   public static final class Dimens.SwipeReveal {
@@ -1639,6 +1680,18 @@ package io.github.ygaray.yahirandroidtaste.theme {
 
   public static final class ThemeMode.Companion {
     method public io.github.ygaray.yahirandroidtaste.theme.ThemeMode fromString(String value);
+  }
+
+  @androidx.compose.runtime.Immutable public final class ToneColors {
+    ctor @KotlinOnly public ToneColors(androidx.compose.ui.graphics.Color container, androidx.compose.ui.graphics.Color content);
+    property public androidx.compose.ui.graphics.Color container;
+    property public androidx.compose.ui.graphics.Color content;
+  }
+
+  public final class ToneDefaults {
+    method @KotlinOnly @androidx.compose.runtime.Composable public io.github.ygaray.yahirandroidtaste.theme.ToneColors error();
+    method @KotlinOnly @androidx.compose.runtime.Composable public io.github.ygaray.yahirandroidtaste.theme.ToneColors warn();
+    field public static final io.github.ygaray.yahirandroidtaste.theme.ToneDefaults INSTANCE;
   }
 
   public final class TypeKt {
