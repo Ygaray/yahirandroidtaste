@@ -34,7 +34,7 @@ data class BarSegment(
 /**
  * Clamps raw segment fractions into a safe layout input (D-09).
  *
- * Walks [raw] left to right with `1f` of room: `NaN` counts as `0f` (`coerceAtLeast` would leave a
+ * Walks [raw] in order with `1f` of room: `NaN` counts as `0f` (`coerceAtLeast` would leave a
  * `NaN` as `NaN`), every other value is coerced into `0f..remaining`, and the accepted value is
  * subtracted from the room. The segment that crosses the end of the track is therefore
  * **truncated**, not rescaled, and any segment after a full track gets `0f`. The result always has
@@ -50,15 +50,16 @@ internal fun clampSegmentFractions(raw: List<Float>): List<Float> {
 }
 
 /**
- * A horizontal progress bar made of colored [segments] drawn left to right inside a fully rounded
+ * A horizontal progress bar made of colored [segments] drawn start to end inside a fully rounded
  * track (sketch Y-9). Example: segments of `0.4f` and `0.18f` fill 58 percent of the track, the
- * first segment on the left; the rest of the track shows [trackColor].
+ * first segment at the start edge (the left in LTR, the right in RTL); the rest of the track shows
+ * [trackColor].
  *
  * The track clips to a pill shape before it paints [trackColor], so the track and the segments keep
  * rounded ends at any width.
  *
  * Hostile input is safe. Fractions are clamped by an internal rule: a negative or `NaN` fraction
- * draws as zero, fractions accumulate left to right, and the running total is capped at `1f` by
+ * draws as zero, fractions accumulate in order, and the running total is capped at `1f` by
  * truncating the segment that crosses it. A zero-width segment draws nothing. An empty list draws
  * the bare track.
  *
@@ -71,9 +72,13 @@ internal fun clampSegmentFractions(raw: List<Float>): List<Float> {
  *
  * Test tags: the track node carries the stable tag `stacked_progress_bar`; a `Modifier.testTag(...)`
  * in [modifier] wins. Each drawn segment carries `stacked_progress_bar_segment`, which is a
- * **test-only** hook and not stable API. The library never exposes tags as resource ids.
+ * **test-only** hook and not stable API. The library never exposes tags as resource ids itself; a
+ * consumer that turns on `testTagsAsResourceId` for its own tree would expose both tags.
  *
- * @param segments Segments in drawing order, left to right.
+ * Width: the bar fills the width it is given, so it needs a bounded width. Inside an unbounded
+ * parent (such as a horizontal scroller) pass an explicit width in [modifier], or it collapses.
+ *
+ * @param segments Segments in drawing order, start to end.
  * @param trackColor Color of the unfilled track. Required.
  * @param modifier Applied first on the track node. Pass a width (or a weight) here; the bar fills
  *   the width it is given.
