@@ -14,6 +14,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -21,10 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.AnimatedStatValue
+import io.github.ygaray.yahirandroidtaste.component.BarSegment
 import io.github.ygaray.yahirandroidtaste.component.HeroStatCard
 import io.github.ygaray.yahirandroidtaste.component.MetricBand
 import io.github.ygaray.yahirandroidtaste.component.MetricBar
 import io.github.ygaray.yahirandroidtaste.component.ProgressRing
+import io.github.ygaray.yahirandroidtaste.component.StackedProgressBar
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
@@ -130,6 +133,35 @@ internal val progressFamilyEntries: List<ComponentRegistry.Entry> = listOf(
         ),
         content = { HeroStatCardVariants() },
         tier = ComponentRegistry.Tier.PATTERN
+    ),
+    ComponentRegistry.Entry(
+        name = "StackedProgressBar",
+        family = ExplorerFamilies.PROGRESS_METRICS,
+        states = listOf(
+            ComponentRegistry.StateCell(
+                "Default",
+                render = {
+                    // outline stays visible in both schemes (the MetricBar track-contrast lesson).
+                    StackedProgressBar(
+                        segments = listOf(
+                            BarSegment(0.4f, MaterialTheme.colorScheme.primary),
+                            BarSegment(0.18f, MaterialTheme.colorScheme.tertiary)
+                        ),
+                        trackColor = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.fillMaxWidth().padding(16.dp)
+                    )
+                }
+            ),
+            // StackedProgressBar is display-only, no pressable/selectable element - N/A (mirrors
+            // MetricBar's own N/A precedent above).
+            ComponentRegistry.StateCell("Pressed / Selected"),
+            // StackedProgressBar has no `enabled` param - N/A.
+            ComponentRegistry.StateCell("Disabled"),
+            // StackedProgressBar has no focus-visual override - N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { StackedProgressBarVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     )
 )
 
@@ -256,6 +288,41 @@ private fun HeroStatCardVariants() {
         HeroStatCard(label = "With embedded ring", value = "1,204") {
             ProgressRing(fraction = 0.65f, modifier = Modifier.size(48.dp))
         }
+    }
+}
+
+/**
+ * Sample `StackedProgressBar`s: two segments, a sum above 1 (clamped to the full track), a
+ * negative fraction (drawn as zero), an empty list (bare track) and a taller 12dp track.
+ */
+@Composable
+private fun StackedProgressBarVariants() {
+    SectionLabel("StackedProgressBar - sample segments")
+    val track = MaterialTheme.colorScheme.outline
+    val primary = MaterialTheme.colorScheme.primary
+    val tertiary = MaterialTheme.colorScheme.tertiary
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        StackedProgressBar(
+            segments = listOf(BarSegment(0.4f, primary), BarSegment(0.18f, tertiary)),
+            trackColor = track
+        )
+        StackedProgressBar(
+            segments = listOf(BarSegment(0.7f, primary), BarSegment(0.6f, tertiary)),
+            trackColor = track
+        )
+        StackedProgressBar(
+            segments = listOf(BarSegment(-0.3f, primary), BarSegment(0.5f, tertiary)),
+            trackColor = track
+        )
+        StackedProgressBar(segments = emptyList(), trackColor = track)
+        StackedProgressBar(
+            segments = listOf(BarSegment(0.4f, primary), BarSegment(0.18f, tertiary)),
+            trackColor = track,
+            height = 12.dp
+        )
     }
 }
 

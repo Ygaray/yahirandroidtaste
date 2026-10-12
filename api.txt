@@ -78,6 +78,16 @@ package io.github.ygaray.yahirandroidtaste.component {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void AttentionCue(String? text, optional androidx.compose.ui.Modifier modifier, optional io.github.ygaray.yahirandroidtaste.component.AttentionCueDefaults.Style style, optional androidx.compose.ui.graphics.vector.ImageVector icon, optional androidx.compose.ui.graphics.Color tint, optional String contentDescription);
   }
 
+  @androidx.compose.runtime.Immutable public final class BarSegment {
+    ctor @KotlinOnly public BarSegment(float fraction, androidx.compose.ui.graphics.Color color);
+    method public float component1();
+    method @KotlinOnly public operator androidx.compose.ui.graphics.Color component2();
+    method @KotlinOnly public io.github.ygaray.yahirandroidtaste.component.BarSegment copy(optional float fraction, optional androidx.compose.ui.graphics.Color color);
+    method @InaccessibleFromKotlin public float getFraction();
+    property public androidx.compose.ui.graphics.Color color;
+    property public float fraction;
+  }
+
   public final class BulkCreatePopupKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void BulkCreatePopup(kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, String actionLabel, String actionAndMoreLabel, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onAction, optional kotlin.jvm.functions.Function1<java.lang.String,java.lang.String?> validate, optional androidx.compose.ui.Modifier modifier);
     method @KotlinOnly @androidx.compose.runtime.Composable public static void BulkCreatePopupContent(String actionLabel, String actionAndMoreLabel, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onAction, kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, optional kotlin.jvm.functions.Function1<java.lang.String,java.lang.String?> validate, optional androidx.compose.ui.Modifier modifier);
@@ -384,6 +394,10 @@ package io.github.ygaray.yahirandroidtaste.component {
 
   public final class SortControlKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static <T> void SortControl(T sortMode, java.util.List<T> options, kotlin.jvm.functions.Function1<T,java.lang.String> optionLabel, kotlin.jvm.functions.Function1<T,kotlin.Unit> onSortModeChange, optional androidx.compose.ui.Modifier modifier, optional String sortContentDescription);
+  }
+
+  public final class StackedProgressBarKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void StackedProgressBar(java.util.List<io.github.ygaray.yahirandroidtaste.component.BarSegment> segments, androidx.compose.ui.graphics.Color trackColor, optional androidx.compose.ui.Modifier modifier, optional androidx.compose.ui.unit.Dp height);
   }
 
   public final class TagChipEditorContentKt {

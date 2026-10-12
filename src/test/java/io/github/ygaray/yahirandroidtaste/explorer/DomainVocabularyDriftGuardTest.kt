@@ -339,7 +339,10 @@ class DomainVocabularyDriftGuardTest {
             "Round",
             // Phase 20 (VCHIP-01): "Pill" is PillChip's head token — a generic shape descriptor
             // (fully rounded chip), not consumer-domain vocabulary.
-            "Pill"
+            "Pill",
+            // Phase 20 (VBAR-01): "Stacked" is StackedProgressBar's head token - a generic layout
+            // descriptor (segments stacked along one track), not consumer-domain vocabulary.
+            "Stacked"
         )
 
         /**
