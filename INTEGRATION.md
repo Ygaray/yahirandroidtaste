@@ -219,7 +219,7 @@ ProviderKeyCard(
         saveEnabled = typed.isNotBlank(),
         onUpdate = { editing = true },
         onClear = { clear(selected) },
-        onCancelEdit = { editing = false; typed = "" },
+        onCancelEdit = if (editing) { { editing = false; typed = "" } } else null,  // only while editing a saved key
         inFlight = saving,                                                      // disables every action
     ),
 )
@@ -229,6 +229,8 @@ ProviderKeyCard(
   Clear instead of the field; `editingSavedKey = true` brings the field back for the Update flow. It is
   one flag for the whole card, so reset it (and the typed text) in `onProviderSelected`.
 - A `null` callback in `ProviderKeyActions` hides that button, and `null` `actions` renders no button row.
+- Pass `onCancelEdit` only while `editingSavedKey` is true. The card draws Cancel whenever the callback
+  is non-null, and a provider with no saved key has nothing to cancel back to.
 - **What a consumer can delete.** CalTracker can drop its dead provider dropdown
   (`onProviderSelected = {}`) and its own Save, Cancel and "key configured" rows, pass the real provider
   list and let the card draw them. SecondBrain is unchanged: with `savedKeys` empty and `actions` null the
