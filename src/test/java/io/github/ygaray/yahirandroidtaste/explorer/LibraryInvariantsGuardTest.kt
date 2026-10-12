@@ -16,6 +16,8 @@ import org.junit.Test
  *    Coil, osmdroid, the reorderable library and the library's own root);
  *  - the manifest declares exactly one `activity` (the Explorer) and an `application` element with no
  *    `android:name`, so the library can never become the Hilt host;
+ *  - comment-stripped code declares no Hilt application host or entry point (the consumer owns the
+ *    Hilt `Application`; the library only provides bindings);
  *  - comment-stripped code names no consumer package or app identifier;
  *  - the Explorer demo copy file `ReleaseDemos.kt` holds no consumer noun, no domain noun and no
  *    key-looking prefix.
@@ -105,6 +107,17 @@ class LibraryInvariantsGuardTest {
         listOf("service", "receiver", "provider").forEach { component ->
             assertTrue("the library declares no <$component>", !Regex("<$component\\b").containsMatchIn(withoutComments))
         }
+    }
+
+    @Test
+    fun `the library declares no Hilt application host or entry point`() {
+        val hostAnnotation = Regex("@(" + "Hilt" + "AndroidApp|Android" + "EntryPoint)\\b")
+        val files = mainKotlinFiles()
+        assertTrue("source scan found only ${files.size} files; the source root is wrong", files.size > 100)
+        val offenders = files
+            .filter { hostAnnotation.containsMatchIn(SourceContractTestSupport.stripComments(it.readText())) }
+            .map { it.name }
+        assertTrue("Hilt host annotations in the library (the consumer owns the host): $offenders", offenders.isEmpty())
     }
 
     @Test
