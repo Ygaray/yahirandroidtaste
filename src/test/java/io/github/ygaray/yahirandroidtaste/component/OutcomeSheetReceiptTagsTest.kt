@@ -207,7 +207,7 @@ class OutcomeSheetReceiptTagsTest {
     }
 
     @Test
-    fun `failure warn carries the same tags as error and differs only in tone`() {
+    fun `failure warn carries the same tags as error`() {
         assertTags(fullFailure(FailureTone.Warn), fullFailureTags)
     }
 

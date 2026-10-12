@@ -14,8 +14,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -64,6 +67,29 @@ class OutcomeSheetReceiptFrameTest {
         composeTestRule.onNodeWithTag(tag, useUnmergedTree = true)
 
     private fun count(tag: String) = composeTestRule.onAllNodesWithTag(tag, useUnmergedTree = true)
+
+    // ---- Bar structure (IN-05) ------------------------------------------------------------------
+
+    @Test
+    fun `the pinned bar is a sibling below the scroll body, not a descendant of it`() {
+        // Enough items that the body overflows the 600dp host and must scroll.
+        setContent(OutcomeFixtures.needsConfirmation(items = OutcomeFixtures.proposedItems(30)))
+
+        val scrollBody = SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        // Positive control: the scroll matcher really contains the body content.
+        composeTestRule.onAllNodes(hasTestTag("outcome_sheet_title") and hasAnyAncestor(scrollBody), true)
+            .assertCountEquals(1)
+        composeTestRule.onAllNodes(hasTestTag("outcome_sheet_action_bar") and hasAnyAncestor(scrollBody), true)
+            .assertCountEquals(0)
+
+        val body = composeTestRule.onAllNodes(scrollBody, true).fetchSemanticsNodes().single()
+        val bar = tagged("outcome_sheet_action_bar").fetchSemanticsNode()
+        assertTrue(
+            "bar top ${bar.positionInRoot.y} must be at or below the scroll body bottom " +
+                "${body.positionInRoot.y + body.size.height}",
+            bar.positionInRoot.y >= body.positionInRoot.y + body.size.height - 1f
+        )
+    }
 
     // ---- Title row ----------------------------------------------------------------------------
 
