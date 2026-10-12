@@ -100,7 +100,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 21-02-PLAN.md — `SegmentedOptionSelector` Pill style + `disabledOptions` above the byte-identical Material block, parity contract, Pill/German 360dp/disabled tests, gallery demos (VSEG-01)
+- [x] 21-02-PLAN.md — `SegmentedOptionSelector` Pill style + `disabledOptions` above the byte-identical Material block, parity contract, Pill/German 360dp/disabled tests, gallery demos (VSEG-01)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -287,7 +287,7 @@ only on Phase 20, but it runs after 22 because every phase rewrites the shared `
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 20. Tone foundation & atoms | v2.6 | 4/4 | Planned |  |
-| 21. Receipt row, Pill selector & sheet shape | v2.6 | 1/4 | Not started |  |
+| 21. Receipt row, Pill selector & sheet shape | v2.6 | 2/4 | Not started |  |
 | 22. OutcomeSheet Receipt style | v2.6 | 0/TBD | Not started | - |
 | 23. ProviderKeyCard lifecycle & Undo Center groups | v2.6 | 0/TBD | Not started | - |
 | 24. Catalog, docs, Explorer demos & cut v2.6.0 | v2.6 | 0/TBD | Not started | - |
