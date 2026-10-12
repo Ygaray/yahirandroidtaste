@@ -85,8 +85,8 @@ sealed interface VoiceOutcomeUiState {
      *   surface's accessibility announcement (VFAIL-03, D-02), joined by a single ASCII space so any
      *   punctuation belongs to the prefix (e.g. `"Error:"`). `null` or blank leaves the announcement
      *   unchanged. Plain text, no templating. Static UI copy only.
-     * @param title Receipt title-row headline (Receipt only). `null` lets the sheet fall back to its
-     *   default title behavior.
+     * @param title Receipt title-row headline (Receipt only). `null` renders no title text (a
+     *   [badge] alone still renders).
      * @param transcript The spoken text, shown as the transcript line in the Receipt style only.
      * @param tone The hue of the failure (D-09). Honored by both styles: Receipt picks the
      *   `ToneCard` hue, Classic paints the warn tone for [FailureTone.Warn]. Defaults to
