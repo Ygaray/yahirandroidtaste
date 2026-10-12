@@ -40,6 +40,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -67,7 +69,8 @@ import kotlinx.coroutines.delay
  *   button) followed by its members, indented. Entries that belong to no group stay flat. The
  *   default `emptyList()` renders exactly the flat list of earlier releases.
  * @param onUndoGroup Invoked with a group id when its "Undo all" button is tapped. `null` (the
- *   default) hides every "Undo all" button.
+ *   default) hides every "Undo all" button. The button is also hidden for a group whose status is
+ *   FullyResolved or Empty.
  * @param onClear Invoked when "Clear history" is tapped — scoped clear of spent entries (D-08).
  *   It stays the trailing parameter, so a positional four-argument call must now name `onClear`
  *   or pass it as the trailing lambda.
@@ -122,7 +125,12 @@ fun UndoCenterScreen(
                         is UndoCenterRow.Group -> UndoGroupHeaderRow(row, onUndoGroup)
                         is UndoCenterRow.Entry -> UndoHistoryRow(
                             entry = row.entry,
-                            onUndo = { onUndo(row.entry.id) }
+                            onUndo = { onUndo(row.entry.id) },
+                            modifier = if (row.indented) {
+                                Modifier.padding(start = Dimens.HorizontalPadding)
+                            } else {
+                                Modifier
+                            }
                         )
                     }
                 }
@@ -206,6 +214,14 @@ internal fun groupStatusText(status: UndoGroupStatus): String? = when (status) {
     UndoGroupStatus.Empty -> null
 }
 
+/**
+ * Undo all is shown only for a caller that wired [onUndoGroup] and a group that still has
+ * something to undo: Undoable or PartiallyResolved. FullyResolved and Empty groups hide it.
+ */
+internal fun undoAllVisible(status: UndoGroupStatus, onUndoGroup: ((String) -> Unit)?): Boolean =
+    onUndoGroup != null &&
+        (status == UndoGroupStatus.Undoable || status == UndoGroupStatus.PartiallyResolved)
+
 /** The count text joined by a middle dot to the status text (just the count when there is no status text). */
 internal fun groupSubtitle(count: Int, status: UndoGroupStatus): String {
     val statusText = groupStatusText(status)
@@ -230,6 +246,7 @@ private fun UndoGroupHeaderRow(row: UndoCenterRow.Group, onUndoGroup: ((String) 
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = group.label,
+                modifier = Modifier.semantics { heading() },
                 style = MaterialTheme.typography.titleSmall,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -241,7 +258,7 @@ private fun UndoGroupHeaderRow(row: UndoCenterRow.Group, onUndoGroup: ((String) 
                 maxLines = 2
             )
         }
-        if (onUndoGroup != null) {
+        if (onUndoGroup != null && undoAllVisible(group.status, onUndoGroup)) {
             TextButton(
                 onClick = { onUndoGroup(group.groupId) },
                 modifier = Modifier.testTag("$UNDO_GROUP_UNDO_ALL_TEST_TAG_PREFIX${group.groupId}")
@@ -256,10 +273,10 @@ private fun UndoGroupHeaderRow(row: UndoCenterRow.Group, onUndoGroup: ((String) 
  * gesture (D-04) so the read-only [UndoPreviewPeek] overlay can render above it while held.
  */
 @Composable
-private fun UndoHistoryRow(entry: UndoHistoryEntry, onUndo: () -> Unit) {
+private fun UndoHistoryRow(entry: UndoHistoryEntry, onUndo: () -> Unit, modifier: Modifier = Modifier) {
     var showPeek by remember(entry.id) { mutableStateOf(false) }
     Box(
-        modifier = Modifier
+        modifier = modifier
             .testTag("$UNDO_ROW_TEST_TAG_PREFIX${entry.id}")
             .pointerInput(entry.id) {
                 // A1 (RESEARCH.md): detectTapGestures's awaitFirstDown defaults to
