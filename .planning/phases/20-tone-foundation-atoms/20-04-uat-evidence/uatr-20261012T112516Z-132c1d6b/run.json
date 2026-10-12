@@ -1,0 +1,198 @@
+{
+  "schema": "gsd.uat-run/v1",
+  "run_id": "uatr-20261012T112516Z-132c1d6b",
+  "status": "finished",
+  "phase": "20",
+  "plan": "04",
+  "prefix": "20-04",
+  "surface": "android",
+  "required_surface": {
+    "surface": "android",
+    "source": "marker:AGENT-DEVICE-TESTING.md"
+  },
+  "surface_override": null,
+  "device": {
+    "addr": "R5CT10XNKQN",
+    "serial": "R5CT10XNKQN",
+    "model": "SM-S908U",
+    "label": null
+  },
+  "app": {
+    "package": "io.github.ygaray.yahirandroidtasteharness",
+    "apk_path": "/data/app/~~sFha50A07LSLBP9BWWyT0A==/io.github.ygaray.yahirandroidtasteharness-irW1zvEAtNIq7xxy9jUTbg==/base.apk",
+    "apk_sha256": "31e1ba14bf4e8e6b497138d24ae1ef8fb992295b556cf49320e11b7be6e5a270"
+  },
+  "head_at_start": "3015de6d0cb651c1e832694d85f48cce8a8e557a",
+  "started_at": "2026-10-12T11:25:16.455Z",
+  "finished_at": "2026-10-12T11:33:02.638Z",
+  "capture_count": 18,
+  "captures": [
+    {
+      "label": "sc1-tonecard-light-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "01-sc1-tonecard-light-ui.xml",
+      "sha256": "20a79c3621dd9a4543fba32f6baffaf88eba8147d06c4cd726807fb6a95d7b3b",
+      "bytes": 14648,
+      "at": "2026-10-12T11:25:46.904Z"
+    },
+    {
+      "label": "sc1-tonecard-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "02-sc1-tonecard-light-screen.png",
+      "sha256": "1854c750fbf3fd44932ab18715eb18e2b27803d48f2fc3eecc59eaed0ac10635",
+      "bytes": 149105,
+      "at": "2026-10-12T11:25:47.808Z"
+    },
+    {
+      "label": "sc1-tonecard-dark-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "03-sc1-tonecard-dark-screen.png",
+      "sha256": "b78c42a7139c55398aa90cffde3b030e8f50192376e6eb6cd0c1982349b85730",
+      "bytes": 144289,
+      "at": "2026-10-12T11:27:04.556Z"
+    },
+    {
+      "label": "sc2-emphasis-matrix-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "04-sc2-emphasis-matrix-ui.xml",
+      "sha256": "4427aa35ee2462f1783521002b8f431e42c2ad8ab7bb7e1b1367fd0698cfb070",
+      "bytes": 29235,
+      "at": "2026-10-12T11:27:56.409Z"
+    },
+    {
+      "label": "sc2-emphasis-matrix-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "05-sc2-emphasis-matrix-light-screen.png",
+      "sha256": "451fd6fdbc2e7b7a0af8ec337f715cdd013fda718ff32430757befb6ea0273c4",
+      "bytes": 182320,
+      "at": "2026-10-12T11:27:56.893Z"
+    },
+    {
+      "label": "sc3-roundiconbutton-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "06-sc3-roundiconbutton-ui.xml",
+      "sha256": "4664d4144df2a8d1b165493da8e1a0837653cc095d94f5d2f6b0ba33195083a9",
+      "bytes": 13895,
+      "at": "2026-10-12T11:28:42.960Z"
+    },
+    {
+      "label": "sc3-roundiconbutton-enabled-pressed-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "07-sc3-roundiconbutton-enabled-pressed-screen.png",
+      "sha256": "5d87857bbbb5d1229082b19765c02c8bf0769cd083cc40f657c7b58e1313186f",
+      "bytes": 145376,
+      "at": "2026-10-12T11:28:44.005Z"
+    },
+    {
+      "label": "sc3-roundiconbutton-disabled-pressed-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "08-sc3-roundiconbutton-disabled-pressed-screen.png",
+      "sha256": "3c70b47468c0a83ff22bc56ae1703747ec5978a5b57077619839d1d604ee40b4",
+      "bytes": 142312,
+      "at": "2026-10-12T11:28:46.997Z"
+    },
+    {
+      "label": "sc3-pillchip-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "09-sc3-pillchip-ui.xml",
+      "sha256": "49b40b326c8bdaea46e72af642c1a1d223233ad6604eeccecfbd3e5d5bb573b4",
+      "bytes": 19469,
+      "at": "2026-10-12T11:29:33.708Z"
+    },
+    {
+      "label": "sc3-pillchip-enabled-pressed-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "10-sc3-pillchip-enabled-pressed-screen.png",
+      "sha256": "0a31152cad59e46bd422ee5a887c2f6ebb05b45cd4d8714c5d5d1645243fa0e3",
+      "bytes": 157837,
+      "at": "2026-10-12T11:29:34.709Z"
+    },
+    {
+      "label": "sc3-pillchip-disabled-pressed-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "11-sc3-pillchip-disabled-pressed-screen.png",
+      "sha256": "d3633afd90c838602a5534407f7e60b01d4201d446f15d7fe4a6a4f14eed89f5",
+      "bytes": 298039,
+      "at": "2026-10-12T11:29:37.771Z"
+    },
+    {
+      "label": "sc3-pillchip-disabledcell-pressed-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "12-sc3-pillchip-disabledcell-pressed-screen.png",
+      "sha256": "52228efb3718df1c75a61523c7a6c2355480235835028db6a2a857ea31cc02e4",
+      "bytes": 152493,
+      "at": "2026-10-12T11:30:07.845Z"
+    },
+    {
+      "label": "sc3-pillchip-defaultcell-pressed-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "13-sc3-pillchip-defaultcell-pressed-screen.png",
+      "sha256": "4f40e3b43fbaf36d603b3e322e05ed1c797c6c60335767f6c2db9c7df6c61f39",
+      "bytes": 152503,
+      "at": "2026-10-12T11:30:11.021Z"
+    },
+    {
+      "label": "sc4-stackedbar-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "14-sc4-stackedbar-ui.xml",
+      "sha256": "25a1d456f775b1aeb70d6c9ecf63fb97a5d5ef08dec4fe74644d30909bb6a8d2",
+      "bytes": 16199,
+      "at": "2026-10-12T11:30:43.818Z"
+    },
+    {
+      "label": "sc4-stackedbar-light-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "15-sc4-stackedbar-light-screen.png",
+      "sha256": "500606564eecc046fb39417c3f2d91f68f500f51f41dc589ad583ba8902d35f8",
+      "bytes": 114383,
+      "at": "2026-10-12T11:30:44.321Z"
+    },
+    {
+      "label": "logcat-fatal-check",
+      "kind": "log",
+      "source": "cli",
+      "file": "16-logcat-fatal-check.log",
+      "sha256": "629f5c99a8c152fb8fc472f83ecb0cea3af783a9c1f2c7a3480e46d02ae1a1e8",
+      "bytes": 63,
+      "at": "2026-10-12T11:31:10.744Z",
+      "empty": true
+    },
+    {
+      "label": "sc2-legacy-head-states-variants-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "17-sc2-legacy-head-states-variants-screen.png",
+      "sha256": "5be9be06fca87e5f8fd6e6e5e5abe69a626e5336f18a038d2dfc7296254cfda2",
+      "bytes": 169632,
+      "at": "2026-10-12T11:32:29.093Z"
+    },
+    {
+      "label": "sc2-legacy-baseline-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "18-sc2-legacy-baseline-v251-screen.png",
+      "sha256": "e02b4647621db29be058e245b9a9d725ea50fb4079611bbac19be5c0472256c7",
+      "bytes": 134083,
+      "at": "2026-10-12T11:32:54.517Z"
+    }
+  ],
+  "sig": {
+    "alg": "HMAC-SHA256",
+    "value": "57b511286712a0d01e7e82d0c38b3ca9b30f4d046d8944f7e34602096bce4725"
+  }
+}
