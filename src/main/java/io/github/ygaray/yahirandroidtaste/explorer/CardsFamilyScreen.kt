@@ -308,6 +308,8 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
         states = listOf(
             ComponentRegistry.StateCell("Default") { ReceiptRowDefaultPreview() },
             ComponentRegistry.StateCell("Pressed / Selected") { ReceiptRowExpandedPreview() },
+            // ReceiptRow has no `enabled` flag: the fixed "Disabled" axis shows the closest state, a
+            // dimmed non-interactive row (no onClick), since `dimmed` alone does not block taps.
             ComponentRegistry.StateCell("Disabled") { ReceiptRowDimmedPreview() },
             // Focused: no focus-visual param exposed — N/A.
             ComponentRegistry.StateCell("Focused")
@@ -581,7 +583,6 @@ private fun ReceiptRowDimmedPreview() {
         value = "1,250",
         valueCaption = "Total",
         dimmed = true,
-        onClick = {},
         modifier = Modifier.padding(horizontal = 16.dp)
     )
 }

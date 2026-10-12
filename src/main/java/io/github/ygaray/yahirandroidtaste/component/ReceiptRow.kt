@@ -157,7 +157,11 @@ internal fun receiptRowToneColor(
  * @param expandedStateLabel State description announced while [expanded].
  * @param collapsedStateLabel State description announced while collapsed.
  * @param trailingAction Optional action at the end of the summary line, outside the merged node.
- * @param dimmed Dims the summary line to 38% and strikes through the title and subtitle.
+ * @param dimmed Dims the summary (not [trailingAction]) to 38% and strikes through the title and
+ *   subtitle. It is a visual state only: it neither blocks [onClick] nor adds anything to the
+ *   semantics, so a caller that needs to tell screen-reader users the row is dimmed must say so in
+ *   its own [onClickLabel] or text, and should drop [onClick] and [trailingAction] on a dimmed row
+ *   that must not be interactive.
  * @param showDivider Adds a 1dp hairline under the row.
  * @param expandedContent Optional content shown full width below the summary while [expanded].
  */
@@ -205,14 +209,13 @@ fun ReceiptRow(
     )
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .graphicsLayer { alpha = summaryAlpha.value },
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Dimens.ReceiptRow.ColumnGap)
         ) {
             ReceiptRowSummary(
-                modifier = Modifier.weight(1f),
+                // Only the summary dims; a trailingAction keeps full opacity (WR-02).
+                modifier = Modifier.weight(1f).graphicsLayer { alpha = summaryAlpha.value },
                 text = text,
                 palette = palette,
                 expanded = expanded,
