@@ -344,7 +344,12 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public final class ProviderKeyCardKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void ProviderKeyCard(java.util.List<io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel> providers, String? selectedProviderId, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onProviderSelected, String keyValue, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onKeyChange, io.github.ygaray.yahirandroidtaste.model.KeyFieldState keyState, String keyLabel, optional androidx.compose.ui.Modifier modifier, optional String emptyProvidersReason, optional String providerLabel);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ProviderKeyCard(java.util.List<io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel> providers, String? selectedProviderId, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onProviderSelected, String keyValue, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onKeyChange, io.github.ygaray.yahirandroidtaste.model.KeyFieldState keyState, String keyLabel, optional androidx.compose.ui.Modifier modifier, optional String emptyProvidersReason, optional String providerLabel, optional java.util.Map<java.lang.String,io.github.ygaray.yahirandroidtaste.model.SavedKeyUiModel> savedKeys, optional boolean editingSavedKey, optional io.github.ygaray.yahirandroidtaste.model.ProviderKeyActions? actions, optional io.github.ygaray.yahirandroidtaste.model.ProviderKeyLabels labels);
+  }
+
+  public final class ProviderKeyDefaults {
+    method public io.github.ygaray.yahirandroidtaste.model.ProviderKeyLabels labels(optional String save, optional String update, optional String clear, optional String cancel, optional String savedPrefix, optional String savedMarker);
+    field public static final io.github.ygaray.yahirandroidtaste.component.ProviderKeyDefaults INSTANCE;
   }
 
   public final class ReceiptRowKt {
@@ -1264,6 +1269,53 @@ package io.github.ygaray.yahirandroidtaste.model {
     property public kotlin.jvm.functions.Function0<kotlin.Unit>? trailingContent;
   }
 
+  @androidx.compose.runtime.Immutable public final class ProviderKeyActions {
+    ctor public ProviderKeyActions(kotlin.jvm.functions.Function0<kotlin.Unit> onSave, optional boolean saveEnabled, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onUpdate, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onClear, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onCancelEdit, optional boolean inFlight);
+    method public kotlin.jvm.functions.Function0<kotlin.Unit> component1();
+    method public boolean component2();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit>? component3();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit>? component4();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit>? component5();
+    method public boolean component6();
+    method public io.github.ygaray.yahirandroidtaste.model.ProviderKeyActions copy(optional kotlin.jvm.functions.Function0<kotlin.Unit> onSave, optional boolean saveEnabled, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onUpdate, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onClear, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onCancelEdit, optional boolean inFlight);
+    method @InaccessibleFromKotlin public boolean getInFlight();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getOnCancelEdit();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getOnClear();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnSave();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit>? getOnUpdate();
+    method @InaccessibleFromKotlin public boolean getSaveEnabled();
+    property public boolean inFlight;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit>? onCancelEdit;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit>? onClear;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit> onSave;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit>? onUpdate;
+    property public boolean saveEnabled;
+  }
+
+  @androidx.compose.runtime.Immutable public final class ProviderKeyLabels {
+    ctor public ProviderKeyLabels();
+    ctor public ProviderKeyLabels(optional String save, optional String update, optional String clear, optional String cancel, optional String savedPrefix, optional String savedMarker);
+    method public String component1();
+    method public String component2();
+    method public String component3();
+    method public String component4();
+    method public String component5();
+    method public String component6();
+    method public io.github.ygaray.yahirandroidtaste.model.ProviderKeyLabels copy(optional String save, optional String update, optional String clear, optional String cancel, optional String savedPrefix, optional String savedMarker);
+    method @InaccessibleFromKotlin public String getCancel();
+    method @InaccessibleFromKotlin public String getClear();
+    method @InaccessibleFromKotlin public String getSave();
+    method @InaccessibleFromKotlin public String getSavedMarker();
+    method @InaccessibleFromKotlin public String getSavedPrefix();
+    method @InaccessibleFromKotlin public String getUpdate();
+    property public String cancel;
+    property public String clear;
+    property public String save;
+    property public String savedMarker;
+    property public String savedPrefix;
+    property public String update;
+  }
+
   public final class ProviderOptionUiModel {
     ctor public ProviderOptionUiModel(String id, String label);
     method public String component1();
@@ -1273,6 +1325,14 @@ package io.github.ygaray.yahirandroidtaste.model {
     method @InaccessibleFromKotlin public String getLabel();
     property public String id;
     property public String label;
+  }
+
+  @androidx.compose.runtime.Immutable public final class SavedKeyUiModel {
+    ctor public SavedKeyUiModel(String fingerprint);
+    method public String component1();
+    method public io.github.ygaray.yahirandroidtaste.model.SavedKeyUiModel copy(optional String fingerprint);
+    method @InaccessibleFromKotlin public String getFingerprint();
+    property public String fingerprint;
   }
 
   public final class SavedPlaceUiModel {
