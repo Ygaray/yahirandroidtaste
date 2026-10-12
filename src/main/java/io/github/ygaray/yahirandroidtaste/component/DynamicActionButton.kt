@@ -28,10 +28,12 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  * generalizing the hand-rolled `TextButton`/filled-`Button` split shipped in
  * [NameAndTagsEditor]'s Discard/Save row into one role-driven, discoverable component.
  *
- * The [role] -> widget mapping is fixed and internal (D-01): [ActionButtonDefaults.ActionButtonRole.Save]
- * renders a filled [Button]; [ActionButtonDefaults.ActionButtonRole.Destructive] and
- * [ActionButtonDefaults.ActionButtonRole.Neutral] render a [TextButton]. There is deliberately no
- * caller-supplied widget override — this is a locked design decision, not an oversight.
+ * With no [emphasis], the [role] -> widget mapping is fixed and internal (D-01):
+ * [ActionButtonDefaults.ActionButtonRole.Save] renders a filled [Button];
+ * [ActionButtonDefaults.ActionButtonRole.Destructive] and
+ * [ActionButtonDefaults.ActionButtonRole.Neutral] render a [TextButton]. The only caller-supplied
+ * widget choice is the explicit [emphasis] parameter (Phase 20), which is one-way: there is no
+ * arbitrary widget override.
  *
  * Stateless: state-in/callback-out only, matching [CycleSubTypeButton]'s documented convention.
  * All colors resolve exclusively through `MaterialTheme.colorScheme.*` — never a hardcoded ARGB
