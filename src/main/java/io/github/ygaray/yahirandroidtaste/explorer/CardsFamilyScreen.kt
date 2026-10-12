@@ -40,6 +40,7 @@ import io.github.ygaray.yahirandroidtaste.component.CountBadge
 import io.github.ygaray.yahirandroidtaste.component.ListCard
 import io.github.ygaray.yahirandroidtaste.component.TagListItem
 import io.github.ygaray.yahirandroidtaste.component.TextCard
+import io.github.ygaray.yahirandroidtaste.component.ToneCard
 import io.github.ygaray.yahirandroidtaste.component.VoiceCard
 import io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
@@ -47,6 +48,8 @@ import io.github.ygaray.yahirandroidtaste.model.TagManagementUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceClipUiModel
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import io.github.ygaray.yahirandroidtaste.theme.TactileType
+import io.github.ygaray.yahirandroidtaste.theme.ToneColors
+import io.github.ygaray.yahirandroidtaste.theme.ToneDefaults
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import kotlinx.coroutines.Dispatchers
@@ -280,6 +283,21 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
         ),
         content = { TagListItemVariants() },
         tier = ComponentRegistry.Tier.PATTERN
+    ),
+    ComponentRegistry.Entry(
+        name = "ToneCard",
+        family = ExplorerFamilies.CARDS,
+        states = listOf(
+            ComponentRegistry.StateCell("Default") { ToneCardDefaultPreview() },
+            // Pressed / Selected: ToneCard is a static container — no press axis — N/A.
+            ComponentRegistry.StateCell("Pressed / Selected"),
+            // Disabled: static container — no enabled axis — N/A.
+            ComponentRegistry.StateCell("Disabled"),
+            // Focused: static container — no focus axis — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { ToneCardVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     )
 )
 
@@ -480,6 +498,28 @@ private fun TagListItemVariants() {
     DividerRow()
     SectionLabel("TagListItem — home tag with custom color")
     TagListItem(tag = TagListItemFixtureHomeTag, onClick = {})
+}
+
+@Composable
+private fun ToneCardVariants() {
+    SectionLabel("ToneCard — error tone")
+    ToneCardSample(tone = ToneDefaults.error(), title = "Could not save", body = "Check the connection and try again.")
+    DividerRow()
+    SectionLabel("ToneCard — warn tone")
+    ToneCardSample(tone = ToneDefaults.warn(), title = "Almost full", body = "Storage is nearly used up.")
+}
+
+@Composable
+private fun ToneCardSample(tone: ToneColors, title: String, body: String) {
+    ToneCard(tone = tone, modifier = Modifier.padding(horizontal = 16.dp)) {
+        Text(title, style = MaterialTheme.typography.titleSmall)
+        Text(body, style = MaterialTheme.typography.bodyMedium)
+    }
+}
+
+@Composable
+private fun ToneCardDefaultPreview() {
+    ToneCardSample(tone = ToneDefaults.error(), title = "Could not save", body = "Check the connection and try again.")
 }
 
 // --- States-matrix preview helpers (D-03) -------------------------------------------------
