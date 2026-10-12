@@ -257,7 +257,7 @@ class DynamicActionButtonEmphasisTest {
     // --- Sizes ---
 
     @Test
-    fun `Filled and Tonal are at least 40dp tall and drawn heights are recorded`() {
+    fun `Filled and Tonal are at least 40dp tall and Text and TextSmall draw at the M3 40dp minimum`() {
         renderTagged(
             listOf(
                 tagged("filled", ActionButtonEmphasis.Filled),
@@ -268,10 +268,10 @@ class DynamicActionButtonEmphasisTest {
         )
         assertTrue("Filled height ${heightDp("filled")}", heightDp("filled") >= 40f)
         assertTrue("Tonal height ${heightDp("tonal")}", heightDp("tonal") >= 40f)
-        println(
-            "OBSERVED_HEIGHTS_DP density=${density.density} filled=${heightDp("filled")} tonal=${heightDp("tonal")} " +
-                "text=${heightDp("text")} small=${heightDp("small")}"
-        )
+        // TextSmall is a smaller label, not a physically smaller button: the M3 TextButton 40dp
+        // minimum governs both Text and TextSmall (the KDoc on ActionButtonEmphasis.TextSmall says so).
+        assertEquals("Text height", 40f, heightDp("text"), 1f)
+        assertEquals("TextSmall height", 40f, heightDp("small"), 1f)
     }
 
     @Test

@@ -127,7 +127,11 @@ enum class ActionButtonEmphasis {
     /** Plain text button in the hue. */
     Text,
 
-    /** Compact text button (small label, tight padding) that still keeps a 48dp touch target. */
+    /**
+     * Text button with a smaller label (`bodySmall`). The drawn size is still governed by the M3
+     * `TextButton` minimum (40dp tall, 58dp wide), so it is not physically more compact than [Text];
+     * the touch target is 48dp.
+     */
     TextSmall
 }
 

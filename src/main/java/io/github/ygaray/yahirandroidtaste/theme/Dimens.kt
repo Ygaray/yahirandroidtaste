@@ -191,10 +191,16 @@ object Dimens {
         /** Horizontal content padding of the Text emphasis. */
         val TextHorizontalPadding: Dp = 12.dp
 
-        /** Horizontal content padding of the TextSmall emphasis. */
+        /**
+         * Horizontal content padding of the TextSmall emphasis. The M3 `TextButton` minimum width
+         * (58dp) governs for any label narrower than that, so the padding only shows on wider labels.
+         */
         val TextSmallHorizontalPadding: Dp = 8.dp
 
-        /** Vertical content padding of the TextSmall emphasis. */
+        /**
+         * Vertical content padding of the TextSmall emphasis. The M3 `TextButton` minimum height
+         * (40dp) governs a `bodySmall` label, so this padding has no visible effect today.
+         */
         val TextSmallVerticalPadding: Dp = 4.dp
 
         /** Size of the optional leading icon. */
