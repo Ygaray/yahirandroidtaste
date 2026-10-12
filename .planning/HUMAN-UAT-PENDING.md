@@ -207,9 +207,11 @@
   2. In a consumer (or the harness source `15-03-evidence/harness-OverrideActivity.kt.txt`), pass a real localized string (a long one, e.g. German) to each new param and eyeball truncation: the ProviderKeyCard/ModelSelectCard dropdown labels, the ClarificationBar dismiss button, the ApproachLadderCard segmented toggle + rung subdued labels, and the OutcomeSheet handled-by / undo / refusal rows.
 - **Note:** No schema or persistence involved. "Strictly additive" holds at the source/Metalava level only; Kotlin default-arg call sites are not binary compatible, so consumers must recompile on repin (documented in `API.md`). `tools/verify-api-additive.sh` exits 3 against v2.4.1 (known false positive) and needs the lane-3 override at Phase 18. Residual i18n limits WR-02/WR-03/WR-04 are in `15-REVIEW-FIX.md`, out of VI18N-01..04 scope.
 
+- **Gate-2 correction item (orchestrator yahir-gsd-control-plane-3b ruling, 2026-10-05):** 15-VERIFICATION SC5 trailing-lambda claim wrong for ProposedItemUiModel; caveat in API.md. `15-VERIFICATION.md:60` says v2.4.0 trailing-lambda shapes still bind for `ProposedItemUiModel`. They do not: the lambda now targets `removeContentDescription: String`, and API.md §10 documents the caveat (pass `trailingContent` by name). Do not edit mid-run; correct `15-VERIFICATION.md` at milestone close.
+
 ### Phase 16 — a11y-failure-enrichment (v2.5)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-12`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.5 (Voice UI Localization & Accessibility)
 - **Gate 1 self-UAT log:** [`.planning/phases/16-a11y-failure-enrichment/16-03-SELF-UAT.md`](phases/16-a11y-failure-enrichment/16-03-SELF-UAT.md) — Verdict: **SC1-SC4 PASS, SC5 PARTIAL (one owner API-contract call)** (device Samsung SM-S908U tester rig `R5CT10XNKQN`, library AAR md5 `2a7ce56547374776d5f5583031b80597` @ `118af62`, 2026-10-05). Rung semantics, role color, body-in-surface and merged-node prefix observed on the real device via a throwaway harness activity; 114 targeted unit tests + apiCheck green.
 - **Items covered (5 ROADMAP success criteria):**
@@ -227,7 +229,7 @@
 
 ### Phase 17 — approachladdercard-router-on-off-toggle (v2.5)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir, 2026-10-12`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.5 (Voice UI Localization & Accessibility)
 - **Gate 1 self-UAT log:** [`.planning/phases/17-approachladdercard-router-on-off-toggle/17-01-SELF-UAT.md`](phases/17-approachladdercard-router-on-off-toggle/17-01-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device Samsung SM-S908U tester rig R5CT10XNKQN, library AAR md5 `ac172bfed07386fabb11a92f67f6f7de` @ `5b0de39`, harness APK md5 `2ec074296d3f4627346e6c5ee26f0681`, 2026-10-05). Router toggle driven in the real Explorer gallery (light + dark) and a direct-call harness: state reflected, emitted values read back, null hides it, both half-pair directions throw on-device, rung tap selects only the cap.
 - **Items covered (5 ROADMAP success criteria + decisions):**
@@ -248,7 +250,7 @@
 
 ### Phase 18 — catalog-integrity-api-dump-docs (v2.5)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir, 2026-10-12`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.5 (Voice UI Localization & Accessibility)
 - **Gate 1 self-UAT log:** [`.planning/phases/18-catalog-integrity-api-dump-docs/18-02-SELF-UAT.md`](phases/18-catalog-integrity-api-dump-docs/18-02-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (headless, non-device docs + evidence phase; no device driven; HEAD `a10c79e`, api.txt sha256 `218bd9c2acb1c01c3a988dfb462449dc3fd43f3ba387c88cb3ae01160d23740e`, 2026-10-05). Fresh uncached full suite 751 tests / 22 skipped / 0 failures / 0 errors, apiCheck + detekt green, v2.4.1 swap-baseline Metalava green, no v2.5 tag.
 - **Items covered (5 ROADMAP success criteria):**
