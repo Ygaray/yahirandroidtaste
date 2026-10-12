@@ -1,9 +1,11 @@
 package io.github.ygaray.yahirandroidtaste.explorer
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithTag
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import org.junit.Assert.assertEquals
@@ -91,5 +93,78 @@ class ToneAtomsRegistryRenderTest {
 
         val clickable = composeTestRule.onAllNodes(hasClickAction()).fetchSemanticsNodes().size
         assertTrue("expected at least 17 click targets in Variants, found $clickable", clickable >= 3 + 12 + 2)
+    }
+
+    @Test
+    fun `RoundIconButton is a Buttons primitive with canonical states and renders in both themes`() {
+        val button = entry("RoundIconButton")
+        assertEquals(ExplorerFamilies.BUTTONS_FAB, button.family)
+        assertEquals(ComponentRegistry.Tier.PRIMITIVE, button.tier)
+        assertEquals(canonicalLabels, button.states.map { it.label })
+        assertNotNull(button.states.first { it.label == "Default" }.render)
+        assertNotNull(button.states.first { it.label == "Disabled" }.render)
+        assertNotNull(button.content)
+
+        renderEverything(button)
+
+        // Per theme: Default + Disabled cells and 6 Variants buttons.
+        val count = composeTestRule.onAllNodesWithTag("round_icon_button").fetchSemanticsNodes().size
+        assertTrue("expected round icon buttons from cells and Variants, found $count", count >= 2 * 8)
+    }
+
+    @Test
+    fun `RoundIconButton Variants render at least four tagged buttons`() {
+        val content = checkNotNull(entry("RoundIconButton").content)
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme(themeMode = ThemeMode.LIGHT, dynamicColor = false) {
+                Column { content() }
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        val count = composeTestRule.onAllNodesWithTag("round_icon_button").fetchSemanticsNodes().size
+        assertTrue("expected at least 4 buttons in Variants, found $count", count >= 4)
+    }
+
+    @Test
+    fun `RoundIconButton Disabled cell renders a not-enabled node`() {
+        val disabled = checkNotNull(entry("RoundIconButton").states.first { it.label == "Disabled" }.render)
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme(themeMode = ThemeMode.LIGHT, dynamicColor = false) { disabled() }
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("round_icon_button").assertIsNotEnabled()
+    }
+
+    @Test
+    fun `PillChip is a Chips primitive with canonical states and renders in both themes`() {
+        val chip = entry("PillChip")
+        assertEquals(ExplorerFamilies.CHIPS, chip.family)
+        assertEquals(ComponentRegistry.Tier.PRIMITIVE, chip.tier)
+        assertEquals(canonicalLabels, chip.states.map { it.label })
+        assertNotNull(chip.states.first { it.label == "Default" }.render)
+        assertNotNull(chip.states.first { it.label == "Disabled" }.render)
+        assertNotNull(chip.content)
+
+        renderEverything(chip)
+
+        val count = composeTestRule.onAllNodesWithTag("pill_chip").fetchSemanticsNodes().size
+        // Per theme: Default + Disabled cells and 6 Variants chips.
+        assertTrue("expected pill chips from cells and Variants, found $count", count >= 2 * 8)
+    }
+
+    @Test
+    fun `PillChip Variants render at least five tagged chips`() {
+        val content = checkNotNull(entry("PillChip").content)
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme(themeMode = ThemeMode.LIGHT, dynamicColor = false) {
+                Column { content() }
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        val count = composeTestRule.onAllNodesWithTag("pill_chip").fetchSemanticsNodes().size
+        assertTrue("expected at least 5 chips in Variants, found $count", count >= 5)
     }
 }
