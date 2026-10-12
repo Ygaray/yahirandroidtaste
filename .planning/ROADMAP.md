@@ -104,7 +104,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 21-03-PLAN.md — `ReceiptRow` end to end (Y-2 signature, 92dp anatomy, merge-domain semantics, motion seams, Cards entry + vocabulary acknowledgment), line-height probe, geometry/semantics/source-contract tests (VROW-01, VROW-02)
+- [x] 21-03-PLAN.md — `ReceiptRow` end to end (Y-2 signature, 92dp anatomy, merge-domain semantics, motion seams, Cards entry + vocabulary acknowledgment), line-height probe, geometry/semantics/source-contract tests (VROW-01, VROW-02)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -287,7 +287,7 @@ only on Phase 20, but it runs after 22 because every phase rewrites the shared `
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 20. Tone foundation & atoms | v2.6 | 4/4 | Planned |  |
-| 21. Receipt row, Pill selector & sheet shape | v2.6 | 2/4 | Not started |  |
+| 21. Receipt row, Pill selector & sheet shape | v2.6 | 3/4 | Not started |  |
 | 22. OutcomeSheet Receipt style | v2.6 | 0/TBD | Not started | - |
 | 23. ProviderKeyCard lifecycle & Undo Center groups | v2.6 | 0/TBD | Not started | - |
 | 24. Catalog, docs, Explorer demos & cut v2.6.0 | v2.6 | 0/TBD | Not started | - |
