@@ -646,6 +646,24 @@ private fun ReceiptRowVariants() {
     DividerRow()
     SectionLabel("ReceiptRow — dimmed")
     ReceiptRowDimmedPreview()
+    DividerRow()
+    SectionLabel("ReceiptRow — single-open accordion (state held in the demo)")
+    var openIndex by remember { mutableStateOf<Int?>(null) }
+    repeat(3) { index ->
+        val number = index + 1
+        ReceiptRow(
+            title = "Accordion row $number",
+            subtitle = "Tap to open row $number",
+            value = "${number * 250}",
+            valueCaption = "Total",
+            expanded = openIndex == index,
+            onClick = { openIndex = if (openIndex == index) null else index },
+            onClickLabel = "Toggle row $number",
+            showDivider = index < 2,
+            expandedContent = { Text("Accordion detail $number", modifier = Modifier.padding(16.dp)) },
+            modifier = rowModifier
+        )
+    }
 }
 
 // --- States-matrix preview helpers (D-03) -------------------------------------------------
