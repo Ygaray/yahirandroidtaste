@@ -120,4 +120,40 @@ class ReceiptRowSourceContractTest {
         assertTrue(stripped.compact().contains("RECEIPT_ROW_DIMMED_ALPHA=DISABLED_CONTENT_ALPHA"))
         assertFalse("must not redefine 0.38f", stripped.contains("0.38f"))
     }
+
+    // --- Motion contract (plan 21-04) --------------------------------------------------------
+
+    @Test
+    fun `the motion constants are the sketch values`() {
+        val compact = stripped.compact()
+        assertTrue(compact.contains("internalconstvalRECEIPT_ROW_MOTION_MS=200"))
+        assertTrue(compact.contains("internalconstvalRECEIPT_ROW_CHEVRON_EXPANDED_DEGREES=180f"))
+        assertTrue(compact.contains("internalconstvalRECEIPT_ROW_DIMMED_ALPHA=DISABLED_CONTENT_ALPHA"))
+    }
+
+    @Test
+    fun `the row reads the motion seams it defines`() {
+        listOf("rememberReceiptRowChevronRotation(", "rememberReceiptRowAlpha(").forEach { seam ->
+            val uses = count(seam)
+            assertTrue("$seam occurs $uses times, expected the definition plus a use in the row", uses >= 2)
+        }
+    }
+
+    @Test
+    fun `every animation uses the shared 200ms tween`() {
+        val tweens = count("tween(RECEIPT_ROW_MOTION_MS)")
+        assertTrue("tween(RECEIPT_ROW_MOTION_MS) occurs $tweens times, expected at least 6", tweens >= 6)
+        listOf("expandVertically(", "fadeIn(", "shrinkVertically(", "fadeOut(").forEach { spec ->
+            assertTrue("$spec is missing", count(spec) >= 1)
+        }
+    }
+
+    @Test
+    fun `the expanded content sits below the summary and above the divider`() {
+        val summary = rowBody.indexOf("ReceiptRowSummary(")
+        val visibility = rowBody.indexOf("AnimatedVisibility(")
+        val divider = rowBody.indexOf("HorizontalDivider(")
+        assertTrue("all three present: $summary $visibility $divider", listOf(summary, visibility, divider).all { it >= 0 })
+        assertTrue("order summary < AnimatedVisibility < divider: $summary $visibility $divider", summary < visibility && visibility < divider)
+    }
 }
