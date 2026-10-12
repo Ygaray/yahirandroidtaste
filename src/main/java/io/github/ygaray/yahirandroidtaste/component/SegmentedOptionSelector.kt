@@ -53,6 +53,9 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  * a warning or failure color: the values already shown are still valid, only the toggle itself is
  * temporarily unavailable.
  *
+ * Long localized labels truncate to a single ellipsized line in [SegmentedOptionStyle.Pill], while
+ * [SegmentedOptionStyle.Material] wraps them to two lines first, so choose short labels for Pill.
+ *
  * @param options Exactly two labels for the two segments. A label too long for its half of the row
  *   wraps to at most two lines and then ellipsizes, never running past the segment edge or under
  *   the selected segment's check icon; both segments keep equal height.
@@ -64,9 +67,6 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
  * @param style [SegmentedOptionStyle.Material] (the default) keeps the layout of earlier releases;
  *   [SegmentedOptionStyle.Pill] draws one outlined, fully rounded container with a `primary` selected
  *   segment and no check icon.
- *
- * Long localized labels truncate to a single ellipsized line in [SegmentedOptionStyle.Pill], while
- * [SegmentedOptionStyle.Material] wraps them to two lines first, so choose short labels for Pill.
  */
 @Composable
 fun SegmentedOptionSelector(

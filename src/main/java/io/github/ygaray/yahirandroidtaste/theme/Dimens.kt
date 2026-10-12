@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
  * - [RoundIconButton]: round outlined icon button size and icon tokens (Phase 20)
  * - [PillChip]: pill chip height and padding tokens (Phase 20)
  * - [StackedProgressBar]: stacked progress bar track height (Phase 20)
+ * - [SegmentedPill]: Pill-style segmented selector height and label padding (Phase 21)
+ * - [ReceiptRow]: receipt row vertical padding, gaps, value width, chevron and cue tokens (Phase 21)
  */
 object Dimens {
 
