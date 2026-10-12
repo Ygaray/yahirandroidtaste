@@ -39,7 +39,10 @@ class ToneFoundationInvariantsTest {
         "component/RoundIconButton.kt",
         "component/StackedProgressBar.kt",
         "component/PillChip.kt",
-        "component/DynamicActionButton.kt"
+        "component/DynamicActionButton.kt",
+        "component/ReceiptRow.kt",
+        "component/SegmentedOptionSelector.kt",
+        "component/SheetScaffold.kt"
     )
 
     /** Gradle runs unit tests with the project directory as the working directory. */
@@ -104,7 +107,8 @@ class ToneFoundationInvariantsTest {
             "component/ToneCard.kt" to "ToneCard",
             "component/RoundIconButton.kt" to "RoundIconButton",
             "component/StackedProgressBar.kt" to "StackedProgressBar",
-            "component/PillChip.kt" to "PillChip"
+            "component/PillChip.kt" to "PillChip",
+            "component/ReceiptRow.kt" to "ReceiptRow"
         )
         names.forEach { (path, name) ->
             val src = read(path)

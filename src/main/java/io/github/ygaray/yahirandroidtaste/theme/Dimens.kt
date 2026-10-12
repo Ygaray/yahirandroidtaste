@@ -245,4 +245,31 @@ object Dimens {
         /** Horizontal padding between a Pill segment's edge and its label. */
         val LabelHorizontalPadding: Dp = 12.dp
     }
+
+    /**
+     * `ReceiptRow` dimensions (Phase 21 VROW-01, D-04). The 24dp cue pill height is not a token: it
+     * is `CueVerticalPadding` + one 16sp line + `CueVerticalPadding`.
+     */
+    object ReceiptRow {
+        /** Vertical padding above and below the summary line. */
+        val VerticalPadding: Dp = 12.dp
+
+        /** Horizontal gap between the title column, the value column, the chevron and the trailing action. */
+        val ColumnGap: Dp = 8.dp
+
+        /** Vertical gap between the stacked lines of the title column. */
+        val LineGap: Dp = 4.dp
+
+        /** Minimum width of the end-aligned value column. */
+        val ValueMinWidth: Dp = 56.dp
+
+        /** Horizontal padding inside the attention cue pill. */
+        val CueHorizontalPadding: Dp = 8.dp
+
+        /** Vertical padding inside the attention cue pill. */
+        val CueVerticalPadding: Dp = 4.dp
+
+        /** Size of the expand chevron. */
+        val ChevronSize: Dp = 24.dp
+    }
 }

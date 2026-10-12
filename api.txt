@@ -328,6 +328,10 @@ package io.github.ygaray.yahirandroidtaste.component {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void ProviderKeyCard(java.util.List<io.github.ygaray.yahirandroidtaste.model.ProviderOptionUiModel> providers, String? selectedProviderId, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onProviderSelected, String keyValue, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onKeyChange, io.github.ygaray.yahirandroidtaste.model.KeyFieldState keyState, String keyLabel, optional androidx.compose.ui.Modifier modifier, optional String emptyProvidersReason, optional String providerLabel);
   }
 
+  public final class ReceiptRowKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void ReceiptRow(String title, optional androidx.compose.ui.Modifier modifier, optional String? subtitle, optional io.github.ygaray.yahirandroidtaste.theme.ContentTone subtitleTone, optional kotlin.jvm.functions.Function0<kotlin.Unit>? supportingContent, optional String? value, optional String? valueCaption, optional io.github.ygaray.yahirandroidtaste.theme.ContentTone valueTone, optional io.github.ygaray.yahirandroidtaste.theme.ContentTone titleTone, optional String? attentionCue, optional io.github.ygaray.yahirandroidtaste.theme.ToneColors warnTone, optional boolean expanded, optional kotlin.jvm.functions.Function0<kotlin.Unit>? onClick, optional String? onClickLabel, optional String expandedStateLabel, optional String collapsedStateLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? trailingAction, optional boolean dimmed, optional boolean showDivider, optional kotlin.jvm.functions.Function0<kotlin.Unit>? expandedContent);
+  }
+
   public final class RecordingBottomSheetContentKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void RecordingBottomSheetContent(io.github.ygaray.yahirandroidtaste.component.RecordingSheetUiState uiState, long elapsedSeconds, java.util.List<java.lang.Float> amplitudeBars, String titleText, String defaultTitle, boolean permissionDenied, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onTitleChange, kotlin.jvm.functions.Function0<kotlin.Unit> onPause, kotlin.jvm.functions.Function0<kotlin.Unit> onResume, kotlin.jvm.functions.Function0<kotlin.Unit> onStop, kotlin.jvm.functions.Function0<kotlin.Unit> onSave, kotlin.jvm.functions.Function0<kotlin.Unit> onDiscard, kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClosePermissionDenied, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> bufferedTags, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.TagChipUiModel> allTags, optional kotlin.jvm.functions.Function1<java.util.List<java.lang.String>,kotlin.Unit> onAddBufferedTags, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onRemoveBufferedTag, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onCreateAndBufferTag, optional io.github.ygaray.yahirandroidtaste.model.TagSortMode sortMode, optional kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.model.TagSortMode,kotlin.Unit> onSortModeChange, optional boolean showTagColors);
   }
@@ -1600,6 +1604,17 @@ package io.github.ygaray.yahirandroidtaste.theme {
     property public androidx.compose.ui.unit.Dp IconSideHorizontalPadding;
     property public androidx.compose.ui.unit.Dp LabelOnlyHorizontalPadding;
     field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.PillChip INSTANCE;
+  }
+
+  public static final class Dimens.ReceiptRow {
+    property public androidx.compose.ui.unit.Dp ChevronSize;
+    property public androidx.compose.ui.unit.Dp ColumnGap;
+    property public androidx.compose.ui.unit.Dp CueHorizontalPadding;
+    property public androidx.compose.ui.unit.Dp CueVerticalPadding;
+    property public androidx.compose.ui.unit.Dp LineGap;
+    property public androidx.compose.ui.unit.Dp ValueMinWidth;
+    property public androidx.compose.ui.unit.Dp VerticalPadding;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.ReceiptRow INSTANCE;
   }
 
   public static final class Dimens.RoundIconButton {

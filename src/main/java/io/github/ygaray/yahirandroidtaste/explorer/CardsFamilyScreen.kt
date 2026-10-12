@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,6 +39,7 @@ import io.github.ygaray.yahirandroidtaste.component.CardTagRow
 import io.github.ygaray.yahirandroidtaste.component.CardTypeChip
 import io.github.ygaray.yahirandroidtaste.component.CountBadge
 import io.github.ygaray.yahirandroidtaste.component.ListCard
+import io.github.ygaray.yahirandroidtaste.component.ReceiptRow
 import io.github.ygaray.yahirandroidtaste.component.TagListItem
 import io.github.ygaray.yahirandroidtaste.component.TextCard
 import io.github.ygaray.yahirandroidtaste.component.ToneCard
@@ -46,6 +48,7 @@ import io.github.ygaray.yahirandroidtaste.modifier.SwipeAnchor
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
 import io.github.ygaray.yahirandroidtaste.model.TagManagementUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceClipUiModel
+import io.github.ygaray.yahirandroidtaste.theme.ContentTone
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import io.github.ygaray.yahirandroidtaste.theme.TactileType
 import io.github.ygaray.yahirandroidtaste.theme.ToneColors
@@ -298,6 +301,19 @@ internal val cardsFamilyEntries: List<ComponentRegistry.Entry> = listOf(
         ),
         content = { ToneCardVariants() },
         tier = ComponentRegistry.Tier.PRIMITIVE
+    ),
+    ComponentRegistry.Entry(
+        name = "ReceiptRow",
+        family = ExplorerFamilies.CARDS,
+        states = listOf(
+            ComponentRegistry.StateCell("Default") { ReceiptRowDefaultPreview() },
+            ComponentRegistry.StateCell("Pressed / Selected") { ReceiptRowExpandedPreview() },
+            ComponentRegistry.StateCell("Disabled") { ReceiptRowDimmedPreview() },
+            // Focused: no focus-visual param exposed — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { ReceiptRowVariants() },
+        tier = ComponentRegistry.Tier.PATTERN
     )
 )
 
@@ -520,6 +536,116 @@ private fun ToneCardSample(tone: ToneColors, title: String, body: String) {
 @Composable
 private fun ToneCardDefaultPreview() {
     ToneCardSample(tone = ToneDefaults.error(), title = "Could not save", body = "Check the connection and try again.")
+}
+
+@Composable
+private fun ReceiptRowSupportingLine() {
+    Text("Supporting line", style = MaterialTheme.typography.bodySmall)
+}
+
+@Composable
+private fun ReceiptRowDefaultPreview() {
+    ReceiptRow(
+        title = "Item title",
+        subtitle = "Subtitle detail",
+        supportingContent = { ReceiptRowSupportingLine() },
+        value = "1,250",
+        valueCaption = "Total",
+        onClick = {},
+        onClickLabel = "Show details",
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+}
+
+@Composable
+private fun ReceiptRowExpandedPreview() {
+    ReceiptRow(
+        title = "Item title",
+        subtitle = "Subtitle detail",
+        value = "1,250",
+        valueCaption = "Total",
+        expanded = true,
+        onClick = {},
+        expandedContent = {
+            Text("Expanded detail", style = MaterialTheme.typography.bodyMedium)
+        },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+}
+
+@Composable
+private fun ReceiptRowDimmedPreview() {
+    ReceiptRow(
+        title = "Item title",
+        subtitle = "Subtitle detail",
+        value = "1,250",
+        valueCaption = "Total",
+        dimmed = true,
+        onClick = {},
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+}
+
+@Composable
+private fun ReceiptRowVariants() {
+    val rowModifier = Modifier.padding(horizontal = 16.dp)
+    SectionLabel("ReceiptRow — clickable with chevron")
+    ReceiptRowDefaultPreview()
+    DividerRow()
+    SectionLabel("ReceiptRow — no onClick (no chevron)")
+    ReceiptRow(
+        title = "Item title",
+        subtitle = "Subtitle detail",
+        value = "1,250",
+        valueCaption = "Total",
+        modifier = rowModifier
+    )
+    DividerRow()
+    SectionLabel("ReceiptRow — attention cue")
+    ReceiptRow(
+        title = "Item title",
+        subtitle = "Subtitle detail",
+        supportingContent = { ReceiptRowSupportingLine() },
+        value = "1,250",
+        valueCaption = "Total",
+        attentionCue = "Check this",
+        onClick = {},
+        modifier = rowModifier
+    )
+    DividerRow()
+    SectionLabel("ReceiptRow — warn subtitle and value")
+    ReceiptRow(
+        title = "Item title",
+        subtitle = "Subtitle detail",
+        subtitleTone = ContentTone.Warn,
+        value = "?",
+        valueTone = ContentTone.Warn,
+        onClick = {},
+        modifier = rowModifier
+    )
+    DividerRow()
+    SectionLabel("ReceiptRow — error title")
+    ReceiptRow(
+        title = "Item title",
+        titleTone = ContentTone.Error,
+        value = "1,250",
+        valueCaption = "Total",
+        onClick = {},
+        modifier = rowModifier
+    )
+    DividerRow()
+    SectionLabel("ReceiptRow — trailing action")
+    ReceiptRow(
+        title = "Item title",
+        subtitle = "Subtitle detail",
+        value = "1,250",
+        onClick = {},
+        trailingAction = { TextButton(onClick = {}) { Text("Undo") } },
+        modifier = rowModifier
+    )
+    DividerRow()
+    SectionLabel("ReceiptRow — dimmed")
+    ReceiptRowDimmedPreview()
 }
 
 // --- States-matrix preview helpers (D-03) -------------------------------------------------

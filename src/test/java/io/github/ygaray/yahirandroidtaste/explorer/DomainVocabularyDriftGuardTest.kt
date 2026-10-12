@@ -424,7 +424,13 @@ class DomainVocabularyDriftGuardTest {
                 "flagged for review.",
             "PlaceMapPicker" to
                 "Head token 'Place' leans location-domain; acknowledged explicitly per Phase 6 " +
-                "D-05.2 rather than treated as a domain-agnostic primitive."
+                "D-05.2 rather than treated as a domain-agnostic primitive.",
+            "ReceiptRow" to
+                "Head token 'Receipt' names the receipt-list presentation metaphor (a titled " +
+                "line item with a trailing value and optional expandable detail). The row takes " +
+                "only caller strings, tones and callbacks and names no consumer concept; " +
+                "acknowledged explicitly per Phase 21 D-09 and R-01 rather than allowlisted as " +
+                "a generic noun."
         )
     }
 }
