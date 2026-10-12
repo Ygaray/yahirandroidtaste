@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 15-voice-surface-i18n-label-params
 source: [15-01-SUMMARY.md, 15-02-SUMMARY.md, 15-03-SUMMARY.md]
 started: 2026-10-12T00:01:11Z
@@ -114,8 +114,18 @@ blocked: 0
   severity: major
   test: 1
   observed: "Cloud rung (disabled+capped+needs-network) with German labels: rung name squeezed to zero width, needs-network label wraps one character per line; also the offline segmented toggle clips \"Ausschließlich offline\" at the right edge"
-  artifacts: []  # Filled by diagnosis
-  missing: []    # Filled by diagnosis
+  root_cause: "RungRow (ApproachLadderCard.kt ~L242-269) lays the rung name out with Modifier.weight(1f) and the unavailable/capped/needs-network affordance Texts unweighted with no maxLines. Compose Row measures unweighted children first, so long affordance labels consume the full width: the weighted rung name gets 0 width (disappears) and the last affordance gets the sliver left, wrapping per character. Latent since the affordances existed; reachable once Phase 15 made the labels caller-overridable. Separately, the Online/Offline (and Router) SegmentedOptionSelector segment labels are single-line and clip long text at the card edge."
+  artifacts:
+    - path: "src/main/java/io/github/ygaray/yahirandroidtaste/component/ApproachLadderCard.kt"
+      issue: "RungRow affordance Texts unweighted/unbounded; rung name weight(1f) starves to 0 width"
+    - path: "src/main/java/io/github/ygaray/yahirandroidtaste/component/SegmentedOptionSelector.kt"
+      issue: "segment label clips long localized text instead of wrapping/ellipsizing"
+  missing:
+    - "Rung name keeps a guaranteed minimum share of the row; affordance labels share the remaining width (weight with fill=false / FlowRow / stack below the name) and wrap or ellipsize at word boundaries, never per character"
+    - "Segmented toggle labels wrap (max 2 lines) or ellipsize instead of clipping"
+    - "Regression test with long labels (e.g. the German set from the Gate-2 harness) asserting rung name is displayed with nonzero width and affordances render"
+    - "Gallery/Explorer fixture with long localized labels so future Gate-2 can eyeball it"
+  diagnosed_by: "orchestrator inline (screenshot p15s.png on personal + source read); no separate debug session"
 
 ## Deferred Diagnosis
 
