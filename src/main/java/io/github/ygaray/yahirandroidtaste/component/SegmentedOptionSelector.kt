@@ -1,24 +1,39 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.theme.Dimens
 
 /**
  * A generic two-option segmented toggle (Material3 [SingleChoiceSegmentedButtonRow]) with an
@@ -41,6 +56,17 @@ import androidx.compose.ui.unit.dp
  * @param options Exactly two labels for the two segments. A label too long for its half of the row
  *   wraps to at most two lines and then ellipsizes, never running past the segment edge or under
  *   the selected segment's check icon; both segments keep equal height.
+ * @param disabledOptions Indices of options that cannot be chosen. A listed segment reports
+ *   `enabled = false` and never fires [onSelect]; its sibling still does. Indices outside the option
+ *   range are ignored. In [SegmentedOptionStyle.Material] a disabled option takes the same Material3
+ *   disabled treatment a whole-control `enabled = false` takes; in [SegmentedOptionStyle.Pill] it is
+ *   drawn at 38% alpha. An empty set (the default) changes nothing.
+ * @param style [SegmentedOptionStyle.Material] (the default) keeps the layout of earlier releases;
+ *   [SegmentedOptionStyle.Pill] draws one outlined, fully rounded container with a `primary` selected
+ *   segment and no check icon.
+ *
+ * Long localized labels truncate to a single ellipsized line in [SegmentedOptionStyle.Pill], while
+ * [SegmentedOptionStyle.Material] wraps them to two lines first, so choose short labels for Pill.
  */
 @Composable
 fun SegmentedOptionSelector(
@@ -50,11 +76,18 @@ fun SegmentedOptionSelector(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     disabledReason: String? = null,
+    disabledOptions: Set<Int> = emptySet(),
+    style: SegmentedOptionStyle = SegmentedOptionStyle.Material,
 ) {
     // WR-04: enforce the documented "exactly two options" contract at runtime -- a 1- or 3+
     // element list previously compiled and rendered silently with the wrong segment count.
     require(options.size == 2) {
         "SegmentedOptionSelector requires exactly 2 options, got ${options.size}"
+    }
+    // Pill is a separate Row-based branch: M3 SegmentedButton forces the check icon and its shape (D-07).
+    if (style == SegmentedOptionStyle.Pill) {
+        PillSegmentedOptionSelector(selectedIndex, options, onSelect, modifier, enabled, disabledReason, disabledOptions)
+        return
     }
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         // height(IntrinsicSize.Min) + each segment's fillMaxHeight(): when only one label wraps to
@@ -62,6 +95,8 @@ fun SegmentedOptionSelector(
         SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
             options.forEachIndexed { index, label ->
                 val selected = index == selectedIndex
+                // Shadows the whole-control flag on purpose so the per-segment call below stays identical.
+                val enabled = enabled && index !in disabledOptions
                 SegmentedButton(
                     selected = selected,
                     // enabled=false dims the segment (Material3 default) so a tap cannot fire.
@@ -137,3 +172,87 @@ private fun Modifier.reserveSegmentIconSlot(): Modifier = layout { measurable, c
  * are the tripwire if an M3 bump changes it.
  */
 private val SegmentedButtonIconSpacing = 8.dp
+
+/**
+ * Visual style of a [SegmentedOptionSelector].
+ *
+ * - [Material]: the Material3 `SingleChoiceSegmentedButtonRow` -- check icon on the selected
+ *   segment, labels wrap to two lines.
+ * - [Pill]: one full-radius outlined container, a `primary`/`onPrimary` selected segment, no check
+ *   icon, single-line ellipsized labels, 40dp tall.
+ */
+enum class SegmentedOptionStyle { Material, Pill }
+
+/**
+ * The [SegmentedOptionStyle.Pill] branch of [SegmentedOptionSelector] (D-07, D-08): one clipped,
+ * 1dp `outlineVariant` outlined full-radius container; the selected segment's `primary` fill is
+ * full-bleed inside it. A segment in [disabledOptions] (or every segment when [enabled] is false)
+ * renders at 38% alpha and never fires [onSelect]. Segment semantics keep the Material strings.
+ */
+@Composable
+private fun PillSegmentedOptionSelector(
+    selectedIndex: Int,
+    options: List<String>,
+    onSelect: (Int) -> Unit,
+    modifier: Modifier,
+    enabled: Boolean,
+    disabledReason: String?,
+    disabledOptions: Set<Int>,
+) {
+    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(Dimens.ContentSpacing)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+                .clip(CircleShape)
+                .border(Dimens.HairlineBorder, MaterialTheme.colorScheme.outlineVariant, CircleShape)
+                .selectableGroup(),
+        ) {
+            options.forEachIndexed { index, label ->
+                val selected = index == selectedIndex
+                val segmentEnabled = enabled && index !in disabledOptions
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .heightIn(min = Dimens.SegmentedPill.Height)
+                        .alpha(if (segmentEnabled) 1f else DISABLED_CONTENT_ALPHA)
+                        .background(if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
+                        .selectable(
+                            selected = selected,
+                            enabled = segmentEnabled,
+                            role = Role.RadioButton,
+                            onClick = { onSelect(index) },
+                        )
+                        .semantics {
+                            contentDescription = "$label, ${if (selected) "selected" else "not selected"}"
+                        }
+                        .padding(horizontal = Dimens.SegmentedPill.LabelHorizontalPadding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (selected) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+        }
+        if (!enabled && disabledReason != null) {
+            Text(
+                text = disabledReason,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+}

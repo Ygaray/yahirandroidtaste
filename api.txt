@@ -385,7 +385,12 @@ package io.github.ygaray.yahirandroidtaste.component {
   }
 
   public final class SegmentedOptionSelectorKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void SegmentedOptionSelector(int selectedIndex, java.util.List<java.lang.String> options, kotlin.jvm.functions.Function1<java.lang.Integer,kotlin.Unit> onSelect, optional androidx.compose.ui.Modifier modifier, optional boolean enabled, optional String? disabledReason);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void SegmentedOptionSelector(int selectedIndex, java.util.List<java.lang.String> options, kotlin.jvm.functions.Function1<java.lang.Integer,kotlin.Unit> onSelect, optional androidx.compose.ui.Modifier modifier, optional boolean enabled, optional String? disabledReason, optional java.util.Set<java.lang.Integer> disabledOptions, optional io.github.ygaray.yahirandroidtaste.component.SegmentedOptionStyle style);
+  }
+
+  public enum SegmentedOptionStyle {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.SegmentedOptionStyle Material;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.SegmentedOptionStyle Pill;
   }
 
   public final class SheetScaffoldKt {
@@ -1601,6 +1606,12 @@ package io.github.ygaray.yahirandroidtaste.theme {
     property public androidx.compose.ui.unit.Dp IconSize;
     property public androidx.compose.ui.unit.Dp Size;
     field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.RoundIconButton INSTANCE;
+  }
+
+  public static final class Dimens.SegmentedPill {
+    property public androidx.compose.ui.unit.Dp Height;
+    property public androidx.compose.ui.unit.Dp LabelHorizontalPadding;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.SegmentedPill INSTANCE;
   }
 
   public static final class Dimens.StackedProgressBar {

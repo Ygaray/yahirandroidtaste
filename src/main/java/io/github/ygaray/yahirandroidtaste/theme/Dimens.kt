@@ -236,4 +236,13 @@ object Dimens {
         /** Default track height. */
         val Height: Dp = 6.dp
     }
+
+    /** `SegmentedOptionSelector` Pill-style dimensions (Phase 21 VSEG-01, D-07). */
+    object SegmentedPill {
+        /** Minimum drawn height of a Pill segment (it grows with font scale). */
+        val Height: Dp = 40.dp
+
+        /** Horizontal padding between a Pill segment's edge and its label. */
+        val LabelHorizontalPadding: Dp = 12.dp
+    }
 }
