@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,14 +28,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
 import io.github.ygaray.yahirandroidtaste.model.OutcomeBadge
+import io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import io.github.ygaray.yahirandroidtaste.theme.ToneColors
@@ -200,9 +208,120 @@ private fun ReceiptTranscript(text: String) {
     )
 }
 
+/**
+ * The Receipt Success body (D-08), in order: title row, handled-by pill, the caller's editable slot
+ * (hidden while in flight, as in Classic and the model KDoc, OQ-1), the shared batch-result list, the
+ * shared undo block (locked while in flight) and the actions row at the end of the scroll content.
+ */
 @Composable
 private fun ReceiptSuccessBody(success: VoiceOutcomeUiState.Success, colors: OutcomeSheetColors) {
     ReceiptTitleRow(success.summary, success.badge, success.titleActions, colors)
+    success.handledBy?.let { ReceiptHandledByPill(it, colors) }
+    success.editableContent?.takeIf { !success.inFlight }?.invoke()
+    success.batchResults.takeIf { it.isNotEmpty() }?.let { BatchResultsList(it) }
+    success.undo?.let { UndoAffordanceBody(it, locked = success.inFlight) }
+    ReceiptSuccessActions(success)
+}
+
+/**
+ * Whether [action] is enabled: the caller's own `enabled` always wins, and while [inFlight] only an
+ * action marked `activeWhileInFlight` (for example a Cancel) stays usable (T-22-15).
+ */
+internal fun actionEnabled(action: SheetActionUiModel, inFlight: Boolean): Boolean =
+    action.enabled && (!inFlight || action.activeWhileInFlight)
+
+/** The pill dot color: the warn tone's content color for an on-device result, else the primary role. */
+internal fun handledByDotColor(onDevice: Boolean, colors: OutcomeSheetColors, scheme: ColorScheme): Color =
+    if (onDevice) colors.warnTone.content else scheme.primary
+
+/**
+ * The parts that follow the tier in the pill, in the Classic secondary-line order: approach, provider,
+ * model, then the escalation caption when a count is present (OQ-2).
+ */
+internal fun handledBySecondaryParts(handledBy: HandledByUiModel): List<String> = buildList {
+    handledBy.approach?.let { add(it) }
+    handledBy.provider?.let { add(it) }
+    handledBy.model?.let { add(it) }
+    handledBy.escalationCount?.let { add("${handledBy.escalationsLabel} $it") }
+}
+
+/**
+ * The handled-by pill (D-10): a dot plus ONE string, so the merged node reads
+ * "Handled by Local grammar · offline". The text wraps inside the pill rather than pushing the dot out.
+ */
+@Composable
+private fun ReceiptHandledByPill(handledBy: HandledByUiModel, colors: OutcomeSheetColors) {
+    val scheme = MaterialTheme.colorScheme
+    val secondary = handledBySecondaryParts(handledBy)
+    Row(
+        modifier = Modifier
+            .padding(top = Dimens.ContentSpacing)
+            .background(scheme.surfaceContainerHighest, CircleShape)
+            .padding(
+                vertical = Dimens.OutcomeReceipt.PillVerticalPadding,
+                horizontal = Dimens.OutcomeReceipt.PillHorizontalPadding
+            )
+            .semantics(mergeDescendants = true) {}
+            .testTag("outcome_sheet_handled_by"),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(Dimens.OutcomeReceipt.DotSize)
+                .background(handledByDotColor(handledBy.onDevice, colors, scheme), CircleShape)
+                .testTag("outcome_sheet_handled_by_dot")
+        )
+        Spacer(Modifier.width(Dimens.OutcomeReceipt.DotGap))
+        Text(
+            text = buildAnnotatedString {
+                append("${handledBy.prefixLabel} ")
+                withStyle(SpanStyle(fontWeight = FontWeight.SemiBold, color = scheme.onSurface)) {
+                    append(handledBy.tier)
+                }
+                if (secondary.isNotEmpty()) append(" · ${secondary.joinToString(" · ")}")
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = scheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f, fill = false)
+        )
+    }
+}
+
+/** One action button from a [SheetActionUiModel]; [enabled] is already resolved by the caller. */
+@Composable
+private fun ReceiptSheetAction(action: SheetActionUiModel, enabled: Boolean, tag: String) {
+    DynamicActionButton(
+        label = action.label,
+        role = action.role,
+        onClick = action.onClick,
+        enabled = enabled,
+        emphasis = action.emphasis,
+        icon = action.icon,
+        modifier = Modifier.testTag(tag)
+    )
+}
+
+/**
+ * The Success actions row at the END of the scroll content (not pinned, no divider, not tagged as
+ * the bar, OQ-3). Renders nothing when both actions are absent.
+ */
+@Composable
+private fun ReceiptSuccessActions(success: VoiceOutcomeUiState.Success) {
+    val startAction = success.startAction
+    val endAction = success.endAction
+    if (startAction == null && endAction == null) return
+    ReceiptActionRow(
+        start = startAction?.let {
+            { ReceiptSheetAction(it, actionEnabled(it, success.inFlight), "outcome_sheet_action_start") }
+        },
+        end = endAction?.let {
+            { ReceiptSheetAction(it, actionEnabled(it, success.inFlight), "outcome_sheet_action_end") }
+        },
+        modifier = Modifier.padding(
+            top = Dimens.OutcomeReceipt.SuccessActionsTopPadding,
+            bottom = Dimens.OutcomeReceipt.SuccessActionsBottomPadding
+        )
+    )
 }
 
 @Composable
@@ -276,22 +395,34 @@ private fun ReceiptActionBar(
             thickness = Dimens.HairlineBorder,
             color = MaterialTheme.colorScheme.outlineVariant
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = Dimens.HorizontalPadding,
-                    end = Dimens.HorizontalPadding,
-                    top = Dimens.OutcomeReceipt.BarTopPadding,
-                    bottom = Dimens.OutcomeReceipt.BarBottomPadding
-                ),
-            horizontalArrangement = barArrangement(hasStart = start != null, hasEnd = end != null),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // P7 escape hatch: each slot shares the row (weight 1f, fill = false) so a long localized
-            // label wraps instead of squeezing the other action out of the window.
-            start?.let { Box(Modifier.weight(1f, fill = false)) { it() } }
-            end?.let { Box(Modifier.weight(1f, fill = false)) { it() } }
-        }
+        ReceiptActionRow(
+            start = start,
+            end = end,
+            modifier = Modifier.padding(
+                start = Dimens.HorizontalPadding,
+                end = Dimens.HorizontalPadding,
+                top = Dimens.OutcomeReceipt.BarTopPadding,
+                bottom = Dimens.OutcomeReceipt.BarBottomPadding
+            )
+        )
+    }
+}
+
+/** The start / end action row shared by the pinned bar and the Success actions row. */
+@Composable
+private fun ReceiptActionRow(
+    start: (@Composable () -> Unit)?,
+    end: (@Composable () -> Unit)?,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = barArrangement(hasStart = start != null, hasEnd = end != null),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // P7 escape hatch: each slot shares the row (weight 1f, fill = false) so a long localized
+        // label wraps instead of squeezing the other action out of the window.
+        start?.let { Box(Modifier.weight(1f, fill = false)) { it() } }
+        end?.let { Box(Modifier.weight(1f, fill = false)) { it() } }
     }
 }

@@ -93,10 +93,13 @@ class OutcomeSheetReceiptSourceContractTest {
         assertTrue(body.contains("start=Dimens.HorizontalPadding"))
         assertTrue(body.contains("end=Dimens.HorizontalPadding"))
         assertTrue(body.contains("thickness=Dimens.HairlineBorder"))
+        // 22-04 extracted the row into ReceiptActionRow so the pinned bar and the Success actions share it.
+        assertTrue(body.contains("ReceiptActionRow("))
         // P7 escape hatch: both slots share the row, no Spacer(weight 1f).
-        assertTrue(body.contains("barArrangement("))
-        assertEquals(2, SourceContractTestSupport.countOccurrences(body, "weight(1f,fill=false)"))
-        assertFalse("no Spacer may combine with weighted actions", body.contains("Spacer("))
+        val row = receiptBody("fun ReceiptActionRow(")
+        assertTrue(row.contains("barArrangement("))
+        assertEquals(2, SourceContractTestSupport.countOccurrences(row, "weight(1f,fill=false)"))
+        assertFalse("no Spacer may combine with weighted actions", row.contains("Spacer("))
         assertTrue(receiptSource.compact().contains("hasStart&&hasEnd->Arrangement.SpaceBetween"))
     }
 
