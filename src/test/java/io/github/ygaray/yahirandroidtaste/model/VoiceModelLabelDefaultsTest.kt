@@ -1,6 +1,9 @@
 package io.github.ygaray.yahirandroidtaste.model
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
+import io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
@@ -296,9 +299,19 @@ class VoiceModelLabelDefaultsTest {
         val trailing: @androidx.compose.runtime.Composable () -> Unit = {}
         val failureOnClick: () -> Unit = {}
         val failureBody: @androidx.compose.runtime.Composable () -> Unit = {}
+        val failureTip: @androidx.compose.runtime.Composable () -> Unit = {}
 
         assertLegacyCopyCarriesEveryField(
-            HandledByUiModel("Cloud", "ladder", "prov", "mod", 3, escalationsLabel = "Escalades :")
+            HandledByUiModel(
+                "Cloud",
+                "ladder",
+                "prov",
+                "mod",
+                3,
+                escalationsLabel = "Escalades :",
+                prefixLabel = "Traité par",
+                onDevice = true
+            )
         )
         assertLegacyCopyCarriesEveryField(
             ProposedItemUiModel(
@@ -319,15 +332,36 @@ class VoiceModelLabelDefaultsTest {
             UndoRowUiModel("1", "l", UndoRowState.Undone, undoneLabel = "Annulé")
         )
         assertLegacyCopyCarriesEveryField(
-            FailureActionUiModel("l", failureOnClick, role = ActionButtonDefaults.ActionButtonRole.Destructive)
+            FailureActionUiModel(
+                "l",
+                failureOnClick,
+                role = ActionButtonDefaults.ActionButtonRole.Destructive,
+                icon = Icons.Filled.Check
+            )
         )
         assertLegacyCopyCarriesEveryField(
             VoiceOutcomeUiState.Failure(
                 reason = "r",
-                handledBy = HandledByUiModel("Local"),
-                action = FailureActionUiModel("l", failureOnClick, ActionButtonDefaults.ActionButtonRole.Destructive),
+                handledBy = HandledByUiModel("Local", prefixLabel = "Traité par", onDevice = true),
+                action = FailureActionUiModel(
+                    "l",
+                    failureOnClick,
+                    ActionButtonDefaults.ActionButtonRole.Destructive,
+                    icon = Icons.Filled.Check
+                ),
                 body = failureBody,
-                semanticsPrefix = "Erreur :"
+                semanticsPrefix = "Erreur :",
+                title = "Titre",
+                transcript = "transcription",
+                tone = FailureTone.Warn,
+                tip = failureTip,
+                secondaryAction = SheetActionUiModel("Fermer", failureOnClick, ActionButtonEmphasis.Text),
+                badge = OutcomeBadge.Warn,
+                undo = UndoAffordanceUiModel(
+                    allLabel = "Tout annuler (1)",
+                    rows = emptyList(),
+                    onUndoAll = failureOnClick
+                )
             )
         )
     }
