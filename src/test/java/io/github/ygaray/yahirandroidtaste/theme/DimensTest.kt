@@ -64,4 +64,34 @@ class DimensTest {
         assertEquals(12.dp, Dimens.CornerRadius.Medium)
         assertEquals(28.dp, Dimens.CornerRadius.Large)
     }
+
+    @Test
+    fun `ActionButton tokens equal their phase 20 values`() {
+        assertEquals(40.dp, Dimens.ActionButton.FilledMinHeight)
+        assertEquals(20.dp, Dimens.ActionButton.FilledHorizontalPadding)
+        assertEquals(8.dp, Dimens.ActionButton.ContentVerticalPadding)
+        assertEquals(12.dp, Dimens.ActionButton.TextHorizontalPadding)
+        assertEquals(8.dp, Dimens.ActionButton.TextSmallHorizontalPadding)
+        assertEquals(4.dp, Dimens.ActionButton.TextSmallVerticalPadding)
+        assertEquals(18.dp, Dimens.ActionButton.IconSize)
+        assertEquals(8.dp, Dimens.ActionButton.IconGap)
+    }
+
+    @Test
+    fun `RoundIconButton tokens equal their phase 20 values`() {
+        assertEquals(40.dp, Dimens.RoundIconButton.Size)
+        assertEquals(20.dp, Dimens.RoundIconButton.IconSize)
+    }
+
+    @Test
+    fun `PillChip tokens equal their phase 20 values`() {
+        assertEquals(32.dp, Dimens.PillChip.Height)
+        assertEquals(12.dp, Dimens.PillChip.LabelOnlyHorizontalPadding)
+        assertEquals(8.dp, Dimens.PillChip.IconSideHorizontalPadding)
+    }
+
+    @Test
+    fun `StackedProgressBar tokens equal their phase 20 values`() {
+        assertEquals(6.dp, Dimens.StackedProgressBar.Height)
+    }
 }

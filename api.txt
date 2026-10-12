@@ -1523,6 +1523,18 @@ package io.github.ygaray.yahirandroidtaste.theme {
     field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens INSTANCE;
   }
 
+  public static final class Dimens.ActionButton {
+    property public androidx.compose.ui.unit.Dp ContentVerticalPadding;
+    property public androidx.compose.ui.unit.Dp FilledHorizontalPadding;
+    property public androidx.compose.ui.unit.Dp FilledMinHeight;
+    property public androidx.compose.ui.unit.Dp IconGap;
+    property public androidx.compose.ui.unit.Dp IconSize;
+    property public androidx.compose.ui.unit.Dp TextHorizontalPadding;
+    property public androidx.compose.ui.unit.Dp TextSmallHorizontalPadding;
+    property public androidx.compose.ui.unit.Dp TextSmallVerticalPadding;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.ActionButton INSTANCE;
+  }
+
   public static final class Dimens.CornerRadius {
     property public androidx.compose.ui.unit.Dp Card;
     property public androidx.compose.ui.unit.Dp Large;
@@ -1547,6 +1559,24 @@ package io.github.ygaray.yahirandroidtaste.theme {
     property public androidx.compose.ui.unit.Dp MenuButton;
     property public androidx.compose.ui.unit.Dp MenuIcon;
     field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.Icons INSTANCE;
+  }
+
+  public static final class Dimens.PillChip {
+    property public androidx.compose.ui.unit.Dp Height;
+    property public androidx.compose.ui.unit.Dp IconSideHorizontalPadding;
+    property public androidx.compose.ui.unit.Dp LabelOnlyHorizontalPadding;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.PillChip INSTANCE;
+  }
+
+  public static final class Dimens.RoundIconButton {
+    property public androidx.compose.ui.unit.Dp IconSize;
+    property public androidx.compose.ui.unit.Dp Size;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.RoundIconButton INSTANCE;
+  }
+
+  public static final class Dimens.StackedProgressBar {
+    property public androidx.compose.ui.unit.Dp Height;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.StackedProgressBar INSTANCE;
   }
 
   public static final class Dimens.SwipeReveal {

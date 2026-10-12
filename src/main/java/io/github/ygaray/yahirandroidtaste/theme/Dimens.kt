@@ -24,6 +24,10 @@ import androidx.compose.ui.unit.dp
  * - [SwipeReveal]: dimension tokens for the SwipeableActionRow reveal slots
  * - [CornerRadius]: consolidated corner-radius tokens (D-01)
  * - [Elevation]: shadow-elevation scale (Phase 123 DS-01)
+ * - [ActionButton]: emphasis-button padding, height and icon tokens (Phase 20)
+ * - [RoundIconButton]: round outlined icon button size and icon tokens (Phase 20)
+ * - [PillChip]: pill chip height and padding tokens (Phase 20)
+ * - [StackedProgressBar]: stacked progress bar track height (Phase 20)
  */
 object Dimens {
 
@@ -168,5 +172,62 @@ object Dimens {
 
         /** Pressed/active or highest-priority overlay surface. */
         val Level5: Dp = 12.dp
+    }
+
+    /**
+     * Emphasis-button dimensions for `DynamicActionButton` (Phase 20 VBTN-01, D-07). Each token
+     * names its own concept even where another token shares the value (see [ChipToTitleGap]).
+     */
+    object ActionButton {
+        /** Minimum height of the Filled and Tonal emphases. */
+        val FilledMinHeight: Dp = 40.dp
+
+        /** Horizontal content padding of the Filled and Tonal emphases. */
+        val FilledHorizontalPadding: Dp = 20.dp
+
+        /** Vertical content padding of the Filled, Tonal and Text emphases. */
+        val ContentVerticalPadding: Dp = 8.dp
+
+        /** Horizontal content padding of the Text emphasis. */
+        val TextHorizontalPadding: Dp = 12.dp
+
+        /** Horizontal content padding of the TextSmall emphasis. */
+        val TextSmallHorizontalPadding: Dp = 8.dp
+
+        /** Vertical content padding of the TextSmall emphasis. */
+        val TextSmallVerticalPadding: Dp = 4.dp
+
+        /** Size of the optional leading icon. */
+        val IconSize: Dp = 18.dp
+
+        /** Gap between the leading icon and the label. */
+        val IconGap: Dp = 8.dp
+    }
+
+    /** `RoundIconButton` dimensions (Phase 20 VBTN-02, D-08). */
+    object RoundIconButton {
+        /** Default diameter of the drawn circle (the touch target stays [TouchTarget]). */
+        val Size: Dp = 40.dp
+
+        /** Icon size inside the circle. */
+        val IconSize: Dp = 20.dp
+    }
+
+    /** `PillChip` dimensions (Phase 20 VCHIP-01). */
+    object PillChip {
+        /** Fixed drawn height of the chip. */
+        val Height: Dp = 32.dp
+
+        /** Horizontal padding when the chip shows a label only. */
+        val LabelOnlyHorizontalPadding: Dp = 12.dp
+
+        /** Horizontal padding on the side that carries an icon. */
+        val IconSideHorizontalPadding: Dp = 8.dp
+    }
+
+    /** `StackedProgressBar` dimensions (Phase 20 VBAR-01, D-09). */
+    object StackedProgressBar {
+        /** Default track height. */
+        val Height: Dp = 6.dp
     }
 }
