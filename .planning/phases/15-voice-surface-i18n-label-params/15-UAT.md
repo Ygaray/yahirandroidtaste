@@ -1,9 +1,9 @@
 ---
-status: diagnosed
+status: complete
 phase: 15-voice-surface-i18n-label-params
 source: [15-01-SUMMARY.md, 15-02-SUMMARY.md, 15-03-SUMMARY.md]
 started: 2026-10-12T00:01:11Z
-updated: 2026-10-12T00:03:58Z
+updated: 2026-10-12T01:24:46Z
 ---
 
 ## Current Test
@@ -17,6 +17,7 @@ expected: On personal, open the YAT v2.5 Gate-2 app, tap "P15: LONG German label
 result: issue
 reported: "there are bugs in the ui, you can see one of the side by side texts is all crammed"
 severity: major
+resolved_by_retest: 15 (pass, 2026-10-11; gap G-15-1 resolved by 15-04 + review fixes)
 
 ### 2. ProviderKeyCard renders a caller-supplied providerLabel on the provider dropdown field; default stays 'Provider'
 expected: ProviderKeyCard renders a caller-supplied providerLabel on the provider dropdown field; default stays 'Provider'
@@ -96,10 +97,25 @@ result: pass
 source: automated
 coverage_id: 15-03 D4
 
+### 15. Re-test G-15-1 — long German labels render legibly (post 15-04 + review fixes)
+expected: Harness "P15: LONG German labels" + Explorer > Voice Command > ApproachLadderCard > "long localized labels (German)", light + dark: Cloud rung name fully visible; German affordances right-aligned, ≤2 lines each, no per-character wrap, no overlap with the name; "Onlineverarbeitung" / "Ausschließlich offline" wrap inside their segments without clipping, equal segment heights; OutcomeSheet German rows still render.
+result: pass
+source: gate2-retest (15-VERIFICATION human_verification #1)
+
+### 16. English defaults look like v2.5.0
+expected: In the Explorer gallery, the default-English ApproachLadderCard cells — especially "combined subdued labels" (Cloud with Unavailable + Capped + Needs network) — show all three English affordances on ONE line to the right of "Cloud", as in v2.5.0; row pitch and touch targets look unchanged.
+result: pass
+source: gate2 (15-VERIFICATION human_verification #2, CR-01)
+
+### 17. Selected-segment check-icon margin with a near-full label
+expected: With "Ausschließlich offline" selected (tap it) at phone width, the label stays inside the segment border and never runs under the check icon; the icon may sit close to the segment edge (accepted WR-03 trade-off, same as v2.5.0).
+result: pass
+source: gate2 (15-VERIFICATION human_verification #3, WR-03)
+
 ## Summary
 
-total: 14
-passed: 13
+total: 17
+passed: 16
 issues: 1
 pending: 0
 skipped: 0
@@ -109,10 +125,12 @@ blocked: 0
 
 - gap_id: G-15-1
   truth: "ApproachLadderCard rung rows stay legible with long caller-supplied rung-state labels (rung name visible, affordance labels wrap/ellipsize gracefully, no per-character wrapping)"
-  status: failed
+  status: resolved
   reason: "User reported: there are bugs in the ui, you can see one of the side by side texts is all crammed"
   severity: major
   test: 1
+  resolved_by: 15-04-PLAN.md (+ review fixes c877c9d..abdc4a8)
+  resolved_at: 2026-10-11
   observed: "Cloud rung (disabled+capped+needs-network) with German labels: rung name squeezed to zero width, needs-network label wraps one character per line; also the offline segmented toggle clips \"Ausschließlich offline\" at the right edge"
   root_cause: "RungRow (ApproachLadderCard.kt ~L242-269) lays the rung name out with Modifier.weight(1f) and the unavailable/capped/needs-network affordance Texts unweighted with no maxLines. Compose Row measures unweighted children first, so long affordance labels consume the full width: the weighted rung name gets 0 width (disappears) and the last affordance gets the sliver left, wrapping per character. Latent since the affordances existed; reachable once Phase 15 made the labels caller-overridable. Separately, the Online/Offline (and Router) SegmentedOptionSelector segment labels are single-line and clip long text at the card edge."
   artifacts:
