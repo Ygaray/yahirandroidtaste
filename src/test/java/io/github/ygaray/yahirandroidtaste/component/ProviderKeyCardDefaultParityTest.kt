@@ -273,6 +273,9 @@ internal object ProviderKeyCardGoldens {
 |        node
 |          node Text=[Anthropic]
 """.trimMargin()
+    // Pixel bounds depend on exact font metrics, so a Compose/Material bump can shift them without any
+    // behavior change. To regenerate: run this class, read the "actual" bounds in the failure message
+    // and paste them here after confirming the change is a metrics drift, not a layout regression.
     val S1_BOUNDS = """
 |provider_key_card_surface x=0 y=0 w=360 h=189
 |provider_key_card_dropdown x=16 y=16 w=328 h=77
