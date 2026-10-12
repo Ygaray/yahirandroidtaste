@@ -69,6 +69,41 @@
 
 ---
 
+## Milestone: v2.5 — Voice UI Localization & Accessibility
+
+**Shipped:** 2026-10-11 (library `v2.5.0`; G-15-1 fix pending as `v2.5.1`)
+**Phases:** 5 | **Plans:** 12
+
+### What Was Built
+- Caller-localizable labels on the four settings/voice-surface composables, plus the OutcomeSheet literals moved into defaulted model fields. English defaults are byte-identical.
+- `ApproachLadderCard` rung rows get the minimum interactive size and selected-radio semantics. `Failure` gets an action role, a body slot and a semantics prefix.
+- A `require()`-paired Router ON/OFF toggle on `ApproachLadderCard`.
+- An informational binary-ABI javap gate (`tools/verify-binary-abi.sh`), and the immutable `v2.5.0` cut.
+- After the tag, the G-15-1 long-label layout fix: a private `RungLabelLayout` and a segmented-label icon-slot reservation.
+
+### What Worked
+- **Gate-2 on a real phone with deliberately hostile input** (long German labels) caught a latent layout bug that the unit tests had missed since v2.4: the rung name went to 0 width. The automated suite used fake text measurement.
+- **The code-review gate after gap closure.** It caught that the first fix (a fixed 60% cap) regressed the English defaults. The reviewer proved it by measuring both the old and new code with real text measurement.
+- **Requiring each fix's tests to fail against the old code.** It exposed two guard tests that passed trivially.
+
+### What Was Inefficient
+- **`/gsd-verify-milestone --personal:<port>` can't install for a library repo.** It expects an app APK; the Gate-2 harness APK had to be rebuilt by hand (backlog 999.1).
+- **A post-tag gap closure made every later phase's VERIFICATION fingerprint stale.** It took a manual re-confirmation of each verdict, then a fingerprint refresh, before close.
+- **The code-review scope auto-detection over-reached.** Its cross-check against the diff since the last review would have pulled in every file from phases 16–18, so the review was narrowed to 15-04's files by hand.
+
+### Patterns Established
+- **Long-label torture fixtures**, both a gallery cell and NATIVE-graphics Robolectric geometry tests, for any composable whose labels the caller can override.
+- **Ship post-tag gap fixes as a patch tag (`v2.5.1`)**, never by moving the immutable tag.
+
+### Key Lessons
+1. Making a label caller-overridable creates a new layout contract (arbitrary length). Test it at the same time as the param, not at Gate-2.
+2. Fake text measurement hides wrap and starvation bugs. Use real (NATIVE) text measurement for any geometry assertion about text.
+3. A fix needs a test that fails without it; a guard that passes on the broken code is not a guard.
+
+### Cost Observations
+- Sessions: the original 2026-10-05 run, plus a 2026-10-11 close-out session (gap execution, review/fix, re-verify, Gate-2, close).
+- Notable: the review-plus-fix loop, about 25 minutes of agent time, prevented shipping an English-label regression in `v2.5.1`.
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -78,6 +113,7 @@
 | v1.0 — Hub Stewardship | 5 | Introduced two-tier design system, governance drift guards, repin matrix |
 | v2.0 — Line Reunification | 4 | Forward-port reunification onto one line; coverage-classified UAT; escalate-with-evidence certification over buggy resolver |
 | v2.4 — AI-Voice Command UI | 5 | Cross-repo orchestrator-driven milestone run + Gate-2-via-orchestrator relay; autonomous A12 tag cut; isolated tag-cut phase |
+| v2.5 — Voice UI Localization & Accessibility | 5 | Gate-2 with hostile-input fixtures reopened a phase post-tag; gap closure → code-review → re-verify loop; patch-tag follow-up instead of tag mutation |
 
 ### Cumulative Quality
 
@@ -86,6 +122,7 @@
 | v1.0 | (shipped, library v2.0.0) | — | green |
 | v2.0 | 10/10 satisfied | CLEAN | green except pre-existing KI-2026-09-27-01 (TextCard.kt, unrelated) |
 | v2.4 | 16/16 satisfied | CLEAN | green (zero baseline) |
+| v2.5 | 14/14 satisfied | WIRED (2 combined-scenario test-gap warnings) | green (zero baseline) |
 
 ### Top Lessons (Verified Across Milestones)
 
