@@ -820,7 +820,7 @@ package io.github.ygaray.yahirandroidtaste.feedback {
   }
 
   public final class UndoCenterScreenKt {
-    method @KotlinOnly @androidx.compose.runtime.Composable public static void UndoCenterScreen(java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry> entries, kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onUndo, kotlin.jvm.functions.Function0<kotlin.Unit> onClear);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void UndoCenterScreen(java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry> entries, kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onUndo, optional java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoGroupRowUiModel> groups, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onUndoGroup, kotlin.jvm.functions.Function0<kotlin.Unit> onClear);
   }
 
   public final class UndoGroupRefusedException extends java.lang.Exception {
@@ -859,6 +859,26 @@ package io.github.ygaray.yahirandroidtaste.feedback {
     method public io.github.ygaray.yahirandroidtaste.feedback.UndoGroupResult.Undone copy(optional int count);
     method @InaccessibleFromKotlin public int getCount();
     property public int count;
+  }
+
+  @androidx.compose.runtime.Immutable public final class UndoGroupRowUiModel {
+    ctor public UndoGroupRowUiModel(String groupId, String label, java.util.List<java.lang.String> memberIds, io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus status, optional String undoAllLabel);
+    method public String component1();
+    method public String component2();
+    method public java.util.List<java.lang.String> component3();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus component4();
+    method public String component5();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoGroupRowUiModel copy(optional String groupId, optional String label, optional java.util.List<java.lang.String> memberIds, optional io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus status, optional String undoAllLabel);
+    method @InaccessibleFromKotlin public String getGroupId();
+    method @InaccessibleFromKotlin public String getLabel();
+    method @InaccessibleFromKotlin public java.util.List<java.lang.String> getMemberIds();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus getStatus();
+    method @InaccessibleFromKotlin public String getUndoAllLabel();
+    property public String groupId;
+    property public String label;
+    property public java.util.List<java.lang.String> memberIds;
+    property public io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus status;
+    property public String undoAllLabel;
   }
 
   public sealed exhaustive interface UndoGroupStatus {
