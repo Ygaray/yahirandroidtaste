@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
@@ -16,6 +17,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
@@ -61,12 +63,14 @@ class ApproachLadderCardLongLabelTest {
         horizontalPadding: Dp = 0.dp,
         fontScale: Float? = null,
         ladder: List<ApproachRungUiModel> = this.ladder,
+        layoutDirection: LayoutDirection? = null,
         unavailableLabel: String = UNAVAILABLE_DE
     ) {
         composeTestRule.setContent {
             val density = LocalDensity.current
             CompositionLocalProvider(
-                LocalDensity provides Density(density.density, fontScale ?: density.fontScale)
+                LocalDensity provides Density(density.density, fontScale ?: density.fontScale),
+                LocalLayoutDirection provides (layoutDirection ?: LocalLayoutDirection.current)
             ) {
                 YahirAndroidTasteTheme {
                     val cardModifier = Modifier.fillMaxWidth().padding(horizontal = horizontalPadding)
@@ -219,6 +223,35 @@ class ApproachLadderCardLongLabelTest {
         }
     }
 
+    /**
+     * IN-02: RTL mirrors the row -- the name sits at the right, the affordances at the left without
+     * overlapping it, and the offline-only segment labels stay inside their segments.
+     */
+    @Test
+    fun `German labels in RTL put the affordances left of the name without overlap`() {
+        setCard(german = true, layoutDirection = LayoutDirection.Rtl)
+
+        val (nameLeft, nameRight) = text("Cloud").edges()
+        assertTrue("Cloud name width must be > 0 in RTL", nameRight > nameLeft)
+        assertFalse("Cloud name must not be ellipsized in RTL", text("Cloud").textLayout().isLineEllipsized(0))
+        listOf(text(UNAVAILABLE_DE), cloudCappedNode(CAPPED_DE), text(NEEDS_NETWORK_DE)).forEach { node ->
+            val right = node.edges().second
+            assertTrue(
+                "RTL affordance right edge $right must be at or left of the name's left edge $nameLeft",
+                right <= nameLeft
+            )
+        }
+        listOf(ONLINE_DE to "not selected", OFFLINE_ONLY_DE to "selected").forEach { (label, state) ->
+            val (labelLeft, labelRight) = text(label).edges()
+            val (segmentLeft, segmentRight) = composeTestRule.onNodeWithContentDescription("$label, $state")
+                .edges()
+            assertTrue(
+                "RTL \"$label\" [$labelLeft, $labelRight] must stay inside its segment [$segmentLeft, $segmentRight]",
+                labelLeft >= segmentLeft - EDGE_TOLERANCE_PX && labelRight <= segmentRight + EDGE_TOLERANCE_PX
+            )
+        }
+    }
+
     /** The topmost match for [label] -- the first rung row (Cloud) in these fixtures. */
     private fun cloudRowNode(label: String) = allText(label).minBy { it.top() }
 
@@ -267,6 +300,7 @@ class ApproachLadderCardLongLabelTest {
 
     private companion object {
         const val NAME_FLOOR_FRACTION = 0.4f
+        const val EDGE_TOLERANCE_PX = 0.5f
         const val UNAVAILABLE_DE = "Derzeit nicht verfügbar"
         const val CAPPED_DE = "Durch Obergrenze eingeschränkt"
         const val NEEDS_NETWORK_DE = "Netzwerkverbindung erforderlich"
