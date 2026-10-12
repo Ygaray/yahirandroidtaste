@@ -126,7 +126,29 @@ Plans:
   5. The refused/partial undo surface reports `liveRegion = LiveRegionMode.Assertive` in the semantics tree, with no visual change. A `Failure` carrying `undo` renders the same undo block as `Success` (undo-all + per-item rows) in both Classic and Receipt (semantics + render tests) (VXR-01, VXR-02).
 
 **Notes**: This phase widens six signatures (`OutcomeSheet`, `NeedsConfirmation`, `Success`, `Failure`, `FailureActionUiModel`, `HandledByUiModel`). Each commit keeps `apiCheck` green on the regenerated `api.txt`. The Receipt action-bar and pill labels get a long German ~360dp check before layout sign-off (the long-localized-label lesson). If a new public top-level composable appears, it is registered or allowlisted in this phase.
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 22-01-PLAN.md — API types and model widening, leaf types first: `OutcomeBadge`, `FailureTone`, `SheetActionUiModel`, `HandledByUiModel` / `FailureActionUiModel` / `Success` / `Failure` (redacting `toString`) / `NeedsConfirmation` fields, `OutcomeSheetStyle` / `OutcomeSheetColors` / `OutcomeSheetDefaults`, `Dimens.OutcomeReceipt`, three arity pins, v2.5.1 call-shape canary, `api.txt` per commit (VRCPT-01..05 fields, VXR-02 field)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 22-02-PLAN.md — Tracer: `OutcomeSheet(style, colors)` dispatch + Receipt frame + NeedsConfirmation end to end (24dp shape, title row, transcript, pinned Text/Filled bar, `confirmEnabled`), 384dp edges, tall body, long German 360dp, source contracts (VRCPT-01, VRCPT-02, VTAG-01)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 22-03-PLAN.md — The four named Classic deltas (confirm enabled, Warn tone seam, `Failure.undo`, Assertive live region) + Classic parity inventories and v2.5.1-derived source contract; `api.txt` byte-identical (VRCPT-01..05 Classic, VXR-01, VXR-02)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 22-04-PLAN.md — Receipt Success: handled-by pill, `editableContent`, shared undo/batch blocks, actions row with the in-flight rule, badge seams, long German pill (VRCPT-03, VRCPT-05, VTAG-01, VXR-01)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 22-05-PLAN.md — Receipt Failure (ToneCard, tip, undo, pinned bar), full Y-14 tag matrix across every Receipt state, phase gate and Gate-1 handoff (VRCPT-04, VTAG-01, VXR-01, VXR-02)
+
 **UI hint**: yes
 
 ### Phase 23: ProviderKeyCard lifecycle & Undo Center groups
