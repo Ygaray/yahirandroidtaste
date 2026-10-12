@@ -46,6 +46,25 @@ tools/verify-binary-abi.sh <previous-tag>     # for the v2.5.0 cut: tools/verify
 - **Seams:** `BASELINE_AAR`, `HEAD_AAR`, `SKIP_BUILD`, `MIN_LINES` and `JITPACK_BASE` exist for the offline fixture test and diagnostics only. The first output line is `SEAMS: none` or names the seams set; a release cut must show `SEAMS: none`.
 - **When to run:** optional. Run it when you want to know whether a prebuilt binary compiled against the previous tag would still link. It does not block a cut.
 
+## Source-additivity review (API-03)
+
+`tools/verify-api-source-additive.sh <baseline-tag>` reviews `api.txt` against the baseline tag's `api.txt` and is part of the cut gate (D-02 step 5), run next to `./gradlew apiCheck`. A literal append-only text diff of `api.txt` is impossible (sketch P2): appending a defaulted parameter rewrites the old overload line, so the tool parses the signature files and checks four rules instead:
+
+- **R1** every public or protected class of the baseline still exists.
+- **R2** every `(class, kind, member name)` triple of the baseline still exists (kinds `ctor`, `method`, `property`, `field`; a constructor's name is the class simple name).
+- **R3** every baseline enum constant still exists.
+- **R4** for every baseline method or constructor signature, at least one current signature of the same class, kind and name has an identical ordered list of REQUIRED (non-optional) parameter types. Appended or mid-list `optional` parameters pass; an added, removed or retyped required parameter fails.
+
+```bash
+bash tools/verify-api-source-additive.sh v2.5.1     # for the v2.6.0 cut
+```
+
+- **Output:** the first line is `SEAMS: none` (or the fixture seams that are set); a pass prints `API SOURCE-ADDITIVE OK baseline=<tag> removed_classes=0 removed_members=0 enum_constants_intact=<n> required_param_changes=0 added_classes=<n> added_members=<n>`; a failure prints one `FAIL R<n>: ...` line per violation naming the class and member.
+- **Exit codes:** `0` pass; `1` at least one rule violated; `2` usage or tooling error (no argument, a name that is not an existing git tag, an unreadable or empty api file, `python3` missing).
+- **Baseline and head:** the baseline is `git show <tag>:api.txt` and the head is the working-tree `api.txt`. The fixture seams `BASELINE_API_FILE` and `HEAD_API_FILE` exist for the fixture test only; a release cut must show `SEAMS: none`.
+- **Negative controls:** `tools/test/test-verify-api-source-additive.sh` holds permanent fixtures (a removed class, a removed member, a dropped enum constant, an added required parameter and a retyped one must each fail; an appended optional parameter, a mid-list optional parameter, an added class, an added method and an overload rewrite must pass) and is picked up by `tools/test/run-all.sh`.
+- **Scope:** it proves "no public symbol removed, no required parameter added, enum constants intact". It does not model binary compatibility (see the optional ABI check above) and does not look at behavior; the call-site canary `V251CallSiteCanaryTest` covers the shapes consumers actually write.
+
 ## ABI-dump mechanism (Task 1 spike, 2026-08-27)
 
 **Chosen mechanism: Metalava** (mechanism 3 of the spike order), via the community
