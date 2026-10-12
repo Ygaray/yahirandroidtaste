@@ -25,9 +25,8 @@ import org.robolectric.annotation.Config
 
 /**
  * Lifecycle behavior of [ProviderKeyCard] (VKEY-01, VKEY-02): the saved-key summary with Update and
- * Clear (Phase 23 tracer), and the pure mode / text seams. Later tasks append the Field-mode
- * Save/Cancel row, `inFlight` and `saveEnabled` gating, 48dp targets, custom labels and the
- * explicit-default parity cases.
+ * Clear, the Field-mode Save/Cancel row, `inFlight` and `saveEnabled` gating, 48dp targets, custom
+ * labels, the explicit-default parity cases and the pure mode / text seams.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35])

@@ -69,7 +69,8 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  *   are source-compatible; callers with a more specific message should override it.
  * @param providerLabel Caller-localizable label of the provider dropdown's text field. Defaults to
  *   the English `"Provider"`; rendered verbatim as plain text (no formatting or templating).
- * @param savedKeys Saved keys by provider id (`providerId -> fingerprint`). The card stays stateless:
+ * @param savedKeys Saved keys by provider id (`providerId -> SavedKeyUiModel`, whose fingerprint is the
+ *   only thing ever shown). The card stays stateless:
  *   the consumer owns persistence. When the selected provider has an entry (and [editingSavedKey] is
  *   `false`) the key field is replaced by a summary showing the fingerprint only, never the raw key.
  *   Empty (the default) renders today's card.
@@ -122,10 +123,9 @@ fun ProviderKeyCard(
             )
 
             var revealed by rememberSaveable { mutableStateOf(false) }
-            val saved = selectedProviderId?.let { savedKeys[it] }
-            if (saved != null &&
-                providerKeyMode(savedKeys, selectedProviderId, editingSavedKey) == ProviderKeyMode.Summary
-            ) {
+            if (providerKeyMode(savedKeys, selectedProviderId, editingSavedKey) == ProviderKeyMode.Summary) {
+                // Summary mode implies a non-null selection with a saved entry (providerKeyMode).
+                val saved = savedKeys.getValue(checkNotNull(selectedProviderId))
                 SavedKeySummary(
                     text = savedSummaryText(labels, saved),
                     errorReason = (keyState as? KeyFieldState.Invalid)?.reason,
@@ -210,6 +210,12 @@ internal fun providerMenuLabel(
     labels: ProviderKeyLabels
 ): String = if (option.id in savedIds) "${option.label} \u00B7 ${labels.savedMarker}" else option.label
 
+/** Horizontal gap between the summary's check icon and its text (8dp; the vertical `TopPadding` names a different axis). */
+private val SUMMARY_ICON_GAP = Dimens.ContentSpacing * 2
+
+/** Horizontal gap between the buttons of an action row (8dp). */
+private val ACTION_ROW_SPACING = Dimens.ContentSpacing * 2
+
 private const val TAG_ACTION_SAVE = "provider_key_action_save"
 private const val TAG_ACTION_CANCEL = "provider_key_action_cancel"
 private const val TAG_SAVED_SUMMARY = "provider_key_saved_summary"
@@ -232,7 +238,7 @@ private fun SavedKeySummary(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Dimens.TopPadding),
+        horizontalArrangement = Arrangement.spacedBy(SUMMARY_ICON_GAP),
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = Dimens.ContentSpacing)
@@ -263,7 +269,7 @@ private fun SavedKeySummary(
     }
     if (actions != null && (actions.onUpdate != null || actions.onClear != null)) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(Dimens.ContentSpacing * 2, Alignment.End),
+            horizontalArrangement = Arrangement.spacedBy(ACTION_ROW_SPACING, Alignment.End),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = Dimens.TopPadding)
@@ -296,7 +302,7 @@ private fun SavedKeySummary(
 @Composable
 private fun FieldActionRow(actions: ProviderKeyActions, labels: ProviderKeyLabels) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(Dimens.ContentSpacing * 2, Alignment.End),
+        horizontalArrangement = Arrangement.spacedBy(ACTION_ROW_SPACING, Alignment.End),
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = Dimens.TopPadding)
