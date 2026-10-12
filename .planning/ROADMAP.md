@@ -312,4 +312,4 @@ only on Phase 20, but it runs after 22 because every phase rewrites the shared `
 | 21. Receipt row, Pill selector & sheet shape | v2.6 | 4/4 | Not started |  |
 | 22. OutcomeSheet Receipt style | v2.6 | 5/5 | Not started |  |
 | 23. ProviderKeyCard lifecycle & Undo Center groups | v2.6 | 2/2 | Not started |  |
-| 24. Catalog, docs, Explorer demos & cut v2.6.0 | v2.6 | 1/4 | Not started |  |
+| 24. Catalog, docs, Explorer demos & cut v2.6.0 | v2.6 | 2/4 | Not started |  |

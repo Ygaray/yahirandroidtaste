@@ -5,16 +5,16 @@ milestone_name: Receipt voice surfaces + ProviderKeyCard lifecycle
 current_phase: 24
 current_phase_name: Catalog, docs, Explorer demos & cut v2.6.0
 status: executing
-stopped_at: Completed 24-01-PLAN.md
-last_updated: "2026-10-12T18:58:06.551Z"
+stopped_at: Completed 24-02-PLAN.md
+last_updated: "2026-10-12T19:17:14.047Z"
 last_activity: 2026-10-12
 last_activity_desc: Phase 24 execution started
-state_head: 5257d86446f48767eb2f92114b04e927dbd527f9
+state_head: c3f34805e5111c7be04f29aa629275a8a225404b
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 19
-  completed_plans: 16
+  completed_plans: 17
   percent: 80
 ---
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-10-11)
 ## Current Position
 
 Phase: 24 (Catalog, docs, Explorer demos & cut v2.6.0) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-10-12 — Phase 24 execution started
 
@@ -65,6 +65,7 @@ Progress: [████████░░] 80%
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 24 P01 | 17 min | 3 tasks | 10 files |
+| Phase 24 P02 | 18 min | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,7 @@ Recent decisions affecting current work:
 - Carried from v2.5: commits that re-signature a composable are classified lane 2 by the pre-commit hook, so use `HUB_LANE_OVERRIDE=2` (the detected lane). Regenerate `api.txt` in the same commit as the signature change.
 - Carried from v2.5 (G-15-1): `SegmentedOptionSelector`'s Material layout (label wraps to 2 lines, check-icon slot reserve) and the private `RungLabelLayout` are the v2.5.1 parity baseline. Phase 21's Pill style must leave the Material path untouched.
 - [Phase 24]: 24-01: count editor offers Few/Many (SegmentedOptionSelector requires exactly 2 options); HubSchemeScope re-wraps Receipt and tone demos in the hub static scheme (owner flag); Undo group demo boxes are 680dp
+- [Phase 24]: 24-02: canary asserts only v2.5.1 properties; additivity = same ordered required parameter types (R1-R4); tags not called test-only by KDoc are stable
 
 ### Pending Todos
 
@@ -117,8 +119,8 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-12T18:58:06.484Z
-Stopped at: Completed 24-01-PLAN.md
+Last session: 2026-10-12T19:17:14.001Z
+Stopped at: Completed 24-02-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

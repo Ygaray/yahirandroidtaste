@@ -112,16 +112,16 @@
 
 ### Catalog, docs, demos & ship
 
-- [ ] **CAT-03**: Every new public composable is registered in its `ComponentRegistry` family screen: `ReceiptRow`, `ToneCard`, `StackedProgressBar`, `PillChip` and `RoundIconButton`. The registry integrity test and the CATALOG drift guard are green in the full suite.
-- [ ] **API-03**: The cut gate is green on a **regenerated** `api.txt`:
+- [x] **CAT-03**: Every new public composable is registered in its `ComponentRegistry` family screen: `ReceiptRow`, `ToneCard`, `StackedProgressBar`, `PillChip` and `RoundIconButton`. The registry integrity test and the CATALOG drift guard are green in the full suite.
+- [x] **API-03**: The cut gate is green on a **regenerated** `api.txt`:
   - `./gradlew apiCheck`;
   - `bash tools/test/run-all.sh`;
   - a **v2.5.1 call-site compile canary**: a test source set with today's SB and CT call shapes and the Explorer, compiling unchanged;
   - no public symbol removed, no required param added, and existing enum constants intact.
 
   `tools/verify-binary-abi.sh v2.5.1` runs as information only (P2).
-- [ ] **DOC-03**: `API.md` (with stable test tags as a documented API section), `INTEGRATION.md` and KDoc cover every ask Y-1..Y-14, the ProviderKeyCard lifecycle and XR-178-01 a/b/c.
-- [ ] **INV-03**: The one-way-dependency invariant holds: no engine or consumer import, and no consumer nouns or colors. Detekt is green at zero baseline. No `@HiltAndroidApp`.
+- [x] **DOC-03**: `API.md` (with stable test tags as a documented API section), `INTEGRATION.md` and KDoc cover every ask Y-1..Y-14, the ProviderKeyCard lifecycle and XR-178-01 a/b/c.
+- [x] **INV-03**: The one-way-dependency invariant holds: no engine or consumer import, and no consumer nouns or colors. Detekt is green at zero baseline. No `@HiltAndroidApp`.
 - [ ] **DEMO-01**: The `ExplorerActivity` gallery adds demos for:
   - Receipt confirm: single open, batch collapsed, and batch with an attention row;
   - a count editor with a disabled Pill segment and a warn `ToneCard`;
@@ -175,10 +175,10 @@
 | VKEY-01 | Phase 23 | Complete |
 | VKEY-02 | Phase 23 | Complete |
 | VUNDO-02 | Phase 23 | Complete |
-| CAT-03 | Phase 24 | Pending |
-| API-03 | Phase 24 | Pending |
-| DOC-03 | Phase 24 | Pending |
-| INV-03 | Phase 24 | Pending |
+| CAT-03 | Phase 24 | Complete |
+| API-03 | Phase 24 | Complete |
+| DOC-03 | Phase 24 | Complete |
+| INV-03 | Phase 24 | Complete |
 | DEMO-01 | Phase 24 | Pending |
 | SHIP-04 | Phase 24 | Pending |
 
