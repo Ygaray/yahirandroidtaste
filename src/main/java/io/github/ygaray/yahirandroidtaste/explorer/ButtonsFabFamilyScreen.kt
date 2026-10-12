@@ -11,7 +11,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,6 +31,7 @@ import io.github.ygaray.yahirandroidtaste.component.CycleSubTypeButton
 import io.github.ygaray.yahirandroidtaste.component.DynamicActionButton
 import io.github.ygaray.yahirandroidtaste.component.ExpandableFab
 import io.github.ygaray.yahirandroidtaste.component.MicButton
+import io.github.ygaray.yahirandroidtaste.component.RoundIconButton
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
@@ -133,6 +137,31 @@ internal val buttonsFabFamilyEntries: List<ComponentRegistry.Entry> = listOf(
         // PATTERN: bakes in one specific interaction convention (the single-pointerInput
         // press/release gesture discipline) — the same litmus ExpandableFab already satisfies.
         tier = ComponentRegistry.Tier.PATTERN
+    ),
+    ComponentRegistry.Entry(
+        name = "RoundIconButton",
+        family = ExplorerFamilies.BUTTONS_FAB,
+        states = listOf(
+            // Default: the 40dp outlined circle with an Add glyph.
+            ComponentRegistry.StateCell("Default") {
+                RoundIconButton(icon = Icons.Filled.Add, contentDescription = "Add", onClick = {})
+            },
+            // The button has no selected state and owns no pressed visual beyond the ripple — N/A.
+            ComponentRegistry.StateCell("Pressed / Selected"),
+            // Disabled: 38% alpha, ignores taps, node reports not-enabled.
+            ComponentRegistry.StateCell("Disabled") {
+                RoundIconButton(
+                    icon = Icons.Filled.Add,
+                    contentDescription = "Add",
+                    onClick = {},
+                    enabled = false
+                )
+            },
+            // No focus-visual override beyond the default clickable focus handling — N/A.
+            ComponentRegistry.StateCell("Focused")
+        ),
+        content = { RoundIconButtonVariants() },
+        tier = ComponentRegistry.Tier.PRIMITIVE
     )
 )
 
@@ -312,6 +341,41 @@ private fun MicButtonVariants() {
         MicButton(isListening = false, enabled = true, onTap = {}, onDisabledTap = {})
         MicButton(isListening = true, enabled = true, onTap = {}, onDisabledTap = {})
         MicButton(isListening = false, enabled = false, onTap = {}, onDisabledTap = {})
+    }
+}
+
+/**
+ * RoundIconButton's Variants — Remove / Add / Mic at the 40dp default, then a 36dp one, a 56dp one
+ * and a disabled one. The drawn circle changes size; the touch region stays at least 48dp.
+ */
+@Composable
+private fun RoundIconButtonVariants() {
+    SectionLabel("RoundIconButton — default 40dp: Remove / Add / Mic")
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        RoundIconButton(icon = Icons.Filled.Remove, contentDescription = "Remove", onClick = {})
+        RoundIconButton(icon = Icons.Filled.Add, contentDescription = "Add", onClick = {})
+        RoundIconButton(icon = Icons.Filled.Mic, contentDescription = "Mic", onClick = {})
+    }
+    SectionLabel("RoundIconButton — 36dp / 56dp / disabled")
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        RoundIconButton(icon = Icons.Filled.Add, contentDescription = "Add small", onClick = {}, size = 36.dp)
+        RoundIconButton(icon = Icons.Filled.Add, contentDescription = "Add large", onClick = {}, size = 56.dp)
+        RoundIconButton(
+            icon = Icons.Filled.Add,
+            contentDescription = "Add disabled",
+            onClick = {},
+            enabled = false
+        )
     }
 }
 

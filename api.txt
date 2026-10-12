@@ -366,6 +366,10 @@ package io.github.ygaray.yahirandroidtaste.component {
     property public boolean revealed;
   }
 
+  public final class RoundIconButtonKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void RoundIconButton(androidx.compose.ui.graphics.vector.ImageVector icon, String contentDescription, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional androidx.compose.ui.Modifier modifier, optional boolean enabled, optional androidx.compose.ui.unit.Dp size);
+  }
+
   public final class SegmentedOptionSelectorKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void SegmentedOptionSelector(int selectedIndex, java.util.List<java.lang.String> options, kotlin.jvm.functions.Function1<java.lang.Integer,kotlin.Unit> onSelect, optional androidx.compose.ui.Modifier modifier, optional boolean enabled, optional String? disabledReason);
   }
