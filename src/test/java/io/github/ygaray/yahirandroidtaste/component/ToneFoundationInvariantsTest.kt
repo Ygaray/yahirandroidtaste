@@ -42,7 +42,9 @@ class ToneFoundationInvariantsTest {
         "component/DynamicActionButton.kt",
         "component/ReceiptRow.kt",
         "component/SegmentedOptionSelector.kt",
-        "component/SheetScaffold.kt"
+        "component/SheetScaffold.kt",
+        "component/OutcomeSheetReceipt.kt",
+        "component/OutcomeSheetDefaults.kt"
     )
 
     /** Gradle runs unit tests with the project directory as the working directory. */

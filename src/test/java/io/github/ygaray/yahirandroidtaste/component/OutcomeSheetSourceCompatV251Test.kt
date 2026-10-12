@@ -40,6 +40,23 @@ class OutcomeSheetSourceCompatV251Test {
         // Compile-only: the lambda is intentionally never invoked.
     }
 
+    @Suppress("UNUSED_VARIABLE")
+    @Test
+    fun receiptOutcomeSheetCallShape_compiles() {
+        // The widened shape: style and colors appended after modifier.
+        val receipt: @androidx.compose.runtime.Composable () -> Unit = {
+            OutcomeSheet(
+                VoiceOutcomeUiState.Failure("r", null),
+                {},
+                Modifier,
+                OutcomeSheetStyle.Receipt,
+                OutcomeSheetDefaults.colors()
+            )
+        }
+
+        // Compile-only: the lambda is intentionally never invoked.
+    }
+
     @Test
     fun v251HandledByShapes_compileAndDefaultTheNewFields() {
         val one = HandledByUiModel("Local")

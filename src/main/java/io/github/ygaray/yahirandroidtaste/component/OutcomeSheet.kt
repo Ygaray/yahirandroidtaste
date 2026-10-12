@@ -56,14 +56,24 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * @param outcome The command outcome to render.
  * @param onDismissRequest Invoked on scrim tap, back-press, or drag-to-dismiss.
  * @param modifier Modifier for the sheet's root composable.
+ * @param style [OutcomeSheetStyle.Classic] (the default) is the v2.5.1 rendering unchanged;
+ *   [OutcomeSheetStyle.Receipt] is the opt-in receipt layout.
+ * @param colors The warn and error tone pairs; feeds the Warn failure card and the Receipt badges,
+ *   cards and pill dot. Defaults to [OutcomeSheetDefaults.colors].
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OutcomeSheet(
     outcome: VoiceOutcomeUiState,
     onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    style: OutcomeSheetStyle = OutcomeSheetStyle.Classic,
+    colors: OutcomeSheetColors = OutcomeSheetDefaults.colors()
 ) {
+    if (style == OutcomeSheetStyle.Receipt) {
+        OutcomeSheetReceipt(outcome, onDismissRequest, modifier, colors)
+        return
+    }
     SheetScaffold(onDismissRequest = onDismissRequest, modifier = modifier) {
         OutcomeSheetContent(outcome)
     }
@@ -430,7 +440,7 @@ private fun NeedsConfirmationActions(confirmation: VoiceOutcomeUiState.NeedsConf
  * [ProposedItemUiModel.subtitle], and an optional [ProposedItemUiModel.confidenceCue].
  */
 @Composable
-private fun ProposedItemRow(item: ProposedItemUiModel) {
+internal fun ProposedItemRow(item: ProposedItemUiModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
