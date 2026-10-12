@@ -109,8 +109,9 @@ fun SegmentedOptionSelector(
  * has to come off the label's max width to keep it inside the segment, check icon or not (WR-03).
  * Reserving the whole 26dp slot instead wrapped short labels at large font scales that fit on one
  * line in v2.5.0. The trade-off: a label that fills its segment lets the selected check icon reach
- * the segment's edge, as in v2.5.0. Unbounded constraints pass through; the label reports its own
- * size and is placed with `placeRelative` so RTL mirrors.
+ * the segment's edge, as in v2.5.0. Unbounded constraints pass through. The wrapper reports exactly
+ * the label's size and places it at (0, 0), so it mirrors nothing itself: RTL placement comes from
+ * M3's own segment layout.
  */
 private fun Modifier.reserveSegmentIconSlot(): Modifier = layout { measurable, constraints ->
     val childConstraints = if (constraints.hasBoundedWidth) {
