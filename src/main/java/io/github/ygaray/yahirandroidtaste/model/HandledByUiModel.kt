@@ -23,6 +23,10 @@ import kotlin.jvm.internal.DefaultConstructorMarker
  * @param escalationsLabel Caller-localizable prefix of the escalation caption, rendered as
  *   `"<escalationsLabel> <escalationCount>"`; English default `"Escalations:"`, plain text
  *   (VI18N-04).
+ * @param prefixLabel Caller-localizable word before the tier in the Receipt pill, rendered as
+ *   `"<prefixLabel> <tier>"`; English default `"Handled by"`. The Classic `HandledByRow` ignores it.
+ * @param onDevice `true` paints the Receipt pill's dot in the warn tone (handled on the device)
+ *   instead of `primary`. The Classic `HandledByRow` ignores it.
  */
 data class HandledByUiModel @JvmOverloads constructor(
     val tier: String,
@@ -30,7 +34,9 @@ data class HandledByUiModel @JvmOverloads constructor(
     val provider: String? = null,
     val model: String? = null,
     val escalationCount: Int? = null,
-    val escalationsLabel: String = "Escalations:"
+    val escalationsLabel: String = "Escalations:",
+    val prefixLabel: String = "Handled by",
+    val onDevice: Boolean = false
 ) {
     // Hand-written pre-v2.5 `copy` arity. Without it Metalava reports the shipped JVM five-parameter
     // `copy` as a removed method once [escalationsLabel] is appended (the compiler only generates

@@ -1079,18 +1079,26 @@ package io.github.ygaray.yahirandroidtaste.model {
 
   public final class FailureActionUiModel {
     ctor public FailureActionUiModel(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick);
-    ctor public FailureActionUiModel(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role);
+    ctor public FailureActionUiModel(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role, optional androidx.compose.ui.graphics.vector.ImageVector? icon);
     method public String component1();
     method public kotlin.jvm.functions.Function0<kotlin.Unit> component2();
     method public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole component3();
+    method public androidx.compose.ui.graphics.vector.ImageVector? component4();
     method public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel copy(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick);
-    method public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel copy(optional String label, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role);
+    method public io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel copy(optional String label, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role, optional androidx.compose.ui.graphics.vector.ImageVector? icon);
+    method @InaccessibleFromKotlin public androidx.compose.ui.graphics.vector.ImageVector? getIcon();
     method @InaccessibleFromKotlin public String getLabel();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnClick();
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole getRole();
+    property public androidx.compose.ui.graphics.vector.ImageVector? icon;
     property public String label;
     property public kotlin.jvm.functions.Function0<kotlin.Unit> onClick;
     property public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role;
+  }
+
+  public enum FailureTone {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.FailureTone Error;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.FailureTone Warn;
   }
 
   public final class HandledByUiModel {
@@ -1100,24 +1108,32 @@ package io.github.ygaray.yahirandroidtaste.model {
     ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model);
     ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount);
     ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount, optional String escalationsLabel);
+    ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount, optional String escalationsLabel, optional String prefixLabel);
+    ctor public HandledByUiModel(String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount, optional String escalationsLabel, optional String prefixLabel, optional boolean onDevice);
     method public String component1();
     method public String? component2();
     method public String? component3();
     method public String? component4();
     method public Integer? component5();
     method public String component6();
+    method public String component7();
+    method public boolean component8();
     method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel copy(String tier, String? approach, String? provider, String? model, Integer? escalationCount);
-    method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel copy(optional String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount, optional String escalationsLabel);
+    method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel copy(optional String tier, optional String? approach, optional String? provider, optional String? model, optional Integer? escalationCount, optional String escalationsLabel, optional String prefixLabel, optional boolean onDevice);
     method @InaccessibleFromKotlin public String? getApproach();
     method @InaccessibleFromKotlin public Integer? getEscalationCount();
     method @InaccessibleFromKotlin public String getEscalationsLabel();
     method @InaccessibleFromKotlin public String? getModel();
+    method @InaccessibleFromKotlin public boolean getOnDevice();
+    method @InaccessibleFromKotlin public String getPrefixLabel();
     method @InaccessibleFromKotlin public String? getProvider();
     method @InaccessibleFromKotlin public String getTier();
     property public String? approach;
     property public Integer? escalationCount;
     property public String escalationsLabel;
     property public String? model;
+    property public boolean onDevice;
+    property public String prefixLabel;
     property public String? provider;
     property public String tier;
   }
@@ -1184,6 +1200,13 @@ package io.github.ygaray.yahirandroidtaste.model {
     property public String id;
     property public String label;
     property public String? subtitle;
+  }
+
+  public enum OutcomeBadge {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.OutcomeBadge Error;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.OutcomeBadge Reverted;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.OutcomeBadge Success;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.model.OutcomeBadge Warn;
   }
 
   public final class ProposedItemUiModel {
@@ -1253,6 +1276,32 @@ package io.github.ygaray.yahirandroidtaste.model {
   public enum SelectionMode {
     enum_constant public static final io.github.ygaray.yahirandroidtaste.model.SelectionMode AllOrNothing;
     enum_constant public static final io.github.ygaray.yahirandroidtaste.model.SelectionMode PerItem;
+  }
+
+  @androidx.compose.runtime.Immutable public final class SheetActionUiModel {
+    ctor public SheetActionUiModel(String label, kotlin.jvm.functions.Function0<kotlin.Unit> onClick, io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis emphasis, optional boolean enabled, optional androidx.compose.ui.graphics.vector.ImageVector? icon, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role, optional boolean activeWhileInFlight);
+    method public String component1();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit> component2();
+    method public io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis component3();
+    method public boolean component4();
+    method public androidx.compose.ui.graphics.vector.ImageVector? component5();
+    method public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole component6();
+    method public boolean component7();
+    method public io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel copy(optional String label, optional kotlin.jvm.functions.Function0<kotlin.Unit> onClick, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis emphasis, optional boolean enabled, optional androidx.compose.ui.graphics.vector.ImageVector? icon, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role, optional boolean activeWhileInFlight);
+    method @InaccessibleFromKotlin public boolean getActiveWhileInFlight();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis getEmphasis();
+    method @InaccessibleFromKotlin public boolean getEnabled();
+    method @InaccessibleFromKotlin public androidx.compose.ui.graphics.vector.ImageVector? getIcon();
+    method @InaccessibleFromKotlin public String getLabel();
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnClick();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole getRole();
+    property public boolean activeWhileInFlight;
+    property public io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis emphasis;
+    property public boolean enabled;
+    property public androidx.compose.ui.graphics.vector.ImageVector? icon;
+    property public String label;
+    property public kotlin.jvm.functions.Function0<kotlin.Unit> onClick;
+    property public io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole role;
   }
 
   public final class TagChipUiModel {

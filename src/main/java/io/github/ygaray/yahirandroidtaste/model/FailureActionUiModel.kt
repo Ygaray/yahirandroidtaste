@@ -1,5 +1,6 @@
 package io.github.ygaray.yahirandroidtaste.model
 
+import androidx.compose.ui.graphics.vector.ImageVector
 import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
 
 /**
@@ -18,11 +19,14 @@ import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
  *   [ActionButtonDefaults.ActionButtonRole.Destructive] for a destructive remedy. Reuses the
  *   existing public enum (English-free; no new library type). Defaults to
  *   [ActionButtonDefaults.ActionButtonRole.Neutral], today's rendering.
+ * @param icon Optional leading icon in the Receipt action (e.g. a mic on Retry). The Classic style
+ *   does not draw it. Defaults to `null`.
  */
 data class FailureActionUiModel(
     val label: String,
     val onClick: () -> Unit,
-    val role: ActionButtonDefaults.ActionButtonRole = ActionButtonDefaults.ActionButtonRole.Neutral
+    val role: ActionButtonDefaults.ActionButtonRole = ActionButtonDefaults.ActionButtonRole.Neutral,
+    val icon: ImageVector? = null
 ) {
     // Why an explicit two-argument secondary constructor instead of `@JvmOverloads` (INC-2026-10-05-02
     // F1b): `@JvmOverloads` would generate the same JVM `(String, Function0)` constructor (so both
