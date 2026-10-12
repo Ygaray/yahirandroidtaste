@@ -125,6 +125,8 @@ Items acknowledged and carried forward, most recent first:
 
 | Category | Item | Status | Deferred At | Milestone |
 |----------|------|--------|-------------|-----------|
+| uat_gaps | 16/16-03-SELF-UAT.md | partial (0 open scenarios) — superseded by Phase 16 Gate-2 sign-off | 2026-10-11 | v2.5 |
+| Release | v2.5.1 patch tag for G-15-1 long-label fix (+ SB/CT repins) | Pending human go-ahead (route via orchestrator) | 2026-10-11 | v2.5 |
 | Future | Two Gate-2-waived `ApproachLadderCard` UI-polish notes (KI-2026-10-01-01) | Deferred (future polish unless pulled into scope) | v2.5 requirements | v2.5 |
 | Future | Consumer repins onto `v2.5.0` (SB for 172/175/177; CT optional) | Deferred (Wave-1, consumers' own channels) | v2.5 requirements | v2.5 |
 | Future | Consumer wiring — SB/CT map engine outcomes → these composables' props | Deferred (Wave-1, consumers' own milestones) | v2.4 requirements | v2.4 |

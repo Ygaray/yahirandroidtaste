@@ -7,6 +7,10 @@ source: [16-ROADMAP success criteria SC1-SC5]
 device: Samsung SM-S908U Galaxy S22 Ultra, tester rig (USB serial R5CT10XNKQN, Android 15 / SDK 35, 1080x2316 @ 450dpi)
 apk: harness-debug.apk md5 2f2d2a1ec9f62c34263457e1226830c7 over library AAR yahirandroidtaste-1.10.0.aar md5 2a7ce56547374776d5f5583031b80597 @ 118af62
 run: 2026-10-05T04:34:00-06:00
+audit_acknowledged:
+  milestone: v2.5
+  at: 2026-10-12
+  gap_snapshot: "partial::scenarios=0"
 ---
 
 <!-- Gate-1 agentic self-UAT, Phase 16 (closing plan 16-03). Platform: Android library, driver playbook
@@ -44,7 +48,9 @@ A baseline arm (sheet 1, ladders with no cap) is driven next to each override ar
 falsifiable, not assumed.
 
 ### 1. SC1 - ApproachLadderCard rung min interactive size + selected/RadioButton semantics, no public API change (VA11Y-01)
+
 result: passed
+
 - Highest rung: 5 (rung 4 settled the semantics; one downscaled capture `p1-ladders-small.jpg` for the pitch).
 - Arranged (seeded): `Phase16Activity` hosts three ladders on the same 3-rung model: (A) `maxTierId="hybrid"` +
   `onMaxTierChange` (selectable cap), (B) cap-less (both null), (C) `maxTierId="ghost"` (stale id, selectable).
@@ -69,7 +75,9 @@ result: passed
   TalkBack speaks and cannot be heard by this tester.
 
 ### 2. SC2 - FailureActionUiModel.role wired to the Failure action button (VFAIL-01)
+
 result: passed
+
 - Highest rung: 5 (role color is visual).
 - Arranged: sheet 1 = action built with the v2.4 two-argument shape (default role); sheet 2 = `role = Destructive`;
   sheet 3 = `role = Save`.
@@ -82,7 +90,9 @@ result: passed
 - Mechanism: `FailureRoleSourceContractTest` + `OutcomeSheetTest` role cases re-run green below.
 
 ### 3. SC3 - Failure.body renders inside the error surface; null unchanged (VFAIL-02)
+
 result: passed
+
 - Highest rung: 5.
 - Arranged: sheet 2 `body = { Text("BODY-SLOT-MARKER extra detail") }` with a handledBy row and an action; sheet 1/3
   have `body = null`.
@@ -95,7 +105,9 @@ result: passed
 - Mechanism: `OutcomeSheetTest` body cases re-run green below.
 
 ### 4. SC4 - Failure.semanticsPrefix prefixes the accessibility announcement; null unchanged (VFAIL-03)
+
 result: passed
+
 - Highest rung: 4 (merged-node `content-desc`). The spoken announcement itself is Gate-2 (see below).
 - Arranged: sheet 2 `semanticsPrefix = "PREFIX-ERROR:"`, reason `NEW-REASON key rejected`.
 - Did: opened sheet 2 and sheets 1/3; dumped.
@@ -112,7 +124,9 @@ result: passed
 - Mechanism: `OutcomeSheetTest` semantics cases re-run green below.
 
 ### 5. SC5 - All additions strictly additive; existing Failure callers unchanged, nothing removed or reshaped
+
 result: partial
+
 - Highest rung: 2 (unit/coverage + api check) corroborated at rung 4/5 on the device for the passing half.
 - Arranged/Did: re-ran `./gradlew testDebugUnitTest --tests *ApproachLadderCardTest *OutcomeSheetTest
   *VoiceI18nSourceCompatTest *VoiceModelLabelDefaultsTest *FailureRoleSourceContractTest *ComponentRegistry* apiCheck
