@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
 import io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis
+import io.github.ygaray.yahirandroidtaste.component.OutcomeSheetStyle
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
@@ -32,6 +33,11 @@ class OutcomeReceiptModelsTest {
     @Test
     fun `FailureTone constants are Error then Warn`() {
         assertEquals(listOf("Error", "Warn"), FailureTone.entries.map { it.name })
+    }
+
+    @Test
+    fun `OutcomeSheetStyle constants are Classic then Receipt`() {
+        assertEquals(listOf("Classic", "Receipt"), OutcomeSheetStyle.entries.map { it.name })
     }
 
     // ---- SheetActionUiModel ----

@@ -303,8 +303,27 @@ package io.github.ygaray.yahirandroidtaste.component {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void NameAndTagsEditor(optional kotlin.jvm.functions.Function1<androidx.compose.foundation.layout.ColumnScope,kotlin.Unit> header, String name, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onNameChange, String nameLabel, kotlin.jvm.functions.Function0<kotlin.Unit> tagsContent, kotlin.jvm.functions.Function0<kotlin.Unit> onSave, kotlin.jvm.functions.Function0<kotlin.Unit> onDismiss, String saveLabel, optional String dismissLabel, optional boolean dismissDestructive, optional boolean enabled, optional androidx.compose.ui.Modifier modifier);
   }
 
+  @androidx.compose.runtime.Immutable public final class OutcomeSheetColors {
+    ctor public OutcomeSheetColors(io.github.ygaray.yahirandroidtaste.theme.ToneColors warnTone, io.github.ygaray.yahirandroidtaste.theme.ToneColors errorTone);
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.theme.ToneColors getErrorTone();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.theme.ToneColors getWarnTone();
+    property public io.github.ygaray.yahirandroidtaste.theme.ToneColors errorTone;
+    property public io.github.ygaray.yahirandroidtaste.theme.ToneColors warnTone;
+  }
+
+  public final class OutcomeSheetDefaults {
+    method @KotlinOnly @androidx.compose.runtime.Composable public io.github.ygaray.yahirandroidtaste.component.OutcomeSheetColors colors(optional io.github.ygaray.yahirandroidtaste.theme.ToneColors warnTone, optional io.github.ygaray.yahirandroidtaste.theme.ToneColors errorTone);
+    property public androidx.compose.ui.text.TextStyle ReceiptTitleStyle;
+    field public static final io.github.ygaray.yahirandroidtaste.component.OutcomeSheetDefaults INSTANCE;
+  }
+
   public final class OutcomeSheetKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void OutcomeSheet(io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState outcome, kotlin.jvm.functions.Function0<kotlin.Unit> onDismissRequest, optional androidx.compose.ui.Modifier modifier);
+  }
+
+  public enum OutcomeSheetStyle {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.OutcomeSheetStyle Classic;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.component.OutcomeSheetStyle Receipt;
   }
 
   public final class PillChipKt {
@@ -1692,6 +1711,25 @@ package io.github.ygaray.yahirandroidtaste.theme {
     property public androidx.compose.ui.unit.Dp MenuButton;
     property public androidx.compose.ui.unit.Dp MenuIcon;
     field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.Icons INSTANCE;
+  }
+
+  public static final class Dimens.OutcomeReceipt {
+    property public androidx.compose.ui.unit.Dp BadgeIconSize;
+    property public androidx.compose.ui.unit.Dp BadgeSize;
+    property public androidx.compose.ui.unit.Dp BarBottomPadding;
+    property public androidx.compose.ui.unit.Dp BarTopPadding;
+    property public androidx.compose.ui.unit.Dp BodyTopPadding;
+    property public androidx.compose.ui.unit.Dp CornerRadius;
+    property public androidx.compose.ui.unit.Dp DotGap;
+    property public androidx.compose.ui.unit.Dp DotSize;
+    property public androidx.compose.ui.unit.Dp PillHorizontalPadding;
+    property public androidx.compose.ui.unit.Dp PillVerticalPadding;
+    property public androidx.compose.ui.unit.Dp SuccessActionsBottomPadding;
+    property public androidx.compose.ui.unit.Dp SuccessActionsTopPadding;
+    property public androidx.compose.ui.unit.Dp TitleRowGap;
+    property public androidx.compose.ui.unit.Dp TranscriptBottomPadding;
+    property public androidx.compose.ui.unit.Dp TranscriptTopPadding;
+    field public static final io.github.ygaray.yahirandroidtaste.theme.Dimens.OutcomeReceipt INSTANCE;
   }
 
   public static final class Dimens.PillChip {
