@@ -495,6 +495,8 @@ private fun SegmentedOptionSelectorVariants() {
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         style = SegmentedOptionStyle.Pill
     )
+    SectionLabel("SegmentedOptionSelector — count editor (Pill, one option disabled, warn ToneCard)")
+    CountEditorDemo()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -651,6 +651,7 @@ private fun OutcomeSheetVariants() {
             }
         )
     }
+    ReceiptOutcomeSheetDemos()
 }
 
 /** Fixture options -- explorer-only, never registered (explorer/ is drift-guard denylisted). */
