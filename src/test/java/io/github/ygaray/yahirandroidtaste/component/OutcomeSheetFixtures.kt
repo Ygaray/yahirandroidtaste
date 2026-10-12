@@ -124,6 +124,24 @@ internal object OutcomeFixtures {
         BatchRowResultUiModel(label = "Milk", succeeded = false, detail = "not found")
     )
 
+    /** A Receipt action with every field defaulted; tests name only what they care about. */
+    fun sheetAction(
+        label: String = "Done",
+        emphasis: ActionButtonEmphasis = ActionButtonEmphasis.Filled,
+        activeWhileInFlight: Boolean = false,
+        enabled: Boolean = true,
+        onClick: () -> Unit = {}
+    ) = SheetActionUiModel(
+        label = label,
+        onClick = onClick,
+        emphasis = emphasis,
+        enabled = enabled,
+        activeWhileInFlight = activeWhileInFlight
+    )
+
+    /** A probe `editableContent` slot: renders one findable Text. */
+    val editableProbe: @Composable () -> Unit = { Text("editable probe") }
+
     /** Every Success field defaulted; the Receipt-only fields are named arguments. */
     @Suppress("LongParameterList")
     fun success(

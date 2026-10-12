@@ -119,4 +119,58 @@ class OutcomeSheetReceiptLongLabelTest {
         assertEquals("title line height", 24.sp, style.lineHeight)
         assertEquals("title font weight", FontWeight.SemiBold, style.fontWeight)
     }
+
+    // ---- Receipt Success (22-04, T-22-06) -------------------------------------------------------
+
+    private val germanPrefix = "Bearbeitet von"
+    private val germanTier = "Verarbeitung auf dem Gerät ohne Netzwerkverbindung"
+    private val germanProvider = "Lokale Grammatik offline"
+    private val longUndoAction = "Änderungen rückgängig machen"
+    private val longSaveAction = "Alle Einträge endgültig speichern"
+
+    @Test
+    fun `a long German pill stays inside the window with its dot visible and its text unellipsized`() {
+        setContent(
+            OutcomeFixtures.success(
+                handledBy = OutcomeFixtures.handledBy(
+                    prefixLabel = germanPrefix,
+                    tier = germanTier,
+                    provider = germanProvider,
+                    onDevice = true
+                )
+            )
+        )
+
+        val pill = tagged("outcome_sheet_handled_by").fetchSemanticsNode()
+        val pillRight = (pill.positionInRoot.x + pill.size.width) / composeTestRule.density.density
+        assertTrue("pill right edge $pillRight dp must be at most 344dp", pillRight <= 344f + 1f)
+        assertInsideWindow(tagged("outcome_sheet_handled_by_dot"), "pill dot")
+        assertNoEllipsizedLine("pill text", "$germanPrefix $germanTier · $germanProvider")
+    }
+
+    @Test
+    fun `long German Success actions stay inside the window and unellipsized`() {
+        setContent(
+            OutcomeFixtures.success(
+                startAction = OutcomeFixtures.sheetAction(label = longUndoAction),
+                endAction = OutcomeFixtures.sheetAction(label = longSaveAction)
+            )
+        )
+
+        assertInsideWindow(tagged("outcome_sheet_action_start"), "start action")
+        assertInsideWindow(tagged("outcome_sheet_action_end"), "end action")
+        assertNoEllipsizedLine("start label", longUndoAction)
+        assertNoEllipsizedLine("end label", longSaveAction)
+    }
+
+    @Test
+    fun `a 120 character German Success summary wraps to at most two lines`() {
+        val summary = "Drei Einträge wurden gespeichert und die Zusammenfassung ist bewusst sehr lang formuliert, " +
+            "damit sie auf einem schmalen Telefon umbrechen muss"
+        assertTrue("fixture must be at least 120 characters, was ${summary.length}", summary.length >= 120)
+        setContent(OutcomeFixtures.success(summary = summary))
+
+        val layout = tagged("outcome_sheet_title").textLayout()
+        assertTrue("summary line count ${layout.lineCount} must be at most 2", layout.lineCount <= 2)
+    }
 }

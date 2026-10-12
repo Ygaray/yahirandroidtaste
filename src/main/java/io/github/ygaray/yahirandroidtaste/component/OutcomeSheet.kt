@@ -174,7 +174,7 @@ private fun SuccessBody(success: VoiceOutcomeUiState.Success) {
  *   visible so the user can see what WILL be undoable once the in-flight batch write settles.
  */
 @Composable
-private fun UndoAffordanceBody(undo: UndoAffordanceUiModel, locked: Boolean) {
+internal fun UndoAffordanceBody(undo: UndoAffordanceUiModel, locked: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -275,7 +275,7 @@ private fun UndoRowItem(row: UndoRowUiModel, locked: Boolean) {
 
 /** Per-row batch result reporting (D-06) — each row's label plus success/fail status. */
 @Composable
-private fun BatchResultsList(rows: List<BatchRowResultUiModel>) {
+internal fun BatchResultsList(rows: List<BatchRowResultUiModel>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
