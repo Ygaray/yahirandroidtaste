@@ -97,6 +97,8 @@ class SegmentedOptionSelectorTest {
         val long = "Ausschließlich offline verarbeiten lassen"
         setSelector(listOf(short, long), selectedIndex = 0)
 
+        // Precondition: the long label really wraps, or the height comparison proves nothing.
+        assertEquals("long label line count", 2, label(long).textLayout().lineCount)
         val shortHeight = segment(short, selected = true).fetchSemanticsNode().size.height
         val longHeight = segment(long, selected = false).fetchSemanticsNode().size.height
         assertTrue(

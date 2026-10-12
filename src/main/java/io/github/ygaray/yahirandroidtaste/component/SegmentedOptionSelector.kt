@@ -2,7 +2,11 @@ package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -10,8 +14,10 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
@@ -33,7 +39,9 @@ import androidx.compose.ui.unit.dp
  * a warning or failure color: the values already shown are still valid, only the toggle itself is
  * temporarily unavailable.
  *
- * @param options Exactly two short labels for the two segments.
+ * @param options Exactly two labels for the two segments. A label too long for its half of the row
+ *   wraps to at most two lines and then ellipsizes, never running past the segment edge or under
+ *   the selected segment's check icon; both segments keep equal height.
  */
 @Composable
 fun SegmentedOptionSelector(
@@ -50,7 +58,9 @@ fun SegmentedOptionSelector(
         "SegmentedOptionSelector requires exactly 2 options, got ${options.size}"
     }
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+        // height(IntrinsicSize.Min) + each segment's fillMaxHeight(): when only one label wraps to
+        // two lines, both segments take the taller height (M3 does not equalize them itself).
+        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
             options.forEachIndexed { index, label ->
                 val selected = index == selectedIndex
                 SegmentedButton(
@@ -61,15 +71,17 @@ fun SegmentedOptionSelector(
                     shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
                     // Default colors draw the unselected segment's outlineVariant border — leave them.
                     colors = SegmentedButtonDefaults.colors(),
-                    modifier = Modifier.semantics {
+                    modifier = Modifier.fillMaxHeight().semantics {
                         contentDescription = "$label, ${if (selected) "selected" else "not selected"}"
                     },
                 ) {
                     Text(
                         text = label,
                         style = MaterialTheme.typography.labelLarge,
-                        maxLines = 1,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.reserveSegmentIconSlot(),
                     )
                 }
             }
@@ -86,4 +98,25 @@ fun SegmentedOptionSelector(
             )
         }
     }
+}
+
+/**
+ * Keeps a segment label inside its segment (G-15-1). Material3 1.4.0's
+ * `SegmentedButtonContentMeasurePolicy` measures the label at the FULL content width, then places
+ * it after the icon slot (`SegmentedButtonDefaults.IconSize` + `ButtonDefaults.IconSpacing`, at
+ * most 26dp; shifted back by half that when the check icon is hidden), so a label that fills its
+ * segment ran past the segment's right edge and was clipped under the selected check icon's shift.
+ * Shrinking the label's bounded max width by that slot keeps it inside the segment, check icon or
+ * not. Unbounded constraints pass through; the label reports its own size and is placed with
+ * `placeRelative` so RTL mirrors.
+ */
+private fun Modifier.reserveSegmentIconSlot(): Modifier = layout { measurable, constraints ->
+    val childConstraints = if (constraints.hasBoundedWidth) {
+        val slot = (SegmentedButtonDefaults.IconSize + ButtonDefaults.IconSpacing).roundToPx()
+        constraints.copy(minWidth = 0, maxWidth = (constraints.maxWidth - slot).coerceAtLeast(0))
+    } else {
+        constraints
+    }
+    val placeable = measurable.measure(childConstraints)
+    layout(placeable.width, placeable.height) { placeable.placeRelative(0, 0) }
 }
