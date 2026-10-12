@@ -131,7 +131,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 22-01-PLAN.md — API types and model widening, leaf types first: `OutcomeBadge`, `FailureTone`, `SheetActionUiModel`, `HandledByUiModel` / `FailureActionUiModel` / `Success` / `Failure` (redacting `toString`) / `NeedsConfirmation` fields, `OutcomeSheetStyle` / `OutcomeSheetColors` / `OutcomeSheetDefaults`, `Dimens.OutcomeReceipt`, three arity pins, v2.5.1 call-shape canary, `api.txt` per commit (VRCPT-01..05 fields, VXR-02 field)
+- [x] 22-01-PLAN.md — API types and model widening, leaf types first: `OutcomeBadge`, `FailureTone`, `SheetActionUiModel`, `HandledByUiModel` / `FailureActionUiModel` / `Success` / `Failure` (redacting `toString`) / `NeedsConfirmation` fields, `OutcomeSheetStyle` / `OutcomeSheetColors` / `OutcomeSheetDefaults`, `Dimens.OutcomeReceipt`, three arity pins, v2.5.1 call-shape canary, `api.txt` per commit (VRCPT-01..05 fields, VXR-02 field)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -310,6 +310,6 @@ only on Phase 20, but it runs after 22 because every phase rewrites the shared `
 |-------|-----------|----------------|--------|-----------|
 | 20. Tone foundation & atoms | v2.6 | 4/4 | Planned |  |
 | 21. Receipt row, Pill selector & sheet shape | v2.6 | 4/4 | Not started |  |
-| 22. OutcomeSheet Receipt style | v2.6 | 0/TBD | Not started | - |
+| 22. OutcomeSheet Receipt style | v2.6 | 1/5 | Not started |  |
 | 23. ProviderKeyCard lifecycle & Undo Center groups | v2.6 | 0/TBD | Not started | - |
 | 24. Catalog, docs, Explorer demos & cut v2.6.0 | v2.6 | 0/TBD | Not started | - |
