@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -104,7 +103,7 @@ fun SegmentedOptionSelector(
  * Keeps a segment label inside its segment (G-15-1). Material3 1.4.0's
  * `SegmentedButtonContentMeasurePolicy` measures the label at the FULL content width (the segment
  * minus `SegmentedButtonDefaults.ContentPadding` on each side), then lays the icon slot
- * (`SegmentedButtonDefaults.IconSize` + `ButtonDefaults.IconSpacing`, 26dp) in front of it, and
+ * (`SegmentedButtonDefaults.IconSize` + M3's private 8dp icon spacing, 26dp) in front of it, and
  * the content `Box` centers that wider row inside the padded segment. A full-width label therefore
  * overflows each side by half of `slot - horizontal padding`, so only that difference (about 2dp)
  * has to come off the label's max width to keep it inside the segment, check icon or not (WR-03).
@@ -115,7 +114,7 @@ fun SegmentedOptionSelector(
  */
 private fun Modifier.reserveSegmentIconSlot(): Modifier = layout { measurable, constraints ->
     val childConstraints = if (constraints.hasBoundedWidth) {
-        val slot = SegmentedButtonDefaults.IconSize.roundToPx() + ButtonDefaults.IconSpacing.roundToPx()
+        val slot = SegmentedButtonDefaults.IconSize.roundToPx() + SegmentedButtonIconSpacing.roundToPx()
         val padding = SegmentedButtonDefaults.ContentPadding.let {
             it.calculateLeftPadding(layoutDirection).roundToPx() +
                 it.calculateRightPadding(layoutDirection).roundToPx()
@@ -128,3 +127,12 @@ private fun Modifier.reserveSegmentIconSlot(): Modifier = layout { measurable, c
     val placeable = measurable.measure(childConstraints)
     layout(placeable.width, placeable.height) { placeable.placeRelative(0, 0) }
 }
+
+/**
+ * The icon-to-label spacing M3 1.4.0's `SegmentedButtonContentMeasurePolicy` actually uses: a
+ * PRIVATE `SegmentedButton.kt` literal (`private val IconSpacing = 8.dp`), NOT
+ * `ButtonDefaults.IconSpacing` (a different button token that is only coincidentally 8dp today and
+ * could move on its own in a Material token update). Pinned here; the G-15-1 segment-overflow tests
+ * are the tripwire if an M3 bump changes it.
+ */
+private val SegmentedButtonIconSpacing = 8.dp
