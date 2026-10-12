@@ -167,4 +167,34 @@ class ToneAtomsRegistryRenderTest {
         val count = composeTestRule.onAllNodesWithTag("pill_chip").fetchSemanticsNodes().size
         assertTrue("expected at least 5 chips in Variants, found $count", count >= 5)
     }
+
+    @Test
+    fun `StackedProgressBar is a Progress primitive with canonical states and renders in both themes`() {
+        val bar = entry("StackedProgressBar")
+        assertEquals(ExplorerFamilies.PROGRESS_METRICS, bar.family)
+        assertEquals(ComponentRegistry.Tier.PRIMITIVE, bar.tier)
+        assertEquals(canonicalLabels, bar.states.map { it.label })
+        assertNotNull(bar.states.first { it.label == "Default" }.render)
+        assertNotNull(bar.content)
+
+        renderEverything(bar)
+
+        // Per theme: the Default cell plus 5 Variants bars.
+        val count = composeTestRule.onAllNodesWithTag("stacked_progress_bar").fetchSemanticsNodes().size
+        assertTrue("expected bars from the cell and Variants, found $count", count >= 2 * 6)
+    }
+
+    @Test
+    fun `StackedProgressBar Variants render at least five tagged bars`() {
+        val content = checkNotNull(entry("StackedProgressBar").content)
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme(themeMode = ThemeMode.LIGHT, dynamicColor = false) {
+                Column { content() }
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        val count = composeTestRule.onAllNodesWithTag("stacked_progress_bar").fetchSemanticsNodes().size
+        assertTrue("expected at least 5 bars in Variants, found $count", count >= 5)
+    }
 }
