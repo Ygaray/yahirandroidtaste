@@ -11,6 +11,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
@@ -125,5 +126,21 @@ class OutcomeSheetReceiptBarGeometryTest {
 
         assertEquals("Success start edge", 16f * density, startLeft, 1f)
         assertEquals("Success end edge", 368f * density, endRight, 1f)
+    }
+
+    @Test
+    fun `at 384dp the Failure secondary starts at 16dp and the action ends at 368dp`() {
+        setContent(
+            OutcomeFixtures.failure(
+                action = FailureActionUiModel(label = "Retry", onClick = {}),
+                secondaryAction = OutcomeFixtures.sheetAction(label = "Close")
+            )
+        )
+
+        val (startLeft, _) = tagged("outcome_sheet_action_start").edges()
+        val (_, endRight) = tagged("outcome_sheet_action_end").edges()
+
+        assertEquals("Failure secondary start edge", 16f * density, startLeft, 1f)
+        assertEquals("Failure action end edge", 368f * density, endRight, 1f)
     }
 }

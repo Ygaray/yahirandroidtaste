@@ -24,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SpanStyle
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.model.FailureTone
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
 import io.github.ygaray.yahirandroidtaste.model.OutcomeBadge
 import io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel
@@ -86,7 +89,7 @@ internal fun OutcomeSheetReceiptContent(
     modifier: Modifier = Modifier,
     colors: OutcomeSheetColors = OutcomeSheetDefaults.colors()
 ) {
-    val barFollows = outcome is VoiceOutcomeUiState.NeedsConfirmation
+    val barFollows = receiptHasBar(outcome)
     Column(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -107,10 +110,20 @@ internal fun OutcomeSheetReceiptContent(
         }
         when (outcome) {
             is VoiceOutcomeUiState.Success -> Unit
-            is VoiceOutcomeUiState.Failure -> Unit
+            is VoiceOutcomeUiState.Failure -> ReceiptFailureBar(outcome)
             is VoiceOutcomeUiState.NeedsConfirmation -> ReceiptNeedsConfirmationBar(outcome)
         }
     }
+}
+
+/**
+ * Whether a pinned bar follows the scroll body: always for a confirmation, for a Failure only when it
+ * has an action or a secondary action (OQ-3), never for Success (its actions row scrolls).
+ */
+private fun receiptHasBar(outcome: VoiceOutcomeUiState): Boolean = when (outcome) {
+    is VoiceOutcomeUiState.NeedsConfirmation -> true
+    is VoiceOutcomeUiState.Failure -> outcome.action != null || outcome.secondaryAction != null
+    is VoiceOutcomeUiState.Success -> false
 }
 
 /** The glyph drawn inside the status badge circle for [badge]. */
@@ -324,9 +337,76 @@ private fun ReceiptSuccessActions(success: VoiceOutcomeUiState.Success) {
     )
 }
 
+/** The card tone of a Failure (D-09): Warn paints the warn tone, every other tone the error tone. */
+internal fun failureToneColors(tone: FailureTone, colors: OutcomeSheetColors): ToneColors =
+    if (tone == FailureTone.Warn) colors.warnTone else colors.errorTone
+
+/**
+ * The Receipt Failure body (D-09, D-11), in order: title row outside the card, transcript, handled-by
+ * pill, the tone card (reason plus the caller's body slot), the tip, and the shared undo block. The
+ * pinned bar follows as a sibling of the scroll body ([ReceiptFailureBar]).
+ */
 @Composable
 private fun ReceiptFailureBody(failure: VoiceOutcomeUiState.Failure, colors: OutcomeSheetColors) {
     ReceiptTitleRow(failure.title, failure.badge, null, colors)
+    failure.transcript?.takeIf { it.isNotBlank() }?.let { ReceiptTranscript(it) }
+    failure.handledBy?.let { ReceiptHandledByPill(it, colors) }
+    ToneCard(
+        tone = failureToneColors(failure.tone, colors),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = Dimens.ContentSpacing)
+            // Same VFAIL-03 merge as Classic: a non-blank prefix is announced with the reason on the
+            // card's merged node; the bar buttons are not descendants, so they stay separate nodes.
+            .then(
+                if (!failure.semanticsPrefix.isNullOrBlank()) {
+                    Modifier.semantics(mergeDescendants = true) {
+                        contentDescription = "${failure.semanticsPrefix.trim()} ${failure.reason}"
+                    }
+                } else {
+                    Modifier
+                }
+            )
+            .testTag("outcome_sheet_failure_surface")
+    ) {
+        Text(
+            text = failure.reason,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        failure.body?.let { body -> ProvideTextStyle(MaterialTheme.typography.bodyMedium) { body() } }
+    }
+    failure.tip?.let { tip ->
+        Box(modifier = Modifier.padding(top = Dimens.ContentSpacing).testTag("outcome_sheet_failure_tip")) { tip() }
+    }
+    failure.undo?.let { UndoAffordanceBody(it, locked = false) }
+}
+
+/**
+ * The Failure pinned bar: the secondary action at the START and the role-hued action at the END
+ * (D-09). Renders nothing, no bar and no divider, when both are absent (OQ-3).
+ */
+@Composable
+private fun ReceiptFailureBar(failure: VoiceOutcomeUiState.Failure) {
+    val action = failure.action
+    val secondary = failure.secondaryAction
+    if (action == null && secondary == null) return
+    ReceiptActionBar(
+        start = secondary?.let { { ReceiptSheetAction(it, it.enabled, "outcome_sheet_action_start") } },
+        end = action?.let {
+            {
+                DynamicActionButton(
+                    label = it.label,
+                    role = it.role,
+                    onClick = it.onClick,
+                    emphasis = ActionButtonEmphasis.Filled,
+                    icon = it.icon,
+                    modifier = Modifier.testTag("outcome_sheet_action_end")
+                )
+            }
+        }
+    )
 }
 
 @Composable
