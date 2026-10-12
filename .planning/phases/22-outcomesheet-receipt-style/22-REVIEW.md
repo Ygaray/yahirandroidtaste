@@ -39,7 +39,7 @@ findings:
   warning: 2
   info: 6
   total: 8
-status: issues_found
+status: resolved
 ---
 
 # Phase 22: Code Review Report
