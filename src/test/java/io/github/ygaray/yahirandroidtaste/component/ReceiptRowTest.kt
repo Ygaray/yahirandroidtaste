@@ -10,14 +10,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -411,5 +419,148 @@ class ReceiptRowTest {
 
         assertEquals(warn.content, text("Subtitle detail").textLayout().layoutInput.style.color)
         assertEquals(errorContent, text("Item title").textLayout().layoutInput.style.color)
+    }
+
+    // --- Semantics: the merge domain (VROW-02) -----------------------------------------------
+
+    private fun summaryTexts(): String =
+        composeTestRule.onNodeWithTag("receipt_row_summary").fetchSemanticsNode()
+            .config[SemanticsProperties.Text].joinToString("|") { it.text }
+
+    @Test
+    fun `the title resolves to exactly one merged node and it is the summary`() {
+        setRow {
+            ReceiptRow(
+                title = "Item title",
+                subtitle = "Subtitle detail",
+                value = "1,250",
+                valueCaption = "Total",
+                attentionCue = "Check this",
+                onClick = {}
+            )
+        }
+
+        val matches = composeTestRule.onAllNodesWithText("Item title")
+        assertEquals(1, matches.fetchSemanticsNodes().size)
+        matches[0].assert(hasTestTag("receipt_row_summary"))
+        listOf("Item title", "Subtitle detail", "1,250", "Total", "Check this").forEach { expected ->
+            assertTrue("merged text lacks \"$expected\": ${summaryTexts()}", summaryTexts().contains(expected))
+        }
+        val node = composeTestRule.onNodeWithTag("receipt_row_summary").fetchSemanticsNode()
+        assertTrue("summary merges descendants", node.config.isMergingSemanticsOfDescendants)
+        text("Item title").assert(hasAnyAncestor(hasTestTag("receipt_row_summary")))
+    }
+
+    @Test
+    fun `with onClick the summary is a button with the caller label and one click fires once`() {
+        var clicks = 0
+        setRow {
+            ReceiptRow(title = "Item title", value = "5", onClick = { clicks++ }, onClickLabel = "Edit row")
+        }
+
+        val config = composeTestRule.onNodeWithTag("receipt_row_summary").fetchSemanticsNode().config
+        assertEquals(Role.Button, config.getOrNull(SemanticsProperties.Role))
+        assertEquals("Edit row", config[SemanticsActions.OnClick].label)
+
+        composeTestRule.onNodeWithTag("receipt_row_summary").performClick()
+        composeTestRule.waitForIdle()
+        assertEquals(1, clicks)
+    }
+
+    private fun stateDescriptionOf(expanded: Boolean, expandedLabel: String?, collapsedLabel: String?): String? {
+        setRow {
+            if (expandedLabel != null && collapsedLabel != null) {
+                ReceiptRow(
+                    title = "Item title",
+                    expanded = expanded,
+                    onClick = {},
+                    expandedStateLabel = expandedLabel,
+                    collapsedStateLabel = collapsedLabel
+                )
+            } else {
+                ReceiptRow(title = "Item title", expanded = expanded, onClick = {})
+            }
+        }
+        return composeTestRule.onNodeWithTag("receipt_row_summary").fetchSemanticsNode()
+            .config.getOrNull(SemanticsProperties.StateDescription)
+    }
+
+    @Test
+    fun `an expanded row announces the default expanded label`() {
+        assertEquals("Expanded", stateDescriptionOf(expanded = true, expandedLabel = null, collapsedLabel = null))
+    }
+
+    @Test
+    fun `a collapsed row announces the default collapsed label`() {
+        assertEquals("Collapsed", stateDescriptionOf(expanded = false, expandedLabel = null, collapsedLabel = null))
+    }
+
+    @Test
+    fun `an expanded row announces the caller expanded label`() {
+        assertEquals("Open", stateDescriptionOf(expanded = true, expandedLabel = "Open", collapsedLabel = "Closed"))
+    }
+
+    @Test
+    fun `a collapsed row announces the caller collapsed label`() {
+        assertEquals("Closed", stateDescriptionOf(expanded = false, expandedLabel = "Open", collapsedLabel = "Closed"))
+    }
+
+    @Test
+    fun `without onClick the summary has no role no state description and no click action`() {
+        setRow {
+            ReceiptRow(title = "Item title", value = "1,250")
+        }
+
+        val config = composeTestRule.onNodeWithTag("receipt_row_summary").fetchSemanticsNode().config
+        assertEquals(null, config.getOrNull(SemanticsProperties.Role))
+        assertEquals(null, config.getOrNull(SemanticsProperties.StateDescription))
+        assertEquals(null, config.getOrNull(SemanticsActions.OnClick))
+        assertEquals(1, composeTestRule.onAllNodesWithText("Item title").fetchSemanticsNodes().size)
+        assertTrue("still merges its children: ${summaryTexts()}", summaryTexts().contains("1,250"))
+    }
+
+    @Test
+    fun `the trailing action is a separate node and its click never reaches the row`() {
+        var rowClicks = 0
+        var undoClicks = 0
+        setRow {
+            ReceiptRow(
+                title = "Item title",
+                value = "5",
+                onClick = { rowClicks++ },
+                trailingAction = { TextButton(onClick = { undoClicks++ }) { Text("Undo") } }
+            )
+        }
+
+        composeTestRule.onNodeWithTag("receipt_row_trailing_action")
+            .assert(!hasAnyAncestor(hasTestTag("receipt_row_summary")))
+        assertFalse("summary text must not hold the action: ${summaryTexts()}", summaryTexts().contains("Undo"))
+
+        composeTestRule.onNodeWithText("Undo").performClick()
+        composeTestRule.waitForIdle()
+        assertEquals("undo clicks", 1, undoClicks)
+        assertEquals("row clicks after tapping the action", 0, rowClicks)
+
+        composeTestRule.onNodeWithTag("receipt_row_summary").performClick()
+        composeTestRule.waitForIdle()
+        assertEquals("row clicks after tapping the summary", 1, rowClicks)
+        assertEquals("undo clicks after tapping the summary", 1, undoClicks)
+    }
+
+    @Test
+    fun `expanded content is a separate node outside the merged summary`() {
+        setRow {
+            ReceiptRow(
+                title = "Item title",
+                value = "5",
+                expanded = true,
+                onClick = {},
+                expandedContent = { Text("Expanded detail") }
+            )
+        }
+
+        composeTestRule.onNodeWithTag("receipt_row_expanded_content")
+            .assert(!hasAnyAncestor(hasTestTag("receipt_row_summary")))
+        assertFalse("summary text must not hold the content: ${summaryTexts()}", summaryTexts().contains("Expanded detail"))
     }
 }
