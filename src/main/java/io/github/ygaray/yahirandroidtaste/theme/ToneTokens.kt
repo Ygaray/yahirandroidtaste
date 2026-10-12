@@ -37,7 +37,12 @@ class ToneColors(val container: Color, val content: Color) {
  */
 object ToneDefaults {
 
-    /** Error tone: `errorContainer` fill with `error` content. */
+    /**
+     * Error tone: `errorContainer` fill with `error` content (not `onErrorContainer`, D-05). The hub
+     * palettes pass 4.5:1 for this pair (about 5.0 light, 5.5 dark), a thin margin. Under dynamic
+     * color (Material You) the pair is wallpaper-derived and unchecked, so pass your own
+     * [ToneColors] when you need a guaranteed contrast.
+     */
     @Composable
     fun error(): ToneColors = MaterialTheme.colorScheme.let { ToneColors(it.errorContainer, it.error) }
 
