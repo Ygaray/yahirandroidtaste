@@ -60,7 +60,8 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  *   leading/trailing whitespace before this callback fires — not scoped to paste alone; pure
  *   formatting, no validation (INV-01).
  * @param keyState Render-only validation state (see [KeyFieldState]) driving the field's
- *   error/supporting-text presentation. The library never validates the key itself.
+ *   error/supporting-text presentation. While a saved-key summary shows, an `Invalid` reason is
+ *   rendered as an error line under the summary instead. The library never validates the key itself.
  * @param keyLabel Caller-formatted label text for the key field (e.g. `"API key"`).
  * @param modifier Applied to the outer [Surface].
  * @param emptyProvidersReason Caption shown when [providers] is empty (e.g. "No providers
@@ -125,7 +126,12 @@ fun ProviderKeyCard(
             if (saved != null &&
                 providerKeyMode(savedKeys, selectedProviderId, editingSavedKey) == ProviderKeyMode.Summary
             ) {
-                SavedKeySummary(text = savedSummaryText(labels, saved), actions = actions, labels = labels)
+                SavedKeySummary(
+                    text = savedSummaryText(labels, saved),
+                    errorReason = (keyState as? KeyFieldState.Invalid)?.reason,
+                    actions = actions,
+                    labels = labels
+                )
             } else {
                 val invalidState = keyState as? KeyFieldState.Invalid
                 ClearableTextField(
@@ -207,16 +213,23 @@ internal fun providerMenuLabel(
 private const val TAG_ACTION_SAVE = "provider_key_action_save"
 private const val TAG_ACTION_CANCEL = "provider_key_action_cancel"
 private const val TAG_SAVED_SUMMARY = "provider_key_saved_summary"
+private const val TAG_SAVED_ERROR = "provider_key_saved_error"
 private const val TAG_ACTION_UPDATE = "provider_key_action_update"
 private const val TAG_ACTION_CLEAR = "provider_key_action_clear"
 
 /**
  * The saved-key summary: a decorative check plus the whole summary string as one merged node, then
- * (when [actions] has an Update or a Clear) the button row. Emits two siblings into the card column;
- * the buttons are deliberately NOT inside the merged summary node.
+ * the [errorReason] of a [KeyFieldState.Invalid] state (when there is one), then (when [actions] has
+ * an Update or a Clear) the button row. Emits up to three siblings into the card column; the error
+ * and the buttons are deliberately NOT inside the merged summary node.
  */
 @Composable
-private fun SavedKeySummary(text: String, actions: ProviderKeyActions?, labels: ProviderKeyLabels) {
+private fun SavedKeySummary(
+    text: String,
+    errorReason: String?,
+    actions: ProviderKeyActions?,
+    labels: ProviderKeyLabels
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Dimens.TopPadding),
@@ -237,6 +250,15 @@ private fun SavedKeySummary(text: String, actions: ProviderKeyActions?, labels: 
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f)
+        )
+    }
+    if (errorReason != null) {
+        // A failure reported while the summary shows (a rejected saved key, a failed Clear) stays loud.
+        Text(
+            text = errorReason,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(top = Dimens.ContentSpacing).testTag(TAG_SAVED_ERROR)
         )
     }
     if (actions != null && (actions.onUpdate != null || actions.onClear != null)) {

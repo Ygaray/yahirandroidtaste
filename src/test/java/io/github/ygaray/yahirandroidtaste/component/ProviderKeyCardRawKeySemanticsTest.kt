@@ -1,6 +1,8 @@
 package io.github.ygaray.yahirandroidtaste.component
 
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -114,5 +116,21 @@ class ProviderKeyCardRawKeySemanticsTest {
     fun `summary mode with an Invalid keyState keeps the sentinel out of every root`() {
         setCard(keyState = KeyFieldState.Invalid("Key rejected by provider"))
         assertNoSentinelAnywhere()
+    }
+
+    @Test
+    fun `summary mode shows the Invalid reason as its own error line, and only when Invalid`() {
+        setCard(keyState = KeyFieldState.Invalid("Key rejected by provider"))
+        composeTestRule.onNodeWithTag("provider_key_saved_error").assertTextEquals("Key rejected by provider")
+        // The summary itself stays the one merged fingerprint node.
+        composeTestRule.onNodeWithTag("provider_key_saved_summary").assertTextEquals("Saved · sk-ant-…abcd")
+    }
+
+    @Test
+    fun `summary mode without an Invalid keyState renders no error line`() {
+        setCard(keyState = KeyFieldState.Entered)
+        assertTrue(
+            composeTestRule.onAllNodesWithTag("provider_key_saved_error").fetchSemanticsNodes().isEmpty()
+        )
     }
 }
