@@ -1,0 +1,342 @@
+{
+  "schema": "gsd.uat-run/v1",
+  "run_id": "uatr-20261012T130416Z-9e032ae3",
+  "status": "finished",
+  "phase": "21",
+  "plan": "04",
+  "prefix": "21-04",
+  "surface": "android",
+  "required_surface": {
+    "surface": "android",
+    "source": "marker:AGENT-DEVICE-TESTING.md"
+  },
+  "surface_override": null,
+  "device": {
+    "addr": "R5CT10XNKQN",
+    "serial": "R5CT10XNKQN",
+    "model": "SM-S908U",
+    "label": null
+  },
+  "app": {
+    "package": "io.github.ygaray.yahirandroidtasteharness",
+    "apk_path": "/data/app/~~YPKllS2FODb4Io_IXmS4qg==/io.github.ygaray.yahirandroidtasteharness-_X4QsFW4irVJtwNPWaF17g==/base.apk",
+    "apk_sha256": "ce62b5ce558f0f112240fbfe69e5db395a550648a966d105867f1b8ca38faf28"
+  },
+  "head_at_start": "5aee7dd49cc8315109834239670c590969f06f1a",
+  "started_at": "2026-10-12T13:04:16.059Z",
+  "finished_at": "2026-10-12T13:17:32.940Z",
+  "capture_count": 34,
+  "captures": [
+    {
+      "label": "sc1-receiptrow-states-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "01-sc1-receiptrow-states-ui.xml",
+      "sha256": "71d5a3a3afeef55b1c2abe8af7ec73f92caebfc42387098b43f9dd942004cd8e",
+      "bytes": 22612,
+      "at": "2026-10-12T13:05:29.127Z"
+    },
+    {
+      "label": "sc1-receiptrow-states-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "02-sc1-receiptrow-states-screen.png",
+      "sha256": "0442a63a87ba6b33390a6a0d416427febd8066202947a2e05f16a31e593e209f",
+      "bytes": 155692,
+      "at": "2026-10-12T13:05:29.632Z"
+    },
+    {
+      "label": "sc5-accordion-0-all-closed-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "03-sc5-accordion-0-all-closed-ui.xml",
+      "sha256": "786364391a78bdc8e4d1b3e49687dc19e0715200673fbede1f24c1d96c482345",
+      "bytes": 26486,
+      "at": "2026-10-12T13:06:43.785Z"
+    },
+    {
+      "label": "sc5-accordion-1-row1-open-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "04-sc5-accordion-1-row1-open-ui.xml",
+      "sha256": "b04b3d0726400f52783cb48ed142aeea31f9ff202897bdee82b4662b5fa60949",
+      "bytes": 25788,
+      "at": "2026-10-12T13:06:49.855Z"
+    },
+    {
+      "label": "sc5-accordion-2-row2-open-row1-closed-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "05-sc5-accordion-2-row2-open-row1-closed-ui.xml",
+      "sha256": "d4944c23377762115ec945372184ec1694da6b6da418515fb2ce9acbf17c6c92",
+      "bytes": 25788,
+      "at": "2026-10-12T13:07:02.267Z"
+    },
+    {
+      "label": "sc5-accordion-2-row2-open-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "06-sc5-accordion-2-row2-open-screen.png",
+      "sha256": "e729f043d30459fa860a6b824ef51966620f75a96ba8068623ba7f75f47441ac",
+      "bytes": 156387,
+      "at": "2026-10-12T13:07:02.747Z"
+    },
+    {
+      "label": "sc5-accordion-3-row3-open-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "07-sc5-accordion-3-row3-open-ui.xml",
+      "sha256": "d4944c23377762115ec945372184ec1694da6b6da418515fb2ce9acbf17c6c92",
+      "bytes": 25788,
+      "at": "2026-10-12T13:07:14.002Z"
+    },
+    {
+      "label": "sc5-accordion-4-row3-reclick-closed-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "08-sc5-accordion-4-row3-reclick-closed-ui.xml",
+      "sha256": "786364391a78bdc8e4d1b3e49687dc19e0715200673fbede1f24c1d96c482345",
+      "bytes": 26486,
+      "at": "2026-10-12T13:07:20.083Z"
+    },
+    {
+      "label": "sc5-accordion-5-switch-to-row3-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "09-sc5-accordion-5-switch-to-row3-ui.xml",
+      "sha256": "fd9c131f4cc708cd405ef56bb64943a2e3ac20e98d4136e7147fd873248c32d6",
+      "bytes": 26495,
+      "at": "2026-10-12T13:07:42.407Z"
+    },
+    {
+      "label": "sc5-accordion-5-switch-to-row3-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "10-sc5-accordion-5-switch-to-row3-screen.png",
+      "sha256": "f0fb3c0d42e090fe4b0105fd8086e7e4f021a0564fb8905e6bf0e77c394c90fd",
+      "bytes": 172397,
+      "at": "2026-10-12T13:07:42.846Z"
+    },
+    {
+      "label": "sc5-accordion-6-row3-reclick-all-closed-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "11-sc5-accordion-6-row3-reclick-all-closed-ui.xml",
+      "sha256": "fd9c131f4cc708cd405ef56bb64943a2e3ac20e98d4136e7147fd873248c32d6",
+      "bytes": 26495,
+      "at": "2026-10-12T13:07:48.769Z"
+    },
+    {
+      "label": "sc5-accordion-7-row3-summary-retap-all-closed-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "12-sc5-accordion-7-row3-summary-retap-all-closed-ui.xml",
+      "sha256": "786364391a78bdc8e4d1b3e49687dc19e0715200673fbede1f24c1d96c482345",
+      "bytes": 26486,
+      "at": "2026-10-12T13:07:59.716Z"
+    },
+    {
+      "label": "sc1-probe-rows-360dp-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "13-sc1-probe-rows-360dp-ui.xml",
+      "sha256": "8a08f92d3ef089d8074cf2c32377193776597dba7b3d3431be5d584bdc75db09",
+      "bytes": 32040,
+      "at": "2026-10-12T13:11:05.411Z"
+    },
+    {
+      "label": "sc1-probe-rows-360dp-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "14-sc1-probe-rows-360dp-screen.png",
+      "sha256": "3d0764ceff5331d9b32d4f85ffa08d178ab0266918258b5330fd5833d7d108ff",
+      "bytes": 245062,
+      "at": "2026-10-12T13:11:05.913Z"
+    },
+    {
+      "label": "sc1-chevron-anim10x-0-closed-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "15-sc1-chevron-anim10x-0-closed-screen.png",
+      "sha256": "8fc05b9a834e43dabb9b496981678520e73c8eb3d2c2671158dbb26837dcc815",
+      "bytes": 164743,
+      "at": "2026-10-12T13:11:58.895Z"
+    },
+    {
+      "label": "sc1-chevron-anim10x-1-mid-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "16-sc1-chevron-anim10x-1-mid-screen.png",
+      "sha256": "32e5c0beb96e14bb632e5c5df40518bed479f71e38fd4e7d6f0ed9c7b646f255",
+      "bytes": 169028,
+      "at": "2026-10-12T13:11:59.713Z"
+    },
+    {
+      "label": "sc1-chevron-anim10x-2-end-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "17-sc1-chevron-anim10x-2-end-screen.png",
+      "sha256": "ad355ecab1eec2caf4755e9a43cad0c0297877855b9d9f279592b3788670a8dc",
+      "bytes": 155589,
+      "at": "2026-10-12T13:12:05.213Z"
+    },
+    {
+      "label": "sc3-probe-pills-360dp-before-taps-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "18-sc3-probe-pills-360dp-before-taps-ui.xml",
+      "sha256": "51ca4d046dea36ec523df4933de93e08ff6444d282498219b85c79baab1cc2e4",
+      "bytes": 35624,
+      "at": "2026-10-12T13:12:34.549Z"
+    },
+    {
+      "label": "sc3-probe-pills-360dp-before-taps-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "19-sc3-probe-pills-360dp-before-taps-screen.png",
+      "sha256": "256da40a277da14fce272f282d1b366749e499e2c2276e232e040a2122193cba",
+      "bytes": 201917,
+      "at": "2026-10-12T13:12:35.018Z"
+    },
+    {
+      "label": "sc3-probe-pills-after-taps-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "20-sc3-probe-pills-after-taps-ui.xml",
+      "sha256": "7aa0238132cc2b2fadd0fbf0332694c45259c54e188efbba3f7652e6155d68a9",
+      "bytes": 35624,
+      "at": "2026-10-12T13:13:04.705Z"
+    },
+    {
+      "label": "sc3-gallery-selector-top-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "21-sc3-gallery-selector-top-ui.xml",
+      "sha256": "693db5995a352d7f2e9d88a67048fb02307a13fd6a3b63ae812095fa9491fe48",
+      "bytes": 28693,
+      "at": "2026-10-12T13:13:26.978Z"
+    },
+    {
+      "label": "sc3-gallery-selector-top-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "22-sc3-gallery-selector-top-screen.png",
+      "sha256": "b146f9397df266ef4ab9060917be37732e669644ca3a6b257cb78960175aed6c",
+      "bytes": 188860,
+      "at": "2026-10-12T13:13:27.544Z"
+    },
+    {
+      "label": "sc3-gallery-selector-bottom-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "23-sc3-gallery-selector-bottom-ui.xml",
+      "sha256": "feaba9c91405da09663e161c0c32206e8d4f99114a9cd96427b74fdcef0dab90",
+      "bytes": 31371,
+      "at": "2026-10-12T13:13:38.195Z"
+    },
+    {
+      "label": "sc3-gallery-selector-bottom-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "24-sc3-gallery-selector-bottom-screen.png",
+      "sha256": "c039eb13ee5c6571811443025c156461b90cef2fbcc61959c2d43c6f4f816b84",
+      "bytes": 215463,
+      "at": "2026-10-12T13:13:38.712Z"
+    },
+    {
+      "label": "sc4-selector-v251-baseline-top-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "25-sc4-selector-v251-baseline-top-screen.png",
+      "sha256": "f6c64c8ab4054cde175faef71940ee75923cd64c610d41457b54bb1095fde3f5",
+      "bytes": 147164,
+      "at": "2026-10-12T13:14:30.979Z"
+    },
+    {
+      "label": "sc4-sheet-default-v251-baseline-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "26-sc4-sheet-default-v251-baseline-screen.png",
+      "sha256": "965430c946b4d4980ed0c8cc1329296b077b02858733a0a5b86c0b873906c9d5",
+      "bytes": 125478,
+      "at": "2026-10-12T13:15:04.964Z"
+    },
+    {
+      "label": "sc4-sheet-default-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "27-sc4-sheet-default-head-screen.png",
+      "sha256": "e6f2e4e058d05af67b4594cce399ae504bc83ece34eaf2d1f70ac3666dd7c524",
+      "bytes": 145067,
+      "at": "2026-10-12T13:15:29.375Z"
+    },
+    {
+      "label": "sc4-sheet-default-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "28-sc4-sheet-default-head-ui.xml",
+      "sha256": "f3fc5541b1ffb07455516d9075f6807fcee370272b052a2c0b9a655dc14496fe",
+      "bytes": 5378,
+      "at": "2026-10-12T13:15:31.762Z"
+    },
+    {
+      "label": "sc4-sheet-shaped-24dp-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "29-sc4-sheet-shaped-24dp-head-screen.png",
+      "sha256": "40b702902c3907701ccd1ce47a78e48593ec2d8220d81c308b555378c7096986",
+      "bytes": 143754,
+      "at": "2026-10-12T13:15:40.009Z"
+    },
+    {
+      "label": "sc4-sheet-shaped-24dp-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "30-sc4-sheet-shaped-24dp-head-ui.xml",
+      "sha256": "df1bbabfc946d95fb8c5111cfd48a1265d8071f7dfa14da74f02e5bf9956a59d",
+      "bytes": 5377,
+      "at": "2026-10-12T13:15:42.376Z"
+    },
+    {
+      "label": "sc1-receiptrow-states-dark-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "31-sc1-receiptrow-states-dark-screen.png",
+      "sha256": "691e14bcb3806a6ad4d7fb7f3f2ede5bc0cf169d72fc1a0df53d2cc052f47d18",
+      "bytes": 150405,
+      "at": "2026-10-12T13:16:38.303Z"
+    },
+    {
+      "label": "logcat-fatal-check",
+      "kind": "log",
+      "source": "cli",
+      "file": "32-logcat-fatal-check.log",
+      "sha256": "629f5c99a8c152fb8fc472f83ecb0cea3af783a9c1f2c7a3480e46d02ae1a1e8",
+      "bytes": 63,
+      "at": "2026-10-12T13:16:50.196Z",
+      "empty": true
+    },
+    {
+      "label": "sc1-probe-expanded-fullwidth-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "33-sc1-probe-expanded-fullwidth-ui.xml",
+      "sha256": "9a3bfc8515be5f5eb163a9001b811677b696f7483e4d3027aa3ea5df902836ec",
+      "bytes": 32363,
+      "at": "2026-10-12T13:17:31.391Z"
+    },
+    {
+      "label": "sc1-probe-expanded-fullwidth-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "34-sc1-probe-expanded-fullwidth-screen.png",
+      "sha256": "3e82764cd5391b58b87e3eb47357e73bf0c7bac5a9d3eb3cf15675eb097b925d",
+      "bytes": 238059,
+      "at": "2026-10-12T13:17:31.854Z"
+    }
+  ],
+  "sig": {
+    "alg": "HMAC-SHA256",
+    "value": "4b2dfe83171938d2ce6066fb681f01b9f8932c560f17c77fc0c3b014dc53afcf"
+  }
+}
