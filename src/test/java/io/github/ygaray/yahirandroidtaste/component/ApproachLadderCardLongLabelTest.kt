@@ -1,7 +1,10 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
@@ -10,6 +13,9 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import org.junit.Assert.assertEquals
@@ -49,32 +55,38 @@ class ApproachLadderCardLongLabelTest {
         ApproachRungUiModel(id = "local", label = "Local", rank = 1, offlineCapable = true)
     )
 
-    private fun setCard(german: Boolean) {
+    private fun setCard(german: Boolean, horizontalPadding: Dp = 0.dp, fontScale: Float? = null) {
         composeTestRule.setContent {
-            YahirAndroidTasteTheme {
-                if (german) {
-                    ApproachLadderCard(
-                        ladder = ladder,
-                        offlineOnly = true,
-                        onOfflineOnlyChange = {},
-                        maxTierId = "local",
-                        onMaxTierChange = {},
-                        modifier = Modifier.fillMaxWidth(),
-                        unavailableLabel = UNAVAILABLE_DE,
-                        cappedLabel = CAPPED_DE,
-                        needsNetworkLabel = NEEDS_NETWORK_DE,
-                        onlineLabel = ONLINE_DE,
-                        offlineOnlyLabel = OFFLINE_ONLY_DE
-                    )
-                } else {
-                    ApproachLadderCard(
-                        ladder = ladder,
-                        offlineOnly = true,
-                        onOfflineOnlyChange = {},
-                        maxTierId = "local",
-                        onMaxTierChange = {},
-                        modifier = Modifier.fillMaxWidth()
-                    )
+            val density = LocalDensity.current
+            CompositionLocalProvider(
+                LocalDensity provides Density(density.density, fontScale ?: density.fontScale)
+            ) {
+                YahirAndroidTasteTheme {
+                    val cardModifier = Modifier.fillMaxWidth().padding(horizontal = horizontalPadding)
+                    if (german) {
+                        ApproachLadderCard(
+                            ladder = ladder,
+                            offlineOnly = true,
+                            onOfflineOnlyChange = {},
+                            maxTierId = "local",
+                            onMaxTierChange = {},
+                            modifier = cardModifier,
+                            unavailableLabel = UNAVAILABLE_DE,
+                            cappedLabel = CAPPED_DE,
+                            needsNetworkLabel = NEEDS_NETWORK_DE,
+                            onlineLabel = ONLINE_DE,
+                            offlineOnlyLabel = OFFLINE_ONLY_DE
+                        )
+                    } else {
+                        ApproachLadderCard(
+                            ladder = ladder,
+                            offlineOnly = true,
+                            onOfflineOnlyChange = {},
+                            maxTierId = "local",
+                            onMaxTierChange = {},
+                            modifier = cardModifier
+                        )
+                    }
                 }
             }
         }
@@ -168,15 +180,45 @@ class ApproachLadderCardLongLabelTest {
     }
 
     @Test
-    fun `English default labels stay single-line and the Cloud name is not ellipsized`() {
+    fun `English default labels at 360dp stay single-line and share one line with the Cloud name`() {
         setCard(german = false)
+        assertEnglishCloudRowUnchanged()
+    }
 
+    @Test
+    @Config(qualifiers = "w320dp-h800dp")
+    fun `English default labels at 320dp share one line with the Cloud name`() {
+        setCard(german = false)
+        assertEnglishCloudRowUnchanged()
+    }
+
+    @Test
+    fun `English default labels inside the gallery's 16dp padding share one line with the Cloud name`() {
+        setCard(german = false, horizontalPadding = 16.dp)
+        assertEnglishCloudRowUnchanged()
+    }
+
+    @Test
+    fun `English default labels at fontScale 1_3 share one line with the Cloud name`() {
+        setCard(german = false, fontScale = 1.3f)
+        assertEnglishCloudRowUnchanged()
+    }
+
+    /**
+     * v2.5.0 parity for short labels (CR-01 / WR-02): each English affordance is one line AND the
+     * three of them sit on the SAME line next to the Cloud name. A per-Text line count alone cannot
+     * see the affordance group wrapping "Needs network" under "Unavailable" / "Capped".
+     */
+    private fun assertEnglishCloudRowUnchanged() {
         listOf("Unavailable", "Needs network").forEach { label ->
             assertEquals("\"$label\" line count", 1, text(label).textLayout().lineCount)
         }
         allText("Capped").forEach { node ->
             assertEquals("\"Capped\" line count", 1, node.textLayout().lineCount)
         }
+        val tops = listOf(text("Unavailable"), cloudCappedNode("Capped"), text("Needs network"))
+            .map { it.top() }
+        assertEquals("English affordances must share one line, tops=$tops", 1, tops.distinct().size)
         assertFalse("Cloud name must not be ellipsized", text("Cloud").textLayout().isLineEllipsized(0))
     }
 
