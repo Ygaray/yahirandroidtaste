@@ -38,7 +38,7 @@ SB with no signature deltas; P1-P3 rulings applied). Inputs: CT `76-UI-SPEC.md` 
 - [ ] **Phase 21: Receipt row, Pill selector & sheet shape** - `ReceiptRow`, `SegmentedOptionSelector` Pill style + per-option disable, `SheetScaffold` shape (Y-2, Y-11, Y-13)
 - [ ] **Phase 22: OutcomeSheet Receipt style** - Receipt frame + NeedsConfirmation/Success/Failure/handled-by additions, stable test tags, in-flight action, XR-178-01 a/b (Y-3..Y-7, Y-14)
 - [ ] **Phase 23: ProviderKeyCard lifecycle & Undo Center groups** - Per-provider saved-key summary with Save/Update/Clear/Cancel, plus the Undo Center group row (sketch §1, XR-178-01 c)
-- [ ] **Phase 24: Catalog, docs, Explorer demos & cut v2.6.0** - Registry/API/docs/invariant gate, Explorer demos + TESTER screencaps, then the owner-gated `v2.6.0` cut (Y-15)
+- [ ] **Phase 24: Catalog, docs, Explorer demos & cut v2.6.0** - Registry/API/docs/invariant gate, Explorer demos + TESTER screencaps, then the `v2.6.0` cut (owner screencap review after the cut, Y-15)
 
 ## Phase Details
 
@@ -111,7 +111,7 @@ SB with no signature deltas; P1-P3 rulings applied). Inputs: CT `76-UI-SPEC.md` 
 
 ### Phase 24: Catalog, docs, Explorer demos & cut v2.6.0
 
-**Goal**: Prove the whole milestone is registry-clean, source-compatible, documented and invariant-clean; demo every new surface in the Explorer with TESTER screencaps for the owner; then, after the owner reviews those screencaps, cut the immutable `v2.6.0` tag.
+**Goal**: Prove the whole milestone is registry-clean, source-compatible, documented and invariant-clean; demo every new surface in the Explorer with TESTER screencaps for the owner; then cut the immutable `v2.6.0` tag (the owner reviews the screencaps after the cut).
 **Depends on**: Phase 20, Phase 21, Phase 22, Phase 23
 **Requirements**: CAT-03, API-03, DOC-03, INV-03, DEMO-01, SHIP-04
 **Success Criteria** (what must be TRUE):
@@ -120,9 +120,9 @@ SB with no signature deltas; P1-P3 rulings applied). Inputs: CT `76-UI-SPEC.md` 
   2. On a freshly regenerated `api.txt`, `./gradlew apiCheck` and `bash tools/test/run-all.sh` pass, and a v2.5.1 call-site canary test source set (SB + CT call shapes and the Explorer) compiles unchanged. The diff shows no public symbol removed, no required param added and every existing enum constant intact. `tools/verify-binary-abi.sh v2.5.1` runs and its result is recorded as information only (API-03).
   3. `API.md` (including a stable-test-tags section listing every Y-14 and `provider_key_*` tag), `INTEGRATION.md` and the KDoc cover Y-1..Y-14, the ProviderKeyCard lifecycle and XR-178-01 a/b/c, checked item by item against the sketch (DOC-03).
   4. The Explorer shows every DEMO-01 demo, each reached by a registry render test: Receipt confirm (single open, batch collapsed, batch with an attention row); a count editor with a disabled Pill segment and a warn `ToneCard`; Success single/batch/all-undone; Failure error/warn; the ProviderKeyCard lifecycle (3 providers, one saved, edit and clear flows); and an Undo Center group row. Screencaps are captured on the TESTER (`R5CT10XNKQN`) only and kept for the owner (DEMO-01).
-  5. Only after the owner signs off on the screencaps is the annotated `v2.6.0` tag cut via §11 on the gated commit, pushed, and its JitPack build confirmed. Tag sha, commit, coordinate and build status are reported to the teamlead. There is no stray marker tag (`git.create_tag` false), and no consumer is repinned from the hub (SHIP-04).
+  5. The annotated `v2.6.0` tag is cut via §11 on the gated commit. Only after gates 1-2 and the full unit suite pass is it pushed, with targeted `git push origin main` + `git push origin v2.6.0` (never `--all`) before the push OK expires (midnight 2026-10-12→13). Then the JitPack build is confirmed, and tag sha, commit, coordinate, JitPack status and gate results are reported to the teamlead. The owner's screencap review happens AFTER the cut (an objection ships as `v2.6.1`). There is no stray marker tag (`git.create_tag` false), and no consumer is repinned from the hub (SHIP-04).
 
-**Notes**: The tag cut is the last step and waits on the owner's screencap review. Shipping is human-gated (root `CLAUDE.md`), and tag/sequencing confirmations go to the orchestrator first. Before pushing the tag, check `git log origin/main..v2.6.0`: a tag push publishes every unpushed commit reachable from it.
+**Notes**: The tag cut is the last step. Push authority: the director relayed Yahir's explicit OK for 2026-10-12 via the teamlead (gates first, targeted push only, expires at midnight; if the cut slips past it, stop before pushing and ask the teamlead). The owner's screencap review moved to after the cut (teamlead, 2026-10-12). Before pushing the tag, check `git log origin/main..v2.6.0`: a tag push publishes every unpushed commit reachable from it.
 **Plans**: TBD
 
 ## Completed Milestones
