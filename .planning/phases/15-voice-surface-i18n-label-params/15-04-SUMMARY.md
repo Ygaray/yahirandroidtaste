@@ -105,6 +105,14 @@ status: complete
 
 **Rung names stay visible with long localized labels: the affordances sit in a FlowRow capped at 60% of the row, and segmented labels get a reserved icon slot so they wrap inside their segment. Both changes are private, and api.txt is byte-identical to v2.5.0.**
 
+## Superseded layout (post-review, 2026-10-11)
+
+> The fixed 60% `maxWidthFraction` FlowRow cap described below was **replaced** by the private
+> `RungLabelLayout` in `c877c9d` (code-review CR-01: the cap stacked short English labels, breaking
+> the v2.5.0-identical truth). The segmented icon-slot reservation was also reduced to ~2dp
+> (`b46e62a`, WR-03). See `15-REVIEW.md` / `15-REVIEW-FIX.md` and the re-verified
+> `15-VERIFICATION.md` for the final layout. The body below is the historical 15-04 record.
+
 ## Performance
 
 - **Duration:** about 11 min

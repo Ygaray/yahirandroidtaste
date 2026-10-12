@@ -1,16 +1,21 @@
 ---
 phase: 15-voice-surface-i18n-label-params
-verified: 2026-10-05T00:00:00Z
-status: passed
-score: 5/5 must-haves verified
+verified: 2026-10-12T01:20:00Z
+status: human_needed
+score: 13/13 must-haves verified
 covered_files:
-  - ".planning/REQUIREMENTS.md"
+  - ".planning/REQUIREMENTS.md#VI18N-01"
+  - ".planning/REQUIREMENTS.md#VI18N-02"
+  - ".planning/REQUIREMENTS.md#VI18N-03"
+  - ".planning/REQUIREMENTS.md#VI18N-04"
   - ".planning/phases/15-voice-surface-i18n-label-params/15-01-PLAN.md"
   - ".planning/phases/15-voice-surface-i18n-label-params/15-01-SUMMARY.md"
   - ".planning/phases/15-voice-surface-i18n-label-params/15-02-PLAN.md"
   - ".planning/phases/15-voice-surface-i18n-label-params/15-02-SUMMARY.md"
   - ".planning/phases/15-voice-surface-i18n-label-params/15-03-PLAN.md"
   - ".planning/phases/15-voice-surface-i18n-label-params/15-03-SUMMARY.md"
+  - ".planning/phases/15-voice-surface-i18n-label-params/15-04-PLAN.md"
+  - ".planning/phases/15-voice-surface-i18n-label-params/15-04-SUMMARY.md"
   - "API.md"
   - "api.txt"
   - "src/main/java/io/github/ygaray/yahirandroidtaste/component/ApproachLadderCard.kt"
@@ -18,132 +23,176 @@ covered_files:
   - "src/main/java/io/github/ygaray/yahirandroidtaste/component/ModelSelectCard.kt"
   - "src/main/java/io/github/ygaray/yahirandroidtaste/component/OutcomeSheet.kt"
   - "src/main/java/io/github/ygaray/yahirandroidtaste/component/ProviderKeyCard.kt"
+  - "src/main/java/io/github/ygaray/yahirandroidtaste/component/SegmentedOptionSelector.kt"
+  - "src/main/java/io/github/ygaray/yahirandroidtaste/explorer/VoiceCommandFamilyScreen.kt"
   - "src/main/java/io/github/ygaray/yahirandroidtaste/model/HandledByUiModel.kt"
   - "src/main/java/io/github/ygaray/yahirandroidtaste/model/ProposedItemUiModel.kt"
   - "src/main/java/io/github/ygaray/yahirandroidtaste/model/UndoRefusedUiModel.kt"
   - "src/main/java/io/github/ygaray/yahirandroidtaste/model/UndoRowUiModel.kt"
-covered_digest: "v1:sha256:3490e03ec8e3fa325ceeeeb04805fe2294b6bd267b91ee6f14749d9dcd775543"
+covered_digest: "v1:sha256:2c2613ebcb621bec5524b418dbc4c27b5654c806b68b9eafaf0a484741fafefa"
 behavior_unverified: 0
 overrides_applied: 0
+re_verification:
+  previous_status: passed
+  previous_score: 5/5
+  previous_verified: 2026-10-05
+  reopened_by: "15-UAT.md Gate-2 test 1 (gap G-15-1, major)"
+  gaps_closed:
+    - "G-15-1: ApproachLadderCard rung rows stay legible with long caller-supplied rung-state labels (rung name visible, affordances wrap/ellipsize, no per-character wrapping); segmented toggle labels no longer clip"
+    - "Gate-2 correction item: SC5 trailing-lambda claim corrected for ProposedItemUiModel"
+  gaps_remaining: []
+  regressions: []
 coincidental_reliance_items: []
 warnings:
-  - "SC5 is satisfied at the SOURCE level (Metalava apiCheck vs v2.4.1 green); it is NOT binary-compatible for Kotlin default-arg call sites. Documented in API.md; consumers must recompile on repin."
-  - "tools/verify-api-additive.sh (raw-line set diff) exits 3 against v2.4.1 (8 superseded lines). Phase 18 SC2 names this script as a gate; it needs a lane-3 override or a Metalava-based judgment there."
-  - "Residual i18n limitations (review follow-ups WR-02, WR-04) are out of VI18N-01..04 scope and are not gaps."
+  - "15-04-PLAN.md (key_links[0], Task 1 Step B, Task 3 API.md text, threat T-15-04-01) and 15-04-SUMMARY.md (headline, Accomplishments, tech-stack pattern, Files) still describe the private Modifier.maxWidthFraction 60% FlowRow cap. That mechanism was replaced by the private RungLabelLayout in c877c9d (CR-01). maxWidthFraction no longer exists in the code. The truths still hold against the final code (see below), but the SUMMARY is not an accurate record of what shipped."
+  - "The previous report's warning 'NOT binary-compatible for Kotlin default-arg call sites' is stale. The 2026-10-05 binary-compat fix added @Deprecated(HIDDEN) v2.4.1 composable overloads and variant-K synthetics (visible in ApproachLadderCard.kt:201-220; documented in API.md). Project policy is now source-compatibility only (API.md 'Compatibility rule'). The same stale sentence is in .planning/uat-pending/15-voice-surface-i18n-label-params.md line 15."
+  - "The v2.5.1 tag and the SecondBrain/CalTracker repins are human-gated and not done. API.md already labels the layout fix 'v2.5.1'; no v2.5.1 tag exists (only v2.5.0). 28 local commits on main are ahead of origin/main."
+human_verification:
+  - test: "Gate-2 on the personal device: open the YAT v2.5 Gate-2 harness 'P15: LONG German labels', then Explorer > Voice Command > ApproachLadderCard > 'long localized labels (German)', in light and dark."
+    expected: "The Cloud rung name is fully visible. The three German affordances (Derzeit nicht verfügbar / Durch Obergrenze eingeschränkt / Netzwerkverbindung erforderlich) sit right-aligned, at most 2 lines each, with no character-per-line wrapping and no overlap with the name. 'Onlineverarbeitung' / 'Ausschließlich offline' wrap inside their segments without clipping at the card edge, and both segments are the same height. The OutcomeSheet German rows from the harness still render."
+    why_human: "Visual legibility on real hardware with real fonts. Robolectric NATIVE geometry tests pin the numbers, not the look. Note: under the final RungLabelLayout the German affordances get more width than in the 15-04 build that the original UAT plan described, so they may stack differently."
+  - test: "In the same gallery, compare the default-English ApproachLadderCard cells (especially 'combined subdued labels', where Cloud carries Unavailable + Capped + Needs network) with v2.5.0."
+    expected: "All three English affordances share one line to the right of 'Cloud', as in v2.5.0. Row pitch and touch targets look unchanged."
+    why_human: "CR-01 replaced the layout algorithm. The fixer flagged it 'requires human verification'. Tests prove the three tops are equal at 320/360dp, with 16dp padding and at fontScale 1.3, but not that the row looks pixel-identical."
+  - test: "With a segment label that nearly fills its half (e.g. 'Ausschließlich offline' selected at 360dp), look at the check icon and label margins on the selected segment."
+    expected: "The label stays inside the segment border and never runs under the check icon. The icon may reach close to the segment edge (the accepted WR-03 trade-off, the same as v2.5.0)."
+    why_human: "WR-03 reserves only about 2dp rather than the full 26dp icon slot. Whether the tighter margin looks acceptable is a visual call."
 ---
 
 # Phase 15: Voice-surface i18n label params Verification Report
 
-**Phase Goal:** Every hardcoded label on the voice-command settings cards and voice-surface composables becomes caller-overridable (optional defaulted params or additive defaulted model fields), English defaults preserved, hub localizes nothing (INV-01).
-**Verified:** 2026-10-05
-**Status:** passed (with warnings below)
-**Re-verification:** No - initial verification
+**Phase Goal:** Every hardcoded label on the voice-command settings cards and voice-surface composables becomes caller-overridable, through optional defaulted params or additive defaulted model fields, so a consumer can pass localized strings. English defaults are preserved, and the hub itself localizes nothing (INV-01).
+**Verified:** 2026-10-12T01:20:00Z
+**Status:** human_needed. Everything that can be automated is verified. What remains is the Gate-2 visual check on the device.
+**Re-verification:** Yes. The previous report (2026-10-05) passed 5/5. Gate-2 UAT then reopened the phase with G-15-1. This pass checks plan 15-04 and the code-review fixes (c877c9d..abdc4a8) against the code as it stands at HEAD `b5a51e4`.
 
 ## Goal Achievement
 
-### Observable Truths (ROADMAP Success Criteria)
+### Observable Truths
+
+ROADMAP success criteria (SC1-SC5), then the 15-04 gap-closure truths (G1-G8). Every G-truth was checked against the **final** code (`RungLabelLayout`). The 60% `maxWidthFraction` FlowRow cap described in 15-04-PLAN/SUMMARY is no longer in the code.
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | `providerLabel` on `ProviderKeyCard`, `modelLabel` on `ModelSelectCard` render supplied text; default "Provider"/"Model" | VERIFIED | `ProviderKeyCard.kt`: `providerLabel: String = "Provider"` appended last, threaded to private `ProviderDropdown` (non-default param) -> `label = { Text(providerLabel) }`. `ModelSelectCard.kt`: `modelLabel: String = "Model"` -> `ModelDropdown` -> `Text(modelLabel)`. Tests `ProviderKeyCardTest` (8) and `ModelSelectCardTest` (5) pass, incl. supplied-override and omitted-default cases. |
-| 2 | `ClarificationBar` renders caller `dismissLabel`, default "Dismiss" | VERIFIED | `ClarificationBar.kt`: `dismissLabel: String = "Dismiss"` last param, `Text(dismissLabel)` on `clarification_bar_dismiss` button. `ClarificationBarTest` (11) passes, incl. override still invoking `onDismiss`. |
-| 3 | `ApproachLadderCard` five rung/toggle labels caller-supplied, English defaults | VERIFIED | `ApproachLadderCard.kt`: 5 defaulted `String` params after `modifier` ("Unavailable","Capped","Needs network","Online","Offline only"); three threaded into private `RungRow` (non-default), two feed `SegmentedOptionSelector` options. `ApproachLadderCardTest` (15) passes, incl. supplied rung-state, supplied toggle, omitted-default tests. |
-| 4 | `OutcomeSheet` literals ("Escalations:", "Undone", "Couldn't undo:"/"changed since", "Remove" a11y) caller-overridable via additive defaulted model fields | VERIFIED | `HandledByUiModel.escalationsLabel`, `UndoRowUiModel.undoneLabel`, `UndoRefusedUiModel.refusedPrefix`/`changedSinceSuffix`, `ProposedItemUiModel.removeContentDescription`, each defaulting to the old literal. `OutcomeSheet.kt` consumes each field at the former literal site (`"${handledBy.escalationsLabel} $it"`, `row.undoneLabel`, `"${refused.refusedPrefix} ${refused.reason}$suffix"` with `", $it ${refused.changedSinceSuffix}"`, `item.removeContentDescription`). 7 new `OutcomeSheetTest` cases (35 total) pass. Rendered text with defaults is identical to v2.4.1 strings. |
-| 5 | Existing callers passing none of the new params/fields see byte-identical English; strictly additive, no param/field removed or reshaped | VERIFIED (source level; see Evaluation) | New params appended LAST on every composable; new model fields appended LAST on every data class, all defaulted. `VoiceI18nSourceCompatTest` (2) compiles v2.4.0 positional composable shapes, positional/destructuring/legacy-arity `copy` on the four models, and asserts English defaults. `VoiceModelLabelDefaultsTest` (18) incl. legacy-arity copy-drift guard passes. `./gradlew apiCheck` (Metalava vs committed baseline, which was diffed to v2.4.1) exit 0. |
+| SC1 | `providerLabel` on `ProviderKeyCard` and `modelLabel` on `ModelSelectCard` render the supplied text; defaults are "Provider" / "Model" | VERIFIED (regression) | Unchanged since the prior pass (no diff vs v2.5.0). `ProviderKeyCardTest` 8/8 and `ModelSelectCardTest` 5/5 re-run green this session. |
+| SC2 | `ClarificationBar` renders the caller's `dismissLabel`; default "Dismiss" | VERIFIED (regression) | Unchanged. `ClarificationBarTest` 11/11 green. |
+| SC3 | `ApproachLadderCard`'s five rung/toggle labels are caller-supplied with English defaults | VERIFIED | Signature `ApproachLadderCard.kt:105-121` unchanged; defaults "Unavailable"/"Capped"/"Needs network"/"Online"/"Offline only". The three rung labels pass through `RungRow` into `AffordanceText` (L276-284); the toggle labels go into `SegmentedOptionSelector` options (L177). `ApproachLadderCardTest` 33/33, a file not edited since v2.5.0 (`git diff --quiet v2.5.0` exit 0). |
+| SC4 | `OutcomeSheet` literals can be overridden through additive defaulted model fields | VERIFIED (regression) | Model and sheet files unchanged since v2.5.0. `OutcomeSheetTest` 49/49 and `VoiceModelLabelDefaultsTest` 27/27 green. |
+| SC5 | Callers that pass none of the new params see byte-identical English; the change is strictly additive | VERIFIED (source level; see SC5 section) | `apiCheck` green; `git diff --quiet v2.5.0 -- api.txt` exit 0, so 15-04 and the review fixes added no public surface. `VoiceI18nSourceCompatTest` 4/4. Documented exception: the `ProposedItemUiModel` trailing lambda (see G7). |
+| G1 | With the German labels at 360dp, the Cloud rung name is displayed with nonzero width and is not ellipsized | VERIFIED | `RungLabelMeasurePolicy` (L338-371): the name reserves `min(maxIntrinsicWidth, row - floor(0.6*row))`; the affordances are measured with the remainder; the name gets everything that is left. Tests: `German labels at 360dp keep the Cloud rung name displayed...`, the RTL variant, and the gallery test (RED against ce3516c per 15-REVIEW-FIX: "width must be > 0, was 0"). All green. |
+| G2 | No affordance renders on more than 2 lines or one character per line; no affordance overlaps the name | VERIFIED | `AffordanceText` (L294-304): `maxLines = 2`, Ellipsis, End. The affordances are placed at `rowWidth - it.width`, after the name's width plus the gap. Tests `German affordance labels each render ... at most two lines` (RED in 15-04 at 21 lines) and `... never overlap the rung name`, plus the RTL variant `affordances left of the name without overlap`. All green. |
+| G3 | Short (English default) labels look as they did in v2.5.0: affordances on one line trailing on the right, name fills the rest; pre-existing ApproachLadderCardTest passes unchanged | VERIFIED | When the name's need is under 40%, the affordances get `row - nameNeed - gap`. Spacing matches v2.5.0: a 4dp gap after the name, `spacedBy(4.dp)` between affordances, and the needs-network start padding kept. Rows without affordances compose no affordance child, so the name takes the full width. Tests `English default labels ... share one line with the Cloud name` at 360dp, 320dp, with 16dp gallery padding, and at fontScale 1.3 (RED against the 60% cap per 15-REVIEW-FIX: tops `[30,30,45]`). `ApproachLadderCardTest` 33/33 unedited. The visual pixel match is in human item 2. |
+| G4 | A segment label too long for its half wraps to at most 2 lines and then ellipsizes; it stays inside its segment, selected or not; both segments keep equal height; short labels and the content descriptions are unchanged | VERIFIED | `SegmentedOptionSelector.kt`: `maxLines = 2`, Ellipsis, Center (L77-84). `reserveSegmentIconSlot` reserves `(IconSize + 8dp) - horizontal ContentPadding` (L116-130; the WR-03/WR-04 final form, not the 26dp of the 15-04 SUMMARY). Equal height comes from `height(IntrinsicSize.Min)` on the row (L62) plus `fillMaxHeight()` on each segment (L73). contentDescription is unchanged (L74). `SegmentedOptionSelectorTest` 5/5: German inside-segment (RED 345 > 344 in 15-04), equal height, short labels and descriptions, and both fontScale-2 single-line tests (RED against the 26dp reserve). |
+| G5 | Explorer > Voice Command > ApproachLadderCard Variants has a long German label cell reached through ComponentRegistry; existing cells keep English defaults | VERIFIED | `VoiceCommandFamilyScreen.kt`: private German consts and the new cell between "combined subdued labels" and "router on", with no router. `ApproachLadderCardGalleryDemoTest` reaches it through `ComponentRegistry.entries.first { it.name == "ApproachLadderCard" }.content` and is now NATIVE at w360dp (WR-01). 4/4 green, router-count pin still 2. |
+| G6 | No public API change: apiCheck green and api.txt byte-identical to v2.5.0; detekt green at zero baseline; drift guard green with nothing new registered | VERIFIED | Ran this session: `apiCheck` and `detekt` exit 0. `git diff --quiet v2.5.0 -- api.txt` exit 0. `ComponentRegistryDriftGuardTest` 1/1 green. Every new symbol (`RungLabelLayout`, `RungLabelMeasurePolicy`, `AffordanceText`, `NameAffordanceGap`, `reserveSegmentIconSlot`, `SegmentedButtonIconSpacing`) is `private`. |
+| G7 | 15-VERIFICATION no longer claims every trailing-lambda shape binds; it names `ProposedItemUiModel(id, title) { … }` and points to the API.md caveat | VERIFIED | Kept below in the SC5 section, with the dated marker. Accurate against the code: `ProposedItemUiModel.kt:44-45` has `trailingContent` and then `removeContentDescription: String = "Remove"`. The API.md bullet "**NOT source-compatible** for a **trailing-lambda** call of `ProposedItemUiModel`" exists (API.md ~L302). The consumer claim also checks out (read-only grep): CalTracker `VoiceOutcomeMapper.kt:319/372/443` and SecondBrain `VoiceConfirmSheetModels.kt:52` use the named form. |
+| G8 | API.md documents the long-label behavior as a v2.5.1 layout-only fix; no tag cut, no consumer touched | VERIFIED | API.md §10 has the "Long labels (v2.5.1, layout only, no signature change)" bullet, updated in c877c9d to the final "full width or 40%, whichever is smaller" behavior, and the §5 SegmentedOptionSelector row has a v2.5.1 clause. `git tag -l 'v2.5*'` shows only v2.5.0. No consumer files were changed. |
 
-**Score:** 5/5 truths verified, 0 behavior-unverified.
+**Score:** 13/13 truths verified; 0 present but behavior-unverified. The layout truths G1-G4 are backed by geometry tests that ran, and were shown RED before their fixes, not by code presence alone.
 
-### Success Criterion 5 - explicit evaluation (requested)
-
-Facts, from `git diff v2.4.1 HEAD -- api.txt` and the source diff:
+### Success Criterion 5 - explicit evaluation
 
 - No parameter, field, or property was removed, renamed, retyped, or reordered. Every addition is appended after the former last element and defaulted. Positional and named v2.4.0 call shapes still bind the same values, and so do trailing-lambda shapes, with one exception: `ProposedItemUiModel(id, title) { … }` no longer compiles, because `removeContentDescription: String` was appended after the former last parameter `trailingContent`, so Kotlin binds the trailing lambda to the `String`. Callers must pass `trailingContent = { … }` by name. This is a documented source-level break only, with no shim; it already shipped this way in v2.5.0, and both consumers use the named form. See `API.md`, section "Appending label fields to the voice models and composables (v2.5.0, VI18N-01..04)", bullet "NOT source-compatible for a trailing-lambda call of `ProposedItemUiModel`". (Corrected 2026-10-11 per 18-UAT test 3; the original claim was wrong for ProposedItemUiModel.) Verified by compile-time fixture plus runtime assertions for the shapes `VoiceI18nSourceCompatTest` covers: positional composable calls through the former last parameter, positional/named construction, positional and legacy-arity `copy`, destructuring, and the `FailureActionUiModel("l") { … }` trailing lambda.
-- `api.txt` removed lines: exactly 8, all superseded:
-  - 4 composable signatures (`ApproachLadderCard`, `ClarificationBar`, `ModelSelectCard`, `ProviderKeyCard`) replaced by the same signature plus appended `optional String ...` params.
-  - 4 generated `copy(optional ...)` lines (`HandledByUiModel`, `ProposedItemUiModel`, `UndoRefusedUiModel`, `UndoRowUiModel`) replaced by (a) a hand-written non-default old-arity `copy` and (b) the new full-arity `copy(optional ...)`. Kotlin `copy(x)`, `copy(a = ..)`, positional old-arity `copy`, and 3-arg destructuring all still compile (exercised by the fixture); `@JvmOverloads` constructors restore every old constructor arity (visible as added `ctor` lines in `api.txt`).
-- Honest caveats on "not reshaped":
-  1. **Binary compatibility is not preserved** for Kotlin default-arg call sites: composable `$default`/changed-mask synthetics and data-class `copy$default` change shape, which Metalava does not model. The review-fix commit 0d94c11 documents this in `API.md` (consumers must recompile on repin). So "strictly additive" is true for the source/API-surface contract the project gates on (Metalava `apiCheck`), not for already-compiled consumer binaries.
-  2. Data-class `equals`/`hashCode`/`toString`/`componentN` now include the new fields (`component5/6/8`, `component3/4` added). `HandledByUiModel`/`UndoRowUiModel`/`UndoRefusedUiModel` auto-`toString` now lists the new label field; `ProposedItemUiModel.toString()` is unchanged by its explicit override (privacy). Pure addition; no existing caller can observe it except by printing the model.
-  3. The repo's raw-line script `tools/verify-api-additive.sh v2.4.1` exits **3** (8 removed lines above). This is the known, declared false-positive for re-signatured composables/`copy` (lane 3 via `HUB_LANE_OVERRIDE`), not a real removal. I ran it myself.
-- Judgment: SC5 holds at the contract level the phase and project define (source-compatible, Metalava-additive, English output unchanged), with the binary-compat limitation honestly documented rather than hidden. I treat it as VERIFIED, not as a gap.
+- The api.txt delta vs v2.4.1 is the 8 superseded lines analysed in the prior pass (4 composable re-signatures, 4 generated `copy` lines replaced by a legacy-arity `copy` plus the full-arity `copy`). 15-04 and the review fixes add **zero** api.txt lines (byte-identical to v2.5.0).
+- Binary compatibility, updated: the prior report said it was not preserved. Since then the 2026-10-05 binary-compat fix added hidden v2.4.1 overloads and variant-K synthetics, and the project policy (API.md "Compatibility rule") now requires source compatibility only. Neither change touches SC5, which is a source-level criterion.
+- Judgment: SC5 holds at the contract the project gates on, and its one exception is documented accurately.
 
 ### Required Artifacts
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `component/ProviderKeyCard.kt` | `providerLabel` param + threading | VERIFIED | Substantive, wired to dropdown label, tested |
-| `component/ModelSelectCard.kt` | `modelLabel` param + threading | VERIFIED | Same |
-| `component/ClarificationBar.kt` | `dismissLabel` | VERIFIED | Same |
-| `component/ApproachLadderCard.kt` | 5 label params | VERIFIED | Same |
-| `component/OutcomeSheet.kt` | Consumes 5 model label fields | VERIFIED | All 5 literal sites replaced |
-| `model/{HandledBy,UndoRow,UndoRefused,ProposedItem}UiModel.kt` | Appended defaulted fields + `@JvmOverloads` + legacy `copy` | VERIFIED | Present; legacy `copy` delegates preserving current label (guarded by IN-02 test) |
-| `api.txt` | Regenerated, matches source | VERIFIED | `apiCheck` exit 0 on current HEAD |
-| Tests (7 classes) | Override + default pins | VERIFIED | Ran: 8+5+11+15+35+2+18 tests, 0 failures/errors/skips |
+| `component/ApproachLadderCard.kt` | 5 label params (SC3); long-label rung layout (G1-G3) | VERIFIED | Private `RungLabelLayout` + `RungLabelMeasurePolicy` + `AffordanceText`; `AFFORDANCE_MAX_WIDTH_FRACTION` declared and used (L310, L352) |
+| `component/SegmentedOptionSelector.kt` | Wrap-in-segment, equal heights (G4) | VERIFIED | `reserveSegmentIconSlot` declared and used; IntrinsicSize equal-height |
+| `explorer/VoiceCommandFamilyScreen.kt` | German Gate-2 cell (G5) | VERIFIED | Registry-reached, no router |
+| `ApproachLadderCardLongLabelTest.kt` | German/English/RTL/floor geometry | VERIFIED | 10 tests, NATIVE, w360dp |
+| `SegmentedOptionSelectorTest.kt` | Segment overflow / height / fontScale | VERIFIED | 5 tests |
+| `ApproachLadderCardGalleryDemoTest.kt` | Gallery cell guard | VERIFIED | 4 tests; the German test is now NATIVE and checks the Cloud width |
+| `component/{ProviderKeyCard,ModelSelectCard,ClarificationBar,OutcomeSheet}.kt`, `model/*UiModel.kt` | SC1, SC2, SC4 | VERIFIED (regression) | No diff vs v2.5.0; suites green |
+| `API.md` | v2.5.1 notes; SC5 caveat | VERIFIED | Matches the final code (40%-or-need wording) |
+| `api.txt` | Byte-identical to v2.5.0 | VERIFIED | diff exit 0 |
 
 ### Key Link Verification
 
-| From | To | Status | Details |
-|------|----|--------|---------|
-| public label params -> private helpers (`ProviderDropdown`, `ModelDropdown`, `RungRow`) | Text/label slots | WIRED | Helpers take labels as non-default params; English default literals live only on public signatures (confirmed in diff) |
-| model label fields -> `OutcomeSheet` render sites | `UndoRowItem`, `HandledByRow`, `ProposedItemRow`, `UndoAffordanceBody` | WIRED | Confirmed in `OutcomeSheet.kt` diff |
-| source change -> `apiDump` -> `api.txt` same commit | Metalava gate | WIRED | `apiCheck` green on HEAD |
+| From | To | Via | Status | Details |
+|------|----|-----|--------|---------|
+| `RungRow` | name + affordance `FlowRow` | `RungLabelLayout(modifier = Modifier.weight(1f))` as the single `CapControl` child | WIRED | Replaces the 15-04 key_link "FlowRow capped by Modifier.maxWidthFraction" (that link no longer exists; superseded by CR-01, c877c9d). `CapControl` signature and merged semantics are unchanged; composition order is name, then affordances. |
+| `SegmentedButton` label `Text` | `reserveSegmentIconSlot()` | modifier on the label | WIRED | The reserve is `slot - ContentPadding`, about 2dp (WR-03), using a pinned private 8dp spacing (WR-04), not the plan's `ButtonDefaults.IconSpacing` |
+| Variants German cell | `ComponentRegistry` "ApproachLadderCard" `.content` | `ApproachLadderCardVariants()` (L142) | WIRED | Exercised by `ApproachLadderCardGalleryDemoTest` |
+| 15-VERIFICATION SC5 | API.md trailing-lambda caveat | Section and bullet name | WIRED | Both texts present |
+| Public label params | `AffordanceText` / segment options | Non-default private params | WIRED | English literals only on the public signature |
 
 ### Data-Flow Trace (Level 4)
 
-Pure parameter pass-through to `Text`/`contentDescription`; no data source/fetch. Values flow caller -> param -> render (FLOWING). No hardcoded or static fallback beyond the intended English defaults.
+Pure pass-through from caller params to `Text`/`contentDescription`, with no fetch or store. FLOWING. The only literals are the intended English defaults on the public signatures plus the explorer-only German fixture.
 
-### Behavioral Spot-Checks / Probes
+### Behavioral Spot-Checks
 
 | Behavior | Command | Result | Status |
 |----------|---------|--------|--------|
-| Phase 15 tests + registry drift guard | `./gradlew testDebugUnitTest --tests` (7 classes + `ComponentRegistry*`) | BUILD SUCCESSFUL; all suites 0 failures | PASS |
-| Metalava additive gate | `./gradlew apiCheck` | exit 0 | PASS |
-| Raw-line additive script | `API_FILE=api.txt tools/verify-api-additive.sh v2.4.1` | exit 3, 8 superseded lines (expected false-positive) | KNOWN / documented |
-| Orchestrator full run | `testDebugUnitTest detekt apiCheck` | reported green on HEAD (not re-run in full by me) | accepted |
+| Phase-15 suites + registry guards + API/lint gates | `./gradlew testDebugUnitTest --tests {ApproachLadderCardLongLabelTest, SegmentedOptionSelectorTest, ApproachLadderCardTest, ApproachLadderCardGalleryDemoTest, ProviderKeyCardTest, ModelSelectCardTest, ClarificationBarTest, OutcomeSheetTest, VoiceI18nSourceCompatTest, VoiceModelLabelDefaultsTest, ComponentRegistry*} apiCheck detekt` | exit 0; JUnit XML (timestamps 2026-10-12T01:15Z): 10+5+33+4+8+5+11+49+4+27+1+6+4 tests, 0 failures, 0 errors, 0 skipped | PASS |
+| Public surface frozen | `git diff --quiet v2.5.0 -- api.txt` | exit 0 | PASS |
+| Pre-existing card test untouched | `git diff --quiet v2.5.0 HEAD -- .../ApproachLadderCardTest.kt` | exit 0 | PASS |
+| Full suite (767 tests) | orchestrator / 15-REVIEW-FIX report | reported green at HEAD; not re-run in full by me (the targeted run covers every phase-15 class) | ACCEPTED |
 
-Probes: none declared in the phase plans (SKIPPED).
+Probes: none declared in any phase-15 plan (SKIPPED).
 
 ### Requirements Coverage
 
-| Requirement | Source Plan | Status | Evidence |
-|-------------|-------------|--------|----------|
-| VI18N-01 | 15-01 | SATISFIED | `providerLabel`, `modelLabel` (SC1) |
-| VI18N-02 | 15-01 | SATISFIED | `dismissLabel` (SC2) |
-| VI18N-03 | 15-01 | SATISFIED | five ApproachLadderCard labels (SC3) |
-| VI18N-04 | 15-02, 15-03 | SATISFIED | four model label field groups + OutcomeSheet (SC4) |
+| Requirement | Source Plan | Description | Status | Evidence |
+|-------------|-------------|-------------|--------|----------|
+| VI18N-01 | 15-01 | `providerLabel` / `modelLabel` | SATISFIED | SC1 |
+| VI18N-02 | 15-01 | `dismissLabel` | SATISFIED | SC2 |
+| VI18N-03 | 15-01, 15-04 | Five ApproachLadderCard labels | SATISFIED | SC3, plus G1-G4: the overrides are now usable with long localized strings |
+| VI18N-04 | 15-02, 15-03, 15-04 | OutcomeSheet model label fields | SATISFIED | SC4, G7 |
 
-All four IDs appear in PLAN frontmatter and in `REQUIREMENTS.md` (marked Complete, mapped to Phase 15). No orphaned requirements.
+Every ID in PLAN frontmatter (`[VI18N-01,02,03]`, `[VI18N-03,04]`, `[VI18N-04]` x2) is mapped to Phase 15 in REQUIREMENTS.md and marked Complete. There are no orphaned requirements.
 
-### Invariants / Guards
+### Invariants
 
-- INV-01 (one-way dependency): no new imports in the `src/main` diff; no consumer package referenced; no localization in the hub (defaults are the old English literals).
-- Registry/explorer: no `explorer/`, `SegmentedOptionSelector.kt`, or registry files changed; no new public composable; `ComponentRegistryDriftGuardTest` passes.
-- Debt markers (TBD/FIXME/XXX/TODO/HACK) in added `src/main` lines: none.
-- Working tree: no uncommitted changes to `src`, `api.txt`, `API.md`.
+- INV-01: the src/main diff vs v2.5.0 adds only `androidx.compose.*` imports. It references no consumer package, and the hub localizes nothing; the German strings are explorer-only fixtures.
+- Registry: no new public composable; drift guard green.
+- Debt markers (TBD/FIXME/XXX/TODO/HACK) in added src/main lines vs v2.5.0: none.
 
 ### Anti-Patterns Found
 
-None blocking. No stubs, placeholders, or empty implementations in modified files.
+| File | Line | Pattern | Severity | Impact |
+|------|------|---------|----------|--------|
+| `15-04-SUMMARY.md` | 27, 106, 118, 156 | Describes the replaced `maxWidthFraction` / 60% cap mechanism | Warning | Historical record does not match shipped code; later readers will be misled. Suggest a "superseded by CR-01 (c877c9d) — see 15-REVIEW-FIX.md" note. |
+| `15-04-PLAN.md` | 46, 152-155, 255, 290 | Same superseded mechanism in key_links and threat model | Info | Plan is a historical intent record; the truths still hold |
+| `.planning/uat-pending/15-…md` | 15 | Stale "not binary compatible" note | Info | Contradicts current API.md |
+| `SegmentedOptionSelector.kt` | 123 | A label within ~2dp of the full content width now wraps where v2.5.0 kept it on one line | Info | Practically invisible; "short labels unchanged" holds for real short labels (fontScale-2 tests pin Router/Offline) |
 
-### Deferred / Residual Items (not gaps)
-
-| Item | Why not a gap | Tracked |
-|------|---------------|---------|
-| WR-02: `removeContentDescription` is per item (partially localized list may mix languages) | Fix requires new public sheet-level API beyond VI18N-04's stated model-field design | 15-REVIEW-FIX.md follow-up |
-| WR-04: `SegmentedOptionSelector` announces English "selected/not selected" with a localized segment label | Shared-component/API change beyond VI18N-03; current behavior pinned by tests and documented in KDoc | 15-REVIEW-FIX.md follow-up |
-| WR-03 runtime empty-fragment skipping / configurable separators | Documented in API.md instead; behavior change deferred | 15-REVIEW-FIX.md follow-up |
-
-Note these are real i18n completeness limits for a consumer localizing fully (SecondBrain), but the phase goal and VI18N-01..04 text only require each hardcoded literal to be overridable, which holds. Recommend surfacing them in the backlog.
-
-### Forward-looking warning for Phase 18
-
-Phase 18 SC2 says `tools/verify-api-additive.sh` "passes - strictly additive vs v2.4.x". As verified here it exits 3 against v2.4.1 because of Phase 15's superseded lines. Phase 18 will need to apply the lane-3 override path (or judge against Metalava `apiCheck`) rather than expecting a bare pass of that script. Similarly, release notes for v2.5.0 should say "source-compatible, recompile required", not "binary compatible".
+No stubs, placeholders, or empty implementations.
 
 ### Human Verification Required
 
-None. All label behavior is exercised by Compose-UI unit tests; no visual/real-time/external-service claim is made.
+#### 1. German long labels on the device (G-15-1 Gate-2 re-check)
+
+**Test:** On the personal device, open the YAT v2.5 Gate-2 harness "P15: LONG German labels" and Explorer > Voice Command > ApproachLadderCard > "long localized labels (German)", in light and dark.
+**Expected:** The Cloud name is visible. The German affordances are right-aligned, at most 2 lines each, with no per-character wrap and no overlap. The segmented toggle labels wrap inside their segments without clipping, and the segments are the same height.
+**Why human:** Visual legibility with real fonts. The final layout also gives the affordances more width than the 15-04 build did.
+
+#### 2. English defaults look as they did in v2.5.0
+
+**Test:** Check the English gallery cells, especially "combined subdued labels".
+**Expected:** Unavailable, Capped and Needs network sit on one line next to Cloud. Row pitch is unchanged.
+**Why human:** CR-01 swapped the layout algorithm. Tests prove the shared line, not a pixel match.
+
+#### 3. Check-icon margin on a full-width selected segment
+
+**Test:** Look at "Ausschließlich offline" while it is selected.
+**Expected:** The label is inside the border and never under the check icon. The icon may sit close to the edge (the accepted WR-03 trade-off).
+**Why human:** This is an aesthetic judgment.
+
+### Gaps Summary
+
+There are no blocking gaps. G-15-1 is closed in code. The final `RungLabelLayout` gives the rung name its full need or 40% of the row, whichever is smaller. The affordances get the rest, wrap to at most 2 lines, and never overlap the name. Segment labels stay inside their segments, and the segments have equal heights. All of this is backed by geometry tests that were shown RED before their fixes and are green now. English defaults stay on one line, which is guarded at 320/360dp, with padding, and at fontScale 1.3. The public surface is byte-identical to v2.5.0. The SC5 trailing-lambda correction is present and accurate.
+
+There are two documentation-hygiene warnings, neither blocking. 15-04-SUMMARY/PLAN describe the replaced 60% `maxWidthFraction` cap rather than what shipped. The earlier "not binary-compatible" caveat is stale.
+
+The phase stays `human_needed` until the Gate-2 visual check is done. After that, the v2.5.1 tag and the consumer repins still need the owner's go-ahead, routed through the orchestrator.
 
 ---
 
-_Verified: 2026-10-05_
+_Verified: 2026-10-12T01:20:00Z_
 _Verifier: Claude (gsd-verifier)_
