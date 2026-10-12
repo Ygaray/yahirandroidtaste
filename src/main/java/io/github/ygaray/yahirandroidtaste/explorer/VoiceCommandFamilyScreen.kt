@@ -305,6 +305,17 @@ private val fixtureLadderCombinedAffordance = listOf(
 )
 
 /**
+ * G-15-1 Gate-2 review fixture: the German Gate-2 label set (the long localized labels that used to
+ * collapse the Cloud rung's name). explorer-only, never registered (explorer/ is drift-guard
+ * denylisted).
+ */
+private const val LONG_LABEL_UNAVAILABLE_DE = "Derzeit nicht verfügbar"
+private const val LONG_LABEL_CAPPED_DE = "Durch Obergrenze eingeschränkt"
+private const val LONG_LABEL_NEEDS_NETWORK_DE = "Netzwerkverbindung erforderlich"
+private const val LONG_LABEL_ONLINE_DE = "Onlineverarbeitung"
+private const val LONG_LABEL_OFFLINE_ONLY_DE = "Ausschließlich offline"
+
+/**
  * Shared hoisted-state wrapper for the States matrix cells — seeds initial offline-only/cap
  * fixture values and lets the live composable own state from there.
  */
@@ -371,6 +382,24 @@ private fun ApproachLadderCardVariants() {
         maxTierId = "local",
         onMaxTierChange = {},
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
+
+    // G-15-1 Gate-2 review cell: the combined-affordance fixture with the long German labels, so a
+    // human can check the Cloud name stays visible and the affordances stack right-aligned on at
+    // most two lines each. Passes NO router (the gallery test pins exactly two router toggles).
+    SectionLabel("ApproachLadderCard — long localized labels (German)")
+    ApproachLadderCard(
+        ladder = fixtureLadderCombinedAffordance,
+        offlineOnly = true,
+        onOfflineOnlyChange = {},
+        maxTierId = "local",
+        onMaxTierChange = {},
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        unavailableLabel = LONG_LABEL_UNAVAILABLE_DE,
+        cappedLabel = LONG_LABEL_CAPPED_DE,
+        needsNetworkLabel = LONG_LABEL_NEEDS_NETWORK_DE,
+        onlineLabel = LONG_LABEL_ONLINE_DE,
+        offlineOnlyLabel = LONG_LABEL_OFFLINE_ONLY_DE
     )
 
     SectionLabel("ApproachLadderCard — router on")

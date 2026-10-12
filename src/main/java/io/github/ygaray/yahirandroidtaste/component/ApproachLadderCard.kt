@@ -2,6 +2,8 @@ package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,9 +17,11 @@ import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel
@@ -74,6 +78,8 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * @param needsNetworkLabel Caller-localizable text of the affordance shown on an
  *   offline-incapable rung while offline-only is on. Defaults to the English `"Needs network"`;
  *   rendered verbatim as plain text.
+ *   Long labels never hide the rung name: the name keeps at least 40% of the row, and each of the
+ *   three affordance labels wraps to at most two lines, then ellipsizes.
  * @param onlineLabel Caller-localizable text of the toggle's "online" segment. Defaults to the
  *   English `"Online"`. The toggle's accessibility state words ("selected" / "not selected") are
  *   announced by [SegmentedOptionSelector] and stay English.
@@ -210,6 +216,7 @@ fun ApproachLadderCard(
 )
 
 /** One rendered ladder rung — the label, plus visible-but-subdued capped/needs-network affordances. */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun RungRow(
     rung: ApproachRungUiModel,
@@ -246,29 +253,74 @@ private fun RungRow(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f)
         )
-        if (!rung.enabled) {
-            Text(
-                text = unavailableLabel,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        if (isCapped) {
-            Text(
-                text = cappedLabel,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        if (needsNetwork) {
-            Text(
-                text = needsNetworkLabel,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = Dimens.ContentSpacing)
-            )
+        // G-15-1: Row measures unweighted children first, so long (localized) affordance labels
+        // used to take the whole row -- the weight(1f) name starved to 0 width and the last
+        // affordance wrapped one character per line. The affordances now share ONE capped FlowRow
+        // (the name keeps the rest of the row) that stacks them right-aligned when they don't fit
+        // side by side. Rendered only when an affordance applies, so affordance-free rows gain no
+        // CapControl spacing (conditional-render-no-dead-space). Short labels make the FlowRow
+        // exactly as wide as its content, so those rows look as before.
+        if (!rung.enabled || isCapped || needsNetwork) {
+            FlowRow(
+                modifier = Modifier.maxWidthFraction(AFFORDANCE_MAX_WIDTH_FRACTION),
+                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End),
+                verticalArrangement = Arrangement.spacedBy(Dimens.HairlineSpacing)
+            ) {
+                if (!rung.enabled) {
+                    Text(
+                        text = unavailableLabel,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.End
+                    )
+                }
+                if (isCapped) {
+                    Text(
+                        text = cappedLabel,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.End
+                    )
+                }
+                if (needsNetwork) {
+                    Text(
+                        text = needsNetworkLabel,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.padding(start = Dimens.ContentSpacing)
+                    )
+                }
+            }
         }
     }
+}
+
+/**
+ * Upper bound on the share of a rung row the affordance labels may take; the rung name keeps at
+ * least the remaining 40% of the row (G-15-1).
+ */
+private const val AFFORDANCE_MAX_WIDTH_FRACTION = 0.6f
+
+/**
+ * Caps the child's max width at [fraction] of the incoming bounded max width (min width relaxed to
+ * 0); unbounded constraints pass through unchanged. Reports the child's own size and places it with
+ * [placeRelative][androidx.compose.ui.layout.Placeable.PlacementScope.placeRelative] so RTL mirrors.
+ */
+private fun Modifier.maxWidthFraction(fraction: Float): Modifier = layout { measurable, constraints ->
+    val childConstraints = if (constraints.hasBoundedWidth) {
+        constraints.copy(minWidth = 0, maxWidth = (constraints.maxWidth * fraction).toInt())
+    } else {
+        constraints
+    }
+    val placeable = measurable.measure(childConstraints)
+    layout(placeable.width, placeable.height) { placeable.placeRelative(0, 0) }
 }
 
 /**
