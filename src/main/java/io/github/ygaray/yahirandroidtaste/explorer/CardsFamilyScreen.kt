@@ -542,7 +542,9 @@ private fun ToneCardDefaultPreview() {
 
 @Composable
 private fun ReceiptRowSupportingLine() {
-    Text("Supporting line", style = MaterialTheme.typography.bodySmall)
+    // No `style`: the row's own ProvideTextStyle supplies bodySmall plus the line-height normalization,
+    // and an explicit style would replace it (Phase 21 gallery finding, row measured 90dp not 92dp).
+    Text("Supporting line")
 }
 
 @Composable

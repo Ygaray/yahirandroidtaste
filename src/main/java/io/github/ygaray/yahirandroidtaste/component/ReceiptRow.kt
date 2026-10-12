@@ -147,7 +147,9 @@ internal fun receiptRowToneColor(
  * @param subtitle Optional second line. Single line, ellipsized.
  * @param subtitleTone Tone of [subtitle].
  * @param supportingContent Optional third line, rendered in `bodySmall` with `onSurfaceVariant` as the
- *   default content color.
+ *   default content color. A `Text` that sets its own `style` replaces the row's line-height
+ *   normalization and makes the row about 2dp shorter than 92dp, so omit `style` and let the row
+ *   supply `bodySmall`.
  * @param value Optional end-aligned value. Single line, ellipsized.
  * @param valueCaption Optional small line under [value].
  * @param valueTone Tone of [value].

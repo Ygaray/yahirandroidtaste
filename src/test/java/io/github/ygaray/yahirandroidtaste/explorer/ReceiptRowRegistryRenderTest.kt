@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
@@ -171,5 +172,30 @@ class ReceiptRowRegistryRenderTest {
         composeTestRule.waitForIdle()
 
         assertEquals("tapping the open row closes everything", 0, detailCount())
+    }
+
+    // --- 92dp gallery fixture (Phase 24 DEMO-01; 21-04-SELF-UAT Note 1) ----------------------
+
+    private fun SemanticsNodeInteraction.heightDp(): Float {
+        val bounds = getUnclippedBoundsInRoot()
+        return (bounds.bottom - bounds.top).value
+    }
+
+    @Test
+    fun `the Default cell measures 92dp within one dp`() {
+        renderCell("Default")
+
+        val height = composeTestRule.onNodeWithTag("receipt_row_summary", useUnmergedTree = true).heightDp()
+
+        assertEquals("Default cell height in dp", 92f, height, 1f)
+    }
+
+    @Test
+    fun `the first Variants row measures 92dp within one dp`() {
+        renderVariants()
+
+        val first = composeTestRule.onAllNodesWithTag("receipt_row_summary", useUnmergedTree = true)[0]
+
+        assertEquals("first Variants row height in dp", 92f, first.heightDp(), 1f)
     }
 }
