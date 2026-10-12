@@ -3,19 +3,18 @@ gsd_state_version: "1.0"
 milestone: v2.5
 milestone_name: Voice UI Localization & Accessibility
 current_phase: 15
-current_phase_name: Voice-surface i18n label params
-status: executing
-stopped_at: Phase 19 complete — all phases complete
-last_updated: "2026-10-12T00:33:57.641Z"
+status: completed
+stopped_at: Phase 15 complete — all phases complete
+last_updated: "2026-10-12T01:26:08.974Z"
 last_activity: 2026-10-11
-last_activity_desc: Phase 15 execution started
-state_head: ce3516c0989973db806acec7a453a411c6b1a430
+last_activity_desc: Phase 15 complete
+state_head: f6a97ad01cd5d4b8407a1f160df361b2002f99e4
 progress:
   total_phases: 5
   completed_phases: 5
   total_plans: 12
-  completed_plans: 11
-  percent: 92
+  completed_plans: 12
+  percent: 100
 ---
 
 # Project State
@@ -25,22 +24,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-05)
 
 **Core value:** The hub stays a coherent design system — not merely a safe, ever-growing pile of domain-agnostic components — as more consumers contribute.
-**Current focus:** Phase 15 — Voice-surface i18n label params
+**Current focus:** v2.5 milestone close (all 5 phases complete; Gate-2 ledger drain → audit → complete → cleanup)
 
 ## Current Position
 
-Phase: 15 (Voice-surface i18n label params) — EXECUTING
-Plan: 1 of 4
-Status: Executing Phase 15
-Last activity: 2026-10-11 — Phase 15 execution started
+Phase: 15
+Plan: Not started
+Status: All phases complete
+Last activity: 2026-10-11 — Phase 15 complete
 
-Progress: [█████████░] 92%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity (milestone v2.5):**
 
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: - min
 - Total execution time: 0 hours
 
@@ -48,7 +47,7 @@ Progress: [█████████░] 92%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 15 | 3 | - | - |
+| 15 | 4 | - | - |
 | 16 | 3 | - | - |
 | 17 | 1 | - | - |
 | 18 | 2 | - | - |
@@ -97,6 +96,7 @@ Recent decisions affecting current work:
 - [Phase 17]: Explorer fixture keeps its two-parameter ApproachLadderCardFixture as a wrapper and adds a router-aware overload — Preserves the Kotlin synthetic access$ descriptor so the javap binary gate vs v2.4.1 reports missing=0
 - [Phase 18]: [Phase 18-02]: D-01 reading applied - Metalava apiCheck green + current api.txt is API-02 pass; raw-line exit 3 (10 lines) recorded as known false positive, not overridden
 - [Phase 19]: Phase 19-01: D-03 binary ABI gate tools/verify-binary-abi.sh added; raw-line api.txt check removed (verify-api-additive.sh retired, hook override narrowed to lane 2)
+- [Phase 15]: 15-04 (G-15-1 gap closure, 2026-10-11): ApproachLadderCard rung row uses private RungLabelLayout — name keeps min(intrinsic, 40%), affordances get the rest (≤2 lines each); SegmentedOptionSelector reserves ~2dp for the check-icon slot (pinned 8dp M3 spacing). Replaced the 15-04 fixed 60% cap after code-review CR-01 (it stacked short English labels). Layout-only, api.txt byte-identical to v2.5.0 → ships as v2.5.1 (tag human-gated)
 - [Phase 19]: 19-02: v2.5.0 cut in-repo (xrepo unavailable), annotated tag by SHA 7101516e, all gates green; ledger row relayed via file (no messaging tool)
 
 ### Pending Todos
@@ -134,10 +134,10 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-05T20:12:37.387Z
-Stopped at: Phase 19 complete — all phases complete
+Last session: 2026-10-11
+Stopped at: Phase 15 Gate-2 re-verified (17/17) after G-15-1 gap closure — all phases complete; v2.5 milestone close in progress (/gsd-verify-milestone)
 Resume file: None
 
 ## Operator Next Steps
 
-- Plan the first phase with /gsd-plan-phase 15
+- Finish /gsd-verify-milestone (ledger drain → audit → complete → cleanup); then human-gated v2.5.1 tag + consumer repins (route to orchestrator first)
