@@ -1,0 +1,1134 @@
+{
+  "schema": "gsd.uat-run/v1",
+  "run_id": "uatr-20261012T152444Z-94e3da8a",
+  "status": "finished",
+  "phase": "22",
+  "plan": "05",
+  "prefix": "22-05",
+  "surface": "android",
+  "required_surface": {
+    "surface": "android",
+    "source": "marker:AGENT-DEVICE-TESTING.md"
+  },
+  "surface_override": null,
+  "device": {
+    "addr": "R5CT10XNKQN",
+    "serial": "R5CT10XNKQN",
+    "model": "SM-S908U",
+    "label": null
+  },
+  "app": {
+    "package": "io.github.ygaray.yahirandroidtasteharness",
+    "apk_path": "/data/app/~~JrWqKavdEiqAovHoFQM5UQ==/io.github.ygaray.yahirandroidtasteharness-gxc53BsgD6b6vtPLqlMwDg==/base.apk",
+    "apk_sha256": "4503f01c512516ffa54e48d42260007a193e01e9045a49ae91d2f8106607977b"
+  },
+  "head_at_start": "5117d74ecad17a991828da8814d5c1e8a7843d38",
+  "started_at": "2026-10-12T15:24:44.387Z",
+  "finished_at": "2026-10-12T15:35:54.139Z",
+  "capture_count": 122,
+  "captures": [
+    {
+      "label": "sc2-confirm1-native384-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "01-sc2-confirm1-native384-ui.xml",
+      "sha256": "d29b289c1300789851c637822576b4428bb3437f95e956371f4ed5b6d1441641",
+      "bytes": 10501,
+      "at": "2026-10-12T15:24:57.467Z"
+    },
+    {
+      "label": "sc2-confirm1-native384-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "02-sc2-confirm1-native384-screen.png",
+      "sha256": "e82442544e61f1fa91c87362652dbab64186d6a1a75bf7a571680fdc82e4621f",
+      "bytes": 84069,
+      "at": "2026-10-12T15:24:57.990Z"
+    },
+    {
+      "label": "sc2-confirmbatch-native384-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "03-sc2-confirmbatch-native384-ui.xml",
+      "sha256": "eaafb924f9e44e4b6d8910c076c9708083736a060e04fbcd8fd1d436529eb644",
+      "bytes": 16316,
+      "at": "2026-10-12T15:25:12.472Z"
+    },
+    {
+      "label": "sc2-confirmbatch-native384-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "04-sc2-confirmbatch-native384-screen.png",
+      "sha256": "21b4cbd24f53026a94b3839e12f3384dc446ca8dbe38082b9e09666f7ee7e9f2",
+      "bytes": 105190,
+      "at": "2026-10-12T15:25:12.994Z"
+    },
+    {
+      "label": "sc2-confirm1off-before-taps-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "05-sc2-confirm1off-before-taps-ui.xml",
+      "sha256": "81d52d7304d783be781020c830e2d9567e67fd60a3c9e14338cd39409eab3d95",
+      "bytes": 10503,
+      "at": "2026-10-12T15:25:18.843Z"
+    },
+    {
+      "label": "sc2-confirm1off-before-taps-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "06-sc2-confirm1off-before-taps-screen.png",
+      "sha256": "9b35876ab8f7ba9454fc6d355c0ed36f717a41a4f5df14ea0d2ab0ba5fe2c581",
+      "bytes": 83831,
+      "at": "2026-10-12T15:25:19.364Z"
+    },
+    {
+      "label": "sc2-confirm1off-after-3-confirm-taps-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "07-sc2-confirm1off-after-3-confirm-taps-ui.xml",
+      "sha256": "81d52d7304d783be781020c830e2d9567e67fd60a3c9e14338cd39409eab3d95",
+      "bytes": 10503,
+      "at": "2026-10-12T15:25:23.518Z"
+    },
+    {
+      "label": "sc2-confirm1off-after-cancel-tap-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "08-sc2-confirm1off-after-cancel-tap-ui.xml",
+      "sha256": "a8ac1df0430cd4b279abb3ca6717c973e70f6c56db987b2ffb6b2af70e5e180f",
+      "bytes": 10503,
+      "at": "2026-10-12T15:25:26.715Z"
+    },
+    {
+      "label": "sc2-confirm1-after-confirm-tap-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "09-sc2-confirm1-after-confirm-tap-ui.xml",
+      "sha256": "b4e60b6ee6f6723994c88bb8fd0dbfbfedb2dad17af4289a5ad920abd1b543dd",
+      "bytes": 10501,
+      "at": "2026-10-12T15:25:33.136Z"
+    },
+    {
+      "label": "sc2-tall-initial-detent-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "10-sc2-tall-initial-detent-ui.xml",
+      "sha256": "cac244013f0c6c7489d9baa65d783959857d7e5ba5b3bc9dbf4702412ae032d6",
+      "bytes": 6941,
+      "at": "2026-10-12T15:25:38.878Z"
+    },
+    {
+      "label": "sc2-tall-initial-detent-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "11-sc2-tall-initial-detent-screen.png",
+      "sha256": "690fbca1a554a2b0c1fc28cc3e596693c8dab7939d88c6697d8c94cd4a1b40dd",
+      "bytes": 78419,
+      "at": "2026-10-12T15:25:39.394Z"
+    },
+    {
+      "label": "sc2-tall-expanded-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "12-sc2-tall-expanded-ui.xml",
+      "sha256": "856ce3476035e7908fbc0fb6674a54244ec4519dcde7296855fa14ff501c0ab8",
+      "bytes": 12773,
+      "at": "2026-10-12T15:25:47.162Z"
+    },
+    {
+      "label": "sc2-tall-expanded-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "13-sc2-tall-expanded-screen.png",
+      "sha256": "d085118520c3e6e4b0d848a86ca1fd20a8ad96a8c8454139835002af169d7b1c",
+      "bytes": 110367,
+      "at": "2026-10-12T15:25:47.654Z"
+    },
+    {
+      "label": "sc2-failerr-native384-expanded-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "14-sc2-failerr-native384-expanded-ui.xml",
+      "sha256": "f18766c07275e7993e0deebc012b4b2d5e9f1d03f2d1e2fa1ef3ddceaa6d0aee",
+      "bytes": 14877,
+      "at": "2026-10-12T15:26:04.673Z"
+    },
+    {
+      "label": "sc2-failerr-native384-expanded-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "15-sc2-failerr-native384-expanded-screen.png",
+      "sha256": "8f96b543c5ed35aa0c871b660c23334b8e2f9d137842cfee7e51ddf545dc9963",
+      "bytes": 128269,
+      "at": "2026-10-12T15:26:05.163Z"
+    },
+    {
+      "label": "sc2-failerr-custom-colors-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "16-sc2-failerr-custom-colors-ui.xml",
+      "sha256": "f18766c07275e7993e0deebc012b4b2d5e9f1d03f2d1e2fa1ef3ddceaa6d0aee",
+      "bytes": 14877,
+      "at": "2026-10-12T15:26:12.968Z"
+    },
+    {
+      "label": "sc2-failerr-custom-colors-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "17-sc2-failerr-custom-colors-screen.png",
+      "sha256": "3ae09dd5db349d08f13024e86276ea33cc55d7223193a2a2b8d488b50ad442dd",
+      "bytes": 129222,
+      "at": "2026-10-12T15:26:13.476Z"
+    },
+    {
+      "label": "sc2-failwarn-custom-colors-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "18-sc2-failwarn-custom-colors-ui.xml",
+      "sha256": "f18766c07275e7993e0deebc012b4b2d5e9f1d03f2d1e2fa1ef3ddceaa6d0aee",
+      "bytes": 14877,
+      "at": "2026-10-12T15:26:21.375Z"
+    },
+    {
+      "label": "sc2-failwarn-custom-colors-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "19-sc2-failwarn-custom-colors-screen.png",
+      "sha256": "b9828e009041a6ffe215b6bb607887a5d675e17596d00fb927e12973ad40aa8c",
+      "bytes": 130268,
+      "at": "2026-10-12T15:26:21.920Z"
+    },
+    {
+      "label": "sc2-faildestructive-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "20-sc2-faildestructive-ui.xml",
+      "sha256": "8d38f1421d550cd4bce56160024673389c0c804c17585d2e2035c965a1830ca7",
+      "bytes": 9720,
+      "at": "2026-10-12T15:26:27.975Z"
+    },
+    {
+      "label": "sc2-faildestructive-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "21-sc2-faildestructive-screen.png",
+      "sha256": "36b8e446e2e7b870957d9b05434e13571ec451ef83f5d6a0934d332658c4f12c",
+      "bytes": 70751,
+      "at": "2026-10-12T15:26:28.454Z"
+    },
+    {
+      "label": "sc2-failnone-no-actions-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "22-sc2-failnone-no-actions-ui.xml",
+      "sha256": "aff4ffea2dc747cd776ec68f43f007b06692a8325599238379e8801d5f26bb9d",
+      "bytes": 7963,
+      "at": "2026-10-12T15:26:34.388Z"
+    },
+    {
+      "label": "sc2-failnone-no-actions-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "23-sc2-failnone-no-actions-screen.png",
+      "sha256": "6daf9b01c9fadb18d021ac8850620fdc0d3b5bcc5ee8e105d5790dc5354c94ca",
+      "bytes": 73764,
+      "at": "2026-10-12T15:26:34.877Z"
+    },
+    {
+      "label": "sc5-failerr-after-taps-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "24-sc5-failerr-after-taps-ui.xml",
+      "sha256": "a0f1aa7bde956d5341bb8c55ec194a2dd29461833914ad57e82d5e05c9f5c601",
+      "bytes": 14877,
+      "at": "2026-10-12T15:26:44.880Z"
+    },
+    {
+      "label": "sc2-german360-confirmde-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "25-sc2-german360-confirmde-ui.xml",
+      "sha256": "518e6705398dca9250c429f7f01c23678dfdb2123c29848941f4b7d75ff4e415",
+      "bytes": 10271,
+      "at": "2026-10-12T15:26:58.631Z"
+    },
+    {
+      "label": "sc2-german360-confirmde-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "26-sc2-german360-confirmde-screen.png",
+      "sha256": "6d360491d6ab30bb7dbc4d29a26fde6c9daac98c49f9ff2e8a7756e55146f9fb",
+      "bytes": 115010,
+      "at": "2026-10-12T15:26:59.153Z"
+    },
+    {
+      "label": "sc2-german360-barshortcancel-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "27-sc2-german360-barshortcancel-ui.xml",
+      "sha256": "476b5b6b9061d7ba961bab9e0787358224612b8fe6108ffc41e1b74ed92e1e07",
+      "bytes": 3604,
+      "at": "2026-10-12T15:27:06.931Z"
+    },
+    {
+      "label": "sc2-german360-barshortcancel-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "28-sc2-german360-barshortcancel-screen.png",
+      "sha256": "6ef1d498c8dcf8f4d8c987caeaf65de091193e2cec79c972293450b491dd1c24",
+      "bytes": 46130,
+      "at": "2026-10-12T15:27:07.514Z"
+    },
+    {
+      "label": "sc2-german360-barshortconfirm-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "29-sc2-german360-barshortconfirm-ui.xml",
+      "sha256": "476b5b6b9061d7ba961bab9e0787358224612b8fe6108ffc41e1b74ed92e1e07",
+      "bytes": 3604,
+      "at": "2026-10-12T15:27:15.077Z"
+    },
+    {
+      "label": "sc2-german360-barshortconfirm-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "30-sc2-german360-barshortconfirm-screen.png",
+      "sha256": "c5ff6e39c651ebc59d1efb70976a2c4ded5d9deed2f26d9b36a304b628e49037",
+      "bytes": 46282,
+      "at": "2026-10-12T15:27:15.593Z"
+    },
+    {
+      "label": "sc2-german360-failde-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "31-sc2-german360-failde-ui.xml",
+      "sha256": "5a019517bab5147d64979e5a22a77a0c9e2d9445dc78cdbbb60f9d3336685efb",
+      "bytes": 12150,
+      "at": "2026-10-12T15:27:23.254Z"
+    },
+    {
+      "label": "sc2-german360-failde-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "32-sc2-german360-failde-screen.png",
+      "sha256": "171d14d151684495f42b420e1651634f2a8edce9a79577a44f17a0a25f219a8f",
+      "bytes": 142923,
+      "at": "2026-10-12T15:27:23.791Z"
+    },
+    {
+      "label": "dbg-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "33-dbg-ui.xml",
+      "sha256": "476b5b6b9061d7ba961bab9e0787358224612b8fe6108ffc41e1b74ed92e1e07",
+      "bytes": 3604,
+      "at": "2026-10-12T15:27:42.961Z"
+    },
+    {
+      "label": "sc2-german360-barshortcancel-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "34-sc2-german360-barshortcancel-ui.xml",
+      "sha256": "1c3b9a1e8c704ec3dca0d4b4add3ec81507038b3838375f795b78d079eb2abb3",
+      "bytes": 10182,
+      "at": "2026-10-12T15:28:05.552Z"
+    },
+    {
+      "label": "sc2-german360-barshortcancel-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "35-sc2-german360-barshortcancel-screen.png",
+      "sha256": "9bdf64fabbdcb9657f904f57705f7d5975a333a2d61babdbee66546657e9c9c7",
+      "bytes": 92255,
+      "at": "2026-10-12T15:28:06.076Z"
+    },
+    {
+      "label": "sc2-german360-barshortconfirm-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "36-sc2-german360-barshortconfirm-ui.xml",
+      "sha256": "ca27113a06fd297cefb1bd422d7bddf9e5cdfcb281d11e35f03dc968108f4416",
+      "bytes": 10178,
+      "at": "2026-10-12T15:28:11.984Z"
+    },
+    {
+      "label": "sc2-german360-barshortconfirm-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "37-sc2-german360-barshortconfirm-screen.png",
+      "sha256": "c7b79c9d4915c7e6a4967948a200b4be1e7e4b092bb44142e12d1acda0dbb44f",
+      "bytes": 89857,
+      "at": "2026-10-12T15:28:12.524Z"
+    },
+    {
+      "label": "sc3-succ1-native384-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "38-sc3-succ1-native384-ui.xml",
+      "sha256": "a418b06dfeec8ab56aa7051791c82e5b982cdf54a825b6dfa55b288e3cf31e6f",
+      "bytes": 9359,
+      "at": "2026-10-12T15:28:25.700Z"
+    },
+    {
+      "label": "sc3-succ1-native384-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "39-sc3-succ1-native384-screen.png",
+      "sha256": "35be5fdb58e97ab30ed26d14ebfe85e191ac45407d6f06b662d373a7ae08e3ac",
+      "bytes": 72863,
+      "at": "2026-10-12T15:28:26.220Z"
+    },
+    {
+      "label": "sc3-succ1-custom-colors-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "40-sc3-succ1-custom-colors-ui.xml",
+      "sha256": "a418b06dfeec8ab56aa7051791c82e5b982cdf54a825b6dfa55b288e3cf31e6f",
+      "bytes": 9359,
+      "at": "2026-10-12T15:28:32.050Z"
+    },
+    {
+      "label": "sc3-succ1-custom-colors-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "41-sc3-succ1-custom-colors-screen.png",
+      "sha256": "d456fb8ce55c6d082701a9247da1b16fec84baf58fdc0c93b3172eda9ac746ff",
+      "bytes": 72900,
+      "at": "2026-10-12T15:28:32.555Z"
+    },
+    {
+      "label": "sc3-succ1net-dot-primary-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "42-sc3-succ1net-dot-primary-ui.xml",
+      "sha256": "40ce8d4f1b507f18cbc4b07209e8a26bdbfbd86fbffe75af35d37807919078c5",
+      "bytes": 9381,
+      "at": "2026-10-12T15:28:38.487Z"
+    },
+    {
+      "label": "sc3-succ1net-dot-primary-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "43-sc3-succ1net-dot-primary-screen.png",
+      "sha256": "27600aca1368400f9735d6560ba88ab67bdab95bc0ff5975c9389fdf6ec5b73f",
+      "bytes": 76813,
+      "at": "2026-10-12T15:28:38.988Z"
+    },
+    {
+      "label": "sc3-succb-batch-undo-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "44-sc3-succb-batch-undo-ui.xml",
+      "sha256": "77f8357fc408c528e008ce0cf2b72b3ff1b745b2f5a9234e9bcaf4a73ca076c9",
+      "bytes": 14401,
+      "at": "2026-10-12T15:28:45.035Z"
+    },
+    {
+      "label": "sc3-succb-batch-undo-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "45-sc3-succb-batch-undo-screen.png",
+      "sha256": "a91e11bd1981e73de54d8baafe80911552ed0a1a8a9a90194279a0c598679da4",
+      "bytes": 105036,
+      "at": "2026-10-12T15:28:45.533Z"
+    },
+    {
+      "label": "sc3-succundone-reverted-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "46-sc3-succundone-reverted-ui.xml",
+      "sha256": "f9e13ee1346c9fd00931f02409684db929bd092afe1d1d2c4e92a5fa235b159a",
+      "bytes": 9326,
+      "at": "2026-10-12T15:28:51.436Z"
+    },
+    {
+      "label": "sc3-succundone-reverted-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "47-sc3-succundone-reverted-screen.png",
+      "sha256": "a95727a74654e4d83d8e19ce77d217962bcb9b6ddbd5f53609119f5de9bb2b11",
+      "bytes": 75823,
+      "at": "2026-10-12T15:28:51.953Z"
+    },
+    {
+      "label": "sc3-succwarn-badge-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "48-sc3-succwarn-badge-ui.xml",
+      "sha256": "799454a2705057d1e3e5aaca3d22000d86866ad96484238811f3a30dd8bbf9c2",
+      "bytes": 7171,
+      "at": "2026-10-12T15:28:57.828Z"
+    },
+    {
+      "label": "sc3-succwarn-badge-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "49-sc3-succwarn-badge-screen.png",
+      "sha256": "9d4820f0216e7f5872533b3f31a50a75c884e992c22ab0a0d65900b6d761ea25",
+      "bytes": 62873,
+      "at": "2026-10-12T15:28:58.321Z"
+    },
+    {
+      "label": "sc3-succplain-corners-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "50-sc3-succplain-corners-ui.xml",
+      "sha256": "7ad91449f1f6e2346ad0a65d30367790a30b448a19998ab8b2789eec76b4df84",
+      "bytes": 5734,
+      "at": "2026-10-12T15:29:04.126Z"
+    },
+    {
+      "label": "sc3-succplain-corners-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "51-sc3-succplain-corners-screen.png",
+      "sha256": "77d6cc5d83a0ff74b94377b3a8672d13d499fecb6f43a91316f9de355dc7590f",
+      "bytes": 51964,
+      "at": "2026-10-12T15:29:04.640Z"
+    },
+    {
+      "label": "sc3-succflight-before-taps-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "52-sc3-succflight-before-taps-ui.xml",
+      "sha256": "f9232a319c4b4132b9f2999ca2e3e1ddf90ee49e227e8133b467e367f1414af6",
+      "bytes": 12245,
+      "at": "2026-10-12T15:29:28.211Z"
+    },
+    {
+      "label": "sc3-succflight-before-taps-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "53-sc3-succflight-before-taps-screen.png",
+      "sha256": "8256c99e842759487e68f64c6a87b69cd80b26fa0dfc0f427e4b39050f95b58a",
+      "bytes": 91486,
+      "at": "2026-10-12T15:29:28.737Z"
+    },
+    {
+      "label": "sc3-succflight-after-done-taps-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "54-sc3-succflight-after-done-taps-ui.xml",
+      "sha256": "f9232a319c4b4132b9f2999ca2e3e1ddf90ee49e227e8133b467e367f1414af6",
+      "bytes": 12245,
+      "at": "2026-10-12T15:29:32.285Z"
+    },
+    {
+      "label": "sc3-succflight-after-cancel-tap-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "55-sc3-succflight-after-cancel-tap-ui.xml",
+      "sha256": "a81cd51cbfde73a1f734b259afc5345436b05676c1816ffb6c814b70109a0654",
+      "bytes": 12245,
+      "at": "2026-10-12T15:29:35.448Z"
+    },
+    {
+      "label": "sc3-succflightrev-before-taps-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "56-sc3-succflightrev-before-taps-ui.xml",
+      "sha256": "44329efcea4bc709d9e9080f05263a7b78f88da91c5a653f420dfe9dc25863de",
+      "bytes": 7883,
+      "at": "2026-10-12T15:29:41.159Z"
+    },
+    {
+      "label": "sc3-succflightrev-after-taps-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "57-sc3-succflightrev-after-taps-ui.xml",
+      "sha256": "0730d14c4f2d641c64fbf45f7dc4f262129bc4190c55026350436240f8270515",
+      "bytes": 7883,
+      "at": "2026-10-12T15:29:44.791Z"
+    },
+    {
+      "label": "sc3-german360-succde-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "58-sc3-german360-succde-ui.xml",
+      "sha256": "3b6b97a5ed8716d5fab0741698f9ace27e7fa8ffe9f18d3c7f47d8201524447c",
+      "bytes": 9566,
+      "at": "2026-10-12T15:29:50.502Z"
+    },
+    {
+      "label": "sc3-german360-succde-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "59-sc3-german360-succde-screen.png",
+      "sha256": "8c0b871997752e03d1611dcb9a5aac716b0c34f6c008a23b9951ebc7e9ec55fc",
+      "bytes": 122079,
+      "at": "2026-10-12T15:29:51.090Z"
+    },
+    {
+      "label": "sc1-classic-summary-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "60-sc1-classic-summary-head-ui.xml",
+      "sha256": "5095363c7e0d4bc3fa986f4bf0005378e16badce242874b6cfd4fbfdcdf97786",
+      "bytes": 5714,
+      "at": "2026-10-12T15:30:06.491Z"
+    },
+    {
+      "label": "sc1-classic-summary-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "61-sc1-classic-summary-head-screen.png",
+      "sha256": "8d3b683bc09c89ccf4339a4068ceb3e573d87f8a298bd08fcba5f2e4f6aa07fc",
+      "bytes": 54960,
+      "at": "2026-10-12T15:30:07.041Z"
+    },
+    {
+      "label": "sc1-classic-summary-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "62-sc1-classic-summary-v251-ui.xml",
+      "sha256": "f4cda46c8af8a11beca327065ac013ef64452d0a6af789fdffcd853869d2187a",
+      "bytes": 5730,
+      "at": "2026-10-12T15:30:12.878Z"
+    },
+    {
+      "label": "sc1-classic-summary-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "63-sc1-classic-summary-v251-screen.png",
+      "sha256": "8d3b683bc09c89ccf4339a4068ceb3e573d87f8a298bd08fcba5f2e4f6aa07fc",
+      "bytes": 54960,
+      "at": "2026-10-12T15:30:13.396Z"
+    },
+    {
+      "label": "sc1-classic-handledby-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "64-sc1-classic-handledby-head-ui.xml",
+      "sha256": "cd2eb33edb7da79ac021af479ea3a417f22f40f570b68f5d3ca45cad6190ae53",
+      "bytes": 6826,
+      "at": "2026-10-12T15:30:19.185Z"
+    },
+    {
+      "label": "sc1-classic-handledby-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "65-sc1-classic-handledby-head-screen.png",
+      "sha256": "03df7f4b2ba65df923e9bb056414fe736c3f03c5776a43122a80b95bdcc011eb",
+      "bytes": 66968,
+      "at": "2026-10-12T15:30:19.661Z"
+    },
+    {
+      "label": "sc1-classic-handledby-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "66-sc1-classic-handledby-v251-ui.xml",
+      "sha256": "4ee7e064dac222629a039de903147f21848b6209123950572a5ae0a7720bdc3c",
+      "bytes": 6845,
+      "at": "2026-10-12T15:30:25.459Z"
+    },
+    {
+      "label": "sc1-classic-handledby-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "67-sc1-classic-handledby-v251-screen.png",
+      "sha256": "5283b3de581c221505eb4e12747572c6ad0ebda560c9d9c82d8fbab16cada227",
+      "bytes": 67724,
+      "at": "2026-10-12T15:30:25.973Z"
+    },
+    {
+      "label": "sc1-classic-failnoaction-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "68-sc1-classic-failnoaction-head-ui.xml",
+      "sha256": "1b07218b942cd6c6d88bed113321055edaea85aa70276b8c4e73f4e561e89469",
+      "bytes": 6104,
+      "at": "2026-10-12T15:30:31.753Z"
+    },
+    {
+      "label": "sc1-classic-failnoaction-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "69-sc1-classic-failnoaction-head-screen.png",
+      "sha256": "33cb3492073f3b51e68631a89363c6c2f1c779554223ff5b37bee7d1532839c6",
+      "bytes": 62360,
+      "at": "2026-10-12T15:30:32.261Z"
+    },
+    {
+      "label": "sc1-classic-failnoaction-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "70-sc1-classic-failnoaction-v251-ui.xml",
+      "sha256": "f66b272cefbc064bacbb0980eae54028bab1d52b97295bdc1df5a7a76b5f97e7",
+      "bytes": 6121,
+      "at": "2026-10-12T15:30:38.067Z"
+    },
+    {
+      "label": "sc1-classic-failnoaction-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "71-sc1-classic-failnoaction-v251-screen.png",
+      "sha256": "33cb3492073f3b51e68631a89363c6c2f1c779554223ff5b37bee7d1532839c6",
+      "bytes": 62360,
+      "at": "2026-10-12T15:30:38.574Z"
+    },
+    {
+      "label": "sc1-classic-failaction-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "72-sc1-classic-failaction-head-ui.xml",
+      "sha256": "2c19e8b90b564fdd801264fac7344d9e50d8290778ef4ee32a41bafa92e07fcc",
+      "bytes": 7168,
+      "at": "2026-10-12T15:30:44.418Z"
+    },
+    {
+      "label": "sc1-classic-failaction-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "73-sc1-classic-failaction-head-screen.png",
+      "sha256": "8be099aaa5fca3812539abeb0042ebcba3fdf9ead786eee764fd093e61570c5d",
+      "bytes": 65415,
+      "at": "2026-10-12T15:30:44.955Z"
+    },
+    {
+      "label": "sc1-classic-failaction-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "74-sc1-classic-failaction-v251-ui.xml",
+      "sha256": "702b7e2a6a0e95d3824e7c552938a54c9ddbae23f14420638861f27c88ed774a",
+      "bytes": 7188,
+      "at": "2026-10-12T15:30:50.762Z"
+    },
+    {
+      "label": "sc1-classic-failaction-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "75-sc1-classic-failaction-v251-screen.png",
+      "sha256": "8be099aaa5fca3812539abeb0042ebcba3fdf9ead786eee764fd093e61570c5d",
+      "bytes": 65415,
+      "at": "2026-10-12T15:30:51.298Z"
+    },
+    {
+      "label": "sc1-classic-undo-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "76-sc1-classic-undo-head-ui.xml",
+      "sha256": "df3140c5f7f37a2c344bd2e7ab18d606fbc082fe11694d16f4bd883c65ae5d35",
+      "bytes": 8238,
+      "at": "2026-10-12T15:30:57.145Z"
+    },
+    {
+      "label": "sc1-classic-undo-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "77-sc1-classic-undo-head-screen.png",
+      "sha256": "94294db0fbb2dcca1a7c47921c8743252f7e06083857ff4c3f76ca4a63fb742c",
+      "bytes": 71081,
+      "at": "2026-10-12T15:30:57.644Z"
+    },
+    {
+      "label": "sc1-classic-undo-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "78-sc1-classic-undo-v251-ui.xml",
+      "sha256": "550c23aa45e84592645e6f84dbd5725b94ea725d63f157b04d6efb7377d77807",
+      "bytes": 8261,
+      "at": "2026-10-12T15:31:03.532Z"
+    },
+    {
+      "label": "sc1-classic-undo-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "79-sc1-classic-undo-v251-screen.png",
+      "sha256": "54a8c15ea450cd6f0bb925da997cbd447331b78e56d9e4ea3b5463acc2d1e499",
+      "bytes": 70554,
+      "at": "2026-10-12T15:31:04.061Z"
+    },
+    {
+      "label": "sc1-classic-undounavail-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "80-sc1-classic-undounavail-head-ui.xml",
+      "sha256": "133ee54cc149c07693e003d45eefb2e0c17304b2726ede366a20c7c70604cf67",
+      "bytes": 8615,
+      "at": "2026-10-12T15:31:09.925Z"
+    },
+    {
+      "label": "sc1-classic-undounavail-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "81-sc1-classic-undounavail-head-screen.png",
+      "sha256": "80ec17a3cbbd2491af8fca6a491f43e4ff52eff1087f3b0bc08593f8f0aff7a0",
+      "bytes": 76408,
+      "at": "2026-10-12T15:31:10.459Z"
+    },
+    {
+      "label": "sc1-classic-undounavail-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "82-sc1-classic-undounavail-v251-ui.xml",
+      "sha256": "514230d59c3fa899cded5bff18de207d208319437c5a41b072dd3821f24fc10b",
+      "bytes": 8639,
+      "at": "2026-10-12T15:31:16.266Z"
+    },
+    {
+      "label": "sc1-classic-undounavail-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "83-sc1-classic-undounavail-v251-screen.png",
+      "sha256": "80ec17a3cbbd2491af8fca6a491f43e4ff52eff1087f3b0bc08593f8f0aff7a0",
+      "bytes": 76408,
+      "at": "2026-10-12T15:31:16.790Z"
+    },
+    {
+      "label": "sc1-classic-undorefused-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "84-sc1-classic-undorefused-head-ui.xml",
+      "sha256": "96cd5e8d5427b04e677b4c8536d680fe52d0b8b86141c77b273ddf93bdfd5829",
+      "bytes": 9019,
+      "at": "2026-10-12T15:31:22.644Z"
+    },
+    {
+      "label": "sc1-classic-undorefused-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "85-sc1-classic-undorefused-head-screen.png",
+      "sha256": "34a882af33ea03d191c5b820f4f7cb234a038db837b9f80fd7d323a0ae7858ac",
+      "bytes": 88904,
+      "at": "2026-10-12T15:31:23.169Z"
+    },
+    {
+      "label": "sc1-classic-undorefused-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "86-sc1-classic-undorefused-v251-ui.xml",
+      "sha256": "efb3437557583813cc895acd8407bb6a2cf31652b16b03a9313351143aff2705",
+      "bytes": 9044,
+      "at": "2026-10-12T15:31:29.002Z"
+    },
+    {
+      "label": "sc1-classic-undorefused-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "87-sc1-classic-undorefused-v251-screen.png",
+      "sha256": "34a882af33ea03d191c5b820f4f7cb234a038db837b9f80fd7d323a0ae7858ac",
+      "bytes": 88904,
+      "at": "2026-10-12T15:31:29.501Z"
+    },
+    {
+      "label": "sc1-classic-confsingle-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "88-sc1-classic-confsingle-head-ui.xml",
+      "sha256": "ad4907355750df4d85e1a706b5e2ad86376af7f87801259eeb54694bb6a83d63",
+      "bytes": 9726,
+      "at": "2026-10-12T15:31:35.360Z"
+    },
+    {
+      "label": "sc1-classic-confsingle-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "89-sc1-classic-confsingle-head-screen.png",
+      "sha256": "b4af756f6b1fbdcbedd60b8b6e7e4c5a1be404bdd4eaac1fb608df0e56a3b265",
+      "bytes": 86675,
+      "at": "2026-10-12T15:31:35.905Z"
+    },
+    {
+      "label": "sc1-classic-confsingle-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "90-sc1-classic-confsingle-v251-ui.xml",
+      "sha256": "e580f926c538dd0a2fcf9d4ca0a7ea5acebd70cd891aa5c3ef376f3ada44f657",
+      "bytes": 9753,
+      "at": "2026-10-12T15:31:41.688Z"
+    },
+    {
+      "label": "sc1-classic-confsingle-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "91-sc1-classic-confsingle-v251-screen.png",
+      "sha256": "22afd3759b1a348d0582724d40e20dc83b3dff9b45d628fee2e32401423b99af",
+      "bytes": 85584,
+      "at": "2026-10-12T15:31:42.208Z"
+    },
+    {
+      "label": "sc1-classic-confbatch-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "92-sc1-classic-confbatch-head-ui.xml",
+      "sha256": "0be80181ce018fb0bc7d1ec48beb07da2709a3b2028c8fd427865330591401c9",
+      "bytes": 14465,
+      "at": "2026-10-12T15:31:48.062Z"
+    },
+    {
+      "label": "sc1-classic-confbatch-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "93-sc1-classic-confbatch-head-screen.png",
+      "sha256": "f29698f7eff658ac5f2d9df593d1a9ca4d31462eea4a8ec8eabdcd43112f6c8c",
+      "bytes": 99973,
+      "at": "2026-10-12T15:31:48.607Z"
+    },
+    {
+      "label": "sc1-classic-confbatch-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "94-sc1-classic-confbatch-v251-ui.xml",
+      "sha256": "84d5c32ce8cd92069a12548337e141d942bdb0bf014f2c70801f6a8e41abb122",
+      "bytes": 14505,
+      "at": "2026-10-12T15:31:54.557Z"
+    },
+    {
+      "label": "sc1-classic-confbatch-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "95-sc1-classic-confbatch-v251-screen.png",
+      "sha256": "2bcca927461f538c3fc8e1e8df45d95f186021c99ab033e1cf20ede4215afa71",
+      "bytes": 100795,
+      "at": "2026-10-12T15:31:55.070Z"
+    },
+    {
+      "label": "sc1-classic-conftrailing-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "96-sc1-classic-conftrailing-head-ui.xml",
+      "sha256": "d5de35158c84e3ead4bdd4e38fb84f45d1a4304a63038d5164fa583b1b270b8b",
+      "bytes": 8979,
+      "at": "2026-10-12T15:32:00.945Z"
+    },
+    {
+      "label": "sc1-classic-conftrailing-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "97-sc1-classic-conftrailing-head-screen.png",
+      "sha256": "0cb6d4c1f6c7a6c6080d83a4ec3e53e6276df69a7e28a492993fcd7ef09eb367",
+      "bytes": 68689,
+      "at": "2026-10-12T15:32:01.469Z"
+    },
+    {
+      "label": "sc1-classic-conftrailing-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "98-sc1-classic-conftrailing-v251-ui.xml",
+      "sha256": "9a7ec519cc995b5a7d31fb46b64a91d9d29d609019593bdad56c72f2163ab484",
+      "bytes": 9004,
+      "at": "2026-10-12T15:32:07.348Z"
+    },
+    {
+      "label": "sc1-classic-conftrailing-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "99-sc1-classic-conftrailing-v251-screen.png",
+      "sha256": "0cb6d4c1f6c7a6c6080d83a4ec3e53e6276df69a7e28a492993fcd7ef09eb367",
+      "bytes": 68689,
+      "at": "2026-10-12T15:32:07.856Z"
+    },
+    {
+      "label": "sc1-classic-conftall-head-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "100-sc1-classic-conftall-head-ui.xml",
+      "sha256": "126950f26a690f60d5735397f5fb53a6269c7f9f3217f8366b4394d0773cae98",
+      "bytes": 7210,
+      "at": "2026-10-12T15:32:13.652Z"
+    },
+    {
+      "label": "sc1-classic-conftall-head-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "101-sc1-classic-conftall-head-screen.png",
+      "sha256": "c9daff7a0f77d1056696a68ca2d80433bfe1f591e7ebb045344f882ec70f5dbd",
+      "bytes": 138258,
+      "at": "2026-10-12T15:32:14.182Z"
+    },
+    {
+      "label": "sc1-classic-conftall-v251-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "102-sc1-classic-conftall-v251-ui.xml",
+      "sha256": "62800585442dc8278e061ffc8a1c0974c11639c337a421453841386ae5776524",
+      "bytes": 7229,
+      "at": "2026-10-12T15:32:19.981Z"
+    },
+    {
+      "label": "sc1-classic-conftall-v251-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "103-sc1-classic-conftall-v251-screen.png",
+      "sha256": "c9daff7a0f77d1056696a68ca2d80433bfe1f591e7ebb045344f882ec70f5dbd",
+      "bytes": 138258,
+      "at": "2026-10-12T15:32:20.518Z"
+    },
+    {
+      "label": "sc1-classic-warn-custom-colors-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "104-sc1-classic-warn-custom-colors-ui.xml",
+      "sha256": "5291effc889e75f00c1b20257c72373437d827e45b8394faada88886b00752bc",
+      "bytes": 6096,
+      "at": "2026-10-12T15:32:48.158Z"
+    },
+    {
+      "label": "sc1-classic-warn-custom-colors-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "105-sc1-classic-warn-custom-colors-screen.png",
+      "sha256": "f5e84386d83b575c9dd867be8911226fd0a1787e5c7e6721a10b2435433d9e7e",
+      "bytes": 61447,
+      "at": "2026-10-12T15:32:48.682Z"
+    },
+    {
+      "label": "sc1-classic-warn-default-colors-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "106-sc1-classic-warn-default-colors-ui.xml",
+      "sha256": "5291effc889e75f00c1b20257c72373437d827e45b8394faada88886b00752bc",
+      "bytes": 6096,
+      "at": "2026-10-12T15:32:54.654Z"
+    },
+    {
+      "label": "sc1-classic-warn-default-colors-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "107-sc1-classic-warn-default-colors-screen.png",
+      "sha256": "532e22205e794bff8e7c08ca2cafedc51893178c69ba308e9dbffcb87a91b05d",
+      "bytes": 61340,
+      "at": "2026-10-12T15:32:55.156Z"
+    },
+    {
+      "label": "sc1-classic-error-default-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "108-sc1-classic-error-default-ui.xml",
+      "sha256": "5291effc889e75f00c1b20257c72373437d827e45b8394faada88886b00752bc",
+      "bytes": 6096,
+      "at": "2026-10-12T15:33:01.135Z"
+    },
+    {
+      "label": "sc1-classic-error-default-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "109-sc1-classic-error-default-screen.png",
+      "sha256": "1642b7869ee43aca09738832b985d2d51f8163a403aa2766f3e55d4aed303498",
+      "bytes": 60243,
+      "at": "2026-10-12T15:33:01.643Z"
+    },
+    {
+      "label": "sc5-classic-failure-undo-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "110-sc5-classic-failure-undo-ui.xml",
+      "sha256": "a0aa8c1baee56e0a30e008f7c99edb03b6d07ae70276e294d647f9945f03295e",
+      "bytes": 10034,
+      "at": "2026-10-12T15:33:07.746Z"
+    },
+    {
+      "label": "sc5-classic-failure-undo-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "111-sc5-classic-failure-undo-screen.png",
+      "sha256": "b327170a748ab7f56e33cfabca785123d338fd2dc1e71c8bfc6ab82f6998f1da",
+      "bytes": 77476,
+      "at": "2026-10-12T15:33:08.262Z"
+    },
+    {
+      "label": "sc5-classic-failure-undo-after-taps-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "112-sc5-classic-failure-undo-after-taps-ui.xml",
+      "sha256": "a56f29060636bd98c8a37eed7e1ead394320624db18aa91a9eced55c06f16b88",
+      "bytes": 10034,
+      "at": "2026-10-12T15:33:23.720Z"
+    },
+    {
+      "label": "sc5-classic-failure-undo-refused-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "113-sc5-classic-failure-undo-refused-ui.xml",
+      "sha256": "72f51d937d68d904159131336d80c718e1af2b0722791ed47876925c2364ccd9",
+      "bytes": 9745,
+      "at": "2026-10-12T15:33:29.406Z"
+    },
+    {
+      "label": "sc5-classic-failure-undo-refused-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "114-sc5-classic-failure-undo-refused-screen.png",
+      "sha256": "c057f4cd75d9a37e7b0fd133bcc7e846192dffdfa06454b0dada3157d9a6515f",
+      "bytes": 93751,
+      "at": "2026-10-12T15:33:29.925Z"
+    },
+    {
+      "label": "sc1-classic-confirm-off-before-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "115-sc1-classic-confirm-off-before-ui.xml",
+      "sha256": "6944719fea8611f2824142fb146102aea1e4531b02b412e69eaf55a6e2290a58",
+      "bytes": 9348,
+      "at": "2026-10-12T15:33:35.857Z"
+    },
+    {
+      "label": "sc1-classic-confirm-off-before-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "116-sc1-classic-confirm-off-before-screen.png",
+      "sha256": "8a0c1004c180e98dbac679639cb175d23a8fa99bfc58d174577191813b269818",
+      "bytes": 79274,
+      "at": "2026-10-12T15:33:36.345Z"
+    },
+    {
+      "label": "sc1-classic-confirm-off-after-taps-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "117-sc1-classic-confirm-off-after-taps-ui.xml",
+      "sha256": "75bff24d5a59c7aebf1d32dd7d64176ec59c8e7db7e9d5020c8c89cf605685de",
+      "bytes": 9348,
+      "at": "2026-10-12T15:33:50.941Z"
+    },
+    {
+      "label": "sc1-classic-ignores-receipt-fields-success-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "118-sc1-classic-ignores-receipt-fields-success-ui.xml",
+      "sha256": "e1e6e0e6664a1087cf5f99640a3adddbbab50dfd60eba935f6cf3396969b509a",
+      "bytes": 6790,
+      "at": "2026-10-12T15:33:56.570Z"
+    },
+    {
+      "label": "sc1-classic-ignores-receipt-fields-success-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "119-sc1-classic-ignores-receipt-fields-success-screen.png",
+      "sha256": "0914fbc01422a4b7c8b64170a0c73473deeeae0cf2804da8450414b7428075a8",
+      "bytes": 61350,
+      "at": "2026-10-12T15:33:57.069Z"
+    },
+    {
+      "label": "sc1-classic-ignores-receipt-fields-failure-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "120-sc1-classic-ignores-receipt-fields-failure-ui.xml",
+      "sha256": "2c19e8b90b564fdd801264fac7344d9e50d8290778ef4ee32a41bafa92e07fcc",
+      "bytes": 7168,
+      "at": "2026-10-12T15:34:02.933Z"
+    },
+    {
+      "label": "sc1-classic-ignores-receipt-fields-failure-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "121-sc1-classic-ignores-receipt-fields-failure-screen.png",
+      "sha256": "ffc9cd4121407e9e1c677017a074f5f5dc61e9e933ed703578c8e50f525ada9e",
+      "bytes": 64651,
+      "at": "2026-10-12T15:34:03.458Z"
+    },
+    {
+      "label": "logcat-fatal-check-last-launches",
+      "kind": "log",
+      "source": "cli",
+      "file": "122-logcat-fatal-check-last-launches.log",
+      "sha256": "629f5c99a8c152fb8fc472f83ecb0cea3af783a9c1f2c7a3480e46d02ae1a1e8",
+      "bytes": 63,
+      "at": "2026-10-12T15:35:41.330Z",
+      "empty": true
+    }
+  ],
+  "sig": {
+    "alg": "HMAC-SHA256",
+    "value": "b23e48da2f5169a930130e2b17dd5fb2c67084b7a93d41b57015421a7a7995ca"
+  }
+}
