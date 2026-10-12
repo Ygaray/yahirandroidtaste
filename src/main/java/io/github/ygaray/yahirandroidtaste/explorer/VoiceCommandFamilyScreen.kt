@@ -242,6 +242,7 @@ private fun ProviderKeyCardFixture(keyValue: String, keyState: KeyFieldState) {
 private fun ProviderKeyCardVariants() {
     SectionLabel("ProviderKeyCard")
     ProviderKeyCardFixture(keyValue = "", keyState = KeyFieldState.Empty)
+    ProviderKeyLifecycleDemos()
 }
 
 /** Fixture models list — explorer-only, never registered (explorer/ is drift-guard denylisted). */
