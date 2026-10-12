@@ -231,6 +231,7 @@ class OutcomeSheetReceiptSourceContractTest {
         val content = receiptBody("fun OutcomeSheetReceiptContent(")
         assertTrue(content.contains("is VoiceOutcomeUiState.Failure->ReceiptFailureBar(outcome)".compact()))
         assertTrue(content.contains("valbarFollows=receiptHasBar(outcome)"))
+        assertTrue(content.contains("valbodyEndsFlush=barFollows||receiptSuccessHasActions(outcome)"))
         // Expression-bodied, so the brace-based functionBody extractor does not apply.
         val compact = receiptSource.compact()
         assertTrue(compact.contains("privatefunreceiptHasBar(outcome:VoiceOutcomeUiState):Boolean=when(outcome){"))

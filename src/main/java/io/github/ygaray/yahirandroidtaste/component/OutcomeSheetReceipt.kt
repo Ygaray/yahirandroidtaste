@@ -94,6 +94,9 @@ internal fun OutcomeSheetReceiptContent(
     colors: OutcomeSheetColors = OutcomeSheetDefaults.colors()
 ) {
     val barFollows = receiptHasBar(outcome)
+    // The body's own 16dp bottom padding is dropped whenever something already supplies the space
+    // below the last section: the pinned bar, or the Success actions row (its own 16dp, IN-01).
+    val bodyEndsFlush = barFollows || receiptSuccessHasActions(outcome)
     Column(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -103,7 +106,7 @@ internal fun OutcomeSheetReceiptContent(
                     start = Dimens.HorizontalPadding,
                     end = Dimens.HorizontalPadding,
                     top = Dimens.OutcomeReceipt.BodyTopPadding,
-                    bottom = if (barFollows) 0.dp else Dimens.HorizontalPadding
+                    bottom = if (bodyEndsFlush) 0.dp else Dimens.HorizontalPadding
                 )
         ) {
             when (outcome) {
@@ -129,6 +132,10 @@ private fun receiptHasBar(outcome: VoiceOutcomeUiState): Boolean = when (outcome
     is VoiceOutcomeUiState.Failure -> outcome.action != null || outcome.secondaryAction != null
     is VoiceOutcomeUiState.Success -> false
 }
+
+/** Whether [outcome] is a Success that renders its actions row at the end of the scroll content. */
+private fun receiptSuccessHasActions(outcome: VoiceOutcomeUiState): Boolean =
+    outcome is VoiceOutcomeUiState.Success && (outcome.startAction != null || outcome.endAction != null)
 
 /** The glyph drawn inside the status badge circle for [badge]. */
 internal fun outcomeBadgeIcon(badge: OutcomeBadge): ImageVector = when (badge) {

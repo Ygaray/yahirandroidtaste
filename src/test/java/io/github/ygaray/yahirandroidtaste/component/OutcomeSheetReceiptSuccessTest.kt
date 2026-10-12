@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
@@ -306,6 +307,31 @@ class OutcomeSheetReceiptSuccessTest {
         val probe = composeTestRule.onNode(hasText("editable probe"), useUnmergedTree = true)
             .fetchSemanticsNode().boundsInRoot.bottom
         assertActionsGapAtLeast24dp(probe)
+    }
+
+    @Test
+    fun `the Success actions row has exactly 16dp below it, not 32dp`() {
+        composeTestRule.setContent {
+            YahirAndroidTasteTheme(themeMode = ThemeMode.LIGHT, dynamicColor = false) {
+                Box(Modifier.testTag("receipt_host")) {
+                    OutcomeSheetReceiptContent(
+                        OutcomeFixtures.success(
+                            startAction = OutcomeFixtures.sheetAction(label = "Start"),
+                            endAction = OutcomeFixtures.sheetAction(label = "End")
+                        )
+                    )
+                }
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        val hostBottom = tagged("receipt_host").fetchSemanticsNode().boundsInRoot.bottom
+        val actionsBottom = maxOf(
+            tagged("outcome_sheet_action_start").fetchSemanticsNode().boundsInRoot.bottom,
+            tagged("outcome_sheet_action_end").fetchSemanticsNode().boundsInRoot.bottom
+        )
+        val expected = 16f * composeTestRule.density.density
+        assertEquals("space under the actions row", expected, hostBottom - actionsBottom, 1.5f)
     }
 
     // ---- OQ-1: editableContent while in flight --------------------------------------------------
