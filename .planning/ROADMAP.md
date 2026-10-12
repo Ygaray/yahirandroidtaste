@@ -139,7 +139,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 22-03-PLAN.md — The four named Classic deltas (confirm enabled, Warn tone seam, `Failure.undo`, Assertive live region) + Classic parity inventories and v2.5.1-derived source contract; `api.txt` byte-identical (VRCPT-01..05 Classic, VXR-01, VXR-02)
+- [x] 22-03-PLAN.md — The four named Classic deltas (confirm enabled, Warn tone seam, `Failure.undo`, Assertive live region) + Classic parity inventories and v2.5.1-derived source contract; `api.txt` byte-identical (VRCPT-01..05 Classic, VXR-01, VXR-02)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -310,6 +310,6 @@ only on Phase 20, but it runs after 22 because every phase rewrites the shared `
 |-------|-----------|----------------|--------|-----------|
 | 20. Tone foundation & atoms | v2.6 | 4/4 | Planned |  |
 | 21. Receipt row, Pill selector & sheet shape | v2.6 | 4/4 | Not started |  |
-| 22. OutcomeSheet Receipt style | v2.6 | 2/5 | Not started |  |
+| 22. OutcomeSheet Receipt style | v2.6 | 3/5 | Not started |  |
 | 23. ProviderKeyCard lifecycle & Undo Center groups | v2.6 | 0/TBD | Not started | - |
 | 24. Catalog, docs, Explorer demos & cut v2.6.0 | v2.6 | 0/TBD | Not started | - |
