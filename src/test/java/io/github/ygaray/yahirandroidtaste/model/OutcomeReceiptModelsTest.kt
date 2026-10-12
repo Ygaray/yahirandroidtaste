@@ -7,6 +7,7 @@ import io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -125,5 +126,118 @@ class OutcomeReceiptModelsTest {
 
         assertEquals(ActionButtonDefaults.ActionButtonRole.Destructive, action.role)
         assertEquals(null, action.icon)
+    }
+
+    // ---- Success ----
+
+    @Test
+    fun `Success new fields default to null and destructuring of six components still compiles`() {
+        val success = VoiceOutcomeUiState.Success("s")
+
+        assertNull(success.badge)
+        assertNull(success.titleActions)
+        assertNull(success.startAction)
+        assertNull(success.endAction)
+
+        val (summary, handledBy, editable, inFlight, results, undo) = success
+        assertEquals("s", summary)
+        assertNull(handledBy)
+        assertNull(editable)
+        assertFalse(inFlight)
+        assertTrue(results.isEmpty())
+        assertNull(undo)
+    }
+
+    // ---- Failure ----
+
+    @Test
+    fun `Failure v2_5_1 shapes default every new field`() {
+        listOf(VoiceOutcomeUiState.Failure("r"), VoiceOutcomeUiState.Failure("r", null, null)).forEach {
+            assertNull(it.title)
+            assertNull(it.transcript)
+            assertEquals(FailureTone.Error, it.tone)
+            assertNull(it.tip)
+            assertNull(it.secondaryAction)
+            assertNull(it.badge)
+            assertNull(it.undo)
+        }
+
+        val (reason, handledBy, action, body, prefix) = VoiceOutcomeUiState.Failure("r")
+        assertEquals("r", reason)
+        assertNull(handledBy)
+        assertNull(action)
+        assertNull(body)
+        assertNull(prefix)
+    }
+
+    @Test
+    fun `Failure legacy three-argument copy keeps every new field`() {
+        val tip: @androidx.compose.runtime.Composable () -> Unit = {}
+        val body: @androidx.compose.runtime.Composable () -> Unit = {}
+        val secondary = SheetActionUiModel("Cancel", {}, ActionButtonEmphasis.Text)
+        val undo = UndoAffordanceUiModel("Undo all")
+        val failure = VoiceOutcomeUiState.Failure(
+            reason = "r",
+            handledBy = null,
+            action = null,
+            body = body,
+            semanticsPrefix = "Erreur :",
+            title = "Didn't catch that",
+            transcript = "add milk",
+            tone = FailureTone.Warn,
+            tip = tip,
+            secondaryAction = secondary,
+            badge = OutcomeBadge.Warn,
+            undo = undo
+        )
+
+        val copied = failure.copy("r2", null, null)
+
+        assertEquals("r2", copied.reason)
+        assertSame(body, copied.body)
+        assertEquals("Erreur :", copied.semanticsPrefix)
+        assertEquals("Didn't catch that", copied.title)
+        assertEquals("add milk", copied.transcript)
+        assertEquals(FailureTone.Warn, copied.tone)
+        assertSame(tip, copied.tip)
+        assertSame(secondary, copied.secondaryAction)
+        assertEquals(OutcomeBadge.Warn, copied.badge)
+        assertSame(undo, copied.undo)
+        assertEquals(failure.copy(reason = "r2"), copied)
+    }
+
+    @Test
+    fun `Failure toString omits the reason, title, transcript and semanticsPrefix`() {
+        val failure = VoiceOutcomeUiState.Failure(
+            reason = "secret reason",
+            semanticsPrefix = "secret prefix",
+            title = "secret title",
+            transcript = "secret transcript",
+            tone = FailureTone.Warn
+        )
+
+        val text = failure.toString()
+
+        assertFalse(text.contains("secret"))
+        assertTrue(text.contains("Warn"))
+    }
+
+    // ---- NeedsConfirmation ----
+
+    @Test
+    fun `NeedsConfirmation named v2_5_1 shape defaults confirmEnabled and titleActions`() {
+        val confirmation = VoiceOutcomeUiState.NeedsConfirmation(
+            reason = "Delete?",
+            items = emptyList(),
+            onConfirm = {},
+            onCancel = {}
+        )
+
+        assertTrue(confirmation.confirmEnabled)
+        assertNull(confirmation.titleActions)
+        assertEquals(
+            "NeedsConfirmation(items=0, selectionMode=AllOrNothing, severity=Neutral)",
+            confirmation.toString()
+        )
     }
 }

@@ -283,9 +283,9 @@ class VoiceModelLabelDefaultsTest {
     }
 
     @Test
-    fun `Failure keeps every old constructor arity and the new copy arities`() {
+    fun `Failure keeps every old constructor arity and the legacy three and full twelve-arg copy`() {
         assertTrue(constructorArities(VoiceOutcomeUiState.Failure::class.java).containsAll(listOf(1, 2, 3, 4, 5)))
-        assertTrue(copyArities(VoiceOutcomeUiState.Failure::class.java).containsAll(listOf(3, 5)))
+        assertTrue(copyArities(VoiceOutcomeUiState.Failure::class.java).containsAll(listOf(3, 12)))
     }
 
     // ---- IN-02: legacy-arity copy drift guards (every field non-default) ----

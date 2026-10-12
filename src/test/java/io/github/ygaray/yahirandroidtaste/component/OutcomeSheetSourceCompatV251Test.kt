@@ -5,7 +5,11 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.ui.Modifier
 import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
+import io.github.ygaray.yahirandroidtaste.model.FailureTone
+import io.github.ygaray.yahirandroidtaste.model.OutcomeBadge
+import io.github.ygaray.yahirandroidtaste.model.SelectionMode
 import io.github.ygaray.yahirandroidtaste.model.SheetActionUiModel
+import io.github.ygaray.yahirandroidtaste.model.UndoAffordanceUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -99,6 +103,108 @@ class OutcomeSheetSourceCompatV251Test {
             icon = icon
         )
         assertSame(icon, full.icon)
+    }
+
+    @Test
+    fun v251StateArmShapes_compileAndDefaultTheNewFields() {
+        // Success with 1 to 6 positional arguments.
+        val handledBy = HandledByUiModel("Local")
+        val undo = UndoAffordanceUiModel("Undo all")
+        listOf(
+            VoiceOutcomeUiState.Success("s"),
+            VoiceOutcomeUiState.Success("s", handledBy),
+            VoiceOutcomeUiState.Success("s", handledBy, null),
+            VoiceOutcomeUiState.Success("s", handledBy, null, false),
+            VoiceOutcomeUiState.Success("s", handledBy, null, false, emptyList()),
+            VoiceOutcomeUiState.Success("s", handledBy, null, false, emptyList(), undo)
+        ).forEach {
+            assertNull(it.badge)
+            assertNull(it.titleActions)
+            assertNull(it.startAction)
+            assertNull(it.endAction)
+        }
+
+        // Destructuring of Success (six) and Failure (five) still compiles.
+        val (summary, _, _, inFlight, _, destructuredUndo) =
+            VoiceOutcomeUiState.Success("s", handledBy, null, true, emptyList(), undo)
+        assertEquals("s", summary)
+        assertTrue(inFlight)
+        assertSame(undo, destructuredUndo)
+        val (reason, _, _, _, prefix) = VoiceOutcomeUiState.Failure("r", null, null, null, "Error:")
+        assertEquals("r", reason)
+        assertEquals("Error:", prefix)
+
+        // Failure at every v2.5.1 arity.
+        listOf(
+            VoiceOutcomeUiState.Failure("r"),
+            VoiceOutcomeUiState.Failure("r", null),
+            VoiceOutcomeUiState.Failure("r", null, null)
+        ).forEach {
+            assertNull(it.title)
+            assertNull(it.transcript)
+            assertEquals(FailureTone.Error, it.tone)
+            assertNull(it.tip)
+            assertNull(it.secondaryAction)
+            assertNull(it.badge)
+            assertNull(it.undo)
+        }
+
+        // NeedsConfirmation, the named v2.5.1 shape (both consumers use named arguments).
+        val confirmation = VoiceOutcomeUiState.NeedsConfirmation(
+            reason = "Delete?",
+            items = emptyList(),
+            onConfirm = {},
+            onCancel = {}
+        )
+        assertTrue(confirmation.confirmEnabled)
+        assertNull(confirmation.titleActions)
+    }
+
+    @Test
+    fun newStateArmShapes_compileWithEveryNamedArgument() {
+        val action = SheetActionUiModel("Cancel", {}, ActionButtonEmphasis.Text)
+        val titleActions: @androidx.compose.runtime.Composable () -> Unit = {}
+
+        val success = VoiceOutcomeUiState.Success(
+            summary = "s",
+            badge = OutcomeBadge.Success,
+            titleActions = titleActions,
+            startAction = action,
+            endAction = action
+        )
+        assertEquals(OutcomeBadge.Success, success.badge)
+        assertSame(action, success.startAction)
+
+        val failure = VoiceOutcomeUiState.Failure(
+            reason = "r",
+            title = "t",
+            transcript = "spoken",
+            tone = FailureTone.Warn,
+            tip = titleActions,
+            secondaryAction = action,
+            badge = OutcomeBadge.Warn,
+            undo = UndoAffordanceUiModel("Undo all")
+        )
+        assertEquals(FailureTone.Warn, failure.tone)
+        assertEquals("spoken", failure.transcript)
+
+        val confirmation = VoiceOutcomeUiState.NeedsConfirmation(
+            reason = "Delete?",
+            items = emptyList(),
+            selectionMode = SelectionMode.AllOrNothing,
+            title = "Delete card?",
+            severity = ActionButtonDefaults.ActionButtonRole.Destructive,
+            reversibilityHint = "Irreversible",
+            confirmLabel = "Delete",
+            cancelLabel = "Keep",
+            topLevelContent = titleActions,
+            confirmEnabled = false,
+            titleActions = titleActions,
+            onConfirm = {},
+            onCancel = {}
+        )
+        assertFalse(confirmation.confirmEnabled)
+        assertSame(titleActions, confirmation.titleActions)
     }
 
     @Test
