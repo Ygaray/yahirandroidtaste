@@ -15,7 +15,6 @@ import io.github.ygaray.yahirandroidtaste.component.SourceContractTestSupport
 import io.github.ygaray.yahirandroidtaste.feedback.UndoCenterScreen
 import io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel
 import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
-import io.github.ygaray.yahirandroidtaste.model.FailureTone
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
 import io.github.ygaray.yahirandroidtaste.model.KeyFieldState
 import io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel
@@ -29,6 +28,7 @@ import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import java.io.File
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
@@ -164,12 +164,16 @@ class V251CallSiteCanaryTest {
         )
         // Positional arities 1 to 6: OutcomeSheetSourceCompatV251Test#v251StateArmShapes_...
 
-        listOf(sb, summaryOnly, ct, everyNamed, explorerUndo).forEach {
-            assertNull(it.badge)
-            assertNull(it.titleActions)
-            assertNull(it.startAction)
-            assertNull(it.endAction)
-        }
+        // Only properties that exist on v2.5.1 are asserted here, so this file also compiles on the
+        // v2.5.1 tag (the new-field defaults are asserted by OutcomeSheetSourceCompatV251Test).
+        assertEquals("Done", sb.summary)
+        assertEquals("Local", sb.handledBy?.tier)
+        assertEquals(listOf("Logged 1 item", "Logged 2 items"), listOf(summaryOnly, ct).map { it.summary })
+        assertNull(ct.handledBy)
+        assertNotNull(ct.editableContent)
+        assertNull(summaryOnly.editableContent)
+        assertEquals(2, explorerUndo.undo?.rows?.size)
+        assertEquals("Item changed since", explorerUndo.undo?.refused?.reason)
         assertTrue(everyNamed.inFlight)
         assertFalse(summaryOnly.inFlight)
         assertEquals(2, everyNamed.batchResults.size)
@@ -215,14 +219,14 @@ class V251CallSiteCanaryTest {
         val copied = sbShape.copy(body = { Text("body") })
 
         listOf(reasonOnly, withAction, ctShape, sbShape, bodyShape, copied).forEach {
-            assertNull(it.title)
-            assertNull(it.transcript)
-            assertEquals(FailureTone.Error, it.tone)
-            assertNull(it.tip)
-            assertNull(it.secondaryAction)
-            assertNull(it.badge)
-            assertNull(it.undo)
+            assertTrue(it.reason.isNotEmpty())
         }
+        assertNull(reasonOnly.action)
+        assertNull(reasonOnly.handledBy)
+        assertNull(reasonOnly.body)
+        assertNull(reasonOnly.semanticsPrefix)
+        assertEquals("Open Settings", withAction.action?.label)
+        assertEquals("Local", sbShape.handledBy?.tier)
         assertEquals("Error:", bodyShape.semanticsPrefix)
         assertEquals("Retry", copied.action?.label)
         // Positional arities (reason through semanticsPrefix): OutcomeSheetSourceCompatV251Test.
@@ -293,9 +297,16 @@ class V251CallSiteCanaryTest {
         )
 
         listOf(single, batch, trailing, sb, full).forEach {
-            assertTrue("confirmEnabled must default to true", it.confirmEnabled)
-            assertNull(it.titleActions)
+            assertTrue(it.reason.isNotEmpty())
         }
+        // The v2.5.1 defaults of the fields the named shapes leave out.
+        assertEquals(SelectionMode.AllOrNothing, single.selectionMode)
+        assertEquals("Confirm", trailing.confirmLabel)
+        assertEquals("Cancel", trailing.cancelLabel)
+        assertEquals(ActionButtonDefaults.ActionButtonRole.Neutral, trailing.severity)
+        assertNull(trailing.title)
+        assertNull(trailing.topLevelContent)
+        assertNotNull(batch.topLevelContent)
         assertEquals(SelectionMode.PerItem, full.selectionMode)
         assertEquals("Back", full.cancelLabel)
         assertEquals(3, batch.items.size)
@@ -324,10 +335,8 @@ class V251CallSiteCanaryTest {
         val four = HandledByUiModel("Local", "a", "p", "m")
 
         listOf(ct, sb, explorer, four).forEach {
-            assertEquals("Handled by", it.prefixLabel)
-            assertFalse(it.onDevice)
+            assertEquals("Escalations:", it.escalationsLabel)
         }
-        assertEquals("Escalations:", explorer.escalationsLabel)
         assertNull(ct.approach)
         assertEquals(1, explorer.escalationCount)
     }
@@ -348,7 +357,7 @@ class V251CallSiteCanaryTest {
         named.onClick()
         trailing.onClick()
         assertEquals(2, clicked)
-        listOf(named, explorer, trailing, withRole).forEach { assertNull(it.icon) }
+        listOf(named, explorer, trailing).forEach { assertEquals(ActionButtonDefaults.ActionButtonRole.Neutral, it.role) }
         assertEquals(ActionButtonDefaults.ActionButtonRole.Neutral, named.role)
         assertEquals(ActionButtonDefaults.ActionButtonRole.Destructive, withRole.role)
     }
