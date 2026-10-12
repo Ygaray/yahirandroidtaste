@@ -56,10 +56,13 @@ class DynamicActionButtonLegacyPathSourceContractTest {
             "IconSize",
             "IconGap"
         )
+        // Scoped to the emphasis path so an unrelated occurrence elsewhere in the file cannot satisfy it.
+        val emphasisPath = SourceContractTestSupport.functionBody(stripped, "fun EmphasisActionButton(") +
+            SourceContractTestSupport.functionBody(stripped, "fun RowScope.EmphasisContent(")
         tokens.forEach { token ->
-            assertTrue("missing Dimens.ActionButton.$token", stripped.contains("Dimens.ActionButton.$token"))
+            assertTrue("missing Dimens.ActionButton.$token", emphasisPath.contains("Dimens.ActionButton.$token"))
         }
-        assertTrue("pill shape expected", stripped.contains("CircleShape"))
-        assertTrue("SemiBold label expected", stripped.contains("FontWeight.SemiBold"))
+        assertTrue("pill shape expected", emphasisPath.contains("CircleShape"))
+        assertTrue("SemiBold label expected", emphasisPath.contains("FontWeight.SemiBold"))
     }
 }

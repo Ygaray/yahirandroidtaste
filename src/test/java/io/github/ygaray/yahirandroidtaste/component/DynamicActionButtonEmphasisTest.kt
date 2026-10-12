@@ -368,7 +368,37 @@ class DynamicActionButtonEmphasisTest {
         assertEquals("Destructive", widthDp("text_ref"), widthDp("legacy_${ActionButtonRole.Destructive}"), 0.5f)
     }
 
+    @Test
+    fun `an icon-only call differs from the real no-icon legacy button by the documented deltas`() {
+        // The icon-only path goes through the emphasis styling (see the DynamicActionButton KDoc), so
+        // against the real no-icon legacy widget the width changes by the 26dp icon + gap, minus 8dp for
+        // Save (20dp padding instead of the M3 default 24dp, both sides), plus a small label-weight delta
+        // (SemiBold vs Medium). A mapping regression (Save no longer filled, or text roles padded like
+        // Filled) moves the delta by 16dp and fails here, which comparing two emphasis calls cannot.
+        val check = Icons.Filled.Check
+        composeTestRule.setContent {
+            density = LocalDensity.current
+            YahirAndroidTasteTheme(dynamicColor = false) {
+                Column {
+                    roles.forEach { role ->
+                        DynamicActionButton(WIDE_LABEL, role, onClick = {}, modifier = Modifier.testTag("plain_$role"))
+                        DynamicActionButton(WIDE_LABEL, role, onClick = {}, modifier = Modifier.testTag("icon_$role"), icon = check)
+                    }
+                }
+            }
+        }
+        composeTestRule.waitForIdle()
+        roles.forEach { role ->
+            val delta = widthDp("icon_$role") - widthDp("plain_$role")
+            val expected = if (role == ActionButtonRole.Save) 26f - 8f else 26f
+            assertEquals("$role icon-only vs legacy width delta", expected, delta, LABEL_WEIGHT_TOLERANCE_DP)
+        }
+    }
+
     private companion object {
         const val WIDE_LABEL = "Continue anyway now"
+
+        /** Slack for the SemiBold-vs-Medium label width difference between the two render paths. */
+        const val LABEL_WEIGHT_TOLERANCE_DP = 4f
     }
 }
