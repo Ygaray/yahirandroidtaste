@@ -122,7 +122,7 @@
   `tools/verify-binary-abi.sh v2.5.1` runs as information only (P2).
 - [x] **DOC-03**: `API.md` (with stable test tags as a documented API section), `INTEGRATION.md` and KDoc cover every ask Y-1..Y-14, the ProviderKeyCard lifecycle and XR-178-01 a/b/c.
 - [x] **INV-03**: The one-way-dependency invariant holds: no engine or consumer import, and no consumer nouns or colors. Detekt is green at zero baseline. No `@HiltAndroidApp`.
-- [ ] **DEMO-01**: The `ExplorerActivity` gallery adds demos for:
+- [x] **DEMO-01**: The `ExplorerActivity` gallery adds demos for:
   - Receipt confirm: single open, batch collapsed, and batch with an attention row;
   - a count editor with a disabled Pill segment and a warn `ToneCard`;
   - Success single, batch and all-undone;
@@ -179,7 +179,7 @@
 | API-03 | Phase 24 | Complete |
 | DOC-03 | Phase 24 | Complete |
 | INV-03 | Phase 24 | Complete |
-| DEMO-01 | Phase 24 | Pending |
+| DEMO-01 | Phase 24 | Complete |
 | SHIP-04 | Phase 24 | Complete |
 
 **Coverage:**
