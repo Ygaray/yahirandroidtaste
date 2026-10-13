@@ -205,4 +205,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-11 at the start of milestone v2.6 (Receipt voice surfaces + ProviderKeyCard lifecycle). Prior: v2.5 → `v2.5.0`/`v2.5.1`; v2.4 → `v2.4.0`/`v2.4.1`; v2.0 → `v2.2.0`/`v2.3.0`; v1.0 → `v2.0.0`.*
+*Last updated: 2026-10-12 after Phase 24 (v2.6.0 cut: tag v2.6.0 pushed, JitPack ok; Gate-2 screencap review pending). Milestone v2.6 (Receipt voice surfaces + ProviderKeyCard lifecycle). Prior: v2.5 → `v2.5.0`/`v2.5.1`; v2.4 → `v2.4.0`/`v2.4.1`; v2.0 → `v2.2.0`/`v2.3.0`; v1.0 → `v2.0.0`.*
