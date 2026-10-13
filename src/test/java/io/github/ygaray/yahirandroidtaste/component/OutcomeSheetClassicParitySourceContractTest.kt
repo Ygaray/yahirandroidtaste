@@ -200,7 +200,12 @@ class OutcomeSheetClassicParitySourceContractTest {
 
     @Test
     fun `legacy SheetScaffold line and Classic content call are the 22-03 shape`() {
-        assertTrue(stripped.contains("SheetScaffold(onDismissRequest = onDismissRequest, modifier = modifier) {"))
+        // CalTracker 76-14 only forwards the (optionally hoisted) sheetState; nothing else changed.
+        assertTrue(
+            stripped.contains(
+                "SheetScaffold(onDismissRequest = onDismissRequest, modifier = modifier, sheetState = sheetState) {"
+            )
+        )
         assertTrue(stripped.contains("OutcomeSheetContent(outcome, colors = colors)"))
     }
 }

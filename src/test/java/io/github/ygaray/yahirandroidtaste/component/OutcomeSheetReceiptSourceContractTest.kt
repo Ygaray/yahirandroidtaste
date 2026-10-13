@@ -24,8 +24,13 @@ class OutcomeSheetReceiptSourceContractTest {
     // ---- Dispatch -----------------------------------------------------------------------------
 
     @Test
-    fun `OutcomeSheet declares exactly one public entry point`() {
-        assertEquals(1, SourceContractTestSupport.countOccurrences(sheetSource, "fun OutcomeSheet("))
+    fun `OutcomeSheet declares exactly two public entry points, the hoisted-state one first`() {
+        // CalTracker 76-14: the dispatching overload takes a required, named sheetState; the v2.6.0
+        // signature (no sheetState, no opt-in) delegates to it with rememberModalBottomSheetState().
+        assertEquals(2, SourceContractTestSupport.countOccurrences(sheetSource, "fun OutcomeSheet("))
+        val delegating = SourceContractTestSupport.functionBody(sheetSource, "fun OutcomeSheet(", occurrence = 2).compact()
+        assertTrue(delegating.contains("sheetState=rememberModalBottomSheetState()"))
+        assertFalse(delegating.contains("SheetScaffold("))
     }
 
     @Test
@@ -34,7 +39,7 @@ class OutcomeSheetReceiptSourceContractTest {
         val guard = body.indexOf("if(style==OutcomeSheetStyle.Receipt){")
         val call = body.indexOf("OutcomeSheetReceipt(")
         val ret = body.indexOf("return")
-        val legacy = body.indexOf("SheetScaffold(onDismissRequest=onDismissRequest,modifier=modifier){")
+        val legacy = body.indexOf("SheetScaffold(onDismissRequest=onDismissRequest,modifier=modifier,sheetState=sheetState){")
 
         assertTrue("guard missing", guard >= 0)
         assertTrue("guard $guard must precede the call $call", guard < call)
@@ -44,7 +49,7 @@ class OutcomeSheetReceiptSourceContractTest {
 
     @Test
     fun `the legacy scaffold line occurs exactly once`() {
-        val legacy = "SheetScaffold(onDismissRequest=onDismissRequest,modifier=modifier){"
+        val legacy = "SheetScaffold(onDismissRequest=onDismissRequest,modifier=modifier,sheetState=sheetState){"
         assertEquals(1, SourceContractTestSupport.countOccurrences(sheetSource.compact(), legacy))
     }
 

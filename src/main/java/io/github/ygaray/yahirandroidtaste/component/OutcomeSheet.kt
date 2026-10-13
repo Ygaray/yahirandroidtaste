@@ -16,8 +16,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,6 +67,48 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  *   [OutcomeSheetStyle.Receipt] is the opt-in receipt layout.
  * @param colors The warn and error tone pairs; feeds the Warn failure card and the Receipt badges,
  *   cards and pill dot. Defaults to [OutcomeSheetDefaults.colors].
+ * @param sheetState The sheet's [SheetState], passed to [SheetScaffold] in both styles. Hoist it
+ *   (`rememberModalBottomSheetState()` next to the call) to slide a finished sheet down: call
+ *   `hide()` on it for Close/Done/Cancel and clear the outcome only after it returns. `hide()` does
+ *   not invoke [onDismissRequest]. Keep ONE call site per sheet so swapping [outcome] keeps the same
+ *   state. Required and passed by name here; a caller that does not hoist the state uses the
+ *   overload without it, which keeps the previous internal [rememberModalBottomSheetState].
+ *
+ * Why an overload and not a defaulted parameter: [SheetState] is `@ExperimentalMaterial3Api`, and
+ * an experimental type anywhere in a signature makes EVERY call of that function require the
+ * opt-in, even calls that leave the parameter at its default. A defaulted `sheetState` on the
+ * single entry point would therefore break each consumer call site that does not opt in. Only a
+ * caller that passes `sheetState` reaches this overload, so only that caller needs the opt-in.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OutcomeSheet(
+    outcome: VoiceOutcomeUiState,
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+    style: OutcomeSheetStyle = OutcomeSheetStyle.Classic,
+    colors: OutcomeSheetColors = OutcomeSheetDefaults.colors(),
+    sheetState: SheetState
+) {
+    if (style == OutcomeSheetStyle.Receipt) {
+        OutcomeSheetReceipt(outcome, onDismissRequest, modifier, colors, sheetState)
+        return
+    }
+    SheetScaffold(onDismissRequest = onDismissRequest, modifier = modifier, sheetState = sheetState) {
+        OutcomeSheetContent(outcome, colors = colors)
+    }
+}
+
+/**
+ * [OutcomeSheet] with the sheet's own internal [SheetState] (the v2.6.0 entry point, signature
+ * unchanged, no opt-in needed). Identical to the hoisted-state overload above with
+ * `sheetState = rememberModalBottomSheetState()`, the same default [SheetScaffold] uses.
+ *
+ * @param outcome The command outcome to render.
+ * @param onDismissRequest Invoked on scrim tap, back-press, or drag-to-dismiss.
+ * @param modifier Modifier for the sheet's root composable.
+ * @param style [OutcomeSheetStyle.Classic] (the default) or [OutcomeSheetStyle.Receipt].
+ * @param colors The warn and error tone pairs. Defaults to [OutcomeSheetDefaults.colors].
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,13 +119,14 @@ fun OutcomeSheet(
     style: OutcomeSheetStyle = OutcomeSheetStyle.Classic,
     colors: OutcomeSheetColors = OutcomeSheetDefaults.colors()
 ) {
-    if (style == OutcomeSheetStyle.Receipt) {
-        OutcomeSheetReceipt(outcome, onDismissRequest, modifier, colors)
-        return
-    }
-    SheetScaffold(onDismissRequest = onDismissRequest, modifier = modifier) {
-        OutcomeSheetContent(outcome, colors = colors)
-    }
+    OutcomeSheet(
+        outcome = outcome,
+        onDismissRequest = onDismissRequest,
+        modifier = modifier,
+        style = style,
+        colors = colors,
+        sheetState = rememberModalBottomSheetState()
+    )
 }
 
 /**

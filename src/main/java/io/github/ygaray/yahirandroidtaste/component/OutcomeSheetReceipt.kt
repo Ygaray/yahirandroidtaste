@@ -25,6 +25,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -57,7 +58,7 @@ import io.github.ygaray.yahirandroidtaste.theme.ToneColors
 /**
  * The Receipt rendering of [OutcomeSheet] (VRCPT-01, D-04): a [SheetScaffold] with 24dp top corners
  * around [OutcomeSheetReceiptContent]. Internal: the public entry point is [OutcomeSheet] with
- * `style = OutcomeSheetStyle.Receipt`.
+ * `style = OutcomeSheetStyle.Receipt`, which forwards its (optionally hoisted) [sheetState].
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,11 +66,13 @@ internal fun OutcomeSheetReceipt(
     outcome: VoiceOutcomeUiState,
     onDismissRequest: () -> Unit,
     modifier: Modifier,
-    colors: OutcomeSheetColors
+    colors: OutcomeSheetColors,
+    sheetState: SheetState
 ) {
     SheetScaffold(
         onDismissRequest = onDismissRequest,
         modifier = modifier,
+        sheetState = sheetState,
         shape = RoundedCornerShape(
             topStart = Dimens.OutcomeReceipt.CornerRadius,
             topEnd = Dimens.OutcomeReceipt.CornerRadius

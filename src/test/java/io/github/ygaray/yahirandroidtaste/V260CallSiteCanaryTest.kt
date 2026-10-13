@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertCountEquals
@@ -32,7 +33,7 @@ import org.robolectric.annotation.Config
 
 /**
  * Call-site canary for the post-v2.6.0 voice-sheet additions (CalTracker 76-14): the optional
- * `NeedsConfirmation.handledBy` field and the appended `OutcomeSheet(sheetState)` parameter.
+ * `NeedsConfirmation.handledBy` field and the hoisted-state `OutcomeSheet(..., sheetState)` overload.
  * VERBATIM v2.6.0-shaped call sites (named arguments, as both live consumers write them) must still
  * compile at HEAD, keep their v2.6.0 defaults and render with no handled-by pill in either style.
  *
@@ -45,8 +46,12 @@ import org.robolectric.annotation.Config
  * Positional `NeedsConfirmation` construction, positional `copy` and destructuring past
  * `titleActions` are the accepted, documented break (API.md section 11, INTEGRATION.md 5b): neither
  * consumer writes them.
+ *
+ * Deliberately NO class-level `@OptIn(ExperimentalMaterial3Api::class)`: SecondBrain's
+ * `VoiceSheetHost.kt` calls `OutcomeSheet` without that opt-in, so the shapes that do not pass
+ * `sheetState` must compile without it (an experimental type in the called signature would demand
+ * it). Only the hoisted-state shape opts in, exactly as a consumer that hoists the state must.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35])
 class V260CallSiteCanaryTest {
@@ -106,6 +111,25 @@ class V260CallSiteCanaryTest {
         // v2.6.0 positional prefix (outcome, onDismissRequest, modifier, style) still binds.
         val positional: @Composable () -> Unit = {
             OutcomeSheet(outcome, onDismiss, Modifier, OutcomeSheetStyle.Classic)
+        }
+    }
+
+    /** CT 76-20 shape: the v2.6.0 named call plus a hoisted `sheetState`, under the consumer's opt-in. */
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Suppress("UNUSED_VARIABLE")
+    @Test
+    fun outcomeSheet_hoistedStateShape_compiles() {
+        val outcome: VoiceOutcomeUiState = ctV260Shape()
+        val ctHoisted: @Composable () -> Unit = {
+            val outcomeSheetState = rememberModalBottomSheetState()
+            OutcomeSheet(
+                outcome = outcome,
+                onDismissRequest = {},
+                modifier = Modifier,
+                style = OutcomeSheetStyle.Receipt,
+                colors = OutcomeSheetDefaults.colors(),
+                sheetState = outcomeSheetState,
+            )
         }
     }
 
