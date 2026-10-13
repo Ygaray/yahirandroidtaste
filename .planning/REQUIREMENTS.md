@@ -131,7 +131,7 @@
   - an Undo Center group row.
 
   Screencaps come from the TESTER (`R5CT10XNKQN`) only and are kept for the owner, who reviews them after the cut; an objection ships as `v2.6.1` (Y-15; teamlead ruling 2026-10-12).
-- [ ] **SHIP-04**: The immutable annotated tag `v2.6.0` is cut via the §11 protocol: gate green, pushed, and the JitPack build confirmed. Then tag sha, commit, coordinate and build status are reported to the teamlead, who records §11. There is no stray marker tag (`git.create_tag` false), and no consumer is repinned from the hub.
+- [x] **SHIP-04**: The immutable annotated tag `v2.6.0` is cut via the §11 protocol: gate green, pushed, and the JitPack build confirmed. Then tag sha, commit, coordinate and build status are reported to the teamlead, who records §11. There is no stray marker tag (`git.create_tag` false), and no consumer is repinned from the hub.
 
 ## Future Requirements
 
@@ -180,7 +180,7 @@
 | DOC-03 | Phase 24 | Complete |
 | INV-03 | Phase 24 | Complete |
 | DEMO-01 | Phase 24 | Pending |
-| SHIP-04 | Phase 24 | Pending |
+| SHIP-04 | Phase 24 | Complete |
 
 **Coverage:**
 
