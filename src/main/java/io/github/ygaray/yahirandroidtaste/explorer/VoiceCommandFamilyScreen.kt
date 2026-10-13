@@ -14,10 +14,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -26,6 +28,7 @@ import io.github.ygaray.yahirandroidtaste.component.ApproachLadderCard
 import io.github.ygaray.yahirandroidtaste.component.ClarificationBar
 import io.github.ygaray.yahirandroidtaste.component.ModelSelectCard
 import io.github.ygaray.yahirandroidtaste.component.OutcomeSheet
+import io.github.ygaray.yahirandroidtaste.component.OutcomeSheetStyle
 import io.github.ygaray.yahirandroidtaste.component.ProviderKeyCard
 import io.github.ygaray.yahirandroidtaste.model.ApproachRungUiModel
 import io.github.ygaray.yahirandroidtaste.model.ClarificationOptionUiModel
@@ -42,6 +45,7 @@ import io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
+import kotlinx.coroutines.launch
 
 /**
  * D-05: this family's slice of [ComponentRegistry.entries], declared here (not in
@@ -651,7 +655,52 @@ private fun OutcomeSheetVariants() {
             }
         )
     }
+    ReceiptConfirmHandledByVariant(onShow = { visibleOutcome = null })
     ReceiptOutcomeSheetDemos()
+}
+
+/**
+ * After v2.6.0 (CalTracker 76-14): a Receipt NeedsConfirmation carrying `handledBy`, so the gallery
+ * shows the handler pill under the confirm title, on a HOISTED sheet state: Cancel and Log it call
+ * `hide()` on that state and clear the slot only after the slide-down animation finishes.
+ * [onShow] closes the Classic demo sheet first so two sheets never stack (WR-01).
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ReceiptConfirmHandledByVariant(onShow: () -> Unit) {
+    var shown by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    val slideDown: () -> Unit = {
+        scope.launch { sheetState.hide() }.invokeOnCompletion { shown = false }
+    }
+
+    SectionLabel("OutcomeSheet — Receipt NeedsConfirmation, handled-by pill + hoisted sheetState (slides down)")
+    Button(
+        onClick = {
+            onShow()
+            shown = true
+        },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) { Text("Show sheet") }
+
+    if (shown) {
+        OutcomeSheet(
+            outcome = VoiceOutcomeUiState.NeedsConfirmation(
+                reason = "You said: “two eggs”",
+                title = "Log this?",
+                items = listOf(ProposedItemUiModel(id = "eggs", title = "Eggs", subtitle = "2 ct")),
+                severity = ActionButtonDefaults.ActionButtonRole.Save,
+                confirmLabel = "Log it",
+                handledBy = HandledByUiModel(tier = "Local grammar", provider = "offline", onDevice = true),
+                onConfirm = slideDown,
+                onCancel = slideDown
+            ),
+            onDismissRequest = { shown = false },
+            style = OutcomeSheetStyle.Receipt,
+            sheetState = sheetState
+        )
+    }
 }
 
 /** Fixture options -- explorer-only, never registered (explorer/ is drift-guard denylisted). */

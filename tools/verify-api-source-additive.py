@@ -35,8 +35,8 @@ HEADER_RE = re.compile(
 )
 
 
-# Reviewed, documented source breaks of v2.6.0 (API.md section 11 and "Adding / changing components",
-# INTEGRATION.md 5b). Keyed by baseline label, then (class, kind, member name) -> (waived rules, why).
+# Reviewed, documented source breaks of v2.6.0 and later (API.md section 11 and "Adding / changing
+# components", INTEGRATION.md 5b). Keyed by baseline label, then (class, kind, member name) -> (waived rules, why).
 # An entry here means "the owner accepted this break and the docs say so"; add nothing without both.
 _COMPONENT = "io.github.ygaray.yahirandroidtaste.component"
 _FEEDBACK = "io.github.ygaray.yahirandroidtaste.feedback"
@@ -55,6 +55,16 @@ ACCEPTED_EXCEPTIONS = {
             {"R6"}, "destructuring shifts after the inserted fields (API.md)"),
         (_NEEDS, "method", "component11"): (
             {"R6"}, "destructuring shifts after the inserted fields (API.md)"),
+    },
+    # Post-v2.6.0 (CalTracker 76-14): the optional handledBy field inserted after titleActions,
+    # before the two required lambdas (appending after the trailing lambda would break R7).
+    "v2.6.0": {
+        (_NEEDS, "ctor", "NeedsConfirmation"): (
+            {"R5"}, "handledBy inserted before onConfirm and onCancel (API.md)"),
+        (_NEEDS, "method", "copy"): (
+            {"R5"}, "data-class copy of the same inserted handledBy field (API.md)"),
+        (_NEEDS, "method", "component12"): (
+            {"R6"}, "destructuring shifts after the inserted handledBy field (API.md)"),
     },
 }
 

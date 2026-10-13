@@ -279,6 +279,34 @@ UndoCenterScreen(
 states under `OutcomeSheet`, the count editor under `SegmentedOptionSelector`, the key lifecycle under
 `ProviderKeyCard` and the group rows under `UndoCenterScreen`.
 
+**(v) After v2.6.0: the confirm-sheet handler pill and a hoistable sheet state.** Two more opt-in
+additions ship with the next tag after v2.6.0:
+
+- `NeedsConfirmation(handledBy = HandledByUiModel(…))` draws the same handled-by pill as `Success`
+  directly under the Receipt confirm title row. `null` (the default) draws nothing and Classic ignores
+  it. The field sits after `titleActions` and before `onConfirm` / `onCancel`, so, like v2.6.0, only a
+  positional construction, a positional `copy` or destructuring breaks (`component12()` is now
+  `handledBy`; the lambdas are `component13()` and `component14()`). Named calls, which is what both
+  consumers write, compile unchanged.
+- `OutcomeSheet(…, sheetState = state)` is a new overload with a required, named `sheetState` that
+  both styles pass to `SheetScaffold`. Hoist one `rememberModalBottomSheetState()` next to a SINGLE
+  `OutcomeSheet` call (swap the `outcome`, don't swap call sites), then slide a finished sheet down on
+  Close / Done / Cancel and clear the outcome only afterwards; `hide()` does not call
+  `onDismissRequest`:
+
+```kotlin
+val sheetState = rememberModalBottomSheetState()
+val scope = rememberCoroutineScope()
+outcome?.let {
+    OutcomeSheet(outcome = it, onDismissRequest = { outcome = null }, style = OutcomeSheetStyle.Receipt, sheetState = sheetState)
+}
+fun close() = scope.launch { sheetState.hide() }.invokeOnCompletion { outcome = null }
+```
+
+  `SheetState` is `@ExperimentalMaterial3Api`, so a call that passes it needs the opt-in. The v2.6.0
+  signature without `sheetState` is untouched and needs no opt-in, which is why this is an overload and
+  not a defaulted parameter (an experimental type in a signature demands the opt-in on every call).
+
 ## 6. (Optional) The component gallery
 
 The library ships a self-launching `ExplorerActivity` (declared in its own `AndroidManifest.xml` as

@@ -195,7 +195,7 @@ control entirely, with no reserved space (conditional-render-no-dead-space).
 | `ProviderKeyCard` | Provider dropdown plus a hoisted API-key field; the card stores, validates and transmits nothing; the field is masked by default with a reveal toggle, and every edit is trimmed of leading/trailing whitespace before `onKeyChange` (pure formatting, no validation). Since v2.6.0 it can own the whole key lifecycle: a provider with a saved key shows a summary (check icon plus the fingerprint) with Update and Clear instead of the field | `providers, selectedProviderId, onProviderSelected, keyValue, onKeyChange, keyState, keyLabel, modifier`, `emptyProvidersReason = "No providers configured yet"`, `providerLabel = "Provider"`, then the v2.6.0 key-lifecycle parameters, all off by default: `savedKeys: Map<String, SavedKeyUiModel> = emptyMap()`, `editingSavedKey: Boolean = false`, `actions: ProviderKeyActions? = null`, `labels: ProviderKeyLabels = ProviderKeyDefaults.labels()` — see section 11 |
 | `ModelSelectCard` | Model dropdown over the caller's model list, with a disabled reason caption when the list is empty | `models, selectedModelId, onModelSelected, emptyReason, modifier`, `modelLabel = "Model"` |
 | `ApproachLadderCard` | Command-approach settings card: the caller's tier ladder in list order, an optional offline-only toggle, an optional max-tier cap and an optional router toggle | `ladder, offlineOnly, onOfflineOnlyChange, maxTierId, onMaxTierChange, modifier`, `unavailableLabel = "Unavailable"`, `cappedLabel = "Capped"`, `needsNetworkLabel = "Needs network"`, `onlineLabel = "Online"`, `offlineOnlyLabel = "Offline only"`, `router: Boolean? = null`, `onRouterChange: ((Boolean) -> Unit)? = null`, `routerOnLabel = "Router on"`, `routerOffLabel = "Router off"` |
-| `OutcomeSheet` | Bottom sheet rendering a command outcome (success, failure or needs-confirmation) with its undo affordances | `outcome: VoiceOutcomeUiState, onDismissRequest, modifier`, `style: OutcomeSheetStyle = OutcomeSheetStyle.Classic` and `colors: OutcomeSheetColors = OutcomeSheetDefaults.colors()` (v2.6.0; `Classic` is the unchanged earlier look, `Receipt` is the badge, title row, pinned action bar and `ReceiptRow` look) — the overridable strings live on the models in the table below |
+| `OutcomeSheet` | Bottom sheet rendering a command outcome (success, failure or needs-confirmation) with its undo affordances | `outcome: VoiceOutcomeUiState, onDismissRequest, modifier`, `style: OutcomeSheetStyle = OutcomeSheetStyle.Classic` and `colors: OutcomeSheetColors = OutcomeSheetDefaults.colors()` (v2.6.0; `Classic` is the unchanged earlier look, `Receipt` is the badge, title row, pinned action bar and `ReceiptRow` look); after v2.6.0 an overload adds a required, named `sheetState: SheetState` (hoist it to `hide()` a finished sheet, see section 11 "Additions after v2.6.0") — the overridable strings live on the models in the table below |
 | `ClarificationBar` | Tap-to-clarify bar: a question, option chips in exact list order and a dismiss control; renders nothing for an empty option list | `question, options, onSelect, onDismiss, modifier`, `dismissLabel = "Dismiss"` |
 
 **`ApproachLadderCard` behaviour (v2.5.0):**
@@ -286,11 +286,31 @@ are inserted before the two required lambdas (see the compatibility scope below)
 
 | Model | Added field(s) | Behaviour |
 |-------|----------------|-----------|
-| `VoiceOutcomeUiState.NeedsConfirmation` | `confirmEnabled: Boolean = true` and `titleActions: (@Composable () -> Unit)? = null`, inserted before `onConfirm` and `onCancel` | While `confirmEnabled` is `false` the confirm node is disabled and `onConfirm` never fires (both styles). `titleActions` is drawn at the end of the Receipt title row. `items` may be empty when `topLevelContent` renders the rows, for example `ReceiptRow`s whose accordion state the caller holds. |
+| `VoiceOutcomeUiState.NeedsConfirmation` | `confirmEnabled: Boolean = true` and `titleActions: (@Composable () -> Unit)? = null`, inserted before `onConfirm` and `onCancel` | While `confirmEnabled` is `false` the confirm node is disabled and `onConfirm` never fires (both styles). `titleActions` is drawn at the end of the Receipt title row. `items` may be empty when `topLevelContent` renders the rows, for example `ReceiptRow`s whose accordion state the caller holds. After v2.6.0 it also takes `handledBy: HandledByUiModel? = null` (see "Additions after v2.6.0" below). |
 | `VoiceOutcomeUiState.Success` | `badge: OutcomeBadge?`, `titleActions`, `startAction: SheetActionUiModel?`, `endAction: SheetActionUiModel?` | Receipt only; Classic ignores all four, so setting them on Classic keeps the earlier pixels. While `inFlight` every action except one with `activeWhileInFlight = true` is disabled. |
 | `VoiceOutcomeUiState.Failure` | `title: String?`, `transcript: String?`, `tone: FailureTone = Error`, `tip: (@Composable () -> Unit)?`, `secondaryAction: SheetActionUiModel?`, `badge: OutcomeBadge?`, `undo: UndoAffordanceUiModel?` | Receipt renders them all. Classic ignores `title`, `transcript`, `tip`, `secondaryAction` and `badge`, honors `tone = Warn`, and renders `undo` through the same undo block as `Success` in both styles (XR-178-01 b), so a consumer can retire a local failure-undo body. |
 | `FailureActionUiModel` | `icon: ImageVector? = null` | The Receipt failure button draws it; the explicit `(label, onClick)` constructor and the trailing-lambda form keep working. |
 | `HandledByUiModel` | `prefixLabel: String = "Handled by"` and `onDevice: Boolean = false` | Receipt renders a pill: a 6dp dot (`primary`, or the warn tone content when `onDevice`), `"<prefixLabel> "`, the tier in SemiBold, then `" · <approach / provider / model>"`. Classic `HandledByRow` ignores both. |
+
+### Additions after v2.6.0 (next tag)
+
+Both are opt-in; with neither set, every v2.6.0 call site renders exactly as at v2.6.0.
+
+| Surface | Addition | Behaviour |
+|---------|----------|-----------|
+| `VoiceOutcomeUiState.NeedsConfirmation` | `handledBy: HandledByUiModel? = null`, inserted after `titleActions` and before `onConfirm` and `onCancel` | The Receipt confirm body draws the handled-by pill (`outcome_sheet_handled_by`) directly under the title row, the same pill and order as `Success`. `null` draws nothing; Classic ignores it. `toString` still prints only the item count, selection mode and severity. |
+| `OutcomeSheet` | A new overload ending in a required `sheetState: SheetState`, passed by name; both styles hand it to `SheetScaffold` | Hoist one `rememberModalBottomSheetState()` next to a single `OutcomeSheet` call and `hide()` it for Close / Done / Cancel before clearing the outcome, so the sheet slides down instead of popping. `hide()` does not call `onDismissRequest`. The v2.6.0 signature (no `sheetState`) is unchanged and delegates with `rememberModalBottomSheetState()`. |
+
+**Compatibility scope.** Like v2.6.0, the inserted `handledBy` breaks only a positional
+`NeedsConfirmation` construction, a positional `copy(...)` that reaches the lambdas and
+destructuring (`component12()` is now `handledBy`, the lambdas are `component13()` and
+`component14()`). Named calls compile unchanged, and both live consumers construct it by name.
+`OutcomeSheet` is fully source-compatible: the earlier signature is untouched. `sheetState` is an
+overload rather than a defaulted parameter because `SheetState` is `@ExperimentalMaterial3Api`, and an
+experimental type anywhere in a signature makes every call of that function require the opt-in, even
+a call that leaves the parameter at its default. Only a caller that passes `sheetState` reaches the
+new overload and needs `@OptIn(ExperimentalMaterial3Api::class)`. The three `NeedsConfirmation`
+signatures are the reviewed exceptions of `tools/verify-api-source-additive.sh v2.6.0`.
 
 ### XR-178-01 mapping
 
@@ -536,6 +556,11 @@ defaulted.
   or property type, no enum constant added or removed; the three positional breaks listed above are
   its reviewed, printed exceptions), and `CatalogDocsDriftGuardTest` keeps this file's counts, symbols
   and tags true.
+- After v2.6.0, `NeedsConfirmation.handledBy` is inserted the same way (positional construction,
+  positional `copy` and destructuring break; named calls compile) and `OutcomeSheet` gains a
+  `sheetState` overload (fully compatible). `V260CallSiteCanaryTest` compiles the consumers' v2.6.0
+  named shapes without the Material 3 opt-in, and `verify-api-source-additive.sh v2.6.0` lists the three
+  `NeedsConfirmation` signatures as its reviewed exceptions (section 11, "Additions after v2.6.0").
 
 **Voice label fragments — how the sheet joins them (v2.5.0, VI18N-04).** The label fields are plain
 text fragments; `OutcomeSheet` composes them with fixed separators: a single ASCII space between a
