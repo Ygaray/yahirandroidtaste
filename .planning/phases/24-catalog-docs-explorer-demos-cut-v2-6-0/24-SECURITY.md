@@ -4,15 +4,15 @@ slug: "catalog-docs-explorer-demos-cut-v2-6-0"
 status: secured
 threats_open: 0
 asvs_level: 1
-audited_head: b2eb0aeaba60dc9ab0b03f536290f1bacec48dd3
+audited_head: eeb0ee0e4f209b82110c275f4f835451a8574128
 created: "2026-10-12"
 ---
 
 # Phase 24 - Security
 
 > Per-phase security contract: threat register, accepted risks, and audit trail.
-> Pre-cut audit (plans 24-01 to 24-03 verified; plan 24-04 threats T-24-20 to T-24-28 are
-> PENDING-AT-CUT and are re-audited after the cut, which also refreshes the audited_head stamp).
+> Pre-cut audit (2026-10-12) plus post-cut re-audit (plan 24-04 threats T-24-20 to T-24-28 verified against the
+> tag, push, JitPack and the executor transcript; audited_head refreshed).
 
 ---
 
@@ -52,7 +52,7 @@ created: "2026-10-12"
 | T-24-17 | Tampering | stale AAR | high | mitigate | AAR md5 recorded and re-read; classes.jar names confirmed | closed |
 | T-24-18 | Elevation of Privilege | accidental tag/push from evidence plan | high | mitigate | no v2.6* tag local or remote at audit | closed |
 | T-24-19 | Tampering | evidence commit sweep | medium | mitigate | commit 75fdf9f touched only owned paths | closed |
-| T-24-20 to T-24-28 | various | plan 24-04 cut (range, author, paths, secret scan, exact push forms, tag by SHA, JitPack commit equality, clock, resume, no adb) | high x7, medium x2 | mitigate | specified in 24-04-PLAN.md | PENDING-AT-CUT |
+| T-24-20 to T-24-28 | various | plan 24-04 cut (range, author, paths, secret scan, exact push forms, tag by SHA, JitPack commit equality, clock, resume, no adb) | high x7, medium x2 | mitigate | verified post-cut: tag b837d02 (peeled 78d89cf == GATED_HEAD), origin/main 154b4d8 fast-forward, 190 commits single author, allowlisted paths, credential scans clean, exact push forms in executor transcript, JitPack ok + 200s, no adb | closed |
 
 *Status: open · closed · open - below block_on threshold (non-blocking)*
 
@@ -80,6 +80,7 @@ to `sk-[A-Za-z0-9_-]{16,}`; re-record the real range count (187, not ~167).
 | Audit Date | Threats Total | Closed | Open | Run By |
 |------------|---------------|--------|------|--------|
 | 2026-10-12 (pre-cut) | 28 | 18 | 1 (non-blocking) + 9 pending-at-cut | gsd-security-auditor |
+| 2026-10-12 (post-cut) | 28 | 27 | 1 (non-blocking, AR-24-01) | gsd-security-auditor |
 
 ---
 
@@ -88,6 +89,8 @@ to `sk-[A-Za-z0-9_-]{16,}`; re-record the real range count (187, not ~167).
 - [x] All threats have a disposition (mitigate / accept / transfer)
 - [x] Accepted risks documented in Accepted Risks Log
 - [x] `threats_open: 0` confirmed (blocking count)
-- [ ] Post-cut re-audit of T-24-20 to T-24-28 (pending)
+- [x] Post-cut re-audit of T-24-20 to T-24-28 (closed)
 
-**Approval:** pre-cut secured 2026-10-12
+**Approval:** secured 2026-10-12 (post-cut)
+
+Note: four planning-only commits are local and unpushed (f9569f2, e5ece62, 408c9da, eeb0ee0 and later); any push needs its own range/author/path/credential check.
