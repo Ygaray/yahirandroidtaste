@@ -104,7 +104,115 @@ Session names can change after a restart. If one doesn't resolve, ask the orches
 
 ---
 
-## Current state (2026-10-05) — milestone v2.5 PAUSED for binary-compat fix
+## Current state (2026-10-12) — milestone v2.6 EXECUTED, library `v2.6.0` CUT + PUSHED + JitPack-live
+
+**Stage:** milestone v2.6 "Receipt voice surfaces + ProviderKeyCard lifecycle" (phases 20-24) is
+**fully executed**. All 5 phases complete (19/19 plans). `v2.6.0` has been cut, pushed and
+JitPack-confirmed. The milestone is **NOT yet closed**: certify, Gate-2 with Yahir, audit and
+complete are still to do. **HELD after the cut** for the teamlead's gsd-core install (B3): run no
+gsd-tools until the teamlead says RESUME. The tester is free.
+
+**Decision record:** `.planning/seams/v2.6.0-SKETCH.md` (`105255d`, CT and SB signed off with no
+signature deltas). Rulings in force:
+- P1: source compatibility only, with no new HIDDEN overloads or copy shims.
+- P2: the cut gate is `apiCheck` on a regenerated `api.txt`, plus `tools/test/run-all.sh`, plus the
+  v2.5.1 call-site canary.
+- P3: no Roborazzi.
+- Accepted delta: `SheetActionUiModel.activeWhileInFlight`.
+- XR-178-01 a/b/c are in scope.
+
+**The cut:**
+- **Tag:** annotated `v2.6.0`, tag object `b837d02d1208647b433a258580a4116e5d237b79`, on commit
+  `78d89cf49fa3f0b59dbde91d2b69ac680eae5fc1`. Coordinate `com.github.Ygaray:yahirandroidtaste:v2.6.0`.
+- **Push:** at 18:14 MDT on 2026-10-12, exactly `git push origin main` (`b6c363c`→`154b4d8`), then
+  `git push origin v2.6.0`.
+- **JitPack:** `status ok`, `isTag true`, commit = `78d89cf`; aar, pom and module all HTTP 200
+  (re-verified by the master).
+- **Report:** sent to the teamlead, who records §11. No consumer was touched, and consumer repins
+  are the teamlead's job.
+- **Gates on the tagged commit:**
+  - `apiDump` + `apiCheck` green, with no `api.txt` diff.
+  - 1317 tests, 0 failures, including the V251 canary (12) and the registry/drift guard (10).
+  - detekt 0 findings; `run-all.sh` green.
+  - Additivity vs v2.5.1: 0 removed, 0 required-param changes, 6 accepted exceptions.
+  - `verify-binary-abi.sh v2.5.1` exit 3, informational only.
+
+**Pushed vs local:** `origin/main` = `154b4d8`. The commits after it are **LOCAL and UNPUSHED**:
+7 planning-only commits `f9569f2`..`6d2cad2`, plus this handoff commit. A push of them needs its own
+OK (range/author/path/credential check). The push OK (Yahir via the director) covered `main` +
+`v2.6.0` through 2026-10-13.
+
+**Per-phase (all settled by the master except 24):**
+
+| Phase | Head | Gate-1 run (TESTER `R5CT10XNKQN`) |
+|---|---|---|
+| 20 tone + atoms | `b781d20` | `uatr-20261012T112516Z-132c1d6b` |
+| 21 ReceiptRow / Pill / sheet shape | `ed3d983` | `uatr-20261012T130416Z-9e032ae3` |
+| 22 OutcomeSheet Receipt | `d7befcf` | `uatr-20261012T152444Z-94e3da8a` |
+| 23 ProviderKeyCard lifecycle + Undo Center groups | `cffad79` | re-run `uatr-20261012T223815Z-1f8b52e0` |
+| 24 catalog/docs/demos/cut | `bcd0a6d` | `uatr-20261012T230611Z-4dbe72cf` |
+
+- **Phase 23:** the director ruled a fresh signed re-run (INC-2026-10-12-02). It superseded
+  `…172501Z-65a2a2aa`, which had 3 void captures, and verified.
+- **Phase 24:** phase.complete ran in the child. **The master `settle-phase 24` has NOT run yet**
+  (held, no gsd-tools), and `workflow._milestone_run_active` is still `true` in the uncommitted
+  `.planning/config.json`.
+
+**Open items parked for Yahir (Gate-2):**
+- **Y-15 screencaps:** 33 files in `.planning/phases/24-catalog-docs-explorer-demos-cut-v2-6-0/screencaps/`.
+  The review happens after the cut, and an objection ships as `v2.6.1`.
+- **Gate-2 fragments:** `.planning/uat-pending/20..24-*.md`, aggregated in `.planning/HUMAN-UAT-PENDING.md`.
+- **Flags raised:**
+  - the warn tone renders mauve under dynamic color;
+  - the TextSmall drawn size (P20 WR-02);
+  - `BarSegment` stays a public data class (P20 IN-04, kept as signed off);
+  - P22 OQ-1..4 (Receipt hides `editableContent` while inFlight; the pill keeps the escalation
+    caption; no bar for a Failure with no actions; demos moved to P24);
+  - the TalkBack read-out of the refused-surface live region (P22 WR-02);
+  - the count editor demo is Few/Many, because the selector takes 2 options;
+  - 3 extra stable tags (`outcome_sheet_handled_by_dot`, `outcome_sheet_action_bar_divider`,
+    `provider_key_saved_error`);
+  - a `dagger.` import allowlist entry;
+  - a positional 4-arg `UndoCenterScreen` call breaks, though SB uses named args (accepted, D-06).
+- **v2.6.1 candidates (Gate-1 advisories):**
+  - tall sheets open at the partial detent with the bar under the nav bar;
+  - the count-editor demo has no horizontal padding;
+  - the Explorer theme toggle persists across screens;
+  - P23 ADV-1..3: group label ellipsis, key field editable while inFlight, header count semantics.
+- **Device-alias inconsistency:** a briefing called `100.118.21.106:1496` the personal phone, while
+  `~/.claude/context/devices/common.md` lists it as the tester's wireless fallback and the personal
+  phone as `100.126.94.47`. The shell also has a stale `ANDROID_SERIAL=100.118.21.106:1496`. Always
+  use `adb -s R5CT10XNKQN`.
+
+**Waiting on:**
+1. The teamlead's **RESUME** after the B3 gsd-core install.
+2. Yahir's Gate-2 (the screencaps + the fragments above).
+3. The teamlead's §11 ledger row and the SB/CT repins (their channels).
+
+**Next action (on RESUME):**
+1. Run the master settle for P24: `gsd-tools query milestone settle-phase .planning/phases/24-catalog-docs-explorer-demos-cut-v2-6-0 --stage execute --exit-kind execute --if-quiesced`, then confirm `stage-barrier` reads `clear`.
+2. Clear `workflow._milestone_run_active` and append the run-log "milestone run complete".
+3. Then `/gsd-certify-milestone`, and `/gsd-verify-milestone` with Yahir (Gate-2) → audit → complete → cleanup. That close is human-gated: don't run Gate-2 without him.
+4. Ask the teamlead/Yahir before pushing the local planning commits.
+
+**Rules in force (survive resets):**
+- **Never run `./gradlew --stop`** (director, all seats): it kills other seats' daemons. Kill only
+  this project's daemon by PID, or use `--no-daemon`.
+- One gradle at a time on the host.
+- TESTER only for device work, never the personal phone.
+- Commit only your own files: never `git add .planning/` wholesale. Keep these out of commits:
+  `.planning/milestones/v2.5-phases/19-cut-v2-5-0/.gate/`, `.planning/graphs/*`,
+  `.planning/uat-pending/16..18*` (pre-existing dirt), `.planning/WAITING.json` (a stale v2.5
+  leftover), and the untracked abandoned uat-evidence run dirs.
+- uat-run quirks:
+  - `--plan` takes the bare plan number;
+  - labels must be lowercase-hyphen;
+  - `finish` stages but never commits, so commit the run dir with a plain `git add --`;
+  - `abandon` refuses finished runs.
+
+---
+
+## Current state (2026-10-05) — HISTORICAL (superseded by the 2026-10-12 block above): milestone v2.5 PAUSED for binary-compat fix
 
 **Stage:** milestone v2.5 "Voice UI Localization & Accessibility" (5 phases: 15–19) **IN PROGRESS,
 PAUSED at a clean committed seam.** Run was `/gsd-execute-milestone` (operator-authorized in-session

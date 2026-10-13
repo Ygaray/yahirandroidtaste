@@ -24,14 +24,15 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-11)
 
 **Core value:** An agent building one of Yahir's apps finds the widget it needs already here, coherent and legible, and drops it in instead of writing a new one.
-**Current focus:** Phase 24 — catalog-docs-explorer-demos-cut-v2-6-0
+**Current focus:** v2.6 executed; `v2.6.0` cut, pushed and JitPack-live. Milestone close (certify, Gate-2, audit, complete) is pending.
 
 ## Current Position
 
-Phase: 24
-Plan: Not started
-Status: All phases complete
-Last activity: 2026-10-12 — Phase 24 complete
+Phase: 24 of 24 (all complete; the master settle of 24 is still pending)
+Plan: 19/19 complete
+Status: Executed. `v2.6.0` cut (tag `b837d02` → `78d89cf`), pushed (`origin/main` = `154b4d8`) and
+JitPack-confirmed. HELD after the cut for the teamlead's gsd-core install (B3).
+Last activity: 2026-10-12 — v2.6.0 cut + push + JitPack confirm; cut report sent to the teamlead
 
 Progress: [██████████] 100%
 
@@ -118,10 +119,12 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-12T19:17:14.001Z
-Stopped at: Phase 24 complete — all phases complete
-Resume file: None
+Last session: 2026-10-12
+Stopped at: v2.6.0 cut + pushed + JitPack-live. Held for the gsd-core B3 install (no gsd-tools until the teamlead says RESUME).
+Resume file: .planning/cross-repo/HANDOFF.md § "Current state (2026-10-12)"
 
 ## Operator Next Steps
 
-- Phase 20 is a UI phase: run /gsd-ui-phase 20 (UI-SPEC), then /gsd-plan-phase 20
+- On RESUME: run the master `milestone settle-phase` for phase 24, then clear `workflow._milestone_run_active`.
+- Then `/gsd-certify-milestone`, and `/gsd-verify-milestone` with Yahir (Gate-2: the 33 Y-15 screencaps + `.planning/uat-pending/20..24`) → audit → complete → cleanup.
+- 7+ planning commits after `154b4d8` are local and unpushed; ask before pushing them.
