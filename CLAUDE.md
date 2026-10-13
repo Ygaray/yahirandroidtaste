@@ -14,8 +14,8 @@ breadth, consistency and ease of reuse over release-engineering ceremony.
 
 - **Import root:** `io.github.ygaray.yahirandroidtaste` (publisher-owned, consumer-name-free;
   renamed to this publisher-owned root in Phase 101 / LIB-03).
-- **JitPack coordinate:** `com.github.Ygaray:yahirandroidtaste:<tag>` (current release: `v2.5.0`,
-  voice UI localization + a11y + Failure enrichment + router toggle; see `API.md`).
+- **JitPack coordinate:** `com.github.Ygaray:yahirandroidtaste:<tag>` (current release: `v2.6.0`,
+  Receipt voice surfaces + ProviderKeyCard lifecycle; see `API.md`).
 - **Public repo:** `github.com/Ygaray/yahirandroidtaste`
 - **Consumers:** SecondBrain, CalTracker (both repin by tag and recompile).
 
