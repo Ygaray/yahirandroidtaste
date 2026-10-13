@@ -213,6 +213,8 @@ sealed interface VoiceOutcomeUiState {
      *   in both styles (D-07). Defaults to `true`.
      * @param titleActions An optional composable slot at the end of the Receipt title row (Receipt
      *   only). Equality is by lambda reference, so remember the lambda.
+     * @param handledBy Provenance pill drawn directly under the Receipt confirm title row, or `null`
+     *   (the default) to hide it. The Classic style ignores it. Never printed by [toString].
      * @param onConfirm Invoked exactly once on an explicit Confirm-button tap. Never invoked on
      *   composition/recomposition or on a timeout (all of SecondBrain's `ConfirmSubject` arms are
      *   destructive).
@@ -231,6 +233,7 @@ sealed interface VoiceOutcomeUiState {
         val topLevelContent: (@Composable () -> Unit)? = null,
         val confirmEnabled: Boolean = true,
         val titleActions: (@Composable () -> Unit)? = null,
+        val handledBy: HandledByUiModel? = null,
         val onConfirm: () -> Unit,
         val onCancel: () -> Unit
     ) : VoiceOutcomeUiState

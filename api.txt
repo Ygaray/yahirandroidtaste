@@ -1628,12 +1628,13 @@ package io.github.ygaray.yahirandroidtaste.model {
   }
 
   public static final class VoiceOutcomeUiState.NeedsConfirmation implements io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState {
-    ctor public VoiceOutcomeUiState.NeedsConfirmation(String reason, java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> items, optional io.github.ygaray.yahirandroidtaste.model.SelectionMode selectionMode, optional String? title, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole severity, optional String? reversibilityHint, optional String confirmLabel, optional String cancelLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? topLevelContent, optional boolean confirmEnabled, optional kotlin.jvm.functions.Function0<kotlin.Unit>? titleActions, kotlin.jvm.functions.Function0<kotlin.Unit> onConfirm, kotlin.jvm.functions.Function0<kotlin.Unit> onCancel);
+    ctor public VoiceOutcomeUiState.NeedsConfirmation(String reason, java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> items, optional io.github.ygaray.yahirandroidtaste.model.SelectionMode selectionMode, optional String? title, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole severity, optional String? reversibilityHint, optional String confirmLabel, optional String cancelLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? topLevelContent, optional boolean confirmEnabled, optional kotlin.jvm.functions.Function0<kotlin.Unit>? titleActions, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, kotlin.jvm.functions.Function0<kotlin.Unit> onConfirm, kotlin.jvm.functions.Function0<kotlin.Unit> onCancel);
     method public String component1();
     method public boolean component10();
     method public kotlin.jvm.functions.Function0<kotlin.Unit>? component11();
-    method public kotlin.jvm.functions.Function0<kotlin.Unit> component12();
+    method public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? component12();
     method public kotlin.jvm.functions.Function0<kotlin.Unit> component13();
+    method public kotlin.jvm.functions.Function0<kotlin.Unit> component14();
     method public java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> component2();
     method public io.github.ygaray.yahirandroidtaste.model.SelectionMode component3();
     method public String? component4();
@@ -1642,10 +1643,11 @@ package io.github.ygaray.yahirandroidtaste.model {
     method public String component7();
     method public String component8();
     method public kotlin.jvm.functions.Function0<kotlin.Unit>? component9();
-    method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.NeedsConfirmation copy(optional String reason, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> items, optional io.github.ygaray.yahirandroidtaste.model.SelectionMode selectionMode, optional String? title, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole severity, optional String? reversibilityHint, optional String confirmLabel, optional String cancelLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? topLevelContent, optional boolean confirmEnabled, optional kotlin.jvm.functions.Function0<kotlin.Unit>? titleActions, optional kotlin.jvm.functions.Function0<kotlin.Unit> onConfirm, optional kotlin.jvm.functions.Function0<kotlin.Unit> onCancel);
+    method public io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState.NeedsConfirmation copy(optional String reason, optional java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> items, optional io.github.ygaray.yahirandroidtaste.model.SelectionMode selectionMode, optional String? title, optional io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults.ActionButtonRole severity, optional String? reversibilityHint, optional String confirmLabel, optional String cancelLabel, optional kotlin.jvm.functions.Function0<kotlin.Unit>? topLevelContent, optional boolean confirmEnabled, optional kotlin.jvm.functions.Function0<kotlin.Unit>? titleActions, optional io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy, optional kotlin.jvm.functions.Function0<kotlin.Unit> onConfirm, optional kotlin.jvm.functions.Function0<kotlin.Unit> onCancel);
     method @InaccessibleFromKotlin public String getCancelLabel();
     method @InaccessibleFromKotlin public boolean getConfirmEnabled();
     method @InaccessibleFromKotlin public String getConfirmLabel();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? getHandledBy();
     method @InaccessibleFromKotlin public java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> getItems();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnCancel();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function0<kotlin.Unit> getOnConfirm();
@@ -1659,6 +1661,7 @@ package io.github.ygaray.yahirandroidtaste.model {
     property public String cancelLabel;
     property public boolean confirmEnabled;
     property public String confirmLabel;
+    property public io.github.ygaray.yahirandroidtaste.model.HandledByUiModel? handledBy;
     property public java.util.List<io.github.ygaray.yahirandroidtaste.model.ProposedItemUiModel> items;
     property public kotlin.jvm.functions.Function0<kotlin.Unit> onCancel;
     property public kotlin.jvm.functions.Function0<kotlin.Unit> onConfirm;

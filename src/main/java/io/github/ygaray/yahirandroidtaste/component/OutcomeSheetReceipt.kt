@@ -420,12 +420,17 @@ private fun ReceiptFailureBar(failure: VoiceOutcomeUiState.Failure) {
     )
 }
 
+/**
+ * The Receipt confirmation body, in order: title row, the optional handled-by pill (same place as on
+ * Success), transcript (the reason), reversibility hint, the caller's top-level slot and the items.
+ */
 @Composable
 private fun ReceiptNeedsConfirmationBody(
     confirmation: VoiceOutcomeUiState.NeedsConfirmation,
     colors: OutcomeSheetColors
 ) {
     ReceiptTitleRow(confirmation.title, null, confirmation.titleActions, colors)
+    confirmation.handledBy?.let { ReceiptHandledByPill(it, colors) }
     if (confirmation.reason.isNotBlank()) ReceiptTranscript(confirmation.reason)
     confirmation.reversibilityHint?.let {
         Text(
