@@ -1,5 +1,35 @@
 # Milestones — yahirandroidtaste (Hub Stewardship)
 
+## v2.6 Receipt voice surfaces + ProviderKeyCard lifecycle (Shipped: 2026-10-14)
+
+**Phases completed:** 5 phases, 19 plans, 9 tasks
+
+**Key accomplishments:**
+
+- `SheetScaffold(shape = BottomSheetDefaults.ExpandedShape)` inserted before the trailing content lambda and forwarded by name to `ModalBottomSheet`, pinned by a source contract and a recording-Shape probe, with a 24dp-top-corner gallery demo and a one-line api.txt change.
+- `SegmentedOptionSelector` gains a `Pill` style (one outlined full-radius container, `primary`/`onPrimary` selected segment, no check icon, single-line 40dp labels) and per-option `disabledOptions` in both styles, with the Material block pinned to v2.5.1 plus exactly one inserted line.
+- Stateless, accessible `ReceiptRow` with the exact sketch Y-2 signature: a 92dp merged-button summary (title column, end-aligned value column, chevron, separate trailing action), full-width expanded content, a Cards registry entry and `api.txt`, all proven structurally.
+- The 200ms chevron and dim motion, the value-wins German overflow at 360dp and a demo-held single-open accordion are proven; the full suite (968 tests), detekt at the zero baseline, apiCheck and the repo guard fixtures are green, and the user-visible criteria are handed to the Gate-1 tester.
+- Every public type and model field the Receipt OutcomeSheet needs now exists (three leaf-first commits, source-compatible, `api.txt` regenerated in each, apiCheck and detekt green at the zero baseline); no rendering changed.
+- `OutcomeSheet(style = Receipt)` now renders a NeedsConfirmation end to end (24dp frame, title row, transcript, shared item rows, 1dp divider and a pinned Text/Filled bar) with real click, 384dp-edge and long-German proofs; Classic is untouched.
+- Classic gets exactly four behavior edits (confirm enabled, Warn tone, Failure.undo, Assertive live region) as one lane-2 commit, and everything else in Classic is pinned to v2.5.1 by per-arm inventories and SHA-256 source pins; `api.txt` is byte-identical.
+- The Receipt `Success` arm now renders in the D-08 order with a one-string handled-by pill, the shared batch and undo blocks, and an actions row whose enabled state follows `enabled && (!inFlight || activeWhileInFlight)`; `api.txt` is byte-identical and the long German 360dp checks passed without any fix.
+- The Receipt `Failure` arm now renders a title row, transcript and pill outside a `ToneCard` that holds the reason and body, then the tip, the shared undo block and a pinned bar (secondary at the start, role-hued Filled action at the end); the Y-14 tag matrix is proven across nine Receipt states, the full suite (1136 tests), detekt, apiCheck and run-all are green, and `api.txt` is byte-identical after `apiDump`.
+- ProviderKeyCard now owns Save/Update/Clear/Cancel with a fingerprint-only saved-key summary (key field not composed), while a default call renders exactly as v2.5.1, proven by goldens captured before the first src/main edit.
+- UndoCenterScreen now renders one header per UndoHistoryStore group (label, count, status, a single Undo all) with indented members and flat ungrouped entries, while a default call renders exactly the v2.5.1 flat list, proven by goldens captured before the first edit of the screen.
+- Every DEMO-01 demo (nine Receipt sheets, count editor, key lifecycle, Undo Center group rows, English and German) now lives in an existing registry Entry's Variants, is driven by real demo state, and is proven reachable by a registry render test; the ReceiptRow gallery cell is fixed to 92dp. No new API, no new registry entry.
+- The v2.6.0 surface is documented end to end (including a Stable test tags API section) and guarded by a v2.5.1 call-site canary that also builds on the v2.5.1 tag, a parsed-signature additivity tool with 22 fixture cases, and two permanent tests for the invariants and the doc counts. No library behaviour and no public API changed.
+- Every DEMO-01 demo was driven on the real tester (`R5CT10XNKQN`) through the Explorer in one signed `uat-run` (90 captures, `finish` and `verify` = verified); all 5 ROADMAP criteria pass at Gate-1, 33 screencaps are kept for the owner, no source changed, no tag, no push. SHIP-04 is NOT satisfied by Gate-1; it is closed only by the 24-04 SUMMARY recording JitPack ok for v2.6.0.
+- Annotated tag `v2.6.0` cut on a fully gated commit, pushed (main then tag), and JitPack-confirmed ok with .aar, .pom and .module all HTTP 200.
+
+**Follow-up:** `v2.7.0` (2026-10-13), CalTracker 76-14 asks: optional `NeedsConfirmation.handledBy` and the hoistable `OutcomeSheet` `sheetState` overload. Yahir accepted the positional `handledBy` break.
+
+**Gate-2 (Yahir, 2026-10-14):** all five phases are signed-off-with-gap, because the TalkBack checks went to backlog 999.2. The 33 Y-15 screencaps are signed off, with no v2.6.1. Yahir approved the patch `v2.7.1` items: tall sheets skip the partial detent, localizable group count/status words, and count-editor demo padding. Certify: certified, 0 gaps. Audit: 27/27 requirements, integration WIRED, Nyquist compliant, status `tech_debt` (accepted).
+
+**Closeout type:** verified_closeout. Phases 20-24 are vouched by `v2.6-CERTIFY.md`. Phase 24's security and verification were re-run at HEAD after the v2.7.0 delta. **Known verification overrides:** 4 newly acknowledged (the partial 21-24 UATs, TalkBack gap), 4 carried forward from a prior close (see STATE.md Deferred Items).
+
+---
+
 ## v2.5 Voice UI Localization & Accessibility (Shipped: 2026-10-11)
 
 **Phases completed:** 5 phases, 12 plans, 17 tasks
@@ -16,7 +46,6 @@
 - Router ON/OFF segmented toggle on ApproachLadderCard via a require()-paired `router` / `onRouterChange` pair plus localizable `routerOnLabel` / `routerOffLabel`, appended last so v2.4.1-compiled consumers still link (javap diff vs the v2.4.1 AAR: missing = 0).
 - tools/verify-binary-abi.sh (javap descriptor diff of the release AAR vs the previous tag) added test-first and proven on the real v2.4.1 baseline (base=2526, head=2584, missing=0), with the dead raw-line api.txt check removed from the whole lane pipeline.
 - Annotated tag `v2.5.0` cut by SHA on the commit that passed a fresh battery, the v2.4.1 swap-baseline Metalava check, run-all.sh and the zero-missing binary ABI gate; JitPack built it and the published AAR re-passed the ABI check.
-
 
 **Gate-2:** all five phases human-signed-off (Yahir). Phase 15 was reopened by G-15-1, fixed by 15-04 plus the code-review fixes, and re-verified 17/17 on the personal device on 2026-10-11. Phases 16–18 were signed off 2026-10-11. Audit: 14/14 requirements, integration WIRED, Nyquist compliant, status `tech_debt` (accepted).
 

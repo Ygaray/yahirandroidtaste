@@ -26,47 +26,37 @@ repin). Binary compatibility is not a goal (see API.md § "Compatibility rule").
 
 ## Current State
 
-**Shipped: milestone v2.5 — Voice UI Localization & Accessibility (2026-10-11) → library `v2.5.0`.**
+**Shipped: milestone v2.6 — Receipt voice surfaces + ProviderKeyCard lifecycle (2026-10-14) → library
+`v2.6.0`.**
 
-- **Localization.** Every label on the AI-voice settings cards and voice-surface composables can now
-  be set by the caller. Composables take defaulted label params; the `OutcomeSheet` literals come from
-  defaulted model fields. English defaults are preserved.
-- **Accessibility.** `ApproachLadderCard` rung rows meet the minimum interactive size and expose
-  selected-radio semantics.
-- **Failure enrichment.** `VoiceOutcomeUiState.Failure` gains an action role, a body slot and a
-  semantics prefix.
-- **Router toggle.** `ApproachLadderCard` gains a `require()`-paired Router ON/OFF toggle.
-- **Status.** All of it is strictly additive. Requirements: 14/14. Gate-2 is signed off for all five
-  phases (Yahir).
+- **Receipt outcome sheet.** `OutcomeSheet(style = Receipt)` is an opt-in rendering of
+  NeedsConfirmation, Success and Failure, with stable test tags, a pinned action bar, an in-flight
+  action, and XR-178-01 a/b. Classic stays pixel-identical to v2.5.1.
+- **Atoms.** The tone tokens, the button emphasis axis, `RoundIconButton`, `StackedProgressBar`,
+  `ToneCard`, `PillChip`, `ReceiptRow`, the Pill selector with `disabledOptions`, and `SheetScaffold`
+  shape.
+- **Key lifecycle.** `ProviderKeyCard` gains Save/Update/Clear/Cancel with a fingerprint-only saved
+  summary. `UndoCenterScreen` gains group rows.
+- **Status.** Source compatible. Requirements: 27/27. Gate-2 is signed off with a gap on all five phases
+  (Yahir): the TalkBack checks went to a hub-wide sweep in the backlog.
 
-**Patch `v2.5.1` shipped (2026-10-11):** the G-15-1 long-label layout fix (private `RungLabelLayout`,
-`api.txt` unchanged), tagged at `b6c363c` and JitPack-confirmed. SecondBrain and CalTracker are both
-repinned to it.
+**`v2.7.0` shipped (2026-10-13):** CalTracker 76-14 asked for two additions, the optional
+`NeedsConfirmation.handledBy` (a Receipt confirm pill) and a hoistable `OutcomeSheet` `sheetState`
+overload. The `handledBy` field moved `NeedsConfirmation`'s positional `componentN`; Yahir accepted
+that break.
+
+**Next:** patch `v2.7.1` (Yahir approved it 2026-10-14; it starts on the teamlead's GO). It has three
+fixes:
+- tall outcome sheets skip the partial detent;
+- the Undo Center group count and status words become localizable;
+- the count-editor demo gets padding.
+
+The backlog is ROADMAP 999.2-999.4.
 
 **Prior milestones:** v1.0 — Hub Stewardship (2026-09-02, `v2.0.0`); v2.0 — Line Reunification
 (2026-09-27, `v2.2.0`, + `TAGCOLOR-02` follow-on `v2.3.0`); v2.4 — AI-Voice Command UI (2026-10-01,
-`v2.4.0`, + `v2.4.1` OutcomeSheet hotfix). See `.planning/MILESTONES.md`.
-
-## Current Milestone: v2.6 Receipt voice surfaces + ProviderKeyCard lifecycle
-
-**Goal:** Ship library `v2.6.0`, an additive, opt-in minor that adds an opt-in "Receipt" rendering of
-the voice outcome sheet plus the atoms it needs, and gives `ProviderKeyCard` the full key lifecycle.
-Every default reproduces today's pixels, so SecondBrain stays on Classic, unchanged.
-
-**Decision record:** `.planning/seams/v2.6.0-SKETCH.md` (`105255d`; signed off by CT and SB with no
-signature deltas; P1-P3 rulings applied). Inputs: CT `76-UI-SPEC.md` Y-1..Y-15 (`0a1da128`), SB
-`178-XR-01.md`.
-
-**Target features:**
-- Tone foundation and atoms: `ToneColors`/`ToneDefaults`/`ContentTone`, button emphasis +
-  `RoundIconButton`, `StackedProgressBar`, `ToneCard`, `PillChip` (Y-1, Y-8, Y-9, Y-10, Y-12)
-- `ReceiptRow`, `SegmentedOptionSelector` Pill style + per-option disable, `SheetScaffold` shape
-  (Y-2, Y-11, Y-13)
-- `OutcomeSheet` Receipt style with the `NeedsConfirmation`/`Success`/`Failure`/handled-by additions
-  and stable test tags (Y-3..Y-7, Y-14), an action that stays usable while `inFlight` (SB in-flight
-  Cancel), and XR-178-01 (a) `liveRegion` on the refused surface and (b) `Failure.undo`
-- `ProviderKeyCard` lifecycle (sketch §1) and XR-178-01 (c) the Undo Center group row
-- Explorer demos + docs (Y-15), then the `v2.6.0` cut (immutable tag, JitPack-confirmed, §11 relay)
+`v2.4.0`, + `v2.4.1` OutcomeSheet hotfix); v2.5 — Voice UI Localization & Accessibility (2026-10-11,
+`v2.5.0`, + `v2.5.1`). See `.planning/MILESTONES.md`.
 
 ## Context
 
@@ -157,14 +147,16 @@ signature deltas; P1-P3 rulings applied). Inputs: CT `76-UI-SPEC.md` Y-1..Y-15 (
 - ✓ `VoiceOutcomeUiState.Failure` action role + body slot + a11y semantics prefix (XR-175-02 d) — v2.5 (VFAIL-01..03)
 - ✓ `ApproachLadderCard` Router ON/OFF toggle, `require()`-paired like `offlineOnly` (XR-175-02 e) — v2.5 (VAPPR-04)
 - ✓ Catalog integrity + regenerated `api.txt` + docs, then the additive `v2.5.0` cut (§11) — v2.5 (CAT-02, API-02, DOC-02, INV-02, SHIP-03)
+- ✓ Tone foundation + atom components (Y-1, Y-8, Y-9, Y-10, Y-12) — v2.6 (VTONE-01, VBTN-01/02, VBAR-01, VCARD-01, VCHIP-01)
+- ✓ `ReceiptRow` + segmented Pill style + sheet shape (Y-2, Y-11, Y-13) — v2.6 (VROW-01/02, VSEG-01, VSHEET-01)
+- ✓ `OutcomeSheet` Receipt style + state additions + test tags (Y-3..Y-7, Y-14, SB in-flight action, XR-178-01 a/b) — v2.6 (VRCPT-01..05, VTAG-01, VXR-01/02)
+- ✓ `ProviderKeyCard` key lifecycle + Undo Center group row (sketch §1, XR-178-01 c) — v2.6 (VKEY-01/02, VUNDO-02)
+- ✓ Explorer/docs/catalog integrity + the `v2.6.0` cut (Y-15) — v2.6 (CAT-03, API-03, DOC-03, INV-03, DEMO-01, SHIP-04)
 
 ### Active
 
-- [ ] Tone foundation + atom components (Y-1, Y-8, Y-9, Y-10, Y-12)
-- [ ] `ReceiptRow` + segmented Pill style + sheet shape (Y-2, Y-11, Y-13)
-- [ ] `OutcomeSheet` Receipt style + state additions + test tags (Y-3..Y-7, Y-14, SB in-flight action, XR-178-01 a/b)
-- [ ] `ProviderKeyCard` key lifecycle + Undo Center group row (sketch §1, XR-178-01 c)
-- [ ] Explorer/docs/catalog integrity + the `v2.6.0` cut (Y-15)
+- [ ] v2.7.1 patch: tall outcome sheets skip the partial detent; localizable Undo Center group count/status words; count-editor demo padding (approved 2026-10-14, awaits the teamlead's GO)
+- [ ] Backlog: hub-wide TalkBack sweep (999.2), Explorer demo polish (999.3), voice-surface polish (999.4)
 
 ### Out of Scope
 
@@ -184,7 +176,8 @@ signature deltas; P1-P3 rulings applied). Inputs: CT `76-UI-SPEC.md` Y-1..Y-15 (
 | v2.4: admit the shared AI-voice UI (settings + outcome/failure surfaces) into the hub as generic, prop-driven presentational composables — no OkHttp, no engine dependency | §6.3 of the vae-bilingual contract: SB + CT both need the same voice-command settings/outcome UI; putting the domain-neutral shell in the hub (apps map engine outcomes → props) keeps the one-way-dependency invariant clean and gives both consumers one surface | ✓ Good — shipped `v2.4.0` (2026-10-01), 16/16 reqs, one-way-dependency invariant held (INV-01) |
 | v2.4: cut the immutable `v2.4.0` tag autonomously on green verification (A12 human-gate waiver) rather than pausing for a human tag gate | The vae-bilingual effort waived per-repo human tag gates (A12, Yahir) so the five coordinated repos can ship without serialized human checkpoints; the agent owns tag correctness via §11 steps 1–4 + the orchestrator's ledger re-check (A14) | ✓ Good — `v2.4.0` cut + JitPack-confirmed; §11 ledger relayed; no stray marker tag (SHIP-02) |
 | v2.5: ship the G-15-1 long-label layout fix as a post-tag `v2.5.1` patch, not by re-cutting `v2.5.0` | Tags are immutable JitPack coordinates. The fix is layout-only (`api.txt` unchanged), so a patch tag is the clean path | ✓ Good. `v2.5.1` cut 2026-10-11, JitPack green, SB + CT repinned |
-| v2.6: source compatibility only, with no new hidden overloads or binary shims; cut gate = `apiCheck` on a regenerated `api.txt` + `tools/test/run-all.sh` + a v2.5.1 call-site compile canary; no Roborazzi (sketch P1-P3) | Consumers recompile on every repin; shims are dead weight and a known defect source (INC-2026-10-05-02 F1c). `verify-api-additive.sh` was retired in Phase 19. Screenshot tooling was declined (Yahir) | — Pending |
+| v2.6: source compatibility only, with no new hidden overloads or binary shims; cut gate = `apiCheck` on a regenerated `api.txt` + `tools/test/run-all.sh` + a v2.5.1 call-site compile canary; no Roborazzi (sketch P1-P3) | Consumers recompile on every repin; shims are dead weight and a known defect source (INC-2026-10-05-02 F1c). `verify-api-additive.sh` was retired in Phase 19. Screenshot tooling was declined (Yahir) | ✓ Good. `v2.6.0` and `v2.7.0` shipped on these gates. The one positional break (`handledBy`) was reviewed and accepted |
+| v2.7.0: add an experimental-typed param (`SheetState`) as a separate `OutcomeSheet` overload, not a defaulted param | A defaulted `@ExperimentalMaterial3Api` param would force the opt-in on every caller | ✓ Good. Existing call sites are unchanged |
 | v2.5: make rung-row label width depend on what the name needs, not a fixed 60% cap (CR-01) | A fixed cap stacked short English labels and broke the identical-to-v2.5.0 promise; the name now keeps whichever is smaller, its full width or 40%, and the affordances get the rest | ✓ Good. English one-line and German no-clip both verified on device (Gate-2 17/17) |
 
 ## Evolution
@@ -205,4 +198,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-12 after Phase 24 (v2.6.0 cut: tag v2.6.0 pushed, JitPack ok; Gate-2 screencap review pending). Milestone v2.6 (Receipt voice surfaces + ProviderKeyCard lifecycle). Prior: v2.5 → `v2.5.0`/`v2.5.1`; v2.4 → `v2.4.0`/`v2.4.1`; v2.0 → `v2.2.0`/`v2.3.0`; v1.0 → `v2.0.0`.*
+*Last updated: 2026-10-14 after the v2.6 milestone (Gate-2 signed off with a TalkBack gap; next: v2.7.1). Prior: v2.6 → `v2.6.0`/`v2.7.0`; v2.5 → `v2.5.0`/`v2.5.1`; v2.4 → `v2.4.0`/`v2.4.1`; v2.0 → `v2.2.0`/`v2.3.0`; v1.0 → `v2.0.0`.*

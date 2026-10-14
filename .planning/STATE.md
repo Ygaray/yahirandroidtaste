@@ -2,43 +2,37 @@
 gsd_state_version: "1.0"
 milestone: v2.6
 milestone_name: Receipt voice surfaces + ProviderKeyCard lifecycle
-current_phase: 24
-current_phase_name: all complete; phase 24 settled
-status: completed
+status: Awaiting next milestone
 stopped_at: Phase 24 complete — all phases complete
-last_updated: "2026-10-14T20:35:22.156Z"
+last_updated: "2026-10-14T20:53:16.083Z"
 last_activity: 2026-10-14
-last_activity_desc: Phase 24 complete
-state_head: 1c4a7e0c0cfc51f1bbeaeb06b3d98820ffaba55f
+last_activity_desc: Milestone v2.6 completed and archived
+state_head: fc6660ac3492ec0bda41321e40a1b73b09517e4d
 progress:
   total_phases: 5
   completed_phases: 5
   total_plans: 19
   completed_plans: 19
   percent: 100
+current_phase: 24
+current_phase_name: all complete; phase 24 settled
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-10-11)
+See: .planning/PROJECT.md (updated 2026-10-14)
 
 **Core value:** An agent building one of Yahir's apps finds the widget it needs already here, coherent and legible, and drops it in instead of writing a new one.
-**Current focus:** v2.6 executed; `v2.6.0` and `v2.7.0` cut and JitPack-live. Milestone close (certify, Gate-2 with Yahir, audit, complete) is pending.
+**Current focus:** v2.6 closed 2026-10-14 (`v2.6.0` + `v2.7.0` JitPack-live). Next: patch `v2.7.1`, approved by Yahir, starts on the teamlead's GO (ROADMAP "Next up"). Nothing pushed since the v2.7.0 tag.
 
 ## Current Position
 
-Phase: 24 of 24 (all complete; phase 24 settled 2026-10-14)
-Plan: 19/19 complete
-Status: Executed and settled. `v2.6.0` cut (tag `b837d02` → `78d89cf`), pushed (`origin/main` = `154b4d8`) and
-JitPack-confirmed. `v2.7.0` cut 2026-10-13 (tag `f95f165` → `5206be9`, CT P76 asks: optional
-`NeedsConfirmation.handledBy` + hoistable `sheetState` `OutcomeSheet` overload), tag-only push, JitPack-confirmed.
-RESUMED 2026-10-14: P24 security + verification re-run at HEAD after the v2.7.0 delta, settled, barrier clear.
-Next: certify, then Gate-2 with Yahir (Y-15 signed off 2026-10-14). No push until asked.
-Last activity: 2026-10-14 — Phase 24 settled (security + verification refreshed for the v2.7.0 delta)
-
-Progress: [██████████] 100%
+Phase: Milestone v2.6 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-10-14 — Milestone v2.6 completed and archived
 
 ## Performance Metrics
 
@@ -112,6 +106,11 @@ Items acknowledged and carried forward, most recent first:
 
 | Category | Item | Status | Deferred At | Milestone |
 |----------|------|--------|-------------|-----------|
+| uat_gaps | 21/21-UAT.md | partial (TalkBack blocked) — signed-off-with-gap by Yahir; sweep in backlog 999.2 | 2026-10-14 | v2.6 |
+| uat_gaps | 22/22-UAT.md | partial (TalkBack blocked) — signed-off-with-gap by Yahir; sweep in backlog 999.2 | 2026-10-14 | v2.6 |
+| uat_gaps | 23/23-UAT.md | partial (TalkBack blocked) — signed-off-with-gap by Yahir; sweep in backlog 999.2 | 2026-10-14 | v2.6 |
+| uat_gaps | 24/24-UAT.md | partial (TalkBack blocked) — signed-off-with-gap by Yahir; sweep in backlog 999.2 | 2026-10-14 | v2.6 |
+| Release | v2.7.1 patch (tall sheets skip partial detent; localizable group count/status words; count-editor demo padding) | Approved by Yahir; awaits the teamlead's GO | 2026-10-14 | v2.6 |
 | uat_gaps | 16/16-03-SELF-UAT.md | partial (0 open scenarios) — superseded by Phase 16 Gate-2 sign-off | 2026-10-11 | v2.5 |
 | Release | v2.5.1 patch tag for G-15-1 long-label fix (+ SB/CT repins) | Done: `v2.5.1` cut 2026-10-11 at `b6c363c`, JitPack-confirmed, SB + CT repinned | 2026-10-11 | v2.5 |
 | Future | Two Gate-2-waived `ApproachLadderCard` UI-polish notes (KI-2026-10-01-01) | Deferred (future polish unless pulled into scope) | v2.5 requirements | v2.5 |
@@ -129,11 +128,4 @@ Resume file: .planning/cross-repo/HANDOFF.md § "Current state (2026-10-13)"
 
 ## Operator Next Steps
 
-- On RESUME: run the master `milestone settle-phase` for phase 24, then clear `workflow._milestone_run_active`.
-- Then `/gsd-certify-milestone`, and `/gsd-verify-milestone` with Yahir → audit → complete → cleanup.
-  Gate-2 needs: (1) the Y-15 review of the 33 screencaps in `.planning/phases/24-catalog-docs-explorer-demos-cut-v2-6-0/screencaps/`
-  (an objection ships as `v2.6.1`); (2) confirm the `NeedsConfirmation.handledBy` positional/destructuring
-  break, which CT put on the additivity guard's accepted-exception list for `v2.7.0` and which Yahir
-  ACCEPTED on 2026-10-13; (3) the `.planning/uat-pending/20..24` fragments.
-- `origin/main` = `154b4d8`. The `v2.7.0` tag push published the commits through `5206be9`. `ba33189`
-  and the 2026-10-13 handoff commit are local-only; ask before pushing `main`.
+- Start the next milestone with /gsd-new-milestone
