@@ -6,8 +6,8 @@ current_phase: 24
 status: completed
 stopped_at: Phase 24 complete — all phases complete
 last_updated: "2026-10-13T00:25:14.614Z"
-last_activity: 2026-10-12
-last_activity_desc: Phase 24 complete
+last_activity: 2026-10-13
+last_activity_desc: v2.7.0 cut (CT P76 hub asks); parked overnight for Gate-2
 state_head: c790147a45d6175b6a91090fa66b7f020b2910df
 progress:
   total_phases: 5
@@ -24,15 +24,17 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-11)
 
 **Core value:** An agent building one of Yahir's apps finds the widget it needs already here, coherent and legible, and drops it in instead of writing a new one.
-**Current focus:** v2.6 executed; `v2.6.0` cut, pushed and JitPack-live. Milestone close (certify, Gate-2, audit, complete) is pending.
+**Current focus:** v2.6 executed; `v2.6.0` and `v2.7.0` cut and JitPack-live. Milestone close (certify, Gate-2 with Yahir, audit, complete) is pending.
 
 ## Current Position
 
 Phase: 24 of 24 (all complete; the master settle of 24 is still pending)
 Plan: 19/19 complete
 Status: Executed. `v2.6.0` cut (tag `b837d02` → `78d89cf`), pushed (`origin/main` = `154b4d8`) and
-JitPack-confirmed. HELD after the cut for the teamlead's gsd-core install (B3).
-Last activity: 2026-10-12 — v2.6.0 cut + push + JitPack confirm; cut report sent to the teamlead
+JitPack-confirmed. `v2.7.0` cut 2026-10-13 (tag `f95f165` → `5206be9`, CT P76 asks: optional
+`NeedsConfirmation.handledBy` + hoistable `sheetState` `OutcomeSheet` overload), tag-only push, JitPack-confirmed.
+PARKED overnight: Yahir runs Gate-2 on 2026-10-14; no gsd-tools until the teamlead says RESUME (B3).
+Last activity: 2026-10-13 — v2.7.0 cut; phases 16-18 Gate-2 drains committed (`ba33189`)
 
 Progress: [██████████] 100%
 
@@ -119,12 +121,17 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-12
-Stopped at: v2.6.0 cut + pushed + JitPack-live. Held for the gsd-core B3 install (no gsd-tools until the teamlead says RESUME).
-Resume file: .planning/cross-repo/HANDOFF.md § "Current state (2026-10-12)"
+Last session: 2026-10-13
+Stopped at: v2.6.0 and v2.7.0 cut + JitPack-live; parked overnight for Yahir's Gate-2 (no gsd-tools until the teamlead says RESUME).
+Resume file: .planning/cross-repo/HANDOFF.md § "Current state (2026-10-13)"
 
 ## Operator Next Steps
 
 - On RESUME: run the master `milestone settle-phase` for phase 24, then clear `workflow._milestone_run_active`.
-- Then `/gsd-certify-milestone`, and `/gsd-verify-milestone` with Yahir (Gate-2: the 33 Y-15 screencaps + `.planning/uat-pending/20..24`) → audit → complete → cleanup.
-- 7+ planning commits after `154b4d8` are local and unpushed; ask before pushing them.
+- Then `/gsd-certify-milestone`, and `/gsd-verify-milestone` with Yahir → audit → complete → cleanup.
+  Gate-2 needs: (1) the Y-15 review of the 33 screencaps in `.planning/phases/24-catalog-docs-explorer-demos-cut-v2-6-0/screencaps/`
+  (an objection ships as `v2.6.1`); (2) confirm the `NeedsConfirmation.handledBy` positional/destructuring
+  break, which CT put on the additivity guard's accepted-exception list for `v2.7.0` and which Yahir
+  ACCEPTED on 2026-10-13; (3) the `.planning/uat-pending/20..24` fragments.
+- `origin/main` = `154b4d8`. The `v2.7.0` tag push published the commits through `5206be9`. `ba33189`
+  and the 2026-10-13 handoff commit are local-only; ask before pushing `main`.

@@ -104,7 +104,69 @@ Session names can change after a restart. If one doesn't resolve, ask the orches
 
 ---
 
-## Current state (2026-10-12) — milestone v2.6 EXECUTED, library `v2.6.0` CUT + PUSHED + JitPack-live
+## Current state (2026-10-13) — PARKED overnight; v2.6.0 + v2.7.0 cut; v2.6 close pending Yahir's Gate-2
+
+**Stage:** milestone v2.6 is executed (phases 20-24, 19/19 plans) and **NOT closed**. Yahir retakes
+the vae-bilingual Gate-2s (YAT v2.6, VAE v1.1) on the morning of 2026-10-14. There is no overnight
+work. Stay parked: run no GSD command and no push until the teamlead (`teamlead@vae-bilingual`)
+messages you. The B3 gsd-core hold from 2026-10-12 still applies: no gsd-tools until the teamlead
+says RESUME.
+
+**Tags cut (both immutable, both JitPack-live):**
+- `v2.6.0`: tag object `b837d02`, commit `78d89cf`. Details are in the 2026-10-12 block below.
+- `v2.7.0` (2026-10-13): tag object `f95f165e70abbdcd5b6ca249130769805d156473`, commit `5206be9`.
+  - **Contents:** CalTracker P76 hub asks, owner-routed and committed by CT on this `main`:
+    - `41c07ad`: optional `NeedsConfirmation.handledBy` and the Receipt confirm pill;
+    - `0dd4b79`: a second `OutcomeSheet` overload with a required `sheetState`. It's an overload
+      because `SheetState` is `@ExperimentalMaterial3Api`, so a defaulted param would force the
+      opt-in on every caller;
+    - `5206be9`: docs and the Explorer demo.
+  - **Gates:** cut on Yahir's conditional GO (relayed by the teamlead). This seat ran the gates
+    independently at `5206be9` with `--rerun-tasks`:
+    - 1331 tests, 0 failures, including the V251 + V260 canaries and the drift guards;
+    - detekt 0, and apiCheck green with no `api.txt` diff;
+    - `verify-api-source-additive.sh v2.6.0` OK, with 3 accepted exceptions;
+    - `run-all.sh` green.
+  - **Push and JitPack:** pushed with `git push origin v2.7.0` (tag only). JitPack reports
+    `status ok`, `isTag true`, commit `5206be9`; pom, aar and module are all HTTP 200. The report
+    went to the teamlead, who owns §11 and the repins.
+
+**What v2.6 Gate-2 (`/gsd-verify-milestone`, human-gated, run WITH Yahir) needs from him:**
+1. **Y-15 screencap review:** 33 Explorer screencaps in
+   `.planning/phases/24-catalog-docs-explorer-demos-cut-v2-6-0/screencaps/`. Any objection ships
+   as `v2.6.1`, because tags are immutable.
+2. **The `handledBy` source break:** inserting `handledBy` before `onConfirm`/`onCancel` breaks
+   positional construction, positional `copy` and destructuring of `VoiceOutcomeUiState.NeedsConfirmation`
+   (`component12` shifted). CT put it on the additivity guard's accepted-exception list
+   (`tools/verify-api-source-additive.py`, baseline `v2.6.0`) for `v2.7.0`. **Yahir ACCEPTED it on
+   2026-10-13** (relayed by the teamlead), so record it as accepted. Gate-2 only confirms it.
+3. The rest of the Gate-2 fragments: `.planning/uat-pending/20..24-*.md` (aggregated in
+   `.planning/HUMAN-UAT-PENDING.md`), plus the flags and v2.6.1 candidates listed in the
+   2026-10-12 block below.
+   - The v2.5 fragments 16/17/18 are already drained (Yahir, 2026-10-12): 16 is
+     signed-off-with-gap, 17 and 18 are signed-off. They're committed as `ba33189`.
+
+**Git state:**
+- `origin/main` is still `154b4d8`, because `main` was never pushed past it.
+- Pushing the `v2.7.0` tag published every commit up to `5206be9`: the planning commits
+  `f9569f2`..`12c4e74` and the 3 CT commits.
+- **Local-only and unpushed:** `ba33189` (the 16-18 drains) and this handoff/STATE commit. Pushing
+  `main` needs its own OK.
+- The pre-existing dirt still stays out of commits. That covers `config.json`, `state.json`,
+  `graphs/*`, `v2.6-MILESTONE-RUN.md`, and the untracked `.gate/`, stage markers and abandoned
+  uat-evidence dirs.
+
+**Next action (on the teamlead's RESUME):**
+1. Settle phase 24 with `gsd-tools query milestone settle-phase .planning/phases/24-catalog-docs-explorer-demos-cut-v2-6-0 --stage execute --exit-kind execute --if-quiesced`.
+2. Check that `stage-barrier` reads `clear`.
+3. Clear `workflow._milestone_run_active`, which is still `true` in the uncommitted `config.json`.
+4. Run `/gsd-certify-milestone`.
+5. Run `/gsd-verify-milestone` with Yahir (Gate-2, the items above), then audit → complete →
+   cleanup. Cut NO marker tag.
+
+---
+
+## Current state (2026-10-12) — HISTORICAL (superseded by the 2026-10-13 block above): milestone v2.6 EXECUTED, library `v2.6.0` CUT + PUSHED + JitPack-live
 
 **Stage:** milestone v2.6 "Receipt voice surfaces + ProviderKeyCard lifecycle" (phases 20-24) is
 **fully executed**. All 5 phases complete (19/19 plans). `v2.6.0` has been cut, pushed and
