@@ -104,6 +104,56 @@
 - Sessions: the original 2026-10-05 run, plus a 2026-10-11 close-out session (gap execution, review/fix, re-verify, Gate-2, close).
 - Notable: the review-plus-fix loop, about 25 minutes of agent time, prevented shipping an English-label regression in `v2.5.1`.
 
+## Milestone: v2.6 — Receipt voice surfaces + ProviderKeyCard lifecycle
+
+**Shipped:** 2026-10-14 (library `v2.6.0`; follow-up `v2.7.0` for CalTracker 76-14 on 2026-10-13)
+**Phases:** 5 | **Plans:** 19
+
+### What Was Built
+- An opt-in `OutcomeSheet(style = Receipt)` for NeedsConfirmation, Success and Failure, with a pinned
+  bar, Y-14 stable test tags, an in-flight action and XR-178-01 a/b. Classic stays pixel-identical to
+  v2.5.1.
+- Atoms: tone tokens, the button emphasis axis, `RoundIconButton`, `StackedProgressBar`, `ToneCard`,
+  `PillChip`, `ReceiptRow`, a Pill selector with `disabledOptions`, and a `SheetScaffold` shape.
+- `ProviderKeyCard` Save/Update/Clear/Cancel with a fingerprint-only saved summary, and Undo Center
+  group rows.
+- Explorer demos for all of it, 33 TESTER screencaps for the owner, and the `v2.6.0` cut.
+
+### What Worked
+- **Using the sketch as a signed decision record.** Writing `v2.6.0-SKETCH.md` and having CT and SB
+  sign it off before planning gave zero signature deltas across five phases.
+- **Goldens captured before the first src edit.** They proved "default call = v2.5.1 pixels" by
+  diff sum 0, with no screenshot tooling.
+- **The cut first, then the screencap review (Y-15).** The tag shipped on gates and owner taste was
+  judged after it; an objection would have shipped as a patch. Yahir signed it off with no v2.6.1.
+
+### What Was Inefficient
+- **Mid-milestone tags made the close's gates stale.** `v2.7.0` landed on `main` before v2.6 closed,
+  so phase 24's security and verification had to be re-run at HEAD before settle-phase would pass,
+  and the stage marker then waited out its quiesce window.
+- **The archive move silently dropped gitignored evidence.** `*.log` is ignored, so the six signed
+  logcat captures had to be force-added again at the archive path (`da89f92`).
+- **The TalkBack Gate-2 items had no consumer to run in.** All three went to a backlog sweep rather
+  than being checked.
+
+### Patterns Established
+- **Experimental-typed params become a separate overload** (`OutcomeSheet` + `SheetState`), not a
+  defaulted param, so callers need no opt-in.
+- **The additivity tool's accepted exceptions are keyed by baseline tag.** For example the v2.6.0
+  `NeedsConfirmation` R5/R6 exceptions, which come with the owner's acceptance.
+
+### Key Lessons
+1. Release tags cut for a downstream app mid-milestone are fine, but plan the close to re-run the
+   gates that cover the touched files.
+2. When archiving, check renames against `git ls-files`. An ignore rule can turn a tracked file into a
+   silent deletion.
+3. Hard accessibility checks (TalkBack) need a consumer surface or a committed harness; library-only
+   Gate-1 can't reach them.
+
+### Cost Observations
+- Sessions: the 2026-10-12 milestone run plus the cut, a 2026-10-13 v2.7.0 cut, and a 2026-10-14
+  close (settle, certify, Gate-2 via the teamlead relay, audit, complete).
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -114,6 +164,7 @@
 | v2.0 — Line Reunification | 4 | Forward-port reunification onto one line; coverage-classified UAT; escalate-with-evidence certification over buggy resolver |
 | v2.4 — AI-Voice Command UI | 5 | Cross-repo orchestrator-driven milestone run + Gate-2-via-orchestrator relay; autonomous A12 tag cut; isolated tag-cut phase |
 | v2.5 — Voice UI Localization & Accessibility | 5 | Gate-2 with hostile-input fixtures reopened a phase post-tag; gap closure → code-review → re-verify loop; patch-tag follow-up instead of tag mutation |
+| v2.6 — Receipt voice surfaces + ProviderKeyCard lifecycle | 5 | Consumer-signed sketch as the decision record; cut-before-screencap-review (Y-15); mid-milestone release tag for a consumer ask; Gate-2 relayed via the teamlead |
 
 ### Cumulative Quality
 
@@ -123,6 +174,7 @@
 | v2.0 | 10/10 satisfied | CLEAN | green except pre-existing KI-2026-09-27-01 (TextCard.kt, unrelated) |
 | v2.4 | 16/16 satisfied | CLEAN | green (zero baseline) |
 | v2.5 | 14/14 satisfied | WIRED (2 combined-scenario test-gap warnings) | green (zero baseline) |
+| v2.6 | 27/27 satisfied | WIRED (2 advisory warnings) | green (zero baseline) |
 
 ### Top Lessons (Verified Across Milestones)
 
