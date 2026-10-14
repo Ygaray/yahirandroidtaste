@@ -104,7 +104,52 @@ Session names can change after a restart. If one doesn't resolve, ask the orches
 
 ---
 
-## Current state (2026-10-13) — PARKED overnight; v2.6.0 + v2.7.0 cut; v2.6 close pending Yahir's Gate-2
+## Current state (2026-10-14) — v2.6 CLOSED; v2.7.1 approved, waiting on the teamlead's GO; NOTHING pushed
+
+**Stage:** milestone v2.6 is closed: settled, certified, Gate-2, audited, completed and archived. No
+milestone is open. Yahir approved patch **v2.7.1**, but it starts only on the teamlead's GO. Run no GSD
+command and no push until the teamlead says go.
+
+**How the close went (2026-10-14):**
+1. The first P24 settle was refused, because the v2.7.0 CT commits made the P24 security audit and
+   verification stale. Both were re-run at HEAD: `85d9a3f` SECURED and `1c4a7e0` passed 5/5.
+2. Settled at `056688a` (barrier clear, `_milestone_run_active` cleared).
+3. Certified at `f8ba5e3`: 0 gaps, integration clean. The three stale v2.7.0 doc facts were fixed in
+   `f94563f`.
+4. Gate-2: the decisions came from Yahir through the teamlead pane, and the drains are signed by Yahir
+   (`56cb7c2`). Phases 20-24 are all **signed-off-with-gap**: no TalkBack checks were run, and a sweep
+   for them is backlog 999.2.
+   - Y-15 screencaps: signed off, no v2.6.1.
+   - The `handledBy` break: accepted.
+   - Certify advisory 1: accepted.
+   - Advisory 2: moved to backlog 999.3.
+5. Audit `9907a27`: `tech_debt`, 27/27 requirements.
+6. Archive: `a79ba6b`, then `4dac1e6` + `da89f92` (575 R100 renames; six gitignored signed logcat
+   captures force-added again), `19f1f00` (REQUIREMENTS.md removed) and `1cce5db` (retro).
+   No milestone tag was cut (`git.create_tag=false`).
+
+**v2.7.1 scope (Yahir-approved; see ROADMAP "Next up"):**
+1. Tall outcome sheets skip the partial detent.
+2. The Undo Center group count and status words become localizable.
+3. The count-editor demo gets horizontal padding.
+
+Backlog: 999.2 (TalkBack sweep), 999.3 (Explorer hub-scheme pin + sheetState demo, v2.8) and 999.4
+(voice-surface polish).
+
+**Git state:**
+- `origin/main` = `154b4d8`, and the `v2.7.0` tag push already published everything through `5206be9`.
+- All later commits (`ba33189`..HEAD) are local, unpushed and planning/docs-only. One exception:
+  `f94563f` also touches `CLAUDE.md`, `API.md` and `INTEGRATION.md`, which are docs.
+- A close push would be `git push origin main` only. No tag goes with it, because tags are JitPack
+  coordinates. It is held until Yahir gives an explicit OK.
+- The working-tree debris still stays out of commits.
+
+**Next action (on the teamlead's GO):** start v2.7.1. The workflow choice (quick/phase) is the
+teamlead's call.
+
+---
+
+## Current state (2026-10-13) — HISTORICAL (superseded by the 2026-10-14 block above): PARKED overnight; v2.6.0 + v2.7.0 cut; v2.6 close pending Yahir's Gate-2
 
 **Stage:** milestone v2.6 is executed (phases 20-24, 19/19 plans) and **NOT closed**. Yahir retakes
 the vae-bilingual Gate-2s (YAT v2.6, VAE v1.1) on the morning of 2026-10-14. There is no overnight
