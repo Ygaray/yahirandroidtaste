@@ -1,6 +1,6 @@
 ### Phase 18 — catalog-integrity-api-dump-docs (v2.5)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir, 2026-10-12`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.5 (Voice UI Localization & Accessibility)
 - **Gate 1 self-UAT log:** [`.planning/phases/18-catalog-integrity-api-dump-docs/18-02-SELF-UAT.md`](phases/18-catalog-integrity-api-dump-docs/18-02-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (headless, non-device docs + evidence phase; no device driven; HEAD `a10c79e`, api.txt sha256 `218bd9c2acb1c01c3a988dfb462449dc3fd43f3ba387c88cb3ae01160d23740e`, 2026-10-05). Fresh uncached full suite 751 tests / 22 skipped / 0 failures / 0 errors, apiCheck + detekt green, v2.4.1 swap-baseline Metalava green, no v2.5 tag.
 - **Items covered (5 ROADMAP success criteria):**

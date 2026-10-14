@@ -1,6 +1,6 @@
 ### Phase 17 — approachladdercard-router-on-off-toggle (v2.5)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off — Yahir, 2026-10-12`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.5 (Voice UI Localization & Accessibility)
 - **Gate 1 self-UAT log:** [`.planning/phases/17-approachladdercard-router-on-off-toggle/17-01-SELF-UAT.md`](phases/17-approachladdercard-router-on-off-toggle/17-01-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device Samsung SM-S908U tester rig R5CT10XNKQN, library AAR md5 `ac172bfed07386fabb11a92f67f6f7de` @ `5b0de39`, harness APK md5 `2ec074296d3f4627346e6c5ee26f0681`, 2026-10-05). Router toggle driven in the real Explorer gallery (light + dark) and a direct-call harness: state reflected, emitted values read back, null hides it, both half-pair directions throw on-device, rung tap selects only the cap.
 - **Items covered (5 ROADMAP success criteria + decisions):**

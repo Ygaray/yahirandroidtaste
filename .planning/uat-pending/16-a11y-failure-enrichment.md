@@ -1,6 +1,6 @@
 ### Phase 16 — a11y-failure-enrichment (v2.5)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-12`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
 - **Milestone:** v2.5 (Voice UI Localization & Accessibility)
 - **Gate 1 self-UAT log:** [`.planning/phases/16-a11y-failure-enrichment/16-03-SELF-UAT.md`](phases/16-a11y-failure-enrichment/16-03-SELF-UAT.md) — Verdict: **SC1-SC4 PASS, SC5 PARTIAL (one owner API-contract call)** (device Samsung SM-S908U tester rig `R5CT10XNKQN`, library AAR md5 `2a7ce56547374776d5f5583031b80597` @ `118af62`, 2026-10-05). Rung semantics, role color, body-in-surface and merged-node prefix observed on the real device via a throwaway harness activity; 114 targeted unit tests + apiCheck green.
 - **Items covered (5 ROADMAP success criteria):**
