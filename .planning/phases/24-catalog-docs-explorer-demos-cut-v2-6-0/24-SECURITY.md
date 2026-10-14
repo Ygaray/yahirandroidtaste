@@ -4,7 +4,7 @@ slug: "catalog-docs-explorer-demos-cut-v2-6-0"
 status: secured
 threats_open: 0
 asvs_level: 1
-audited_head: eeb0ee0e4f209b82110c275f4f835451a8574128
+audited_head: b96d49af116b2d0d421a282ebdded4c228fbf95e
 created: "2026-10-12"
 ---
 
@@ -13,6 +13,8 @@ created: "2026-10-12"
 > Per-phase security contract: threat register, accepted risks, and audit trail.
 > Pre-cut audit (2026-10-12) plus post-cut re-audit (plan 24-04 threats T-24-20 to T-24-28 verified against the
 > tag, push, JitPack and the executor transcript; audited_head refreshed).
+> Delta re-audit (2026-10-14): register re-verified at HEAD after the v2.7.0 CalTracker 76-14 commits
+> (41c07ad, 0dd4b79, 5206be9) made the audit stale; all entries still hold.
 
 ---
 
@@ -34,8 +36,8 @@ created: "2026-10-12"
 | Threat ID | Category | Component | Severity | Disposition | Mitigation | Status |
 |-----------|----------|-----------|----------|-------------|------------|--------|
 | T-24-01 | Information Disclosure | raw key text in UI | high | mitigate | fingerprint keeps last 4; render test scans every semantics root with positive control; device capture 52 = 0 hits, control 54 = 1 | closed |
-| T-24-02 | Tampering | existing tests | high | mitigate | protected tests byte-identical to cffad79; src/test appended only | closed |
-| T-24-03 | Tampering | API or registry | medium | mitigate | api.txt byte-identical; registry counts 66+5 match docs | closed |
+| T-24-02 | Tampering | existing tests | high | mitigate | protected set byte-identical to cffad79; two non-protected source-contract tests (ClassicParity, ReceiptSourceContract) updated in lockstep with the v2.7.0 sheetState overload (reviewed 2026-10-14, not weakening) | closed |
+| T-24-03 | Tampering | API or registry | medium | mitigate | api.txt consistent with source (v2.7.0 adds the sheetState overload + handledBy members by design; identical to tagged 5206be9); registry unchanged, counts 66+5 match docs | closed |
 | T-24-04 | Repudiation | 92dp test | medium | mitigate | failing-first run recorded at 90.0dp | closed |
 | T-24-05 | Denial of Service | German 360dp overflow | medium | mitigate | w360dp native render tests + device P04/P09/P11 | closed |
 | T-24-06 | Information Disclosure | consumer nouns / key text | low | mitigate | LibraryInvariantsGuardTest + grep clean | closed |
@@ -81,6 +83,7 @@ to `sk-[A-Za-z0-9_-]{16,}`; re-record the real range count (187, not ~167).
 |------------|---------------|--------|------|--------|
 | 2026-10-12 (pre-cut) | 28 | 18 | 1 (non-blocking) + 9 pending-at-cut | gsd-security-auditor |
 | 2026-10-12 (post-cut) | 28 | 27 | 1 (non-blocking, AR-24-01) | gsd-security-auditor |
+| 2026-10-14 (v2.7.0 delta) | 28 | 27 | 1 (non-blocking, AR-24-01) | gsd-security-auditor |
 
 ---
 
@@ -91,6 +94,19 @@ to `sk-[A-Za-z0-9_-]{16,}`; re-record the real range count (187, not ~167).
 - [x] `threats_open: 0` confirmed (blocking count)
 - [x] Post-cut re-audit of T-24-20 to T-24-28 (closed)
 
-**Approval:** secured 2026-10-12 (post-cut)
+**Approval:** secured 2026-10-12 (post-cut); re-secured 2026-10-14 (v2.7.0 delta)
 
-Note: four planning-only commits are local and unpushed (f9569f2, e5ece62, 408c9da, eeb0ee0 and later); any push needs its own range/author/path/credential check.
+## Security Audit 2026-10-14
+| Metric | Count |
+|--------|-------|
+| Threats found | 28 |
+| Closed | 27 |
+| Open | 1 (T-24-16, below block threshold, AR-24-01) |
+
+v2.7.0 push hygiene (retroactive): the `git push origin v2.7.0` tag push published 154b4d8..5206be9 (11 commits,
+including planning commits f9569f2..12c4e74). Checked after the fact: single author/committer, hub paths only,
+no binaries, credential scan clean; device IDs added in 12c4e74 were already public in the v2.6.0 tree (T-24-22
+accepted low-risk class).
+
+Note: the only local, unpushed commits are planning-only (ba33189, b96d49a and later); any push needs its own
+range/author/path/credential check.
