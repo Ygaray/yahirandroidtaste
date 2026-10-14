@@ -68,11 +68,13 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * @param colors The warn and error tone pairs; feeds the Warn failure card and the Receipt badges,
  *   cards and pill dot. Defaults to [OutcomeSheetDefaults.colors].
  * @param sheetState The sheet's [SheetState], passed to [SheetScaffold] in both styles. Hoist it
- *   (`rememberModalBottomSheetState()` next to the call) to slide a finished sheet down: call
- *   `hide()` on it for Close/Done/Cancel and clear the outcome only after it returns. `hide()` does
- *   not invoke [onDismissRequest]. Keep ONE call site per sheet so swapping [outcome] keeps the same
- *   state. Required and passed by name here; a caller that does not hoist the state uses the
- *   overload without it, which keeps the previous internal [rememberModalBottomSheetState].
+ *   (`rememberModalBottomSheetState(skipPartiallyExpanded = true)` next to the call) to slide a
+ *   finished sheet down: call `hide()` on it for Close/Done/Cancel and clear the outcome only after
+ *   it returns. `hide()` does not invoke [onDismissRequest]. Keep ONE call site per sheet so swapping
+ *   [outcome] keeps the same state. Pass `skipPartiallyExpanded = true` as the overload without this
+ *   parameter does (v2.7.1): without it a tall sheet opens at half height with its pinned action bar
+ *   below the fold. Required and passed by name here; a caller that does not hoist the state uses
+ *   the overload without it.
  *
  * Why an overload and not a defaulted parameter: [SheetState] is `@ExperimentalMaterial3Api`, and
  * an experimental type anywhere in a signature makes EVERY call of that function require the
@@ -102,7 +104,9 @@ fun OutcomeSheet(
 /**
  * [OutcomeSheet] with the sheet's own internal [SheetState] (the v2.6.0 entry point, signature
  * unchanged, no opt-in needed). Identical to the hoisted-state overload above with
- * `sheetState = rememberModalBottomSheetState()`, the same default [SheetScaffold] uses.
+ * `sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)`: since v2.7.1 a tall
+ * sheet opens fully expanded, so its pinned action bar is on screen at once (a short sheet opens at
+ * its content height either way).
  *
  * @param outcome The command outcome to render.
  * @param onDismissRequest Invoked on scrim tap, back-press, or drag-to-dismiss.
@@ -125,7 +129,7 @@ fun OutcomeSheet(
         modifier = modifier,
         style = style,
         colors = colors,
-        sheetState = rememberModalBottomSheetState()
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     )
 }
 

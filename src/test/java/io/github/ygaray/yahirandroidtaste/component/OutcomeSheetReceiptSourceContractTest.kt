@@ -26,10 +26,11 @@ class OutcomeSheetReceiptSourceContractTest {
     @Test
     fun `OutcomeSheet declares exactly two public entry points, the hoisted-state one first`() {
         // CalTracker 76-14: the dispatching overload takes a required, named sheetState; the v2.6.0
-        // signature (no sheetState, no opt-in) delegates to it with rememberModalBottomSheetState().
+        // signature (no sheetState, no opt-in) delegates to it with a state that skips the partial
+        // detent (v2.7.1), so a tall sheet opens with its pinned bar on screen.
         assertEquals(2, SourceContractTestSupport.countOccurrences(sheetSource, "fun OutcomeSheet("))
         val delegating = SourceContractTestSupport.functionBody(sheetSource, "fun OutcomeSheet(", occurrence = 2).compact()
-        assertTrue(delegating.contains("sheetState=rememberModalBottomSheetState()"))
+        assertTrue(delegating.contains("sheetState=rememberModalBottomSheetState(skipPartiallyExpanded=true)"))
         assertFalse(delegating.contains("SheetScaffold("))
     }
 
