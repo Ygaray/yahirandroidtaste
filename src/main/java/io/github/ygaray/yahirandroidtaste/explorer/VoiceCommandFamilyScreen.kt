@@ -669,7 +669,7 @@ private fun OutcomeSheetVariants() {
 @Composable
 private fun ReceiptConfirmHandledByVariant(onShow: () -> Unit) {
     var shown by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     val slideDown: () -> Unit = {
         scope.launch { sheetState.hide() }.invokeOnCompletion { shown = false }
