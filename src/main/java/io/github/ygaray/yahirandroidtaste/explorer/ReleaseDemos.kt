@@ -187,26 +187,35 @@ private val DEMO_GROUP_MEMBERS = mapOf(
     DEMO_GROUP_EARLIER to listOf("demo-g2-a", "demo-g2-b")
 )
 
-/** The English and the German Undo Center with one open group, one resolved group and one flat row. */
+/**
+ * The English and the German Undo Center with one open group, one resolved group and one flat row. The
+ * German demo also localizes the header count and status words (v2.7.1).
+ */
 @Composable
 internal fun UndoGroupsDemos() {
     SectionLabel("UndoCenterScreen — group rows (Undo all, indented members)")
     UndoGroupsDemo(undoAllLabel = "Undo all", batchLabel = "Batch edit", tag = DEMO_TAG_UNDO_GROUPS)
-    SectionLabel("UndoCenterScreen — group rows, German Undo all")
+    SectionLabel("UndoCenterScreen — group rows, German labels")
     UndoGroupsDemo(
         undoAllLabel = GERMAN_UNDO_ALL,
         batchLabel = GERMAN_GROUP_LABEL,
-        tag = DEMO_TAG_UNDO_GROUPS_GERMAN
+        tag = DEMO_TAG_UNDO_GROUPS_GERMAN,
+        localize = ::germanGroupWords
     )
 }
 
 @Composable
-private fun UndoGroupsDemo(undoAllLabel: String, batchLabel: String, tag: String) {
+private fun UndoGroupsDemo(
+    undoAllLabel: String,
+    batchLabel: String,
+    tag: String,
+    localize: (UndoGroupRowUiModel) -> UndoGroupRowUiModel = { it }
+) {
     var entries by remember { mutableStateOf(demoUndoEntries()) }
     val groups = listOf(
         demoGroup(DEMO_GROUP_BATCH, batchLabel, undoAllLabel, entries),
         demoGroup(DEMO_GROUP_EARLIER, "Earlier batch", undoAllLabel, entries)
-    )
+    ).map(localize)
     // Tall enough that every row is composed in the lazy list: 3 + 1 + 2 members and two headers.
     Box(modifier = Modifier.fillMaxWidth().height(680.dp).testTag(tag)) {
         UndoCenterScreen(
@@ -224,6 +233,14 @@ private fun UndoGroupsDemo(undoAllLabel: String, batchLabel: String, tag: String
         )
     }
 }
+
+/** The German count (with its own plural rule) and status words a consumer would pass. */
+private fun germanGroupWords(group: UndoGroupRowUiModel) = group.copy(
+    countLabel = { count -> if (count == 1) "1 Eintrag" else "$count Einträge" },
+    undoableLabel = "Rückgängig möglich",
+    partlyResolvedLabel = "Teilweise erledigt",
+    resolvedLabel = "Erledigt"
+)
 
 private fun demoUndoEntries(): List<UndoHistoryEntry> {
     val now = System.currentTimeMillis()

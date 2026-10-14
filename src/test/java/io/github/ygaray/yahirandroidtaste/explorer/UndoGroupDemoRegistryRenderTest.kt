@@ -118,6 +118,14 @@ class UndoGroupDemoRegistryRenderTest {
     // --- German Undo all at 360dp ------------------------------------------------------------
 
     @Test
+    fun `the German demo localizes the header count and status words`() {
+        render()
+
+        text("3 Einträge · Rückgängig möglich", german).assertExists()
+        text("2 Einträge · Erledigt", german).assertExists()
+    }
+
+    @Test
     fun `the German Undo all label reads Alle rückgängig machen`() {
         render()
 
@@ -148,7 +156,7 @@ class UndoGroupDemoRegistryRenderTest {
         val groupLabel = text("Sammelbearbeitung der Positionen aus der letzten Sitzung", german).fetchSemanticsNode()
         val labelRight = groupLabel.positionInRoot.x + groupLabel.size.width
         assertTrue("group label right $labelRight must be <= button left $buttonLeft", labelRight <= buttonLeft)
-        val subtitle = text("3 items · Undoable", german).fetchSemanticsNode()
+        val subtitle = text("3 Einträge · Rückgängig möglich", german).fetchSemanticsNode()
         val subtitleRight = subtitle.positionInRoot.x + subtitle.size.width
         assertTrue("subtitle right $subtitleRight must be <= button left $buttonLeft", subtitleRight <= buttonLeft)
     }

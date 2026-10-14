@@ -489,4 +489,46 @@ class UndoCenterScreenGroupsTest {
         composeTestRule.onNodeWithText("2 items · Partly resolved").assertExists()
         composeTestRule.onNodeWithTag(undoAllTag("g1")).assertExists()
     }
+
+    // --- v2.7.1: caller-localizable count and status words (v2.6 Gate-2 item 10) ----------
+
+    private fun german(group: UndoGroupRowUiModel) = group.copy(
+        countLabel = { count -> if (count == 1) "1 Eintrag" else "$count Einträge" },
+        undoableLabel = "Rückgängig möglich",
+        partlyResolvedLabel = "Teilweise erledigt",
+        resolvedLabel = "Erledigt"
+    )
+
+    @Test
+    fun `caller labels replace the count and every status word`() {
+        showStatic(
+            entries = listOf(entry("a1"), entry("a2"), entry("b1"), entry("c1"), entry("c2")),
+            groups = listOf(
+                german(group("a", "a1", "a2")),
+                german(group("b", "b1", status = UndoGroupStatus.PartiallyResolved)),
+                german(group("c", "c1", "c2", status = UndoGroupStatus.FullyResolved))
+            )
+        )
+        composeTestRule.onNodeWithText("2 Einträge · Rückgängig möglich").assertExists()
+        composeTestRule.onNodeWithText("1 Eintrag · Teilweise erledigt").assertExists()
+        composeTestRule.onNodeWithText("2 Einträge · Erledigt").assertExists()
+    }
+
+    @Test
+    fun `an Empty status group shows only the caller count label`() {
+        showStatic(
+            entries = listOf(entry("m1")),
+            groups = listOf(german(group("g", "m1", status = UndoGroupStatus.Empty)))
+        )
+        composeTestRule.onNodeWithText("1 Eintrag").assertExists()
+    }
+
+    @Test
+    fun `the default labels keep the signed English wording`() {
+        val defaults = group("g", "m1")
+        assertEquals(null, defaults.countLabel)
+        assertEquals("Undoable", defaults.undoableLabel)
+        assertEquals("Partly resolved", defaults.partlyResolvedLabel)
+        assertEquals("Resolved", defaults.resolvedLabel)
+    }
 }

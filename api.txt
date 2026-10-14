@@ -863,23 +863,35 @@ package io.github.ygaray.yahirandroidtaste.feedback {
   }
 
   @androidx.compose.runtime.Immutable public final class UndoGroupRowUiModel {
-    ctor public UndoGroupRowUiModel(String groupId, String label, java.util.List<java.lang.String> memberIds, io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus status, optional String undoAllLabel);
+    ctor public UndoGroupRowUiModel(String groupId, String label, java.util.List<java.lang.String> memberIds, io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus status, optional String undoAllLabel, optional kotlin.jvm.functions.Function1<? super java.lang.Integer,java.lang.String>? countLabel, optional String undoableLabel, optional String partlyResolvedLabel, optional String resolvedLabel);
     method public String component1();
     method public String component2();
     method public java.util.List<java.lang.String> component3();
     method public io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus component4();
     method public String component5();
-    method public io.github.ygaray.yahirandroidtaste.feedback.UndoGroupRowUiModel copy(optional String groupId, optional String label, optional java.util.List<java.lang.String> memberIds, optional io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus status, optional String undoAllLabel);
+    method public kotlin.jvm.functions.Function1<java.lang.Integer,java.lang.String>? component6();
+    method public String component7();
+    method public String component8();
+    method public String component9();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoGroupRowUiModel copy(optional String groupId, optional String label, optional java.util.List<java.lang.String> memberIds, optional io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus status, optional String undoAllLabel, optional kotlin.jvm.functions.Function1<? super java.lang.Integer,java.lang.String>? countLabel, optional String undoableLabel, optional String partlyResolvedLabel, optional String resolvedLabel);
+    method @InaccessibleFromKotlin public kotlin.jvm.functions.Function1<java.lang.Integer,java.lang.String>? getCountLabel();
     method @InaccessibleFromKotlin public String getGroupId();
     method @InaccessibleFromKotlin public String getLabel();
     method @InaccessibleFromKotlin public java.util.List<java.lang.String> getMemberIds();
+    method @InaccessibleFromKotlin public String getPartlyResolvedLabel();
+    method @InaccessibleFromKotlin public String getResolvedLabel();
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus getStatus();
     method @InaccessibleFromKotlin public String getUndoAllLabel();
+    method @InaccessibleFromKotlin public String getUndoableLabel();
+    property public kotlin.jvm.functions.Function1<java.lang.Integer,java.lang.String>? countLabel;
     property public String groupId;
     property public String label;
     property public java.util.List<java.lang.String> memberIds;
+    property public String partlyResolvedLabel;
+    property public String resolvedLabel;
     property public io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus status;
     property public String undoAllLabel;
+    property public String undoableLabel;
   }
 
   public sealed exhaustive interface UndoGroupStatus {

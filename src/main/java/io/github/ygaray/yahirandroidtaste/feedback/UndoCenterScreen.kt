@@ -207,10 +207,10 @@ internal fun undoCenterRowKey(row: UndoCenterRow): String = when (row) {
     is UndoCenterRow.Entry -> "e:${row.entry.id}"
 }
 
-/** `1 item` for one, otherwise the number plus ` items`. English-only library text (D-06). */
+/** `1 item` for one, otherwise the number plus ` items`: the English default of [UndoGroupRowUiModel.countLabel]. */
 internal fun groupCountText(count: Int): String = if (count == 1) "1 item" else "$count items"
 
-/** The status words of a group header, or `null` for [UndoGroupStatus.Empty]. English-only library text. */
+/** The default English status words of a group header, or `null` for [UndoGroupStatus.Empty]. */
 internal fun groupStatusText(status: UndoGroupStatus): String? = when (status) {
     UndoGroupStatus.Undoable -> "Undoable"
     UndoGroupStatus.PartiallyResolved -> "Partly resolved"
@@ -230,6 +230,22 @@ internal fun undoAllVisible(status: UndoGroupStatus, onUndoGroup: ((String) -> U
 internal fun groupSubtitle(count: Int, status: UndoGroupStatus): String {
     val statusText = groupStatusText(status)
     return if (statusText == null) groupCountText(count) else "${groupCountText(count)} · $statusText"
+}
+
+/**
+ * The header subtitle built from [group]'s caller labels (v2.7.1): its [UndoGroupRowUiModel.countLabel]
+ * (or the English count) joined by a middle dot to its status label, just the count for
+ * [UndoGroupStatus.Empty]. With every label left at its default it equals [groupSubtitle].
+ */
+internal fun groupSubtitle(count: Int, group: UndoGroupRowUiModel): String {
+    val countText = group.countLabel?.invoke(count) ?: groupCountText(count)
+    val statusText = when (group.status) {
+        UndoGroupStatus.Undoable -> group.undoableLabel
+        UndoGroupStatus.PartiallyResolved -> group.partlyResolvedLabel
+        UndoGroupStatus.FullyResolved -> group.resolvedLabel
+        UndoGroupStatus.Empty -> null
+    }
+    return if (statusText == null) countText else "$countText · $statusText"
 }
 
 /**
@@ -256,7 +272,7 @@ private fun UndoGroupHeaderRow(row: UndoCenterRow.Group, onUndoGroup: ((String) 
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = groupSubtitle(row.memberCount, group.status),
+                text = groupSubtitle(row.memberCount, group),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 2

@@ -8,8 +8,9 @@ import androidx.compose.runtime.Immutable
  * stays stateless, so a consumer builds this projection from [UndoHistoryStore] on every
  * recomposition and nothing here is stored by the library.
  *
- * The member count and the status words are English-only library text under this shape; only the
- * Undo all button label is caller-overridable through [undoAllLabel].
+ * Every word on the header is caller-overridable: the Undo all button through [undoAllLabel], the
+ * member count through [countLabel] and the status words through [undoableLabel],
+ * [partlyResolvedLabel] and [resolvedLabel] (v2.7.1). The defaults are the English wording.
  *
  * @param groupId The store group id. Passed back to `onUndoGroup` when Undo all is tapped.
  * @param label The group's display label, typically `UndoHistoryStore.groupLabel(groupId)`.
@@ -18,6 +19,13 @@ import androidx.compose.runtime.Immutable
  * @param status The caller's projection of `UndoHistoryStore.groupStatus(groupId)`. Drives the
  *   status text and whether Undo all is shown (only for Undoable and PartiallyResolved).
  * @param undoAllLabel The text of the Undo all button. Defaults to `"Undo all"`.
+ * @param countLabel Formats the number of members present, for plural rules the caller owns.
+ *   `null` (the default) gives `"1 item"` / `"N items"`.
+ * @param undoableLabel The status text of an [UndoGroupStatus.Undoable] group. Defaults to `"Undoable"`.
+ * @param partlyResolvedLabel The status text of an [UndoGroupStatus.PartiallyResolved] group.
+ *   Defaults to `"Partly resolved"`.
+ * @param resolvedLabel The status text of an [UndoGroupStatus.FullyResolved] group. Defaults to
+ *   `"Resolved"`. An [UndoGroupStatus.Empty] group shows only the count.
  */
 @Immutable
 data class UndoGroupRowUiModel(
@@ -25,5 +33,9 @@ data class UndoGroupRowUiModel(
     val label: String,
     val memberIds: List<String>,
     val status: UndoGroupStatus,
-    val undoAllLabel: String = "Undo all"
+    val undoAllLabel: String = "Undo all",
+    val countLabel: ((count: Int) -> String)? = null,
+    val undoableLabel: String = "Undoable",
+    val partlyResolvedLabel: String = "Partly resolved",
+    val resolvedLabel: String = "Resolved"
 )
