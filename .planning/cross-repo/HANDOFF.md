@@ -104,6 +104,35 @@ Session names can change after a restart. If one doesn't resolve, ask the orches
 
 ---
 
+## Current state (2026-10-14, later) — v2.7.1 SHIPPED; parked
+
+**v2.7.1 was cut and is JitPack-live.**
+- **Tag:** annotated `v2.7.1`, tag object `7068729a17f709900052547cf21980c08931a6ec`, on commit
+  `f60bfc4`. JitPack reports ok and the pom returns HTTP 200.
+- **§11:** the teamlead recorded the row (`dbf7004`) and owns the CalTracker repin.
+- **Contents:**
+  - tall outcome sheets skip the partial detent;
+  - localizable Undo Center group count and status words (`UndoGroupRowUiModel`, 4 appended fields);
+  - a 16dp inset on the count-editor demo;
+  - the hoisted-sheetState demo passes `skipPartiallyExpanded = true`.
+- **Gates:** 1338 tests with 0 failures, detekt 0, apiCheck green, run-all green, and additive vs
+  v2.7.0 (+12 members, 0 accepted exceptions).
+- **TESTER Gate-1:** 4/4 PASS. Evidence is in `.planning/v2.7.1-gate-evidence/`. The device window
+  was claimed in `4939e55` and released in `113dd13`.
+
+**Ordering note:** the tag push happened on Yahir's in-session "ok", before the teamlead's
+amend-first condition arrived. `f60bfc4` names two tailnet IPs, but both were already public. The
+fix-forward `4347130` redacts them to aliases and is pushed to main. The teamlead accepted this and
+asked for no hub-wide sweep.
+
+**Git:** `origin/main` = `4347130`. The local commit after it is just this handoff and the
+CLAUDE.md "current release" bump.
+
+**Next:** nothing in flight. The backlog is ROADMAP 999.1-999.4. 999.4 now also holds the two
+v2.7.1 Gate-1 advisories (f, g). Wait for the teamlead.
+
+---
+
 ## Current state (2026-10-14) — v2.6 CLOSED; v2.7.1 approved, waiting on the teamlead's GO; NOTHING pushed
 
 **Stage:** milestone v2.6 is closed: settled, certified, Gate-2, audited, completed and archived. No
