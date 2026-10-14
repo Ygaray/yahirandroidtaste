@@ -187,6 +187,8 @@ Source: Yahir, v2.6 Gate-2 and certify advisory 2.
 - (c) A long group label is cut at 2 lines next to a long German Undo all.
 - (d) The key field stays typeable while `inFlight`.
 - (e) The group header count shows members present, not members still undoable.
+- (f) The count-editor demo's warn card sits flush on the bottom nav bar (no bottom spacing; v2.7.1 Gate-1 advisory).
+- (g) The German group subtitle "3 Einträge · Rückgängig möglich" already fills its 2 allowed lines at 384/360dp; a longer status word may clip (v2.7.1 Gate-1 advisory).
 
 Source: Yahir, v2.6 Gate-2 2026-10-14.
 

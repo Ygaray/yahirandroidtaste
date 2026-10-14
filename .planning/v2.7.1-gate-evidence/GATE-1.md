@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-14 · **Verdict: all 4 probes PASS** · diagnose-only, nothing fixed, committed, tagged or pushed.
 
-**Device:** tester `yahirs-s22-ultra-2`, SM-S908U, USB serial `R5CT10XNKQN`, Android 15. Every adb command used `-s R5CT10XNKQN`. `100.118.21.106:1496` (same phone, wireless) and the personal phone `100.126.94.47:39087` were listed in `adb devices` but never addressed. Geometry: 1080x2316 override on a 1440x3088 panel, 450 dpi, so 1 dp = 2.8125 px and the screen is 384 dp wide (3 px/dp at the 480-dpi 360 dp check). The navigation bar is 3-button, frame `[0,2181][1080,2316]` (from `dumpsys window` InsetsSource navigationBars).
+**Device:** tester `yahirs-s22-ultra-2`, SM-S908U, USB serial `R5CT10XNKQN`, Android 15. Every adb command used `-s R5CT10XNKQN`. The TESTER's wireless adb endpoint and the PERSONAL phone were listed in `adb devices` but never addressed. Geometry: 1080x2316 override on a 1440x3088 panel, 450 dpi, so 1 dp = 2.8125 px and the screen is 384 dp wide (3 px/dp at the 480-dpi 360 dp check). The navigation bar is 3-button, frame `[0,2181][1080,2316]` (from `dumpsys window` InsetsSource navigationBars).
 
 **Driver:** `AGENT-DEVICE-TESTING.md` D1-D7 (same-package harness launching `ExplorerActivity`), driven by text with host-side uiautomator helpers in the session scratchpad. Bounds are read from the dumps; the button bounds below are the nearest `clickable` ancestor of the label.
 
