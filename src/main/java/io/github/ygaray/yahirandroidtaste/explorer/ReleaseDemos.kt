@@ -312,7 +312,7 @@ private const val DARK_SURFACE_LUMINANCE = 0.5f
 internal fun CountEditorDemo() {
     var selected by remember { mutableIntStateOf(0) }
     HubSchemeScope {
-        Column(modifier = Modifier.fillMaxWidth().testTag(DEMO_TAG_COUNT_EDITOR)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).testTag(DEMO_TAG_COUNT_EDITOR)) {
             Text("Count", style = MaterialTheme.typography.labelLarge)
             SegmentedOptionSelector(
                 selectedIndex = selected,
