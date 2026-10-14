@@ -268,7 +268,7 @@ below. `OutcomeSheet` keeps rendering the Classic look unless a caller passes
 | `ProviderKeyActions` | `model` | `@Immutable data class ProviderKeyActions(onSave, saveEnabled = true, onUpdate: (() -> Unit)? = null, onClear: (() -> Unit)? = null, onCancelEdit: (() -> Unit)? = null, inFlight = false)`. A `null` callback hides that button; `inFlight = true` disables every action and the provider dropdown. |
 | `ProviderKeyLabels` | `model` | `@Immutable data class ProviderKeyLabels(save = "Save", update = "Update", clear = "Clear", cancel = "Cancel", savedPrefix = "Saved", savedMarker = "saved")`. The summary renders `"<savedPrefix> · <fingerprint>"`; `savedMarker` is appended to providers that have a saved key in the dropdown. |
 | `ProviderKeyDefaults` | `component` | `labels(save, update, clear, cancel, savedPrefix, savedMarker)`: builds a `ProviderKeyLabels`, every argument optional with the English default. |
-| `UndoGroupRowUiModel` | `feedback` | `@Immutable data class UndoGroupRowUiModel(groupId, label, memberIds: List<String>, status: UndoGroupStatus, undoAllLabel = "Undo all")`: the caller's projection of one `UndoHistoryStore` group for `UndoCenterScreen`. The member count and the status words are English-only library text; only the button label is overridable. |
+| `UndoGroupRowUiModel` | `feedback` | `@Immutable data class UndoGroupRowUiModel(groupId, label, memberIds: List<String>, status: UndoGroupStatus, undoAllLabel = "Undo all", countLabel: ((Int) -> String)? = null, undoableLabel = "Undoable", partlyResolvedLabel = "Partly resolved", resolvedLabel = "Resolved")`: the caller's projection of one `UndoHistoryStore` group for `UndoCenterScreen`. Every header word is caller-overridable (v2.7.1 appended the count formatter and the three status labels); `countLabel = null` gives `"1 item"` / `"N items"`. |
 
 ### Dimens token groups
 
@@ -299,7 +299,7 @@ Both are opt-in; with neither set, every v2.6.0 call site renders exactly as at 
 | Surface | Addition | Behaviour |
 |---------|----------|-----------|
 | `VoiceOutcomeUiState.NeedsConfirmation` | `handledBy: HandledByUiModel? = null`, inserted after `titleActions` and before `onConfirm` and `onCancel` | The Receipt confirm body draws the handled-by pill (`outcome_sheet_handled_by`) directly under the title row, the same pill and order as `Success`. `null` draws nothing; Classic ignores it. `toString` still prints only the item count, selection mode and severity. |
-| `OutcomeSheet` | A new overload ending in a required `sheetState: SheetState`, passed by name; both styles hand it to `SheetScaffold` | Hoist one `rememberModalBottomSheetState()` next to a single `OutcomeSheet` call and `hide()` it for Close / Done / Cancel before clearing the outcome, so the sheet slides down instead of popping. `hide()` does not call `onDismissRequest`. The v2.6.0 signature (no `sheetState`) is unchanged and delegates with `rememberModalBottomSheetState()`. |
+| `OutcomeSheet` | A new overload ending in a required `sheetState: SheetState`, passed by name; both styles hand it to `SheetScaffold` | Hoist one `rememberModalBottomSheetState()` next to a single `OutcomeSheet` call and `hide()` it for Close / Done / Cancel before clearing the outcome, so the sheet slides down instead of popping. `hide()` does not call `onDismissRequest`. The v2.6.0 signature (no `sheetState`) is unchanged; since v2.7.1 it delegates with `rememberModalBottomSheetState(skipPartiallyExpanded = true)`. |
 
 **Compatibility scope.** Like v2.6.0, the inserted `handledBy` breaks only a positional
 `NeedsConfirmation` construction, a positional `copy(...)` that reaches the lambdas and
@@ -311,6 +311,16 @@ experimental type anywhere in a signature makes every call of that function requ
 a call that leaves the parameter at its default. Only a caller that passes `sheetState` reaches the
 new overload and needs `@OptIn(ExperimentalMaterial3Api::class)`. The three `NeedsConfirmation`
 signatures are the reviewed exceptions of `tools/verify-api-source-additive.sh v2.6.0`.
+
+### Changes in v2.7.1
+
+A patch: no existing call site changes, and the only API addition is four appended, defaulted
+`UndoGroupRowUiModel` fields.
+
+| Surface | Change | Behaviour |
+|---------|--------|-----------|
+| `OutcomeSheet` (signature without `sheetState`) | Delegates with `rememberModalBottomSheetState(skipPartiallyExpanded = true)` | A tall sheet opens fully expanded, so its pinned Cancel / Confirm bar is on screen at once instead of below the fold (or under the 3-button navigation bar). A short sheet opens at its content height as before. A caller that hoists its own `sheetState` should pass `skipPartiallyExpanded = true` for the same result. |
+| `UndoGroupRowUiModel` | Appends `countLabel: ((count: Int) -> String)? = null`, `undoableLabel = "Undoable"`, `partlyResolvedLabel = "Partly resolved"`, `resolvedLabel = "Resolved"` | The group header's `count · status` subtitle uses the caller's words; `countLabel` owns the plural rule. The defaults render the v2.7.0 English text. Appended after `undoAllLabel`, so every existing positional or named construction compiles unchanged. |
 
 ### XR-178-01 mapping
 
@@ -548,7 +558,8 @@ defaulted.
   `secondaryAction`, `prefixLabel`, `onDevice`, `icon`), honors `FailureTone.Warn`, `confirmEnabled`
   and `Failure.undo`, and keeps its tags.
 - The group count and status words of an `UndoCenterScreen` group row ("3 items", "Undoable",
-  "Resolved") are English-only library text; only `UndoGroupRowUiModel.undoAllLabel` is overridable.
+  "Resolved") were English-only library text up to v2.7.0; v2.7.1 makes them caller-overridable through
+  `UndoGroupRowUiModel.countLabel`, `undoableLabel`, `partlyResolvedLabel` and `resolvedLabel`.
 - Guards that keep this true: `V251CallSiteCanaryTest` compiles verbatim v2.5.1 call shapes of the nine
   affected surfaces (consumer and Explorer call sites), `tools/verify-api-source-additive.sh <tag>`
   reviews `api.txt` against the baseline tag (no removed symbol, no changed required parameter, no

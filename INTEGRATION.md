@@ -272,8 +272,10 @@ UndoCenterScreen(
   positional arguments no longer compiles, because `groups` and `onUndoGroup` now sit before the
   trailing `onClear`. Name it (`onClear = …`) or pass it as the trailing lambda; every named and
   trailing-lambda form compiles.
-- The member count and status words of a group row ("3 items", "Undoable", "Resolved") are
-  English-only library text; only `undoAllLabel` is overridable.
+- Every word of a group row is caller-overridable (v2.7.1): `undoAllLabel`, `countLabel` (a
+  `(Int) -> String` that owns your plural rule; `null` gives "1 item" / "N items"), `undoableLabel`,
+  `partlyResolvedLabel` and `resolvedLabel`. Pass your localized strings, for example
+  `countLabel = { n -> pluralStringResource(R.plurals.undo_items, n, n) }` resolved in composition.
 
 **(iv) Seeing it work.** The Explorer gallery has demos for all of the above: the Receipt `OutcomeSheet`
 states under `OutcomeSheet`, the count editor under `SegmentedOptionSelector`, the key lifecycle under
@@ -289,13 +291,13 @@ additions shipped in v2.7.0:
   `handledBy`; the lambdas are `component13()` and `component14()`). Named calls, which is what both
   consumers write, compile unchanged.
 - `OutcomeSheet(…, sheetState = state)` is a new overload with a required, named `sheetState` that
-  both styles pass to `SheetScaffold`. Hoist one `rememberModalBottomSheetState()` next to a SINGLE
+  both styles pass to `SheetScaffold`. Hoist one `rememberModalBottomSheetState(skipPartiallyExpanded = true)` next to a SINGLE
   `OutcomeSheet` call (swap the `outcome`, don't swap call sites), then slide a finished sheet down on
   Close / Done / Cancel and clear the outcome only afterwards; `hide()` does not call
   `onDismissRequest`:
 
 ```kotlin
-val sheetState = rememberModalBottomSheetState()
+val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 val scope = rememberCoroutineScope()
 outcome?.let {
     OutcomeSheet(outcome = it, onDismissRequest = { outcome = null }, style = OutcomeSheetStyle.Receipt, sheetState = sheetState)
@@ -306,6 +308,9 @@ fun close() = scope.launch { sheetState.hide() }.invokeOnCompletion { outcome = 
   `SheetState` is `@ExperimentalMaterial3Api`, so a call that passes it needs the opt-in. The v2.6.0
   signature without `sheetState` is untouched and needs no opt-in, which is why this is an overload and
   not a defaulted parameter (an experimental type in a signature demands the opt-in on every call).
+  Pass `skipPartiallyExpanded = true` (v2.7.1): the overload without `sheetState` does, so a tall sheet
+  opens fully expanded with its pinned Cancel / Confirm bar on screen; a hoisted plain
+  `rememberModalBottomSheetState()` would still open a tall sheet at half height.
 
 ## 6. (Optional) The component gallery
 
