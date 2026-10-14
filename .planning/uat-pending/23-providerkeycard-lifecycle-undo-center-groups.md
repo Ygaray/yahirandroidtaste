@@ -1,6 +1,10 @@
 ### Phase 23 — providerkeycard-lifecycle-undo-center-groups (v2.6)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-14`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Drain-Sig:** `b09e189300880d47dc41e3ef75478bdb268ddea5eeb423a76ab2d767eb5be72c` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:2d8217b97fe104599b685652cf802ae362c59a2bfc901204423baa5ec98f58d3` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.6 (Receipt voice surfaces + ProviderKeyCard lifecycle)
 - **Gate 1 self-UAT log:** [`.planning/phases/23-providerkeycard-lifecycle-undo-center-groups/23-02-SELF-UAT.md`](phases/23-providerkeycard-lifecycle-undo-center-groups/23-02-SELF-UAT.md) — Verdict: **ALL 4 criteria PASS** (device SM-S908U tester `R5CT10XNKQN`, harness against library AAR md5 `a695b8258e9e45c39ba9dad4b3cf359a` @ `deae923`, uat_run `uatr-20261012T223815Z-1f8b52e0`, 2026-10-12; a fresh signed re-run per INC-2026-10-12-02 supersedes the earlier run `uatr-20261012T172501Z-65a2a2aa`, which had 3 void captures). Fresh Robolectric/detekt/apiCheck run in the main checkout 1315 tests / 22 skipped / 0 failures; default `ProviderKeyCard` (4 states) and default `UndoCenterScreen` (3 states) pixel-identical (diff sum 0, identical UI trees) to a real v2.5.1 build; the 20 probe cases of the plan exercised on the real device through a throwaway harness, including a real `UndoHistoryStore` for the Undo Center.
 - **Items covered (4 ROADMAP success criteria):**

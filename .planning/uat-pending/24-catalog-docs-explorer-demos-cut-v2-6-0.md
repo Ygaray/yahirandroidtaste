@@ -1,6 +1,10 @@
 ### Phase 24 — catalog-docs-explorer-demos-cut-v2-6-0 (v2.6)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-14`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Drain-Sig:** `d759e0f5ff15077d133debd57ad9dc6394608dd5f63df9d6d4c1bd0dca2941d3` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:753b3a7f148f5f37b96d021be971842eaebd059767609108c7d314e28b1e3db9` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.6 (Receipt voice surfaces + ProviderKeyCard lifecycle)
 - **Gate 1 self-UAT log:** [`.planning/phases/24-catalog-docs-explorer-demos-cut-v2-6-0/24-03-SELF-UAT.md`](phases/24-catalog-docs-explorer-demos-cut-v2-6-0/24-03-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device SM-S908U tester `R5CT10XNKQN`, harness against library AAR md5 `a695b8258e9e45c39ba9dad4b3cf359a` @ `13039d1`, harness APK md5 `a853f475e555ca1b282840afb52786be`, uat_run `uatr-20261012T230611Z-4dbe72cf`, 90 signed captures, 2026-10-12). Fresh uncached Robolectric/detekt/apiCheck run 1315 tests / 22 skipped / 0 failures; every DEMO-01 demo driven on the real tester through the Explorer; 33 tester screencaps kept for the owner. The review is AFTER the cut (D-03); an objection ships as `v2.6.1` because `v2.6.0` is immutable (Y-15).
 - **Items covered (5 ROADMAP success criteria):**

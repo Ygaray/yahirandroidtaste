@@ -268,7 +268,11 @@
 
 ### Phase 20 — tone-foundation-atoms (v2.6)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-14`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Drain-Sig:** `f2e0b3138fb2260575086eb2729eb47ee1c2c7f12d5d39c440ff6dc199e09ce0` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:88d6ee37d66a20b274948d80005157905b9c2bd289a39742e7960f1201c34451` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.6 (Receipt voice surfaces + ProviderKeyCard lifecycle)
 - **Gate 1 self-UAT log:** [`.planning/phases/20-tone-foundation-atoms/20-04-SELF-UAT.md`](phases/20-tone-foundation-atoms/20-04-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device SM-S908U tester `R5CT10XNKQN`, harness against library AAR md5 `aab6d21f0faf978c2300ce5df6c66d88` @ `3015de6`, uat_run `uatr-20261012T112516Z-132c1d6b`, 2026-10-12). Fresh Robolectric/detekt/apiCheck run 869 tests / 22 skipped / 0 failures; on-device pixel/geometry checks of ToneCard, the DynamicActionButton emphasis matrix, RoundIconButton, PillChip and StackedProgressBar; legacy `DynamicActionButton` rendering pixel-identical to a real v2.5.1 build.
 - **Items covered (5 ROADMAP success criteria):**
@@ -286,7 +290,11 @@
 
 ### Phase 21 — receipt-row-pill-selector-sheet-shape (v2.6)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-14`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Drain-Sig:** `cda971dd7530c54f4d20b260de2750e92d7584b6d0975b17c834d01f4d547197` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:ceb0ea29e247ed5886fa56c6f6e6ba2c3eb732b06c47f159fcf2c30269aee17d` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.6 (Receipt voice surfaces + ProviderKeyCard lifecycle)
 - **Gate 1 self-UAT log:** [`.planning/phases/21-receipt-row-pill-selector-sheet-shape/21-04-SELF-UAT.md`](phases/21-receipt-row-pill-selector-sheet-shape/21-04-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device SM-S908U tester `R5CT10XNKQN`, harness against library AAR md5 `a713b0620ae0d6dfa254e699c6ff65f2` @ `5aee7dd`, uat_run `uatr-20261012T130416Z-9e032ae3`, 2026-10-12). Fresh Robolectric/detekt/apiCheck run in the main checkout 968 tests / 22 skipped / 0 failures; on-device checks of `ReceiptRow` (360 dp German overflow, chevron rule and rotation, 38% dim + strikethrough, full-width expanded content, 92 dp), the Pill selector and `disabledOptions`, the shaped `SheetScaffold`, and the single-open accordion; defaulted `SegmentedOptionSelector` and `SheetScaffold` pixel-identical to a real v2.5.1 build.
 - **Items covered (5 ROADMAP success criteria):**
@@ -306,7 +314,11 @@
 
 ### Phase 22 — outcomesheet-receipt-style (v2.6)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-14`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Drain-Sig:** `25b5f1f2889339e5c7fe4b12d31f4f5f5eb7495859414955e6ee85f740093b4b` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:3af98d86574dbad1bcce0cb3b571a58fdc24301e48f556c6f3371433b82696dd` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.6 (Receipt voice surfaces + ProviderKeyCard lifecycle)
 - **Gate 1 self-UAT log:** [`.planning/phases/22-outcomesheet-receipt-style/22-05-SELF-UAT.md`](phases/22-outcomesheet-receipt-style/22-05-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device SM-S908U tester `R5CT10XNKQN`, harness against library AAR md5 `da3f1049de9bdd4e8674d5d41b76c415` @ `5117d74`, uat_run `uatr-20261012T152444Z-94e3da8a`, 2026-10-12). Fresh Robolectric/detekt/apiCheck run in the main checkout 1141 tests / 22 skipped / 0 failures; all 11 Classic `OutcomeSheet` states pixel-identical (diff sum 0, identical UI trees) to a real v2.5.1 build; Receipt confirm, success and failure probed on the real device including the WR-01 (short Cancel next to a long German Confirm) and IN-01 (16 dp under the Success actions row) review fixes.
 - **Items covered (5 ROADMAP success criteria):**
@@ -326,7 +338,11 @@
 
 ### Phase 23 — providerkeycard-lifecycle-undo-center-groups (v2.6)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-14`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Drain-Sig:** `b09e189300880d47dc41e3ef75478bdb268ddea5eeb423a76ab2d767eb5be72c` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:2d8217b97fe104599b685652cf802ae362c59a2bfc901204423baa5ec98f58d3` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.6 (Receipt voice surfaces + ProviderKeyCard lifecycle)
 - **Gate 1 self-UAT log:** [`.planning/phases/23-providerkeycard-lifecycle-undo-center-groups/23-02-SELF-UAT.md`](phases/23-providerkeycard-lifecycle-undo-center-groups/23-02-SELF-UAT.md) — Verdict: **ALL 4 criteria PASS** (device SM-S908U tester `R5CT10XNKQN`, harness against library AAR md5 `a695b8258e9e45c39ba9dad4b3cf359a` @ `deae923`, uat_run `uatr-20261012T223815Z-1f8b52e0`, 2026-10-12; a fresh signed re-run per INC-2026-10-12-02 supersedes the earlier run `uatr-20261012T172501Z-65a2a2aa`, which had 3 void captures). Fresh Robolectric/detekt/apiCheck run in the main checkout 1315 tests / 22 skipped / 0 failures; default `ProviderKeyCard` (4 states) and default `UndoCenterScreen` (3 states) pixel-identical (diff sum 0, identical UI trees) to a real v2.5.1 build; the 20 probe cases of the plan exercised on the real device through a throwaway harness, including a real `UndoHistoryStore` for the Undo Center.
 - **Items covered (4 ROADMAP success criteria):**
@@ -346,7 +362,11 @@
 
 ### Phase 24 — catalog-docs-explorer-demos-cut-v2-6-0 (v2.6)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-14`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Drain-Sig:** `d759e0f5ff15077d133debd57ad9dc6394608dd5f63df9d6d4c1bd0dca2941d3` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:753b3a7f148f5f37b96d021be971842eaebd059767609108c7d314e28b1e3db9` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.6 (Receipt voice surfaces + ProviderKeyCard lifecycle)
 - **Gate 1 self-UAT log:** [`.planning/phases/24-catalog-docs-explorer-demos-cut-v2-6-0/24-03-SELF-UAT.md`](phases/24-catalog-docs-explorer-demos-cut-v2-6-0/24-03-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device SM-S908U tester `R5CT10XNKQN`, harness against library AAR md5 `a695b8258e9e45c39ba9dad4b3cf359a` @ `13039d1`, harness APK md5 `a853f475e555ca1b282840afb52786be`, uat_run `uatr-20261012T230611Z-4dbe72cf`, 90 signed captures, 2026-10-12). Fresh uncached Robolectric/detekt/apiCheck run 1315 tests / 22 skipped / 0 failures; every DEMO-01 demo driven on the real tester through the Explorer; 33 tester screencaps kept for the owner. The review is AFTER the cut (D-03); an objection ships as `v2.6.1` because `v2.6.0` is immutable (Y-15).
 - **Items covered (5 ROADMAP success criteria):**

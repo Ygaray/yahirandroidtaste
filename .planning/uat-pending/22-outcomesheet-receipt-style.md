@@ -1,6 +1,10 @@
 ### Phase 22 — outcomesheet-receipt-style (v2.6)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-14`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Drain-Sig:** `25b5f1f2889339e5c7fe4b12d31f4f5f5eb7495859414955e6ee85f740093b4b` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:3af98d86574dbad1bcce0cb3b571a58fdc24301e48f556c6f3371433b82696dd` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.6 (Receipt voice surfaces + ProviderKeyCard lifecycle)
 - **Gate 1 self-UAT log:** [`.planning/phases/22-outcomesheet-receipt-style/22-05-SELF-UAT.md`](phases/22-outcomesheet-receipt-style/22-05-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device SM-S908U tester `R5CT10XNKQN`, harness against library AAR md5 `da3f1049de9bdd4e8674d5d41b76c415` @ `5117d74`, uat_run `uatr-20261012T152444Z-94e3da8a`, 2026-10-12). Fresh Robolectric/detekt/apiCheck run in the main checkout 1141 tests / 22 skipped / 0 failures; all 11 Classic `OutcomeSheet` states pixel-identical (diff sum 0, identical UI trees) to a real v2.5.1 build; Receipt confirm, success and failure probed on the real device including the WR-01 (short Cancel next to a long German Confirm) and IN-01 (16 dp under the Success actions row) review fixes.
 - **Items covered (5 ROADMAP success criteria):**

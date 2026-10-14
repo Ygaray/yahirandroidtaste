@@ -1,6 +1,10 @@
 ### Phase 20 — tone-foundation-atoms (v2.6)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-14`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Drain-Sig:** `f2e0b3138fb2260575086eb2729eb47ee1c2c7f12d5d39c440ff6dc199e09ce0` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:88d6ee37d66a20b274948d80005157905b9c2bd289a39742e7960f1201c34451` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.6 (Receipt voice surfaces + ProviderKeyCard lifecycle)
 - **Gate 1 self-UAT log:** [`.planning/phases/20-tone-foundation-atoms/20-04-SELF-UAT.md`](phases/20-tone-foundation-atoms/20-04-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device SM-S908U tester `R5CT10XNKQN`, harness against library AAR md5 `aab6d21f0faf978c2300ce5df6c66d88` @ `3015de6`, uat_run `uatr-20261012T112516Z-132c1d6b`, 2026-10-12). Fresh Robolectric/detekt/apiCheck run 869 tests / 22 skipped / 0 failures; on-device pixel/geometry checks of ToneCard, the DynamicActionButton emphasis matrix, RoundIconButton, PillChip and StackedProgressBar; legacy `DynamicActionButton` rendering pixel-identical to a real v2.5.1 build.
 - **Items covered (5 ROADMAP success criteria):**

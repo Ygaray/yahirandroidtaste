@@ -1,6 +1,10 @@
 ### Phase 21 — receipt-row-pill-selector-sheet-shape (v2.6)
 
-- **Status:** `pending`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-14`            <!-- pending | signed-off | signed-off-with-gap; owner adds date+name on sign-off -->
+- **Drain-Sig:** `cda971dd7530c54f4d20b260de2750e92d7584b6d0975b17c834d01f4d547197` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:ceb0ea29e247ed5886fa56c6f6e6ba2c3eb732b06c47f159fcf2c30269aee17d` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.6 (Receipt voice surfaces + ProviderKeyCard lifecycle)
 - **Gate 1 self-UAT log:** [`.planning/phases/21-receipt-row-pill-selector-sheet-shape/21-04-SELF-UAT.md`](phases/21-receipt-row-pill-selector-sheet-shape/21-04-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device SM-S908U tester `R5CT10XNKQN`, harness against library AAR md5 `a713b0620ae0d6dfa254e699c6ff65f2` @ `5aee7dd`, uat_run `uatr-20261012T130416Z-9e032ae3`, 2026-10-12). Fresh Robolectric/detekt/apiCheck run in the main checkout 968 tests / 22 skipped / 0 failures; on-device checks of `ReceiptRow` (360 dp German overflow, chevron rule and rotation, 38% dim + strikethrough, full-width expanded content, 92 dp), the Pill selector and `disabledOptions`, the shaped `SheetScaffold`, and the single-open accordion; defaulted `SegmentedOptionSelector` and `SheetScaffold` pixel-identical to a real v2.5.1 build.
 - **Items covered (5 ROADMAP success criteria):**
