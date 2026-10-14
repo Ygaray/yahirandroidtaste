@@ -3,12 +3,13 @@ gsd_state_version: "1.0"
 milestone: v2.6
 milestone_name: Receipt voice surfaces + ProviderKeyCard lifecycle
 current_phase: 24
+current_phase_name: all complete; phase 24 settled
 status: completed
 stopped_at: Phase 24 complete — all phases complete
-last_updated: "2026-10-13T00:25:14.614Z"
-last_activity: 2026-10-13
-last_activity_desc: v2.7.0 cut (CT P76 hub asks); parked overnight for Gate-2
-state_head: c790147a45d6175b6a91090fa66b7f020b2910df
+last_updated: "2026-10-14T20:35:22.156Z"
+last_activity: 2026-10-14
+last_activity_desc: Phase 24 complete
+state_head: 1c4a7e0c0cfc51f1bbeaeb06b3d98820ffaba55f
 progress:
   total_phases: 5
   completed_phases: 5
@@ -28,13 +29,14 @@ See: .planning/PROJECT.md (updated 2026-10-11)
 
 ## Current Position
 
-Phase: 24 of 24 (all complete; the master settle of 24 is still pending)
+Phase: 24 of 24 (all complete; phase 24 settled 2026-10-14)
 Plan: 19/19 complete
-Status: Executed. `v2.6.0` cut (tag `b837d02` → `78d89cf`), pushed (`origin/main` = `154b4d8`) and
+Status: Executed and settled. `v2.6.0` cut (tag `b837d02` → `78d89cf`), pushed (`origin/main` = `154b4d8`) and
 JitPack-confirmed. `v2.7.0` cut 2026-10-13 (tag `f95f165` → `5206be9`, CT P76 asks: optional
 `NeedsConfirmation.handledBy` + hoistable `sheetState` `OutcomeSheet` overload), tag-only push, JitPack-confirmed.
-PARKED overnight: Yahir runs Gate-2 on 2026-10-14; no gsd-tools until the teamlead says RESUME (B3).
-Last activity: 2026-10-13 — v2.7.0 cut; phases 16-18 Gate-2 drains committed (`ba33189`)
+RESUMED 2026-10-14: P24 security + verification re-run at HEAD after the v2.7.0 delta, settled, barrier clear.
+Next: certify, then Gate-2 with Yahir (Y-15 signed off 2026-10-14). No push until asked.
+Last activity: 2026-10-14 — Phase 24 settled (security + verification refreshed for the v2.7.0 delta)
 
 Progress: [██████████] 100%
 
@@ -122,7 +124,7 @@ Items acknowledged and carried forward, most recent first:
 ## Session Continuity
 
 Last session: 2026-10-13
-Stopped at: v2.6.0 and v2.7.0 cut + JitPack-live; parked overnight for Yahir's Gate-2 (no gsd-tools until the teamlead says RESUME).
+Stopped at: Phase 24 complete — all phases complete
 Resume file: .planning/cross-repo/HANDOFF.md § "Current state (2026-10-13)"
 
 ## Operator Next Steps
