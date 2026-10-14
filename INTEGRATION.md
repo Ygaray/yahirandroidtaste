@@ -279,8 +279,8 @@ UndoCenterScreen(
 states under `OutcomeSheet`, the count editor under `SegmentedOptionSelector`, the key lifecycle under
 `ProviderKeyCard` and the group rows under `UndoCenterScreen`.
 
-**(v) After v2.6.0: the confirm-sheet handler pill and a hoistable sheet state.** Two more opt-in
-additions ship with the next tag after v2.6.0:
+**(v) v2.7.0: the confirm-sheet handler pill and a hoistable sheet state.** Two more opt-in
+additions shipped in v2.7.0:
 
 - `NeedsConfirmation(handledBy = HandledByUiModel(…))` draws the same handled-by pill as `Success`
   directly under the Receipt confirm title row. `null` (the default) draws nothing and Classic ignores

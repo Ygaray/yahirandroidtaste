@@ -292,7 +292,7 @@ are inserted before the two required lambdas (see the compatibility scope below)
 | `FailureActionUiModel` | `icon: ImageVector? = null` | The Receipt failure button draws it; the explicit `(label, onClick)` constructor and the trailing-lambda form keep working. |
 | `HandledByUiModel` | `prefixLabel: String = "Handled by"` and `onDevice: Boolean = false` | Receipt renders a pill: a 6dp dot (`primary`, or the warn tone content when `onDevice`), `"<prefixLabel> "`, the tier in SemiBold, then `" · <approach / provider / model>"`. Classic `HandledByRow` ignores both. |
 
-### Additions after v2.6.0 (next tag)
+### Additions in v2.7.0
 
 Both are opt-in; with neither set, every v2.6.0 call site renders exactly as at v2.6.0.
 
