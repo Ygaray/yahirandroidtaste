@@ -623,7 +623,11 @@ private fun SuccessBodyOpenTarget(
         Text(text = success.summary, style = MaterialTheme.typography.headlineSmall)
         success.handledBy?.let { HandledByRow(it) }
         SuccessOpenTargetRow(success, onOpenTarget)
-        success.batchResults.takeIf { it.isNotEmpty() }?.let { BatchResultsList(it) }
+        if (success.batchResults.hasRowTarget()) {
+            OpenTargetBatchList(success.batchResults, onOpenTarget, locked = success.inFlight)
+        } else {
+            success.batchResults.takeIf { it.isNotEmpty() }?.let { BatchResultsList(it) }
+        }
         success.editableContent?.takeIf { !success.inFlight }?.invoke()
         success.undo?.let { UndoAffordanceBody(it, locked = success.inFlight) }
     }
