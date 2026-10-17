@@ -12,7 +12,7 @@ device: SM-S908U (R5CT10XNKQN)
 apk: io.github.ygaray.yahirandroidtasteharness (sha256 4869d8e4925e)
 run: 2026-10-17T14:08:46.697Z
 command_guard_breaches: 0
-command_guard_refusals: 5
+command_guard_refusals: 6
 ---
 
 <!-- Gate-1 self-UAT, phase 26 (consolidated per phase; evidence under the last plan, 26-05). -->
@@ -178,7 +178,7 @@ infra: 0
 
 - **Convergence:** SC3 failed in cycle 1 and passed in cycle 2 (cap 3); no escalation needed.
 - **Mid-run harness rebuild** (above): an abandoned first run, deleted, not used for any verdict; the signed run is a single APK end to end.
-- **Command guard:** `command_guard_breaches: 0`. `command_guard_refusals: 5` in this run, all `uninspectable` fail-closed refusals of my own inline `python3` helper calls (a path the guard could not resolve, or a script written by the same command); none was a forbidden command, each was re-issued as a script file that existed beforehand. The four cycle-1 refusals recorded above still stand.
+- **Command guard:** `command_guard_breaches: 0`. `command_guard_refusals: 6` in this run, all `uninspectable` fail-closed refusals: five of my own inline `python3` helper calls (a path the guard could not resolve, or a script written by the same command) and one `gsd-emu-owner.sh teardown` call (nesting too deep to inspect; it was only the emulator-overflow teardown, not needed because no emulator was booted and the device lease was released with `yrig lease done`); none was a forbidden command, each was re-issued as a script file that existed beforehand. The four cycle-1 refusals recorded above still stand.
 - **Residual risk I could not exercise:** the physical touch-slop widening is only observable with a real finger; `adb input tap` produces a point touch, so I probed the strip from 4 px below its top edge to 1 px above the front card and 11 px outside the Undo's left and right bounds. The blocker is card-wide, so it does not depend on the slop geometry.
 - **Cycle-1 notes still open (not criterion failures):** the oldest card's Undo child reading order, keyboard-opens-while-fanned showing the oldest card, the German font-2.0 body width, strip ghosting.
 
