@@ -51,8 +51,22 @@ data class UndoHistoryEntry internal constructor(
     val undoAction: suspend () -> Unit,
     val preview: UndoPreview? = null,
     val status: UndoStatus = UndoStatus.Available,
-    private val consumedGuard: AtomicBoolean = AtomicBoolean(false)
+    private val consumedGuard: AtomicBoolean = AtomicBoolean(false),
+    /**
+     * Optional [FeedbackTarget] carried verbatim from the originating [FeedbackEvent.WithUndo]
+     * (Phase 25, FTGT-02). Appended LAST so positional `copy` and `componentN` of the v2.7.1
+     * shape are unchanged. Read [openableTarget] to decide whether the target may be opened.
+     */
+    val target: FeedbackTarget? = null
 ) {
+
+    /**
+     * [target] only while this entry is [UndoStatus.Available]; `null` once it is Undone or
+     * Failed, so a stale entry can never be opened (D-03). [target] itself keeps the original
+     * value for display or logging.
+     */
+    val openableTarget: FeedbackTarget?
+        get() = target?.takeIf { status == UndoStatus.Available }
 
     /** Returns true only for the FIRST caller to claim this entry; false for every caller after. */
     fun tryConsume(): Boolean = consumedGuard.compareAndSet(false, true)

@@ -943,25 +943,31 @@ package io.github.ygaray.yahirandroidtaste.feedback {
     method public kotlin.jvm.functions.Function1<kotlin.coroutines.Continuation<? super kotlin.Unit>,java.lang.Object?> component4();
     method public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? component5();
     method public io.github.ygaray.yahirandroidtaste.feedback.UndoStatus component6();
-    method public io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry copy(optional String id, optional String message, optional long timestamp, optional kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview, optional io.github.ygaray.yahirandroidtaste.feedback.UndoStatus status, optional java.util.concurrent.atomic.AtomicBoolean consumedGuard);
+    method public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? component8();
+    method public io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry copy(optional String id, optional String message, optional long timestamp, optional kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview, optional io.github.ygaray.yahirandroidtaste.feedback.UndoStatus status, optional java.util.concurrent.atomic.AtomicBoolean consumedGuard, optional io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? target);
     method @InaccessibleFromKotlin public String getId();
     method @InaccessibleFromKotlin public String getMessage();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? getOpenableTarget();
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? getPreview();
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.feedback.UndoStatus getStatus();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? getTarget();
     method @InaccessibleFromKotlin public long getTimestamp();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function1<kotlin.coroutines.Continuation<? super kotlin.Unit>,java.lang.Object?> getUndoAction();
     method public boolean tryConsume();
     method public io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry withStatus(io.github.ygaray.yahirandroidtaste.feedback.UndoStatus newStatus);
     property public String id;
     property public String message;
+    property public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? openableTarget;
     property public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview;
     property public io.github.ygaray.yahirandroidtaste.feedback.UndoStatus status;
+    property public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? target;
     property public long timestamp;
     property public kotlin.jvm.functions.Function1<kotlin.coroutines.Continuation<? super kotlin.Unit>,?> undoAction;
   }
 
   @javax.inject.Singleton public final class UndoHistoryStore {
     ctor @javax.inject.Inject public UndoHistoryStore();
+    method public String append(String message, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview, optional String? groupId, io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? target, kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction);
     method public String append(String message, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview, String groupId, kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction);
     method public String append(String message, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview, kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction);
     method public suspend Object? attemptUndo(String id, kotlin.coroutines.Continuation<? super kotlin.Unit>);
