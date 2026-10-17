@@ -19,8 +19,8 @@ import java.util.Random
  * POL-02 (D-07 [dot-contrast]): the warn dot keeps its color, and a pure decision adds a contrast ring
  * only when the dot fill has less than 3:1 against the pill (`surfaceContainerHighest`). Proven on the
  * hub light and dark schemes, synthetic schemes and hand-written samples that stand in for dynamic
- * (wallpaper-derived) schemes, which a JVM test cannot generate. A translucent fill is treated as
- * opaque, because luminance ignores alpha (FA-7; documented, not tested).
+ * (wallpaper-derived) schemes, which a JVM test cannot generate. A translucent fill is composited
+ * over the pill before it is measured, because luminance alone ignores alpha (FA-7, IN-03).
  */
 class HandledByDotContrastTest {
 
@@ -121,6 +121,15 @@ class HandledByDotContrastTest {
             val pill = grey(level)
             assertRingPasses(fill = pill, pill = pill, scheme = scheme)
         }
+    }
+
+    @Test
+    fun translucentFill_isMeasuredAsPaintedOverThePill() {
+        // An opaque black passes 3:1 on white, but at 10% alpha it paints a near-white grey that fails.
+        val white = Color.White
+        val scheme = lightColorScheme(surfaceContainerHighest = white)
+        assertNull(handledByDotRing(Color.Black, white, scheme))
+        assertNotNull(handledByDotRing(Color.Black.copy(alpha = 0.1f), white, scheme))
     }
 
     @Test
