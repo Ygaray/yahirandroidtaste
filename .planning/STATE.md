@@ -25,7 +25,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-17)
 
 **Core value:** An agent building one of Yahir's apps finds the widget it needs already here, coherent and legible, and drops it in instead of writing a new one.
-**Current focus:** Phase 27 — Open from the sheet & Undo Center, pill fixes
+**Current focus:** Phase 28 — TalkBack sweep & Explorer demos
 
 ## Current Position
 
