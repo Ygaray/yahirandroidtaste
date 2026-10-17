@@ -45,7 +45,7 @@ locked (Yahir, 2026-10-17, via director@office): `.planning/research/v2.8-BRIEF.
   (`git.create_tag` false); tags here are JitPack coordinates.
 
 - [x] **Phase 25: Feedback target model & stack state** - `FeedbackTarget` on events and Undo history, `FeedbackStackState` + result contract, tracked undo through the store, the `FeedbackStackHost` entry point (D-08, D-09) (completed 2026-10-17)
-- [ ] **Phase 26: Receipt-card stacked snackbar deck** - Direction A deck (max 3), tap-to-open with chevron, fan-out, swipe dismiss, timeouts with pause, merged-button semantics (D-01..D-07, D-11)
+- [x] **Phase 26: Receipt-card stacked snackbar deck** - Direction A deck (max 3), tap-to-open with chevron, fan-out, swipe dismiss, timeouts with pause, merged-button semantics (D-01..D-07, D-11) (completed 2026-10-17)
 - [ ] **Phase 27: Open from the sheet & Undo Center, pill fixes** - Label-less go-to-item rows in Receipt and Classic `OutcomeSheet` and in the Undo Center; handled-by pill at font scale 2.0 and a contrast-safe Grammar dot (D-09, D-10)
 - [ ] **Phase 28: TalkBack sweep & Explorer demos** - Scoped TalkBack sweep on the TESTER (999.2), pinned hub scheme + `hide()` demo (999.3), stacked-snackbar and go-to-item demos in English and German
 - [ ] **Phase 29: Docs & v2.8.0 cut readiness** - API/STYLE/INTEGRATION docs, additive `apiCheck`, full gates, long-string and Gate-1 device checks, then a `v2.8.0` proposal to Yahir (no tag cut by the agent)
@@ -103,7 +103,7 @@ Plans:
   5. In the semantics tree each card body is one merged node with `Role.Button`, `onClickLabel = openLabel` and a Polite live region. Undo is a separate focusable child and also a custom action. A Dismiss custom action (labeled `dismissLabel`) and `dismiss` semantics remove the card the way a swipe does. Deck cards stay in the tree newest-first, collapsed or fanned out (A11Y-01).
 
 **Notes**: Any new public composable is registered or allowlisted here; `apiCheck` stays green on the regenerated `api.txt`. The TalkBack device confirmation of these semantics happens in Phase 28's sweep.
-**Plans:** 6 plans
+**Plans:** 6/6 plans complete
 
 Plans:
 **Wave 1**
