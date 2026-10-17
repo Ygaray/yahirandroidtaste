@@ -37,6 +37,7 @@ import io.github.ygaray.yahirandroidtaste.feedback.UndoCenterScreen
 import io.github.ygaray.yahirandroidtaste.feedback.rememberFeedbackStackState
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -271,10 +272,36 @@ private fun AttentionCueVariants() {
     )
 }
 
+/** Gap between the cards of the "Burst x4" demo button. */
+private const val BURST_SPACING_MILLIS = 350L
+
+/** The four Indefinite events of "Burst x4": a targeted note, one with Undo, a plain note, a target. */
+private fun burstEvents(): List<FeedbackEvent> = listOf(
+    FeedbackEvent.Notify(
+        message = "Burst one",
+        duration = SnackbarDuration.Indefinite,
+        target = FeedbackTarget("demo-item", "Open item"),
+        supportingText = "Second line"
+    ),
+    FeedbackEvent.WithUndo(
+        message = "Burst two",
+        undoAction = {},
+        duration = SnackbarDuration.Indefinite,
+        target = FeedbackTarget("demo-item", "Open item")
+    ),
+    FeedbackEvent.Notify(message = "Burst three", duration = SnackbarDuration.Indefinite),
+    FeedbackEvent.Notify(
+        message = "Burst four",
+        duration = SnackbarDuration.Indefinite,
+        target = FeedbackTarget("demo-item", "Open item")
+    )
+)
+
 /**
  * FeedbackStackHost's interactive demo: buttons push cards (with a target, with Undo and a target,
- * plain) through `state.show`, the host renders them, and the last result and opened key are shown
- * as text. A plain `show` only reports Undone; it never runs an undo lambda.
+ * plain, a four-card burst, a 4 s note and a 10 s note with Undo) through `state.show`, the host
+ * renders the deck, and the last result and opened key are shown as text. A plain `show` only
+ * reports Undone; it never runs an undo lambda.
  */
 @Composable
 private fun FeedbackStackHostVariants() {
@@ -325,6 +352,50 @@ private fun FeedbackStackHostVariants() {
         modifier = Modifier.padding(horizontal = 16.dp)
     ) {
         Text("Plain note")
+    }
+    Button(
+        onClick = {
+            // Four Indefinite cards 350 ms apart: the 4th arrival evicts the oldest, so the deck, the
+            // fan and the swipe can be exercised without a timer racing the tester.
+            scope.launch {
+                burstEvents().forEachIndexed { index, event ->
+                    if (index > 0) delay(BURST_SPACING_MILLIS)
+                    launch { lastResult = state.show(event).name }
+                }
+            }
+        },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) {
+        Text("Burst x4")
+    }
+    Button(
+        onClick = {
+            push(
+                FeedbackEvent.Notify(
+                    message = "Short note",
+                    duration = SnackbarDuration.Short,
+                    target = FeedbackTarget("demo-item", "Open item")
+                )
+            )
+        },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) {
+        Text("Short note")
+    }
+    Button(
+        onClick = {
+            push(
+                FeedbackEvent.WithUndo(
+                    message = "Long note",
+                    undoAction = {},
+                    duration = SnackbarDuration.Long,
+                    target = FeedbackTarget("demo-item", "Open item")
+                )
+            )
+        },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) {
+        Text("Long note with Undo")
     }
     Button(
         onClick = { state.dismissAll() },

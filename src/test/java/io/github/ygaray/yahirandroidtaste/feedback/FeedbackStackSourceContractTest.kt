@@ -195,4 +195,42 @@ class FeedbackStackSourceContractTest {
         assertFalse("a swipe must never open", effect.contains("onBodyTap") || effect.contains("latestBodyTap"))
         assertFalse("a swipe must never fan", effect.contains("onPeekTap") || effect.contains("latestPeekTap"))
     }
+
+    // ---- plan 26-05: the A11Y-01 semantics (T-26-17) and library hygiene ----
+
+    @Test
+    fun cardSemanticsCarryPoliteRegionDismissAndTraversalIndex() {
+        val card = feedbackSource("FeedbackCard.kt")
+        assertTrue(card.contains("LiveRegionMode.Polite"))
+        assertTrue(card.contains("dismiss(label"))
+        assertTrue(card.contains("traversalIndex"))
+    }
+
+    @Test
+    fun semanticsClickCallsTheResolveFirstCallback() {
+        val card = feedbackSource("FeedbackCard.kt").compact()
+        val call = card.indexOf("onClick(")
+        assertTrue("the semantics onClick is missing", call > 0)
+        val arguments = balancedFrom(card, call + "onClick".length, '(', ')')
+        val lambda = balancedFrom(card, call + "onClick".length + arguments.length, '{', '}')
+        assertTrue("the semantics click must go through the body tap callback", lambda.contains("latestBodyTap("))
+        assertFalse("the semantics click must not navigate by itself", lambda.contains("onOpenTarget"))
+        assertFalse("the semantics click must not resolve a card by itself", lambda.contains("resolve("))
+        assertFalse("the semantics click must not call the raw callback", lambda.contains("onBodyTap("))
+    }
+
+    @Test
+    fun noConsumerOrDomainImportInTheFeedbackDeckFiles() {
+        val allowed = listOf("androidx.", "kotlin.", "kotlinx.", "io.github.ygaray.yahirandroidtaste.")
+        listOf("FeedbackCard.kt", "FeedbackDeck.kt", "FeedbackDeckMetrics.kt").forEach { file ->
+            val imports = File("src/main/java/io/github/ygaray/yahirandroidtaste/feedback/$file")
+                .readLines()
+                .filter { it.startsWith("import ") }
+                .map { it.removePrefix("import ").trim() }
+            assertTrue("$file has no imports to check", imports.isNotEmpty())
+            imports.forEach { import ->
+                assertTrue("$file imports $import", allowed.any { import.startsWith(it) })
+            }
+        }
+    }
 }
