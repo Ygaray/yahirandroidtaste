@@ -30,12 +30,18 @@ class UndoCenterScreenSourceContractTest {
     }
 
     @Test
-    fun `there is exactly one public UndoCenterScreen function`() {
-        assertEquals(1, SourceContractTestSupport.countOccurrences(source, "fun UndoCenterScreen("))
+    fun `there are exactly two public UndoCenterScreen functions, the v2-7-1 one first`() {
+        // D-04: deliberate edit (1 to 2) for the FOPEN-03 overload with a required onOpenTarget.
+        assertEquals(2, SourceContractTestSupport.countOccurrences(source, "fun UndoCenterScreen("))
         assertTrue(
             "UndoCenterScreen must stay a public @Composable",
             source.compact().contains("@ComposablefunUndoCenterScreen(")
         )
+        val second = SourceContractTestSupport.functionBody(source, "fun UndoCenterScreen(", occurrence = 2).compact()
+        val expected = "funUndoCenterScreen(entries:List<UndoHistoryEntry>,onNavigateBack:()->Unit," +
+            "onUndo:(String)->Unit,groups:List<UndoGroupRowUiModel>=emptyList()," +
+            "onUndoGroup:((String)->Unit)?=null,onOpenTarget:(FeedbackTarget)->Unit,onClear:()->Unit)"
+        assertTrue("second overload drifted:\n${second.take(300)}", second.startsWith(expected))
     }
 
     @Test
