@@ -4,11 +4,11 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.semantics.SemanticsActions
-import androidx.compose.ui.test.assert
+import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.click
-import androidx.compose.ui.test.hasAnyDescendant
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -269,13 +269,28 @@ class FeedbackStackHostTest {
         scope.launch { state.show(notify("Message B", target)) }
         composeTestRule.waitForIdle()
 
+        // The deck draws the newest card last (highest zIndex), so the semantics child list is in
+        // draw order. Reading order is the slot's TraversalIndex (A11Y-01), which is newest first.
         val cards = composeTestRule.onAllNodesWithTag(
             FEEDBACK_STACK_ITEM_TEST_TAG,
             useUnmergedTree = true
-        )
-        cards[0].assert(hasAnyDescendant(hasText("Message B")))
-        cards[1].assert(hasAnyDescendant(hasText("Message A")))
+        ).fetchSemanticsNodes().sortedBy { readingIndex(it) }
+        assertTrue(texts(cards[0]).contains("Message B"))
+        assertTrue(texts(cards[1]).contains("Message A"))
     }
+
+    private fun readingIndex(node: SemanticsNode): Float {
+        var current: SemanticsNode? = node
+        while (current != null) {
+            current.config.getOrNull(SemanticsProperties.TraversalIndex)?.let { return it }
+            current = current.parent
+        }
+        return 0f
+    }
+
+    private fun texts(node: SemanticsNode): List<String> =
+        (node.config.getOrNull(SemanticsProperties.Text)?.map { it.text } ?: emptyList()) +
+            node.children.flatMap { texts(it) }
 
     @Test
     fun spentCard_staysVisible_hidesUndoAndChevron_andIsInert() {
