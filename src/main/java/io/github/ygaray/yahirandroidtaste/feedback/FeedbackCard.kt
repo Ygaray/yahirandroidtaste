@@ -77,7 +77,9 @@ internal const val FEEDBACK_STACK_DOT_TEST_TAG = "feedback_stack_dot"
  * The peek tap fans the deck wherever it lands on the strip, over an Undo included: a back card of a
  * collapsed deck keeps its Undo composed, measured and in the semantics tree (the semantic click and
  * the custom action still resolve it), but a semantics-free touch blocker sits above its content, so
- * on that card the pointer path is the peek tap and nothing else.
+ * on that card the pointer path is the peek tap and nothing else. The blocker stops pointer input
+ * only: key and switch activation of the Undo is intentionally not blocked (A11Y-01 keeps the Undo
+ * focusable and enabled), so it does not isolate the card from every input.
  *
  * A11Y-01: the root is one merged node with a Polite live region, the `dismiss` semantics action and
  * a `traversalIndex` equal to [index] (newest first, whatever the draw order). Every action runs the
