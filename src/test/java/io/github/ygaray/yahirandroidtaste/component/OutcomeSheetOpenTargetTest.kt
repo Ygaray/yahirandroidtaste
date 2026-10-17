@@ -333,4 +333,117 @@ class OutcomeSheetOpenTargetTest {
 
     @Test
     fun opaqueKey_neverAppearsInTheSemanticsTree_receipt() = assertOpaqueKeyNeverAppears(OutcomeSheetStyle.Receipt)
+
+    // --- title and detail rules (PD-5) ---------------------------------------------------------------
+
+    private fun mergedRowTexts(): List<String> =
+        composeTestRule.onNodeWithTag(OPEN_TARGET_ROW_TEST_TAG).fetchSemanticsNode()
+            .config[SemanticsProperties.Text].map { it.text }
+
+    private fun assertTitleRules(style: OutcomeSheetStyle) {
+        var outcome: VoiceOutcomeUiState by mutableStateOf(targetSuccess())
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = outcome,
+                onDismissRequest = { dismissals++ },
+                style = style,
+                onOpenTarget = { opened += it }
+            )
+        }
+        composeTestRule.waitForIdle()
+        assertEquals(listOf("Weekend list", "Updated just now"), mergedRowTexts())
+
+        outcome = targetSuccess().copy(targetLabel = "   ")
+        composeTestRule.waitForIdle()
+        assertEquals("a blank label falls back to the summary", "Saved", mergedRowTexts().first())
+
+        outcome = targetSuccess().copy(targetLabel = null)
+        composeTestRule.waitForIdle()
+        assertEquals("a null label falls back to the summary", "Saved", mergedRowTexts().first())
+    }
+
+    @Test
+    fun title_usesTargetLabel_elseSummary_andABlankLabelFallsBack() = assertTitleRules(OutcomeSheetStyle.Receipt)
+
+    @Test
+    fun title_usesTargetLabel_elseSummary_andABlankLabelFallsBack_classic() = assertTitleRules(OutcomeSheetStyle.Classic)
+
+    private fun assertDetailRules(style: OutcomeSheetStyle) {
+        var outcome: VoiceOutcomeUiState by mutableStateOf(targetSuccess())
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = outcome,
+                onDismissRequest = { dismissals++ },
+                style = style,
+                onOpenTarget = { opened += it }
+            )
+        }
+        composeTestRule.waitForIdle()
+        assertEquals(2, mergedRowTexts().size)
+
+        outcome = targetSuccess().copy(targetDetail = "  ")
+        composeTestRule.waitForIdle()
+        assertEquals("a blank detail draws no second line", listOf("Weekend list"), mergedRowTexts())
+
+        outcome = targetSuccess().copy(targetDetail = null)
+        composeTestRule.waitForIdle()
+        assertEquals("a null detail draws no second line", listOf("Weekend list"), mergedRowTexts())
+    }
+
+    @Test
+    fun detail_rendersOnlyWhenNonBlank() = assertDetailRules(OutcomeSheetStyle.Receipt)
+
+    @Test
+    fun detail_rendersOnlyWhenNonBlank_classic() = assertDetailRules(OutcomeSheetStyle.Classic)
+
+    // --- PD-1: locked while in flight ---------------------------------------------------------------
+
+    private fun assertInFlightLocksThenUnlocks(style: OutcomeSheetStyle) {
+        var outcome: VoiceOutcomeUiState by mutableStateOf(targetSuccess().copy(inFlight = true))
+        composeTestRule.setContent {
+            OutcomeSheet(
+                outcome = outcome,
+                onDismissRequest = { dismissals++ },
+                style = style,
+                onOpenTarget = { opened += it }
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        val locked = row().assertExists().fetchSemanticsNode().config
+        assertFalse("an in-flight row has no click action", locked.contains(SemanticsActions.OnClick))
+        assertFalse("an in-flight row has no button role", locked.contains(SemanticsProperties.Role))
+        composeTestRule.onNodeWithTag(OPEN_TARGET_CHEVRON_TEST_TAG, useUnmergedTree = true).assertExists()
+        assertEquals(emptyList<FeedbackTarget>(), opened)
+
+        outcome = targetSuccess().copy(inFlight = false)
+        composeTestRule.waitForIdle()
+
+        assertButtonWithOpenLabel()
+        assertTapOpensOnce()
+    }
+
+    @Test
+    fun inFlight_locksTheRow_dimNoClick_thenUnlocks() = assertInFlightLocksThenUnlocks(OutcomeSheetStyle.Receipt)
+
+    @Test
+    fun inFlight_locksTheRow_dimNoClick_thenUnlocks_classic() = assertInFlightLocksThenUnlocks(OutcomeSheetStyle.Classic)
+
+    // --- semantics in both styles ---------------------------------------------------------------------
+
+    private fun assertNoStateDescription(style: OutcomeSheetStyle) {
+        hostHoisted(targetSuccess(), style)
+        assertButtonWithOpenLabel()
+        val config = row().fetchSemanticsNode().config
+        assertFalse(config.contains(SemanticsProperties.StateDescription))
+        assertFalse(config.contains(SemanticsProperties.ContentDescription))
+    }
+
+    @Test
+    fun bothStyles_rowCarriesButtonRole_openLabelClickLabel_noStateDescription() =
+        assertNoStateDescription(OutcomeSheetStyle.Receipt)
+
+    @Test
+    fun bothStyles_rowCarriesButtonRole_openLabelClickLabel_noStateDescription_classic() =
+        assertNoStateDescription(OutcomeSheetStyle.Classic)
 }
