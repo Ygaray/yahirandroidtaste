@@ -39,6 +39,14 @@ class FeedbackDeckMetricsTest {
     }
 
     @Test
+    fun depthScale_isClampedForDeepCards() {
+        assertEquals(0.7f, feedbackDepthScale(5), 0.0001f)
+        assertEquals(0.7f, feedbackDepthScale(20), 0.0001f)
+        assertEquals(0.7f, feedbackDepthScale(1000), 0.0001f)
+        assertEquals(1f, feedbackDepthScale(-3), 0.0001f)
+    }
+
+    @Test
     fun depthAlpha_isOneNinetyAndSeventyFive() {
         assertEquals(1f, feedbackDepthAlpha(0), 0.0001f)
         assertEquals(0.9f, feedbackDepthAlpha(1), 0.0001f)

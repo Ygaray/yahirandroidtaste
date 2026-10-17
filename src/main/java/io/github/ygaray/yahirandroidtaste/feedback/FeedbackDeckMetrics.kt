@@ -24,9 +24,12 @@ internal val FEEDBACK_DECK_MAX_WIDTH: Dp = 560.dp
 private const val FEEDBACK_DEPTH_ALPHA_FIRST = 0.9f
 private const val FEEDBACK_DEPTH_ALPHA_SECOND = 0.75f
 
-/** Scale of the card at [depth] (0 is the newest card). */
+/** Smallest scale a deep card shrinks to, so a large `maxVisible` can never flip a card upside down. */
+internal const val FEEDBACK_DEPTH_SCALE_MIN: Float = 0.7f
+
+/** Scale of the card at [depth] (0 is the newest card), never below [FEEDBACK_DEPTH_SCALE_MIN]. */
 internal fun feedbackDepthScale(depth: Int): Float =
-    1f - FEEDBACK_DEPTH_SCALE_STEP * depth.coerceAtLeast(0)
+    (1f - FEEDBACK_DEPTH_SCALE_STEP * depth.coerceAtLeast(0)).coerceAtLeast(FEEDBACK_DEPTH_SCALE_MIN)
 
 /** Alpha of the card at [depth]: 1.0, 0.9, 0.75; deeper cards clamp to 0.75. */
 internal fun feedbackDepthAlpha(depth: Int): Float = when {
