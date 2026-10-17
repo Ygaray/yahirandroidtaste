@@ -2,9 +2,13 @@ package io.github.ygaray.yahirandroidtaste.component
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.database.DatabaseErrorHandler
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import android.os.Build
 import android.util.Log
 import java.io.File
+import java.security.MessageDigest
 import org.osmdroid.config.Configuration
 
 private const val USER_AGENT_HEADER = "User-Agent"
@@ -121,6 +125,76 @@ internal fun buildFallbackUserAgent(
     versionName: String?,
     androidRelease: String,
 ): String = "$packageName/${versionName?.trim().orEmpty().ifEmpty { "0" }} (Android $androidRelease)"
+
+/**
+ * Byte length of the "access blocked" placeholder tile the OSM server answers with. A content
+ * fingerprint of a public placeholder image, not a security control.
+ */
+internal const val PLACEHOLDER_TILE_SIZE = 6987
+
+/** md5 (lowercase hex) of the blocked placeholder tile; together with the size it is the fingerprint. */
+internal const val PLACEHOLDER_TILE_MD5 = "c069a15b2cc2d6b6f527ad09eb93c61a"
+
+/**
+ * POL-03 — deletes the cached blocked placeholder tiles from an osmdroid `SqlTileWriter` database
+ * ([dbFile], table `tiles`). A blocked fetch caches the placeholder and re-stamps a fresh expiry on
+ * it, so without this an app that fixes its agent would keep showing blocked tiles for a week.
+ *
+ * Only rows whose tile has exactly [sizeBytes] bytes AND the md5 [md5Hex] are deleted; a size-only
+ * match and every real tile survive. Best-effort and silent: returns the number of deleted rows,
+ * `0` when there is nothing to do (including a missing file, which is never created) and `-1` when
+ * the scan could not run (unreadable file, no `tiles` table, lock error). Never throws.
+ *
+ * Bound arguments only. Android binds every argument as text, so the length is compared through
+ * `CAST(? AS INTEGER)`; an uncast text argument never equals an integer length.
+ */
+internal fun purgePlaceholderTiles(
+    dbFile: File,
+    sizeBytes: Int = PLACEHOLDER_TILE_SIZE,
+    md5Hex: String = PLACEHOLDER_TILE_MD5,
+): Int {
+    if (!dbFile.isFile) return 0
+    var db: SQLiteDatabase? = null
+    return try {
+        // A no-op error handler: the default one DELETES a database it finds corrupt, and this
+        // purge must never remove the cache file itself.
+        db =
+            SQLiteDatabase.openDatabase(
+                dbFile.path,
+                null,
+                SQLiteDatabase.OPEN_READWRITE,
+                DatabaseErrorHandler { },
+            )
+        val matches = mutableListOf<Pair<Long, String>>()
+        db.rawQuery(
+            "SELECT key, provider, tile FROM tiles WHERE length(tile) = CAST(? AS INTEGER)",
+            arrayOf(sizeBytes.toString()),
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                val provider = cursor.getString(1)
+                if (provider != null && md5HexOf(cursor.getBlob(2)) == md5Hex) {
+                    matches += cursor.getLong(0) to provider
+                }
+            }
+        }
+        var deleted = 0
+        for ((key, provider) in matches) {
+            deleted += db.delete("tiles", "key = ? AND provider = ?", arrayOf(key.toString(), provider))
+        }
+        deleted
+    } catch (_: SQLiteException) {
+        -1
+    } finally {
+        try {
+            db?.close()
+        } catch (_: SQLiteException) {
+            // best effort
+        }
+    }
+}
+
+private fun md5HexOf(bytes: ByteArray): String =
+    MessageDigest.getInstance("MD5").digest(bytes).joinToString("") { "%02x".format(it) }
 
 /** True when the OSM tile server refuses this class of agent: blank, or a placeholder app id. */
 internal fun isBlockedClassUserAgent(resolved: String): Boolean =
