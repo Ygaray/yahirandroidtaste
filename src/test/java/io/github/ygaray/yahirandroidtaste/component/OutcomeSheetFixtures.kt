@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget
 import io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel
 import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.FailureTone
@@ -154,7 +155,10 @@ internal object OutcomeFixtures {
         badge: OutcomeBadge? = null,
         titleActions: (@Composable () -> Unit)? = null,
         startAction: SheetActionUiModel? = null,
-        endAction: SheetActionUiModel? = null
+        endAction: SheetActionUiModel? = null,
+        target: FeedbackTarget? = null,
+        targetLabel: String? = null,
+        targetDetail: String? = null
     ) = VoiceOutcomeUiState.Success(
         summary = summary,
         handledBy = handledBy,
@@ -165,7 +169,10 @@ internal object OutcomeFixtures {
         badge = badge,
         titleActions = titleActions,
         startAction = startAction,
-        endAction = endAction
+        endAction = endAction,
+        target = target,
+        targetLabel = targetLabel,
+        targetDetail = targetDetail
     )
 
     /** Every Failure field defaulted; the Receipt-only fields are named arguments. */

@@ -29,6 +29,7 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget
 import io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel
 import io.github.ygaray.yahirandroidtaste.model.FailureTone
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
@@ -75,6 +76,13 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  *   parameter does (v2.7.1): without it a tall sheet opens at half height with its pinned action bar
  *   below the fold. Required and passed by name here; a caller that does not hoist the state uses
  *   the overload without it.
+ * @param onOpenTarget Opens the item a success is about. The go-to-item row (title, optional
+ *   detail, chevron, no action label) shows only when [outcome] is a [VoiceOutcomeUiState.Success]
+ *   whose `target` is set AND this callback is non-null; a tap calls it once with that target.
+ *   The library never hides the sheet, calls [onDismissRequest] or navigates (D-05): a caller that
+ *   wants the slide-down hoists a [sheetState], calls `hide()` on it and then navigates. The handler
+ *   must be idempotent, because the library does not debounce a double tap. A Classic or Receipt
+ *   sheet without a target, or without this callback, renders exactly as in v2.7.1.
  *
  * Why an overload and not a defaulted parameter: [SheetState] is `@ExperimentalMaterial3Api`, and
  * an experimental type anywhere in a signature makes EVERY call of that function require the
@@ -90,14 +98,21 @@ fun OutcomeSheet(
     modifier: Modifier = Modifier,
     style: OutcomeSheetStyle = OutcomeSheetStyle.Classic,
     colors: OutcomeSheetColors = OutcomeSheetDefaults.colors(),
-    sheetState: SheetState
+    sheetState: SheetState,
+    onOpenTarget: ((FeedbackTarget) -> Unit)? = null
 ) {
     if (style == OutcomeSheetStyle.Receipt) {
-        OutcomeSheetReceipt(outcome, onDismissRequest, modifier, colors, sheetState)
+        OutcomeSheetReceipt(outcome, onDismissRequest, modifier, colors, sheetState, onOpenTarget)
         return
     }
     SheetScaffold(onDismissRequest = onDismissRequest, modifier = modifier, sheetState = sheetState) {
-        OutcomeSheetContent(outcome, colors = colors)
+        // One scaffold call site on purpose: a caller that clears `target` after Undo then swaps only
+        // this body and never re-creates the sheet window (PD-2).
+        if (onOpenTarget != null && outcome is VoiceOutcomeUiState.Success && outcome.hasOpenTarget()) {
+            OutcomeSheetContentOpenTarget(outcome, onOpenTarget)
+        } else {
+            OutcomeSheetContent(outcome, colors = colors)
+        }
     }
 }
 
@@ -113,6 +128,11 @@ fun OutcomeSheet(
  * @param modifier Modifier for the sheet's root composable.
  * @param style [OutcomeSheetStyle.Classic] (the default) or [OutcomeSheetStyle.Receipt].
  * @param colors The warn and error tone pairs. Defaults to [OutcomeSheetDefaults.colors].
+ * @param onOpenTarget Opens the item a success is about; shows the go-to-item row only for a
+ *   [VoiceOutcomeUiState.Success] whose `target` is set. The library never hides the sheet, calls
+ *   [onDismissRequest] or navigates (D-05); hoist a sheet state (the overload with `sheetState`) to
+ *   call `hide()` before navigating. The handler must be idempotent: a double tap is not debounced.
+ *   Without a target or without this callback the sheet renders as in v2.7.1.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,7 +141,8 @@ fun OutcomeSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     style: OutcomeSheetStyle = OutcomeSheetStyle.Classic,
-    colors: OutcomeSheetColors = OutcomeSheetDefaults.colors()
+    colors: OutcomeSheetColors = OutcomeSheetDefaults.colors(),
+    onOpenTarget: ((FeedbackTarget) -> Unit)? = null
 ) {
     OutcomeSheet(
         outcome = outcome,
@@ -129,7 +150,8 @@ fun OutcomeSheet(
         modifier = modifier,
         style = style,
         colors = colors,
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        onOpenTarget = onOpenTarget
     )
 }
 
@@ -556,5 +578,53 @@ internal fun ProposedItemRow(item: ProposedItemUiModel) {
                 Icon(Icons.Default.Close, contentDescription = item.removeContentDescription)
             }
         }
+    }
+}
+
+/**
+ * The Classic content of a [VoiceOutcomeUiState.Success] that carries an item to open (FOPEN-01):
+ * [OutcomeSheetContent]'s scroll shape with [SuccessBodyOpenTarget] as the body. A new function, not
+ * a branch inside [OutcomeSheetContent], so the pinned v2.5.1 Classic functions stay byte-equal.
+ * Internal so a height-bounded test can host it without driving a `ModalBottomSheet`.
+ */
+@Composable
+internal fun OutcomeSheetContentOpenTarget(
+    success: VoiceOutcomeUiState.Success,
+    onOpenTarget: (FeedbackTarget) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .weight(1f, fill = false)
+                .verticalScroll(rememberScrollState())
+        ) {
+            SuccessBodyOpenTarget(success, onOpenTarget)
+        }
+    }
+}
+
+/**
+ * The Classic Success body with the go-to-item row after the handled-by indicator (D-02): the
+ * summary headline, [HandledByRow], the row, the batch list, the editor slot (hidden while in
+ * flight) and the undo block (locked while in flight). It calls the pinned helpers; it never copies
+ * their text.
+ */
+@Composable
+private fun SuccessBodyOpenTarget(
+    success: VoiceOutcomeUiState.Success,
+    onOpenTarget: (FeedbackTarget) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Dimens.HorizontalPadding)
+    ) {
+        Text(text = success.summary, style = MaterialTheme.typography.headlineSmall)
+        success.handledBy?.let { HandledByRow(it) }
+        SuccessOpenTargetRow(success, onOpenTarget)
+        success.batchResults.takeIf { it.isNotEmpty() }?.let { BatchResultsList(it) }
+        success.editableContent?.takeIf { !success.inFlight }?.invoke()
+        success.undo?.let { UndoAffordanceBody(it, locked = success.inFlight) }
     }
 }

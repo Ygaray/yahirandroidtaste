@@ -47,6 +47,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget
 import io.github.ygaray.yahirandroidtaste.model.FailureTone
 import io.github.ygaray.yahirandroidtaste.model.HandledByUiModel
 import io.github.ygaray.yahirandroidtaste.model.OutcomeBadge
@@ -67,7 +68,8 @@ internal fun OutcomeSheetReceipt(
     onDismissRequest: () -> Unit,
     modifier: Modifier,
     colors: OutcomeSheetColors,
-    sheetState: SheetState
+    sheetState: SheetState,
+    onOpenTarget: ((FeedbackTarget) -> Unit)? = null
 ) {
     SheetScaffold(
         onDismissRequest = onDismissRequest,
@@ -78,7 +80,7 @@ internal fun OutcomeSheetReceipt(
             topEnd = Dimens.OutcomeReceipt.CornerRadius
         )
     ) {
-        OutcomeSheetReceiptContent(outcome, colors = colors)
+        OutcomeSheetReceiptContent(outcome, colors = colors, onOpenTarget = onOpenTarget)
     }
 }
 
@@ -94,7 +96,8 @@ internal fun OutcomeSheetReceipt(
 internal fun OutcomeSheetReceiptContent(
     outcome: VoiceOutcomeUiState,
     modifier: Modifier = Modifier,
-    colors: OutcomeSheetColors = OutcomeSheetDefaults.colors()
+    colors: OutcomeSheetColors = OutcomeSheetDefaults.colors(),
+    onOpenTarget: ((FeedbackTarget) -> Unit)? = null
 ) {
     val barFollows = receiptHasBar(outcome)
     // The body's own 16dp bottom padding is dropped whenever something already supplies the space
@@ -113,7 +116,7 @@ internal fun OutcomeSheetReceiptContent(
                 )
         ) {
             when (outcome) {
-                is VoiceOutcomeUiState.Success -> ReceiptSuccessBody(outcome, colors)
+                is VoiceOutcomeUiState.Success -> ReceiptSuccessBody(outcome, colors, onOpenTarget)
                 is VoiceOutcomeUiState.Failure -> ReceiptFailureBody(outcome, colors)
                 is VoiceOutcomeUiState.NeedsConfirmation -> ReceiptNeedsConfirmationBody(outcome, colors)
             }
@@ -236,14 +239,20 @@ private fun ReceiptTranscript(text: String) {
 }
 
 /**
- * The Receipt Success body (D-08), in order: title row, handled-by pill, the caller's editable slot
+ * The Receipt Success body (D-08), in order: title row, handled-by pill, the go-to-item row (only with
+ * a target and an `onOpenTarget`, FOPEN-01), the caller's editable slot
  * (hidden while in flight, as in Classic and the model KDoc, OQ-1), the shared batch-result list, the
  * shared undo block (locked while in flight) and the actions row at the end of the scroll content.
  */
 @Composable
-private fun ReceiptSuccessBody(success: VoiceOutcomeUiState.Success, colors: OutcomeSheetColors) {
+private fun ReceiptSuccessBody(
+    success: VoiceOutcomeUiState.Success,
+    colors: OutcomeSheetColors,
+    onOpenTarget: ((FeedbackTarget) -> Unit)? = null
+) {
     ReceiptTitleRow(success.summary, success.badge, success.titleActions, colors)
     success.handledBy?.let { ReceiptHandledByPill(it, colors) }
+    SuccessOpenTargetRow(success, onOpenTarget)
     success.editableContent?.takeIf { !success.inFlight }?.invoke()
     success.batchResults.takeIf { it.isNotEmpty() }?.let { BatchResultsList(it) }
     success.undo?.let { UndoAffordanceBody(it, locked = success.inFlight) }

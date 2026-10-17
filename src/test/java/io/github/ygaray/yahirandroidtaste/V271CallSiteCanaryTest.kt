@@ -1,17 +1,26 @@
 package io.github.ygaray.yahirandroidtaste
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import io.github.ygaray.yahirandroidtaste.component.OutcomeSheet
+import io.github.ygaray.yahirandroidtaste.component.OutcomeSheetDefaults
+import io.github.ygaray.yahirandroidtaste.component.OutcomeSheetStyle
 import io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent
 import io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry
 import io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore
 import io.github.ygaray.yahirandroidtaste.feedback.UndoPreview
 import io.github.ygaray.yahirandroidtaste.feedback.UndoStatus
 import io.github.ygaray.yahirandroidtaste.feedback.emitTrackedWithUndo
+import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -29,6 +38,10 @@ import org.junit.Test
  *
  * Nothing composable is called: the Material3 tracked path is referenced inside a non-invoked
  * suspend lambda, so it only has to COMPILE.
+ *
+ * Phase 27 (FOPEN-01) extended the canary with the `OutcomeSheet` call shapes and the ten-component
+ * `VoiceOutcomeUiState.Success`, which now carries the appended `target`, `targetLabel` and
+ * `targetDetail` fields and an appended `onOpenTarget` parameter.
  */
 class V271CallSiteCanaryTest {
 
@@ -228,5 +241,59 @@ class V271CallSiteCanaryTest {
             host.emitTrackedWithUndo(store, event)
         }
         assertNotNull(tracked)
+    }
+
+    // ------------------------------------------------------------------------------------------
+    // Phase 27: OutcomeSheet and VoiceOutcomeUiState.Success
+    // ------------------------------------------------------------------------------------------
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Test
+    fun outcomeSheet_v271Shapes_compile() {
+        val outcome = VoiceOutcomeUiState.Success("s")
+        // Positional three-argument call (outcome, onDismissRequest, modifier).
+        val positional: @Composable () -> Unit = {
+            OutcomeSheet(outcome, {}, Modifier)
+        }
+        // Receipt five-argument call: style and colors appended after modifier.
+        val receipt: @Composable () -> Unit = {
+            OutcomeSheet(outcome, {}, Modifier, OutcomeSheetStyle.Receipt, OutcomeSheetDefaults.colors())
+        }
+        // Hoisted named call with the sheet state (the v2.7.1 overload).
+        val hoisted: @Composable () -> Unit = {
+            OutcomeSheet(
+                outcome = outcome,
+                onDismissRequest = {},
+                style = OutcomeSheetStyle.Receipt,
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+            )
+        }
+        // Compile-only: the lambdas are intentionally never invoked.
+        assertNotNull(listOf(positional, receipt, hoisted))
+    }
+
+    @Test
+    fun success_v271Shapes_keepTheirDefaults() {
+        val one = VoiceOutcomeUiState.Success("s")
+        val ten = VoiceOutcomeUiState.Success("s", null, null, false, emptyList(), null, null, null, null, null)
+        val copied = one.copy(summary = "x")
+        val (summary, handledBy, editable, inFlight, batch, undo, badge, titleActions, start, end) = ten
+
+        listOf(one, ten, copied).forEach {
+            assertNull(it.target)
+            assertNull(it.targetLabel)
+            assertNull(it.targetDetail)
+        }
+        assertEquals("x", copied.summary)
+        assertEquals("s", summary)
+        assertNull(handledBy)
+        assertNull(editable)
+        assertEquals(false, inFlight)
+        assertTrue(batch.isEmpty())
+        assertNull(undo)
+        assertNull(badge)
+        assertNull(titleActions)
+        assertNull(start)
+        assertNull(end)
     }
 }

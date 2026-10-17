@@ -2,6 +2,7 @@ package io.github.ygaray.yahirandroidtaste.model
 
 import androidx.compose.runtime.Composable
 import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
+import io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget
 import kotlin.jvm.internal.DefaultConstructorMarker
 
 /**
@@ -51,6 +52,20 @@ sealed interface VoiceOutcomeUiState {
      * @param startAction Receipt actions row, start slot (typically a Text action). Receipt only.
      * @param endAction Receipt actions row, end slot (typically a Filled action). Receipt only.
      *   While [inFlight] every action except one with `activeWhileInFlight = true` is disabled.
+     * @param target The item this success is about, or `null` (the default) for none. When set and the
+     *   caller passes `onOpenTarget` to
+     *   [OutcomeSheet][io.github.ygaray.yahirandroidtaste.component.OutcomeSheet], both styles draw a
+     *   go-to-item row (title, optional detail, chevron, no action label) that calls `onOpenTarget`
+     *   with this value. The target's `openLabel` is the TalkBack click label only and is never
+     *   drawn. The CALLER clears [target] after Undo or Undo all: the library cannot see store state,
+     *   so it cannot know the item is gone.
+     * @param targetLabel The go-to-item row title. `null` or blank falls back to [summary], which
+     *   repeats the heading, so pass it to name the item. Only read when [target] is set.
+     * @param targetDetail An optional second line under the row title (for example "List, 3 items").
+     *   `null` or blank draws nothing. Only read when [target] is set.
+     *
+     * While [inFlight] the go-to-item row is locked (dimmed, no click action) because a write that is
+     * still running may not have created the item yet.
      */
     data class Success(
         val summary: String,
@@ -62,7 +77,10 @@ sealed interface VoiceOutcomeUiState {
         val badge: OutcomeBadge? = null,
         val titleActions: (@Composable () -> Unit)? = null,
         val startAction: SheetActionUiModel? = null,
-        val endAction: SheetActionUiModel? = null
+        val endAction: SheetActionUiModel? = null,
+        val target: FeedbackTarget? = null,
+        val targetLabel: String? = null,
+        val targetDetail: String? = null
     ) : VoiceOutcomeUiState
 
     /**
