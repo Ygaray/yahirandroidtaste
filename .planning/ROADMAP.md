@@ -116,7 +116,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 26-03-PLAN.md — single-owner tap gesture, peek-tap fan, long-hold suppression, deck-wide pointer pause observer, idle collapse and cleanup (FSTK-03, FSTK-04, FSTK-06)
+- [x] 26-03-PLAN.md — single-owner tap gesture, peek-tap fan, long-hold suppression, deck-wide pointer pause observer, idle collapse and cleanup (FSTK-03, FSTK-04, FSTK-06)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -377,7 +377,7 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 25. Feedback target model & stack state | v2.8 | 5/5 | Not started |  |
-| 26. Receipt-card stacked snackbar deck | v2.8 | 2/5 | Not started |  |
+| 26. Receipt-card stacked snackbar deck | v2.8 | 3/5 | Not started |  |
 | 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 0/TBD | Not started | - |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 0/TBD | Not started | - |
 | 29. Docs & v2.8.0 cut readiness | v2.8 | 0/TBD | Not started | - |
