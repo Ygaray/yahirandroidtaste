@@ -35,7 +35,6 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import io.github.ygaray.yahirandroidtaste.theme.InkOnBackground
 import io.github.ygaray.yahirandroidtaste.theme.NeutralOnBgLight
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 
 /**
  * EXPLORE-03 token browser — a single scrollable screen rendering the five documented token
@@ -57,7 +56,7 @@ fun TokenBrowserScreen(
     themeMode: ThemeMode,
     onToggleTheme: () -> Unit
 ) {
-    YahirAndroidTasteTheme(themeMode = themeMode) {
+    ExplorerTheme(themeMode) {
         Scaffold(
             topBar = {
                 TopAppBar(

@@ -32,7 +32,6 @@ import io.github.ygaray.yahirandroidtaste.component.DynamicActionButton
 import io.github.ygaray.yahirandroidtaste.component.ExpandableFab
 import io.github.ygaray.yahirandroidtaste.component.MicButton
 import io.github.ygaray.yahirandroidtaste.component.RoundIconButton
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
 /**
@@ -179,7 +178,7 @@ fun ButtonsFabFamilyScreen(
     themeMode: ThemeMode,
     onToggleTheme: () -> Unit
 ) {
-    YahirAndroidTasteTheme(themeMode = themeMode) {
+    ExplorerTheme(themeMode) {
         Scaffold(
             topBar = { ButtonsFabFamilyTopBar(onNavigateBack, themeMode, onToggleTheme) }
         ) { paddingValues ->

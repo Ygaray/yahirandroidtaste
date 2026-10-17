@@ -52,7 +52,6 @@ import io.github.ygaray.yahirandroidtaste.component.VoiceRenameTagsSheet
 import io.github.ygaray.yahirandroidtaste.explorer.ComponentRegistry.StateCell
 import io.github.ygaray.yahirandroidtaste.feedback.LocalFeedbackController
 import io.github.ygaray.yahirandroidtaste.model.TagChipUiModel
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -498,7 +497,7 @@ fun SheetsFamilyScreen(
     themeMode: ThemeMode,
     onToggleTheme: () -> Unit
 ) {
-    YahirAndroidTasteTheme(themeMode = themeMode) {
+    ExplorerTheme(themeMode) {
         Scaffold(
             topBar = { SheetsFamilyTopBar(onNavigateBack, themeMode, onToggleTheme) }
         ) { paddingValues ->

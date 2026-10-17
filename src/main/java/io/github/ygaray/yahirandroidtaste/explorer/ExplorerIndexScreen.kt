@@ -45,7 +45,6 @@ import io.github.ygaray.yahirandroidtaste.component.EmptyState
 import io.github.ygaray.yahirandroidtaste.feedback.FeedbackDispatcher
 import io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
 /**
@@ -107,7 +106,7 @@ fun ExplorerIndexScreen(
     var query by rememberSaveable { mutableStateOf("") }
     val results = remember(query) { ComponentSearch.filter(query) }
 
-    YahirAndroidTasteTheme(themeMode = themeMode) {
+    ExplorerTheme(themeMode) {
         Scaffold(
             topBar = {
                 ExplorerTopBar(
