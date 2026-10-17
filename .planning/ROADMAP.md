@@ -120,7 +120,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 26-04-PLAN.md — swipe-to-dismiss with seeded anchors, Dismissed only, source-contract crash guard (FSTK-05)
+- [x] 26-04-PLAN.md — swipe-to-dismiss with seeded anchors, Dismissed only, source-contract crash guard (FSTK-05)
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
@@ -377,7 +377,7 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 25. Feedback target model & stack state | v2.8 | 5/5 | Not started |  |
-| 26. Receipt-card stacked snackbar deck | v2.8 | 3/5 | Not started |  |
+| 26. Receipt-card stacked snackbar deck | v2.8 | 4/5 | Not started |  |
 | 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 0/TBD | Not started | - |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 0/TBD | Not started | - |
 | 29. Docs & v2.8.0 cut readiness | v2.8 | 0/TBD | Not started | - |

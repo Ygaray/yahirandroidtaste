@@ -18,7 +18,7 @@ requirements-completed: [FSTK-05]
 actuals:
   tokens: 14000
   tasks: 3
-  commits: 3
+  commits: 4
 
 plan_head_before: cf9690ff2eadc87f72321b07afd0dea41f527fa3
 
@@ -166,7 +166,7 @@ None beyond the deviations above.
 ## Self-Check: PASSED
 
 - Files exist: FeedbackCard.kt, FeedbackDeckMetrics.kt, FeedbackStackHostSwipeTest.kt, FeedbackStackSourceContractTest.kt.
-- Commits `9acc680`, `5fb5759`, `69848f7` present (3 commits since the recorded base `cf9690f`).
+- Commits `9acc680`, `5fb5759`, `69848f7` (task commits) plus `a27078a` (SUMMARY) present: 4 commits since the recorded base `cf9690f`.
 - Acceptance literals re-checked: `AnchoredDraggableState(` 1, `Settled at 0f` 2, `isNaN()` 1 or more, `settledValue` 1, `FEEDBACK_SWIPE_THRESHOLD` in both files, `fun feedbackSwipeAlpha` 1, `derivedStateOf` present, `@Test` counts 20 and 12, all seven named swipe tests and the four named contract tests present, result XMLs `failures="0"`.
 
 ---
