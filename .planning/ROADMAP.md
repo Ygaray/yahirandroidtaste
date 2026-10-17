@@ -160,7 +160,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 27-04-PLAN.md — capped-radius handled-by pill shape, contrast ring for the warn dot, phase hygiene contract, fresh full gate and Gate-1 inputs (POL-01, POL-02)
+- [x] 27-04-PLAN.md — capped-radius handled-by pill shape, contrast ring for the warn dot, phase hygiene contract, fresh full gate and Gate-1 inputs (POL-01, POL-02)
 
 **UI hint**: yes
 
@@ -397,6 +397,6 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 |-------|-----------|----------------|--------|-----------|
 | 25. Feedback target model & stack state | v2.8 | 5/5 | Not started |  |
 | 26. Receipt-card stacked snackbar deck | v2.8 | 6/6 | Not started |  |
-| 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 3/4 | Not started |  |
+| 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 4/4 | Not started |  |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 0/TBD | Not started | - |
 | 29. Docs & v2.8.0 cut readiness | v2.8 | 0/TBD | Not started | - |
