@@ -3,13 +3,13 @@ gsd_state_version: "1.0"
 milestone: v2.8
 milestone_name: Snackbar go-to-item + stacked feedback
 current_phase: 25
-current_phase_name: feedback-target-model-stack-state
+current_phase_name: Feedback target model & stack state
 status: executing
 stopped_at: v2.8 roadmap created (Phases 25-29); ready to plan Phase 25
-last_updated: "2026-10-17T07:41:05.440Z"
+last_updated: "2026-10-17T07:42:06.786Z"
 last_activity: 2026-10-17
-last_activity_desc: v2.8 roadmap created (5 phases, 19/19 requirements mapped)
-state_head: e1c87f4fd2d2797c36d50e9ed4c982379f673618
+last_activity_desc: Phase 25 execution started
+state_head: 06628db7303076bd905e31b414dc2abd4c1327e9
 progress:
   total_phases: 5
   completed_phases: 0
@@ -25,14 +25,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-17)
 
 **Core value:** An agent building one of Yahir's apps finds the widget it needs already here, coherent and legible, and drops it in instead of writing a new one.
-**Current focus:** Milestone v2.8 (Snackbar go-to-item + stacked feedback, release `v2.8.0`, additive). Next: Phase 25, Feedback target model & stack state. Baseline `v2.7.1` (tag commit `f60bfc4`), the current release.
+**Current focus:** Phase 25 — Feedback target model & stack state
 
 ## Current Position
 
-Phase: 25 (feedback-target-model-stack-state) — READY TO EXECUTE
-Plan: —
-Status: Ready to execute
-Last activity: 2026-10-17 — v2.8 roadmap created (5 phases, 19/19 requirements mapped)
+Phase: 25 (Feedback target model & stack state) — EXECUTING
+Plan: 1 of 5
+Status: Executing Phase 25
+Last activity: 2026-10-17 — Phase 25 execution started
 
 Progress: [░░░░░░░░░░] 0%
 

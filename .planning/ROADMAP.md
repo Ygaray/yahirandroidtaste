@@ -71,7 +71,7 @@ locked (Yahir, 2026-10-17, via director@office): `.planning/research/v2.8-BRIEF.
 Plans:
 **Wave 1**
 
-- [ ] 25-01-PLAN.md — `FeedbackTarget` + `Notify`/`WithUndo` `target` and `supportingText`, V271 call-site canary, `api.txt` (FTGT-01)
+- [x] 25-01-PLAN.md — `FeedbackTarget` + `Notify`/`WithUndo` `target` and `supportingText`, V271 call-site canary, `api.txt` (FTGT-01)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -354,7 +354,7 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 25. Feedback target model & stack state | v2.8 | 0/TBD | Not started | - |
+| 25. Feedback target model & stack state | v2.8 | 1/5 | Not started |  |
 | 26. Receipt-card stacked snackbar deck | v2.8 | 0/TBD | Not started | - |
 | 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 0/TBD | Not started | - |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 0/TBD | Not started | - |
