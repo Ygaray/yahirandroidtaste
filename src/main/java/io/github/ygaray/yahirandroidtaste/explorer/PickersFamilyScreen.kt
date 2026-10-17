@@ -21,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.AccentColorPicker
 import io.github.ygaray.yahirandroidtaste.component.CropOverlay
@@ -35,6 +34,12 @@ import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import java.time.LocalDate
 import java.time.LocalTime
+
+// A hub-owned real identifying agent for the Explorer's PlaceMapPicker demos, so the Explorer's
+// tile requests are not satisfied by the harness package id and a wire check can tell the
+// fix from the normalized fallback.
+internal const val EXPLORER_MAP_USER_AGENT =
+    "YahirAndroidTasteExplorer/2.8 (+https://github.com/Ygaray/yahirandroidtaste)"
 
 /**
  * D-05: this family's slice of [ComponentRegistry.entries], declared here (not in
@@ -351,7 +356,7 @@ private fun PlaceMapPickerDemo(
         maxRadiusMeters = 1000f,
         defaultRadiusMeters = 150f,
         radiusStepMeters = 50f,
-        userAgent = LocalContext.current.packageName,
+        userAgent = EXPLORER_MAP_USER_AGENT,
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         onUseCurrentLocation = {
             // Explorer fixture coordinate -- never shown as text (T-164-04).
@@ -397,7 +402,7 @@ private fun PlaceMapPickerVariants() {
         maxRadiusMeters = 1000f,
         defaultRadiusMeters = 150f,
         radiusStepMeters = 50f,
-        userAgent = LocalContext.current.packageName,
+        userAgent = EXPLORER_MAP_USER_AGENT,
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         onUseCurrentLocation = {},
         currentLocationErrorText = "Couldn't get your current location",
