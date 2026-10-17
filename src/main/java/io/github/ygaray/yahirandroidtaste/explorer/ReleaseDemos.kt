@@ -88,6 +88,9 @@ internal const val DEMO_TAG_FEEDBACK_STACK_BURST = "demo_feedback_burst"
 internal const val DEMO_TAG_FEEDBACK_STACK_SHORT = "demo_feedback_short"
 internal const val DEMO_TAG_FEEDBACK_STACK_LONG = "demo_feedback_long"
 internal const val DEMO_TAG_FEEDBACK_STACK_DISMISS_ALL = "demo_feedback_dismiss_all"
+internal const val DEMO_TAG_UNDO_TARGETS = "demo_undo_targets"
+internal const val DEMO_TAG_UNDO_TARGETS_GERMAN = "demo_undo_targets_german"
+internal const val DEMO_TAG_UNDO_TARGETS_OPENED = "demo_undo_targets_opened"
 internal const val DEMO_TAG_FEEDBACK_STACK_RESULT = "demo_feedback_result"
 internal const val DEMO_TAG_FEEDBACK_STACK_OPENED = "demo_feedback_opened"
 
@@ -461,6 +464,81 @@ private fun FeedbackStackStageDemo(german: Boolean, tag: String) {
 @Composable
 private fun StageButton(label: String, tag: String, onClick: () -> Unit) {
     Button(onClick = onClick, modifier = Modifier.padding(horizontal = 16.dp).testTag(tag)) { Text(label) }
+}
+
+// --- Undo Center go-to-item rows -----------------------------------------------------------------
+
+private const val UNDO_TARGETS_ROW_A = "demo-row-a"
+private const val UNDO_TARGETS_ROW_B = "demo-row-b"
+private const val UNDO_TARGETS_ROW_C = "demo-row-c"
+
+/**
+ * The English and the German Undo Center with go-to-item rows: row A is Available with a target (opens),
+ * row B is Available without one (does not) and row C is Undone and keeps its target (does not open
+ * either). Pressing Undo on row A makes it lose its chevron and its click action.
+ */
+@Composable
+internal fun UndoCenterTargetRowsDemos() {
+    SectionLabel("UndoCenterScreen — go-to-item rows (tap an Available row with a target)")
+    UndoCenterTargetRowsDemo(german = false, tag = DEMO_TAG_UNDO_TARGETS)
+    SectionLabel("UndoCenterScreen — go-to-item rows, German labels")
+    UndoCenterTargetRowsDemo(german = true, tag = DEMO_TAG_UNDO_TARGETS_GERMAN)
+}
+
+@Composable
+private fun UndoCenterTargetRowsDemo(german: Boolean, tag: String) {
+    var entries by remember { mutableStateOf(demoTargetEntries(german)) }
+    var opened by remember { mutableStateOf<String?>(null) }
+    Column(modifier = Modifier.fillMaxWidth().testTag(tag)) {
+        Text(
+            text = localized(german, "Opened: ", "Geöffnet: ") + (opened ?: resultWord(german, null)),
+            modifier = Modifier.padding(horizontal = 16.dp).testTag(DEMO_TAG_UNDO_TARGETS_OPENED)
+        )
+        Box(modifier = Modifier.fillMaxWidth().height(UNDO_TARGETS_HEIGHT)) {
+            UndoCenterScreen(
+                entries = entries,
+                onNavigateBack = {},
+                onUndo = { id -> entries = entries.map { if (it.id == id) it.withStatus(UndoStatus.Undone) else it } },
+                onOpenTarget = { opened = it.key },
+                onClear = { entries = entries.filter { it.status == UndoStatus.Available } }
+            )
+        }
+    }
+}
+
+private val UNDO_TARGETS_HEIGHT = 460.dp
+
+/** Three rows in input order: A opens, B has no target, C is Undone (a spent entry never opens). */
+private fun demoTargetEntries(german: Boolean): List<UndoHistoryEntry> {
+    val now = System.currentTimeMillis()
+    fun entry(id: String, message: String, status: UndoStatus, target: FeedbackTarget?) = UndoHistoryEntry(
+        id = id,
+        message = message,
+        timestamp = now,
+        undoAction = {},
+        status = status,
+        target = target
+    )
+    return listOf(
+        entry(
+            UNDO_TARGETS_ROW_A,
+            localized(german, "Changed item A", "Eintrag A geändert"),
+            UndoStatus.Available,
+            FeedbackTarget(UNDO_TARGETS_ROW_A, localized(german, "Open item A", "Eintrag A öffnen"))
+        ),
+        entry(
+            UNDO_TARGETS_ROW_B,
+            localized(german, "Renamed item B", "Eintrag B umbenannt"),
+            UndoStatus.Available,
+            null
+        ),
+        entry(
+            UNDO_TARGETS_ROW_C,
+            localized(german, "Moved item C", "Eintrag C verschoben"),
+            UndoStatus.Undone,
+            FeedbackTarget(UNDO_TARGETS_ROW_C, localized(german, "Open item C", "Eintrag C öffnen"))
+        )
+    )
 }
 
 // --- Hub static scheme -----------------------------------------------------------------------------

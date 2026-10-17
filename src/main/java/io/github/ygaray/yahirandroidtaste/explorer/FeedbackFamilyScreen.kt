@@ -251,6 +251,7 @@ private fun UndoCenterScreenVariants() {
         Text("Emit sample feedback event")
     }
     UndoGroupsDemos()
+    UndoCenterTargetRowsDemos()
 }
 
 /** AttentionCue's two real usage shapes, rendered side by side as its Variants. */
