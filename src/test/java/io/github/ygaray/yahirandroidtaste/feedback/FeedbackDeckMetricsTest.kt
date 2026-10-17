@@ -1,5 +1,6 @@
 package io.github.ygaray.yahirandroidtaste.feedback
 
+import androidx.compose.ui.unit.Constraints
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -50,5 +51,44 @@ class FeedbackDeckMetricsTest {
         assertEquals(88, feedbackCollapsedHeight(frontHeight = 60, count = 3, peekPx = 14))
         assertEquals(60, feedbackCollapsedHeight(frontHeight = 60, count = 1, peekPx = 14))
         assertEquals(0, feedbackCollapsedHeight(frontHeight = 60, count = 0, peekPx = 14))
+    }
+
+    // ---- Fanned geometry and cap (D-08 [fanned-overflow]) ----
+
+    @Test
+    fun fannedHeight_sumsHeightsAndGaps() {
+        assertEquals(196, feedbackFannedHeight(listOf(60, 60, 60), gapPx = 8))
+        assertEquals(60, feedbackFannedHeight(listOf(60), gapPx = 8))
+        assertEquals(0, feedbackFannedHeight(emptyList(), gapPx = 8))
+    }
+
+    @Test
+    fun fannedCap_isSixtyPercentOfAvailable() {
+        assertEquals(600, feedbackFannedCap(available = 1000, imeBottom = 0))
+    }
+
+    @Test
+    fun fannedCap_subtractsTheImeBottom() {
+        assertEquals(500, feedbackFannedCap(available = 1000, imeBottom = 500))
+        assertEquals(600, feedbackFannedCap(available = 1000, imeBottom = 0))
+    }
+
+    @Test
+    fun fannedCap_ofUnboundedHeight_isUnbounded() {
+        assertEquals(Int.MAX_VALUE, feedbackFannedCap(available = Constraints.Infinity, imeBottom = 300))
+    }
+
+    @Test
+    fun fannedCap_neverNegative() {
+        assertEquals(0, feedbackFannedCap(available = 100, imeBottom = 500))
+        assertEquals(0, feedbackFannedCap(available = 0, imeBottom = 0))
+    }
+
+    @Test
+    fun lerp_interpolatesBothEndsAndTheMiddle() {
+        assertEquals(10, feedbackLerp(10, 30, 0f))
+        assertEquals(30, feedbackLerp(10, 30, 1f))
+        assertEquals(20, feedbackLerp(10, 30, 0.5f))
+        assertEquals(0.9f, feedbackLerp(0.8f, 1f, 0.5f), 0.0001f)
     }
 }

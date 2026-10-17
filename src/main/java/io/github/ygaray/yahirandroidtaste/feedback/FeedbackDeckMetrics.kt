@@ -1,7 +1,9 @@
 package io.github.ygaray.yahirandroidtaste.feedback
 
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlin.math.roundToInt
 
 /**
  * Pure geometry for the feedback deck (D-01 Direction A). Composition-free so the numbers can be
@@ -57,3 +59,32 @@ internal fun feedbackUndoMaxWidth(rowWidth: Int, naturalWidth: Int, minIntrinsic
     val ceiling = (rowWidth * FEEDBACK_UNDO_CEILING_FRACTION).toInt()
     return minOf(naturalWidth, minOf(maxOf(cap, minIntrinsicWidth), ceiling))
 }
+
+/** Gap between cards of a fanned deck (the mock's 8px). */
+internal val FEEDBACK_FANNED_GAP: Dp = 8.dp
+
+/** A fanned deck takes at most this share of the available height; the cards scroll inside. */
+internal const val FEEDBACK_FANNED_MAX_HEIGHT_FRACTION: Float = 0.6f
+
+/** Height of a fanned deck: the card [heights] stacked with [gapPx] between neighbours. */
+internal fun feedbackFannedHeight(heights: List<Int>, gapPx: Int): Int =
+    if (heights.isEmpty()) 0 else heights.sum() + (heights.size - 1) * gapPx
+
+/**
+ * Cap on the fanned deck's height: 60 percent of [available], and never more than what the on-screen
+ * keyboard leaves ([imeBottom] px are lost at the bottom). Never negative. An unbounded
+ * [available] (`Constraints.Infinity`) stays unbounded as `Int.MAX_VALUE`.
+ */
+internal fun feedbackFannedCap(available: Int, imeBottom: Int): Int {
+    if (available == Constraints.Infinity) return Int.MAX_VALUE
+    val share = (available * FEEDBACK_FANNED_MAX_HEIGHT_FRACTION).toInt()
+    return minOf(share, available - imeBottom).coerceAtLeast(0)
+}
+
+/** Linear interpolation of two pixel values by [fraction] (0 gives [start], 1 gives [stop]). */
+internal fun feedbackLerp(start: Int, stop: Int, fraction: Float): Int =
+    (start + (stop - start) * fraction).roundToInt()
+
+/** Linear interpolation of two floats by [fraction]. */
+internal fun feedbackLerp(start: Float, stop: Float, fraction: Float): Float =
+    start + (stop - start) * fraction
