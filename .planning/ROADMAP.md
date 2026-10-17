@@ -152,7 +152,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 27-02-PLAN.md — `BatchRowResultUiModel.target`, per-row open list in Receipt and Classic, target-less rows inert with no reserved space (FOPEN-02)
+- [x] 27-02-PLAN.md — `BatchRowResultUiModel.target`, per-row open list in Receipt and Classic, target-less rows inert with no reserved space (FOPEN-02)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -397,6 +397,6 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 |-------|-----------|----------------|--------|-----------|
 | 25. Feedback target model & stack state | v2.8 | 5/5 | Not started |  |
 | 26. Receipt-card stacked snackbar deck | v2.8 | 6/6 | Not started |  |
-| 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 1/4 | Not started |  |
+| 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 2/4 | Not started |  |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 0/TBD | Not started | - |
 | 29. Docs & v2.8.0 cut readiness | v2.8 | 0/TBD | Not started | - |
