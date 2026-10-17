@@ -1,0 +1,10 @@
+=== HEAD signed capture: long German pill, font_scale 2.0, 360dp wide, theme hub  (14-sc4-long-f2-360-hub-screen.png)
+pill text node (120, 1643, 996, 2112) lines? text='Bearbeitet von Verarbeitung auf dem Gerä'
+painted rect ~ [48,1631][1032,2124] (328dp x 164dp), pill colour (220, 227, 229)
+rows with ink=305 rows with ink outside the pill-colour span=0
+RESULT OK-all-text-inside-shape
+=== HEAD signed capture: long German pill, font_scale 2.0, 360dp wide, theme dynamic  (16-sc4-long-f2-360-dynamic-screen.png)
+pill text node (120, 1643, 996, 2112) lines? text='Bearbeitet von Verarbeitung auf dem Gerä'
+painted rect ~ [48,1631][1032,2124] (328dp x 164dp), pill colour (226, 226, 233)
+rows with ink=305 rows with ink outside the pill-colour span=0
+RESULT OK-all-text-inside-shape

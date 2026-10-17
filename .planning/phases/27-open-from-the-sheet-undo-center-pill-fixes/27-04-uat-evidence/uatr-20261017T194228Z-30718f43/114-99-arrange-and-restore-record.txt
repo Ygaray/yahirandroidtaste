@@ -1,0 +1,17 @@
+Phase 27 Gate-1 arrange / restore record, tester SM-S908U, adb serial R5CT10XNKQN (USB), Android 15
+
+Build identity
+  library HEAD 2271a0fc13dd716856fa9bf941300f01b8a8f204 (src/ clean: 0 changed files; src identical to ca5fae5, the commits since are .planning docs only)
+  library AAR  mavenLocal com.github.Ygaray:yahirandroidtaste:1.10.0 deleted, then republished from HEAD with clean publishReleasePublicationToMavenLocal: md5 01e623ffa9f2e8542e8c42e507e62240; classes.jar contains OpenTargetRow / HandledByPillShape / HandledByDot / UndoHistoryOpenRow, and the harness dex references them
+  baseline AAR the v2.7.1 tag exported with git archive (no working tree), same deleted-then-republished procedure: md5 41959a0847c8291fb8b1f0dee44f9354; classes.jar contains none of the Phase 27 classes. Used ONLY to build the throwaway BASELINE harness for the parity and control captures, then replaced by the HEAD AAR.
+  HEAD harness APK  (scratchpad, never committed) md5 06f7476680a5cf9b7c7bb2018b745fb4 sha256 prefix 381843a6269f; baseline harness APK md5 586bdf5f582668a376d9d6b4312eb1fe
+
+Device state AFTER the run (read back now)
+  wm density                 : Physical density: 450 
+  wm size                    : Physical size: 1440x3088 Override size: 1080x2316   (Override size 1080x2316 was already set before the run)
+  system font_scale          : 1.0   (baseline 1.0; 2.0 for the large-font legs, restored)
+  secure enabled_accessibility_services : null   (baseline null)
+  secure accessibility_enabled          : 0   (baseline 0)
+  harness package            : 0 installed (0 = uninstalled)
+  window touch mode          : TAB/ENTER key events in the keyboard leg leave the window in keyboard-focus mode; a tap restored it (mInTouchMode true) before the parity battery; not a persisted setting
+  wm density was only ever written as 'wm density 480' / 'wm density 450'; 'wm density reset' was never run

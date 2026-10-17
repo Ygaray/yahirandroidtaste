@@ -1,0 +1,22 @@
+sheet_receipt: nodes b=19 h=19 only_b=0 only_h=0 diffpx=0 bbox=None
+sheet_classic: nodes b=18 h=18 only_b=0 only_h=0 diffpx=0 bbox=None
+sheet_receipt_hoist: nodes b=19 h=19 only_b=0 only_h=0 diffpx=0 bbox=None
+batch_receipt: nodes b=31 h=31 only_b=0 only_h=0 diffpx=0 bbox=None
+batch_classic: nodes b=30 h=30 only_b=0 only_h=0 diffpx=0 bbox=None
+undo: nodes b=59 h=59 only_b=0 only_h=0 diffpx=0 bbox=None
+pill_one_f1_360: nodes b=19 h=19 only_b=0 only_h=0 diffpx=0 bbox=None
+pill_one_f2: nodes b=19 h=19 only_b=0 only_h=0 diffpx=0 bbox=None
+dot_dark: nodes b=19 h=19 only_b=0 only_h=0 diffpx=0 bbox=None
+sheet_receipt_tgt_nohandler: nodes b=19 h=19 only_b=0 only_h=0 diffpx=0 bbox=None
+sheet_receipt_notgt_handler: nodes b=19 h=19 only_b=0 only_h=0 diffpx=0 bbox=None
+sheet_classic_tgt_nohandler: nodes b=18 h=18 only_b=0 only_h=0 diffpx=0 bbox=None
+sheet_classic_notgt_handler: nodes b=18 h=18 only_b=0 only_h=0 diffpx=0 bbox=None
+sheet_receipt_hoist_tgt_nohandler: nodes b=19 h=19 only_b=0 only_h=0 diffpx=0 bbox=None
+sheet_classic_hoist_tgt_nohandler: nodes b=18 h=18 only_b=0 only_h=0 diffpx=0 bbox=None
+batch_receipt_rt_nohandler: nodes b=31 h=31 only_b=0 only_h=0 diffpx=0 bbox=None
+batch_classic_rt_nohandler: nodes b=30 h=30 only_b=0 only_h=0 diffpx=0 bbox=None
+pill_long_f1_360: nodes b=19 h=19 only_b=0 only_h=0 diffpx=0 bbox=None
+pill_long_f2_360: nodes b=19 h=19 only_b=0 only_h=0 diffpx=0 bbox=None
+dot_white: nodes b=19 h=19 only_b=0 only_h=0 diffpx=332 bbox=(74, 1982, 101, 2009)
+dot_dyn: nodes b=19 h=19 only_b=0 only_h=0 diffpx=332 bbox=(74, 1982, 101, 2009)
+pill_long_f2_360_dyn: nodes b=19 h=19 only_b=0 only_h=0 diffpx=376 bbox=(79, 1754, 107, 1782)

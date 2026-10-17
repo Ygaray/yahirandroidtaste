@@ -1,0 +1,1067 @@
+{
+  "schema": "gsd.uat-run/v1",
+  "run_id": "uatr-20261017T194228Z-30718f43",
+  "status": "finished",
+  "phase": "27",
+  "plan": "04",
+  "prefix": "27-04",
+  "surface": "android",
+  "project": "sha:df197faf5105af0ed516c727e2aafb44f5ef5743:.",
+  "phase_dir": "phases/27-open-from-the-sheet-undo-center-pill-fixes",
+  "required_surface": {
+    "surface": "android",
+    "source": "marker:AGENT-DEVICE-TESTING.md"
+  },
+  "surface_override": null,
+  "device": {
+    "addr": "R5CT10XNKQN",
+    "serial": "R5CT10XNKQN",
+    "model": "SM-S908U",
+    "label": null
+  },
+  "app": {
+    "package": "io.github.ygaray.yahirandroidtasteharness",
+    "apk_path": "/data/app/~~yiuuar6cvgMhgLRuwpDjMg==/io.github.ygaray.yahirandroidtasteharness-Gtkdh_5w068WiXpV6qnAtQ==/base.apk",
+    "apk_sha256": "381843a6269fac869d9657173da0001cf77e018c862f3f6878283c828bafff6f"
+  },
+  "head_at_start": "2271a0fc13dd716856fa9bf941300f01b8a8f204",
+  "started_at": "2026-10-17T19:42:28.410Z",
+  "finished_at": "2026-10-17T19:53:16.509Z",
+  "capture_count": 114,
+  "captures": [
+    {
+      "label": "00-build-identity-note",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "01-00-build-identity-note.log",
+      "sha256": "4789aeff5b3a3ba64ce4d8a2ead6d54142a5fc7b115bae1eed5e0f67a3c6aeb1",
+      "bytes": 200,
+      "at": "2026-10-17T19:42:42.908Z"
+    },
+    {
+      "label": "01-unit-detekt-apicheck-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "02-01-unit-detekt-apicheck-summary.txt",
+      "sha256": "0da1dbd347147a3e84120fc771a71513ea5892ea973248094e8795642cc3db75",
+      "bytes": 61,
+      "at": "2026-10-17T19:42:43.237Z"
+    },
+    {
+      "label": "02-api-source-additive-v271",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "03-02-api-source-additive-v271.txt",
+      "sha256": "5c158b46f37a902313fc4793ff1f98351b7425a33936c73722fe83836bead44d",
+      "bytes": 228,
+      "at": "2026-10-17T19:42:43.549Z"
+    },
+    {
+      "label": "03-parity-b-vs-h-thr2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "04-03-parity-b-vs-h-thr2.txt",
+      "sha256": "0117a2f5ccf38f077b90161fe0d25ad5cc6fc5f76ca3e7e76096df0719431bdc",
+      "bytes": 1716,
+      "at": "2026-10-17T19:42:43.859Z"
+    },
+    {
+      "label": "04-parity-b-vs-h-thr24",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "05-04-parity-b-vs-h-thr24.txt",
+      "sha256": "7ef169b818a51f164dd159ddb6977520e24695f4e941b64be326b54576f0b9fa",
+      "bytes": 1670,
+      "at": "2026-10-17T19:42:44.189Z"
+    },
+    {
+      "label": "05-pol01-probe-baseline-vs-head",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "06-05-pol01-probe-baseline-vs-head.txt",
+      "sha256": "3cbc31d4b10b63fec808c5aaabd2186ab2e5becf01716fad90e17732127b1075",
+      "bytes": 2723,
+      "at": "2026-10-17T19:42:44.543Z"
+    },
+    {
+      "label": "b-pill-long-f2-360-baseline-v271-screen",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "07-b-pill-long-f2-360-baseline-v271-screen.png",
+      "sha256": "d4e5586807942d140c85ad989272ed3a65448815aa54df048f8402c3602596c0",
+      "bytes": 171037,
+      "at": "2026-10-17T19:42:44.829Z"
+    },
+    {
+      "label": "b-pill-long-f2-360-baseline-v271-tree",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "08-b-pill-long-f2-360-baseline-v271-tree.xml",
+      "sha256": "64ef94250d5a894fbee7ad4aa12300ce4f4d351da8a2933a334d56f067ebec19",
+      "bytes": 6892,
+      "at": "2026-10-17T19:42:45.110Z"
+    },
+    {
+      "label": "h-pill-long-f2-360-head-screen",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "09-h-pill-long-f2-360-head-screen.png",
+      "sha256": "6a68d53504369f24aa7a842e12886545aaca9d19af9dd6de9f1095283f5ce26e",
+      "bytes": 162628,
+      "at": "2026-10-17T19:42:45.356Z"
+    },
+    {
+      "label": "h-pill-long-f2-360-head-tree",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "10-h-pill-long-f2-360-head-tree.xml",
+      "sha256": "64ef94250d5a894fbee7ad4aa12300ce4f4d351da8a2933a334d56f067ebec19",
+      "bytes": 6892,
+      "at": "2026-10-17T19:42:45.676Z"
+    },
+    {
+      "label": "b-undo-baseline-v271-screen",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "11-b-undo-baseline-v271-screen.png",
+      "sha256": "8a96059a1ebbfb6911f4ba84fbb6541c32c9343a4a1226566c937239cfc3d122",
+      "bytes": 180742,
+      "at": "2026-10-17T19:42:45.985Z"
+    },
+    {
+      "label": "h-undo-legacy-overload-head-screen",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "12-h-undo-legacy-overload-head-screen.png",
+      "sha256": "f2602e0e4de3ac1c2125c05c092927a7fc5cecde1b2c46072269c522fdedad4f",
+      "bytes": 180531,
+      "at": "2026-10-17T19:42:46.270Z"
+    },
+    {
+      "label": "sc4-long-f2-360-hub-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "13-sc4-long-f2-360-hub-tree.xml",
+      "sha256": "64ef94250d5a894fbee7ad4aa12300ce4f4d351da8a2933a334d56f067ebec19",
+      "bytes": 6892,
+      "at": "2026-10-17T19:43:06.956Z"
+    },
+    {
+      "label": "sc4-long-f2-360-hub-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "14-sc4-long-f2-360-hub-screen.png",
+      "sha256": "e4518aa3728e4e7d987ce8470281c204890938d58cea7fcc27e7200b80f2527e",
+      "bytes": 168458,
+      "at": "2026-10-17T19:43:07.641Z"
+    },
+    {
+      "label": "sc4-long-f2-360-dynamic-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "15-sc4-long-f2-360-dynamic-tree.xml",
+      "sha256": "64ef94250d5a894fbee7ad4aa12300ce4f4d351da8a2933a334d56f067ebec19",
+      "bytes": 6892,
+      "at": "2026-10-17T19:43:15.155Z"
+    },
+    {
+      "label": "sc4-long-f2-360-dynamic-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "16-sc4-long-f2-360-dynamic-screen.png",
+      "sha256": "9b2563fb3d5ab5c8005122590e574ec468eb5ad3edf21b1daef0ca71f6b4d9dd",
+      "bytes": 168215,
+      "at": "2026-10-17T19:43:16.173Z"
+    },
+    {
+      "label": "sc4-one-line-f1-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "17-sc4-one-line-f1-tree.xml",
+      "sha256": "8c5c796830dc36b7b3af9e48aa8884ff1f62699f9fa98eb9f9ae957af545a962",
+      "bytes": 6788,
+      "at": "2026-10-17T19:43:25.378Z"
+    },
+    {
+      "label": "sc4-one-line-f1-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "18-sc4-one-line-f1-screen.png",
+      "sha256": "e3b413637daa3c948b87449dfa98d5a87c30a1b922909d8f105bf45478ea2bef",
+      "bytes": 78861,
+      "at": "2026-10-17T19:43:26.269Z"
+    },
+    {
+      "label": "sc4-signed-pill-probe",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "19-sc4-signed-pill-probe.txt",
+      "sha256": "81b48c79fbe7e978fc6b0441e259cad070b0cf1f8eb8b411a7b9689f1fea4d56",
+      "bytes": 784,
+      "at": "2026-10-17T19:43:26.649Z"
+    },
+    {
+      "label": "sc5-dot-hub-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "20-sc5-dot-hub-screen.png",
+      "sha256": "59b967294cbd045b50ba2f9be1cf59fe3049d802560175ee651fc382adbf4e40",
+      "bytes": 79504,
+      "at": "2026-10-17T19:43:43.220Z"
+    },
+    {
+      "label": "sc5-dot-hub-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "21-sc5-dot-hub-tree.xml",
+      "sha256": "8c5c796830dc36b7b3af9e48aa8884ff1f62699f9fa98eb9f9ae957af545a962",
+      "bytes": 6788,
+      "at": "2026-10-17T19:43:46.068Z"
+    },
+    {
+      "label": "sc5-dot-whitetone-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "22-sc5-dot-whitetone-screen.png",
+      "sha256": "4b615fef0614eda80894cf07c3e510d1131e38f8be24fba4939d3cecaa54d5ee",
+      "bytes": 80004,
+      "at": "2026-10-17T19:43:50.413Z"
+    },
+    {
+      "label": "sc5-dot-whitetone-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "23-sc5-dot-whitetone-tree.xml",
+      "sha256": "8c5c796830dc36b7b3af9e48aa8884ff1f62699f9fa98eb9f9ae957af545a962",
+      "bytes": 6788,
+      "at": "2026-10-17T19:43:53.235Z"
+    },
+    {
+      "label": "sc5-dot-dynamic-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "24-sc5-dot-dynamic-screen.png",
+      "sha256": "76d97c6d891326e4328dcf90b0bda10afb1fde511e6d186ae57f36b80cc33120",
+      "bytes": 79401,
+      "at": "2026-10-17T19:43:57.524Z"
+    },
+    {
+      "label": "sc5-dot-dynamic-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "25-sc5-dot-dynamic-tree.xml",
+      "sha256": "8c5c796830dc36b7b3af9e48aa8884ff1f62699f9fa98eb9f9ae957af545a962",
+      "bytes": 6788,
+      "at": "2026-10-17T19:44:00.354Z"
+    },
+    {
+      "label": "sc5-dot-dark-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "26-sc5-dot-dark-screen.png",
+      "sha256": "93822b162d1f72a6f979d8d1e1a217f3d6241874c313de69901081250a88fcc0",
+      "bytes": 78662,
+      "at": "2026-10-17T19:44:04.545Z"
+    },
+    {
+      "label": "sc5-dot-dark-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "27-sc5-dot-dark-tree.xml",
+      "sha256": "8c5c796830dc36b7b3af9e48aa8884ff1f62699f9fa98eb9f9ae957af545a962",
+      "bytes": 6788,
+      "at": "2026-10-17T19:44:07.234Z"
+    },
+    {
+      "label": "sc5-dot-dynwhite-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "28-sc5-dot-dynwhite-screen.png",
+      "sha256": "d65a9d4ce63784f1ac1262c222f9bf51d28dc2067835b5faa8396412d18273ca",
+      "bytes": 78200,
+      "at": "2026-10-17T19:44:11.385Z"
+    },
+    {
+      "label": "sc5-dot-dynwhite-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "29-sc5-dot-dynwhite-tree.xml",
+      "sha256": "8c5c796830dc36b7b3af9e48aa8884ff1f62699f9fa98eb9f9ae957af545a962",
+      "bytes": 6788,
+      "at": "2026-10-17T19:44:14.065Z"
+    },
+    {
+      "label": "sc5-signed-dot-probe",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "30-sc5-signed-dot-probe.txt",
+      "sha256": "507010ecb6a951b832cabdebd9e8b90fc11fd0ddf83ceb26f414a34f392dad2e",
+      "bytes": 1868,
+      "at": "2026-10-17T19:44:15.253Z"
+    },
+    {
+      "label": "sc5-dot-montage-v271-vs-head",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "31-sc5-dot-montage-v271-vs-head.png",
+      "sha256": "4131113e33aa9ea42f0aedee4dcc1f01a0223151a7544484f913fdfd4eec96e6",
+      "bytes": 39475,
+      "at": "2026-10-17T19:44:15.816Z"
+    },
+    {
+      "label": "sc1-rcv-default-before-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "32-sc1-rcv-default-before-tree.xml",
+      "sha256": "175bfcc04c8d343bebead66e6d8c249d4066ef4ea3d304599bf99d498ec29275",
+      "bytes": 8656,
+      "at": "2026-10-17T19:44:35.256Z"
+    },
+    {
+      "label": "sc1-rcv-default-before-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "33-sc1-rcv-default-before-screen.png",
+      "sha256": "7eb2adb05fde83a8163d0ee41d88f4abe6a42aca4911ed90226c199a9845267f",
+      "bytes": 116450,
+      "at": "2026-10-17T19:44:35.974Z"
+    },
+    {
+      "label": "sc1-rcv-default-after-tap-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "34-sc1-rcv-default-after-tap-tree.xml",
+      "sha256": "0172b5de6f146ffed25c5ba102db77bdf6d3b06d4a7e2115b0a5760b27a152cd",
+      "bytes": 4024,
+      "at": "2026-10-17T19:44:44.604Z"
+    },
+    {
+      "label": "sc1-rcv-default-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "35-sc1-rcv-default-log.log",
+      "sha256": "862e46387066709c8d68097b452455145e30630df6409b89c4fe464f7dfe5c08",
+      "bytes": 7376,
+      "at": "2026-10-17T19:44:45.343Z"
+    },
+    {
+      "label": "sc1-rcv-hoist-before-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "36-sc1-rcv-hoist-before-tree.xml",
+      "sha256": "175bfcc04c8d343bebead66e6d8c249d4066ef4ea3d304599bf99d498ec29275",
+      "bytes": 8656,
+      "at": "2026-10-17T19:44:52.364Z"
+    },
+    {
+      "label": "sc1-rcv-hoist-after-tap-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "37-sc1-rcv-hoist-after-tap-tree.xml",
+      "sha256": "0172b5de6f146ffed25c5ba102db77bdf6d3b06d4a7e2115b0a5760b27a152cd",
+      "bytes": 4024,
+      "at": "2026-10-17T19:45:01.063Z"
+    },
+    {
+      "label": "sc1-rcv-hoist-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "38-sc1-rcv-hoist-log.log",
+      "sha256": "aee62913793c484030535cb92f0ef9832707342eda355059db6dad7a969ee279",
+      "bytes": 8427,
+      "at": "2026-10-17T19:45:01.729Z"
+    },
+    {
+      "label": "sc1-cls-default-before-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "39-sc1-cls-default-before-tree.xml",
+      "sha256": "f9547ce1cda4af033437545895218b45f9649e2875d5d95473332f8c1a4e30af",
+      "bytes": 8304,
+      "at": "2026-10-17T19:45:08.667Z"
+    },
+    {
+      "label": "sc1-cls-default-before-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "40-sc1-cls-default-before-screen.png",
+      "sha256": "eb445ec02ba72b858e816854eb2b23ea4f0b41c96471addc4b61121881af3314",
+      "bytes": 120457,
+      "at": "2026-10-17T19:45:09.615Z"
+    },
+    {
+      "label": "sc1-cls-default-after-tap-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "41-sc1-cls-default-after-tap-tree.xml",
+      "sha256": "0172b5de6f146ffed25c5ba102db77bdf6d3b06d4a7e2115b0a5760b27a152cd",
+      "bytes": 4024,
+      "at": "2026-10-17T19:45:18.430Z"
+    },
+    {
+      "label": "sc1-cls-default-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "42-sc1-cls-default-log.log",
+      "sha256": "16c2596862d3a17982fe8f9f62818b481b4b540083fb18b4c159b8f31bb2c72e",
+      "bytes": 7116,
+      "at": "2026-10-17T19:45:19.037Z"
+    },
+    {
+      "label": "sc1-cls-hoist-before-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "43-sc1-cls-hoist-before-tree.xml",
+      "sha256": "f9547ce1cda4af033437545895218b45f9649e2875d5d95473332f8c1a4e30af",
+      "bytes": 8304,
+      "at": "2026-10-17T19:45:26.100Z"
+    },
+    {
+      "label": "sc1-cls-hoist-after-tap-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "44-sc1-cls-hoist-after-tap-tree.xml",
+      "sha256": "0172b5de6f146ffed25c5ba102db77bdf6d3b06d4a7e2115b0a5760b27a152cd",
+      "bytes": 4024,
+      "at": "2026-10-17T19:45:34.772Z"
+    },
+    {
+      "label": "sc1-cls-hoist-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "45-sc1-cls-hoist-log.log",
+      "sha256": "2f5d724109642a637b7888548c1181a7c2ce246ac8e6081ccfe39b48961006a8",
+      "bytes": 8167,
+      "at": "2026-10-17T19:45:35.464Z"
+    },
+    {
+      "label": "sc1-en-receipt-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "46-sc1-en-receipt-screen.png",
+      "sha256": "ac76287d07eabd69413ee26e42b84d6c2389238c4520fab428f9e8de34b8babc",
+      "bytes": 95768,
+      "at": "2026-10-17T19:45:40.399Z"
+    },
+    {
+      "label": "sc1-en-receipt-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "47-sc1-en-receipt-tree.xml",
+      "sha256": "60673e6d59f209301ac1ab1a5e5271d648f16305f8deae8fc0ee6935cd240d15",
+      "bytes": 8562,
+      "at": "2026-10-17T19:45:43.022Z"
+    },
+    {
+      "label": "sc1-en-receipt-a11y-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "48-sc1-en-receipt-a11y-log.log",
+      "sha256": "15233b3c18adf52a6f7d26fc280502b9e4d6106c0e88369e71f6c0fc4c951c1b",
+      "bytes": 6779,
+      "at": "2026-10-17T19:45:45.274Z"
+    },
+    {
+      "label": "sc1-en-classic-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "49-sc1-en-classic-screen.png",
+      "sha256": "68af110ed9726bf9b5e751f95e7efaa1410673b4cfa28d6adb807a1df2d5b8e0",
+      "bytes": 94999,
+      "at": "2026-10-17T19:45:50.194Z"
+    },
+    {
+      "label": "sc1-en-classic-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "50-sc1-en-classic-tree.xml",
+      "sha256": "8d593785c39845e59fbb9fcce35e23cde8a16a5d285923c5dfec5cadb7d2d090",
+      "bytes": 8209,
+      "at": "2026-10-17T19:45:52.950Z"
+    },
+    {
+      "label": "sc1-en-classic-a11y-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "51-sc1-en-classic-a11y-log.log",
+      "sha256": "2b6be59366f8609ef7a1cce7d81e8f5c31b2dc27193b84e8e263c79734df56d5",
+      "bytes": 6609,
+      "at": "2026-10-17T19:45:55.221Z"
+    },
+    {
+      "label": "sc1-lock-receipt-locked-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "52-sc1-lock-receipt-locked-tree.xml",
+      "sha256": "cbd95433563544a71cb096c708f582a6838b09d31181c1e61cfb51637d4de46c",
+      "bytes": 8313,
+      "at": "2026-10-17T19:46:01.525Z"
+    },
+    {
+      "label": "sc1-lock-receipt-locked-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "53-sc1-lock-receipt-locked-screen.png",
+      "sha256": "fa35493fddca9b06957f7f845e96ffb1c8620df430feeaf787131713c6331d11",
+      "bytes": 114804,
+      "at": "2026-10-17T19:46:02.272Z"
+    },
+    {
+      "label": "sc1-lock-receipt-after-locked-tap-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "54-sc1-lock-receipt-after-locked-tap-log.log",
+      "sha256": "fe94decfe94e701966edcd04787159fe5e180aeb128c62b2cf30de00c341dfde",
+      "bytes": 52,
+      "at": "2026-10-17T19:46:03.906Z",
+      "empty": true
+    },
+    {
+      "label": "sc1-lock-receipt-unlocked-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "55-sc1-lock-receipt-unlocked-tree.xml",
+      "sha256": "175bfcc04c8d343bebead66e6d8c249d4066ef4ea3d304599bf99d498ec29275",
+      "bytes": 8656,
+      "at": "2026-10-17T19:46:14.682Z"
+    },
+    {
+      "label": "sc1-lock-receipt-after-unlocked-tap-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "56-sc1-lock-receipt-after-unlocked-tap-log.log",
+      "sha256": "7dc990ee1e40cfa9b983d7d1118c9748e9638c8612cd9244f729c2c7dd263ddb",
+      "bytes": 115,
+      "at": "2026-10-17T19:46:17.365Z"
+    },
+    {
+      "label": "sc1-lock-classic-locked-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "57-sc1-lock-classic-locked-tree.xml",
+      "sha256": "f44a84ce47deadacd6f14db22b474274790459b1abfa0c9672f97218223b12b0",
+      "bytes": 7961,
+      "at": "2026-10-17T19:46:23.620Z"
+    },
+    {
+      "label": "sc1-lock-classic-locked-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "58-sc1-lock-classic-locked-screen.png",
+      "sha256": "9dac5b2c9c06c9beb74a042660c878ef24d37ee22ea36516ea602c755b97ca1b",
+      "bytes": 117702,
+      "at": "2026-10-17T19:46:24.494Z"
+    },
+    {
+      "label": "sc1-lock-classic-after-locked-tap-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "59-sc1-lock-classic-after-locked-tap-log.log",
+      "sha256": "fe94decfe94e701966edcd04787159fe5e180aeb128c62b2cf30de00c341dfde",
+      "bytes": 52,
+      "at": "2026-10-17T19:46:26.107Z",
+      "empty": true
+    },
+    {
+      "label": "sc1-lock-classic-unlocked-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "60-sc1-lock-classic-unlocked-tree.xml",
+      "sha256": "f9547ce1cda4af033437545895218b45f9649e2875d5d95473332f8c1a4e30af",
+      "bytes": 8304,
+      "at": "2026-10-17T19:46:36.916Z"
+    },
+    {
+      "label": "sc1-lock-classic-after-unlocked-tap-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "61-sc1-lock-classic-after-unlocked-tap-log.log",
+      "sha256": "776140224bfae4f362760a4015cecf0ae98781ac7e4af83c288c368b8a8a1d93",
+      "bytes": 115,
+      "at": "2026-10-17T19:46:39.557Z"
+    },
+    {
+      "label": "sc1-clear-receipt-before-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "62-sc1-clear-receipt-before-tree.xml",
+      "sha256": "175bfcc04c8d343bebead66e6d8c249d4066ef4ea3d304599bf99d498ec29275",
+      "bytes": 8656,
+      "at": "2026-10-17T19:46:45.826Z"
+    },
+    {
+      "label": "sc1-clear-receipt-after-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "63-sc1-clear-receipt-after-tree.xml",
+      "sha256": "f92ea98778df77a4c13e19be18652f7e635cca038a350a24431db6b81ef48f57",
+      "bytes": 6821,
+      "at": "2026-10-17T19:46:54.637Z"
+    },
+    {
+      "label": "sc1-clear-receipt-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "64-sc1-clear-receipt-log.log",
+      "sha256": "5f29cf48568176820e8e1932d2c4770625acb09bc6afcb80b0846c70f631eaf9",
+      "bytes": 72,
+      "at": "2026-10-17T19:46:55.234Z"
+    },
+    {
+      "label": "sc1-clear-classic-before-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "65-sc1-clear-classic-before-tree.xml",
+      "sha256": "f9547ce1cda4af033437545895218b45f9649e2875d5d95473332f8c1a4e30af",
+      "bytes": 8304,
+      "at": "2026-10-17T19:47:01.433Z"
+    },
+    {
+      "label": "sc1-clear-classic-after-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "66-sc1-clear-classic-after-tree.xml",
+      "sha256": "04902eee6d07f13e59c22cbc47973d12de2cccc84eabd0666b15ae747da28916",
+      "bytes": 6469,
+      "at": "2026-10-17T19:47:10.222Z"
+    },
+    {
+      "label": "sc1-clear-classic-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "67-sc1-clear-classic-log.log",
+      "sha256": "9f4ce291aebdd153bb11daeead0af191df996814c2f361e23b162ccd7099f179",
+      "bytes": 72,
+      "at": "2026-10-17T19:47:10.763Z"
+    },
+    {
+      "label": "sc2-rcv-before-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "68-sc2-rcv-before-tree.xml",
+      "sha256": "ecd26a47c41af9b82d62b985c3769675c3ce516ae96ab7073782a821ac4a7a43",
+      "bytes": 13205,
+      "at": "2026-10-17T19:47:30.389Z"
+    },
+    {
+      "label": "sc2-rcv-before-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "69-sc2-rcv-before-screen.png",
+      "sha256": "61dfc28b913e88bbe0752079b2861a35038ea038e94a10c7a37fe61f20e940cc",
+      "bytes": 134703,
+      "at": "2026-10-17T19:47:31.260Z"
+    },
+    {
+      "label": "sc2-rcv-after-taps-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "70-sc2-rcv-after-taps-tree.xml",
+      "sha256": "ecd26a47c41af9b82d62b985c3769675c3ce516ae96ab7073782a821ac4a7a43",
+      "bytes": 13205,
+      "at": "2026-10-17T19:47:43.453Z"
+    },
+    {
+      "label": "sc2-rcv-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "71-sc2-rcv-log.log",
+      "sha256": "12842d7c032de4d18d672cdbb5d4351b48c8d4d92ab7ca1bd14b4e83b22987e3",
+      "bytes": 11711,
+      "at": "2026-10-17T19:47:44.134Z"
+    },
+    {
+      "label": "sc2-cls-before-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "72-sc2-cls-before-tree.xml",
+      "sha256": "5577f92627a5bf096e64e7b91d4363748b96bc23d19461ab89027ad095ffddf9",
+      "bytes": 12847,
+      "at": "2026-10-17T19:47:50.940Z"
+    },
+    {
+      "label": "sc2-cls-before-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "73-sc2-cls-before-screen.png",
+      "sha256": "c5e4bc1be8f9b41b0b2654f8f52c611f3baf4d262b61845f48c7faeef839a93a",
+      "bytes": 133491,
+      "at": "2026-10-17T19:47:51.623Z"
+    },
+    {
+      "label": "sc2-cls-after-taps-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "74-sc2-cls-after-taps-tree.xml",
+      "sha256": "5577f92627a5bf096e64e7b91d4363748b96bc23d19461ab89027ad095ffddf9",
+      "bytes": 12847,
+      "at": "2026-10-17T19:48:03.648Z"
+    },
+    {
+      "label": "sc2-cls-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "75-sc2-cls-log.log",
+      "sha256": "bbdce765387e5bbeef7e624d28593b31e5792203f4ced4416eea412559210028",
+      "bytes": 11442,
+      "at": "2026-10-17T19:48:04.201Z"
+    },
+    {
+      "label": "big-receipt-sheet-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "76-big-receipt-sheet-screen.png",
+      "sha256": "242becd06432ea07847d4869f2c18282d009083de1b7ee3a55e6e80eb513f110",
+      "bytes": 209374,
+      "at": "2026-10-17T19:48:08.636Z"
+    },
+    {
+      "label": "big-receipt-sheet-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "77-big-receipt-sheet-tree.xml",
+      "sha256": "aa07563d8b51775320f60eb408c4b90c1528626cf9d1f0cd397d95166861cc41",
+      "bytes": 8713,
+      "at": "2026-10-17T19:48:11.606Z"
+    },
+    {
+      "label": "big-receipt-batch-scrolled-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "78-big-receipt-batch-scrolled-screen.png",
+      "sha256": "a502727d2c341e619745b59a362c08162c3f4b0ff6d32fda110efc37ba19bb2a",
+      "bytes": 175834,
+      "at": "2026-10-17T19:48:17.220Z"
+    },
+    {
+      "label": "big-receipt-batch-scrolled-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "79-big-receipt-batch-scrolled-tree.xml",
+      "sha256": "6f76b4d1985404eb67d9e53b7b9a0223961edd5dc389dfcad373b415e371d3c7",
+      "bytes": 12820,
+      "at": "2026-10-17T19:48:19.949Z"
+    },
+    {
+      "label": "big-classic-sheet-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "80-big-classic-sheet-screen.png",
+      "sha256": "20e4f035bd5db83640af4eeeca1ad8c97a6b132a13afc4128ca01aa1f68f4946",
+      "bytes": 208412,
+      "at": "2026-10-17T19:48:24.166Z"
+    },
+    {
+      "label": "big-classic-sheet-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "81-big-classic-sheet-tree.xml",
+      "sha256": "13c2029ab41dd2804095b3772a6effc22301776a3b790ab5c86f0fdf8fefcc94",
+      "bytes": 8704,
+      "at": "2026-10-17T19:48:26.822Z"
+    },
+    {
+      "label": "big-classic-batch-scrolled-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "82-big-classic-batch-scrolled-screen.png",
+      "sha256": "d852581deac6eb69eec0c34417080006a3b99d3e3dc67164608e55661f699943",
+      "bytes": 179436,
+      "at": "2026-10-17T19:48:32.349Z"
+    },
+    {
+      "label": "big-classic-batch-scrolled-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "83-big-classic-batch-scrolled-tree.xml",
+      "sha256": "31e3985a6c1286d66fb4b81a303e95dfeb11b9e55c9358db3c13a66df52e8082",
+      "bytes": 12469,
+      "at": "2026-10-17T19:48:35.195Z"
+    },
+    {
+      "label": "sc3a-undo-new-before-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "84-sc3a-undo-new-before-tree.xml",
+      "sha256": "c2eb2ab4798b3de19bd657c5ccdb0fb898fd79c9d6aeb22df75d684890216904",
+      "bytes": 22330,
+      "at": "2026-10-17T19:48:42.705Z"
+    },
+    {
+      "label": "sc3a-undo-new-before-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "85-sc3a-undo-new-before-screen.png",
+      "sha256": "beeb52af70b386698e12aeb11d704ced87c2cda2396aaff8548ec0f5d3cefc73",
+      "bytes": 180699,
+      "at": "2026-10-17T19:48:43.523Z"
+    },
+    {
+      "label": "sc3a-undo-new-after-taps-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "86-sc3a-undo-new-after-taps-tree.xml",
+      "sha256": "cdbfac3b4546e1606d2f7eb9db59dfb7db891400a2861ece01f9e3196aa8f99e",
+      "bytes": 22329,
+      "at": "2026-10-17T19:48:58.084Z"
+    },
+    {
+      "label": "sc3a-undo-new-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "87-sc3a-undo-new-log.log",
+      "sha256": "9d9bdf91b4b290b4cc1d820c24bb5f42a48df27f734d079c86f1c431141bfd04",
+      "bytes": 18232,
+      "at": "2026-10-17T19:48:58.764Z"
+    },
+    {
+      "label": "sc3b-hold-u1-peek-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "88-sc3b-hold-u1-peek-screen.png",
+      "sha256": "ae15d2156a3e30c7dddba7583bb4dd92896c6ed77ef374c2860740b5bc662215",
+      "bytes": 184070,
+      "at": "2026-10-17T19:49:06.091Z"
+    },
+    {
+      "label": "sc3b-hold-u1-peek-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "89-sc3b-hold-u1-peek-tree.xml",
+      "sha256": "bdeedd464374662ce346f46767dedfc3b8fe60cc7bb056dde9156c9f2d279209",
+      "bytes": 22404,
+      "at": "2026-10-17T19:49:09.104Z"
+    },
+    {
+      "label": "sc3b-after-release-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "90-sc3b-after-release-tree.xml",
+      "sha256": "c2eb2ab4798b3de19bd657c5ccdb0fb898fd79c9d6aeb22df75d684890216904",
+      "bytes": 22330,
+      "at": "2026-10-17T19:49:13.155Z"
+    },
+    {
+      "label": "sc3b-hold-release-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "91-sc3b-hold-release-log.log",
+      "sha256": "fe94decfe94e701966edcd04787159fe5e180aeb128c62b2cf30de00c341dfde",
+      "bytes": 52,
+      "at": "2026-10-17T19:49:13.911Z",
+      "empty": true
+    },
+    {
+      "label": "sc3c-after-undo-tap-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "92-sc3c-after-undo-tap-tree.xml",
+      "sha256": "ba6cbf4b46debfa06348be31c480205d27a79f519ec30dfac4fcb069c8b6bc3a",
+      "bytes": 20961,
+      "at": "2026-10-17T19:49:21.855Z"
+    },
+    {
+      "label": "sc3c-after-undo-tap-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "93-sc3c-after-undo-tap-screen.png",
+      "sha256": "f886df8c2ae6d339f2deb6f86299c006658881931586304d1086adf1af1f1df1",
+      "bytes": 176736,
+      "at": "2026-10-17T19:49:22.704Z"
+    },
+    {
+      "label": "sc3c-undo-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "94-sc3c-undo-log.log",
+      "sha256": "daf72ca858cf630e464ece0195a0e5dd812e3e5d8c10d9a2c48ee7c43fd4b14a",
+      "bytes": 150,
+      "at": "2026-10-17T19:49:23.296Z"
+    },
+    {
+      "label": "sc3c-after-tap-on-undone-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "95-sc3c-after-tap-on-undone-log.log",
+      "sha256": "daf72ca858cf630e464ece0195a0e5dd812e3e5d8c10d9a2c48ee7c43fd4b14a",
+      "bytes": 150,
+      "at": "2026-10-17T19:49:25.082Z"
+    },
+    {
+      "label": "sc3e-a11y-longclick-peek-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "96-sc3e-a11y-longclick-peek-tree.xml",
+      "sha256": "c2eb2ab4798b3de19bd657c5ccdb0fb898fd79c9d6aeb22df75d684890216904",
+      "bytes": 22330,
+      "at": "2026-10-17T19:49:33.838Z"
+    },
+    {
+      "label": "sc3e-a11y-longclick-peek-gone-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "97-sc3e-a11y-longclick-peek-gone-tree.xml",
+      "sha256": "c2eb2ab4798b3de19bd657c5ccdb0fb898fd79c9d6aeb22df75d684890216904",
+      "bytes": 22330,
+      "at": "2026-10-17T19:49:40.505Z"
+    },
+    {
+      "label": "sc3e-after-longclick-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "98-sc3e-after-longclick-log.log",
+      "sha256": "2a74f78c63007ca7ba33861d27dd294a32d92cad5b6214d644b78f2b41eb3de5",
+      "bytes": 103,
+      "at": "2026-10-17T19:49:41.050Z"
+    },
+    {
+      "label": "sc3e-after-click-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "99-sc3e-after-click-log.log",
+      "sha256": "f22dd55eca1ceb535a81c6204dda4bbe7ee14fe809bae911e450fee680a240a4",
+      "bytes": 257,
+      "at": "2026-10-17T19:49:43.727Z"
+    },
+    {
+      "label": "sc3d-row-focused-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "100-sc3d-row-focused-tree.xml",
+      "sha256": "e941387c094a59f895be69cba1e0bf8b6bc75e766af77d0d778b03c835a6ca1d",
+      "bytes": 22329,
+      "at": "2026-10-17T19:49:59.505Z"
+    },
+    {
+      "label": "sc3d-row-focused-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "101-sc3d-row-focused-screen.png",
+      "sha256": "be12ad6f71cc65918b084b77bf2e04eb287f28a7cd44ceadcb489a670b72b21f",
+      "bytes": 182088,
+      "at": "2026-10-17T19:50:00.336Z"
+    },
+    {
+      "label": "sc3d-after-enter-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "102-sc3d-after-enter-log.log",
+      "sha256": "bdcfb74397b931ddcddd5cfdb2f565ff3d720ad48ede0667b4753e5aee60af2c",
+      "bytes": 55,
+      "at": "2026-10-17T19:50:02.353Z"
+    },
+    {
+      "label": "sc3d-after-next-focus-dpadcenter-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "103-sc3d-after-next-focus-dpadcenter-log.log",
+      "sha256": "407d52015f1238dc4e9ca6f0b89fe18f5fffa17eacb96dc140c49fce87fa05c6",
+      "bytes": 205,
+      "at": "2026-10-17T19:50:05.143Z"
+    },
+    {
+      "label": "sc3f-longclick-peek-visible-tree",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "104-sc3f-longclick-peek-visible-tree.xml",
+      "sha256": "bdeedd464374662ce346f46767dedfc3b8fe60cc7bb056dde9156c9f2d279209",
+      "bytes": 22404,
+      "at": "2026-10-17T19:50:44.175Z"
+    },
+    {
+      "label": "sc3f-longclick-peek-gone-tree",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "105-sc3f-longclick-peek-gone-tree.xml",
+      "sha256": "c2eb2ab4798b3de19bd657c5ccdb0fb898fd79c9d6aeb22df75d684890216904",
+      "bytes": 22330,
+      "at": "2026-10-17T19:50:44.654Z"
+    },
+    {
+      "label": "sc3f-longclick-timing",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "106-sc3f-longclick-timing.txt",
+      "sha256": "822ffd93d67e0898cca9f1c6474ee7acdda5e520f7d923f036becf22c8f9d47b",
+      "bytes": 182,
+      "at": "2026-10-17T19:50:45.007Z"
+    },
+    {
+      "label": "sc3f-longclick-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "107-sc3f-longclick-log.log",
+      "sha256": "516d5af20859408011794dbdd0aa3d4b57e91bfa5b0f8fc806986806949f932b",
+      "bytes": 103,
+      "at": "2026-10-17T19:50:45.672Z"
+    },
+    {
+      "label": "sc3g-legacy-overload-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "108-sc3g-legacy-overload-tree.xml",
+      "sha256": "e77cb8d25b920543f58dad4d7bd5cb29a94d6d0d9ba67905df5bd8507067803e",
+      "bytes": 20966,
+      "at": "2026-10-17T19:51:06.466Z"
+    },
+    {
+      "label": "sc3g-legacy-overload-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "109-sc3g-legacy-overload-screen.png",
+      "sha256": "d8b1ae2a506d33dbf33486a1ec9186fec92d4d8523d24f5360ff7c47ab3e2b41",
+      "bytes": 179327,
+      "at": "2026-10-17T19:51:07.288Z"
+    },
+    {
+      "label": "sc3g-legacy-overload-taps-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "110-sc3g-legacy-overload-taps-log.log",
+      "sha256": "fe94decfe94e701966edcd04787159fe5e180aeb128c62b2cf30de00c341dfde",
+      "bytes": 52,
+      "at": "2026-10-17T19:51:10.028Z",
+      "empty": true
+    },
+    {
+      "label": "sc3h-new-overload-f2-360-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "111-sc3h-new-overload-f2-360-screen.png",
+      "sha256": "1733fbc5eae15a02acf3e6da9923966b4800650651d4d98bd7f391babf067be2",
+      "bytes": 167769,
+      "at": "2026-10-17T19:51:16.821Z"
+    },
+    {
+      "label": "sc3h-new-overload-f2-360-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "112-sc3h-new-overload-f2-360-tree.xml",
+      "sha256": "16d38413d2cf38108529cde617213d53bdbd61c3864a10466e58dcbbf5e54588",
+      "bytes": 12095,
+      "at": "2026-10-17T19:51:19.846Z"
+    },
+    {
+      "label": "sc3i-undo-center-width-note",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "113-sc3i-undo-center-width-note.txt",
+      "sha256": "40ce785583c992072ce995b4a7ab88a65500ac123e56f6e3b04ce3ef1a7525ad",
+      "bytes": 840,
+      "at": "2026-10-17T19:52:55.945Z"
+    },
+    {
+      "label": "99-arrange-and-restore-record",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "114-99-arrange-and-restore-record.txt",
+      "sha256": "9f605cd67f1fa6c7b742ba3808a62cf0728a86dc56231479d5b2e183b6bea0bb",
+      "bytes": 1913,
+      "at": "2026-10-17T19:53:07.100Z"
+    }
+  ],
+  "sig": {
+    "alg": "HMAC-SHA256",
+    "value": "554b1fba3c8986ab2f033f39c721eb3bc2f26c0e8c032ea05d4fd9b2b44eb6b6"
+  }
+}

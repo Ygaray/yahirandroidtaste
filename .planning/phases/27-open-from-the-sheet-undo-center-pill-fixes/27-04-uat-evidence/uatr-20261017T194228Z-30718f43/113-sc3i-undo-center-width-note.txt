@@ -1,0 +1,4 @@
+Undo Center first row (long German message "Eintrag Wocheneinkauf fuer das lange Wochenende wurde geloescht") at 360dp wide (density 480), font_scale 2.0, raw uiautomator dumps h_undo_legacy_f2_360.xml / h_undo_new_f2_360.xml (px, 3.0 px/dp):
+  legacy overload (v2.7.1 look): message text node [72,981][703,1611]  -> 631 px = 210 dp wide, 630 px tall; Undo button [787,1296][972,1408]
+  new overload, openable row    : message text node [72,981][631,1863]  -> 559 px = 186 dp wide, 882 px tall; Undo button [715,1422][900,1534], chevron after it
+The chevron (plus its gap) takes 72 px = 24 dp from the message column on an openable row, so the long German message wraps to more lines (and breaks mid-word, as it already did at this size). The chevron and Undo stay on the row; nothing is pushed off. Informational: not a criterion failure.

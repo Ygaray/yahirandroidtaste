@@ -1,0 +1,40 @@
+=== BASELINE v2.7.1 AAR :: pill_long_f2_360 (360dp wide, density 480 = 3.0 px/dp)
+pill text node (120, 1643, 996, 2112) lines? text='Bearbeitet von Verarbeitung auf dem Gerä'
+painted rect ~ [48,1631][1032,2124] (328dp x 164dp), pill colour (220, 227, 229)
+rows with ink=305 rows with ink outside the pill-colour span=80
+   row y=1659 first-ink-x=126 pill-span=150..899 last-ink-x=369
+   row y=1660 first-ink-x=126 pill-span=178..901 last-ink-x=370
+   row y=1661 first-ink-x=126 pill-span=176..903 last-ink-x=370
+   row y=1662 first-ink-x=126 pill-span=175..904 last-ink-x=370
+   row y=1663 first-ink-x=126 pill-span=173..906 last-ink-x=459
+RESULT FAIL-text-outside-shape
+=== HEAD AAR :: pill_long_f2_360 (360dp wide, density 480 = 3.0 px/dp)
+pill text node (120, 1643, 996, 2112) lines? text='Bearbeitet von Verarbeitung auf dem Gerä'
+painted rect ~ [48,1631][1032,2124] (328dp x 164dp), pill colour (220, 227, 229)
+rows with ink=305 rows with ink outside the pill-colour span=0
+RESULT OK-all-text-inside-shape
+=== BASELINE v2.7.1 AAR :: pill_long_f2_360_dyn (360dp wide, density 480 = 3.0 px/dp)
+pill text node (120, 1643, 996, 2112) lines? text='Bearbeitet von Verarbeitung auf dem Gerä'
+painted rect ~ [48,1631][1032,2124] (328dp x 164dp), pill colour (226, 226, 233)
+rows with ink=305 rows with ink outside the pill-colour span=80
+   row y=1659 first-ink-x=126 pill-span=150..899 last-ink-x=369
+   row y=1660 first-ink-x=126 pill-span=178..901 last-ink-x=370
+   row y=1661 first-ink-x=126 pill-span=176..903 last-ink-x=370
+   row y=1662 first-ink-x=126 pill-span=175..904 last-ink-x=458
+   row y=1663 first-ink-x=126 pill-span=173..906 last-ink-x=459
+RESULT FAIL-text-outside-shape
+=== HEAD AAR :: pill_long_f2_360_dyn (360dp wide, density 480 = 3.0 px/dp)
+pill text node (120, 1643, 996, 2112) lines? text='Bearbeitet von Verarbeitung auf dem Gerä'
+painted rect ~ [48,1631][1032,2124] (328dp x 164dp), pill colour (226, 226, 233)
+rows with ink=305 rows with ink outside the pill-colour span=0
+RESULT OK-all-text-inside-shape
+=== BASELINE v2.7.1 AAR :: pill_long_f1_360 (360dp wide, density 480 = 3.0 px/dp)
+pill text node (120, 2022, 996, 2112) lines? text='Bearbeitet von Verarbeitung auf dem Gerä'
+painted rect ~ [48,2010][1032,2124] (328dp x 38dp), pill colour (220, 227, 229)
+rows with ink=84 rows with ink outside the pill-colour span=0
+RESULT OK-all-text-inside-shape
+=== HEAD AAR :: pill_long_f1_360 (360dp wide, density 480 = 3.0 px/dp)
+pill text node (120, 2022, 996, 2112) lines? text='Bearbeitet von Verarbeitung auf dem Gerä'
+painted rect ~ [48,2010][1032,2124] (328dp x 38dp), pill colour (220, 227, 229)
+rows with ink=84 rows with ink outside the pill-colour span=0
+RESULT OK-all-text-inside-shape

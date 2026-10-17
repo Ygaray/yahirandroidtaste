@@ -1,0 +1,2 @@
+act2 sent at t=0; first dump finished at +3.450964225s; second dump finished at +9.768496436s
+peek overlay node ('Eintrag Wocheneinkauf...' at x=102..978) in dump 1: 1  in dump 2: 0

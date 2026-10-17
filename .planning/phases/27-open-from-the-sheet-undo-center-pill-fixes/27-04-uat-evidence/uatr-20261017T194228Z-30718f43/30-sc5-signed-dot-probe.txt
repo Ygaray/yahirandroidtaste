@@ -1,0 +1,24 @@
+POL-02 dot probe on the signed run captures (1080x2316 @ 450dpi = 2.8125 px/dp); contrast = WCAG relative luminance ratio against the pill
+=== hub  (20-sc5-dot-hub-screen.png)
+pill colour (220, 227, 229); dot fill (37, 26, 0) (run 15px = 5.3dp at centre row y=2106); ring-sample colour (220, 227, 229)
+WCAG contrast fill vs pill = 13.18; ring present = False; ring vs pill = 1.00
+RESULT OK-3to1-met (fill alone )
+=== whitetone  (22-sc5-dot-whitetone-screen.png)
+pill colour (220, 227, 229); dot fill (255, 255, 255) (run 15px = 5.3dp at centre row y=2106); ring-sample colour (23, 29, 30)
+WCAG contrast fill vs pill = 1.30; ring present = True; ring vs pill = 13.13
+ring width along the centre row (left side) = 4px = 1.42dp (spec 1.5dp); fill chord = 5.3dp inside a 6dp footprint
+RESULT OK-3to1-met-by-ring 
+=== dynamic  (24-sc5-dot-dynamic-screen.png)
+pill colour (226, 226, 233); dot fill (255, 255, 255) (run 15px = 5.3dp at centre row y=2106); ring-sample colour (26, 27, 32)
+WCAG contrast fill vs pill = 1.29; ring present = True; ring vs pill = 13.33
+ring width along the centre row (left side) = 4px = 1.42dp (spec 1.5dp); fill chord = 5.3dp inside a 6dp footprint
+RESULT OK-3to1-met-by-ring 
+=== dark  (26-sc5-dot-dark-screen.png)
+pill colour (33, 56, 54); dot fill (255, 224, 160) (run 15px = 5.3dp at centre row y=2106); ring-sample colour (33, 56, 54)
+WCAG contrast fill vs pill = 9.75; ring present = False; ring vs pill = 1.00
+RESULT OK-3to1-met (fill alone )
+=== dynwhite  (28-sc5-dot-dynwhite-screen.png)
+pill colour (226, 226, 233); dot fill (255, 255, 255) (run 15px = 5.3dp at centre row y=2106); ring-sample colour (26, 27, 32)
+WCAG contrast fill vs pill = 1.29; ring present = True; ring vs pill = 13.33
+ring width along the centre row (left side) = 4px = 1.42dp (spec 1.5dp); fill chord = 5.3dp inside a 6dp footprint
+RESULT OK-3to1-met-by-ring 
