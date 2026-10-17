@@ -2,6 +2,9 @@ package io.github.ygaray.yahirandroidtaste.feedback
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 
 /**
  * Single tracked-append sequence for [FeedbackEvent.WithUndo] — the ONE place
@@ -39,4 +42,54 @@ suspend fun SnackbarHostState.emitTrackedWithUndo(
     if (result == SnackbarResult.ActionPerformed) {
         store.attemptUndo(entryId)
     }
+}
+
+/**
+ * Tracked-append sequence for [FeedbackEvent.WithUndo] on the feedback card stack (FSTK-07,
+ * FTGT-02). The stack twin of the Material3 [SnackbarHostState.emitTrackedWithUndo] above, with
+ * the same store-guard rule: the card's Undo and an Undo Center tap share one consumed guard, and
+ * the event's raw [FeedbackEvent.WithUndo.undoAction] is never called directly.
+ *
+ * Order matters: [UndoHistoryStore.append] runs BEFORE the card is shown so the entry exists (and
+ * is visible in the Undo Center) for the entire lifetime of the card, not just after it resolves.
+ * The entry carries the event's [FeedbackEvent.WithUndo.target], and the visible card carries the
+ * entry id.
+ *
+ * Only [FeedbackResult.Undone] runs the undo, through [UndoHistoryStore.attemptUndo]. A tap that
+ * loses the race to the Undo Center still returns [FeedbackResult.Undone]; the store call is then
+ * a no-op. [FeedbackResult.Opened], [FeedbackResult.Dismissed] and [FeedbackResult.TimedOut]
+ * never undo and leave the entry Available.
+ *
+ * Cancellation: if the caller is cancelled before a result, no undo runs, the card is removed and
+ * the entry stays Available, so it can still be undone from the Undo Center. If the caller is
+ * cancelled while the store undo is running, the undo still finishes (it runs under
+ * `NonCancellable`) and the entry ends Undone, never Available but inert. This guard exists on
+ * this stack path only; the Material3 path is unchanged.
+ *
+ * A card whose entry is undone, fails or is removed elsewhere is kept on screen marked spent; it
+ * is not auto-dismissed.
+ *
+ * @return the single [FeedbackResult] the card resolved to.
+ */
+suspend fun FeedbackStackState.emitTrackedWithUndo(
+    store: UndoHistoryStore,
+    event: FeedbackEvent.WithUndo
+): FeedbackResult {
+    val entryId = store.append(
+        message = event.message,
+        preview = event.preview,
+        target = event.target,
+        undoAction = event.undoAction
+    )
+    val result = showInternal(event, entryId) { item ->
+        // Spent elsewhere (undone, failed or removed): keep the card, flag it for the host.
+        store.entries.first { entries ->
+            entries.none { it.id == entryId && it.status == UndoStatus.Available }
+        }
+        item.spent = true
+    }
+    if (result == FeedbackResult.Undone) {
+        withContext(NonCancellable) { store.attemptUndo(entryId) }
+    }
+    return result
 }
