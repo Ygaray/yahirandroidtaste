@@ -384,8 +384,13 @@ class FeedbackStackHostDeckTest {
         state.dismissAll()
     }
 
+    /**
+     * A CONTROL, not a blocker guard: it passes with the blocker removed, because a collapsed back card
+     * has its drag disabled and a drag past the slop suppresses the peek tap on its own. The blocker
+     * versus swipe interaction is guarded by the two mid-gesture tests below.
+     */
     @Test
-    fun dragStartingOverTheBackCardsUndo_neitherFansNorUndoes() {
+    fun dragStartingOverTheBackCardsUndo_neitherFansNorUndoes_control() {
         val state = FeedbackStackState()
         val store = UndoHistoryStore()
         val results = mutableMapOf<String, FeedbackResult>()
@@ -406,6 +411,89 @@ class FeedbackStackHostDeckTest {
         assertTrue("no card may resolve: $results", results.isEmpty())
         assertEquals(0, undoRuns)
         assertEquals(UndoStatus.Available, store.entries.value.single().status)
+        state.dismissAll()
+    }
+
+    /**
+     * The riskiest blocker interaction: a front card is dragged, a newer arrival pushes it to the back
+     * of the collapsed deck (so `collapsedBack` and `displaced` are both true and the blocker appears
+     * above a live drag), and the same finger keeps going. The hit path was fixed at the down event,
+     * so the blocker must not interrupt it: the card still resolves Dismissed, never Undone, and the
+     * deck neither fans nor runs the Undo. It pins the "fixed at down" claim; a blocker that consumed
+     * events would not fail it (mutation check), the fresh-drag test below is the one that bites.
+     */
+    @Test
+    fun cardPushedToTheBackMidDrag_stillDismisses_andNeitherFansNorUndoes() {
+        val state = FeedbackStackState()
+        val store = UndoHistoryStore()
+        val results = mutableMapOf<String, FeedbackResult>()
+        var undoRuns = 0
+        setHost(state)
+        showTracked(state, store, withUndo("Dragged") { undoRuns++ }, "Dragged", results)
+
+        card("Dragged").performTouchInput {
+            down(bodyPoint(width, height))
+            repeat(25) { moveBy(Offset(-40.dp.toPx() / 25, 0f), delayMillis = 16) }
+        }
+        composeTestRule.waitForIdle()
+        show(state, notify("Newer"), "Newer", results)
+        // The dragged card is now the back card of a collapsed deck, with its Undo under the blocker.
+        assertFalse(state.pauseState.value.fanned)
+        card("Dragged").performTouchInput {
+            repeat(25) { moveBy(Offset(-60.dp.toPx() / 25, 0f), delayMillis = 16) }
+            up()
+        }
+        composeTestRule.waitForIdle()
+
+        assertEquals(FeedbackResult.Dismissed, results["Dragged"])
+        assertNull(results["Newer"])
+        assertEquals(0, undoRuns)
+        assertEquals(UndoStatus.Available, store.entries.value.single().status)
+        assertFalse(state.pauseState.value.fanned)
+        state.dismissAll()
+    }
+
+    /**
+     * A fresh gesture on a back card that is still displaced by an earlier, abandoned drag (the card is
+     * settling back, the clock is frozen): the drag is enabled on it again while the blocker sits above
+     * its content, and the blocker must hand the new touch to the root's draggable. A drag that starts
+     * on the card is a swipe, not a peek tap and not an Undo.
+     */
+    @Test
+    fun freshDragOnADisplacedSettlingBackCard_dismissesThroughTheBlocker() {
+        val state = FeedbackStackState()
+        val store = UndoHistoryStore()
+        val results = mutableMapOf<String, FeedbackResult>()
+        var undoRuns = 0
+        setHost(state)
+        showTracked(state, store, withUndo("Dragged") { undoRuns++ }, "Dragged", results)
+
+        card("Dragged").performTouchInput {
+            down(bodyPoint(width, height))
+            repeat(25) { moveBy(Offset(-40.dp.toPx() / 25, 0f), delayMillis = 16) }
+        }
+        composeTestRule.waitForIdle()
+        show(state, notify("Newer"), "Newer", results)
+        // Release below the threshold with the clock frozen, so the card is left displaced.
+        composeTestRule.mainClock.autoAdvance = false
+        card("Dragged").performTouchInput { up() }
+        assertNull("released below the threshold: the card must still be here", results["Dragged"])
+
+        // Only the back card's 14dp strip is visible, and the Undo reaches into it: start the fresh drag there.
+        val (x, y) = undoPointInTheStrip("Dragged")
+        composeTestRule.onRoot().performTouchInput {
+            down(Offset(x.toPx(), y.toPx()))
+            repeat(25) { moveBy(Offset(-100.dp.toPx() / 25, 0f), delayMillis = 16) }
+            up()
+        }
+        composeTestRule.mainClock.autoAdvance = true
+        composeTestRule.waitForIdle()
+
+        assertEquals(FeedbackResult.Dismissed, results["Dragged"])
+        assertNull(results["Newer"])
+        assertEquals(0, undoRuns)
+        assertEquals(UndoStatus.Available, store.entries.value.single().status)
+        assertFalse(state.pauseState.value.fanned)
         state.dismissAll()
     }
 
