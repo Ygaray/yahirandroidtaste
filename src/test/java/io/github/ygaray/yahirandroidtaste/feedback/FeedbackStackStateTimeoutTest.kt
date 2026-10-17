@@ -1,6 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.feedback
 
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.ui.platform.AccessibilityManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -11,6 +12,8 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -211,6 +214,125 @@ class FeedbackStackStateTimeoutTest {
 
         state.timeoutScaler = { base, _ -> base * 10 }
         advanceTimeBy(7999)
+        runCurrent()
+        assertFalse(shown.isCompleted)
+        advanceTimeBy(1)
+        runCurrent()
+
+        assertEquals(FeedbackResult.TimedOut, shown.await())
+    }
+
+    // ---- (c) reference-counted accessibility binding ----
+
+    /** Multiplies the base by [factor] and records the flags of the last call. */
+    private class FakeAccessibilityManager(private val factor: Long) : AccessibilityManager {
+        var lastFlags: Triple<Boolean, Boolean, Boolean>? = null
+
+        override fun calculateRecommendedTimeoutMillis(
+            originalTimeoutMillis: Long,
+            containsIcons: Boolean,
+            containsText: Boolean,
+            containsControls: Boolean
+        ): Long {
+            lastFlags = Triple(containsIcons, containsText, containsControls)
+            return originalTimeoutMillis * factor
+        }
+    }
+
+    @Test
+    fun attachAccessibility_installsAScalerThatPassesMaterial3Flags() {
+        val state = FeedbackStackState()
+        val manager = FakeAccessibilityManager(factor = 2)
+
+        state.attachAccessibility(manager)
+
+        val scaler = state.timeoutScaler
+        assertNotNull(scaler)
+        assertEquals(8_000L, scaler!!.invoke(4_000L, true))
+        assertEquals(Triple(true, true, true), manager.lastFlags)
+        assertEquals(20_000L, scaler.invoke(10_000L, false))
+        assertEquals(Triple(true, true, false), manager.lastFlags)
+    }
+
+    @Test
+    fun detachAccessibility_withNoOtherBinding_clearsTheScaler() {
+        val state = FeedbackStackState()
+        val manager = FakeAccessibilityManager(factor = 2)
+        state.attachAccessibility(manager)
+
+        state.detachAccessibility(manager)
+
+        assertNull(state.timeoutScaler)
+    }
+
+    @Test
+    fun sameManagerAttachedTwiceAndDetachedOnce_keepsTheScaler_detachedTwiceClearsIt() {
+        val state = FeedbackStackState()
+        val manager = FakeAccessibilityManager(factor = 2)
+        state.attachAccessibility(manager)
+        state.attachAccessibility(manager)
+
+        state.detachAccessibility(manager)
+        assertNotNull(state.timeoutScaler)
+
+        state.detachAccessibility(manager)
+        assertNull(state.timeoutScaler)
+    }
+
+    @Test
+    fun twoManagers_lastAttachedWins_andDetachingItFallsBackToTheEarlierOne() {
+        val state = FeedbackStackState()
+        val first = FakeAccessibilityManager(factor = 2)
+        val second = FakeAccessibilityManager(factor = 3)
+        state.attachAccessibility(first)
+        state.attachAccessibility(second)
+        assertEquals(12_000L, state.timeoutScaler!!.invoke(4_000L, false))
+
+        state.detachAccessibility(second)
+
+        assertEquals(8_000L, state.timeoutScaler!!.invoke(4_000L, false))
+        state.detachAccessibility(first)
+        assertNull(state.timeoutScaler)
+    }
+
+    @Test
+    fun detachingAManagerThatWasNeverAttached_isANoOp() {
+        val state = FeedbackStackState()
+        val attached = FakeAccessibilityManager(factor = 2)
+        val stranger = FakeAccessibilityManager(factor = 5)
+
+        state.detachAccessibility(stranger)
+        assertNull(state.timeoutScaler)
+
+        state.attachAccessibility(attached)
+        state.detachAccessibility(stranger)
+        assertEquals(8_000L, state.timeoutScaler!!.invoke(4_000L, false))
+    }
+
+    @Test
+    fun attachedTripleManager_scalesShortToTimedOutAt12000() = runTest {
+        val state = FeedbackStackState()
+        state.attachAccessibility(FakeAccessibilityManager(factor = 3))
+        val shown = showAsync(state, FeedbackEvent.Notify("m", SnackbarDuration.Short))
+        runCurrent()
+
+        advanceTimeBy(11_999)
+        runCurrent()
+        assertFalse(shown.isCompleted)
+        advanceTimeBy(1)
+        runCurrent()
+
+        assertEquals(FeedbackResult.TimedOut, shown.await())
+    }
+
+    @Test
+    fun cardEnqueuedBeforeAttach_keepsTheUnscaledTimer() = runTest {
+        val state = FeedbackStackState()
+        val shown = showAsync(state, FeedbackEvent.Notify("m", SnackbarDuration.Short))
+        runCurrent()
+
+        state.attachAccessibility(FakeAccessibilityManager(factor = 3))
+        advanceTimeBy(3999)
         runCurrent()
         assertFalse(shown.isCompleted)
         advanceTimeBy(1)

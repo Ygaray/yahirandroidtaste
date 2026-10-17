@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.AccessibilityManager
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -124,6 +125,48 @@ class FeedbackStackState(maxVisible: Int = DEFAULT_MAX_VISIBLE) {
             }
             item
         }
+
+    private val accessibilityManagers = mutableListOf<AccessibilityManager>()
+
+    /**
+     * Bind [manager] so card timers are scaled by its recommended timeout. Bindings are
+     * reference-counted by manager identity: a host and `rememberFeedbackStackState` can both bind
+     * the same manager and neither clears the other. The scaler is read once, when a card's timer
+     * starts, so cards enqueued earlier keep their timer.
+     */
+    internal fun attachAccessibility(manager: AccessibilityManager) {
+        synchronized(lock) {
+            accessibilityManagers.add(manager)
+            refreshScaler()
+        }
+    }
+
+    /**
+     * Release one binding of [manager] (a no-op when it was never attached). When the last
+     * binding goes, [timeoutScaler] is cleared so the state keeps no manager reference.
+     */
+    internal fun detachAccessibility(manager: AccessibilityManager) {
+        synchronized(lock) {
+            val index = accessibilityManagers.indexOfFirst { it === manager }
+            if (index >= 0) accessibilityManagers.removeAt(index)
+            refreshScaler()
+        }
+    }
+
+    private fun refreshScaler() {
+        val current = accessibilityManagers.lastOrNull()
+        val scaler: ((Long, Boolean) -> Long)? = current?.let { manager ->
+            { base, containsControls ->
+                manager.calculateRecommendedTimeoutMillis(
+                    base,
+                    containsIcons = true,
+                    containsText = true,
+                    containsControls = containsControls
+                )
+            }
+        }
+        timeoutScaler = scaler
+    }
 }
 
 /**
