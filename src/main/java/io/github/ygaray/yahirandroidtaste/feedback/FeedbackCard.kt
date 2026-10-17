@@ -238,6 +238,7 @@ internal fun FeedbackCard(
                 undoLabel = undoLabel,
                 showUndo = item.hasUndo && !spent,
                 showChevron = openable,
+                openable = openable,
                 onUndo = onUndo
             )
         }
@@ -268,9 +269,11 @@ private fun FeedbackCardRow(
     undoLabel: String,
     showUndo: Boolean,
     showChevron: Boolean,
+    openable: Boolean,
     onUndo: () -> Unit
 ) {
-    val dotColor = if (item.target != null) {
+    // The dot mirrors interactivity: a spent card keeps its target but cannot open, so it goes quiet.
+    val dotColor = if (openable) {
         MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant
