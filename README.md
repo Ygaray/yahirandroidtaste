@@ -81,10 +81,10 @@ YahirAndroidTasteTheme {
 
 - **Ten component families:** cards, chips, sheets, buttons/FAB, pickers, feedback, empty-state,
   progress/metrics, tactile foundation, voice command.
-- **66 registered public composables** in `ComponentRegistry` (the single source of truth that
-  drives the gallery and the CATALOG drift guard), plus **5 intentionally-unregistered** structural
+- **67 registered public composables** in `ComponentRegistry` (the single source of truth that
+  drives the gallery and the CATALOG drift guard), plus **6 intentionally-unregistered** structural
   sub-parts (`WaveformCanvas`, `SwipeableActionRow`, `RevealActionRow`, `YahirAndroidTasteTheme`,
-  `SheetHeaderMenu`) — 71 public composables total. The exact per-family enumeration lives in
+  `SheetHeaderMenu`, `rememberFeedbackStackState`) — 73 public composables total. The exact per-family enumeration lives in
   **[`API.md`](API.md)**.
 - **`ExplorerActivity`** — a self-contained component gallery, launchable standalone.
 

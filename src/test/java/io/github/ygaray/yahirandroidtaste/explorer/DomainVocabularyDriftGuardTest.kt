@@ -342,7 +342,11 @@ class DomainVocabularyDriftGuardTest {
             "Pill",
             // Phase 20 (VBAR-01): "Stacked" is StackedProgressBar's head token - a generic layout
             // descriptor (segments stacked along one track), not consumer-domain vocabulary.
-            "Stacked"
+            "Stacked",
+            // Phase 25 (FSTK-01): "Feedback" is FeedbackStackHost's and rememberFeedbackStackState's
+            // head token, a generic UI-archetype noun (a transient user-feedback surface), not
+            // consumer-domain vocabulary.
+            "Feedback"
         )
 
         /**
