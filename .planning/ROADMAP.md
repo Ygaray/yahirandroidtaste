@@ -75,7 +75,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 25-02-PLAN.md — `UndoHistoryEntry.target` / `openableTarget`, store `append` overload, Material3 tracked path forwards the target (FTGT-02)
+- [x] 25-02-PLAN.md — `UndoHistoryEntry.target` / `openableTarget`, store `append` overload, Material3 tracked path forwards the target (FTGT-02)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -354,7 +354,7 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 25. Feedback target model & stack state | v2.8 | 1/5 | Not started |  |
+| 25. Feedback target model & stack state | v2.8 | 2/5 | Not started |  |
 | 26. Receipt-card stacked snackbar deck | v2.8 | 0/TBD | Not started | - |
 | 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 0/TBD | Not started | - |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 0/TBD | Not started | - |
