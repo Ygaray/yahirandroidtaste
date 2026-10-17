@@ -15,12 +15,12 @@ import androidx.compose.runtime.Composable
  * `.content`) or in [INTENTIONALLY_UNREGISTERED] (a documented sub-part exclusion) — never
  * neither.
  *
- * Recomputed from the live `entries`/`INTENTIONALLY_UNREGISTERED` state at Phase 24 (2026-10-12) —
- * **66 registered, 5 intentionally unregistered = 71 total public composables**
+ * Recomputed from the live `entries`/`INTENTIONALLY_UNREGISTERED` state at Phase 25 (2026-10-17) —
+ * **67 registered, 6 intentionally unregistered = 73 total public composables**
  * (`ComponentRegistry.entries.size` + `INTENTIONALLY_UNREGISTERED.size`). The per-family
  * `*FamilyScreen.kt` files and `INTENTIONALLY_UNREGISTERED` are the only sources of truth for this
- * count; this paragraph is a point-in-time snapshot, now enforced: `CatalogDocsDriftGuardTest`
- * compares these numbers with `API.md` and `README.md` on every test run, so prefer reading
+ * count. This paragraph is a point-in-time snapshot that no test checks (`CatalogDocsDriftGuardTest`
+ * compares the numbers in `API.md` and `README.md` only), so prefer reading
  * `ComponentRegistry.entries.size` / `INTENTIONALLY_UNREGISTERED.size` directly over trusting this
  * prose.
  */
