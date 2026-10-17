@@ -36,7 +36,6 @@ import io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget
 import io.github.ygaray.yahirandroidtaste.feedback.UndoCenterScreen
 import io.github.ygaray.yahirandroidtaste.feedback.rememberFeedbackStackState
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -271,148 +270,10 @@ private fun AttentionCueVariants() {
     )
 }
 
-/** Gap between the cards of the "Burst x4" demo button. */
-private const val BURST_SPACING_MILLIS = 350L
-
-/** The four Indefinite events of "Burst x4": a targeted note, one with Undo, a plain note, a target. */
-private fun burstEvents(): List<FeedbackEvent> = listOf(
-    FeedbackEvent.Notify(
-        message = "Burst one",
-        duration = SnackbarDuration.Indefinite,
-        target = FeedbackTarget("demo-item", "Open item"),
-        supportingText = "Second line"
-    ),
-    FeedbackEvent.WithUndo(
-        message = "Burst two",
-        undoAction = {},
-        duration = SnackbarDuration.Indefinite,
-        target = FeedbackTarget("demo-item", "Open item")
-    ),
-    FeedbackEvent.Notify(message = "Burst three", duration = SnackbarDuration.Indefinite),
-    FeedbackEvent.Notify(
-        message = "Burst four",
-        duration = SnackbarDuration.Indefinite,
-        target = FeedbackTarget("demo-item", "Open item")
-    )
-)
-
-/**
- * FeedbackStackHost's interactive demo: buttons push cards (with a target, with Undo and a target,
- * plain, a four-card burst, a 4 s note and a 10 s note with Undo) through `state.show`, the host
- * renders the deck, and the last result and opened key are shown as text. A plain `show` only
- * reports Undone; it never runs an undo lambda.
- */
+/** FeedbackStackHost's interactive demo: the English and German stage live in `ReleaseDemos.kt`. */
 @Composable
 private fun FeedbackStackHostVariants() {
-    val state = rememberFeedbackStackState()
-    val scope = rememberCoroutineScope()
-    var lastResult by remember { mutableStateOf("none") }
-    var lastOpened by remember { mutableStateOf("none") }
-
-    fun push(event: FeedbackEvent) {
-        scope.launch { lastResult = state.show(event).name }
-    }
-
-    SectionLabel("FeedbackStackHost — push cards, tap the body or Undo")
-    Button(
-        onClick = {
-            push(
-                FeedbackEvent.Notify(
-                    message = "Item saved",
-                    duration = SnackbarDuration.Indefinite,
-                    target = FeedbackTarget("demo-item", "Open item"),
-                    supportingText = "Draft"
-                )
-            )
-        },
-        modifier = Modifier.padding(horizontal = 16.dp)
-    ) {
-        Text("Note with target")
-    }
-    Button(
-        onClick = {
-            push(
-                FeedbackEvent.WithUndo(
-                    message = "Item deleted",
-                    undoAction = {},
-                    duration = SnackbarDuration.Indefinite,
-                    target = FeedbackTarget("demo-item", "Open item")
-                )
-            )
-        },
-        modifier = Modifier.padding(horizontal = 16.dp)
-    ) {
-        Text("Note with Undo and target")
-    }
-    Button(
-        onClick = {
-            push(FeedbackEvent.Notify(message = "Plain note", duration = SnackbarDuration.Indefinite))
-        },
-        modifier = Modifier.padding(horizontal = 16.dp)
-    ) {
-        Text("Plain note")
-    }
-    Button(
-        onClick = {
-            // Four Indefinite cards 350 ms apart: the 4th arrival evicts the oldest, so the deck, the
-            // fan and the swipe can be exercised without a timer racing the tester.
-            scope.launch {
-                burstEvents().forEachIndexed { index, event ->
-                    if (index > 0) delay(BURST_SPACING_MILLIS)
-                    launch { lastResult = state.show(event).name }
-                }
-            }
-        },
-        modifier = Modifier.padding(horizontal = 16.dp)
-    ) {
-        Text("Burst x4")
-    }
-    Button(
-        onClick = {
-            push(
-                FeedbackEvent.Notify(
-                    message = "Short note",
-                    duration = SnackbarDuration.Short,
-                    target = FeedbackTarget("demo-item", "Open item")
-                )
-            )
-        },
-        modifier = Modifier.padding(horizontal = 16.dp)
-    ) {
-        Text("Short note")
-    }
-    Button(
-        onClick = {
-            push(
-                FeedbackEvent.WithUndo(
-                    message = "Long note",
-                    undoAction = {},
-                    duration = SnackbarDuration.Long,
-                    target = FeedbackTarget("demo-item", "Open item")
-                )
-            )
-        },
-        modifier = Modifier.padding(horizontal = 16.dp)
-    ) {
-        Text("Long note with Undo")
-    }
-    Button(
-        onClick = { state.dismissAll() },
-        modifier = Modifier.padding(horizontal = 16.dp)
-    ) {
-        Text("Dismiss all")
-    }
-    Text(
-        text = "Last result: $lastResult, last opened: $lastOpened",
-        modifier = Modifier.padding(horizontal = 16.dp)
-    )
-    Box(modifier = Modifier.fillMaxWidth().height(240.dp).padding(horizontal = 16.dp)) {
-        FeedbackStackHost(
-            state = state,
-            onOpenTarget = { lastOpened = it.key },
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
-    }
+    FeedbackStackStageDemos()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -16,7 +17,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.testTag
@@ -31,11 +34,16 @@ import io.github.ygaray.yahirandroidtaste.component.ReceiptRow
 import io.github.ygaray.yahirandroidtaste.component.SegmentedOptionSelector
 import io.github.ygaray.yahirandroidtaste.component.SegmentedOptionStyle
 import io.github.ygaray.yahirandroidtaste.component.ToneCard
+import io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent
+import io.github.ygaray.yahirandroidtaste.feedback.FeedbackResult
+import io.github.ygaray.yahirandroidtaste.feedback.FeedbackStackHost
+import io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget
 import io.github.ygaray.yahirandroidtaste.feedback.UndoCenterScreen
 import io.github.ygaray.yahirandroidtaste.feedback.UndoGroupRowUiModel
 import io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus
 import io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry
 import io.github.ygaray.yahirandroidtaste.feedback.UndoStatus
+import io.github.ygaray.yahirandroidtaste.feedback.rememberFeedbackStackState
 import io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel
 import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.FailureTone
@@ -54,6 +62,7 @@ import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import io.github.ygaray.yahirandroidtaste.theme.ContentTone
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import io.github.ygaray.yahirandroidtaste.theme.ToneDefaults
+import kotlinx.coroutines.launch
 
 /*
  * v2.6.0 release demos (Phase 24, DEMO-01). Explorer-only: this package is drift-guard denylisted,
@@ -69,6 +78,10 @@ internal const val DEMO_TAG_UNDO_GROUPS = "demo_undo_groups"
 internal const val DEMO_TAG_UNDO_GROUPS_GERMAN = "demo_undo_groups_german"
 internal const val DEMO_TAG_COUNT_EDITOR = "demo_count_editor"
 internal const val DEMO_TAG_MARK_CHECKED = "demo_mark_checked"
+internal const val DEMO_TAG_FEEDBACK_STACK = "demo_feedback_stack"
+internal const val DEMO_TAG_FEEDBACK_STACK_NOTE = "demo_feedback_note"
+internal const val DEMO_TAG_FEEDBACK_STACK_RESULT = "demo_feedback_result"
+internal const val DEMO_TAG_FEEDBACK_STACK_OPENED = "demo_feedback_opened"
 
 // --- ProviderKeyCard key lifecycle ---------------------------------------------------------------
 
@@ -277,6 +290,77 @@ private fun demoGroup(
         status = status,
         undoAllLabel = undoAllLabel
     )
+}
+
+// --- FeedbackStackHost stage ---------------------------------------------------------------------
+
+/**
+ * Stage height: above the 320dp floor that lets the 60 percent fan cap, a burst past the cap and a
+ * swipe all be exercised (28-RESEARCH Pitfall 7).
+ */
+private val FEEDBACK_STAGE_HEIGHT = 360.dp
+
+/** One string per language; the English and German copy sit side by side so one edit changes both. */
+private fun localized(german: Boolean, en: String, de: String): String = if (german) de else en
+
+private fun resultWord(german: Boolean, result: FeedbackResult?): String = when (result) {
+    null -> localized(german, "none", "keins")
+    FeedbackResult.Opened -> localized(german, "Opened", "Geöffnet")
+    FeedbackResult.Undone -> localized(german, "Undone", "Rückgängig gemacht")
+    FeedbackResult.Dismissed -> localized(german, "Dismissed", "Verworfen")
+    FeedbackResult.TimedOut -> localized(german, "TimedOut", "Abgelaufen")
+}
+
+/** The English stacked-snackbar stage: its own state, buttons, readouts and a fixed-height stage box. */
+@Composable
+internal fun FeedbackStackStageDemos() {
+    SectionLabel("FeedbackStackHost — push cards, tap the body or Undo")
+    FeedbackStackStageDemo(german = false, tag = DEMO_TAG_FEEDBACK_STACK)
+}
+
+@Composable
+private fun FeedbackStackStageDemo(german: Boolean, tag: String) {
+    val state = rememberFeedbackStackState()
+    val scope = rememberCoroutineScope()
+    var lastResult by remember { mutableStateOf<FeedbackResult?>(null) }
+    var lastOpened by remember { mutableStateOf<String?>(null) }
+
+    fun push(event: FeedbackEvent) {
+        scope.launch { lastResult = state.show(event) }
+    }
+
+    Column(modifier = Modifier.fillMaxWidth().testTag(tag)) {
+        Button(
+            onClick = {
+                push(
+                    FeedbackEvent.Notify(
+                        message = localized(german, "Item saved", "Eintrag gespeichert und abgelegt"),
+                        duration = SnackbarDuration.Indefinite,
+                        target = FeedbackTarget("demo-note", localized(german, "Open item", "Eintrag öffnen")),
+                        supportingText = localized(german, "Draft", "Entwurf")
+                    )
+                )
+            },
+            modifier = Modifier.padding(horizontal = 16.dp).testTag(DEMO_TAG_FEEDBACK_STACK_NOTE)
+        ) { Text(localized(german, "Note with target", "Hinweis mit Ziel")) }
+        Text(
+            text = localized(german, "Last result: ", "Letztes Ergebnis: ") + resultWord(german, lastResult),
+            modifier = Modifier.padding(horizontal = 16.dp).testTag(DEMO_TAG_FEEDBACK_STACK_RESULT)
+        )
+        Text(
+            text = localized(german, "Opened: ", "Geöffnet: ") + (lastOpened ?: resultWord(german, null)),
+            modifier = Modifier.padding(horizontal = 16.dp).testTag(DEMO_TAG_FEEDBACK_STACK_OPENED)
+        )
+        Box(modifier = Modifier.fillMaxWidth().height(FEEDBACK_STAGE_HEIGHT).padding(horizontal = 16.dp)) {
+            FeedbackStackHost(
+                state = state,
+                onOpenTarget = { lastOpened = it.key },
+                modifier = Modifier.align(Alignment.BottomCenter),
+                undoLabel = localized(german, "Undo", "Rückgängig"),
+                dismissLabel = localized(german, "Dismiss", "Verwerfen")
+            )
+        }
+    }
 }
 
 // --- Hub static scheme -----------------------------------------------------------------------------
