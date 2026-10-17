@@ -22,28 +22,47 @@ internal const val FEEDBACK_STACK_UNDO_TEST_TAG = "feedback_stack_undo"
 internal const val FEEDBACK_STACK_CHEVRON_TEST_TAG = "feedback_stack_chevron"
 
 /**
- * Renders the visible cards of a [FeedbackStackState], newest first (FSTK-01, FSTK-07).
+ * Renders the visible cards of a [FeedbackStackState] as a Receipt-card deck, newest first
+ * (FSTK-01, FSTK-02, FSTK-07, A11Y-01).
  *
+ * **Deck.** Up to the state's `maxVisible` cards (three by default) are shown. The newest card sits
+ * in front and each older card tucks 14dp behind the next newer one, smaller and slightly faded.
+ * Tapping a peek strip fans the deck into a column of full cards, oldest on top. The column
+ * re-collapses after 4 s without a pointer event, and when one card or none is left. It is capped at
+ * 60 percent of the available height minus the keyboard inset, and the cards scroll inside the cap.
+ *
+ * **Card.**
  * - A body tap on a card that carries a [FeedbackTarget] resolves the card as
  *   [FeedbackResult.Opened] and then calls [onOpenTarget] with the target. The callback runs only
  *   for the tap that actually resolved the card, so a double tap, or a tap racing the timer,
- *   navigates at most once.
+ *   navigates at most once. A hold past the long-press timeout neither opens nor fans.
  * - Undo (shown only for a `WithUndo` event) resolves the card as [FeedbackResult.Undone]. The
  *   host never runs an undo lambda; the tracked path (`emitTrackedWithUndo`) does that.
- * - A card without a target has no click action. A card whose backing undo entry was spent
+ * - A card without a target has no open action. A card whose backing undo entry was spent
  *   elsewhere stays on screen, hides Undo and the chevron, and its body is inert.
- * - Each card has a Dismiss accessibility action labelled [dismissLabel] that resolves it as
- *   [FeedbackResult.Dismissed]. A `WithUndo` card that is not spent also has an Undo accessibility
- *   action labelled [undoLabel], so TalkBack can reach Undo even when a target makes the card
- *   clickable (which merges the Undo button into the card's semantics).
+ * - A horizontal swipe, to either side, resolves a card as [FeedbackResult.Dismissed] and never
+ *   undoes it. While the deck is collapsed only the front card can be swiped; while it is fanned
+ *   every card can.
  *
- * Push events with `state.show(event)` or `state.emitTrackedWithUndo(store, event)`. The swipe
- * gesture, deck motion and pause are not part of this surface yet.
+ * **Timers.** Every card's timeout pauses while any pointer is down on the deck and while the deck
+ * is fanned, and resumes when both clear, with at least 800 ms left.
+ *
+ * **Accessibility.** Each card is one merged node: `Role.Button` with [FeedbackTarget.openLabel] as
+ * the click label when the card can open, and a Polite live region. Undo is a separate focusable
+ * child and also a custom action labelled [undoLabel], listed before the Dismiss custom action
+ * labelled [dismissLabel]; Dismiss is also exposed as the `dismiss` semantics action. Every action
+ * resolves the card exactly like touch does. The cards stay in the semantics tree newest first,
+ * collapsed or fanned.
+ *
+ * **Placement.** The host adds no window-inset padding of its own, so an M3 Scaffold snackbar slot or
+ * an overlay `Box` places it. [modifier] applies to the deck container holding the cards.
+ *
+ * Push events with `state.show(event)` or `state.emitTrackedWithUndo(store, event)`.
  *
  * @param state the stack state, usually from [rememberFeedbackStackState].
  * @param onOpenTarget called with the card's [FeedbackTarget] after a successful body tap.
  * @param modifier applied to the deck container holding the cards.
- * @param undoLabel the Undo button text; pass a localized string.
+ * @param undoLabel the Undo button text and Undo action label; pass a localized string.
  * @param dismissLabel the label of each card's Dismiss accessibility action; pass a localized
  *   string.
  */
