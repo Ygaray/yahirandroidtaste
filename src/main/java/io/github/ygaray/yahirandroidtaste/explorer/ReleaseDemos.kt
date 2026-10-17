@@ -62,6 +62,7 @@ import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import io.github.ygaray.yahirandroidtaste.theme.ContentTone
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import io.github.ygaray.yahirandroidtaste.theme.ToneDefaults
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /*
@@ -79,7 +80,14 @@ internal const val DEMO_TAG_UNDO_GROUPS_GERMAN = "demo_undo_groups_german"
 internal const val DEMO_TAG_COUNT_EDITOR = "demo_count_editor"
 internal const val DEMO_TAG_MARK_CHECKED = "demo_mark_checked"
 internal const val DEMO_TAG_FEEDBACK_STACK = "demo_feedback_stack"
+internal const val DEMO_TAG_FEEDBACK_STACK_GERMAN = "demo_feedback_stack_german"
 internal const val DEMO_TAG_FEEDBACK_STACK_NOTE = "demo_feedback_note"
+internal const val DEMO_TAG_FEEDBACK_STACK_NOTE_UNDO = "demo_feedback_note_undo"
+internal const val DEMO_TAG_FEEDBACK_STACK_PLAIN = "demo_feedback_plain"
+internal const val DEMO_TAG_FEEDBACK_STACK_BURST = "demo_feedback_burst"
+internal const val DEMO_TAG_FEEDBACK_STACK_SHORT = "demo_feedback_short"
+internal const val DEMO_TAG_FEEDBACK_STACK_LONG = "demo_feedback_long"
+internal const val DEMO_TAG_FEEDBACK_STACK_DISMISS_ALL = "demo_feedback_dismiss_all"
 internal const val DEMO_TAG_FEEDBACK_STACK_RESULT = "demo_feedback_result"
 internal const val DEMO_TAG_FEEDBACK_STACK_OPENED = "demo_feedback_opened"
 
@@ -311,11 +319,81 @@ private fun resultWord(german: Boolean, result: FeedbackResult?): String = when 
     FeedbackResult.TimedOut -> localized(german, "TimedOut", "Abgelaufen")
 }
 
-/** The English stacked-snackbar stage: its own state, buttons, readouts and a fixed-height stage box. */
+/** Gap between the cards of the "Burst x4" button. */
+private const val BURST_SPACING_MILLIS = 350L
+
+private fun openTarget(german: Boolean, key: String) =
+    FeedbackTarget(key, localized(german, "Open item", "Eintrag öffnen"))
+
+private fun noteEvent(german: Boolean): FeedbackEvent = FeedbackEvent.Notify(
+    message = localized(german, "Item saved", "Eintrag gespeichert und abgelegt"),
+    duration = SnackbarDuration.Indefinite,
+    target = openTarget(german, "demo-note"),
+    supportingText = localized(german, "Draft", "Entwurf")
+)
+
+private fun undoNoteEvent(german: Boolean): FeedbackEvent = FeedbackEvent.WithUndo(
+    message = localized(german, "Item deleted", "Eintrag gelöscht und archiviert"),
+    undoAction = {},
+    duration = SnackbarDuration.Indefinite,
+    target = openTarget(german, "demo-undo")
+)
+
+private fun plainNoteEvent(german: Boolean): FeedbackEvent = FeedbackEvent.Notify(
+    message = localized(german, "Plain note", "Einfacher Hinweis ohne Ziel"),
+    duration = SnackbarDuration.Indefinite
+)
+
+private fun shortNoteEvent(german: Boolean): FeedbackEvent = FeedbackEvent.Notify(
+    message = localized(german, "Short note", "Kurzer Hinweis mit Ziel"),
+    duration = SnackbarDuration.Short,
+    target = openTarget(german, "demo-short")
+)
+
+private fun longNoteEvent(german: Boolean): FeedbackEvent = FeedbackEvent.WithUndo(
+    message = localized(german, "Long note", "Langer Hinweis mit Rückgängig"),
+    undoAction = {},
+    duration = SnackbarDuration.Long,
+    target = openTarget(german, "demo-long")
+)
+
+/** The four Indefinite events of "Burst x4": a targeted note, one with Undo, a plain note, a target. */
+private fun burstEvents(german: Boolean): List<FeedbackEvent> = listOf(
+    FeedbackEvent.Notify(
+        message = localized(german, "Burst one", "Serie eins: Eintrag aktualisiert"),
+        duration = SnackbarDuration.Indefinite,
+        target = openTarget(german, "demo-burst-1"),
+        supportingText = localized(german, "Second line", "Zweite Zeile")
+    ),
+    FeedbackEvent.WithUndo(
+        message = localized(german, "Burst two", "Serie zwei: Eintrag entfernt"),
+        undoAction = {},
+        duration = SnackbarDuration.Indefinite,
+        target = openTarget(german, "demo-burst-2")
+    ),
+    FeedbackEvent.Notify(
+        message = localized(german, "Burst three", "Serie drei: Hinweis ohne Ziel"),
+        duration = SnackbarDuration.Indefinite
+    ),
+    FeedbackEvent.Notify(
+        message = localized(german, "Burst four", "Serie vier: Eintrag geändert und gespeichert"),
+        duration = SnackbarDuration.Indefinite,
+        target = openTarget(german, "demo-burst-4")
+    )
+)
+
+/**
+ * The English and the German stacked-snackbar stage. Each stage owns its own [rememberFeedbackStackState],
+ * so the two never share cards. Buttons push cards through `state.show`, the host renders the deck in a
+ * fixed-height box, and the last result and opened key show as text. A plain `show` only reports Undone;
+ * it never runs an undo lambda.
+ */
 @Composable
 internal fun FeedbackStackStageDemos() {
     SectionLabel("FeedbackStackHost — push cards, tap the body or Undo")
     FeedbackStackStageDemo(german = false, tag = DEMO_TAG_FEEDBACK_STACK)
+    SectionLabel("FeedbackStackHost — German labels (Rückgängig, Verwerfen, Eintrag öffnen)")
+    FeedbackStackStageDemo(german = true, tag = DEMO_TAG_FEEDBACK_STACK_GERMAN)
 }
 
 @Composable
@@ -330,19 +408,36 @@ private fun FeedbackStackStageDemo(german: Boolean, tag: String) {
     }
 
     Column(modifier = Modifier.fillMaxWidth().testTag(tag)) {
-        Button(
-            onClick = {
-                push(
-                    FeedbackEvent.Notify(
-                        message = localized(german, "Item saved", "Eintrag gespeichert und abgelegt"),
-                        duration = SnackbarDuration.Indefinite,
-                        target = FeedbackTarget("demo-note", localized(german, "Open item", "Eintrag öffnen")),
-                        supportingText = localized(german, "Draft", "Entwurf")
-                    )
-                )
-            },
-            modifier = Modifier.padding(horizontal = 16.dp).testTag(DEMO_TAG_FEEDBACK_STACK_NOTE)
-        ) { Text(localized(german, "Note with target", "Hinweis mit Ziel")) }
+        StageButton(localized(german, "Note with target", "Hinweis mit Ziel"), DEMO_TAG_FEEDBACK_STACK_NOTE) {
+            push(noteEvent(german))
+        }
+        StageButton(
+            localized(german, "Note with Undo and target", "Hinweis mit Rückgängig und Ziel"),
+            DEMO_TAG_FEEDBACK_STACK_NOTE_UNDO
+        ) { push(undoNoteEvent(german)) }
+        StageButton(localized(german, "Plain note", "Einfacher Hinweis"), DEMO_TAG_FEEDBACK_STACK_PLAIN) {
+            push(plainNoteEvent(german))
+        }
+        StageButton(localized(german, "Burst x4", "Serie x4"), DEMO_TAG_FEEDBACK_STACK_BURST) {
+            // Four Indefinite cards 350 ms apart: the 4th arrival evicts the oldest, so the deck, the
+            // fan and the swipe can be exercised without a timer racing the tester.
+            scope.launch {
+                burstEvents(german).forEachIndexed { index, event ->
+                    if (index > 0) delay(BURST_SPACING_MILLIS)
+                    launch { lastResult = state.show(event) }
+                }
+            }
+        }
+        StageButton(localized(german, "Short note", "Kurzer Hinweis"), DEMO_TAG_FEEDBACK_STACK_SHORT) {
+            push(shortNoteEvent(german))
+        }
+        StageButton(
+            localized(german, "Long note with Undo", "Langer Hinweis mit Rückgängig"),
+            DEMO_TAG_FEEDBACK_STACK_LONG
+        ) { push(longNoteEvent(german)) }
+        StageButton(localized(german, "Dismiss all", "Alle verwerfen"), DEMO_TAG_FEEDBACK_STACK_DISMISS_ALL) {
+            state.dismissAll()
+        }
         Text(
             text = localized(german, "Last result: ", "Letztes Ergebnis: ") + resultWord(german, lastResult),
             modifier = Modifier.padding(horizontal = 16.dp).testTag(DEMO_TAG_FEEDBACK_STACK_RESULT)
@@ -361,6 +456,11 @@ private fun FeedbackStackStageDemo(german: Boolean, tag: String) {
             )
         }
     }
+}
+
+@Composable
+private fun StageButton(label: String, tag: String, onClick: () -> Unit) {
+    Button(onClick = onClick, modifier = Modifier.padding(horizontal = 16.dp).testTag(tag)) { Text(label) }
 }
 
 // --- Hub static scheme -----------------------------------------------------------------------------
