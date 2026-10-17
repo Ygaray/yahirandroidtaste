@@ -109,6 +109,38 @@ class UndoHistoryStore @Inject constructor() {
     }
 
     /**
+     * Append overload that carries a [FeedbackTarget] onto the new entry (Phase 25, FTGT-02).
+     *
+     * [target] has NO default value on purpose: that keeps every v2.7.1 call shape (including
+     * `append(m, groupId = g) { }` and the function-value form `append(m, p, fn)`) bound to the
+     * older overloads. [undoAction] stays last so the trailing-lambda syntax still works.
+     *
+     * @param groupId Optional group membership, recorded only when non-null (same bookkeeping as
+     *   the grouped overload) so a grouped entry can carry a target.
+     * @param target The target the entry exposes through [UndoHistoryEntry.openableTarget] while
+     *   it is Available; `null` is allowed and behaves like the untargeted overloads.
+     */
+    fun append(
+        message: String,
+        preview: UndoPreview? = null,
+        groupId: String? = null,
+        target: FeedbackTarget?,
+        undoAction: suspend () -> Unit
+    ): String {
+        val entry = UndoHistoryEntry(
+            id = UUID.randomUUID().toString(),
+            message = message,
+            timestamp = System.currentTimeMillis(),
+            undoAction = undoAction,
+            preview = preview,
+            target = target
+        )
+        if (groupId != null) groupIdByEntryId[entry.id] = groupId
+        _entries.update { current -> evictIfNeeded(listOf(entry) + current) }
+        return entry.id
+    }
+
+    /**
      * Registers [groupId]'s label and its ONE atomic undo action (VUNDO-01, D-01) — the action
      * [attemptUndoGroup] runs exactly once for the whole group, never once per member.
      */

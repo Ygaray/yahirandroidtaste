@@ -22,7 +22,12 @@ suspend fun SnackbarHostState.emitTrackedWithUndo(
     store: UndoHistoryStore,
     event: FeedbackEvent.WithUndo
 ) {
-    val entryId = store.append(message = event.message, preview = event.preview, undoAction = event.undoAction)
+    val entryId = store.append(
+        message = event.message,
+        preview = event.preview,
+        target = event.target,
+        undoAction = event.undoAction
+    )
     val result = showSnackbar(
         message = event.message,
         actionLabel = "Undo",
