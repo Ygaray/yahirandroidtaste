@@ -46,7 +46,7 @@ locked (Yahir, 2026-10-17, via director@office): `.planning/research/v2.8-BRIEF.
 
 - [x] **Phase 25: Feedback target model & stack state** - `FeedbackTarget` on events and Undo history, `FeedbackStackState` + result contract, tracked undo through the store, the `FeedbackStackHost` entry point (D-08, D-09) (completed 2026-10-17)
 - [x] **Phase 26: Receipt-card stacked snackbar deck** - Direction A deck (max 3), tap-to-open with chevron, fan-out, swipe dismiss, timeouts with pause, merged-button semantics (D-01..D-07, D-11) (completed 2026-10-17)
-- [ ] **Phase 27: Open from the sheet & Undo Center, pill fixes** - Label-less go-to-item rows in Receipt and Classic `OutcomeSheet` and in the Undo Center; handled-by pill at font scale 2.0 and a contrast-safe Grammar dot (D-09, D-10)
+- [x] **Phase 27: Open from the sheet & Undo Center, pill fixes** - Label-less go-to-item rows in Receipt and Classic `OutcomeSheet` and in the Undo Center; handled-by pill at font scale 2.0 and a contrast-safe Grammar dot (D-09, D-10) (completed 2026-10-17)
 - [ ] **Phase 28: TalkBack sweep & Explorer demos** - Scoped TalkBack sweep on the TESTER (999.2), pinned hub scheme + `hide()` demo (999.3), stacked-snackbar and go-to-item demos in English and German
 - [ ] **Phase 29: Docs & v2.8.0 cut readiness** - API/STYLE/INTEGRATION docs, additive `apiCheck`, full gates, long-string and Gate-1 device checks, then a `v2.8.0` proposal to Yahir (no tag cut by the agent)
 
@@ -143,7 +143,7 @@ Plans:
   5. The Grammar (warn, on-device) handled-by dot meets 3:1 non-text contrast against the pill container under the hub light and dark schemes and under a dynamic-color scheme sample (POL-02).
 
 **Notes**: Open for discuss-phase (D-10): how a sheet row drops its target after Undo / Undo all. The library can derive it from the item's undo row state, or the caller can clear `target`; the brief only fixes the Undo Center side (FTGT-02). Also confirm which `Success` receipt row "names the item". The target rows get the long German ~360dp check (the chevron must not push the value off). The pill fixes apply to Receipt; Classic's `HandledByRow` stays untouched unless the same defect reproduces there.
-**Plans:** 0/4 plans complete
+**Plans:** 4/4 plans complete
 
 Plans:
 **Wave 1**

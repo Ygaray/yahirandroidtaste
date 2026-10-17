@@ -23,9 +23,9 @@
 
 ### Open from the sheet and the Undo Center
 
-- [ ] **FOPEN-01**: `VoiceOutcomeUiState.Success.target` makes the receipt row that names the item a label-less tap target with a chevron, in both the Receipt and Classic `OutcomeSheet` styles, via a defaulted `onOpenTarget` on both `OutcomeSheet` overloads (D-09, D-10).
-- [ ] **FOPEN-02**: Each `BatchRowResultUiModel` with a `target` opens its own item; rows without one show no chevron and aren't clickable (D-10).
-- [ ] **FOPEN-03**: An `UndoCenterScreen` overload with `onOpenTarget` lets Available rows with a target open their item (D-09).
+- [x] **FOPEN-01**: `VoiceOutcomeUiState.Success.target` makes the receipt row that names the item a label-less tap target with a chevron, in both the Receipt and Classic `OutcomeSheet` styles, via a defaulted `onOpenTarget` on both `OutcomeSheet` overloads (D-09, D-10).
+- [x] **FOPEN-02**: Each `BatchRowResultUiModel` with a `target` opens its own item; rows without one show no chevron and aren't clickable (D-10).
+- [x] **FOPEN-03**: An `UndoCenterScreen` overload with `onOpenTarget` lets Available rows with a target open their item (D-09).
 
 ### Accessibility
 
@@ -36,8 +36,8 @@
 
 - [ ] **DEMO-02**: The whole Explorer renders in the pinned hub color scheme (999.3), and a hoisted `OutcomeSheet` `sheetState` demo calls `hide()`.
 - [ ] **DEMO-03**: The Explorer shows the stacked snackbar host (fire/burst/swipe/open demo) and the sheet go-to-item rows, in English and German; new public composables are registered in `ComponentRegistry`.
-- [ ] **POL-01**: The handled-by pill keeps its text inside its shape when it wraps at font scale 2.0 (corner radius capped when multi-line, or equivalent).
-- [ ] **POL-02**: The Grammar (warn) handled-by dot stays clearly visible on the pill under dynamic color (contrast-safe dot).
+- [x] **POL-01**: The handled-by pill keeps its text inside its shape when it wraps at font scale 2.0 (corner radius capped when multi-line, or equivalent).
+- [x] **POL-02**: The Grammar (warn) handled-by dot stays clearly visible on the pill under dynamic color (contrast-safe dot).
 - [ ] **POL-03**: The map picker never silently sends a blocked user agent to the OSM tile server. When the caller's `userAgent` is blank or the bare package name, `configureOsmdroid` builds `"<packageName>/<versionName> (Android <sdk>)"` from PackageManager (internal, no API change). It logs one `Log.w` with the tile-policy URL whenever the resolved agent is blank-derived or contains the `com.example` placeholder namespace (OSM blocks both and answers HTTP 200 with a 6987-byte placeholder plus `x-blocked`). The `PlaceMapPicker` `userAgent` KDoc asks for `"AppName/version (+contact)"` from a real application id. (Source: teamlead@vae-bilingual, SB 999.111.)
 
 ### Ship
@@ -72,11 +72,11 @@
 | FSTK-05 | Phase 26 | Complete |
 | FSTK-06 | Phase 26 | Complete |
 | A11Y-01 | Phase 26 | Complete |
-| FOPEN-01 | Phase 27 | Pending |
-| FOPEN-02 | Phase 27 | Pending |
-| FOPEN-03 | Phase 27 | Pending |
-| POL-01 | Phase 27 | Pending |
-| POL-02 | Phase 27 | Pending |
+| FOPEN-01 | Phase 27 | Complete |
+| FOPEN-02 | Phase 27 | Complete |
+| FOPEN-03 | Phase 27 | Complete |
+| POL-01 | Phase 27 | Complete |
+| POL-02 | Phase 27 | Complete |
 | POL-03 | Phase 28 | Pending |
 | A11Y-02 | Phase 28 | Pending |
 | DEMO-02 | Phase 28 | Pending |
