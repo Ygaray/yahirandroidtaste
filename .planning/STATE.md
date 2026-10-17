@@ -3,17 +3,17 @@ gsd_state_version: "1.0"
 milestone: v2.8
 milestone_name: Snackbar go-to-item + stacked feedback
 current_phase: 27
-current_phase_name: Open from the sheet & Undo Center, pill fixes
-status: planning
+current_phase_name: open-from-the-sheet-undo-center-pill-fixes
+status: executing
 stopped_at: Phase 26 complete, ready to plan Phase 27
-last_updated: "2026-10-17T14:33:39.487Z"
+last_updated: "2026-10-17T15:29:41.544Z"
 last_activity: 2026-10-17
 last_activity_desc: Phase 26 complete, transitioned to Phase 27
-state_head: b22b9aae382c001a93c8f91805d17905093a9b63
+state_head: 32b22cbbb8c5857958ca61a064a401eebbc0fc8e
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 11
+  total_plans: 15
   completed_plans: 11
   percent: 40
 ---
@@ -29,9 +29,9 @@ See: .planning/PROJECT.md (updated 2026-10-17)
 
 ## Current Position
 
-Phase: 27 — Open from the sheet & Undo Center, pill fixes
+Phase: 27 (open-from-the-sheet-undo-center-pill-fixes) — READY TO EXECUTE
 Plan: Not started
-Status: Ready to plan
+Status: Ready to execute
 Last activity: 2026-10-17 — Phase 26 complete, transitioned to Phase 27
 
 Progress: [████░░░░░░] 40%
