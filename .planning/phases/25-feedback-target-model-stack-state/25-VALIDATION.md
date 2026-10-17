@@ -1,9 +1,9 @@
 ---
 phase: "25"
 slug: feedback-target-model-stack-state
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: "2026-10-17"
 ---
 
@@ -39,25 +39,25 @@ created: "2026-10-17"
 
 | Requirement | Behavior | Test Type | Automated Command | File Exists | Status |
 |-------------|----------|-----------|-------------------|-------------|--------|
-| FTGT-01 | `FeedbackTarget` value-equal, no lambda field | unit | `--tests '*FeedbackTargetTest'` | ❌ W0 | ⬜ pending |
-| FTGT-01 | v2.7.1 call shapes compile unchanged | unit | `--tests '*V271CallSiteCanaryTest'` | ❌ W0 | ⬜ pending |
-| FTGT-02 | `append(target=)` stores target; `openableTarget` null after Undone/Failed | unit | `--tests '*UndoHistoryStoreTest'` | ✅ extend | ⬜ pending |
-| FTGT-02, FSTK-07 | tracked undo path (M3 and stack) | unit | `--tests '*FeedbackStackTrackedUndoTest'` | ❌ W0 | ⬜ pending |
-| FSTK-01 | exactly-one result, timers, cap, cancel, dismissAll | unit | `--tests '*FeedbackStackStateTest'` | ❌ W0 | ⬜ pending |
-| FSTK-01, FSTK-07 | host: body tap, Undo, label, remember survives recomposition | Robolectric | `--tests '*FeedbackStackHostTest'` | ❌ W0 | ⬜ pending |
-| FSTK-01 | registry / vocabulary / docs-count guards | guard | guard run command | ✅ edit | ⬜ pending |
+| FTGT-01 | `FeedbackTarget` value-equal, no lambda field | unit | `--tests '*FeedbackTargetTest'` | ✅ | ✅ green |
+| FTGT-01 | v2.7.1 call shapes compile unchanged | unit | `--tests '*V271CallSiteCanaryTest'` | ✅ | ✅ green |
+| FTGT-02 | `append(target=)` stores target; `openableTarget` null after Undone/Failed | unit | `--tests '*UndoHistoryStoreTest'` | ✅ extended | ✅ green |
+| FTGT-02, FSTK-07 | tracked undo path (M3 and stack) | unit | `--tests '*FeedbackStackTrackedUndoTest'` | ✅ | ✅ green |
+| FSTK-01 | exactly-one result, timers, cap, cancel, dismissAll | unit | `--tests '*FeedbackStackStateTest'` | ✅ | ✅ green |
+| FSTK-01, FSTK-07 | host: body tap, Undo, label, remember survives recomposition | Robolectric | `--tests '*FeedbackStackHostTest'` | ✅ | ✅ green |
+| FSTK-01 | registry / vocabulary / docs-count guards | guard | guard run command | ✅ edited | ✅ green |
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+*Status: ✅ green · ✅ green · ❌ red · ⚠️ flaky*
 
 ---
 
 ## Wave 0 Requirements
 
-- [ ] `FeedbackTargetTest.kt` — FTGT-01
-- [ ] `V271CallSiteCanaryTest.kt` — FTGT-01
-- [ ] `FeedbackStackStateTest.kt` — FSTK-01
-- [ ] `FeedbackStackTrackedUndoTest.kt` — FTGT-02, FSTK-07
-- [ ] `FeedbackStackHostTest.kt` — FSTK-01/07
+- [x] `FeedbackTargetTest.kt` — FTGT-01
+- [x] `V271CallSiteCanaryTest.kt` — FTGT-01
+- [x] `FeedbackStackStateTest.kt` — FSTK-01
+- [x] `FeedbackStackTrackedUndoTest.kt` — FTGT-02, FSTK-07
+- [x] `FeedbackStackHostTest.kt` — FSTK-01/07
 - [ ] extend `UndoHistoryStoreTest.kt` — FTGT-02
 
 ---
@@ -70,14 +70,25 @@ All phase behaviors have automated verification (no layout/motion contract until
 
 ## Validation Sign-Off
 
-> **Plan-time state is a DRAFT.** Leave frontmatter `status: draft` and `nyquist_compliant: false`;
-> they are finalized only post-execution by the Nyquist finalizer.
+> Finalized post-execution by the Nyquist finalizer (2026-10-17): zero automatable gaps.
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 60s
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 60s
 - [ ] _(finalizer-only, post-execution)_ `nyquist_compliant` — leave `false` at plan time
 
 **Approval:** pending
+
+---
+
+## Validation Audit 2026-10-17
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+Every requirement row (FTGT-01, FTGT-02, FSTK-01, FSTK-07) maps to an existing test class that ran green in the fresh post-fix run (1452 tests, 0 failures, 22 skipped outside this phase) and again in the Gate-1 rerun. Guard classes (CatalogDocsDrift, DomainVocabularyDrift, ComponentRegistryDrift, LibraryInvariants) are green in the main checkout. Auto-mode finalizer; no tests generated.
