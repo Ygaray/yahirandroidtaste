@@ -87,7 +87,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 25-05-PLAN.md — `rememberFeedbackStackState`, `FeedbackStackHost` tracer, registry/allowlist/vocabulary/docs counts (67/6/73), full phase gate (FSTK-01, FSTK-07)
+- [x] 25-05-PLAN.md — `rememberFeedbackStackState`, `FeedbackStackHost` tracer, registry/allowlist/vocabulary/docs counts (67/6/73), full phase gate (FSTK-01, FSTK-07)
 
 ### Phase 26: Receipt-card stacked snackbar deck
 
@@ -354,7 +354,7 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 25. Feedback target model & stack state | v2.8 | 4/5 | Not started |  |
+| 25. Feedback target model & stack state | v2.8 | 5/5 | Not started |  |
 | 26. Receipt-card stacked snackbar deck | v2.8 | 0/TBD | Not started | - |
 | 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 0/TBD | Not started | - |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 0/TBD | Not started | - |
