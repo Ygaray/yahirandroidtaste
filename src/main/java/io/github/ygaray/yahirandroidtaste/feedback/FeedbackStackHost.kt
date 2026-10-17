@@ -1,8 +1,13 @@
 package io.github.ygaray.yahirandroidtaste.feedback
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 /** Test tag on every card of [FeedbackStackHost]. */
@@ -50,7 +55,12 @@ fun FeedbackStackHost(
 ) {
     state.BindAccessibilityTimeout()
     val currentOnOpenTarget by rememberUpdatedState(onOpenTarget)
-    FeedbackDeck(items = state.items, modifier = modifier) { item, _ ->
+    var fanned by remember { mutableStateOf(false) }
+    // The fan is a pause reason for every timer; the state lives beyond composition, so a host that
+    // leaves while fanned or mid-press must not leave a reason set behind (T-26-11).
+    LaunchedEffect(fanned) { state.setFanned(fanned) }
+    DisposableEffect(state) { onDispose { state.resetPause() } }
+    FeedbackDeck(items = state.items, modifier = modifier, fanned = fanned) { item, index ->
         FeedbackCard(
             item = item,
             undoLabel = undoLabel,
@@ -59,7 +69,9 @@ fun FeedbackStackHost(
                 if (state.resolve(item, FeedbackResult.Opened)) currentOnOpenTarget(target)
             },
             onUndo = { state.resolve(item, FeedbackResult.Undone) },
-            onDismiss = { state.resolve(item, FeedbackResult.Dismissed) }
+            onDismiss = { state.resolve(item, FeedbackResult.Dismissed) },
+            collapsedBack = !fanned && index > 0,
+            onPeekTap = { if (state.items.size > 1) fanned = true }
         )
     }
 }
