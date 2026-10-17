@@ -28,7 +28,6 @@ import io.github.ygaray.yahirandroidtaste.component.MetricBand
 import io.github.ygaray.yahirandroidtaste.component.MetricBar
 import io.github.ygaray.yahirandroidtaste.component.ProgressRing
 import io.github.ygaray.yahirandroidtaste.component.StackedProgressBar
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
 /**
@@ -174,7 +173,7 @@ fun ProgressFamilyScreen(
     themeMode: ThemeMode,
     onToggleTheme: () -> Unit
 ) {
-    YahirAndroidTasteTheme(themeMode = themeMode) {
+    ExplorerTheme(themeMode) {
         Scaffold(
             topBar = { ProgressFamilyTopBar(onNavigateBack, themeMode, onToggleTheme) }
         ) { paddingValues ->
