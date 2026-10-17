@@ -96,7 +96,8 @@ fun FeedbackStackHost(
             onUndo = { state.resolve(item, FeedbackResult.Undone) },
             onDismiss = { state.resolve(item, FeedbackResult.Dismissed) },
             collapsedBack = !fanned && index > 0,
-            onPeekTap = { if (state.items.size > 1) fanned = true }
+            onPeekTap = { if (state.items.size > 1) fanned = true },
+            index = index
         )
     }
 }

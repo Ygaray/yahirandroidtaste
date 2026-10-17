@@ -39,11 +39,15 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.dismiss
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -69,6 +73,12 @@ internal const val FEEDBACK_STACK_DOT_TEST_TAG = "feedback_stack_dot"
  * card is openable and always opens, even on a collapsed back card, so TalkBack reaches the item
  * directly. The root merges its descendants, so the Undo and Dismiss accessibility actions stay on
  * the root, Undo first.
+ *
+ * A11Y-01: the root is one merged node with a Polite live region, the `dismiss` semantics action and
+ * a `traversalIndex` equal to [index] (newest first, whatever the draw order). Every action runs the
+ * same resolve-first callbacks as touch, and nothing the node announces changes after the card
+ * arrives, so only the arriving card is read out. The Undo button stays a separate focusable child
+ * in the unmerged tree and is also offered as a custom action.
  */
 @Composable
 internal fun FeedbackCard(
@@ -80,6 +90,7 @@ internal fun FeedbackCard(
     onDismiss: () -> Unit,
     collapsedBack: Boolean,
     onPeekTap: () -> Unit,
+    index: Int,
     modifier: Modifier = Modifier
 ) {
     val target = item.target
@@ -127,6 +138,14 @@ internal fun FeedbackCard(
             .fillMaxWidth()
             .testTag(FEEDBACK_STACK_ITEM_TEST_TAG)
             .semantics(mergeDescendants = true) {
+                // One announcement per arriving card: every body is Polite and nothing it announces
+                // changes after arrival (D-07 [live-region]); the order is newest first (A11Y-01).
+                liveRegion = LiveRegionMode.Polite
+                traversalIndex = index.toFloat()
+                dismiss(label = dismissLabel) {
+                    onDismiss()
+                    true
+                }
                 if (openTarget != null) {
                     role = Role.Button
                     onClick(label = openTarget.openLabel.ifBlank { item.message }) {
