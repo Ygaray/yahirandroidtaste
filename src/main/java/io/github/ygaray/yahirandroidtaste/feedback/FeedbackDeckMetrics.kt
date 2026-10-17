@@ -40,3 +40,20 @@ internal fun feedbackCollapsedHeight(frontHeight: Int, count: Int, peekPx: Int):
     count <= 0 -> 0
     else -> frontHeight + (count - 1) * peekPx
 }
+
+/** Share of the card row an Undo label may take before it wraps. */
+internal const val FEEDBACK_UNDO_MAX_WIDTH_FRACTION: Float = 0.4f
+
+/** Hard ceiling of the Undo width; only a word longer than this breaks mid-word. */
+internal const val FEEDBACK_UNDO_CEILING_FRACTION: Float = 0.6f
+
+/**
+ * Widest the Undo action may measure in a row [rowWidth] px wide: its [naturalWidth] when that fits,
+ * otherwise 40 percent of the row, widened to [minIntrinsicWidth] (the longest unbreakable word) so
+ * a normal word is never split, and never beyond 60 percent of the row.
+ */
+internal fun feedbackUndoMaxWidth(rowWidth: Int, naturalWidth: Int, minIntrinsicWidth: Int): Int {
+    val cap = (rowWidth * FEEDBACK_UNDO_MAX_WIDTH_FRACTION).toInt()
+    val ceiling = (rowWidth * FEEDBACK_UNDO_CEILING_FRACTION).toInt()
+    return minOf(naturalWidth, minOf(maxOf(cap, minIntrinsicWidth), ceiling))
+}
