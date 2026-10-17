@@ -32,7 +32,7 @@ findings:
   warning: 5
   info: 3
   total: 8
-status: issues_found
+status: resolved
 ---
 
 # Phase 25: Code Review Report
