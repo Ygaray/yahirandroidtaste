@@ -26,7 +26,7 @@ findings:
   warning: 3
   info: 5
   total: 8
-status: issues_found
+status: resolved
 ---
 
 # Phase 26: Code Review Report
