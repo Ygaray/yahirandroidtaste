@@ -832,6 +832,22 @@ package io.github.ygaray.yahirandroidtaste.feedback {
     property public kotlin.jvm.functions.Function1<kotlin.coroutines.Continuation<? super kotlin.Unit>,?> undoAction;
   }
 
+  public enum FeedbackResult {
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.feedback.FeedbackResult Dismissed;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.feedback.FeedbackResult Opened;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.feedback.FeedbackResult TimedOut;
+    enum_constant public static final io.github.ygaray.yahirandroidtaste.feedback.FeedbackResult Undone;
+  }
+
+  @androidx.compose.runtime.Stable public final class FeedbackStackState {
+    ctor public FeedbackStackState();
+    ctor public FeedbackStackState(optional int maxVisible);
+    method public void dismissAll();
+    method @InaccessibleFromKotlin public int getMaxVisible();
+    method public suspend Object? show(io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent event, kotlin.coroutines.Continuation<? super io.github.ygaray.yahirandroidtaste.feedback.FeedbackResult>);
+    property public int maxVisible;
+  }
+
   @androidx.compose.runtime.Immutable public final class FeedbackTarget {
     ctor public FeedbackTarget(String key, String openLabel);
     method public String component1();
