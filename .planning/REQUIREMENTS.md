@@ -8,18 +8,18 @@
 
 ### Feedback target model
 
-- [ ] **FTGT-01**: A caller can attach a `FeedbackTarget(key, openLabel)` to `FeedbackEvent.Notify` and `FeedbackEvent.WithUndo` via a defaulted `target` param; existing call sites compile unchanged (D-08, D-09).
-- [ ] **FTGT-02**: A tracked `WithUndo` copies its target into the `UndoHistoryEntry` (`target`, defaulted), and an entry that is Undone no longer exposes an openable target (D-09, D-10).
+- [x] **FTGT-01**: A caller can attach a `FeedbackTarget(key, openLabel)` to `FeedbackEvent.Notify` and `FeedbackEvent.WithUndo` via a defaulted `target` param; existing call sites compile unchanged (D-08, D-09).
+- [x] **FTGT-02**: A tracked `WithUndo` copies its target into the `UndoHistoryEntry` (`target`, defaulted), and an entry that is Undone no longer exposes an openable target (D-09, D-10).
 
 ### Stacked snackbar host (direction A)
 
-- [ ] **FSTK-01**: A caller can show feedback through `FeedbackStackState` / `rememberFeedbackStackState(maxVisible = 3)` and `FeedbackStackHost(state, onOpenTarget, ...)`; `show(event)` returns `Opened | Undone | Dismissed | TimedOut` (D-09).
+- [x] **FSTK-01**: A caller can show feedback through `FeedbackStackState` / `rememberFeedbackStackState(maxVisible = 3)` and `FeedbackStackHost(state, onOpenTarget, ...)`; `show(event)` returns `Opened | Undone | Dismissed | TimedOut` (D-09).
 - [ ] **FSTK-02**: Up to 3 snackbars are visible as a Receipt-card cascading deck (surfaceContainerHighest, 16dp corners, tone dot, message + optional second line, Undo text action); a 4th arrival dismisses the oldest early (D-01, D-06).
 - [ ] **FSTK-03**: Tapping a snackbar body that has a target calls `onOpenTarget(target)` and dismisses it (`Opened`); a body with no target does nothing; a trailing chevron icon shows only when a target exists; there is no action label (D-02, D-03).
 - [ ] **FSTK-04**: Tapping the peek of a collapsed deck fans it out so every snackbar is reachable; it re-collapses after idle (D-01).
 - [ ] **FSTK-05**: A horizontal swipe dismisses exactly one snackbar (`Dismissed`) and never undoes (D-07).
 - [ ] **FSTK-06**: Each snackbar keeps today's timeout (Short 4 s / Long 10 s through the accessibility recommended-timeout API); timers pause while a pointer is down on a snackbar or the deck is fanned out, and resume afterwards (D-04, D-05).
-- [ ] **FSTK-07**: `FeedbackStackState.emitTrackedWithUndo(store, event)` appends to `UndoHistoryStore` before showing and undoes only through the store's guard; Undo and Dismiss labels are caller-localizable (`undoLabel`, `dismissLabel`); the existing `SnackbarHostState.emitTrackedWithUndo` keeps working (D-09).
+- [x] **FSTK-07**: `FeedbackStackState.emitTrackedWithUndo(store, event)` appends to `UndoHistoryStore` before showing and undoes only through the store's guard; Undo and Dismiss labels are caller-localizable (`undoLabel`, `dismissLabel`); the existing `SnackbarHostState.emitTrackedWithUndo` keeps working (D-09).
 
 ### Open from the sheet and the Undo Center
 
@@ -61,10 +61,10 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FTGT-01 | Phase 25 | Pending |
-| FTGT-02 | Phase 25 | Pending |
-| FSTK-01 | Phase 25 | Pending |
-| FSTK-07 | Phase 25 | Pending |
+| FTGT-01 | Phase 25 | Complete |
+| FTGT-02 | Phase 25 | Complete |
+| FSTK-01 | Phase 25 | Complete |
+| FSTK-07 | Phase 25 | Complete |
 | FSTK-02 | Phase 26 | Pending |
 | FSTK-03 | Phase 26 | Pending |
 | FSTK-04 | Phase 26 | Pending |
@@ -82,6 +82,7 @@
 | SHIP-05 | Phase 29 | Pending |
 
 **Coverage:**
+
 - v2.8 requirements: 19 total
 - Mapped to phases: 19 (Phases 25-29)
 - Unmapped: 0

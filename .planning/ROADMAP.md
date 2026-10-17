@@ -44,7 +44,7 @@ locked (Yahir, 2026-10-17, via director@office): `.planning/research/v2.8-BRIEF.
 - **No tags, no pushes.** `v2.8.0` and every push are Yahir's. No GSD milestone marker tag
   (`git.create_tag` false); tags here are JitPack coordinates.
 
-- [ ] **Phase 25: Feedback target model & stack state** - `FeedbackTarget` on events and Undo history, `FeedbackStackState` + result contract, tracked undo through the store, the `FeedbackStackHost` entry point (D-08, D-09)
+- [x] **Phase 25: Feedback target model & stack state** - `FeedbackTarget` on events and Undo history, `FeedbackStackState` + result contract, tracked undo through the store, the `FeedbackStackHost` entry point (D-08, D-09) (completed 2026-10-17)
 - [ ] **Phase 26: Receipt-card stacked snackbar deck** - Direction A deck (max 3), tap-to-open with chevron, fan-out, swipe dismiss, timeouts with pause, merged-button semantics (D-01..D-07, D-11)
 - [ ] **Phase 27: Open from the sheet & Undo Center, pill fixes** - Label-less go-to-item rows in Receipt and Classic `OutcomeSheet` and in the Undo Center; handled-by pill at font scale 2.0 and a contrast-safe Grammar dot (D-09, D-10)
 - [ ] **Phase 28: TalkBack sweep & Explorer demos** - Scoped TalkBack sweep on the TESTER (999.2), pinned hub scheme + `hide()` demo (999.3), stacked-snackbar and go-to-item demos in English and German
@@ -66,7 +66,7 @@ locked (Yahir, 2026-10-17, via director@office): `.planning/research/v2.8-BRIEF.
   5. `FeedbackStackHost(state, onOpenTarget, modifier, undoLabel = "Undo", dismissLabel = "Dismiss")` exists with the D-09 signature: a body tap on a targeted item calls `onOpenTarget(target)` and resolves `Opened`, Undo resolves `Undone`, and the Undo text is the caller's `undoLabel` (a German label renders as passed). The host is registered in the Feedback family screen (`rememberFeedbackStackState` registered or allowlisted), and the registry integrity test and the CATALOG drift guard are green (FSTK-01, FSTK-07).
 
 **Notes**: Boundary with Phase 26: this phase owns the target model, the state, the result contract, the tracked-undo path and the host's public signature (a tracer host that renders the visible items newest-first with body tap and Undo wired; no deck motion, gestures, pause or semantics polish). The cap and timer logic may live in `FeedbackStackState`, but FSTK-02 and FSTK-06 are accepted in Phase 26. The host and `rememberFeedbackStackState` are public `@Composable`s in `feedback/`, so the drift guard forces their registration (or allowlisting) here. Open for discuss-phase: what `show()` does with `FeedbackEvent.DismissScreen` (message only, as today's dispatcher, or rejected).
-**Plans:** 5 plans
+**Plans:** 5/5 plans complete
 
 Plans:
 **Wave 1**
