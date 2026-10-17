@@ -294,10 +294,16 @@ internal fun handledBySecondaryParts(handledBy: HandledByUiModel): List<String> 
 private fun ReceiptHandledByPill(handledBy: HandledByUiModel, colors: OutcomeSheetColors) {
     val scheme = MaterialTheme.colorScheme
     val secondary = handledBySecondaryParts(handledBy)
+    val pillShape = rememberHandledByPillShape()
+    val ring = handledByDotRing(
+        handledByDotColor(handledBy.onDevice, colors, scheme),
+        scheme.surfaceContainerHighest,
+        scheme
+    )
     Row(
         modifier = Modifier
             .padding(top = Dimens.ContentSpacing)
-            .background(scheme.surfaceContainerHighest, CircleShape)
+            .background(scheme.surfaceContainerHighest, pillShape)
             .padding(
                 vertical = Dimens.OutcomeReceipt.PillVerticalPadding,
                 horizontal = Dimens.OutcomeReceipt.PillHorizontalPadding
@@ -309,6 +315,7 @@ private fun ReceiptHandledByPill(handledBy: HandledByUiModel, colors: OutcomeShe
         Box(
             modifier = Modifier
                 .size(Dimens.OutcomeReceipt.DotSize)
+                .handledByDotRingBehind(ring)
                 .background(handledByDotColor(handledBy.onDevice, colors, scheme), CircleShape)
                 .testTag("outcome_sheet_handled_by_dot")
         )
