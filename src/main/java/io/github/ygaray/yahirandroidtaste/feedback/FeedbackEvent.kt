@@ -23,10 +23,17 @@ sealed interface FeedbackEvent {
      *
      * @param message  Text to display.
      * @param duration How long to show the snackbar; defaults to [SnackbarDuration.Short].
+     * @param target   Optional [FeedbackTarget] the card can open ("go to the thing"); null keeps
+     *                 the v2.7.1 behavior.
+     * @param supportingText Optional second line (for example an item name). There is no tone
+     *                 field: the dot colour derives from target presence (primary with a target,
+     *                 onSurfaceVariant without), rendered by the feedback stack host.
      */
     data class Notify(
         val message: String,
-        val duration: SnackbarDuration = SnackbarDuration.Short
+        val duration: SnackbarDuration = SnackbarDuration.Short,
+        val target: FeedbackTarget? = null,
+        val supportingText: String? = null
     ) : FeedbackEvent
 
     /**
@@ -40,12 +47,19 @@ sealed interface FeedbackEvent {
      *                   emit time by the producer, carried verbatim into the Undo Center's
      *                   [UndoHistoryEntry]. Defaulted null so existing producers compile
      *                   unchanged.
+     * @param target     Optional [FeedbackTarget] the card can open; null keeps the v2.7.1
+     *                   behavior.
+     * @param supportingText Optional second line (for example an item name). There is no tone
+     *                   field: the dot colour derives from target presence (primary with a
+     *                   target, onSurfaceVariant without), rendered by the feedback stack host.
      */
     data class WithUndo(
         val message: String,
         val undoAction: suspend () -> Unit,
         val duration: SnackbarDuration = SnackbarDuration.Long,
-        val preview: UndoPreview? = null
+        val preview: UndoPreview? = null,
+        val target: FeedbackTarget? = null,
+        val supportingText: String? = null
     ) : FeedbackEvent
 
     /**
