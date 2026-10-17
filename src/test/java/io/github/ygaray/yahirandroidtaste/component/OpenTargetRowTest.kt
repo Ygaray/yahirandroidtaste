@@ -110,6 +110,7 @@ class OpenTargetRowTest {
         val config = mergedRow().assertExists().fetchSemanticsNode().config
         assertFalse("a locked row has no click action", config.contains(SemanticsActions.OnClick))
         assertFalse("a locked row has no button role", config.contains(SemanticsProperties.Role))
+        assertTrue("a locked row is announced as disabled", config.contains(SemanticsProperties.Disabled))
         assertEquals(listOf("Weekend list", "Updated just now"), mergedTexts())
         composeTestRule.onNodeWithTag(OPEN_TARGET_CHEVRON_TEST_TAG, useUnmergedTree = true).assertExists()
     }

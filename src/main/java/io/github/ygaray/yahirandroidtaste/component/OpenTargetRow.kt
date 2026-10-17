@@ -22,6 +22,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -138,7 +139,8 @@ internal fun OpenTargetRow(
 /**
  * The click of a row that opens [target]: a [Role.Button] whose click label is the target's
  * `openLabel` ([fallbackLabel] when that is blank) calling [onOpenTarget] with the target. While not
- * [enabled] (the success is in flight, PD-1) it adds no click and no role and dims the row to 38%.
+ * [enabled] (the success is in flight, PD-1) it adds no click and no role, dims the row to 38% and
+ * marks it `disabled()` so the locked state is announced, not only drawn.
  * The target's opaque key is only handed back to the caller, never read.
  */
 private fun Modifier.openTargetClick(
@@ -154,7 +156,8 @@ private fun Modifier.openTargetClick(
             onClick = { onOpenTarget(target) }
         )
     } else {
-        alpha(DISABLED_CONTENT_ALPHA)
+        // Announce the locked state to TalkBack too, so it is not conveyed by dimming alone.
+        alpha(DISABLED_CONTENT_ALPHA).semantics { disabled() }
     }
 
 /** A hairline drawn behind the row, which adds no semantics node. */
