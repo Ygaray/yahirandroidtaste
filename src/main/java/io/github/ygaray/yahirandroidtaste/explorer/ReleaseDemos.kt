@@ -944,7 +944,43 @@ internal fun GoToItemSheetDemos() {
 
 /** The outcome of [demo]; [dismiss] slides the sheet down. */
 internal fun goToItemOutcome(demo: GoToItemDemo, dismiss: () -> Unit): VoiceOutcomeUiState.Success =
-    goToItemSingleOutcome(demo.german, dismiss)
+    if (demo.batch) goToItemBatchOutcome(demo.german, dismiss) else goToItemSingleOutcome(demo.german, dismiss)
+
+/**
+ * The mixed batch: A succeeded with a target, B succeeded without, C failed with a detail and a
+ * target, D failed with a detail and no target. Each targeted row opens its own fixture key.
+ */
+private fun goToItemBatchOutcome(german: Boolean, dismiss: () -> Unit): VoiceOutcomeUiState.Success {
+    val detail = localized(german, "could not be saved", "konnte nicht gespeichert werden")
+    return VoiceOutcomeUiState.Success(
+        summary = localized(german, "Saved 2 of 4 items", "2 von 4 Einträgen gespeichert"),
+        batchResults = listOf(
+            BatchRowResultUiModel(
+                label = localized(german, "Item A", "Eintrag A"),
+                succeeded = true,
+                target = FeedbackTarget("demo-batch-a", localized(german, "Open item A", "Eintrag A öffnen"))
+            ),
+            BatchRowResultUiModel(label = localized(german, "Item B", "Eintrag B"), succeeded = true),
+            BatchRowResultUiModel(
+                label = localized(german, "Item C", GERMAN_LONG_ITEM_C),
+                succeeded = false,
+                detail = detail,
+                target = FeedbackTarget("demo-batch-c", localized(german, "Open item C", "Eintrag C öffnen"))
+            ),
+            BatchRowResultUiModel(
+                label = localized(german, "Item D", "Eintrag D"),
+                succeeded = false,
+                detail = detail
+            )
+        ),
+        badge = OutcomeBadge.Success,
+        startAction = SheetActionUiModel(localized(german, "Edit", "Bearbeiten"), {}, ActionButtonEmphasis.Text),
+        endAction = SheetActionUiModel(localized(german, "Done", "Fertig"), dismiss, ActionButtonEmphasis.Filled)
+    )
+}
+
+/** Long enough to wrap at 360dp, so the German batch shows the chevron staying inside the window. */
+private const val GERMAN_LONG_ITEM_C = "Eintrag C mit einer sehr langen Bezeichnung für die Prüfung"
 
 private fun goToItemSingleOutcome(german: Boolean, dismiss: () -> Unit): VoiceOutcomeUiState.Success =
     VoiceOutcomeUiState.Success(
