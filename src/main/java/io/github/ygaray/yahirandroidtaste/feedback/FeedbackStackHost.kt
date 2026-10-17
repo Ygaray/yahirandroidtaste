@@ -1,34 +1,9 @@
 package io.github.ygaray.yahirandroidtaste.feedback
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.semantics.CustomAccessibilityAction
-import androidx.compose.ui.semantics.customActions
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 
 /** Test tag on every card of [FeedbackStackHost]. */
 internal const val FEEDBACK_STACK_ITEM_TEST_TAG = "feedback_stack_item"
@@ -60,7 +35,7 @@ internal const val FEEDBACK_STACK_CHEVRON_TEST_TAG = "feedback_stack_chevron"
  *
  * @param state the stack state, usually from [rememberFeedbackStackState].
  * @param onOpenTarget called with the card's [FeedbackTarget] after a successful body tap.
- * @param modifier applied to the column holding the cards.
+ * @param modifier applied to the deck container holding the cards.
  * @param undoLabel the Undo button text; pass a localized string.
  * @param dismissLabel the label of each card's Dismiss accessibility action; pass a localized
  *   string.
@@ -75,120 +50,16 @@ fun FeedbackStackHost(
 ) {
     state.BindAccessibilityTimeout()
     val currentOnOpenTarget by rememberUpdatedState(onOpenTarget)
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        state.items.forEach { item ->
-            key(item.id) {
-                FeedbackStackCard(
-                    item = item,
-                    undoLabel = undoLabel,
-                    dismissLabel = dismissLabel,
-                    onBodyTap = { target ->
-                        if (state.resolve(item, FeedbackResult.Opened)) currentOnOpenTarget(target)
-                    },
-                    onUndo = { state.resolve(item, FeedbackResult.Undone) },
-                    onDismiss = { state.resolve(item, FeedbackResult.Dismissed) }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun FeedbackStackCard(
-    item: FeedbackStackItem,
-    undoLabel: String,
-    dismissLabel: String,
-    onBodyTap: (FeedbackTarget) -> Unit,
-    onUndo: () -> Unit,
-    onDismiss: () -> Unit
-) {
-    val target = item.target
-    val spent = item.spent
-    val openable = target != null && !spent
-    val clickModifier = if (openable && target != null) {
-        Modifier.clickable(onClickLabel = target.openLabel.ifBlank { item.message }) {
-            onBodyTap(target)
-        }
-    } else {
-        Modifier
-    }
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .testTag(FEEDBACK_STACK_ITEM_TEST_TAG)
-            .semantics {
-                // A targeted card is clickable, which merges its descendants, so the Undo button
-                // is invisible to TalkBack there; expose Undo as an action on the card root too.
-                customActions = buildList {
-                    if (item.hasUndo && !spent) {
-                        add(
-                            CustomAccessibilityAction(undoLabel) {
-                                onUndo()
-                                true
-                            }
-                        )
-                    }
-                    add(
-                        CustomAccessibilityAction(dismissLabel) {
-                            onDismiss()
-                            true
-                        }
-                    )
-                }
-            }
-            .then(clickModifier),
-        shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.surfaceContainerHighest
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            val dotColor = if (target != null) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onSurfaceVariant
-            }
-            Box(
-                modifier = Modifier
-                    .size(8.dp)
-                    .background(dotColor, CircleShape)
-            )
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = item.message,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                item.supportingText?.let { supporting ->
-                    Text(
-                        text = supporting,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
-            if (item.hasUndo && !spent) {
-                TextButton(
-                    onClick = onUndo,
-                    modifier = Modifier.testTag(FEEDBACK_STACK_UNDO_TEST_TAG)
-                ) {
-                    Text(undoLabel)
-                }
-            }
-            if (openable) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.testTag(FEEDBACK_STACK_CHEVRON_TEST_TAG)
-                )
-            }
-        }
+    FeedbackDeck(items = state.items, modifier = modifier) { item, _ ->
+        FeedbackCard(
+            item = item,
+            undoLabel = undoLabel,
+            dismissLabel = dismissLabel,
+            onBodyTap = { target ->
+                if (state.resolve(item, FeedbackResult.Opened)) currentOnOpenTarget(target)
+            },
+            onUndo = { state.resolve(item, FeedbackResult.Undone) },
+            onDismiss = { state.resolve(item, FeedbackResult.Dismissed) }
+        )
     }
 }
