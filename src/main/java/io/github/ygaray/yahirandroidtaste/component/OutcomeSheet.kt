@@ -106,7 +106,13 @@ fun OutcomeSheet(
         return
     }
     SheetScaffold(onDismissRequest = onDismissRequest, modifier = modifier, sheetState = sheetState) {
-        OutcomeSheetContent(outcome, colors = colors)
+        // One scaffold call site on purpose: a caller that clears `target` after Undo then swaps only
+        // this body and never re-creates the sheet window (PD-2).
+        if (onOpenTarget != null && outcome is VoiceOutcomeUiState.Success && outcome.hasOpenTarget()) {
+            OutcomeSheetContentOpenTarget(outcome, onOpenTarget)
+        } else {
+            OutcomeSheetContent(outcome, colors = colors)
+        }
     }
 }
 
@@ -572,5 +578,53 @@ internal fun ProposedItemRow(item: ProposedItemUiModel) {
                 Icon(Icons.Default.Close, contentDescription = item.removeContentDescription)
             }
         }
+    }
+}
+
+/**
+ * The Classic content of a [VoiceOutcomeUiState.Success] that carries an item to open (FOPEN-01):
+ * [OutcomeSheetContent]'s scroll shape with [SuccessBodyOpenTarget] as the body. A new function, not
+ * a branch inside [OutcomeSheetContent], so the pinned v2.5.1 Classic functions stay byte-equal.
+ * Internal so a height-bounded test can host it without driving a `ModalBottomSheet`.
+ */
+@Composable
+internal fun OutcomeSheetContentOpenTarget(
+    success: VoiceOutcomeUiState.Success,
+    onOpenTarget: (FeedbackTarget) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .weight(1f, fill = false)
+                .verticalScroll(rememberScrollState())
+        ) {
+            SuccessBodyOpenTarget(success, onOpenTarget)
+        }
+    }
+}
+
+/**
+ * The Classic Success body with the go-to-item row after the handled-by indicator (D-02): the
+ * summary headline, [HandledByRow], the row, the batch list, the editor slot (hidden while in
+ * flight) and the undo block (locked while in flight). It calls the pinned helpers; it never copies
+ * their text.
+ */
+@Composable
+private fun SuccessBodyOpenTarget(
+    success: VoiceOutcomeUiState.Success,
+    onOpenTarget: (FeedbackTarget) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Dimens.HorizontalPadding)
+    ) {
+        Text(text = success.summary, style = MaterialTheme.typography.headlineSmall)
+        success.handledBy?.let { HandledByRow(it) }
+        SuccessOpenTargetRow(success, onOpenTarget)
+        success.batchResults.takeIf { it.isNotEmpty() }?.let { BatchResultsList(it) }
+        success.editableContent?.takeIf { !success.inFlight }?.invoke()
+        success.undo?.let { UndoAffordanceBody(it, locked = success.inFlight) }
     }
 }
