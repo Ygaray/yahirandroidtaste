@@ -5,6 +5,9 @@ This document states what the hub *means to be*, per tier — distinct from `Com
 document sets intent: the contract each tier promises, and the litmus that decides which tier a
 component belongs to.
 
+For how components should *look and behave* (surfaces, spacing, sheets, feedback, sign-off checks),
+see `STYLE.md`, and `STYLE.REVERTED.md` for the ideas already tried and rejected.
+
 Scope: this litmus applies to every component registered in `ComponentRegistry.entries`. Sub-parts
 listed in `ComponentRegistry.INTENTIONALLY_UNREGISTERED` are infrastructure exercised indirectly
 through their callers, not independently showcased — they sit outside the tier taxonomy entirely
