@@ -4,6 +4,8 @@ import android.content.Context
 import java.io.File
 import org.osmdroid.config.Configuration
 
+private const val USER_AGENT_HEADER = "User-Agent"
+
 /**
  * HUBW-02 D-06 — the hub's osmdroid tile-policy configuration step.
  *
@@ -18,7 +20,9 @@ import org.osmdroid.config.Configuration
  * serve:
  *  1. **Identifying User-Agent.** [configureOsmdroid] always sets a non-blank `userAgentValue`
  *     ([resolveOsmdroidUserAgent] falls back to the host's package name when the caller passes a
- *     blank/whitespace agent), never osmdroid's library-default agent.
+ *     blank/whitespace agent), never osmdroid's library-default agent. The resolved agent is also
+ *     injected as the `User-Agent` request property after every `load()`, because the MAPNIK tile
+ *     source normalizes the agent to `<packageName>/<versionCode>` and ignores `userAgentValue`.
  *  2. **Honor tile-server cache headers.** osmdroid's expiry-override handling is left at its
  *     default here — this function never calls an API that overrides cache expiry.
  *  3. **No bulk or offline tile pre-fetching.** This function calls no bulk-download or
@@ -37,8 +41,14 @@ internal fun configureOsmdroid(context: Context, userAgent: String) {
     // load() first: it resets Configuration's userAgentValue, so anything set before load() would
     // be discarded.
     Configuration.getInstance().load(appContext, prefs)
-    Configuration.getInstance().userAgentValue =
-        resolveOsmdroidUserAgent(userAgent, appContext.packageName)
+    val resolvedAgent = resolveOsmdroidUserAgent(userAgent, appContext.packageName)
+    Configuration.getInstance().userAgentValue = resolvedAgent
+    // load() re-fills the request properties from persisted prefs on every call, so the header is
+    // injected in memory after EVERY load (never written back to prefs: the consumer owns that
+    // slot). Case variants are removed first so exactly one User-Agent entry remains.
+    val requestProperties = Configuration.getInstance().additionalHttpRequestProperties
+    requestProperties.keys.removeAll { it.equals(USER_AGENT_HEADER, ignoreCase = true) }
+    requestProperties[USER_AGENT_HEADER] = resolvedAgent
     val basePath = File(appContext.cacheDir, "osmdroid")
     Configuration.getInstance().osmdroidBasePath = basePath
     Configuration.getInstance().osmdroidTileCache = File(basePath, "tiles")

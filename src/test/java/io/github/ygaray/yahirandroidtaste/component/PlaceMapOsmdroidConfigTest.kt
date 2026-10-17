@@ -1,9 +1,11 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import android.app.Application
+import android.content.Context
 import java.io.File
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -30,12 +32,18 @@ class PlaceMapOsmdroidConfigTest {
     private lateinit var originalUserAgent: String
     private lateinit var originalBasePath: File
     private lateinit var originalTileCache: File
+    private lateinit var originalRequestProperties: Map<String, String>
+
+    private val osmPrefs
+        get() = application.getSharedPreferences("yahirandroidtaste_osmdroid", Context.MODE_PRIVATE)
 
     @Before
     fun setUp() {
         originalUserAgent = Configuration.getInstance().userAgentValue
         originalBasePath = Configuration.getInstance().osmdroidBasePath
         originalTileCache = Configuration.getInstance().osmdroidTileCache
+        originalRequestProperties = HashMap(Configuration.getInstance().additionalHttpRequestProperties)
+        osmPrefs.edit().clear().commit()
     }
 
     @After
@@ -43,6 +51,87 @@ class PlaceMapOsmdroidConfigTest {
         Configuration.getInstance().userAgentValue = originalUserAgent
         Configuration.getInstance().osmdroidBasePath = originalBasePath
         Configuration.getInstance().osmdroidTileCache = originalTileCache
+        Configuration.getInstance().additionalHttpRequestProperties.apply {
+            clear()
+            putAll(originalRequestProperties)
+        }
+        osmPrefs.edit().clear().commit()
+    }
+
+    /**
+     * osmdroid's very first load (no persisted base path) takes a "first run" branch that rewrites
+     * the persisted request-property keys from memory. A real consumer has already passed that
+     * branch, so seed an existing base path to reach the restore branch under test.
+     */
+    private fun seedPersistedPrefs(vararg entries: Pair<String, String>) {
+        val dir = application.cacheDir.also { it.mkdirs() }
+        osmPrefs.edit().apply {
+            putString("osmdroid.basePath", dir.absolutePath)
+            putString("osmdroid.cachePath", dir.absolutePath)
+            entries.forEach { (key, value) -> putString(key, value) }
+        }.commit()
+    }
+
+    private fun requestProperties(): MutableMap<String, String> =
+        Configuration.getInstance().additionalHttpRequestProperties
+
+    private fun userAgentEntryCount(): Int =
+        requestProperties().keys.count { it.equals("User-Agent", ignoreCase = true) }
+
+    @Test
+    fun callerAgent_reachesTheUserAgentRequestProperty_afterTheFirstCall() {
+        configureOsmdroid(application, "Probe/1.0 (+https://example.org)")
+        assertEquals("Probe/1.0 (+https://example.org)", requestProperties()["User-Agent"])
+    }
+
+    @Test
+    fun secondCallWithAnotherAgent_replacesTheHeader_andKeepsExactlyOneUserAgentEntry() {
+        configureOsmdroid(application, "First/1.0 (+https://example.org)")
+        assertEquals("First/1.0 (+https://example.org)", requestProperties()["User-Agent"])
+        configureOsmdroid(application, "Second/2.0 (+https://example.org)")
+        assertEquals("Second/2.0 (+https://example.org)", requestProperties()["User-Agent"])
+        assertEquals(1, userAgentEntryCount())
+    }
+
+    @Test
+    fun persistedUserAgentValue_isOverwrittenInMemory_andTheHubNeverRewritesThePrefs() {
+        val key = "osmdroid.additionalHttpRequestProperty.User-Agent"
+        seedPersistedPrefs(key to "Persisted/0.1 (consumer owned)")
+        configureOsmdroid(application, "Caller/3.0 (+https://example.org)")
+        configureOsmdroid(application, "Caller/3.0 (+https://example.org)")
+        assertEquals("Caller/3.0 (+https://example.org)", requestProperties()["User-Agent"])
+        assertEquals(1, userAgentEntryCount())
+        assertEquals("Persisted/0.1 (consumer owned)", osmPrefs.getString(key, null))
+    }
+
+    @Test
+    fun differentlyCasedPersistedKey_leavesExactlyOneUserAgentEntry() {
+        seedPersistedPrefs("osmdroid.additionalHttpRequestProperty.user-agent" to "lower/0.1")
+        configureOsmdroid(application, "Caller/3.0 (+https://example.org)")
+        configureOsmdroid(application, "Caller/3.0 (+https://example.org)")
+        assertEquals(1, userAgentEntryCount())
+        assertEquals("Caller/3.0 (+https://example.org)", requestProperties()["User-Agent"])
+    }
+
+    @Test
+    fun otherPersistedRequestProperties_survive() {
+        seedPersistedPrefs("osmdroid.additionalHttpRequestProperty.X-Other" to "kept")
+        configureOsmdroid(application, "Caller/3.0 (+https://example.org)")
+        assertEquals("kept", requestProperties()["X-Other"])
+        assertEquals("Caller/3.0 (+https://example.org)", requestProperties()["User-Agent"])
+    }
+
+    @Test
+    fun userAgentValue_stillCarriesTheResolvedAgent() {
+        configureOsmdroid(application, "Caller/3.0 (+https://example.org)")
+        assertEquals("Caller/3.0 (+https://example.org)", Configuration.getInstance().userAgentValue)
+    }
+
+    @Test
+    fun headerKey_isTheLiteralUserAgent() {
+        configureOsmdroid(application, "Caller/3.0 (+https://example.org)")
+        assertTrue(requestProperties().containsKey("User-Agent"))
+        assertNull(requestProperties()["user-agent"])
     }
 
     @Test
