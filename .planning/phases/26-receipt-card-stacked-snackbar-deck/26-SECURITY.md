@@ -4,7 +4,7 @@ slug: receipt-card-stacked-snackbar-deck
 status: verified
 threats_open: 0
 asvs_level: 1
-audited_head: d87e12a6761177ab11a6d18ca680461675e57b20
+audited_head: e09171373c3864959ba9ff5741b170de2888878f
 created: "2026-10-17"
 ---
 
@@ -48,6 +48,10 @@ created: "2026-10-17"
 | T-26-18 | Information disclosure | Key via contentDescription/stateDescription/tag/action label | medium | mitigate | Semantics inputs are labels only; raw-tree dump test | closed |
 | T-26-19 | Repudiation | Registry/docs/api.txt drift | low | mitigate | Registry + allowlist entries, API.md rows, drift guards, api.txt unchanged | closed |
 | T-26-20 | Spoofing | Tapjacking by another window | low | accept | Same basis as T-26-08 | closed (accepted) |
+| T-26-21 | Tampering | Peek tap over a collapsed back card's Undo runs Undo (gap-closure 26-06) | high | mitigate | Private card-wide CollapsedBackTouchBlocker (empty pointerInput) while collapsedBack; card tap owner fans; tests in FeedbackStackHostDeckTest | closed |
+| T-26-22 | Denial of service | Blocker over-blocks a legitimate touch | medium | mitigate | Gated on collapsedBack, consumes nothing; fanned/front-card Undo, swipe and displaced-card controls | closed |
+| T-26-23 | Denial of service | Screen-reader or switch user loses Undo | medium | mitigate | No semantics/enabled/visibility change; Undo child and custom action intact; FeedbackStackHostSemanticsTest | closed |
+| T-26-24 | Elevation of privilege | New composable becomes public API | low | mitigate | Blocker is private; api.txt unchanged | closed |
 | T-26-SC | Tampering | Package installs | low | accept | No dependency, catalog or BOM change in the phase | closed (accepted) |
 
 *Status: open, closed, or open below block_on threshold (non-blocking)*
@@ -61,7 +65,7 @@ created: "2026-10-17"
 | AR-26-01 | T-26-03 | internal seams are not public API; only tests set them | plan disposition (accept) | 2026-10-17 |
 | AR-26-02 | T-26-08 | Library draws no overlay windows and requests no permissions; tapjacking is a host concern | plan disposition (accept) | 2026-10-17 |
 | AR-26-03 | T-26-20 | Same as AR-26-02 | plan disposition (accept) | 2026-10-17 |
-| AR-26-04 | T-26-SC | No dependency changes in the phase | plan disposition (accept) | 2026-10-17 |
+| AR-26-04 | T-26-SC | No dependency changes in the phase (including gap-closure 26-06) | plan disposition (accept) | 2026-10-17 |
 
 ---
 
@@ -70,6 +74,7 @@ created: "2026-10-17"
 | Audit Date | Threats Total | Closed | Open | Run By |
 |------------|---------------|--------|------|--------|
 | 2026-10-17 | 21 | 21 | 0 | gsd-security-auditor (ASVS L1, block_on high) |
+| 2026-10-17 | 25 | 25 | 0 | gsd-security-auditor re-audit after gap-closure 26-06 and review-2 fixes (audited_head e091713) |
 
 ---
 
