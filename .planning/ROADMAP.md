@@ -103,7 +103,7 @@ Plans:
   5. In the semantics tree each card body is one merged node with `Role.Button`, `onClickLabel = openLabel` and a Polite live region. Undo is a separate focusable child and also a custom action. A Dismiss custom action (labeled `dismissLabel`) and `dismiss` semantics remove the card the way a swipe does. Deck cards stay in the tree newest-first, collapsed or fanned out (A11Y-01).
 
 **Notes**: Any new public composable is registered or allowlisted here; `apiCheck` stays green on the regenerated `api.txt`. The TalkBack device confirmation of these semantics happens in Phase 28's sweep.
-**Plans:** 5 plans
+**Plans:** 6 plans
 
 Plans:
 **Wave 1**
@@ -125,6 +125,7 @@ Plans:
 **Wave 5** *(blocked on Wave 4 completion)*
 
 - [x] 26-05-PLAN.md — A11Y-01 merged-button semantics, Explorer burst demo buttons, API.md row, full phase gate and Gate-1 inputs (A11Y-01, FSTK-02)
+- [x] 26-06-PLAN.md — gap closure: a peek tap over a collapsed back card's Undo fans the deck instead of running Undo (FSTK-04)
 
 **UI hint**: yes
 
@@ -377,7 +378,7 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 25. Feedback target model & stack state | v2.8 | 5/5 | Not started |  |
-| 26. Receipt-card stacked snackbar deck | v2.8 | 5/5 | Not started |  |
+| 26. Receipt-card stacked snackbar deck | v2.8 | 6/6 | Not started |  |
 | 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 0/TBD | Not started | - |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 0/TBD | Not started | - |
 | 29. Docs & v2.8.0 cut readiness | v2.8 | 0/TBD | Not started | - |
