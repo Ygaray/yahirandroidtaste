@@ -294,10 +294,11 @@ internal fun handledBySecondaryParts(handledBy: HandledByUiModel): List<String> 
 private fun ReceiptHandledByPill(handledBy: HandledByUiModel, colors: OutcomeSheetColors) {
     val scheme = MaterialTheme.colorScheme
     val secondary = handledBySecondaryParts(handledBy)
+    val pillShape = rememberHandledByPillShape()
     Row(
         modifier = Modifier
             .padding(top = Dimens.ContentSpacing)
-            .background(scheme.surfaceContainerHighest, CircleShape)
+            .background(scheme.surfaceContainerHighest, pillShape)
             .padding(
                 vertical = Dimens.OutcomeReceipt.PillVerticalPadding,
                 horizontal = Dimens.OutcomeReceipt.PillHorizontalPadding
