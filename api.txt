@@ -793,31 +793,54 @@ package io.github.ygaray.yahirandroidtaste.feedback {
   }
 
   public static final class FeedbackEvent.Notify implements io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent {
-    ctor public FeedbackEvent.Notify(String message, optional androidx.compose.material3.SnackbarDuration duration);
+    ctor public FeedbackEvent.Notify(String message, optional androidx.compose.material3.SnackbarDuration duration, optional io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? target, optional String? supportingText);
     method public String component1();
     method public androidx.compose.material3.SnackbarDuration component2();
-    method public io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent.Notify copy(optional String message, optional androidx.compose.material3.SnackbarDuration duration);
+    method public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? component3();
+    method public String? component4();
+    method public io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent.Notify copy(optional String message, optional androidx.compose.material3.SnackbarDuration duration, optional io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? target, optional String? supportingText);
     method @InaccessibleFromKotlin public androidx.compose.material3.SnackbarDuration getDuration();
     method @InaccessibleFromKotlin public String getMessage();
+    method @InaccessibleFromKotlin public String? getSupportingText();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? getTarget();
     property public androidx.compose.material3.SnackbarDuration duration;
     property public String message;
+    property public String? supportingText;
+    property public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? target;
   }
 
   public static final class FeedbackEvent.WithUndo implements io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent {
-    ctor public FeedbackEvent.WithUndo(String message, kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction, optional androidx.compose.material3.SnackbarDuration duration, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview);
+    ctor public FeedbackEvent.WithUndo(String message, kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction, optional androidx.compose.material3.SnackbarDuration duration, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview, optional io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? target, optional String? supportingText);
     method public String component1();
     method public kotlin.jvm.functions.Function1<kotlin.coroutines.Continuation<? super kotlin.Unit>,java.lang.Object?> component2();
     method public androidx.compose.material3.SnackbarDuration component3();
     method public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? component4();
-    method public io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent.WithUndo copy(optional String message, optional kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction, optional androidx.compose.material3.SnackbarDuration duration, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview);
+    method public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? component5();
+    method public String? component6();
+    method public io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent.WithUndo copy(optional String message, optional kotlin.jvm.functions.Function1<? super kotlin.coroutines.Continuation<? super kotlin.Unit>,? extends java.lang.Object?> undoAction, optional androidx.compose.material3.SnackbarDuration duration, optional io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview, optional io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? target, optional String? supportingText);
     method @InaccessibleFromKotlin public androidx.compose.material3.SnackbarDuration getDuration();
     method @InaccessibleFromKotlin public String getMessage();
     method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? getPreview();
+    method @InaccessibleFromKotlin public String? getSupportingText();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? getTarget();
     method @InaccessibleFromKotlin public kotlin.jvm.functions.Function1<kotlin.coroutines.Continuation<? super kotlin.Unit>,java.lang.Object?> getUndoAction();
     property public androidx.compose.material3.SnackbarDuration duration;
     property public String message;
     property public io.github.ygaray.yahirandroidtaste.feedback.UndoPreview? preview;
+    property public String? supportingText;
+    property public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? target;
     property public kotlin.jvm.functions.Function1<kotlin.coroutines.Continuation<? super kotlin.Unit>,?> undoAction;
+  }
+
+  @androidx.compose.runtime.Immutable public final class FeedbackTarget {
+    ctor public FeedbackTarget(String key, String openLabel);
+    method public String component1();
+    method public String component2();
+    method public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget copy(optional String key, optional String openLabel);
+    method @InaccessibleFromKotlin public String getKey();
+    method @InaccessibleFromKotlin public String getOpenLabel();
+    property public String key;
+    property public String openLabel;
   }
 
   public final class UndoCenterScreenKt {
