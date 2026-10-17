@@ -14,12 +14,37 @@ import androidx.compose.ui.platform.LocalAccessibilityManager
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeSource
 
 private const val SHORT_MILLIS = 4_000L
 private const val LONG_MILLIS = 10_000L
 private const val DEFAULT_MAX_VISIBLE = 3
+
+/** How long the host waits after the last interaction before re-collapsing a fanned deck. */
+private const val IDLE_COLLAPSE_MILLIS = 4_000L
+
+/** Lower bound of the remainder when a pause interrupts a running countdown. */
+private val PAUSE_FLOOR = 800.milliseconds
+
+/**
+ * Why the deck's timers are held. Either reason pauses every card; the timers resume only when
+ * both are clear (phase decision D-04 [pause-scope]).
+ */
+internal data class FeedbackPauseState(
+    val pointer: Boolean = false,
+    val fanned: Boolean = false
+) {
+    /** True while any reason holds. */
+    val any: Boolean get() = pointer || fanned
+}
 
 /**
  * Composition-free state of the feedback card stack (FSTK-01).
@@ -34,7 +59,8 @@ private const val DEFAULT_MAX_VISIBLE = 3
  *  - at most [maxVisible] cards are held, newest first; a further arrival dismisses the oldest
  *    card early with [FeedbackResult.Dismissed];
  *  - each card's timer runs inside [show] on the caller's dispatcher and starts at enqueue
- *    (Short 4000 ms, Long 10000 ms, Indefinite never times out);
+ *    (Short 4000 ms, Long 10000 ms, Indefinite never times out); it pauses while the deck is
+ *    pressed or fanned and resumes the remaining time;
  *  - [dismissAll] resolves every visible card as [FeedbackResult.Dismissed].
  *
  * A [FeedbackEvent.DismissScreen] is shown as a plain message card; the stack sends no dismiss
@@ -70,6 +96,34 @@ class FeedbackStackState(maxVisible: Int = DEFAULT_MAX_VISIBLE) {
      */
     @Volatile
     internal var timeoutScaler: ((Long, Boolean) -> Long)? = null
+
+    private val paused = MutableStateFlow(FeedbackPauseState())
+
+    /** Why the card timers are held right now, for the host and tests. */
+    internal val pauseState: StateFlow<FeedbackPauseState> = paused.asStateFlow()
+
+    /** Clock the card timers measure elapsed time with; tests inject a virtual one. */
+    @Volatile
+    internal var timeSource: TimeSource = TimeSource.Monotonic
+
+    /** Idle time before the host re-collapses a fanned deck; tests shorten it. */
+    @Volatile
+    internal var idleCollapseMillis: Long = IDLE_COLLAPSE_MILLIS
+
+    /** A pointer went down (or up) anywhere on the deck. */
+    internal fun setPointerDown(down: Boolean) {
+        paused.update { it.copy(pointer = down) }
+    }
+
+    /** The deck was fanned out (or collapsed). */
+    internal fun setFanned(fanned: Boolean) {
+        paused.update { it.copy(fanned = fanned) }
+    }
+
+    /** Clear both pause reasons, so a lost pointer-up or a departing host cannot stall timers. */
+    internal fun resetPause() {
+        paused.value = FeedbackPauseState()
+    }
 
     /**
      * Enqueue [event] as a card and suspend until it resolves.
@@ -124,10 +178,7 @@ class FeedbackStackState(maxVisible: Int = DEFAULT_MAX_VISIBLE) {
             // reaches the finally and the card is removed instead of leaking a slot.
             timer = item.baseMillis?.let { base ->
                 val millis = scaledMillis(base, item.hasControls)
-                launch {
-                    delay(millis)
-                    resolve(item, FeedbackResult.TimedOut)
-                }
+                launch { runTimer(item, millis) }
             }
             watcher = watch?.let { launch { it(item) } }
             item.result.await()
@@ -138,6 +189,24 @@ class FeedbackStackState(maxVisible: Int = DEFAULT_MAX_VISIBLE) {
             // the deferred and removes the card.
             resolve(item, FeedbackResult.Dismissed)
         }
+    }
+
+    /**
+     * Count [totalMillis] down for [item], then resolve it as timed out. The countdown never runs
+     * while a pause reason holds. When a pause interrupts it, the remainder becomes
+     * `max(800 ms, remaining - elapsed)`; a card the pause never touched times out at exactly
+     * [totalMillis]. Elapsed time is read only through [timeSource].
+     */
+    private suspend fun runTimer(item: FeedbackStackItem, totalMillis: Long) {
+        var remaining = totalMillis.milliseconds
+        while (true) {
+            paused.first { !it.any }
+            val mark = timeSource.markNow()
+            val interrupted = withTimeoutOrNull(remaining) { paused.first { it.any } } != null
+            if (!interrupted) break
+            remaining = maxOf(PAUSE_FLOOR, remaining - mark.elapsedNow())
+        }
+        resolve(item, FeedbackResult.TimedOut)
     }
 
     /**
