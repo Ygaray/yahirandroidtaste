@@ -168,13 +168,14 @@ Plans:
 
 **Goal**: The new snackbars, the outcome sheet and the Undo Center pass a scoped TalkBack sweep on the TESTER, and the Explorer shows every v2.8 surface in English and German inside the pinned hub color scheme.
 **Depends on**: Phase 26, Phase 27
-**Requirements**: A11Y-02, DEMO-02, DEMO-03
+**Requirements**: A11Y-02, DEMO-02, DEMO-03, POL-03
 **Success Criteria** (what must be TRUE):
 
   1. With TalkBack on the TESTER: a clickable `ReceiptRow` reads as one button with its expanded/collapsed state and Undo is a separate stop; the refused-undo "Couldn't undo" Assertive live region is spoken when it appears; the saved-key summary reads as one item with Update and Clear as separate buttons; the Undo Center group header is announced as a heading; and the new sheet target rows and snackbar cards announce their open label (A11Y-02).
   2. Every Explorer screen renders in the pinned hub color scheme, so the warn tone is never mauve under dynamic color anywhere, and the hoisted `OutcomeSheet` `sheetState` demo closes its sheet through `hide()` (DEMO-02).
   3. The Explorer has a stacked-snackbar demo (fire one, a burst of 4 past the cap, swipe one away, tap to open with the opened key shown) and go-to-item demos (Success single, batch with mixed target and no-target rows, Undo Center with target rows), each in English and German and each reached by a registry render test (DEMO-03).
   4. Every new public composable from Phases 25-27 is registered in `ComponentRegistry` or allowlisted with a reason, and the registry integrity test and the CATALOG drift guard are green (DEMO-03).
+  5. `configureOsmdroid` never silently sends a blocked user agent: a blank or bare-package-name `userAgent` becomes `"<pkg>/<versionName> (Android <sdk>)"`, and a blank-derived or `com.example` agent logs one `Log.w` with the policy URL (unit tests). Verification re-runs the OSM probe with the exact resolved strings: `curl -A "<ua>" -D - https://tile.openstreetmap.org/3/2/3.png` returns a real tile (no `x-blocked`, not 6987 bytes) for a real-id agent, and the placeholder for a `com.example` agent, which proves the warning path is the honest outcome (POL-03).
 
 **Notes**: Defects the sweep finds are fixed in this phase. Already in the code, so verify rather than rebuild: the hoisted-`sheetState` demo that calls `hide()` (`VoiceCommandFamilyScreen.kt`, added in `v2.7.0` `5206be9`, fixed in `v2.7.1` `a5b29eb`), and `heading()` on the Undo Center group label (`UndoGroupHeaderRow`). `HubSchemeScope` (`ReleaseDemos.kt`) wraps only the Receipt and tone demos today. Device work uses the TESTER (`R5CT10XNKQN`) only; after UAT, restore its density with `wm density 450`. If TalkBack can't be driven agentically, park those checks for Yahir; never waive them. Screencaps are kept for the owner.
 **Plans**: TBD

@@ -64,3 +64,14 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
 999.4 voice-surface polish → v2.8.1; combined "Undo & open"; share/MCP deep links; SB sheet-swap blink (app-side).
 
 </deferred>
+
+## Runtime Decisions
+
+- **POL-03 added (ui-designer, 2026-10-17, from teamlead@vae-bilingual / SB 999.111):** OSM user-agent foot-gun.
+  - Probe from the host (curl 3/2/3.png):
+    - Blocked (200 + `x-blocked`, 6987 B placeholder): `""`, and every `com.example.*` id in any form, for example `com.example.secondbrain/1.4.0 (Android 15)`.
+    - Real tile: `com.ygaray.secondbrain`, bare or `/1.4.0 (Android 15)`.
+  - So the fallback helps only real ids, and it must be loud otherwise.
+  - Fix scope: internal only in `component/PlaceMapOsmdroidConfig.kt` (resolver + builder + one `Log.w`) and the `PlaceMapPicker` KDoc. No API change.
+  - `x-blocked` response detection only if cheap (osmdroid's downloader is internal); otherwise it goes in the backlog.
+  - Verification must re-run the curl probe with the exact resolved strings.

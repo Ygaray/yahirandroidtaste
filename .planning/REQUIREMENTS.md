@@ -38,6 +38,7 @@
 - [ ] **DEMO-03**: The Explorer shows the stacked snackbar host (fire/burst/swipe/open demo) and the sheet go-to-item rows, in English and German; new public composables are registered in `ComponentRegistry`.
 - [ ] **POL-01**: The handled-by pill keeps its text inside its shape when it wraps at font scale 2.0 (corner radius capped when multi-line, or equivalent).
 - [ ] **POL-02**: The Grammar (warn) handled-by dot stays clearly visible on the pill under dynamic color (contrast-safe dot).
+- [ ] **POL-03**: The map picker never silently sends a blocked user agent to the OSM tile server. When the caller's `userAgent` is blank or the bare package name, `configureOsmdroid` builds `"<packageName>/<versionName> (Android <sdk>)"` from PackageManager (internal, no API change). It logs one `Log.w` with the tile-policy URL whenever the resolved agent is blank-derived or contains the `com.example` placeholder namespace (OSM blocks both and answers HTTP 200 with a 6987-byte placeholder plus `x-blocked`). The `PlaceMapPicker` `userAgent` KDoc asks for `"AppName/version (+contact)"` from a real application id. (Source: teamlead@vae-bilingual, SB 999.111.)
 
 ### Ship
 
@@ -76,6 +77,7 @@
 | FOPEN-03 | Phase 27 | Pending |
 | POL-01 | Phase 27 | Pending |
 | POL-02 | Phase 27 | Pending |
+| POL-03 | Phase 28 | Pending |
 | A11Y-02 | Phase 28 | Pending |
 | DEMO-02 | Phase 28 | Pending |
 | DEMO-03 | Phase 28 | Pending |
@@ -83,8 +85,8 @@
 
 **Coverage:**
 
-- v2.8 requirements: 19 total
-- Mapped to phases: 19 (Phases 25-29)
+- v2.8 requirements: 20 total
+- Mapped to phases: 20 (Phases 25-29)
 - Unmapped: 0
 
 ---
