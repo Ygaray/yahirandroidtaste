@@ -66,7 +66,28 @@ locked (Yahir, 2026-10-17, via director@office): `.planning/research/v2.8-BRIEF.
   5. `FeedbackStackHost(state, onOpenTarget, modifier, undoLabel = "Undo", dismissLabel = "Dismiss")` exists with the D-09 signature: a body tap on a targeted item calls `onOpenTarget(target)` and resolves `Opened`, Undo resolves `Undone`, and the Undo text is the caller's `undoLabel` (a German label renders as passed). The host is registered in the Feedback family screen (`rememberFeedbackStackState` registered or allowlisted), and the registry integrity test and the CATALOG drift guard are green (FSTK-01, FSTK-07).
 
 **Notes**: Boundary with Phase 26: this phase owns the target model, the state, the result contract, the tracked-undo path and the host's public signature (a tracer host that renders the visible items newest-first with body tap and Undo wired; no deck motion, gestures, pause or semantics polish). The cap and timer logic may live in `FeedbackStackState`, but FSTK-02 and FSTK-06 are accepted in Phase 26. The host and `rememberFeedbackStackState` are public `@Composable`s in `feedback/`, so the drift guard forces their registration (or allowlisting) here. Open for discuss-phase: what `show()` does with `FeedbackEvent.DismissScreen` (message only, as today's dispatcher, or rejected).
-**Plans**: TBD
+**Plans:** 5 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 25-01-PLAN.md — `FeedbackTarget` + `Notify`/`WithUndo` `target` and `supportingText`, V271 call-site canary, `api.txt` (FTGT-01)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 25-02-PLAN.md — `UndoHistoryEntry.target` / `openableTarget`, store `append` overload, Material3 tracked path forwards the target (FTGT-02)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 25-03-PLAN.md — `FeedbackResult` + composition-free `FeedbackStackState` (exactly-one result, cap, timers, cancel, `dismissAll`, accessibility binding) with virtual-time tests (FSTK-01)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 25-04-PLAN.md — `FeedbackStackState.emitTrackedWithUndo` (append before show, undo only via the store guard, NonCancellable) with race and cancel tests (FSTK-07, FTGT-02)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 25-05-PLAN.md — `rememberFeedbackStackState`, `FeedbackStackHost` tracer, registry/allowlist/vocabulary/docs counts (67/6/73), full phase gate (FSTK-01, FSTK-07)
 
 ### Phase 26: Receipt-card stacked snackbar deck
 
@@ -276,6 +297,7 @@ snackbars, the outcome sheet and the Undo Center. Kept here as history.
 
 **Goal:** One TalkBack pass over the hub's voice surfaces, covering the v2.6 Gate-2 gaps. That pass checks
 that:
+
 - a clickable ReceiptRow reads as one button item with its expanded/collapsed state, and Undo is a
   separate stop;
 - the refused-undo "Couldn't undo" Assertive live region is spoken on appearance;
@@ -291,6 +313,7 @@ Source: Yahir, v2.6 Gate-2 2026-10-14.
 **Promoted 2026-10-17** into milestone v2.8 as requirement DEMO-02 (Phase 28). Kept here as history.
 
 **Goal:** Two Explorer demo changes:
+
 - Pin the hub color scheme across the whole Explorer. Today only the Receipt and count-editor demos
   pin it, and the warn tone renders mauve under dynamic color. This is a demo-only change.
 - Add a demo of the hoisted `OutcomeSheet` `sheetState` that calls `hide()`.
@@ -302,6 +325,7 @@ Source: Yahir, v2.6 Gate-2 and certify advisory 2.
 ### Phase 999.4: Voice-surface polish (BACKLOG, target v2.8.1)
 
 **Goal:** Fix these from the v2.6 Gate-2 list:
+
 - (a) Add a small gap between the last body element and the pinned-bar divider. This is cosmetic.
 - (b) A saved `ProviderKeyCard` summary with `actions = null` has no way out.
 - (c) A long group label is cut at 2 lines next to a long German Undo all.

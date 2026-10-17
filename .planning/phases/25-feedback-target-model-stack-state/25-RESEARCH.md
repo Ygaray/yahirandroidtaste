@@ -450,11 +450,11 @@ Canary shape list (`V271CallSiteCanaryTest`, package `io.github.ygaray.yahirandr
 | A6 | `DisposableEffect` (set on enter, null on dispose) is the right binding for the scaler | Pattern 5 | Low: `SideEffect` also works; chosen to avoid a leaked reference |
 | A7 | Metalava will list the new data-class `component*`/`get*` members without surprises | api.txt | Low: `apiDump` output is reviewed in the commit; R2 treats them as additions |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Pause plumbing in Phase 25?** Recommendation: no (A2). ROADMAP says the cap/timer "may" live in the state but FSTK-06 is accepted in Phase 26.
-2. **`dismissLabel` unused in the tracer.** Recommendation: accept and document; Phase 26 wires the custom action.
-3. **Should the `ComponentRegistry` KDoc counts be refreshed?** Recommendation: yes if a lane-2 commit is already declared, otherwise leave (no test reads it).
+1. **Pause plumbing in Phase 25?** RESOLVED: no (A2), plan 25-03 defers pause to Phase 26. ROADMAP says the cap/timer "may" live in the state but FSTK-06 is accepted in Phase 26.
+2. **`dismissLabel` unused in the tracer.** RESOLVED: superseded, plan 25-05 wires dismissLabel as the card Dismiss accessibility action.
+3. **Should the `ComponentRegistry` KDoc counts be refreshed?** RESOLVED: leave alone (no test reads them; avoids a second lane-2 commit).
 
 ## Validation Architecture
 
