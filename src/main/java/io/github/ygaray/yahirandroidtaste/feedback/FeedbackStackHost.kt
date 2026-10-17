@@ -29,7 +29,9 @@ internal const val FEEDBACK_STACK_CHEVRON_TEST_TAG = "feedback_stack_chevron"
  * in front and each older card tucks 14dp behind the next newer one, smaller and slightly faded.
  * Tapping a peek strip fans the deck into a column of full cards, oldest on top. The column
  * re-collapses after 4 s without a pointer event, and when one card or none is left. It is capped at
- * 60 percent of the available height minus the keyboard inset, and the cards scroll inside the cap.
+ * the smaller of 60 percent of the available height and what the on-screen keyboard leaves of it
+ * (only the part of the keyboard that covers the host counts), and the cards scroll inside the cap,
+ * newest in view. Handing the host a different state starts it collapsed.
  *
  * **Card.**
  * - A body tap on a card that carries a [FeedbackTarget] resolves the card as

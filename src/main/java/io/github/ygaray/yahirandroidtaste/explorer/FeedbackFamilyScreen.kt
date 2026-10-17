@@ -170,10 +170,10 @@ internal val feedbackFamilyEntries: List<ComponentRegistry.Entry> = listOf(
 )
 
 /**
- * Feedback family (SHOW-01, D-04): a registry-filtered row-list picker for `ConfirmationDialog`
- * and `UndoCenterScreen` (2 rows). `FeedbackEvent` gets no row of its own — it is non-visual
- * infra, not a registered component — but its demo is preserved inside
- * [UndoCenterScreenVariants] (D-02).
+ * Feedback family (SHOW-01, D-04): a registry-filtered row-list picker for `ConfirmationDialog`,
+ * `UndoCenterScreen`, `AttentionCue` and `FeedbackStackHost` (4 rows). `FeedbackEvent` gets no row
+ * of its own — it is non-visual infra, not a registered component — but its demo is preserved
+ * inside [UndoCenterScreenVariants] (D-02).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
