@@ -15,6 +15,7 @@ import io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore
 import io.github.ygaray.yahirandroidtaste.feedback.UndoPreview
 import io.github.ygaray.yahirandroidtaste.feedback.UndoStatus
 import io.github.ygaray.yahirandroidtaste.feedback.emitTrackedWithUndo
+import io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -295,5 +296,25 @@ class V271CallSiteCanaryTest {
         assertNull(titleActions)
         assertNull(start)
         assertNull(end)
+    }
+
+    // ------------------------------------------------------------------------------------------
+    // Phase 27 (FOPEN-02): BatchRowResultUiModel gains an appended `target`
+    // ------------------------------------------------------------------------------------------
+
+    @Test
+    fun batchRow_v271Shapes_keepTheirDefaults() {
+        val two = BatchRowResultUiModel("Oats", true)
+        val three = BatchRowResultUiModel("Milk", false, "not found")
+        val named = BatchRowResultUiModel(label = "Rice", succeeded = false, detail = "gone")
+        val copied = two.copy(label = "x")
+        val (label, succeeded, detail) = three
+
+        listOf(two, three, named, copied).forEach { assertNull(it.target) }
+        assertEquals("x", copied.label)
+        assertEquals("Milk", label)
+        assertEquals(false, succeeded)
+        assertEquals("not found", detail)
+        assertNull(two.detail)
     }
 }
