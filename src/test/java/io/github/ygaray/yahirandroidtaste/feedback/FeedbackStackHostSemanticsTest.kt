@@ -12,6 +12,7 @@ import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.click
+import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
@@ -374,6 +375,72 @@ class FeedbackStackHostSemanticsTest {
         composeTestRule
             .onNodeWithTag(FEEDBACK_STACK_UNDO_TEST_TAG, useUnmergedTree = true)
             .assertDoesNotExist()
+        state.dismissAll()
+    }
+
+    // ---- Plan 26-06: the touch blocker on a collapsed back card is touch-only (A11Y-01 intact) ----
+
+    /** The Undo button of the card holding [message], from the unmerged tree. */
+    private fun undoOf(message: String): SemanticsNodeInteraction = composeTestRule.onNode(
+        hasTestTag(FEEDBACK_STACK_UNDO_TEST_TAG) and hasAnyAncestor(
+            hasTestTag(FEEDBACK_STACK_ITEM_TEST_TAG) and hasAnyDescendant(hasText(message))
+        ),
+        useUnmergedTree = true
+    )
+
+    /** A collapsed two-card deck: "Hinten" with Undo behind a plain "Vorne". */
+    private fun collapsedDeck(
+        state: FeedbackStackState,
+        results: MutableMap<String, FeedbackResult>,
+        undoAction: suspend () -> Unit = {}
+    ) {
+        setHost(state)
+        show(state, withUndo("Hinten", undoAction = undoAction), "Hinten", results)
+        show(state, notify("Vorne"), "Vorne", results)
+        assertFalse(state.pauseState.value.fanned)
+    }
+
+    @Test
+    fun collapsedBackCard_undoChildStaysEnabledAndClickable() {
+        val state = FeedbackStackState()
+        collapsedDeck(state, mutableMapOf())
+
+        val undo = undoOf("Hinten").fetchSemanticsNode()
+        assertNotNull(undo.config.getOrNull(SemanticsActions.OnClick))
+        assertNull("the Undo must not be reported disabled", undo.config.getOrNull(SemanticsProperties.Disabled))
+        assertTrue(isDescendantOf(undo, FEEDBACK_STACK_ITEM_TEST_TAG))
+        assertFalse(state.pauseState.value.fanned)
+        state.dismissAll()
+    }
+
+    @Test
+    fun collapsedBackCard_undoSemanticClick_resolvesUndone_withoutFanning() {
+        val state = FeedbackStackState()
+        val results = mutableMapOf<String, FeedbackResult>()
+        collapsedDeck(state, results)
+
+        undoOf("Hinten").performSemanticsAction(SemanticsActions.OnClick)
+        composeTestRule.waitForIdle()
+
+        assertEquals(FeedbackResult.Undone, results["Hinten"])
+        assertNull(results["Vorne"])
+        assertFalse(state.pauseState.value.fanned)
+        state.dismissAll()
+    }
+
+    @Test
+    fun collapsedBackCard_undoCustomAction_resolvesUndone() {
+        val state = FeedbackStackState()
+        val results = mutableMapOf<String, FeedbackResult>()
+        collapsedDeck(state, results)
+
+        val undo = cardByText("Hinten").fetchSemanticsNode().config[SemanticsActions.CustomActions]
+            .single { it.label == "Rückgängig" }
+        composeTestRule.runOnIdle { undo.action() }
+        composeTestRule.waitForIdle()
+
+        assertEquals(FeedbackResult.Undone, results["Hinten"])
+        assertNull(results["Vorne"])
         state.dismissAll()
     }
 
