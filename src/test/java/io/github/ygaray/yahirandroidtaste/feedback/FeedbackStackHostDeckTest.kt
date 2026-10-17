@@ -15,7 +15,6 @@ import androidx.compose.ui.test.center
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.down
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
-import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
@@ -123,17 +122,6 @@ class FeedbackStackHostDeckTest {
     }
 
     /**
-     * The Undo button of the card holding [message], from the unmerged tree (the merged card hides
-     * it). A back card of a collapsed deck still composes and measures its Undo.
-     */
-    private fun undoOf(message: String): SemanticsNodeInteraction = composeTestRule.onNode(
-        hasTestTag(FEEDBACK_STACK_UNDO_TEST_TAG) and hasAnyAncestor(
-            hasTestTag(FEEDBACK_STACK_ITEM_TEST_TAG) and hasAnyDescendant(hasText(message))
-        ),
-        useUnmergedTree = true
-    )
-
-    /**
      * Shows [event] through the consumer path, `emitTrackedWithUndo`, which is the only path that runs
      * an undo lambda (through the store guard). Records the result under [key].
      */
@@ -166,7 +154,7 @@ class FeedbackStackHostDeckTest {
      */
     private fun undoPointInTheStrip(message: String, aboveUndoTopDp: Float = 0f): Pair<Dp, Dp> {
         val card = card(message).getUnclippedBoundsInRoot()
-        val undo = undoOf(message).getUnclippedBoundsInRoot()
+        val undo = composeTestRule.undoOf(message).getUnclippedBoundsInRoot()
         val stripTop = card.top
         val stripBottom = card.top + FEEDBACK_PEEK_HEIGHT
         val x = (undo.left + undo.right) / 2
@@ -356,7 +344,7 @@ class FeedbackStackHostDeckTest {
         assertEquals(0, undoRuns)
 
         // Fanned: the blocker is gone, so the same Undo takes touch (ROADMAP SC3).
-        undoOf("Back").performClick()
+        composeTestRule.undoOf("Back").performClick()
         composeTestRule.waitForIdle()
 
         assertEquals(FeedbackResult.Undone, results["Back"])
@@ -377,7 +365,7 @@ class FeedbackStackHostDeckTest {
         showTracked(state, store, withUndo("Front") { undoRuns++ }, "Front", results)
         assertFalse(state.pauseState.value.fanned)
 
-        undoOf("Front").performClick()
+        composeTestRule.undoOf("Front").performClick()
         composeTestRule.waitForIdle()
 
         assertEquals(FeedbackResult.Undone, results["Front"])

@@ -12,7 +12,6 @@ import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.click
-import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
@@ -380,14 +379,6 @@ class FeedbackStackHostSemanticsTest {
 
     // ---- Plan 26-06: the touch blocker on a collapsed back card is touch-only (A11Y-01 intact) ----
 
-    /** The Undo button of the card holding [message], from the unmerged tree. */
-    private fun undoOf(message: String): SemanticsNodeInteraction = composeTestRule.onNode(
-        hasTestTag(FEEDBACK_STACK_UNDO_TEST_TAG) and hasAnyAncestor(
-            hasTestTag(FEEDBACK_STACK_ITEM_TEST_TAG) and hasAnyDescendant(hasText(message))
-        ),
-        useUnmergedTree = true
-    )
-
     /** A collapsed two-card deck: "Hinten" with Undo behind a plain "Vorne". */
     private fun collapsedDeck(
         state: FeedbackStackState,
@@ -405,7 +396,7 @@ class FeedbackStackHostSemanticsTest {
         val state = FeedbackStackState()
         collapsedDeck(state, mutableMapOf())
 
-        val undo = undoOf("Hinten").fetchSemanticsNode()
+        val undo = composeTestRule.undoOf("Hinten").fetchSemanticsNode()
         assertNotNull(undo.config.getOrNull(SemanticsActions.OnClick))
         assertNull("the Undo must not be reported disabled", undo.config.getOrNull(SemanticsProperties.Disabled))
         assertTrue(isDescendantOf(undo, FEEDBACK_STACK_ITEM_TEST_TAG))
@@ -419,7 +410,7 @@ class FeedbackStackHostSemanticsTest {
         val results = mutableMapOf<String, FeedbackResult>()
         collapsedDeck(state, results)
 
-        undoOf("Hinten").performSemanticsAction(SemanticsActions.OnClick)
+        composeTestRule.undoOf("Hinten").performSemanticsAction(SemanticsActions.OnClick)
         composeTestRule.waitForIdle()
 
         assertEquals(FeedbackResult.Undone, results["Hinten"])
