@@ -101,3 +101,12 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
   - The hub does NOT write the `osmdroid.additionalHttpRequestProperty.User-Agent` prefs key. SB persists that key in the hub's prefs file; leaving it alone keeps one owner per storage slot.
   - Precedence (pin with a Robolectric test): `load()` restores SB's persisted value, then the hub overwrites it in memory with the resolved caller `userAgent`. The caller param wins; SB passes the same string, so the wire value is identical either way.
   - Test cases: header present after a first and a second `configureOsmdroid` call; a pre-seeded prefs value is overwritten in memory by the caller UA; exactly one User-Agent entry.
+- **POL-03 load() race (teamlead, SB 181.1 review WR-02, 2026-10-17):**
+  - The problem: `load()` on every map creation clears and refills `additionalHttpRequestProperties`, a plain HashMap, while TileDownloader threads iterate it. Two consequences:
+    - A tile fetched in that window goes out with the blocked normalized UA and caches a 7-day placeholder.
+    - The map can throw `ConcurrentModificationException`.
+  - Fix: `configureOsmdroid` calls `load()` at most ONCE per process (an `AtomicBoolean` / synchronized guard in the hub). The UA header is set right after that load, and is re-applied, without a reload, on later calls only if missing or different. No clear or refill ever happens while tiles are in flight.
+  - The "after every load()" rule above still holds (there is now just one load).
+  - Test: a second `configureOsmdroid` (second map creation) neither calls `load()` again nor clears the header, and the header is still the resolved UA.
+  - SB's persisted prefs value is read by that first load, so precedence is unchanged.
+  - Lands as a follow-up task in a later P28 wave or gap plan if 28-01 is already merged.
