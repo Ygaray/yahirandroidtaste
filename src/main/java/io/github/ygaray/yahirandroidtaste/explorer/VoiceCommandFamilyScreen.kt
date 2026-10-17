@@ -656,6 +656,7 @@ private fun OutcomeSheetVariants() {
     }
     ReceiptConfirmHandledByVariant(onShow = { visibleOutcome = null })
     ReceiptOutcomeSheetDemos()
+    GoToItemSheetDemos()
 }
 
 /**

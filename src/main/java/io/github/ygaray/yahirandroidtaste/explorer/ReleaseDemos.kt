@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -816,3 +818,140 @@ private fun receiptFailure(
     secondaryAction = SheetActionUiModel("Dismiss", dismiss, ActionButtonEmphasis.Text),
     badge = badge
 )
+
+// --- Go-to-item OutcomeSheet demos -------------------------------------------------------------------
+
+internal const val DEMO_TAG_GOTO_OPENED = "demo_goto_opened"
+
+/**
+ * One trigger per go-to-item sheet demo (Phase 28, DEMO-03): a Success with one target and a batch
+ * Success with mixed rows, each in the Receipt and the Classic style and in English and German.
+ * [label] and [tag] are the contract the device walkthrough drives.
+ */
+internal enum class GoToItemDemo(
+    val label: String,
+    val tag: String,
+    val german: Boolean,
+    val batch: Boolean,
+    val style: OutcomeSheetStyle
+) {
+    SingleReceipt(
+        "OutcomeSheet Receipt — Success with a target, single",
+        "demo_goto_single_receipt",
+        german = false,
+        batch = false,
+        style = OutcomeSheetStyle.Receipt
+    ),
+    SingleReceiptGerman(
+        "OutcomeSheet Receipt — Success with a target, single, German",
+        "demo_goto_single_receipt_german",
+        german = true,
+        batch = false,
+        style = OutcomeSheetStyle.Receipt
+    ),
+    SingleClassic(
+        "OutcomeSheet Classic — Success with a target, single",
+        "demo_goto_single_classic",
+        german = false,
+        batch = false,
+        style = OutcomeSheetStyle.Classic
+    ),
+    SingleClassicGerman(
+        "OutcomeSheet Classic — Success with a target, single, German",
+        "demo_goto_single_classic_german",
+        german = true,
+        batch = false,
+        style = OutcomeSheetStyle.Classic
+    ),
+    BatchReceipt(
+        "OutcomeSheet Receipt — Success, batch with mixed target rows",
+        "demo_goto_batch_receipt",
+        german = false,
+        batch = true,
+        style = OutcomeSheetStyle.Receipt
+    ),
+    BatchReceiptGerman(
+        "OutcomeSheet Receipt — Success, batch with mixed target rows, German",
+        "demo_goto_batch_receipt_german",
+        german = true,
+        batch = true,
+        style = OutcomeSheetStyle.Receipt
+    ),
+    BatchClassic(
+        "OutcomeSheet Classic — Success, batch with mixed target rows",
+        "demo_goto_batch_classic",
+        german = false,
+        batch = true,
+        style = OutcomeSheetStyle.Classic
+    ),
+    BatchClassicGerman(
+        "OutcomeSheet Classic — Success, batch with mixed target rows, German",
+        "demo_goto_batch_classic_german",
+        german = true,
+        batch = true,
+        style = OutcomeSheetStyle.Classic
+    )
+}
+
+/**
+ * The go-to-item sheet demos. They own ONE slot and their own hoisted sheet state, separate from the
+ * other sheet demos on the page, so no two sheets ever stack (WR-01). The library never hides the
+ * sheet and never navigates (D-05), so the demo's `onOpenTarget` slides the sheet down with `hide()`
+ * and records the opened key only after the slide finished: the hide-then-navigate order the KDoc
+ * recommends. The readout outside the sheet stands in for the navigation.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun GoToItemSheetDemos() {
+    var shown by remember { mutableStateOf<GoToItemDemo?>(null) }
+    var readout by remember { mutableStateOf("Opened: none") }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+
+    SectionLabel("OutcomeSheet — go-to-item rows (tap a row: the sheet slides down, then the key is read)")
+    Text(
+        text = readout,
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier.padding(horizontal = 16.dp).testTag(DEMO_TAG_GOTO_OPENED)
+    )
+    GoToItemDemo.entries.forEach { demo ->
+        SectionLabel(demo.label)
+        Button(
+            onClick = { shown = demo },
+            modifier = Modifier.padding(horizontal = 16.dp).testTag(demo.tag)
+        ) { Text("Show sheet") }
+    }
+    shown?.let { demo ->
+        val slideDown: () -> Unit = {
+            scope.launch { sheetState.hide() }.invokeOnCompletion { shown = null }
+        }
+        HubSchemeScope {
+            OutcomeSheet(
+                outcome = goToItemOutcome(demo, slideDown),
+                onDismissRequest = { shown = null },
+                style = demo.style,
+                sheetState = sheetState,
+                onOpenTarget = { target ->
+                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                        shown = null
+                        readout = "${localized(demo.german, "Opened", "Geöffnet")}: ${target.key}"
+                    }
+                }
+            )
+        }
+    }
+}
+
+/** The outcome of [demo]; [dismiss] slides the sheet down. */
+internal fun goToItemOutcome(demo: GoToItemDemo, dismiss: () -> Unit): VoiceOutcomeUiState.Success =
+    goToItemSingleOutcome(demo.german, dismiss)
+
+private fun goToItemSingleOutcome(german: Boolean, dismiss: () -> Unit): VoiceOutcomeUiState.Success =
+    VoiceOutcomeUiState.Success(
+        summary = localized(german, "Saved 1 item", "1 Eintrag gespeichert"),
+        badge = OutcomeBadge.Success,
+        endAction = SheetActionUiModel(localized(german, "Done", "Fertig"), dismiss, ActionButtonEmphasis.Filled),
+        target = openTarget(german, "demo-item-1"),
+        targetLabel = localized(german, "Item A", "Eintrag A"),
+        targetDetail = localized(german, "List, 3 items", "Liste, 3 Einträge")
+    )
