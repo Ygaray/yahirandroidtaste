@@ -15,6 +15,7 @@ import androidx.compose.ui.test.center
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.down
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
+import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
@@ -26,6 +27,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.up
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.height
 import kotlinx.coroutines.CoroutineScope
@@ -120,6 +122,81 @@ class FeedbackStackHostDeckTest {
         composeTestRule.waitForIdle()
     }
 
+    /**
+     * The Undo button of the card holding [message], from the unmerged tree (the merged card hides
+     * it). A back card of a collapsed deck still composes and measures its Undo.
+     */
+    private fun undoOf(message: String): SemanticsNodeInteraction = composeTestRule.onNode(
+        hasTestTag(FEEDBACK_STACK_UNDO_TEST_TAG) and hasAnyAncestor(
+            hasTestTag(FEEDBACK_STACK_ITEM_TEST_TAG) and hasAnyDescendant(hasText(message))
+        ),
+        useUnmergedTree = true
+    )
+
+    /**
+     * Shows [event] through the consumer path, `emitTrackedWithUndo`, which is the only path that runs
+     * an undo lambda (through the store guard). Records the result under [key].
+     */
+    private fun showTracked(
+        state: FeedbackStackState,
+        store: UndoHistoryStore,
+        event: FeedbackEvent.WithUndo,
+        key: String,
+        results: MutableMap<String, FeedbackResult>
+    ) {
+        scope.launch { results[key] = state.emitTrackedWithUndo(store, event) }
+        composeTestRule.waitForIdle()
+    }
+
+    /**
+     * The root-space tap point (x, y) over the Undo of the back card holding [message], inside that
+     * card's visible 14dp strip.
+     *
+     * Why this exists: [tapStrip] clicks the strip at its horizontal centre, 4dp down, which never
+     * lands on an Undo, so it was blind to the Gate-1 SC3 defect. The device run measured the strip
+     * at `[54,1961][1026,2000]` px and a clickable Undo sliver at `[356,1972][509,2000]` px inside it,
+     * and a tap at x 430 ran Undo instead of fanning the deck.
+     *
+     * With [aboveUndoTopDp] at 0 the point is the middle of the overlap between the Undo's bounds and
+     * the strip, and the helper fails loudly if the two overlap by 2dp or less, so a moved geometry can
+     * never turn the test vacuous. Above 0 the point sits up to that many dp above the Undo's top,
+     * the band only Compose's touch-slop widening of the button reaches; it is clamped to 0.5dp
+     * inside the strip's top edge, because the node's bounds already start close to the card's top
+     * (1.9dp in Robolectric), and the helper asserts the point stays above the Undo's bounds.
+     */
+    private fun undoPointInTheStrip(message: String, aboveUndoTopDp: Float = 0f): Pair<Dp, Dp> {
+        val card = card(message).getUnclippedBoundsInRoot()
+        val undo = undoOf(message).getUnclippedBoundsInRoot()
+        val stripTop = card.top
+        val stripBottom = card.top + FEEDBACK_PEEK_HEIGHT
+        val x = (undo.left + undo.right) / 2
+        val y = if (aboveUndoTopDp == 0f) {
+            val overlapTop = maxOf(undo.top, stripTop)
+            val overlapBottom = minOf(undo.bottom, stripBottom)
+            assertTrue(
+                "the Undo ($undo) must overlap the strip [$stripTop, $stripBottom] by more than 2dp",
+                (overlapBottom - overlapTop).value > 2f
+            )
+            (overlapTop + overlapBottom) / 2
+        } else {
+            val band = maxOf(undo.top - aboveUndoTopDp.dp, stripTop + 0.5.dp)
+            assertTrue("the band point $band must lie above the Undo's bounds ($undo)", band < undo.top)
+            band
+        }
+        assertTrue(
+            "the tap point $y must lie inside the strip [$stripTop, $stripBottom]",
+            y >= stripTop && y < stripBottom
+        )
+        return x to y
+    }
+
+    /** A real click at [undoPointInTheStrip], issued at the root so it hits whatever is topmost there. */
+    private fun tapOverTheUndoInTheStrip(message: String, aboveUndoTopDp: Float = 0f) {
+        val (x, y) = undoPointInTheStrip(message, aboveUndoTopDp)
+        composeTestRule.onRoot().performTouchInput { click(Offset(x.toPx(), y.toPx())) }
+        composeTestRule.waitForIdle()
+    }
+
     private fun flatten(node: SemanticsNode): List<SemanticsNode> =
         listOf(node) + node.children.flatMap { flatten(it) }
 
@@ -176,6 +253,162 @@ class FeedbackStackHostDeckTest {
         assertTrue((third.top - second.top) >= second.height)
         // The deck is bottom-anchored: the newest card stays on the deck's bottom edge when it grows.
         assertEquals(deck().getUnclippedBoundsInRoot().bottom.value, third.bottom.value, 1f)
+        state.dismissAll()
+    }
+
+    @Test
+    fun peekTapOverTheBackCardsUndo_fansTheDeck_andNeverUndoes() {
+        val state = FeedbackStackState()
+        val store = UndoHistoryStore()
+        val opened = mutableListOf<FeedbackTarget>()
+        val results = mutableMapOf<String, FeedbackResult>()
+        var undoRuns = 0
+        setHost(state, opened)
+        showTracked(state, store, withUndo("Back") { undoRuns++ }, "Back", results)
+        show(state, notify("Front"), "Front", results)
+        assertFalse(state.pauseState.value.fanned)
+
+        tapOverTheUndoInTheStrip("Back")
+
+        assertTrue("the peek tap over the Undo must fan the deck", state.pauseState.value.fanned)
+        assertTrue("no card may resolve: $results", results.isEmpty())
+        assertEquals("the Undo must not run", 0, undoRuns)
+        assertEquals(UndoStatus.Available, store.entries.value.single().status)
+        assertTrue(opened.isEmpty())
+        state.dismissAll()
+    }
+
+    @Test
+    fun peekTapOnTheUndosTouchSlopBand_fansTheDeck_andNeverUndoes() {
+        val state = FeedbackStackState()
+        val store = UndoHistoryStore()
+        val results = mutableMapOf<String, FeedbackResult>()
+        var undoRuns = 0
+        setHost(state)
+        showTracked(state, store, withUndo("Back") { undoRuns++ }, "Back", results)
+        show(state, notify("Front"), "Front", results)
+
+        // 2dp above the Undo's layout top: only the touch-slop widening of the button reaches here.
+        tapOverTheUndoInTheStrip("Back", aboveUndoTopDp = 2f)
+
+        assertTrue(state.pauseState.value.fanned)
+        assertTrue("no card may resolve: $results", results.isEmpty())
+        assertEquals(0, undoRuns)
+        assertEquals(UndoStatus.Available, store.entries.value.single().status)
+        state.dismissAll()
+    }
+
+    @Test
+    fun threeCardDeck_peekTapOverTheMiddleCardsUndo_fansTheDeck_andNeverUndoes() {
+        val state = FeedbackStackState()
+        val store = UndoHistoryStore()
+        val results = mutableMapOf<String, FeedbackResult>()
+        var undoRuns = 0
+        setHost(state)
+        show(state, notify("Oldest", withTarget = false), "Oldest", results)
+        showTracked(state, store, withUndo("Middle") { undoRuns++ }, "Middle", results)
+        show(state, notify("Newest", withTarget = false), "Newest", results)
+        assertFalse(state.pauseState.value.fanned)
+
+        tapOverTheUndoInTheStrip("Middle")
+
+        assertTrue(state.pauseState.value.fanned)
+        assertTrue("no card may resolve: $results", results.isEmpty())
+        assertEquals(0, undoRuns)
+        assertEquals(UndoStatus.Available, store.entries.value.single().status)
+        state.dismissAll()
+    }
+
+    @Test
+    fun threeCardDeck_peekTapOverTheDeepestCardsUndo_fansTheDeck_andNeverUndoes() {
+        val state = FeedbackStackState()
+        val store = UndoHistoryStore()
+        val results = mutableMapOf<String, FeedbackResult>()
+        var undoRuns = 0
+        setHost(state)
+        // The deepest card's strip is the top 14dp of the deck; the Middle card covers the rest of it.
+        showTracked(state, store, withUndo("Oldest") { undoRuns++ }, "Oldest", results)
+        show(state, notify("Middle", withTarget = false), "Middle", results)
+        show(state, notify("Newest", withTarget = false), "Newest", results)
+        assertFalse(state.pauseState.value.fanned)
+
+        tapOverTheUndoInTheStrip("Oldest")
+
+        assertTrue(state.pauseState.value.fanned)
+        assertTrue("no card may resolve: $results", results.isEmpty())
+        assertEquals(0, undoRuns)
+        assertEquals(UndoStatus.Available, store.entries.value.single().status)
+        state.dismissAll()
+    }
+
+    @Test
+    fun afterTheFan_theBackCardsUndo_respondsToTouchAgain() {
+        val state = FeedbackStackState()
+        val store = UndoHistoryStore()
+        val results = mutableMapOf<String, FeedbackResult>()
+        var undoRuns = 0
+        setHost(state)
+        showTracked(state, store, withUndo("Back") { undoRuns++ }, "Back", results)
+        show(state, notify("Front"), "Front", results)
+
+        tapOverTheUndoInTheStrip("Back")
+        assertTrue(state.pauseState.value.fanned)
+        assertEquals(0, undoRuns)
+
+        // Fanned: the blocker is gone, so the same Undo takes touch (ROADMAP SC3).
+        undoOf("Back").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(FeedbackResult.Undone, results["Back"])
+        assertNull(results["Front"])
+        assertEquals(1, undoRuns)
+        assertEquals(UndoStatus.Undone, store.entries.value.single().status)
+        state.dismissAll()
+    }
+
+    @Test
+    fun collapsedFrontCardsUndo_stillRespondsToTouch() {
+        val state = FeedbackStackState()
+        val store = UndoHistoryStore()
+        val results = mutableMapOf<String, FeedbackResult>()
+        var undoRuns = 0
+        setHost(state)
+        show(state, notify("Back"), "Back", results)
+        showTracked(state, store, withUndo("Front") { undoRuns++ }, "Front", results)
+        assertFalse(state.pauseState.value.fanned)
+
+        undoOf("Front").performClick()
+        composeTestRule.waitForIdle()
+
+        assertEquals(FeedbackResult.Undone, results["Front"])
+        assertNull(results["Back"])
+        assertEquals(1, undoRuns)
+        assertFalse("the front card's Undo must not fan the deck", state.pauseState.value.fanned)
+        state.dismissAll()
+    }
+
+    @Test
+    fun dragStartingOverTheBackCardsUndo_neitherFansNorUndoes() {
+        val state = FeedbackStackState()
+        val store = UndoHistoryStore()
+        val results = mutableMapOf<String, FeedbackResult>()
+        var undoRuns = 0
+        setHost(state)
+        showTracked(state, store, withUndo("Back") { undoRuns++ }, "Back", results)
+        show(state, notify("Front"), "Front", results)
+        val (x, y) = undoPointInTheStrip("Back")
+
+        composeTestRule.onRoot().performTouchInput {
+            down(Offset(x.toPx(), y.toPx()))
+            moveBy(Offset(viewConfiguration.touchSlop * 4f, 0f))
+            up()
+        }
+        composeTestRule.waitForIdle()
+
+        assertFalse(state.pauseState.value.fanned)
+        assertTrue("no card may resolve: $results", results.isEmpty())
+        assertEquals(0, undoRuns)
+        assertEquals(UndoStatus.Available, store.entries.value.single().status)
         state.dismissAll()
     }
 
