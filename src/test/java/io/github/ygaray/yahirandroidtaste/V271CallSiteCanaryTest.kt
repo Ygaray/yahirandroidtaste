@@ -10,6 +10,7 @@ import io.github.ygaray.yahirandroidtaste.component.OutcomeSheet
 import io.github.ygaray.yahirandroidtaste.component.OutcomeSheetDefaults
 import io.github.ygaray.yahirandroidtaste.component.OutcomeSheetStyle
 import io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent
+import io.github.ygaray.yahirandroidtaste.feedback.UndoCenterScreen
 import io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry
 import io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore
 import io.github.ygaray.yahirandroidtaste.feedback.UndoPreview
@@ -316,5 +317,68 @@ class V271CallSiteCanaryTest {
         assertEquals(false, succeeded)
         assertEquals("not found", detail)
         assertNull(two.detail)
+    }
+
+    // ------------------------------------------------------------------------------------------
+    // Phase 27 (FOPEN-03): UndoCenterScreen gains a second overload with a required onOpenTarget
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Every v2.7.1 call shape of [UndoCenterScreen] still binds to the old overload (compile-only:
+     * the lambdas are never invoked), while a call that names `onOpenTarget` binds to the new one.
+     * The positional four-argument shape is intentionally excluded, as in
+     * UndoCenterScreenSourceCompatV251Test: it no longer compiles since `groups` and `onUndoGroup`
+     * sit before the trailing `onClear`.
+     */
+    @Test
+    fun undoCenterScreen_v271Shapes_bindToTheOldOverload_andOnOpenTargetBindsToTheNewOne() {
+        val allNamed: @Composable () -> Unit = {
+            UndoCenterScreen(entries = emptyList(), onNavigateBack = {}, onUndo = { _ -> }, onClear = {})
+        }
+        val trailingLambda: @Composable () -> Unit = {
+            UndoCenterScreen(entries = emptyList(), onNavigateBack = {}, onUndo = { _ -> }) {}
+        }
+        val groupsAllNamed: @Composable () -> Unit = {
+            UndoCenterScreen(
+                entries = emptyList(),
+                onNavigateBack = {},
+                onUndo = { _ -> },
+                groups = emptyList(),
+                onUndoGroup = { _ -> },
+                onClear = {}
+            )
+        }
+        val groupsTrailingLambda: @Composable () -> Unit = {
+            UndoCenterScreen(
+                entries = emptyList(),
+                onNavigateBack = {},
+                onUndo = { _ -> },
+                groups = emptyList(),
+                onUndoGroup = null
+            ) {}
+        }
+        val openAllNamed: @Composable () -> Unit = {
+            UndoCenterScreen(
+                entries = emptyList(),
+                onNavigateBack = {},
+                onUndo = { _ -> },
+                onOpenTarget = { _ -> },
+                onClear = {}
+            )
+        }
+        val openTrailingClear: @Composable () -> Unit = {
+            UndoCenterScreen(
+                entries = emptyList(),
+                onNavigateBack = {},
+                onUndo = { _ -> },
+                groups = emptyList(),
+                onUndoGroup = null,
+                onOpenTarget = { _ -> }
+            ) {}
+        }
+        val shapes = listOf(
+            allNamed, trailingLambda, groupsAllNamed, groupsTrailingLambda, openAllNamed, openTrailingClear
+        )
+        assertTrue(shapes.isNotEmpty())
     }
 }
