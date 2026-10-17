@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -16,7 +17,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.testTag
@@ -31,11 +34,16 @@ import io.github.ygaray.yahirandroidtaste.component.ReceiptRow
 import io.github.ygaray.yahirandroidtaste.component.SegmentedOptionSelector
 import io.github.ygaray.yahirandroidtaste.component.SegmentedOptionStyle
 import io.github.ygaray.yahirandroidtaste.component.ToneCard
+import io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent
+import io.github.ygaray.yahirandroidtaste.feedback.FeedbackResult
+import io.github.ygaray.yahirandroidtaste.feedback.FeedbackStackHost
+import io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget
 import io.github.ygaray.yahirandroidtaste.feedback.UndoCenterScreen
 import io.github.ygaray.yahirandroidtaste.feedback.UndoGroupRowUiModel
 import io.github.ygaray.yahirandroidtaste.feedback.UndoGroupStatus
 import io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry
 import io.github.ygaray.yahirandroidtaste.feedback.UndoStatus
+import io.github.ygaray.yahirandroidtaste.feedback.rememberFeedbackStackState
 import io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel
 import io.github.ygaray.yahirandroidtaste.model.FailureActionUiModel
 import io.github.ygaray.yahirandroidtaste.model.FailureTone
@@ -54,6 +62,8 @@ import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import io.github.ygaray.yahirandroidtaste.theme.ContentTone
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import io.github.ygaray.yahirandroidtaste.theme.ToneDefaults
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /*
  * v2.6.0 release demos (Phase 24, DEMO-01). Explorer-only: this package is drift-guard denylisted,
@@ -69,6 +79,20 @@ internal const val DEMO_TAG_UNDO_GROUPS = "demo_undo_groups"
 internal const val DEMO_TAG_UNDO_GROUPS_GERMAN = "demo_undo_groups_german"
 internal const val DEMO_TAG_COUNT_EDITOR = "demo_count_editor"
 internal const val DEMO_TAG_MARK_CHECKED = "demo_mark_checked"
+internal const val DEMO_TAG_FEEDBACK_STACK = "demo_feedback_stack"
+internal const val DEMO_TAG_FEEDBACK_STACK_GERMAN = "demo_feedback_stack_german"
+internal const val DEMO_TAG_FEEDBACK_STACK_NOTE = "demo_feedback_note"
+internal const val DEMO_TAG_FEEDBACK_STACK_NOTE_UNDO = "demo_feedback_note_undo"
+internal const val DEMO_TAG_FEEDBACK_STACK_PLAIN = "demo_feedback_plain"
+internal const val DEMO_TAG_FEEDBACK_STACK_BURST = "demo_feedback_burst"
+internal const val DEMO_TAG_FEEDBACK_STACK_SHORT = "demo_feedback_short"
+internal const val DEMO_TAG_FEEDBACK_STACK_LONG = "demo_feedback_long"
+internal const val DEMO_TAG_FEEDBACK_STACK_DISMISS_ALL = "demo_feedback_dismiss_all"
+internal const val DEMO_TAG_UNDO_TARGETS = "demo_undo_targets"
+internal const val DEMO_TAG_UNDO_TARGETS_GERMAN = "demo_undo_targets_german"
+internal const val DEMO_TAG_UNDO_TARGETS_OPENED = "demo_undo_targets_opened"
+internal const val DEMO_TAG_FEEDBACK_STACK_RESULT = "demo_feedback_result"
+internal const val DEMO_TAG_FEEDBACK_STACK_OPENED = "demo_feedback_opened"
 
 // --- ProviderKeyCard key lifecycle ---------------------------------------------------------------
 
@@ -276,6 +300,244 @@ private fun demoGroup(
         memberIds = memberIds,
         status = status,
         undoAllLabel = undoAllLabel
+    )
+}
+
+// --- FeedbackStackHost stage ---------------------------------------------------------------------
+
+/**
+ * Stage height: above the 320dp floor that lets the 60 percent fan cap, a burst past the cap and a
+ * swipe all be exercised (28-RESEARCH Pitfall 7).
+ */
+private val FEEDBACK_STAGE_HEIGHT = 360.dp
+
+/** One string per language; the English and German copy sit side by side so one edit changes both. */
+private fun localized(german: Boolean, en: String, de: String): String = if (german) de else en
+
+private fun resultWord(german: Boolean, result: FeedbackResult?): String = when (result) {
+    null -> localized(german, "none", "keins")
+    FeedbackResult.Opened -> localized(german, "Opened", "Geöffnet")
+    FeedbackResult.Undone -> localized(german, "Undone", "Rückgängig gemacht")
+    FeedbackResult.Dismissed -> localized(german, "Dismissed", "Verworfen")
+    FeedbackResult.TimedOut -> localized(german, "TimedOut", "Abgelaufen")
+}
+
+/** Gap between the cards of the "Burst x4" button. */
+private const val BURST_SPACING_MILLIS = 350L
+
+private fun openTarget(german: Boolean, key: String) =
+    FeedbackTarget(key, localized(german, "Open item", "Eintrag öffnen"))
+
+private fun noteEvent(german: Boolean): FeedbackEvent = FeedbackEvent.Notify(
+    message = localized(german, "Item saved", "Eintrag gespeichert und abgelegt"),
+    duration = SnackbarDuration.Indefinite,
+    target = openTarget(german, "demo-note"),
+    supportingText = localized(german, "Draft", "Entwurf")
+)
+
+private fun undoNoteEvent(german: Boolean): FeedbackEvent = FeedbackEvent.WithUndo(
+    message = localized(german, "Item deleted", "Eintrag gelöscht und archiviert"),
+    undoAction = {},
+    duration = SnackbarDuration.Indefinite,
+    target = openTarget(german, "demo-undo")
+)
+
+private fun plainNoteEvent(german: Boolean): FeedbackEvent = FeedbackEvent.Notify(
+    message = localized(german, "Plain note", "Einfacher Hinweis ohne Ziel"),
+    duration = SnackbarDuration.Indefinite
+)
+
+private fun shortNoteEvent(german: Boolean): FeedbackEvent = FeedbackEvent.Notify(
+    message = localized(german, "Short note", "Kurzer Hinweis mit Ziel"),
+    duration = SnackbarDuration.Short,
+    target = openTarget(german, "demo-short")
+)
+
+private fun longNoteEvent(german: Boolean): FeedbackEvent = FeedbackEvent.WithUndo(
+    message = localized(german, "Long note", "Langer Hinweis mit Rückgängig"),
+    undoAction = {},
+    duration = SnackbarDuration.Long,
+    target = openTarget(german, "demo-long")
+)
+
+/** The four Indefinite events of "Burst x4": a targeted note, one with Undo, a plain note, a target. */
+private fun burstEvents(german: Boolean): List<FeedbackEvent> = listOf(
+    FeedbackEvent.Notify(
+        message = localized(german, "Burst one", "Serie eins: Eintrag aktualisiert"),
+        duration = SnackbarDuration.Indefinite,
+        target = openTarget(german, "demo-burst-1"),
+        supportingText = localized(german, "Second line", "Zweite Zeile")
+    ),
+    FeedbackEvent.WithUndo(
+        message = localized(german, "Burst two", "Serie zwei: Eintrag entfernt"),
+        undoAction = {},
+        duration = SnackbarDuration.Indefinite,
+        target = openTarget(german, "demo-burst-2")
+    ),
+    FeedbackEvent.Notify(
+        message = localized(german, "Burst three", "Serie drei: Hinweis ohne Ziel"),
+        duration = SnackbarDuration.Indefinite
+    ),
+    FeedbackEvent.Notify(
+        message = localized(german, "Burst four", "Serie vier: Eintrag geändert und gespeichert"),
+        duration = SnackbarDuration.Indefinite,
+        target = openTarget(german, "demo-burst-4")
+    )
+)
+
+/**
+ * The English and the German stacked-snackbar stage. Each stage owns its own [rememberFeedbackStackState],
+ * so the two never share cards. Buttons push cards through `state.show`, the host renders the deck in a
+ * fixed-height box, and the last result and opened key show as text. A plain `show` only reports Undone;
+ * it never runs an undo lambda.
+ */
+@Composable
+internal fun FeedbackStackStageDemos() {
+    SectionLabel("FeedbackStackHost — push cards, tap the body or Undo")
+    FeedbackStackStageDemo(german = false, tag = DEMO_TAG_FEEDBACK_STACK)
+    SectionLabel("FeedbackStackHost — German labels (Rückgängig, Verwerfen, Eintrag öffnen)")
+    FeedbackStackStageDemo(german = true, tag = DEMO_TAG_FEEDBACK_STACK_GERMAN)
+}
+
+@Composable
+private fun FeedbackStackStageDemo(german: Boolean, tag: String) {
+    val state = rememberFeedbackStackState()
+    val scope = rememberCoroutineScope()
+    var lastResult by remember { mutableStateOf<FeedbackResult?>(null) }
+    var lastOpened by remember { mutableStateOf<String?>(null) }
+
+    fun push(event: FeedbackEvent) {
+        scope.launch { lastResult = state.show(event) }
+    }
+
+    Column(modifier = Modifier.fillMaxWidth().testTag(tag)) {
+        StageButton(localized(german, "Note with target", "Hinweis mit Ziel"), DEMO_TAG_FEEDBACK_STACK_NOTE) {
+            push(noteEvent(german))
+        }
+        StageButton(
+            localized(german, "Note with Undo and target", "Hinweis mit Rückgängig und Ziel"),
+            DEMO_TAG_FEEDBACK_STACK_NOTE_UNDO
+        ) { push(undoNoteEvent(german)) }
+        StageButton(localized(german, "Plain note", "Einfacher Hinweis"), DEMO_TAG_FEEDBACK_STACK_PLAIN) {
+            push(plainNoteEvent(german))
+        }
+        StageButton(localized(german, "Burst x4", "Serie x4"), DEMO_TAG_FEEDBACK_STACK_BURST) {
+            // Four Indefinite cards 350 ms apart: the 4th arrival evicts the oldest, so the deck, the
+            // fan and the swipe can be exercised without a timer racing the tester.
+            scope.launch {
+                burstEvents(german).forEachIndexed { index, event ->
+                    if (index > 0) delay(BURST_SPACING_MILLIS)
+                    launch { lastResult = state.show(event) }
+                }
+            }
+        }
+        StageButton(localized(german, "Short note", "Kurzer Hinweis"), DEMO_TAG_FEEDBACK_STACK_SHORT) {
+            push(shortNoteEvent(german))
+        }
+        StageButton(
+            localized(german, "Long note with Undo", "Langer Hinweis mit Rückgängig"),
+            DEMO_TAG_FEEDBACK_STACK_LONG
+        ) { push(longNoteEvent(german)) }
+        StageButton(localized(german, "Dismiss all", "Alle verwerfen"), DEMO_TAG_FEEDBACK_STACK_DISMISS_ALL) {
+            state.dismissAll()
+        }
+        Text(
+            text = localized(german, "Last result: ", "Letztes Ergebnis: ") + resultWord(german, lastResult),
+            modifier = Modifier.padding(horizontal = 16.dp).testTag(DEMO_TAG_FEEDBACK_STACK_RESULT)
+        )
+        Text(
+            text = localized(german, "Opened: ", "Geöffnet: ") + (lastOpened ?: resultWord(german, null)),
+            modifier = Modifier.padding(horizontal = 16.dp).testTag(DEMO_TAG_FEEDBACK_STACK_OPENED)
+        )
+        Box(modifier = Modifier.fillMaxWidth().height(FEEDBACK_STAGE_HEIGHT).padding(horizontal = 16.dp)) {
+            FeedbackStackHost(
+                state = state,
+                onOpenTarget = { lastOpened = it.key },
+                modifier = Modifier.align(Alignment.BottomCenter),
+                undoLabel = localized(german, "Undo", "Rückgängig"),
+                dismissLabel = localized(german, "Dismiss", "Verwerfen")
+            )
+        }
+    }
+}
+
+@Composable
+private fun StageButton(label: String, tag: String, onClick: () -> Unit) {
+    Button(onClick = onClick, modifier = Modifier.padding(horizontal = 16.dp).testTag(tag)) { Text(label) }
+}
+
+// --- Undo Center go-to-item rows -----------------------------------------------------------------
+
+private const val UNDO_TARGETS_ROW_A = "demo-row-a"
+private const val UNDO_TARGETS_ROW_B = "demo-row-b"
+private const val UNDO_TARGETS_ROW_C = "demo-row-c"
+
+/**
+ * The English and the German Undo Center with go-to-item rows: row A is Available with a target (opens),
+ * row B is Available without one (does not) and row C is Undone and keeps its target (does not open
+ * either). Pressing Undo on row A makes it lose its chevron and its click action.
+ */
+@Composable
+internal fun UndoCenterTargetRowsDemos() {
+    SectionLabel("UndoCenterScreen — go-to-item rows (tap an Available row with a target)")
+    UndoCenterTargetRowsDemo(german = false, tag = DEMO_TAG_UNDO_TARGETS)
+    SectionLabel("UndoCenterScreen — go-to-item rows, German labels")
+    UndoCenterTargetRowsDemo(german = true, tag = DEMO_TAG_UNDO_TARGETS_GERMAN)
+}
+
+@Composable
+private fun UndoCenterTargetRowsDemo(german: Boolean, tag: String) {
+    var entries by remember { mutableStateOf(demoTargetEntries(german)) }
+    var opened by remember { mutableStateOf<String?>(null) }
+    Column(modifier = Modifier.fillMaxWidth().testTag(tag)) {
+        Text(
+            text = localized(german, "Opened: ", "Geöffnet: ") + (opened ?: resultWord(german, null)),
+            modifier = Modifier.padding(horizontal = 16.dp).testTag(DEMO_TAG_UNDO_TARGETS_OPENED)
+        )
+        Box(modifier = Modifier.fillMaxWidth().height(UNDO_TARGETS_HEIGHT)) {
+            UndoCenterScreen(
+                entries = entries,
+                onNavigateBack = {},
+                onUndo = { id -> entries = entries.map { if (it.id == id) it.withStatus(UndoStatus.Undone) else it } },
+                onOpenTarget = { opened = it.key },
+                onClear = { entries = entries.filter { it.status == UndoStatus.Available } }
+            )
+        }
+    }
+}
+
+private val UNDO_TARGETS_HEIGHT = 460.dp
+
+/** Three rows in input order: A opens, B has no target, C is Undone (a spent entry never opens). */
+private fun demoTargetEntries(german: Boolean): List<UndoHistoryEntry> {
+    val now = System.currentTimeMillis()
+    fun entry(id: String, message: String, status: UndoStatus, target: FeedbackTarget?) = UndoHistoryEntry(
+        id = id,
+        message = message,
+        timestamp = now,
+        undoAction = {},
+        status = status,
+        target = target
+    )
+    return listOf(
+        entry(
+            UNDO_TARGETS_ROW_A,
+            localized(german, "Changed item A", "Eintrag A geändert"),
+            UndoStatus.Available,
+            FeedbackTarget(UNDO_TARGETS_ROW_A, localized(german, "Open item A", "Eintrag A öffnen"))
+        ),
+        entry(
+            UNDO_TARGETS_ROW_B,
+            localized(german, "Renamed item B", "Eintrag B umbenannt"),
+            UndoStatus.Available,
+            null
+        ),
+        entry(
+            UNDO_TARGETS_ROW_C,
+            localized(german, "Moved item C", "Eintrag C verschoben"),
+            UndoStatus.Undone,
+            FeedbackTarget(UNDO_TARGETS_ROW_C, localized(german, "Open item C", "Eintrag C öffnen"))
+        )
     )
 }
 
