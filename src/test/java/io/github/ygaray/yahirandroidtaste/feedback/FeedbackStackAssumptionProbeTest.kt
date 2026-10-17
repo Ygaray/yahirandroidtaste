@@ -53,7 +53,8 @@ private enum class ProbeAnchor { Start, Settled, End }
 /**
  * Wave 0 probes for phase 26: Compose platform behavior the deck relies on, pinned as
  * characterization tests and kept as a canary for a future BOM bump. These test Compose, not
- * library code. Plans 26-02 to 26-05 read the list below as their branch input.
+ * library code: a failure here after a BOM bump means a Compose behavior changed, not that the
+ * library regressed, so re-read the recorded outcomes below before touching library code. Plans 26-02 to 26-05 read the list below as their branch input.
  *
  * Recorded outcomes (Compose BOM 2026.04.01, Robolectric sdk 35, density 1.0, touch slop 16 px):
  *

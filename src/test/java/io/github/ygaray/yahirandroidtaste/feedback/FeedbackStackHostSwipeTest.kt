@@ -24,6 +24,7 @@ import androidx.compose.ui.test.up
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -443,21 +444,27 @@ class FeedbackStackHostSwipeTest {
         val state = FeedbackStackState()
         val results = mutableMapOf<String, FeedbackResult>()
         val early = CoroutineScope(Dispatchers.Unconfined)
-        early.launch { results["Early"] = state.show(notify("Early")) }
-        assertEquals(1, state.items.size)
+        try {
+            early.launch { results["Early"] = state.show(notify("Early")) }
+            assertEquals(1, state.items.size)
 
-        composeTestRule.mainClock.autoAdvance = false
-        composeTestRule.setContent {
-            scope = rememberCoroutineScope()
-            FeedbackStackHost(state = state, onOpenTarget = { })
+            composeTestRule.mainClock.autoAdvance = false
+            composeTestRule.setContent {
+                scope = rememberCoroutineScope()
+                FeedbackStackHost(state = state, onOpenTarget = { })
+            }
+            repeat(5) { composeTestRule.mainClock.advanceTimeByFrame() }
+            composeTestRule.mainClock.autoAdvance = true
+            composeTestRule.waitForIdle()
+
+            card("Early").assertExists()
+            assertTrue(results.isEmpty())
+        } finally {
+            // Resolve the card and stop the scope even when an assertion above failed, so the
+            // pending show() coroutine cannot leak into a later test.
+            state.dismissAll()
+            early.cancel()
         }
-        repeat(5) { composeTestRule.mainClock.advanceTimeByFrame() }
-        composeTestRule.mainClock.autoAdvance = true
-        composeTestRule.waitForIdle()
-
-        card("Early").assertExists()
-        assertTrue(results.isEmpty())
-        state.dismissAll()
     }
 
     @Test
