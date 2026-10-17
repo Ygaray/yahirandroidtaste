@@ -3,6 +3,7 @@ package io.github.ygaray.yahirandroidtaste.feedback
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /**
@@ -88,3 +89,20 @@ internal fun feedbackLerp(start: Int, stop: Int, fraction: Float): Int =
 /** Linear interpolation of two floats by [fraction]. */
 internal fun feedbackLerp(start: Float, stop: Float, fraction: Float): Float =
     start + (stop - start) * fraction
+
+/** How far a card must be dragged sideways before releasing it dismisses it. */
+internal val FEEDBACK_SWIPE_THRESHOLD: Dp = 72.dp
+
+/** Alpha a swiped card fades to when it has travelled a full width. */
+private const val FEEDBACK_SWIPE_MIN_ALPHA = 0.2f
+
+/**
+ * Alpha of a card displaced by [offsetPx] sideways in a [widthPx] wide row: 1 at rest, falling
+ * linearly to 0.2 at a full width and never below it (the mock's `max(.2, 1 - |dx|/width)`). A zero,
+ * negative or NaN width, or a NaN offset, gives 1 so a card is never hidden by a bad measurement.
+ */
+internal fun feedbackSwipeAlpha(offsetPx: Float, widthPx: Float): Float {
+    if (offsetPx.isNaN() || widthPx.isNaN() || widthPx <= 0f) return 1f
+    val travelled = (abs(offsetPx) / widthPx).coerceIn(0f, 1f)
+    return 1f - (1f - FEEDBACK_SWIPE_MIN_ALPHA) * travelled
+}

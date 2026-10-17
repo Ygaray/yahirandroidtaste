@@ -1,6 +1,11 @@
 package io.github.ygaray.yahirandroidtaste.feedback
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.AnchoredDraggableDefaults
+import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.foundation.gestures.DraggableAnchors
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.anchoredDraggable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -19,13 +24,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.Role
@@ -40,6 +50,7 @@ import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
 import io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis
 import io.github.ygaray.yahirandroidtaste.component.DynamicActionButton
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
+import kotlinx.coroutines.flow.first
 
 /** Test tag on a card's 8dp tone dot. */
 internal const val FEEDBACK_STACK_DOT_TEST_TAG = "feedback_stack_dot"
@@ -81,7 +92,30 @@ internal fun FeedbackCard(
     val latestCollapsedBack by rememberUpdatedState(collapsedBack)
     val latestOpenTarget by rememberUpdatedState(openTarget)
     val travel = remember { PressTravel() }
-    Surface(
+    val density = LocalDensity.current
+    // Seeded with the Settled anchor so the offset is a number from the very first frame; the Start
+    // and End anchors arrive once the width is measured. Remembered per item id, so a list change
+    // under a live gesture can never move the swipe onto another card.
+    val drag = remember(item.id) {
+        AnchoredDraggableState(
+            initialValue = FeedbackCardAnchor.Settled,
+            anchors = DraggableAnchors { FeedbackCardAnchor.Settled at 0f }
+        )
+    }
+    val fling = AnchoredDraggableDefaults.flingBehavior(
+        state = drag,
+        positionalThreshold = { with(density) { FEEDBACK_SWIPE_THRESHOLD.toPx() } }
+    )
+    val latestOnDismiss by rememberUpdatedState(onDismiss)
+    // A settle away from the middle anchor means the card was swiped off. The only thing a swipe may
+    // do is resolve the card Dismissed; it never runs Undo and never opens the target (FSTK-05).
+    LaunchedEffect(drag) {
+        snapshotFlow { drag.settledValue }.first { it != FeedbackCardAnchor.Settled }
+        latestOnDismiss()
+    }
+    // The draggable sits on this stationary root. Only the Surface inside carries the translation,
+    // because a draggable inside its own translated layer would see shrinking local deltas.
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .testTag(FEEDBACK_STACK_ITEM_TEST_TAG)
@@ -112,8 +146,7 @@ internal fun FeedbackCard(
             }
             .pointerInput(item.id) {
                 // Not a second tap owner: it only records, without consuming, whether the finger
-                // travelled past the touch slop. detectTapGestures alone still reports a tap after a
-                // drag that nothing consumes, and a drag release must never open or fan (T-26-10).
+                // travelled past the touch slop. A drag release must never open or fan (T-26-10).
                 val slop = viewConfiguration.touchSlop
                 awaitEachGesture {
                     val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
@@ -141,20 +174,52 @@ internal fun FeedbackCard(
                         }
                     }
                 )
-            },
-        shape = RoundedCornerShape(Dimens.CornerRadius.Card),
-        color = MaterialTheme.colorScheme.surfaceContainerHighest,
-        shadowElevation = Dimens.Elevation.Level2
+            }
+            .onSizeChanged { size ->
+                if (size.width > 0) {
+                    val width = size.width.toFloat()
+                    drag.updateAnchors(
+                        DraggableAnchors {
+                            FeedbackCardAnchor.Start at -width
+                            FeedbackCardAnchor.Settled at 0f
+                            FeedbackCardAnchor.End at width
+                        }
+                    )
+                }
+            }
+            .anchoredDraggable(
+                state = drag,
+                orientation = Orientation.Horizontal,
+                enabled = !collapsedBack,
+                flingBehavior = fling
+            ),
+        propagateMinConstraints = true
     ) {
-        FeedbackCardRow(
-            item = item,
-            undoLabel = undoLabel,
-            showUndo = item.hasUndo && !spent,
-            showChevron = openable,
-            onUndo = onUndo
-        )
+        Surface(
+            modifier = Modifier.graphicsLayer {
+                // The one offset read: guarded, and inside the draw-phase lambda, so it never throws
+                // and never recomposes the card per frame.
+                val offset = drag.offset.takeUnless { it.isNaN() } ?: 0f
+                translationX = offset
+                alpha = feedbackSwipeAlpha(offset, size.width)
+            },
+            shape = RoundedCornerShape(Dimens.CornerRadius.Card),
+            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+            shadowElevation = Dimens.Elevation.Level2
+        ) {
+            FeedbackCardRow(
+                item = item,
+                undoLabel = undoLabel,
+                showUndo = item.hasUndo && !spent,
+                showChevron = openable,
+                onUndo = onUndo
+            )
+        }
     }
 }
+
+/** The three resting places of a swipe: off to the start side, in place, off to the end side. */
+private enum class FeedbackCardAnchor { Start, Settled, End }
 
 /** Whether the current press travelled past the touch slop; a plain holder, not snapshot state. */
 private class PressTravel {
