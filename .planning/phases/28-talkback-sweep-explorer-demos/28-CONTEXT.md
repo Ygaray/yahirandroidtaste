@@ -96,3 +96,8 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
   - When: once per install (flag in the hub's osmdroid prefs), and again whenever a placeholder is detected.
   - Same approach as SB's contingency, so the two don't conflict.
   - Placeholder fingerprint (probe 2026-10-17, blank UA, 3/2/3.png): 6987 bytes, md5 `c069a15b2cc2d6b6f527ad09eb93c61a`. Size AND md5 must match before a row is purged. If OSM changes the image, the purge just misses (fail-safe), and the Log.w still fires.
+- **POL-03 load() detail (teamlead, from SB's javap check, 2026-10-17):** `DefaultConfigurationProvider.load()` clears `additionalHttpRequestProperties` on every non-first load, then refills it from the prefs keys `osmdroid.additionalHttpRequestProperty.*`. `configureOsmdroid` runs `load()` on every MapView creation, so:
+  - Set `additionalHttpRequestProperties["User-Agent"]` in memory AFTER EVERY `load()`, inside `configureOsmdroid` on each call, never once per process.
+  - The hub does NOT write the `osmdroid.additionalHttpRequestProperty.User-Agent` prefs key. SB persists that key in the hub's prefs file; leaving it alone keeps one owner per storage slot.
+  - Precedence (pin with a Robolectric test): `load()` restores SB's persisted value, then the hub overwrites it in memory with the resolved caller `userAgent`. The caller param wins; SB passes the same string, so the wire value is identical either way.
+  - Test cases: header present after a first and a second `configureOsmdroid` call; a pre-seeded prefs value is overwritten in memory by the caller UA; exactly one User-Agent entry.
