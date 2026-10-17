@@ -143,7 +143,25 @@ Plans:
   5. The Grammar (warn, on-device) handled-by dot meets 3:1 non-text contrast against the pill container under the hub light and dark schemes and under a dynamic-color scheme sample (POL-02).
 
 **Notes**: Open for discuss-phase (D-10): how a sheet row drops its target after Undo / Undo all. The library can derive it from the item's undo row state, or the caller can clear `target`; the brief only fixes the Undo Center side (FTGT-02). Also confirm which `Success` receipt row "names the item". The target rows get the long German ~360dp check (the chevron must not push the value off). The pill fixes apply to Receipt; Classic's `HandledByRow` stays untouched unless the same defect reproduces there.
-**Plans**: TBD
+**Plans:** 0/4 plans complete
+
+Plans:
+**Wave 1**
+
+- [ ] 27-01-PLAN.md — `Success.target`/`targetLabel`/`targetDetail`, shared internal open-target row, `onOpenTarget` on both `OutcomeSheet` overloads, Receipt and Classic single-target rows (Classic through new functions inside the single scaffold) (FOPEN-01)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 27-02-PLAN.md — `BatchRowResultUiModel.target`, per-row open list in Receipt and Classic, target-less rows inert with no reserved space (FOPEN-02)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 27-03-PLAN.md — second `UndoCenterScreen` overload with a required `onOpenTarget`, merged `Role.Button` open row, hold-to-peek kept, stale-callback guard, deliberate contract count edit (FOPEN-03)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 27-04-PLAN.md — capped-radius handled-by pill shape, contrast ring for the warn dot, phase hygiene contract, fresh full gate and Gate-1 inputs (POL-01, POL-02)
+
 **UI hint**: yes
 
 ### Phase 28: TalkBack sweep & Explorer demos
