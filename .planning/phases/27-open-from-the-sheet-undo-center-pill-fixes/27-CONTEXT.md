@@ -80,3 +80,7 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
 ## Runtime Decisions
 
 - **D-04 [undo-center-tap] refreshed after Phase 25 (ai-auto):** onTap + no-op onLongPress, merged Role.Button node; required-param overload; update the count contract deliberately. Refreshed against Phase 25: a row is openable iff entry.openableTarget != null (Phase 25 derives it null unless Available, so Undone/Failed rows lose the chevron and click); grouped entries carry targets through the Phase 25 append overload, and a group header itself never opens.
+- **FA-1 / FA-5 confirmed (ui-designer, 2026-10-17):**
+  - FA-1: a target row is dimmed and inert while the sheet is inFlight, the same as the sheet's other actions.
+  - FA-5: a long hold in the Undo Center never opens the item but still shows the peek.
+  - Internal source-line rewrites that forward the new defaulted params are declared lane 2 (as in Phase 26). The public API stays additive (apiCheck and verify-api-source-additive v2.7.1).
