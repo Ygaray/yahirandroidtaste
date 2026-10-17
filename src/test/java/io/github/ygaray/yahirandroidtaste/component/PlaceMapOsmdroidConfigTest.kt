@@ -11,6 +11,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -52,6 +53,7 @@ class PlaceMapOsmdroidConfigTest {
         osmPrefs.edit().clear().commit()
         File(application.cacheDir, "osmdroid").deleteRecursively()
         resetPlaceholderScanForTests()
+        resetOsmdroidLoadForTests()
         ShadowLog.clear()
     }
 
@@ -67,6 +69,7 @@ class PlaceMapOsmdroidConfigTest {
         osmPrefs.edit().clear().commit()
         File(application.cacheDir, "osmdroid").deleteRecursively()
         resetPlaceholderScanForTests()
+        resetOsmdroidLoadForTests()
     }
 
     /**
@@ -455,5 +458,93 @@ class PlaceMapOsmdroidConfigTest {
             Configuration.getInstance().osmdroidTileCache,
         )
         assertEquals("Probe/1.0 (+https://example.org)", requestProperties()["User-Agent"])
+    }
+
+    // ---- POL-03 load() once per process (gap plan 28-08) ---------------------------------------
+
+    private val agentA = "AgentA/1.0 (+https://example.org)"
+    private val agentB = "AgentB/2.0 (+https://example.org)"
+
+    @Test
+    fun secondCallDoesNotReload_andKeepsAnUnrelatedRequestProperty() {
+        configureOsmdroid(application, agentA)
+        val mapBefore = requestProperties()
+        mapBefore["X-Probe"] = "kept"
+        configureOsmdroid(application, agentA)
+        // load() clears and refills the map from prefs: a surviving unrelated entry proves no reload.
+        assertSame(mapBefore, requestProperties())
+        assertEquals("kept", requestProperties()["X-Probe"])
+        assertEquals(agentA, requestProperties()["User-Agent"])
+    }
+
+    @Test
+    fun secondCallWithTheSameAgentKeepsTheHeader() {
+        configureOsmdroid(application, agentA)
+        assertEquals(agentA, requestProperties()["User-Agent"])
+        configureOsmdroid(application, agentA)
+        assertEquals(agentA, requestProperties()["User-Agent"])
+        assertEquals(1, userAgentEntryCount())
+    }
+
+    @Test
+    fun secondCallWithAnotherAgentReplacesTheValueWithoutReloading() {
+        configureOsmdroid(application, agentA)
+        requestProperties()["X-Probe"] = "kept"
+        configureOsmdroid(application, agentB)
+        assertEquals(agentB, requestProperties()["User-Agent"])
+        assertEquals(agentB, Configuration.getInstance().userAgentValue)
+        assertEquals("kept", requestProperties()["X-Probe"])
+        assertEquals(1, userAgentEntryCount())
+    }
+
+    @Test
+    fun secondCallWithAnotherAgentKeepsExactlyOneUserAgentEntryEvenWhenCasedDifferently() {
+        configureOsmdroid(application, agentA)
+        requestProperties()["user-agent"] = "stray/0.1"
+        requestProperties()["X-Probe"] = "kept"
+        configureOsmdroid(application, agentB)
+        assertEquals(1, userAgentEntryCount())
+        assertEquals(agentB, requestProperties()["User-Agent"])
+        assertNull(requestProperties()["user-agent"])
+        assertEquals("kept", requestProperties()["X-Probe"])
+    }
+
+    @Test
+    fun aRemovedHeaderIsReappliedOnTheNextCall() {
+        configureOsmdroid(application, agentA)
+        requestProperties().remove("User-Agent")
+        configureOsmdroid(application, agentA)
+        assertEquals(agentA, requestProperties()["User-Agent"])
+        assertEquals(1, userAgentEntryCount())
+    }
+
+    @Test
+    fun resettingTheLoadGuardMakesTheNextCallLoadAgain() {
+        val key = "osmdroid.additionalHttpRequestProperty.User-Agent"
+        seedPersistedPrefs(key to "Persisted/0.1 (consumer owned)")
+        configureOsmdroid(application, agentA)
+        requestProperties()["X-Probe"] = "wiped-by-reload"
+        requestProperties().remove("User-Agent")
+        resetOsmdroidLoadForTests()
+        configureOsmdroid(application, agentB)
+        // the reload cleared the unrelated entry; the hub then overwrote the persisted value in memory
+        assertNull(requestProperties()["X-Probe"])
+        assertEquals(agentB, requestProperties()["User-Agent"])
+        assertEquals(1, userAgentEntryCount())
+        assertEquals("Persisted/0.1 (consumer owned)", osmPrefs.getString(key, null))
+    }
+
+    @Test
+    fun warningCountPerCallIsUnchangedOnLaterCalls() {
+        configureOsmdroid(application, "")
+        configureOsmdroid(application, "")
+        configureOsmdroid(application, "")
+        assertEquals(3, warnings().size)
+        ShadowLog.clear()
+        configureOsmdroid(application, agentA)
+        configureOsmdroid(application, agentA)
+        assertEquals(0, warnings().size)
+        configureOsmdroid(application, "${BLOCKED_PLACEHOLDER_PACKAGE_PREFIX}probe/1.0 (Android 15)")
+        assertEquals(1, warnings().size)
     }
 }
