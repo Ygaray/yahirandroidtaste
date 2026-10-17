@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
 import io.github.ygaray.yahirandroidtaste.component.ApproachLadderCard
@@ -656,6 +657,7 @@ private fun OutcomeSheetVariants() {
     }
     ReceiptConfirmHandledByVariant(onShow = { visibleOutcome = null })
     ReceiptOutcomeSheetDemos()
+    GoToItemSheetDemos()
 }
 
 /**
@@ -680,7 +682,7 @@ private fun ReceiptConfirmHandledByVariant(onShow: () -> Unit) {
             onShow()
             shown = true
         },
-        modifier = Modifier.padding(horizontal = 16.dp)
+        modifier = Modifier.padding(horizontal = 16.dp).testTag(DEMO_TAG_HOISTED_SHEET_SHOW)
     ) { Text("Show sheet") }
 
     if (shown) {
