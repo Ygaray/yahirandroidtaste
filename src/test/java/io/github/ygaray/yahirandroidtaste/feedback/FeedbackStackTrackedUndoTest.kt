@@ -325,6 +325,28 @@ class FeedbackStackTrackedUndoTest {
         assertEquals(UndoStatus.Undone, store.entries.value.single().status)
     }
 
+    @Test
+    fun cancelAfterUndoTapBeforeCallerResumes_undoStillRunsOnce_entryEndsUndone() = runTest {
+        val state = FeedbackStackState()
+        val store = UndoHistoryStore()
+        val undone = AtomicInteger()
+        val job = launch { state.emitTrackedWithUndo(store, withUndo(undone)) }
+        runCurrent()
+        assertEquals(1, state.items.size)
+
+        // The tap wins resolution and the card disappears, but the caller has not resumed yet
+        // (its continuation is only queued) when the cancel lands.
+        assertTrue(state.resolve(state.items.single(), FeedbackResult.Undone))
+        job.cancel()
+        runCurrent()
+        job.join()
+
+        assertTrue(job.isCancelled)
+        assertTrue(state.items.isEmpty())
+        assertEquals(1, undone.get())
+        assertEquals(UndoStatus.Undone, store.entries.value.single().status)
+    }
+
     // ---- (f) failure, mapping, timeout, append count ----
 
     @Test

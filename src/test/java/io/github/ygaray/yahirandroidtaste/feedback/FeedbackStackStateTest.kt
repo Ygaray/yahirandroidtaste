@@ -435,4 +435,45 @@ class FeedbackStackStateTest {
         assertEquals(FeedbackResult.Undone, shown.await())
         assertEquals(0, undoRuns.get())
     }
+
+    // ---- (h) resolution is safe for inline-resuming callers and throwing scalers ----
+
+    @Test
+    fun inlineResumingCaller_reshowingFromContinuation_doesNotEvictAnOlderCard() = runTest {
+        val state = FeedbackStackState(maxVisible = 2)
+        val older = launch(Dispatchers.Unconfined) { state.show(indefinite("older")) }
+        var second: FeedbackResult? = null
+        val newer = launch(Dispatchers.Unconfined) {
+            second = state.show(indefinite("newer"))
+            // Resumed inline from inside resolve(): the newer card must already be off the stack.
+            state.show(indefinite("again"))
+        }
+        assertEquals(listOf("newer", "older"), state.items.map { it.message })
+        val olderItem = state.items.last()
+
+        assertTrue(state.resolve(state.items.first(), FeedbackResult.Opened))
+
+        assertEquals(FeedbackResult.Opened, second)
+        assertFalse(olderItem.result.isCompleted)
+        assertEquals(listOf("again", "older"), state.items.map { it.message })
+
+        state.dismissAll()
+        older.join()
+        newer.join()
+    }
+
+    @Test
+    fun throwingTimeoutScaler_stillShowsCard_withUnscaledTimer() = runTest {
+        val state = FeedbackStackState()
+        state.timeoutScaler = { _, _ -> error("platform call failed") }
+        val shown = showAsync(state, FeedbackEvent.Notify(message = "m"))
+        runCurrent()
+
+        assertEquals(1, state.items.size)
+        advanceTimeBy(4_000)
+        runCurrent()
+
+        assertEquals(FeedbackResult.TimedOut, shown.await())
+        assertTrue(state.items.isEmpty())
+    }
 }

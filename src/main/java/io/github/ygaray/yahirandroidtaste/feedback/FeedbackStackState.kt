@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.AccessibilityManager
 import androidx.compose.ui.platform.LocalAccessibilityManager
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -26,8 +27,8 @@ private const val DEFAULT_MAX_VISIBLE = 3
  * [show] suspends until the card it enqueued resolves to **exactly one** [FeedbackResult], or
  * throws `CancellationException` if the caller is cancelled first (in which case the card is
  * removed, its slot is freed and no result is invented). Resolution is a single
- * `CompletableDeferred.complete` per card, so tap, timer, swipe, eviction and [dismissAll]
- * can race freely: the first one wins and every later resolver is told `false`.
+ * claim per card (one winner chosen under a lock), so tap, timer, swipe, eviction and
+ * [dismissAll] can race freely: the first one wins and every later resolver is told `false`.
  *
  * Behavior owned here:
  *  - at most [maxVisible] cards are held, newest first; a further arrival dismisses the oldest
@@ -83,52 +84,84 @@ class FeedbackStackState(maxVisible: Int = DEFAULT_MAX_VISIBLE) {
     }
 
     /**
-     * Try to resolve [item] with [result]. Returns true only for the first resolver; the item is
-     * removed in the same critical section so a resolved card never counts toward the cap.
+     * Try to resolve [item] with [result]. Returns true only for the first resolver.
+     *
+     * The winner is chosen and the item is removed inside one critical section, so a resolved card
+     * never counts toward the cap. The deferred is completed only after the lock is released: a
+     * caller on an inline-resuming dispatcher (`Dispatchers.Main.immediate`, `Unconfined`) may run
+     * its continuation, and call [show] again, from inside `complete`, and by then the card is
+     * already gone.
      */
-    internal fun resolve(item: FeedbackStackItem, result: FeedbackResult): Boolean =
-        synchronized(lock) {
-            if (item.result.complete(result)) {
+    internal fun resolve(item: FeedbackStackItem, result: FeedbackResult): Boolean {
+        val won = synchronized(lock) {
+            if (item.outcome == null) {
+                item.outcome = result
                 items.remove(item)
                 true
             } else {
                 false
             }
         }
+        if (won) item.result.complete(result)
+        return won
+    }
 
     internal suspend fun showInternal(
         event: FeedbackEvent,
         entryId: String?,
-        watch: (suspend (FeedbackStackItem) -> Unit)?
+        watch: (suspend (FeedbackStackItem) -> Unit)?,
+        onEnqueued: ((FeedbackStackItem) -> Unit)? = null
     ): FeedbackResult = coroutineScope {
         val item = enqueue(event, entryId)
-        val timer = item.baseMillis?.let { base ->
-            val millis = timeoutScaler?.invoke(base, item.hasControls) ?: base
-            launch {
-                delay(millis)
-                resolve(item, FeedbackResult.TimedOut)
-            }
-        }
-        val watcher = watch?.let { launch { it(item) } }
+        onEnqueued?.invoke(item)
+        var timer: Job? = null
+        var watcher: Job? = null
         try {
+            // Everything after enqueue lives inside the try, so a throwing step below still
+            // reaches the finally and the card is removed instead of leaking a slot.
+            timer = item.baseMillis?.let { base ->
+                val millis = scaledMillis(base, item.hasControls)
+                launch {
+                    delay(millis)
+                    resolve(item, FeedbackResult.TimedOut)
+                }
+            }
+            watcher = watch?.let { launch { it(item) } }
             item.result.await()
         } finally {
             timer?.cancel()
             watcher?.cancel()
-            // No-op unless the caller was cancelled: then it completes the deferred and removes the card.
+            // No-op unless the caller was cancelled (or a step above threw): then it completes
+            // the deferred and removes the card.
             resolve(item, FeedbackResult.Dismissed)
         }
     }
 
-    private fun enqueue(event: FeedbackEvent, entryId: String?): FeedbackStackItem =
-        synchronized(lock) {
-            val item = FeedbackStackItem.from(event, nextId++, entryId)
-            items.add(0, item)
+    /**
+     * The timer length for [base]. A scaler that throws (it wraps a platform call) falls back to
+     * the unscaled timer rather than failing the whole [show].
+     */
+    private fun scaledMillis(base: Long, hasControls: Boolean): Long {
+        val scaler = timeoutScaler ?: return base
+        return runCatching { scaler(base, hasControls) }.getOrNull() ?: base
+    }
+
+    private fun enqueue(event: FeedbackEvent, entryId: String?): FeedbackStackItem {
+        val evicted = mutableListOf<FeedbackStackItem>()
+        val item = synchronized(lock) {
+            val created = FeedbackStackItem.from(event, nextId++, entryId)
+            items.add(0, created)
             while (items.size > maxVisible) {
-                items.removeAt(items.lastIndex).result.complete(FeedbackResult.Dismissed)
+                val oldest = items.removeAt(items.lastIndex)
+                oldest.outcome = FeedbackResult.Dismissed
+                evicted.add(oldest)
             }
-            item
+            created
         }
+        // Completed outside the lock for the same reason as in [resolve].
+        evicted.forEach { it.result.complete(FeedbackResult.Dismissed) }
+        return item
+    }
 
     private val accessibilityManagers = mutableListOf<AccessibilityManager>()
 
@@ -187,6 +220,14 @@ internal class FeedbackStackItem(
     val entryId: String?
 ) {
     val result = CompletableDeferred<FeedbackResult>()
+
+    /**
+     * The result that won resolution, set (under the state's lock) before [result] completes.
+     * Non-null means the card is claimed and already off the stack, even if a dispatcher has not
+     * yet resumed the caller awaiting [result].
+     */
+    @Volatile
+    var outcome: FeedbackResult? = null
 
     /** Snapshot state so a host recomposes when the backing undo entry is spent elsewhere. */
     var spent by mutableStateOf(false)

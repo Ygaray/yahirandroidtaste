@@ -2,6 +2,7 @@ package io.github.ygaray.yahirandroidtaste.feedback
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -62,9 +63,10 @@ suspend fun SnackbarHostState.emitTrackedWithUndo(
  *
  * Cancellation: if the caller is cancelled before a result, no undo runs, the card is removed and
  * the entry stays Available, so it can still be undone from the Undo Center. If the caller is
- * cancelled while the store undo is running, the undo still finishes (it runs under
- * `NonCancellable`) and the entry ends Undone, never Available but inert. This guard exists on
- * this stack path only; the Material3 path is unchanged.
+ * cancelled while the store undo is running, or after the Undo tap resolved the card but before
+ * the caller resumed, the undo still finishes (it runs under `NonCancellable`) and the entry ends
+ * Undone, never Available but inert. This guard exists on this stack path only; the Material3
+ * path is unchanged.
  *
  * A card whose entry is undone, fails or is removed elsewhere is kept on screen marked spent; it
  * is not auto-dismissed.
@@ -81,12 +83,22 @@ suspend fun FeedbackStackState.emitTrackedWithUndo(
         target = event.target,
         undoAction = event.undoAction
     )
-    val result = showInternal(event, entryId) { item ->
-        // Spent elsewhere (undone, failed or removed): keep the card, flag it for the host.
-        store.entries.first { entries ->
-            entries.none { it.id == entryId && it.status == UndoStatus.Available }
+    var shown: FeedbackStackItem? = null
+    val result = try {
+        showInternal(event, entryId, watch = { item ->
+            // Spent elsewhere (undone, failed or removed): keep the card, flag it for the host.
+            store.entries.first { entries ->
+                entries.none { it.id == entryId && it.status == UndoStatus.Available }
+            }
+            item.spent = true
+        }, onEnqueued = { shown = it })
+    } catch (cancelled: CancellationException) {
+        // The Undo tap may have won resolution before the cancel reached the awaiting caller.
+        // The card already vanished as if honored, so honor it (see the Cancellation note above).
+        if (shown?.outcome == FeedbackResult.Undone) {
+            withContext(NonCancellable) { store.attemptUndo(entryId) }
         }
-        item.spent = true
+        throw cancelled
     }
     if (result == FeedbackResult.Undone) {
         withContext(NonCancellable) { store.attemptUndo(entryId) }
