@@ -1,9 +1,16 @@
 package io.github.ygaray.yahirandroidtaste.feedback
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import kotlinx.coroutines.delay
 
 /** Test tag on every card of [FeedbackStackHost]. */
 internal const val FEEDBACK_STACK_ITEM_TEST_TAG = "feedback_stack_item"
@@ -50,7 +57,35 @@ fun FeedbackStackHost(
 ) {
     state.BindAccessibilityTimeout()
     val currentOnOpenTarget by rememberUpdatedState(onOpenTarget)
-    FeedbackDeck(items = state.items, modifier = modifier) { item, _ ->
+    var fanned by remember { mutableStateOf(false) }
+    // The fan is a pause reason for every timer; the state lives beyond composition, so a host that
+    // leaves while fanned or mid-press must not leave a reason set behind (T-26-11).
+    var pointerDown by remember { mutableStateOf(false) }
+    var interactionTick by remember { mutableIntStateOf(0) }
+    LaunchedEffect(fanned) { state.setFanned(fanned) }
+    // Re-collapse after the idle delay. Every pointer event bumps interactionTick, which restarts the
+    // wait, and a held finger (pointerDown) keeps the effect from counting at all.
+    LaunchedEffect(fanned, interactionTick, pointerDown) {
+        if (fanned && !pointerDown) {
+            delay(state.idleCollapseMillis)
+            fanned = false
+        }
+    }
+    // One card or none has nothing to fan, so the deck folds back at once.
+    LaunchedEffect(state.items.size) {
+        if (state.items.size <= 1) fanned = false
+    }
+    DisposableEffect(state) { onDispose { state.resetPause() } }
+    FeedbackDeck(
+        items = state.items,
+        modifier = modifier,
+        fanned = fanned,
+        onPointerChange = { down ->
+            state.setPointerDown(down)
+            pointerDown = down
+            interactionTick++
+        }
+    ) { item, index ->
         FeedbackCard(
             item = item,
             undoLabel = undoLabel,
@@ -59,7 +94,9 @@ fun FeedbackStackHost(
                 if (state.resolve(item, FeedbackResult.Opened)) currentOnOpenTarget(target)
             },
             onUndo = { state.resolve(item, FeedbackResult.Undone) },
-            onDismiss = { state.resolve(item, FeedbackResult.Dismissed) }
+            onDismiss = { state.resolve(item, FeedbackResult.Dismissed) },
+            collapsedBack = !fanned && index > 0,
+            onPeekTap = { if (state.items.size > 1) fanned = true }
         )
     }
 }
