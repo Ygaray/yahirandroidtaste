@@ -74,6 +74,11 @@ internal const val FEEDBACK_STACK_DOT_TEST_TAG = "feedback_stack_dot"
  * directly. The root merges its descendants, so the Undo and Dismiss accessibility actions stay on
  * the root, Undo first.
  *
+ * The peek tap fans the deck wherever it lands on the strip, over an Undo included: a back card of a
+ * collapsed deck keeps its Undo composed, measured and in the semantics tree (the semantic click and
+ * the custom action still resolve it), but a semantics-free touch blocker sits above its content, so
+ * on that card the pointer path is the peek tap and nothing else.
+ *
  * A11Y-01: the root is one merged node with a Polite live region, the `dismiss` semantics action and
  * a `traversalIndex` equal to [index] (newest first, whatever the draw order). Every action runs the
  * same resolve-first callbacks as touch, and nothing the node announces changes after the card
@@ -242,7 +247,31 @@ internal fun FeedbackCard(
                 onUndo = onUndo
             )
         }
+        if (collapsedBack) {
+            CollapsedBackTouchBlocker(Modifier.matchParentSize())
+        }
     }
+}
+
+/**
+ * A transparent, semantics-free layer above the content of a back card in a collapsed deck.
+ *
+ * The visible peek strip of a back card is the only part the user can touch, and the Undo button
+ * reaches into it (its layout starts 8dp below the card's top and Compose widens its touch region
+ * by a few dp), so an Undo tap would otherwise swallow the peek tap. Compose gives a pointer event to
+ * the topmost sibling that has pointer input and stops looking at the siblings below it, while every
+ * ancestor still receives the same events. This layer is that topmost sibling, so the buttons below
+ * never see a touch and the card root's single tap owner sees an ordinary unconsumed tap and fans the
+ * deck.
+ *
+ * It must stay semantics-free and non-consuming: a semantics node here would add a focusable
+ * child to the accessibility tree (A11Y-01 keeps the Undo child and its actions untouched), and a
+ * consumed change would hide the touch from the root's tap owner, the drag and the deck-wide pause
+ * observer.
+ */
+@Composable
+private fun CollapsedBackTouchBlocker(modifier: Modifier) {
+    Box(modifier = modifier.pointerInput(Unit) { })
 }
 
 /** The three resting places of a swipe: off to the start side, in place, off to the end side. */
