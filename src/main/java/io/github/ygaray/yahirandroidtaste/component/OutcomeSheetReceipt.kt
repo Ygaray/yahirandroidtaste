@@ -241,7 +241,8 @@ private fun ReceiptTranscript(text: String) {
 /**
  * The Receipt Success body (D-08), in order: title row, handled-by pill, the go-to-item row (only with
  * a target and an `onOpenTarget`, FOPEN-01), the caller's editable slot
- * (hidden while in flight, as in Classic and the model KDoc, OQ-1), the shared batch-result list, the
+ * (hidden while in flight, as in Classic and the model KDoc, OQ-1), the shared batch-result list (the
+ * per-row open list instead when a handler is passed and a row has a target, FOPEN-02), the
  * shared undo block (locked while in flight) and the actions row at the end of the scroll content.
  */
 @Composable
@@ -254,7 +255,11 @@ private fun ReceiptSuccessBody(
     success.handledBy?.let { ReceiptHandledByPill(it, colors) }
     SuccessOpenTargetRow(success, onOpenTarget)
     success.editableContent?.takeIf { !success.inFlight }?.invoke()
-    success.batchResults.takeIf { it.isNotEmpty() }?.let { BatchResultsList(it) }
+    if (onOpenTarget != null && success.batchResults.hasRowTarget()) {
+        OpenTargetBatchList(success.batchResults, onOpenTarget, locked = success.inFlight)
+    } else {
+        success.batchResults.takeIf { it.isNotEmpty() }?.let { BatchResultsList(it) }
+    }
     success.undo?.let { UndoAffordanceBody(it, locked = success.inFlight) }
     ReceiptSuccessActions(success)
 }

@@ -1120,17 +1120,20 @@ package io.github.ygaray.yahirandroidtaste.model {
   }
 
   public final class BatchRowResultUiModel {
-    ctor public BatchRowResultUiModel(String label, boolean succeeded, optional String? detail);
+    ctor public BatchRowResultUiModel(String label, boolean succeeded, optional String? detail, optional io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? target);
     method public String component1();
     method public boolean component2();
     method public String? component3();
-    method public io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel copy(optional String label, optional boolean succeeded, optional String? detail);
+    method public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? component4();
+    method public io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel copy(optional String label, optional boolean succeeded, optional String? detail, optional io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? target);
     method @InaccessibleFromKotlin public String? getDetail();
     method @InaccessibleFromKotlin public String getLabel();
     method @InaccessibleFromKotlin public boolean getSucceeded();
+    method @InaccessibleFromKotlin public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? getTarget();
     property public String? detail;
     property public String label;
     property public boolean succeeded;
+    property public io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget? target;
   }
 
   public final class BrowseSortPreference {
