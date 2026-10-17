@@ -64,24 +64,46 @@ class FeedbackDeckMetricsTest {
 
     @Test
     fun fannedCap_isSixtyPercentOfAvailable() {
-        assertEquals(600, feedbackFannedCap(available = 1000, imeBottom = 0))
+        assertEquals(600, feedbackFannedCap(available = 1000, imeOverlap = 0))
     }
 
     @Test
-    fun fannedCap_subtractsTheImeBottom() {
-        assertEquals(500, feedbackFannedCap(available = 1000, imeBottom = 500))
-        assertEquals(600, feedbackFannedCap(available = 1000, imeBottom = 0))
+    fun fannedCap_subtractsTheImeOverlap() {
+        assertEquals(500, feedbackFannedCap(available = 1000, imeOverlap = 500))
+        assertEquals(600, feedbackFannedCap(available = 1000, imeOverlap = 0))
     }
 
     @Test
     fun fannedCap_ofUnboundedHeight_isUnbounded() {
-        assertEquals(Int.MAX_VALUE, feedbackFannedCap(available = Constraints.Infinity, imeBottom = 300))
+        assertEquals(Int.MAX_VALUE, feedbackFannedCap(available = Constraints.Infinity, imeOverlap = 300))
     }
 
     @Test
     fun fannedCap_neverNegative() {
-        assertEquals(0, feedbackFannedCap(available = 100, imeBottom = 500))
-        assertEquals(0, feedbackFannedCap(available = 0, imeBottom = 0))
+        assertEquals(0, feedbackFannedCap(available = 100, imeOverlap = 500))
+        assertEquals(0, feedbackFannedCap(available = 0, imeOverlap = 0))
+    }
+
+    @Test
+    fun fannedCap_keyboardNeverPushesItBelowTheFloor() {
+        assertEquals(96, feedbackFannedCap(available = 300, imeOverlap = 400, floorPx = 96))
+        assertEquals(96, feedbackFannedCap(available = 300, imeOverlap = 300, floorPx = 96))
+    }
+
+    @Test
+    fun fannedCap_floorIsLimitedToTheAvailableHeight() {
+        // 60 percent of 50 is 30; the floor of 96 is itself clamped to the 50 available.
+        assertEquals(30, feedbackFannedCap(available = 50, imeOverlap = 500, floorPx = 96))
+    }
+
+    @Test
+    fun fannedCap_floorNeverRaisesTheSixtyPercentShare() {
+        assertEquals(60, feedbackFannedCap(available = 100, imeOverlap = 500, floorPx = 96))
+    }
+
+    @Test
+    fun fannedCap_floorIsIdleWhenTheKeyboardLeavesMoreRoom() {
+        assertEquals(180, feedbackFannedCap(available = 300, imeOverlap = 60, floorPx = 96))
     }
 
     @Test

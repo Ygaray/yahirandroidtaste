@@ -2,8 +2,13 @@ package io.github.ygaray.yahirandroidtaste.feedback
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.SnackbarDuration
@@ -11,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsNode
@@ -132,12 +138,17 @@ class FeedbackDeckLayoutTest {
     private fun setDeck(
         heights: List<Dp>,
         fanned: MutableState<Boolean> = mutableStateOf(false),
+        imeInsets: WindowInsets? = null,
         host: @Composable (@Composable () -> Unit) -> Unit = { it() }
     ) {
         val items = deckItems(heights.size)
         composeTestRule.setContent {
             host {
-                FeedbackDeck(items = items, fanned = fanned.value) { _, index ->
+                FeedbackDeck(
+                    items = items,
+                    fanned = fanned.value,
+                    imeInsets = imeInsets ?: WindowInsets.ime
+                ) { _, index ->
                     Box(Modifier.fillMaxWidth().height(heights[index]).testTag("c$index"))
                 }
             }
@@ -174,6 +185,72 @@ class FeedbackDeckLayoutTest {
         box(2).assertIsNotDisplayed()
         box(2).performScrollTo()
         box(2).assertIsDisplayed()
+    }
+
+    // ---- WR-01: only the part of the keyboard that reaches the deck lowers the cap ----
+
+    @Test
+    @Config(qualifiers = "w360dp-h640dp")
+    fun fannedDeck_withKeyboardBelowASmallHost_staysAtSixtyPercent() {
+        val fanned = mutableStateOf(false)
+        setDeck(
+            listOf(120.dp, 120.dp, 120.dp),
+            fanned = fanned,
+            imeInsets = WindowInsets(bottom = 400.dp),
+            host = { content ->
+                Box(Modifier.fillMaxSize()) { Box(Modifier.height(300.dp)) { content() } }
+            }
+        )
+        fanned.value = true
+        composeTestRule.waitForIdle()
+
+        assertEquals(180f, deck().getUnclippedBoundsInRoot().height.value, 1f)
+    }
+
+    @Test
+    @Config(qualifiers = "w360dp-h640dp")
+    fun fannedDeck_hostAlreadyAboveTheKeyboard_isNotReducedTwice() {
+        val fanned = mutableStateOf(false)
+        setDeck(
+            listOf(120.dp, 120.dp, 120.dp),
+            fanned = fanned,
+            imeInsets = WindowInsets(bottom = 400.dp),
+            host = { content ->
+                Column(Modifier.fillMaxSize()) {
+                    Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.BottomCenter) {
+                        content()
+                    }
+                    Spacer(Modifier.height(400.dp))
+                }
+            }
+        )
+        fanned.value = true
+        composeTestRule.waitForIdle()
+
+        // 240dp of host above the keyboard: 60 percent is 144dp, and the keyboard does not overlap it.
+        assertEquals(144f, deck().getUnclippedBoundsInRoot().height.value, 1f)
+    }
+
+    @Test
+    @Config(qualifiers = "w360dp-h640dp")
+    fun fannedDeck_keyboardCoveringTheHost_neverCollapsesToNothing() {
+        val fanned = mutableStateOf(false)
+        setDeck(
+            listOf(120.dp, 120.dp, 120.dp),
+            fanned = fanned,
+            imeInsets = WindowInsets(bottom = 400.dp),
+            host = { content ->
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+                    Box(Modifier.heightIn(max = 300.dp)) { content() }
+                }
+            }
+        )
+        fanned.value = true
+        composeTestRule.waitForIdle()
+
+        val height = deck().getUnclippedBoundsInRoot().height.value
+        assertEquals(96f, height, 1f)
+        box(0).assertIsDisplayed()
     }
 
     @Test

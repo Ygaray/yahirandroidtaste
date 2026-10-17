@@ -15,7 +15,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
@@ -27,7 +30,10 @@ import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.layout.findRootCoordinates
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
@@ -53,10 +59,12 @@ private const val FAN_SETTLE_TIMEOUT_MILLIS = 2_000L
  * Collapsed, older cards are measured at the newest card's height, so a taller older card can never
  * show more than its strip or hang below the front card (the clamp). With [fanned] the cards spring
  * into a bottom-anchored column of natural-height cards, oldest on top, separated by
- * [FEEDBACK_FANNED_GAP]; the fanned deck is capped at 60 percent of the available height minus the
- * keyboard inset and its cards scroll inside the cap, newest in view. An unbounded height (a deck
- * inside a scrolling parent) is neither capped nor scrolled. Cards share one width, the smaller of
- * the incoming width and [FEEDBACK_DECK_MAX_WIDTH], centered. No items lay out as 0 by 0.
+ * [FEEDBACK_FANNED_GAP]; the fanned deck is capped at the smaller of 60 percent of the available
+ * height and what the keyboard leaves of it (only the part of the keyboard that actually covers the
+ * host counts, and never below a small floor), and its cards scroll inside the cap, newest in view.
+ * An unbounded height (a deck inside a scrolling parent) is neither capped nor scrolled. Cards share
+ * one width, the smaller of the incoming width and [FEEDBACK_DECK_MAX_WIDTH], centered. No items lay
+ * out as 0 by 0.
  *
  * The host adds no window-inset padding of its own: a Scaffold snackbar slot is already lifted above
  * the system bars, and the keyboard only lowers the cap.
@@ -76,6 +84,7 @@ internal fun FeedbackDeck(
     modifier: Modifier = Modifier,
     fanned: Boolean = false,
     onPointerChange: (Boolean) -> Unit = {},
+    imeInsets: WindowInsets = WindowInsets.ime,
     card: @Composable (item: FeedbackStackItem, index: Int) -> Unit
 ) {
     // One spring drives both geometries; the State object (not its value) goes to the layout so only
@@ -85,7 +94,11 @@ internal fun FeedbackDeck(
         animationSpec = ExpressiveMotion.emphasizedSpatialSpec,
         label = "feedback-deck-fan"
     )
-    val ime = WindowInsets.ime
+    // Distance from the deck's bottom edge to the window bottom, sampled while collapsed. The
+    // window-level keyboard inset only counts for the part that reaches the deck: a host that already
+    // sits above the keyboard (imePadding, a Scaffold) must not have it subtracted a second time.
+    // Sampling only at rest keeps this from feeding back into the fanned height.
+    var spaceBelowPx by remember { mutableIntStateOf(0) }
     val scroll = rememberScrollState()
     val latestOnPointerChange by rememberUpdatedState(onPointerChange)
     ScrollToNewestWhenFanned(fanned = fanned, fan = fan, scroll = scroll)
@@ -93,6 +106,13 @@ internal fun FeedbackDeck(
         modifier = modifier
             .testTag(FEEDBACK_STACK_DECK_TEST_TAG)
             .semantics { isTraversalGroup = true }
+            .onGloballyPositioned { coordinates ->
+                if (fan.value == 0f && coordinates.isAttached) {
+                    val bottom = coordinates.positionInRoot().y + coordinates.size.height
+                    val below = (coordinates.findRootCoordinates().size.height - bottom).toInt()
+                    spaceBelowPx = below.coerceAtLeast(0)
+                }
+            }
             .pointerInput(Unit) {
                 // Non-consuming, initial-pass observer: the first down anywhere pauses the deck, and
                 // it stays paused until no pointer is pressed. It must not wait for up or cancellation
@@ -112,7 +132,7 @@ internal fun FeedbackDeck(
     ) {
         // A vertical scroll container refuses an infinite max height, so an unbounded host gets the
         // plain, uncapped deck.
-        val capped = Modifier.fanHeightCap(fan, ime)
+        val capped = Modifier.fanHeightCap(fan, imeInsets) { spaceBelowPx }
         val container = if (constraints.hasBoundedHeight) capped.verticalScroll(scroll) else capped
         DeckLayout(items = items, fan = fan, modifier = container, card = card)
     }
@@ -135,11 +155,18 @@ private fun ScrollToNewestWhenFanned(fanned: Boolean, fan: State<Float>, scroll:
 /**
  * While the deck is fanning or fanned, limits the height the container may take to
  * [feedbackFannedCap]. Collapsed (progress exactly 0) or unbounded it passes constraints through.
+ * Only the keyboard part that reaches past the deck's bottom edge ([spaceBelowPx] above the window
+ * bottom) counts against the cap.
  */
-private fun Modifier.fanHeightCap(fan: State<Float>, ime: WindowInsets): Modifier =
+private fun Modifier.fanHeightCap(
+    fan: State<Float>,
+    ime: WindowInsets,
+    spaceBelowPx: () -> Int
+): Modifier =
     layout { measurable, constraints ->
         val limit = if (fan.value > 0f && constraints.hasBoundedHeight) {
-            feedbackFannedCap(constraints.maxHeight, ime.getBottom(this))
+            val overlap = (ime.getBottom(this) - spaceBelowPx()).coerceAtLeast(0)
+            feedbackFannedCap(constraints.maxHeight, overlap, FEEDBACK_FANNED_MIN_CAP.roundToPx())
         } else {
             constraints.maxHeight
         }

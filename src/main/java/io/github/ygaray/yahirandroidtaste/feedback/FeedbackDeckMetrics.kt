@@ -72,14 +72,24 @@ internal fun feedbackFannedHeight(heights: List<Int>, gapPx: Int): Int =
     if (heights.isEmpty()) 0 else heights.sum() + (heights.size - 1) * gapPx
 
 /**
- * Cap on the fanned deck's height: 60 percent of [available], and never more than what the on-screen
- * keyboard leaves ([imeBottom] px are lost at the bottom). Never negative. An unbounded
- * [available] (`Constraints.Infinity`) stays unbounded as `Int.MAX_VALUE`.
+ * Least height a fanned deck keeps when the on-screen keyboard leaves it little room, so the fanned
+ * column can never collapse to nothing while its cards are still in state and the timers are paused.
  */
-internal fun feedbackFannedCap(available: Int, imeBottom: Int): Int {
+internal val FEEDBACK_FANNED_MIN_CAP: Dp = 96.dp
+
+/**
+ * Cap on the fanned deck's height: the smaller of 60 percent of [available] and what the keyboard
+ * leaves of it, where [imeOverlap] px of [available] are covered by the keyboard (the part of the
+ * keyboard that actually overlaps the host, not the whole window inset). The keyboard term never
+ * pushes the cap below [floorPx], itself limited to [available]; the 60 percent share is the only
+ * term that can go lower. Never negative. An unbounded [available] (`Constraints.Infinity`) stays
+ * unbounded as `Int.MAX_VALUE`.
+ */
+internal fun feedbackFannedCap(available: Int, imeOverlap: Int, floorPx: Int = 0): Int {
     if (available == Constraints.Infinity) return Int.MAX_VALUE
     val share = (available * FEEDBACK_FANNED_MAX_HEIGHT_FRACTION).toInt()
-    return minOf(share, available - imeBottom).coerceAtLeast(0)
+    val keyboardRoom = maxOf(available - imeOverlap, minOf(floorPx, available))
+    return minOf(share, keyboardRoom).coerceAtLeast(0)
 }
 
 /** Linear interpolation of two pixel values by [fraction] (0 gives [start], 1 gives [stop]). */
