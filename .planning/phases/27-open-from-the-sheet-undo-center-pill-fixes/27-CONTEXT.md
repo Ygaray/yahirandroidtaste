@@ -76,3 +76,7 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
 999.4 voice-surface polish → v2.8.1; combined "Undo & open"; share/MCP deep links; SB sheet-swap blink (app-side).
 
 </deferred>
+
+## Runtime Decisions
+
+- **D-04 [undo-center-tap] refreshed after Phase 25 (ai-auto):** onTap + no-op onLongPress, merged Role.Button node; required-param overload; update the count contract deliberately. Refreshed against Phase 25: a row is openable iff entry.openableTarget != null (Phase 25 derives it null unless Available, so Undone/Failed rows lose the chevron and click); grouped entries carry targets through the Phase 25 append overload, and a group header itself never opens.
