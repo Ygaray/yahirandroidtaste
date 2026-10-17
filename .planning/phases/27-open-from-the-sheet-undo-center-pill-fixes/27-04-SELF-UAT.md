@@ -11,7 +11,7 @@ device: SM-S908U (R5CT10XNKQN)
 apk: io.github.ygaray.yahirandroidtasteharness (sha256 381843a6269f)
 run: 2026-10-17T19:42:28.410Z
 command_guard_breaches: 0
-command_guard_refusals: 11
+command_guard_refusals: 12
 ---
 
 <!-- Gate-1 self-UAT, phase 27 (consolidated per phase; evidence under the last plan, 27-04, as for Phases 25 and 26). -->
@@ -136,7 +136,7 @@ infra: 0
 - **Peek timing:** the press-less long-click peek lasts about 3 s; the signed capture pipeline is slower than that, so the visible/gone pair is raw dumps with timestamps (`104`, `105`, `106`).
 - **Not exercised here:** TalkBack itself (Phase 28, A11Y-02), the Explorer demos for these surfaces (DEMO-03), trailing-lambda `UndoCenterScreen` call sites on device (rung 1 canary), a real finger's press indication timing (the press state is seen with a 6.5 s `adb` hold).
 - **Samsung pencil overlay** at the right edge of some screenshots is a device overlay, not the app.
-- **Command guard.** `command_guard_breaches: 0`. `command_guard_refusals: 11`, all fail-closed `uninspectable` refusals of calls that never ran: a `source /dev/stdin`, four scripts written and run in the same call, three python invocations whose path was a variable or a not-yet-written file, three calls whose script or `git` argument used an unresolved variable. None was a forbidden command (`git push`, `git tag`, `wm density reset`, `adb connect`, `gradlew --stop`, a personal-phone adb address); each was re-issued as a literal command or a script file written beforehand.
+- **Command guard.** `command_guard_breaches: 0`. `command_guard_refusals: 12`, all fail-closed `uninspectable` refusals of calls that never ran: a `source /dev/stdin`, four scripts written and run in the same call, three python invocations whose path was a variable or a not-yet-written file, four calls whose script or `git` argument used an unresolved variable or command substitution. None was a forbidden command (`git push`, `git tag`, `wm density reset`, `adb connect`, `gradlew --stop`, a personal-phone adb address); each was re-issued as a literal command or a script file written beforehand.
 - **Residual device differences:** none (font scale 1.0, density 450, accessibility settings null/0, harness uninstalled).
 - **Convergence:** first Gate-1 cycle for Phase 27; no prior SELF-UAT existed, so there was no prior verdict to audit. The claims I treated as claims to falsify were the plan's `27-VERIFICATION.md` "device-only aspects deferred to Gate-1" items, each re-derived from the ROADMAP wording above.
 
