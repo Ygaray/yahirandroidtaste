@@ -95,3 +95,4 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
   - Purge only placeholder rows: cached tiles whose bytes match the blocked PNG (size 6987 B plus its md5, pinned as a constant from the probe).
   - When: once per install (flag in the hub's osmdroid prefs), and again whenever a placeholder is detected.
   - Same approach as SB's contingency, so the two don't conflict.
+  - Placeholder fingerprint (probe 2026-10-17, blank UA, 3/2/3.png): 6987 bytes, md5 `c069a15b2cc2d6b6f527ad09eb93c61a`. Size AND md5 must match before a row is purged. If OSM changes the image, the purge just misses (fail-safe), and the Log.w still fires.
