@@ -75,3 +75,19 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
   - Fix scope: internal only in `component/PlaceMapOsmdroidConfig.kt` (resolver + builder + one `Log.w`) and the `PlaceMapPicker` KDoc. No API change.
   - `x-blocked` response detection only if cheap (osmdroid's downloader is internal); otherwise it goes in the backlog.
   - Verification must re-run the curl probe with the exact resolved strings.
+- **POL-03 scope change (2026-10-17, teamlead@vae-bilingual from SB 181.1 Gate-1 FAIL, verified by ui-designer in the osmdroid 6.1.20 bytecode):**
+  - Why the current code fails:
+    - `TileDownloader` checks `TileSourcePolicy.normalizesUserAgent()`. MAPNIK normalizes, so the `User-Agent` header is `Configuration.getNormalizedUserAgent()` (`mNormalizedUserAgent`, `<packageName>/<versionCode>`, for example `com.example.secondbrain/1`, which is blocked).
+    - `userAgentValue` is ignored for MAPNIK, so today's `configureOsmdroid` setting of `userAgentValue` has NO effect on the wire.
+    - `TileDownloader` then applies `getAdditionalHttpRequestProperties()` with `setRequestProperty` AFTER the UA header, so a `"User-Agent"` entry there wins.
+  - Fix in `configureOsmdroid` (internal, no API change):
+    - After `load()`, put the resolved caller UA into `Configuration.getInstance().additionalHttpRequestProperties["User-Agent"]`. Keep setting `userAgentValue` too, for non-normalizing sources.
+    - SB compatibility: SB already sets the same map key app-side. Use the same header and key. If a non-blank `User-Agent` entry already exists, decide the precedence explicitly and pin it with a test. Proposed: the caller's `userAgent` param wins (it is the hub's documented input; SB passes the same value). Never add a second header.
+    - Check whether `load()` clears `additionalHttpRequestProperties`, and set the entry after `load()` either way.
+  - Keep the blank / `com.example` `Log.w`. Note that the fallback built from a `com.example` id is still blocked.
+  - Stale cache: a blocked fetch re-stamps a 7-day expiry on the cached 6987-byte placeholder. SHOULD: when the resolved UA differs from the last one stored in the hub's osmdroid prefs, clear the tile cache once, so fixed apps don't show blocked tiles for a week. A cache purge is not a bulk download, so it is policy-safe.
+  - Consumers: only SecondBrain uses PlaceMapPicker today (CalTracker checked: no use).
+  - Verification MUST check the wire, not just a host curl:
+    - On the TESTER, render the picker in the Explorer with a real-id UA, then pull the cached tile (or capture the request) and assert its md5/size is not the 6987-byte placeholder and that no `x-blocked` placeholder is cached.
+    - Plus a unit/Robolectric test that `additionalHttpRequestProperties["User-Agent"]` equals the resolved UA after `configureOsmdroid`.
+    - The host curl matrix stays as a supporting check.
