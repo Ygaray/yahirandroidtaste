@@ -43,7 +43,6 @@ import io.github.ygaray.yahirandroidtaste.model.UndoRefusedUiModel
 import io.github.ygaray.yahirandroidtaste.model.UndoRowState
 import io.github.ygaray.yahirandroidtaste.model.UndoRowUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import kotlinx.coroutines.launch
 
@@ -197,7 +196,7 @@ fun VoiceCommandFamilyScreen(
     themeMode: ThemeMode,
     onToggleTheme: () -> Unit
 ) {
-    YahirAndroidTasteTheme(themeMode = themeMode) {
+    ExplorerTheme(themeMode) {
         Scaffold(
             topBar = { VoiceCommandFamilyTopBar(onNavigateBack, themeMode, onToggleTheme) }
         ) { paddingValues ->

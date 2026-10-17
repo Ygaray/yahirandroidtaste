@@ -37,7 +37,6 @@ import io.github.ygaray.yahirandroidtaste.component.PresetChip
 import io.github.ygaray.yahirandroidtaste.component.SortControl
 import io.github.ygaray.yahirandroidtaste.component.TagChipWithContextMenu
 import io.github.ygaray.yahirandroidtaste.model.TagSortMode
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
 /**
@@ -291,7 +290,7 @@ fun ChipsFamilyScreen(
     themeMode: ThemeMode,
     onToggleTheme: () -> Unit
 ) {
-    YahirAndroidTasteTheme(themeMode = themeMode) {
+    ExplorerTheme(themeMode) {
         Scaffold(
             topBar = { ChipsFamilyTopBar(onNavigateBack, themeMode, onToggleTheme) }
         ) { paddingValues ->

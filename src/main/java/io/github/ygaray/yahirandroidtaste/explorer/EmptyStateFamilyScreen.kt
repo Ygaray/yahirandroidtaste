@@ -17,7 +17,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import io.github.ygaray.yahirandroidtaste.component.EmptyState
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
 /**
@@ -64,7 +63,7 @@ fun EmptyStateFamilyScreen(
     themeMode: ThemeMode,
     onToggleTheme: () -> Unit
 ) {
-    YahirAndroidTasteTheme(themeMode = themeMode) {
+    ExplorerTheme(themeMode) {
         Scaffold(
             topBar = { EmptyStateFamilyTopBar(onNavigateBack, themeMode, onToggleTheme) }
         ) { paddingValues ->

@@ -53,7 +53,6 @@ import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import io.github.ygaray.yahirandroidtaste.theme.TactileType
 import io.github.ygaray.yahirandroidtaste.theme.ToneColors
 import io.github.ygaray.yahirandroidtaste.theme.ToneDefaults
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -332,7 +331,7 @@ fun CardsFamilyScreen(
     themeMode: ThemeMode,
     onToggleTheme: () -> Unit
 ) {
-    YahirAndroidTasteTheme(themeMode = themeMode) {
+    ExplorerTheme(themeMode) {
         Scaffold(
             topBar = { CardsFamilyTopBar(onNavigateBack, themeMode, onToggleTheme) }
         ) { paddingValues ->

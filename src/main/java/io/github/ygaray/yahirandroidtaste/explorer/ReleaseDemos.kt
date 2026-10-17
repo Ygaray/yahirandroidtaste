@@ -54,7 +54,6 @@ import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import io.github.ygaray.yahirandroidtaste.theme.ContentTone
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import io.github.ygaray.yahirandroidtaste.theme.ToneDefaults
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 
 /*
  * v2.6.0 release demos (Phase 24, DEMO-01). Explorer-only: this package is drift-guard denylisted,
@@ -283,20 +282,16 @@ private fun demoGroup(
 // --- Hub static scheme -----------------------------------------------------------------------------
 
 /**
- * Re-wraps [content] in the hub's static palette ([YahirAndroidTasteTheme] with `dynamicColor = false`)
- * for the current light or dark mode, decided from the active scheme's surface luminance. The Receipt
- * and tone demos use it so the warn tone shows the hub amber the owner reviews instead of the device
- * wallpaper tone (uat-pending/20 item 2, an owner-flagged decision). Every other Explorer page keeps
- * dynamic color; no global theme changes.
+ * Re-derives the hub's static palette ([ExplorerTheme]) for the current light or dark mode, decided
+ * from the active scheme's surface luminance, so a foreign outer scheme still resolves to the hub
+ * scheme. The sheet and tone demos use it so the warn tone shows the hub amber the owner reviews
+ * instead of the device wallpaper tone (uat-pending/20 item 2, an owner-flagged decision). Every
+ * Explorer page is now pinned to the same scheme by [ExplorerTheme]; no global theme changes.
  */
 @Composable
 internal fun HubSchemeScope(content: @Composable () -> Unit) {
     val dark = MaterialTheme.colorScheme.surface.luminance() < DARK_SURFACE_LUMINANCE
-    YahirAndroidTasteTheme(
-        themeMode = if (dark) ThemeMode.DARK else ThemeMode.LIGHT,
-        dynamicColor = false,
-        content = content
-    )
+    ExplorerTheme(if (dark) ThemeMode.DARK else ThemeMode.LIGHT, content)
 }
 
 private const val DARK_SURFACE_LUMINANCE = 0.5f

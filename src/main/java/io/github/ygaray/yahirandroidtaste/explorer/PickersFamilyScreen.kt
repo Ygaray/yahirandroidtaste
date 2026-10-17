@@ -30,7 +30,6 @@ import io.github.ygaray.yahirandroidtaste.component.PlaceMapPicker
 import io.github.ygaray.yahirandroidtaste.component.SegmentedOptionSelector
 import io.github.ygaray.yahirandroidtaste.component.SegmentedOptionStyle
 import io.github.ygaray.yahirandroidtaste.model.SavedPlaceUiModel
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import java.time.LocalDate
 import java.time.LocalTime
@@ -244,7 +243,7 @@ fun PickersFamilyScreen(
     themeMode: ThemeMode,
     onToggleTheme: () -> Unit
 ) {
-    YahirAndroidTasteTheme(themeMode = themeMode) {
+    ExplorerTheme(themeMode) {
         Scaffold(
             topBar = { PickersFamilyTopBar(onNavigateBack, themeMode, onToggleTheme) }
         ) { paddingValues ->

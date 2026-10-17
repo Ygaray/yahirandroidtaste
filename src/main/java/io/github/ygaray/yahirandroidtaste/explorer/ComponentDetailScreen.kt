@@ -37,7 +37,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 
 /**
  * Per-component detail page (EXPLORE-01, D-02/D-03) resolved by [ComponentRegistry.Entry] —
@@ -55,7 +54,7 @@ fun ComponentDetailScreen(
     themeMode: ThemeMode,
     onToggleTheme: () -> Unit
 ) {
-    YahirAndroidTasteTheme(themeMode = themeMode) {
+    ExplorerTheme(themeMode) {
         Scaffold(
             topBar = {
                 TopAppBar(

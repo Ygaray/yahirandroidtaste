@@ -24,7 +24,6 @@ import io.github.ygaray.yahirandroidtaste.component.HeatSwatch
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import io.github.ygaray.yahirandroidtaste.theme.ElevationLadder
 import io.github.ygaray.yahirandroidtaste.theme.TactileTypeShowcase
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
 /**
@@ -120,7 +119,7 @@ fun TactileFoundationFamilyScreen(
     themeMode: ThemeMode,
     onToggleTheme: () -> Unit
 ) {
-    YahirAndroidTasteTheme(themeMode = themeMode) {
+    ExplorerTheme(themeMode) {
         Scaffold(
             topBar = { TactileFoundationFamilyTopBar(onNavigateBack, themeMode, onToggleTheme) }
         ) { paddingValues ->

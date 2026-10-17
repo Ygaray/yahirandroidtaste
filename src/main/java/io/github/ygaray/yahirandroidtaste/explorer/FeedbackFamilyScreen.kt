@@ -35,7 +35,6 @@ import io.github.ygaray.yahirandroidtaste.feedback.FeedbackStackHost
 import io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget
 import io.github.ygaray.yahirandroidtaste.feedback.UndoCenterScreen
 import io.github.ygaray.yahirandroidtaste.feedback.rememberFeedbackStackState
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -183,7 +182,7 @@ fun FeedbackFamilyScreen(
     themeMode: ThemeMode,
     onToggleTheme: () -> Unit
 ) {
-    YahirAndroidTasteTheme(themeMode = themeMode) {
+    ExplorerTheme(themeMode) {
         Scaffold(
             topBar = { FeedbackFamilyTopBar(onNavigateBack, themeMode, onToggleTheme) }
         ) { paddingValues ->
