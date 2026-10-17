@@ -95,6 +95,7 @@ internal const val DEMO_TAG_UNDO_TARGETS_GERMAN = "demo_undo_targets_german"
 internal const val DEMO_TAG_UNDO_TARGETS_OPENED = "demo_undo_targets_opened"
 internal const val DEMO_TAG_FEEDBACK_STACK_RESULT = "demo_feedback_result"
 internal const val DEMO_TAG_FEEDBACK_STACK_OPENED = "demo_feedback_opened"
+internal const val DEMO_TAG_HOISTED_SHEET_SHOW = "demo_hoisted_sheet_show"
 
 // --- ProviderKeyCard key lifecycle ---------------------------------------------------------------
 
