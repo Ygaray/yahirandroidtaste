@@ -148,9 +148,11 @@ class FeedbackStackHostDeckTest {
      * With [aboveUndoTopDp] at 0 the point is the middle of the overlap between the Undo's bounds and
      * the strip, and the helper fails loudly if the two overlap by 2dp or less, so a moved geometry can
      * never turn the test vacuous. Above 0 the point sits up to that many dp above the Undo's top,
-     * the band only Compose's touch-slop widening of the button reaches; it is clamped to 0.5dp
-     * inside the strip's top edge, because the node's bounds already start close to the card's top
-     * (1.9dp in Robolectric), and the helper asserts the point stays above the Undo's bounds.
+     * the band Compose's touch-slop widening of the button covers on a device; Robolectric does not
+     * widen the hit region beyond the node bounds, so a test using it is a control only. The point is
+     * clamped to 0.5dp inside the strip's top edge, because the node's bounds already start close to
+     * the card's top (1.9dp in Robolectric), and the helper asserts the point stays above the Undo's
+     * bounds.
      */
     private fun undoPointInTheStrip(message: String, aboveUndoTopDp: Float = 0f): Pair<Dp, Dp> {
         val card = card(message).getUnclippedBoundsInRoot()
@@ -266,8 +268,15 @@ class FeedbackStackHostDeckTest {
         state.dismissAll()
     }
 
+    /**
+     * A CONTROL, not a blocker guard: it passes with the blocker removed. Robolectric's hit test uses
+     * the node bounds only and the Undo's bounds already start about 2dp below the card top, so the
+     * point 2dp above them (clamped into the strip) lands outside the button and never reaches it. The
+     * real touch-slop widening of the button (T-26-21) is therefore proven only by the device re-run;
+     * the Undo-overlap tests around this one are the ones that bite.
+     */
     @Test
-    fun peekTapOnTheUndosTouchSlopBand_fansTheDeck_andNeverUndoes() {
+    fun peekTapJustAboveTheUndoBounds_fansTheDeck_control() {
         val state = FeedbackStackState()
         val store = UndoHistoryStore()
         val results = mutableMapOf<String, FeedbackResult>()
@@ -276,7 +285,7 @@ class FeedbackStackHostDeckTest {
         showTracked(state, store, withUndo("Back") { undoRuns++ }, "Back", results)
         show(state, notify("Front"), "Front", results)
 
-        // 2dp above the Undo's layout top: only the touch-slop widening of the button reaches here.
+        // Up to 2dp above the Undo's bounds (clamped into the strip): outside the button for Robolectric.
         tapOverTheUndoInTheStrip("Back", aboveUndoTopDp = 2f)
 
         assertTrue(state.pauseState.value.fanned)
