@@ -38,7 +38,14 @@
 - [ ] **DEMO-03**: The Explorer shows the stacked snackbar host (fire/burst/swipe/open demo) and the sheet go-to-item rows, in English and German; new public composables are registered in `ComponentRegistry`.
 - [x] **POL-01**: The handled-by pill keeps its text inside its shape when it wraps at font scale 2.0 (corner radius capped when multi-line, or equivalent).
 - [x] **POL-02**: The Grammar (warn) handled-by dot stays clearly visible on the pill under dynamic color (contrast-safe dot).
-- [ ] **POL-03**: The map picker never silently sends a blocked user agent to the OSM tile server. When the caller's `userAgent` is blank or the bare package name, `configureOsmdroid` builds `"<packageName>/<versionName> (Android <sdk>)"` from PackageManager (internal, no API change). It logs one `Log.w` with the tile-policy URL whenever the resolved agent is blank-derived or contains the `com.example` placeholder namespace (OSM blocks both and answers HTTP 200 with a 6987-byte placeholder plus `x-blocked`). The `PlaceMapPicker` `userAgent` KDoc asks for `"AppName/version (+contact)"` from a real application id. (Source: teamlead@vae-bilingual, SB 999.111.)
+- [ ] **POL-03**: The map picker's user agent actually reaches the OSM tile server, and a blocked agent is never silent.
+  - osmdroid 6.1.20's MAPNIK normalizes the UA to `<packageName>/<versionCode>` and ignores `userAgentValue`. So `configureOsmdroid` sets `additionalHttpRequestProperties["User-Agent"]` to the resolved caller UA after EVERY `load()` (internal, no API change).
+  - The hub never writes the `osmdroid.additionalHttpRequestProperty.User-Agent` prefs key (SB owns it), and the caller param wins (test-pinned).
+  - A blank or bare-package-name UA falls back to `"<pkg>/<versionName> (Android <sdk>)"`.
+  - A blank-derived or `com.example` UA logs one `Log.w` with the tile-policy URL, because OSM blocks both with HTTP 200, `x-blocked` and a 6987-byte placeholder.
+  - Cached placeholder tiles (6987 B, md5 `c069a15b2cc2d6b6f527ad09eb93c61a`) are purged once per install and whenever one is detected, never the whole cache.
+  - The `PlaceMapPicker` KDoc asks for `"AppName/version (+contact)"`.
+  - (Source: teamlead@vae-bilingual, SB 999.111 / 181.1.)
 
 ### Ship
 
