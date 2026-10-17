@@ -342,8 +342,11 @@ class UndoCenterScreenOpenTargetTest {
         assertEquals("Open item", row.config[SemanticsActions.OnClick].label)
         val rowText = row.config.getOrNull(SemanticsProperties.Text).orEmpty().joinToString { it.text }
         assertFalse("Undo is its own node, not part of the merged row text", rowText.contains("Undo"))
-        // The message lives in the ListItem's own merged node, a child of the row.
-        composeTestRule.onNodeWithText("Tag deleted").assertExists()
+        // Phase 28 (A11Y-02, C-2): the ListItem node IS the row node, so the message is part of the
+        // row's own merged text and no separate message node remains. This used to pin the older
+        // three-stop structure (message in a child node of the row).
+        assertTrue("the row's merged text carries the message: $rowText", rowText.contains("Tag deleted"))
+        assertEquals(row.id, composeTestRule.onNodeWithText("Tag deleted").fetchSemanticsNode().id)
 
         val undo = composeTestRule.onNodeWithText("Undo").fetchSemanticsNode()
         assertTrue("Undo keeps a click action", undo.config.contains(SemanticsActions.OnClick))

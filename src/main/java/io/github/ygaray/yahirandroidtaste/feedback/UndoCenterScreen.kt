@@ -441,24 +441,26 @@ private fun UndoHistoryOpenRow(
             showPeek = false
         }
     }
-    Box(
-        modifier = modifier
-            .testTag("$UNDO_ROW_TEST_TAG_PREFIX${entry.id}")
-            .semantics(mergeDescendants = true) {}
-            .combinedClickable(
-                interactionSource = interactionSource,
-                indication = LocalIndication.current,
-                onClickLabel = target.openLabel.ifBlank { entry.message },
-                role = Role.Button,
-                onLongClickLabel = "Preview",
-                onLongClick = { showPeek = true },
-                onClick = { latestOpen(latestTarget) }
-            )
-    ) {
+    Box(modifier = modifier) {
+        // The tag, the merge and the single click owner sit on the ListItem's own modifier, so the
+        // ListItem node IS the row node: one stop that carries the message and the timestamp
+        // (A11Y-02, candidate C-2). The Undo button is a merging node of its own and stays separate.
         ListItem(
             headlineContent = { Text(entry.message) },
             supportingContent = { RelativeTimestampText(entry.timestamp) },
-            trailingContent = { UndoOpenTrailing(entry.id, onUndo) }
+            trailingContent = { UndoOpenTrailing(entry.id, onUndo) },
+            modifier = Modifier
+                .testTag("$UNDO_ROW_TEST_TAG_PREFIX${entry.id}")
+                .semantics(mergeDescendants = true) {}
+                .combinedClickable(
+                    interactionSource = interactionSource,
+                    indication = LocalIndication.current,
+                    onClickLabel = target.openLabel.ifBlank { entry.message },
+                    role = Role.Button,
+                    onLongClickLabel = "Preview",
+                    onLongClick = { showPeek = true },
+                    onClick = { latestOpen(latestTarget) }
+                )
         )
         if (showPeek) {
             UndoPreviewPeek(preview = entry.preview, message = entry.message)
