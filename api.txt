@@ -869,6 +869,7 @@ package io.github.ygaray.yahirandroidtaste.feedback {
 
   public final class UndoCenterScreenKt {
     method @KotlinOnly @androidx.compose.runtime.Composable public static void UndoCenterScreen(java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry> entries, kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onUndo, optional java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoGroupRowUiModel> groups, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onUndoGroup, kotlin.jvm.functions.Function0<kotlin.Unit> onClear);
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void UndoCenterScreen(java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryEntry> entries, kotlin.jvm.functions.Function0<kotlin.Unit> onNavigateBack, kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit> onUndo, optional java.util.List<io.github.ygaray.yahirandroidtaste.feedback.UndoGroupRowUiModel> groups, optional kotlin.jvm.functions.Function1<java.lang.String,kotlin.Unit>? onUndoGroup, kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget,kotlin.Unit> onOpenTarget, kotlin.jvm.functions.Function0<kotlin.Unit> onClear);
   }
 
   public final class UndoGroupRefusedException extends java.lang.Exception {
