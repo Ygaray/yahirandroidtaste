@@ -150,12 +150,14 @@ fun ExplorerEntry(onNavigateBack: () -> Unit) {
                 // Defensive fallback — a stale/typo'd route arg must never crash the app
                 // (RESEARCH Pitfall 3, mirrors this file's own `else ->` defensive precedent
                 // above): render EmptyState instead of asserting non-null.
-                EmptyState(
-                    icon = Icons.Default.Warning,
-                    title = "Component not found",
-                    body = "\"$componentName\" is not registered.",
-                    modifier = Modifier.fillMaxSize()
-                )
+                ExplorerTheme(themeMode) {
+                    EmptyState(
+                        icon = Icons.Default.Warning,
+                        title = "Component not found",
+                        body = "\"$componentName\" is not registered.",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
         }
     }

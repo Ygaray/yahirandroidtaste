@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
+import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 
 /**
  * CATALOG-06: :yahirandroidtaste's own launch surface for [ExplorerEntry] — lets any consuming
@@ -19,7 +19,7 @@ class ExplorerActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            YahirAndroidTasteTheme {
+            ExplorerTheme(ThemeMode.SYSTEM) {
                 ExplorerEntry(onNavigateBack = { finish() })
             }
         }
