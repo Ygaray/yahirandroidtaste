@@ -32,6 +32,14 @@ class FeedbackTargetTest {
         assertNotEquals(base, FeedbackTarget("item-42", "Open other"))
     }
 
+    @Test
+    fun toString_neverEchoesTheOpaqueKey() {
+        val text = FeedbackTarget("secret-key-42", "Open item").toString()
+        assertTrue(text.contains("Open item"))
+        assertTrue(!text.contains("secret-key-42"))
+        assertTrue(!FeedbackEvent.Notify("m", target = FeedbackTarget("secret-key-42", "x")).toString().contains("secret-key-42"))
+    }
+
     // ---- (b) no lambda, no Context: exactly two String fields ----
 
     @Test

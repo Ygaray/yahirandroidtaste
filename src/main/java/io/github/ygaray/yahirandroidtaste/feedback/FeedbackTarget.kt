@@ -5,8 +5,8 @@ import androidx.compose.runtime.Immutable
 /**
  * Opaque "go to the thing this feedback is about" target carried by a [FeedbackEvent].
  *
- * - [key] is an opaque, consumer-encoded identifier. The library never parses, logs or echoes it;
- *   the consumer decodes it in its own open callback.
+ * - [key] is an opaque, consumer-encoded identifier. The library never parses, logs or echoes it
+ *   (even [toString] leaves it out); the consumer decodes it in its own open callback.
  * - [openLabel] is localized text used as the TalkBack click label for the open action. It must
  *   be non-blank, by this rule only: there is no `init` or `require`, so construction never throws
  *   (a blank label makes the host fall back to the card message at render time).
@@ -16,4 +16,7 @@ import androidx.compose.runtime.Immutable
  * Equality is plain data-class value equality.
  */
 @Immutable
-data class FeedbackTarget(val key: String, val openLabel: String)
+data class FeedbackTarget(val key: String, val openLabel: String) {
+    /** Omits [key], so logging an event or history entry never prints the opaque identifier. */
+    override fun toString(): String = "FeedbackTarget(openLabel=$openLabel)"
+}
