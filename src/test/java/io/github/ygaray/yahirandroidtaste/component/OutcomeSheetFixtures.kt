@@ -125,6 +125,13 @@ internal object OutcomeFixtures {
         BatchRowResultUiModel(label = "Milk", succeeded = false, detail = "not found")
     )
 
+    /** Three batch rows for the per-row open tests: a targeted success, a target-less failure, a targeted success. */
+    fun batchResultsWithTargets(): List<BatchRowResultUiModel> = listOf(
+        BatchRowResultUiModel(label = "Item A", succeeded = true, target = FeedbackTarget("a-1", "Open item A")),
+        BatchRowResultUiModel(label = "Item B", succeeded = false, detail = "not found"),
+        BatchRowResultUiModel(label = "Item C", succeeded = true, target = FeedbackTarget("c-3", "Open item C"))
+    )
+
     /** A Receipt action with every field defaulted; tests name only what they care about. */
     fun sheetAction(
         label: String = "Done",

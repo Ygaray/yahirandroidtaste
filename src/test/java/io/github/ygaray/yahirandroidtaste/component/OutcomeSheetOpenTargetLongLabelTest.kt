@@ -18,6 +18,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget
+import io.github.ygaray.yahirandroidtaste.model.BatchRowResultUiModel
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
 import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
@@ -70,8 +71,7 @@ class OutcomeSheetOpenTargetLongLabelTest {
 
     private var fontScale by mutableFloatStateOf(1f)
 
-    private fun setContent(receipt: Boolean, copy: Copy) {
-        val success = successOf(copy)
+    private fun setContent(receipt: Boolean, copy: Copy, success: VoiceOutcomeUiState.Success = successOf(copy)) {
         composeTestRule.setContent {
             YahirAndroidTasteTheme(themeMode = ThemeMode.LIGHT, dynamicColor = false) {
                 CompositionLocalProvider(
@@ -164,4 +164,67 @@ class OutcomeSheetOpenTargetLongLabelTest {
 
     @Test
     fun classic_spanishTargetRow_wrapsAndKeepsTheChevronInside_atScale1and2() = assertLongTextWraps(false, spanish)
+
+    // --- FOPEN-02: a targeted, failed batch row with a long label and a long failure detail ---------------
+
+    /** No single target: the batch row alone makes the outcome openable, so there is exactly one chevron. */
+    private fun batchSuccessOf(copy: Copy) = VoiceOutcomeUiState.Success(
+        summary = copy.summary,
+        batchResults = listOf(
+            BatchRowResultUiModel(
+                label = copy.title,
+                succeeded = false,
+                detail = copy.detail,
+                target = FeedbackTarget("item-42", copy.openLabel)
+            )
+        )
+    )
+
+    private fun assertBatchGeometry(copy: Copy, scale: Float): Int {
+        val chevron = tagged(OPEN_TARGET_CHEVRON_TEST_TAG).fetchSemanticsNode()
+        val chevronLeft = chevron.positionInRoot.x
+        val chevronRight = chevronLeft + chevron.size.width
+        assertTrue("chevron has a visible width at x$scale", chevron.size.width > 0)
+        assertTrue(
+            "chevron $chevronLeft..$chevronRight must lie inside 0..${windowWidthPx()} at x$scale",
+            chevronLeft >= -1f && chevronRight <= windowWidthPx() + 1f
+        )
+        listOf("label" to copy.title, "detail" to copy.detail).forEach { (label, text) ->
+            val node = byText(text)
+            val right = node.fetchSemanticsNode().let { it.positionInRoot.x + it.size.width }
+            assertTrue("$label right edge $right must be at or left of the chevron $chevronLeft at x$scale", right <= chevronLeft + 1f)
+            assertNoEllipsizedLine("$label at x$scale", node)
+        }
+        val row = tagged("outcome_sheet_batch_row").fetchSemanticsNode()
+        assertTrue("row must stay inside the window width at x$scale", row.positionInRoot.x + row.size.width <= windowWidthPx() + 1f)
+        return row.size.height
+    }
+
+    private fun assertLongBatchRowWraps(receipt: Boolean, copy: Copy) {
+        fontScale = 1f
+        setContent(receipt, copy, batchSuccessOf(copy))
+        val normalHeight = assertBatchGeometry(copy, 1f)
+
+        fontScale = 2f
+        composeTestRule.waitForIdle()
+        val largeHeight = assertBatchGeometry(copy, 2f)
+
+        assertTrue("the row must grow taller at font scale 2.0 ($normalHeight -> $largeHeight)", largeHeight > normalHeight)
+    }
+
+    @Test
+    fun receipt_germanBatchRow_longLabelAndFailureDetail_wrapInsideTheWindow_chevronStaysInside() =
+        assertLongBatchRowWraps(true, german)
+
+    @Test
+    fun receipt_spanishBatchRow_longLabelAndFailureDetail_wrapInsideTheWindow_chevronStaysInside() =
+        assertLongBatchRowWraps(true, spanish)
+
+    @Test
+    fun classic_germanBatchRow_longLabelAndFailureDetail_wrapInsideTheWindow_chevronStaysInside() =
+        assertLongBatchRowWraps(false, german)
+
+    @Test
+    fun classic_spanishBatchRow_longLabelAndFailureDetail_wrapInsideTheWindow_chevronStaysInside() =
+        assertLongBatchRowWraps(false, spanish)
 }
