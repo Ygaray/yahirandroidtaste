@@ -2,9 +2,9 @@
 phase: "27"
 slug: open-from-the-sheet-undo-center-pill-fixes
 # status lifecycle: draft (seeded by plan-phase) → validated (set by validate-phase §6)
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: "2026-10-17"
 ---
 
@@ -44,17 +44,17 @@ Task IDs are bound by the planner; requirement coverage below is from 27-RESEARC
 
 | Requirement | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |-------------|-----------------|-----------|-------------------|-------------|--------|
-| FOPEN-01 | row shows title/detail/chevron, tap calls `onOpenTarget(target)` once, Role.Button; no-target / no-handler render equals v2.7.1; key never in semantics/testTag/log | Robolectric | `--tests '*OpenTargetRowTest' --tests '*OutcomeSheetOpenTargetTest'` | ❌ W0 | ⬜ pending |
-| FOPEN-01 | Classic SHA pins, dispatch literal, Receipt order stay green unedited | source contract | `--tests '*OutcomeSheetClassicParitySourceContractTest' --tests '*OutcomeSheetReceiptSourceContractTest'` | ✅ | ⬜ pending |
-| FOPEN-01 | source compat of v2.7.1 shapes | compile canary | `--tests '*V271CallSiteCanaryTest'` | ✅ extend | ⬜ pending |
-| FOPEN-02 | per-row batch targets; target-less rows have no OnClick, no chevron | Robolectric | `--tests '*OutcomeSheetBatchOpenTargetTest'` | ❌ W0 | ⬜ pending |
-| FOPEN-03 | Available+target opens; Undone/Failed/no-target/group header do not; stale-callback guard; hold shows peek only | Robolectric | `--tests '*UndoCenterScreenOpenTargetTest'` | ❌ W0 | ⬜ pending |
-| FOPEN-03 | old overload unchanged (golden), source contract count 1 to 2 deliberate | golden + contract | `--tests '*UndoCenterScreenDefaultParityTest' --tests '*UndoCenterScreenOpenParityTest' --tests '*UndoCenterScreenSourceContractTest' --tests '*UndoCenterScreenSourceCompatV251Test'` | ✅ + ❌ W0 | ⬜ pending |
-| FOPEN-01/02/03 | long German at w360dp and font scale 2.0: wraps, chevron inside window | Robolectric NATIVE | `--tests '*OutcomeSheetOpenTargetLongLabelTest' --tests '*UndoCenterScreenOpenTargetLongLabelTest'` | ❌ W0 | ⬜ pending |
-| POL-01 | radius = min(height/2, cap); one-line equals CircleShape; multi-line text corners inside shape (CircleShape control fails) | JVM + Robolectric | `--tests '*HandledByPillShapeTest' --tests '*OutcomeSheetReceiptLongLabelTest'` | ❌ W0 | ⬜ pending |
-| POL-02 | `handledByDotRing` null on hub light/dark, contrast >= 3 for synthetic white-on-light and dynamic samples; dot tag/size unchanged | JVM + Robolectric | `--tests '*HandledByDotContrastTest' --tests '*OutcomeSheetReceiptSuccessTest'` | ❌ W0 | ⬜ pending |
-| API | additive only | gate | `./gradlew apiDump apiCheck`, `git diff api.txt`, `bash tools/verify-api-source-additive.sh v2.7.1` | n/a | ⬜ pending |
-| Style | detekt zero baseline | static | `./gradlew detekt --no-daemon` | n/a | ⬜ pending |
+| FOPEN-01 | row shows title/detail/chevron, tap calls `onOpenTarget(target)` once, Role.Button; no-target / no-handler render equals v2.7.1; key never in semantics/testTag/log | Robolectric | `--tests '*OpenTargetRowTest' --tests '*OutcomeSheetOpenTargetTest'` | ✅ | ✅ green |
+| FOPEN-01 | Classic SHA pins, dispatch literal, Receipt order stay green unedited | source contract | `--tests '*OutcomeSheetClassicParitySourceContractTest' --tests '*OutcomeSheetReceiptSourceContractTest'` | ✅ | ✅ green |
+| FOPEN-01 | source compat of v2.7.1 shapes | compile canary | `--tests '*V271CallSiteCanaryTest'` | ✅ | ✅ green |
+| FOPEN-02 | per-row batch targets; target-less rows have no OnClick, no chevron | Robolectric | `--tests '*OutcomeSheetBatchOpenTargetTest'` | ✅ | ✅ green |
+| FOPEN-03 | Available+target opens; Undone/Failed/no-target/group header do not; stale-callback guard; hold shows peek only | Robolectric | `--tests '*UndoCenterScreenOpenTargetTest'` | ✅ | ✅ green |
+| FOPEN-03 | old overload unchanged (golden), source contract count 1 to 2 deliberate | golden + contract | `--tests '*UndoCenterScreenDefaultParityTest' --tests '*UndoCenterScreenOpenParityTest' --tests '*UndoCenterScreenSourceContractTest' --tests '*UndoCenterScreenSourceCompatV251Test'` | ✅ | ✅ green |
+| FOPEN-01/02/03 | long German at w360dp and font scale 2.0: wraps, chevron inside window | Robolectric NATIVE | `--tests '*OutcomeSheetOpenTargetLongLabelTest' --tests '*UndoCenterScreenOpenTargetLongLabelTest'` | ✅ | ✅ green |
+| POL-01 | radius = min(height/2, cap); one-line equals CircleShape; multi-line text corners inside shape (CircleShape control fails) | JVM + Robolectric | `--tests '*HandledByPillShapeTest' --tests '*OutcomeSheetReceiptLongLabelTest'` | ✅ | ✅ green |
+| POL-02 | `handledByDotRing` null on hub light/dark, contrast >= 3 for synthetic white-on-light and dynamic samples; dot tag/size unchanged | JVM + Robolectric | `--tests '*HandledByDotContrastTest' --tests '*OutcomeSheetReceiptSuccessTest'` | ✅ | ✅ green |
+| API | additive only | gate | `./gradlew apiDump apiCheck`, `git diff api.txt`, `bash tools/verify-api-source-additive.sh v2.7.1` | n/a | ✅ green |
+| Style | detekt zero baseline | static | `./gradlew detekt --no-daemon` | n/a | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -62,12 +62,12 @@ Task IDs are bound by the planner; requirement coverage below is from 27-RESEARC
 
 ## Wave 0 Requirements
 
-- [ ] `component/OpenTargetRowTest.kt`, `OutcomeSheetOpenTargetTest.kt`, `OutcomeSheetBatchOpenTargetTest.kt`, `OutcomeSheetOpenTargetLongLabelTest.kt` (FOPEN-01/02)
-- [ ] `feedback/UndoCenterScreenOpenTargetTest.kt`, `UndoCenterScreenOpenParityTest.kt`, `UndoCenterScreenOpenTargetLongLabelTest.kt` (FOPEN-03)
-- [ ] `component/HandledByPillShapeTest.kt`, `HandledByDotContrastTest.kt` (POL-01/02)
-- [ ] Extend `OutcomeSheetFixtures.kt` (`success(...)` + `batchResultsWithTargets()`), `V271CallSiteCanaryTest`
-- [ ] Edit `UndoCenterScreenSourceContractTest` count 1 to 2 (D-04, deliberate)
-- [ ] Pure-JVM contrast helper test mirroring `ContrastTestSupport.contrastRatio`
+- [x] `component/OpenTargetRowTest.kt`, `OutcomeSheetOpenTargetTest.kt`, `OutcomeSheetBatchOpenTargetTest.kt`, `OutcomeSheetOpenTargetLongLabelTest.kt` (FOPEN-01/02)
+- [x] `feedback/UndoCenterScreenOpenTargetTest.kt`, `UndoCenterScreenOpenParityTest.kt`, `UndoCenterScreenOpenTargetLongLabelTest.kt` (FOPEN-03)
+- [x] `component/HandledByPillShapeTest.kt`, `HandledByDotContrastTest.kt` (POL-01/02)
+- [x] Extend `OutcomeSheetFixtures.kt` (`success(...)` + `batchResultsWithTargets()`), `V271CallSiteCanaryTest`
+- [x] Edit `UndoCenterScreenSourceContractTest` count 1 to 2 (D-04, deliberate)
+- [x] Pure-JVM contrast helper test mirroring `ContrastTestSupport.contrastRatio`
 
 ---
 
@@ -83,13 +83,25 @@ Gate-1 (agentic, TESTER `R5CT10XNKQN`) covers on-device tap-to-open, font scale 
 
 ## Validation Sign-Off
 
-> **Plan-time state is a DRAFT.** Frontmatter `status: draft` and `nyquist_compliant: false` are finalized only post-execution by the Nyquist finalizer.
+> Finalized post-execution by the Nyquist finalizer (2026-10-17).
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 120s
-- [ ] _(finalizer-only, post-execution)_ `nyquist_compliant` — leave `false` at plan time
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 120s
+- [x] _(finalizer-only, post-execution)_ `nyquist_compliant: true` set by the finalizer
 
-**Approval:** pending (finalizer-owned)
+**Approval:** validated 2026-10-17 (finalizer)
+
+---
+
+## Validation Audit 2026-10-17
+
+| Metric | Count |
+|--------|-------|
+| Gaps found | 0 |
+| Resolved | 0 |
+| Escalated | 0 |
+
+Every requirement row maps to an existing test class that ran green in the fresh post-fix run (18 mapped classes, 0 failures, 0 errors, 0 skipped), plus the fresh full gate (`testDebugUnitTest detekt apiCheck --rerun-tasks`, rc=0), the additive script (`API SOURCE-ADDITIVE OK`) and the Gate-1 signed run `uatr-20261017T194228Z-30718f43` (all five criteria PASS on the tester). The single Manual-Only row (TalkBack reading of the new rows) is Phase 28 scope (A11Y-02), not an automatable gap. No code outside `.planning` changed between the security audit head (5017ce6) and HEAD, so the SECURITY audit stays fresh.
