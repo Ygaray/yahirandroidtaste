@@ -1,324 +1,200 @@
-# Feature Research
+# Feature Research: v2.8 Snackbar go-to-item + stacked feedback
 
-**Domain:** AI-voice command UI — generic, prop-driven presentational Compose composables for a reusable design-system hub (settings surfaces + outcome/confirmation surfaces)
-**Researched:** 2026-09-29
-**Confidence:** HIGH (established Material 3 / Compose UX patterns; consumer prop-shapes derived from the frozen §6.3 contract + SB `MutationGate`/`VoiceConfirmGate` and CT weak-match confirm)
+**Domain:** stacked, tap-to-open transient feedback (snackbar deck) plus go-to-item rows on the outcome sheet and in the Undo Center, inside a reusable Compose design library
+**Researched:** 2026-10-17
+**Confidence:** HIGH for reference behaviors (read from upstream source: Sonner `main`, MDC-Android `Snackbar`/`BaseTransientBottomBar`/`SwipeDismissBehavior`, Compose M3 `SnackbarHost`/`Scaffold`/`SwipeToDismissBox` on androidx-main). MEDIUM for reduced motion (Compose honoring the animator duration scale comes from accessibility-engineer write-ups, not docs).
 
-> Scope note: this is a **presentational library slice**. "Table stakes vs differentiators vs anti-features" here means *component-behavior expectations* (what a well-built settings/outcome composable must do), not product-market features. The load-bearing output for the roadmap is the **prop-shape** and **states-matrix** implications per phase — those are called out inline and consolidated at the end.
+> **Scope.** D-01..D-17 are locked (`v2.8-BRIEF.md`). This file doesn't reopen them. It lists what comparable systems do, so the plans don't miss a behavior the locked design leaves implicit. The most useful part for the roadmap is **"Gaps the brief leaves implicit"**: each gap comes with a recommended default and the phase that owns it.
 
 ---
 
-## Phase 10 — Settings surfaces (VSET-01/02, VAPPR-01/02/03)
+## How the reference systems behave
 
-### 10a. Provider / API-key card (VSET-01)
+| Behavior | Sonner (web) | MDC Snackbar (Views) | Compose M3 `SnackbarHost` | iOS / Android notifications | **v2.8 (locked)** |
+|---|---|---|---|---|---|
+| Concurrency | Up to 3 visible (`VISIBLE_TOASTS_AMOUNT=3`); extras are **hidden, not dropped**, and their timers keep running | One at a time; a new one dismisses the current one with `DISMISS_EVENT_CONSECUTIVE` | One at a time; a `Mutex` queue holds the rest | Grouped stack, unbounded | Up to 3; a 4th **evicts** the oldest as `Dismissed` (D-06) |
+| Collapsed look | Back toasts scale `1-0.05*i`, lift `gap=14px`, and **take the front toast's height** | n/a | n/a | Stack shows the edges of up to 2 cards behind | Peek ~14dp, scale 0.94/0.88 (D-01) |
+| Expand | Hover or Alt+T; collapses on leave (not while interacting) or Escape; auto-collapses at ≤1 toast | n/a | n/a | Tap the stack to expand; "Show less" collapses | Tap the peek to fan out, re-collapse after idle (D-01). The design mock uses **4 s** idle |
+| Timer | 4 s default. **All** timers pause while expanded, while a pointer is down on the list, and while the document is hidden. Remaining time resumes | Short/Long go through `getRecommendedTimeoutMillis` (CONTROLS flag when there's an action); pauses on ACTION_DOWN in bounds and while dragging; restores on UP/CANCEL | `delay()` inside the **host's** `LaunchedEffect` through `calculateRecommendedTimeoutMillis`; never pauses. With no host attached, `showSnackbar` suspends forever | n/a (persistent) | 4 s/10 s through a11y (D-04). Pauses while a pointer is down or the deck is fanned out (D-05). The mock pauses **all** cards and floors the remaining time at 800 ms |
+| Swipe | 45px or velocity > 0.11 px/ms, in allowed directions only | START_TO_END only, 50% of width, alpha fades with the swipe | None built in; `SwipeToDismissBox` default threshold is 56dp | Swipe dismisses one notification | Horizontal swipe dismisses one card, never undoes (D-07). The mock uses 90px |
+| Tap body | No body action (action and cancel buttons only) | Body inert; one action slot | Body inert; one action plus an optional dismiss icon | **Tap body opens the item** | Tap body opens; chevron hint; no label (D-02/D-03) |
+| Caller cancels | n/a | n/a | `finally { currentSnackbarData = null }`: card removed, no result | n/a | **Unspecified** (see G-2) |
+| A11y | `aria-live=polite` on the list; hotkey focus | Longer timeout under touch exploration | `liveRegion=Polite` (visible only), `dismiss{}` action, `paneTitle` | System handled | Merged `Role.Button`, Polite live region, Undo child plus custom action, Dismiss action, newest-first traversal (D-11) |
+| Reduced motion | `prefers-reduced-motion` turns off all transitions | System animator scale | Compose animations honor animator scale 0 (Compose 1.2+) | System | **Unspecified** (see G-12) |
+| Process death / reload | Gone | Gone | Gone (`remember`ed host state) | Persisted by the OS | Gone; the store is in-memory too |
 
-#### Table Stakes
+Takeaway: v2.8 combines the **Sonner deck**, **notification-style tap-to-open** and **MDC's pause-on-touch**. It is stricter than Sonner on overflow: it evicts instead of hiding, which works because the Undo Center catches evicted undos. Every reference keeps the timer, the touch pause and the a11y timeout out of the caller's hands, so v2.8 should too.
+
+---
+
+## Table Stakes
+
+Users get no credit for these, but they notice when one is missing.
+
+### Stack model & result contract (Phase 25)
 
 | Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| Provider selector | User must pick which provider the key belongs to | LOW | Small fixed set (OpenAI/Anthropic/local/…) → **segmented buttons** if ≤4, **exposed dropdown** if more. Prop: `providers: List<ProviderOption>`, `selectedProviderId`, `onProviderSelected`. Never hardcode provider names in the library. |
-| Masked key entry, default hidden | Keys are secrets; shoulder-surf protection is assumed | LOW | Compose `TextField` with `visualTransformation = PasswordVisualTransformation()` by default. |
-| Reveal (show/hide) toggle | Confirmed universal best practice — reduces entry errors without a confirm field | LOW | Trailing eye icon toggles `PasswordVisualTransformation()` ↔ `VisualTransformation.None`. Focus/caret must stay put. Accessible label ("Show key"/"Hide key"). |
-| Validation state surface | User needs to know if the key is empty/invalid/accepted | MEDIUM | Prop-driven enum, e.g. `keyState: KeyFieldState { Empty, Entered, Validating, Valid, Invalid(reason) }`. Library **renders** the state; it never validates or calls the network itself (INV-01). Maps to `TextField` `isError` + `supportingText`. |
-| "Key set / not set" affordance without echoing the secret | User returns to settings and needs to know a key exists without it being displayed | LOW | Render a masked placeholder ("••••  ••1234" — last-4 only, passed as a prop) rather than the raw stored value. The library holds nothing. |
+|---|---|---|---|
+| Newest card in front (bottom, nearest the thumb); older cards tuck up behind it | Sonner and iOS both work this way; the newest event is the one being read | LOW | Locked in D-01. Visual order is newest at the **bottom**, while semantics order is newest **first** (G-9) |
+| Exactly one terminal result per `show()` | M3 `SnackbarResult` precedent; callers branch on it | MEDIUM | Use a single-resolution guard (CAS) so a racing body tap, timeout, eviction and swipe can't double-resolve. Double-tapping the body calls `onOpenTarget` **once** |
+| Eviction at cap is a normal `Dismissed`, not an error | MDC `CONSECUTIVE` precedent | LOW | Locked in D-06. The evicted card animates out; it doesn't vanish |
+| Defined behavior when the caller is cancelled | M3 removes the card and returns no result | LOW | See G-2. Without this, "exactly one result" is false on rotation |
+| Programmatic dismissal (dismiss one, dismiss all) | M3 `SnackbarData.dismiss()`, Sonner `toast.dismiss(id)`; SB drops per-call snackbars after Undo-all (survey §1a) | LOW | **Not in the D-09 signature** (G-5). Additive method on `FeedbackStackState` |
+| Tracked undo goes through the store only | Existing UNDO-02 invariant (`UndoTracking.kt`) | LOW | Locked as FSTK-07. Reuse the existing "append before visible" ordering |
 
-#### Differentiators
-
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Inline "Validate / Test key" action slot | One tap to confirm the key works before leaving settings | LOW | An **action callback + a state prop** only — `onValidateKey`, plus `keyState = Validating/Valid/Invalid`. The *actual* test call lives in the consumer/engine. Library shows a spinner + result chip. |
-| Paste-affinity + trim | Keys are always pasted; trailing whitespace is the #1 "invalid key" cause | LOW | Emit trimmed text on change (a pure formatting concern, allowed in a presentational layer). |
-| "Get a key" helper link slot | Reduces the "where do I get this" dead-end | LOW | Optional `helpLinkSlot: (@Composable () -> Unit)?` — consumer supplies the URL/text; library reserves the slot. |
-
-#### Anti-Features
-
-| Feature | Why Requested | Why Problematic | Alternative |
-|---------|---------------|-----------------|-------------|
-| Persist the key in the library | "Just remember it for me" | Breaks INV-01 (library holds no secrets, no storage); makes the component non-reusable and a supply-chain liability | Consumer owns storage (EncryptedSharedPrefs/DataStore/Keystore); library is stateless, key arrives via prop, changes emit via callback |
-| Library-side key validation / network probe | "Tell me if it's valid" | Requires OkHttp + provider knowledge → violates INV-01 and one-way-dependency | Expose `keyState` prop + `onValidateKey` callback; consumer/engine does the probe and pushes state back |
-| Baking real provider names/logos into the component | "Show the OpenAI logo" | Domain coupling; every new provider = a library change | Provider is a `ProviderOption(id, label, iconSlot?)` prop list; consumer supplies labels/icons |
-
-**States matrix (4-cell) implication:** Empty (no key) · Filled-hidden (key entered, masked) · Filled-revealed · Error/Invalid. Validating (spinner) is a 5th state worth a preview.
-
----
-
-### 10b. Model card (VSET-02)
-
-#### Table Stakes
+### Timers (Phase 26, logic may live in 25)
 
 | Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| Show available models, mark selected | Core purpose of the card | LOW | Prop: `models: List<ModelOption>`, `selectedModelId`, `onModelSelected`. |
-| Right control for the set size | Legibility | LOW | **Exposed dropdown** is the correct default — model lists are open-ended and often long (confirmed Material 3 guidance: dropdown for many/unknown-count options, segmented only for a small all-visible set). |
-| Empty / unavailable state | Models can't be listed until a provider+key are set | LOW | `models` empty → render a disabled state with a reason string prop ("Set a provider and key first"), not a blank control. Ties to the dependency below. |
+|---|---|---|---|
+| Short/Long scaled by `calculateRecommendedTimeoutMillis`, with CONTROLS when the card has Undo or a target | MDC and M3 both do this; TalkBack "Time to take action" depends on it | LOW | Locked in D-04. A target counts as a control, because the body tap is an action |
+| Pause on touch, resume the **remaining** time (not a restart) | MDC (ACTION_DOWN/drag) and Sonner both resume the remainder | MEDIUM | Locked in D-05. Scope and floor are open (G-1) |
+| Independent per-card timers that run concurrently | Sonner: back cards were the front card earlier and have already been read | LOW | A back card can expire first; the deck re-stacks smoothly |
+| Timers run on wall-clock `delay`, not the animation clock | With "Remove animations" (scale 0), anything driven by animation finishes instantly | LOW | See G-12. A countdown built on `Animatable` would make cards vanish at once for reduced-motion users |
 
-#### Differentiators
-
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Per-model metadata slot (context window, cost, "recommended") | Helps the user choose without leaving the app | LOW | `ModelOption` carries optional `subtitle`/`badge` fields; library renders them if present. Keep generic (strings), no provider-specific schema. |
-| Loading state for async model fetch | Model lists are fetched after a key is entered | LOW | `modelsState: { Idle, Loading, Loaded, Error }` prop — again render-only. |
-
-#### Anti-Features
-
-| Feature | Why Requested | Why Problematic | Alternative |
-|---------|---------------|-----------------|-------------|
-| Library fetches the model list | "Populate it automatically" | Network in the library → INV-01 violation | Consumer fetches; passes `models` + `modelsState` as props |
-| Hardcoded model catalog | "Ship a default list of GPT-4/Claude/…" | Stale the day it ships; domain coupling | All models arrive via props |
-
-**States matrix implication:** Empty/disabled (no provider) · Loading · Loaded-with-selection · Error.
-
----
-
-### 10c. Command-approach card (VAPPR-01/02/03) — the novel surface
-
-This is the least-standard component (no off-the-shelf Material pattern), so it needs the most deliberate design. It shows an **ordered escalation ladder** plus two policy controls. Keep it strictly **display + emit** — the library never *executes* or *enforces* the ladder (that's the engine's `TierPolicy`, explicitly out of scope).
-
-#### Table Stakes
+### Deck interaction (Phase 26)
 
 | Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| Ordered, legible tier ladder | The whole point of VAPPR-01 — the escalation order must read top-to-bottom / left-to-right unambiguously | MEDIUM | Render as a **vertical ordered list of labeled steps** with rank affordance (1→2→3→4, or connector arrows). Prop: `tiers: List<TierRung>` where `TierRung(id, label, description?, enabled)`. Order is the list order — don't rely on a separate sort key. Vertical > horizontal: labels like "Grammar / SingleShot / Plan / Agentic" are long and the ladder can grow. |
-| Offline-only toggle (VAPPR-02) | Privacy/cost control users expect | LOW | Standard `Switch` + label + supporting text. Props: `offlineOnly: Boolean`, `onOfflineOnlyChange`. When on, it should *visibly* dim/annotate the network-requiring rungs (see differentiator) — but the library only reflects state, doesn't decide which rungs are offline-capable (that's a per-rung prop). |
-| Max-tier cap control (VAPPR-03) | Cost/safety ceiling — "never escalate past Plan" | MEDIUM | The interesting one. Cap = "highest rung the system may escalate to." Best rendered **as part of the same ladder** (a selectable cap marker) rather than a separate detached dropdown, so cap is legible *against* the ladder it caps. Props: `maxTierId`, `onMaxTierChange`. Rungs above the cap render visibly capped (greyed + a "capped" affordance). |
-| Reflect derived/effective state | User must see the *combined* effect of offline-only + cap | MEDIUM | A rung's effective availability = `enabled && (!offlineOnly || rung.offlineCapable) && rung.rank <= cap`. Compute-and-pass **or** pass the primitives and let the composable derive presentation. Recommend: pass primitives per rung (`offlineCapable: Boolean`), derive the visual in the composable — keeps the consumer's job to "describe the rungs," not "pre-render the styling." |
+|---|---|---|---|
+| Tap slop between tap and swipe | Every swipe-dismiss system has one (the mock uses 4-6px) | LOW | A drag past touch slop never opens. Use `ViewConfiguration.touchSlop` |
+| Swipe follows the finger, fades with distance, and flings out past a threshold **or** velocity | Sonner (distance or velocity), MDC (alpha fade) | MEDIUM | Recommend about the M3 default of 56dp positional, or a fling. Other cards hold still until the swiped card is removed, then re-stack |
+| Swipe works in both directions with no reveal step | Dismissing isn't destructive; the undo stays in the Undo Center | LOW | Don't reuse the hub's reveal-confirm row swipe (left = delete, right = edit). That convention is for destructive row actions |
+| Fanned-out column: every card's body, Undo and swipe can be reached | iOS expanded stack; D-01 | MEDIUM | Back cards' bodies must not be tappable while collapsed (a tap there fans out instead) |
+| Auto-collapse after idle, and at ≤1 card | Sonner resets at ≤1; the mock waits 4 s idle | LOW | A new arrival while fanned out joins the column and keeps it fanned out. Timers resume on collapse |
+| Collapsed back cards clamped to the front card's height | Sonner `--front-toast-height`; otherwise a tall German card behind a short one sticks out well past 14dp | LOW | See G-7 |
 
-#### Differentiators
-
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Rungs above the cap shown greyed-but-present (not hidden) | Preserves the mental model of the full ladder while showing the ceiling — matches the hub's **conditional-render-no-dead-space** convention's spirit (show structure, not emptiness) | LOW | A capped rung stays visible with a "capped" tag; it's not removed. This makes the cap legible *as a ceiling*. |
-| Per-rung offline-capability annotation | When offline-only is on, the user sees exactly which rungs drop out | LOW | `TierRung.offlineCapable`; disabled rungs get an "needs network" affordance under offline-only. |
-| Tap-a-rung-to-set-cap interaction | Fewer controls; cap is set *on the ladder itself* | MEDIUM | Ladder rung acts as the cap selector — one interaction model instead of ladder + separate dropdown. Emits `onMaxTierChange(rungId)`. |
-| Ladder tag colors (reuse existing `TAGCOLOR` slot) | Visual differentiation of tiers reuses shipped per-tag color infra rather than inventing new theming | LOW | Optional per-rung color slot, consistent with v2.3.0's opt-in tag color. |
-
-#### Anti-Features
-
-| Feature | Why Requested | Why Problematic | Alternative |
-|---------|---------------|-----------------|-------------|
-| Enforcing/executing the ladder (skip disabled tiers, actually escalate) | "Make the cap actually do something" | That's `TierPolicy` in the engine — explicitly out of scope; would drag engine logic into the UI | Library displays + emits; engine enforces |
-| Baking in the tier names (Grammar/SingleShot/Plan/Agentic) as an enum | "They're always these four" | Domain coupling; CT and SB may name/number tiers differently; future tiers = library change | `tiers` is a prop list of `TierRung`; names/order/count all arrive from the consumer |
-| A free-form drag-to-reorder ladder editor | "Let users reorder tiers" | The ladder order is an engine policy artifact, not a user preference; reordering implies the UI owns policy | Order is display-only (from props); the only user-editable policy here is offline-only + cap |
-| Encoding "offline-capable" as a hardcoded rule per known tier name | "Grammar is always offline" | Couples to specific tier identities | `offlineCapable` is a per-rung prop the consumer sets |
-
-**States matrix implication:** All-enabled/no-cap · Cap-set (rungs above greyed) · Offline-only-on (network rungs annotated) · Offline-only + cap combined (the derived/worst-case cell). This card needs its combined-constraint cell as the "interesting" 4th state.
-
----
-
-## Phase 11 — Outcome / failure sheet (VOUT-01/02/03)
-
-Domain-neutral bottom sheet (hub already has a bottom-sheet family) that renders the result of a voice command.
-
-#### Table Stakes
+### Placement & z-order (Phase 26, docs in 29)
 
 | Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| Success vs failure outcome, from props | Core purpose | LOW | `outcome: Outcome { Success, Failure(...), NeedsConfirmation(...) }` (sealed shape; NeedsConfirmation lands in Phase 12). No app nouns — title/detail are strings passed in. |
-| "Handled by: tier/approach" provenance indicator (VOUT-02) | Trust/debuggability — user (and dev) sees which rung answered | LOW | Prop: `handledBy: HandledByInfo(tierLabel, approachLabel?)`. Render as a labeled chip/row ("Handled by · SingleShot"). Reuse chip family. Must be optional/nullable (some outcomes have no attributable tier). |
-| **Loud** failure state (VOUT-03) | Explicit requirement + matches the user's stated "make failures loud and visible in the UI" philosophy | MEDIUM | Failure ≠ subtle grey text. Use error container color, error icon, prominent title, and the failure reason string. Contrast this hard against success. This is the load-bearing UX call of the phase. |
-| Failure reason + optional retry action | A loud failure the user can't act on is a dead-end | LOW | `failureReason: String`, optional `onRetry`/`onDismiss` callbacks. Action slot, not baked logic. |
+|---|---|---|---|
+| Sits above the nav bar, the FAB and the **IME** | M3 Scaffold handles the nav bar and FAB, but `ScaffoldDefaults.contentWindowInsets` (`systemBarsForVisualComponents`) **excludes the IME** | LOW | The host applies no insets of its own (in a Scaffold slot that would double-pad). KDoc shows `Modifier.windowInsetsPadding(WindowInsets.ime.union(navigationBars))` for overlay use. minSdk 35 means edge-to-edge always |
+| Works inside a `ModalBottomSheet` | A modal sheet is its own window, so a root host renders **under** it (SB G9, today's `SheetFeedbackHost`) | MEDIUM | Give the sheet-local host its own `FeedbackStackState`. Already promised on the design page; needs a demo (Phase 28) |
+| Width cap on wide screens | Sonner is fixed at 356px; M3 snackbars cap their width on large screens | LOW | Something like `widthIn(max = 560.dp)`, start/center aligned. Landscape matters too |
+| Fanned-out column never runs off-screen | Landscape (~360dp tall) plus font scale 2.0 plus the IME can leave less room than 3 fanned cards need | MEDIUM | See G-8 |
 
-#### Differentiators
-
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Provenance detail expander | Power users/devs want more than a tier label (e.g. which fallbacks were tried) | LOW | Optional `handledBy.trace: List<String>` rendered in a collapsible — conditional-render-no-dead-space (absent → no expander). |
-| Distinct visual per outcome class beyond color | Accessibility (don't rely on color alone for success/failure) | LOW | Icon + shape + text, not just red/green. Ties to the hub's accessibility posture. |
-| Copy-error affordance | Users report failures; one-tap copy of the reason helps | LOW | Action slot; consumer wires clipboard. |
-
-#### Anti-Features
-
-| Feature | Why Requested | Why Problematic | Alternative |
-|---------|---------------|-----------------|-------------|
-| Silent/auto-dismissing failure toast | "Don't nag the user" | Directly violates VOUT-03 (loud, visible) and the user's regression sensitivity to swallowed failures | Failures are sticky/loud in the sheet until dismissed or retried |
-| Parsing/inferring the failure category in the library | "Show a nicer message for rate-limit errors" | Requires engine/provider knowledge → domain coupling | Consumer maps engine error → a `failureReason` string + optional category enum passed as a prop |
-| App-specific success nouns ("Added to your Second Brain") | Reads nicer | Kills reuse across SB/CT | Title/detail are consumer-supplied strings |
-
-**States matrix implication:** Success · Failure (loud) · Success-with-provenance · Failure-with-retry. (NeedsConfirmation is Phase 12's cells.)
-
----
-
-## Phase 12 — Generic needs-confirmation state (VOUT-04) — the single-OR-batch shape
-
-This is the phase with the sharpest prop-shape risk, so it gets a concrete treatment. It **extends the Phase 11 sheet** with a `NeedsConfirmation` outcome. It must render, from **one** composable and **one** prop shape, *both*:
-
-- **SB `MutationGate`/`VoiceConfirmGate` risk confirm** — a *single* proposed action the user must approve because it's destructive/risky ("Delete 3 notes?").
-- **CT weak-match confirm** — a *weak-match* case that can be **either** a single proposed item ("Did you mean *Running*?") **or** a batch ("These 5 entries matched loosely — confirm each / all").
-
-#### The concrete shape (addresses the single-vs-batch gate)
-
-The trap is modelling "single" and "batch" as two different types. **Model single as a batch of one** so there is exactly one code path:
-
-```
-NeedsConfirmation(
-    reason: String,                     // "This will delete data" / "Weak match — please confirm"
-    items: List<ProposedItem>,          // size 1 = single confirm; size >1 = batch confirm
-    confirmLabel: String = "Confirm",
-    cancelLabel: String = "Cancel",
-    onConfirm: (List<ProposedItemId>) -> Unit,   // ids the user affirmed
-    onCancel: () -> Unit,
-    // batch-only affordances, degrade cleanly when items.size == 1:
-    selectionMode: SelectionMode = AllOrNothing  // AllOrNothing | PerItem
-)
-
-ProposedItem(
-    id, title: String, subtitle: String? = null, detailSlot: (@Composable () -> Unit)? = null
-)
-```
-
-Rendering rule (drives the states matrix):
-- `items.size == 1` → render a **single-item confirm** (no checkboxes, no "select all"); confirm returns that one id. Covers SB risk confirm and CT single weak-match.
-- `items.size > 1` + `AllOrNothing` → render the list read-only with one Confirm/Cancel pair; confirm returns all ids. Covers a batch the user accepts wholesale.
-- `items.size > 1` + `PerItem` → render each item with an include/exclude affordance; confirm returns the affirmed subset. Covers CT "confirm each of these loose matches."
-
-This one shape covers all four consumer cases with **no per-consumer library change** (satisfies VOUT-04's success criterion 4).
-
-#### Table Stakes
+### Accessibility (Phase 26, device check in 28)
 
 | Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| Reason string always shown | User must know *why* confirmation is needed | LOW | Prominent, above the items. |
-| Single-item confirm | SB risk confirm + CT single weak-match | LOW | `items.size == 1` path — no batch chrome. |
-| Batch confirm (all-or-nothing) | Bulk approve loose matches | MEDIUM | Read-only list + one action pair. |
-| Confirm / Cancel, both emit | Destructive-safe: cancel is a first-class, easily-reachable action | LOW | Cancel must be as reachable as confirm (no dark-pattern burying) — matches reveal-confirm destructive convention already in the hub. |
-| Domain-neutral throughout | Reuse across SB/CT | LOW | Every string is a prop; items carry only generic title/subtitle/slot. |
+|---|---|---|---|
+| Swipe has a non-gesture equivalent | WCAG 2.5.1; M3 host exposes `dismiss{}` | LOW | Locked in D-11 (Dismiss custom action plus `dismiss` semantics) |
+| Announce on arrival, politely, once | M3 sets the live region only while visible | LOW | Evicted or exiting cards drop the live region so a 4-event burst doesn't re-announce (G-10) |
+| Reading order that matches meaning | D-11 says newest first, but visually the newest is at the bottom | LOW | Set an explicit `traversalIndex` (the design page already names it); the default top-to-bottom order would read oldest first |
+| Chevron is decorative | The `onClickLabel` already carries the meaning | LOW | `contentDescription = null`; use `Icons.AutoMirrored` so it flips in RTL |
 
-#### Differentiators
+### Go-to-item rows: sheet & Undo Center (Phase 27)
 
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Per-item include/exclude (`PerItem` mode) | CT's "confirm each loose match" without a bespoke screen | MEDIUM | Checkbox/switch per row; confirm returns the affirmed subset. This is what makes the batch case genuinely useful, not just a bulk yes/no. |
-| Risk emphasis for destructive confirms | SB `MutationGate` is destructive — it should *look* riskier than a benign weak-match | LOW | Optional `severity: Confirm { Normal, Destructive }` prop → destructive uses error-tinted confirm button + warning affordance. Keeps one composable, two visual weights. |
-| Item detail slot | Some items need richer preview than title/subtitle | LOW | `detailSlot` composable; conditional-render-no-dead-space when absent. |
-
-#### Anti-Features
-
-| Feature | Why Requested | Why Problematic | Alternative |
-|---------|---------------|-----------------|-------------|
-| Two separate composables (SingleConfirm + BatchConfirm) | "They look different" | Doubles the surface, drifts, and fails VOUT-04's "one prop shape covers both" | One composable, `items: List` (single = list of one) + `selectionMode` |
-| Executing the confirmed mutation in the library | "Just do the delete on confirm" | Domain/engine action in the UI layer → INV-01 violation | `onConfirm(ids)` callback; consumer performs the mutation |
-| Auto-selecting/auto-confirming a "best" match | "Save a tap on strong matches" | The whole point is *weak* match / *risky* action — auto-confirm defeats the gate; also encodes matching logic | Library only presents; the consumer decides what reaches the confirm sheet |
-| Making cancel harder than confirm (or defaulting to confirm) | "Encourage the happy path" | Dark pattern; dangerous for destructive SB confirms | Symmetric, clearly-labeled Confirm/Cancel; destructive variant if anything biases toward caution |
-
-**States matrix implication (this composable's 4 cells):** Single confirm · Batch all-or-nothing · Batch per-item (partial selection) · Destructive single confirm (risk emphasis). Consider a 5th preview for empty-subset (per-item with nothing selected → confirm disabled).
+| Feature | Why Expected | Complexity | Notes |
+|---|---|---|---|
+| The whole row is the target, ≥48dp, with ripple, a trailing chevron and `Role.Button` with `onClickLabel` | M3 lists use a trailing arrow to mean navigation | LOW | Undo inside the row stays a separate node (a nested `clickable` keeps its own merge boundary) |
+| A non-openable row looks and behaves exactly like v2.7.1 | Locked in D-10/D-15 | LOW | No chevron, no click action in semantics, same code path |
+| The row stops being openable after Undo | SB survey: created items stop existing after Undo-all | LOW | Library-derived for the Undo Center and snackbars (D-14); caller-cleared for `Success` and batch rows. Spell that out in KDoc |
+| Opening from a modal sheet doesn't land under the sheet | The sheet's window sits above the NavHost | LOW | The library only calls `onOpenTarget`. KDoc and the Explorer demo should show `sheetState.hide()` and then navigate (G-11) |
 
 ---
 
-## Phase 13 — Catalog & ship (CAT-01, API-01, INV-01, SHIP-01/02)
+## Differentiators
 
-Not a feature-research surface — it's the integrity gate. The feature-research implication is only: **every composable above must land in `ComponentRegistry` with a full 4-cell states matrix** (the states called out per phase feed directly into CAT-01), the API stays strictly additive vs `v2.3.0` (favor nullable/defaulted new params and new symbols, never change existing signatures), and no OkHttp/engine dep enters (INV-01). The prop shapes above are deliberately all data-in / callbacks-out to keep INV-01 trivially true.
+| Feature | Value Proposition | Complexity | Notes |
+|---|---|---|---|
+| Dismissing never loses an undo | Swipe, eviction and timeout all leave the tracked entry in the Undo Center. Sonner and M3 lose the action once the toast is gone | LOW (already built) | Comes from the existing `UndoHistoryStore`. Document it as the reason eviction is safe |
+| One go-to-item model across snackbars, outcome sheet (both styles) and Undo Center | The same chevron, the same `FeedbackTarget` and a single app-level `onOpenTarget` mean consumers write one router | MEDIUM | Opaque key: no NavController in the singleton, and it works in any harness |
+| Pause-on-touch for the **whole** deck | Avoids the deck re-stacking under a finger in mid-swipe | LOW | Recommended reading of D-05 (G-1) |
+| Live store sync on visible cards | Undoing from the Undo Center or the sheet's "Undo all" immediately removes Undo and the chevron from the matching visible card | MEDIUM | Collect `UndoHistoryStore.entries` (G-4). None of the references do this, because none has an Undo Center |
+| Receipt-card look shared with the v2.7 sheets | Snackbars and sheets read as one system | MEDIUM | Locked in D-01 |
+| Haptic tick when a swipe crosses the dismiss threshold | Tells the user the release will dismiss | LOW | Optional; can wait for v2.8.1 |
+
+---
+
+## Anti-Features
+
+| Anti-Feature | Why Requested | Why Problematic | Alternative |
+|---|---|---|---|
+| "Open"/"View" text action next to Undo | Gmail/Drive "View" snackbars | Two actions crowd the card and wrap badly in German; M3 allows one action | Body tap plus chevron (D-02/D-03) |
+| Combined "Undo & open" | Soft-deleted targets (SB G11) | Two outcomes from one tap; out of scope | D-12; a later consumer-side design |
+| Swipe-to-undo, or a reveal-confirm swipe on cards | Matches the hub's list-row swipe convention | Dismissing isn't destructive, and accidental undos are | Swipe = dismiss only (D-07) |
+| Sonner-style hidden overflow (keep more than 3, show 3) | Nothing is lost | Hidden timers expire unseen, and TalkBack reaches cards that aren't shown | Evict to Dismissed; the Undo Center keeps the undo (D-06) |
+| One-at-a-time queue (M3 default) | Simpler | Bursts (voice batches) wait 10 s each, and the user loses the context | Deck of 3 |
+| Deck consuming Back (collapse on back) | Feels tidy | A non-modal surface that steals Back breaks screen navigation and predictive back | Idle auto-collapse; Back never intercepted |
+| Visible countdown bar or progress animation | "Shows remaining time" | Motion under reduced-motion, a11y noise, and it fights the touch pause | No countdown visuals |
+| Defaulting cards with a target to Indefinite | "Can't miss it" | Cards pile up at the cap and evict each other | A11y-scaled timeouts (D-04) |
+| Persisting the deck across process death or restoring it on rotation | Completeness | No reference does it; stale cards after a restart can't open anything sensible | Cancel-safe removal (G-2); the undo survives in the store for the process lifetime |
+| Auto-coalescing identical messages | Bursts of "Card deleted" | Each tracked card has its own undo entry; merging would hide undos | Defer; a caller-chosen key could replace a card in place later |
+| `onOpen` lambda on events or entries | Simplest call site | The singleton store would capture a NavController (leak) and it isn't harness-agnostic | `FeedbackTarget(key, openLabel)` (D-08) |
+| The library navigating, or hiding the sheet on open by itself | Saves the caller a step | Violates "the library never navigates"; the caller may want to skip same-destination opens (SB G10) | `onOpenTarget` only; document hide-then-navigate |
+
+---
+
+## Gaps the brief leaves implicit (resolve in discuss/plan)
+
+| # | Gap | Reference evidence | Recommended default | Phase |
+|---|---|---|---|---|
+| G-1 | Pause scope: D-05 says "a pointer down **on a snackbar**". Does that pause that card or every card? Is there a floor on the remaining time? | Sonner pauses all; the design mock pauses all (`items.forEach(pauseTimer)`) and floors at 800 ms; MDC restores exactly | Pause **all** cards when a pointer is down anywhere on the deck. Resume each card with `max(remaining, ~1 s)` | 26 |
+| G-2 | What `show()` does when the caller is cancelled (rotation with remembered state, a disposed `LaunchedEffect`, a sheet host leaving composition) | M3: card removed, `CancellationException`, no result | Remove the card and rethrow cancellation, with **no** result (an exception to "exactly one", stated in KDoc). Tracked entries stay in the Undo Center. Virtual-time test | 25 |
+| G-3 | Timers running while no host is attached, or while the app is in the background | M3 never times out without a host (timer lives in the host); Sonner pauses when hidden | The host marks itself attached; timers run only while a host is attached and its lifecycle is at least STARTED. `show()` with no host suspends like M3. The state stays testable without composition through an internal "attached" flag | 25/26 |
+| G-4 | A visible card whose entry is undone elsewhere (Undo Center tap, the sheet's Undo all, group undo) or evicted from the store (`evictIfNeeded`) | None (unique to the hub) | Visible tracked cards observe `entries`. If the entry isn't Available, hide Undo and the chevron and leave the card up. A snackbar Undo tap that loses the race still resolves `Undone` (meaning the user chose Undo). `attemptUndo` returns `Unit`, so the KDoc must not promise success | 25 |
+| G-5 | No programmatic dismiss in the D-09 API | M3 `dismiss()`, Sonner `toast.dismiss` | Additive `FeedbackStackState.dismissAll()` (and maybe `dismiss(target)`), resolving `Dismissed` | 25 |
+| G-6 | Press-and-hold to read: pointer-down pauses the timer, so a long hold followed by release fires a body tap and opens the item | Notifications open on tap only; holding is a different gesture | Don't open if the press outlasted the long-press timeout or moved past touch slop. Releasing just resumes the timers | 26 |
+| G-7 | A taller back card (long German message under a short new one) sticks out past the 14dp peek | Sonner clamps back cards to the front card's height | Clip or clamp collapsed back cards to the front card's measured height; restore their full height when fanned out | 26 |
+| G-8 | Fanned-out column taller than the space left (landscape, font 2.0, IME up) | iOS expanded stacks scroll | Cap the fanned-out height to the space available. The newest card stays pinned at the bottom; the column scrolls, or the oldest overlaps. Test at 360x780 landscape with font 2.0 | 26 |
+| G-9 | Newest-first semantics vs. newest-at-bottom visuals | Design page names `traversalIndex` | Explicit `traversalIndex` per card in a traversal group; Robolectric semantics-order test | 26 |
+| G-10 | Live-region burst: 4 events in about 1 s | M3 sets the live region only while visible | Live region only on the entering card; cleared when it exits or is evicted; device check in the TalkBack sweep | 26/28 |
+| G-11 | Opening from a modal `OutcomeSheet`: the sheet's window covers the destination | SB survey (queued sheets, R\* hidden hosts) | The library calls `onOpenTarget` only. KDoc and the Explorer demo show hide-then-navigate (pairs with the 999.3 `hide()` demo) | 27/28 |
+| G-12 | Reduced motion ("Remove animations", animator scale 0) | Sonner turns off transitions; Compose 1.2+ animations jump to their end | Rely on Compose honoring the scale; timers on `delay`; swipe still dismisses when released past the threshold; fan-out is instant. Add one device check with Remove animations on | 26/28 |
+| G-13 | Peek tap target: 14dp is far below 48dp | WCAG 2.5.8 / M3 minimum touch target | Extend the peek hit area, e.g. a 48dp strip covering the peek, with a `Role.Button` "Show all" only if TalkBack needs it (it shouldn't, since cards are flat in the tree) | 26 |
 
 ---
 
 ## Feature Dependencies
 
 ```
-Provider/key card (VSET-01)
-    └──gates──> Model card (VSET-02)          [models can't populate until provider+key set]
-                    └──feeds──> (consumer engine, not library)
-
-Command-approach card (VAPPR-01)
-    ├──contains──> offline-only toggle (VAPPR-02)
-    └──contains──> max-tier cap (VAPPR-03)     [cap is rendered ON the ladder, not detached]
-        offline-only ⊗ cap ──derive──> effective per-rung availability  [the "interesting" state cell]
-
-Outcome sheet (VOUT-01/02/03)
-    └──extended-by──> NeedsConfirmation state (VOUT-04)   [Phase 12 adds a sealed variant]
-
-All composables ──must-register──> ComponentRegistry + 4-cell states matrix (CAT-01)
+FeedbackTarget (25) ──> FeedbackEvent.Notify/WithUndo.target (25) ──> UndoHistoryEntry.target (25)
+FeedbackStackState + result contract + cancel rule G-2 (25)
+    ├──> tracer FeedbackStackHost (25) ──> deck look/gestures/timers/a11y (26)
+    └──> emitTrackedWithUndo(store) (25) ──requires──> UndoHistoryStore.append/attemptUndo (existing)
+Live store sync G-4 ──requires──> UndoHistoryStore.entries StateFlow (existing)
+Undo Center go-to rows (27) ──requires──> UndoHistoryEntry.target (25) + UndoCenterScreen rows/UndoGroupHeaderRow (existing)
+OutcomeSheet go-to rows (27) ──requires──> Success.target/BatchRowResultUiModel.target (25/27) + ReceiptRow, Classic body (existing)
+Sheet-local host demo (28) ──requires──> 26 deck + Explorer HubSchemeScope (existing, widened by 999.3)
+TalkBack sweep (28) ──requires──> 26 semantics + 27 rows
+Docs/cut (29) ──requires──> all; api.txt rewritten by 25, 26, 27 in order
+Pill fixes POL-01/02 (27) ── independent of the snackbar work (same phase for api.txt sequencing only)
 ```
 
-### Dependency Notes
+Builds on existing pieces: `FeedbackEvent` (append fields after `preview`/`duration`), `SnackbarHostState.emitTrackedWithUndo` (must stay byte-identical in behavior), `UndoHistoryStore` (`append`, `attemptUndo`, `entries`, group undo, `evictIfNeeded`), `UndoStatus { Available, Undone, Failed }`, the `ReceiptRow`/`ToneCard`/tone-token look from v2.6, `SheetScaffold`, `ComponentRegistry` (Feedback family) and `HubSchemeScope`.
 
-- **Model card depends on provider/key (presentationally):** the model card's empty/disabled state is driven by whether a provider+key exist — but this is a *prop* relationship (consumer passes empty `models` + a reason), not a library-internal coupling. Roadmap already keeps both in Phase 10.
-- **Cap is coupled to the ladder, not standalone:** VAPPR-03 reads best rendered *inside* the VAPPR-01 ladder (cap marker on the rungs), so plan them as one composable with three prop groups, not three separate widgets.
-- **VOUT-04 extends VOUT-01's sheet:** Phase 12 gating on Phase 11 (per the roadmap) is correct — `NeedsConfirmation` is a variant of the same `Outcome` sealed type, so the sheet's shell must exist first.
-- **offline-only ⊗ cap is the derived state:** don't ask the consumer to pre-compute styling; pass per-rung primitives (`enabled`, `offlineCapable`, rank) + the two policy values and derive the visual in the composable.
+**Conflict to watch:** the hub-wide reveal-confirm swipe convention vs. D-07's immediate swipe-dismiss. Say in STYLE.md (Phase 29) that the reveal-confirm swipe applies to destructive **rows** only, and that snackbars dismiss straight away.
 
 ---
 
-## MVP Definition
+## Priority by phase
 
-Everything in scope is required by the frozen §6.3 contract, so "MVP" here = the required prop surface per phase; "add after" = optional differentiator slots that don't change the core prop shape.
+| Feature | User Value | Cost | Priority | Phase |
+|---|---|---|---|---|
+| Result contract + single-resolution guard + cancel rule (G-2) | HIGH | LOW | P1 | 25 |
+| Host-attached/lifecycle timer gating (G-3) | HIGH | MEDIUM | P1 | 25/26 |
+| Live store sync of visible cards (G-4) | HIGH | MEDIUM | P1 | 25 |
+| `dismissAll()` (G-5) | MEDIUM | LOW | P2 (additive; ask the teamlead) | 25 |
+| Deck visuals + back-card height clamp (G-7) | HIGH | MEDIUM | P1 | 26 |
+| Tap vs. hold vs. swipe disambiguation (G-6, slop) | HIGH | LOW | P1 | 26 |
+| Deck-wide pause + resume floor (G-1) | MEDIUM | LOW | P1 | 26 |
+| Fanned-out height cap (G-8), peek hit area (G-13) | MEDIUM | MEDIUM | P1 | 26 |
+| `traversalIndex` + live region on entry only (G-9/G-10) | HIGH | LOW | P1 | 26 |
+| IME/inset KDoc + sheet-local host demo | MEDIUM | LOW | P1 | 26/28/29 |
+| Hide-then-navigate guidance (G-11) | MEDIUM | LOW | P1 | 27/28 |
+| Reduced-motion device check (G-12) | MEDIUM | LOW | P2 | 28 |
+| Haptic tick on swipe threshold | LOW | LOW | P3 (v2.8.1) | — |
+| Width cap on wide screens | LOW | LOW | P2 | 26 |
 
-### Launch With (v2.4.0 — required)
-
-- [ ] Provider/key card: provider selector + masked key entry + reveal toggle + `keyState` render + set/not-set masked affordance — VSET-01
-- [ ] Model card: `models` list + selection + empty/loading/error states — VSET-02
-- [ ] Command-approach card: ordered ladder + offline-only toggle + max-tier cap, all prop-driven, display-only — VAPPR-01/02/03
-- [ ] Outcome sheet: success/failure from props + "handled by" indicator + **loud** failure — VOUT-01/02/03
-- [ ] Needs-confirmation state: one composable, `items: List` (single = list-of-one) + AllOrNothing/PerItem, reason string, symmetric confirm/cancel — VOUT-04
-- [ ] All registered in `ComponentRegistry` with 4-cell states matrices — CAT-01
-
-### Add After Validation (consumer Wave-1, not this milestone)
-
-- [ ] `onValidateKey` "test key" round-trip — trigger: a consumer wants in-settings validation (slot already reserved)
-- [ ] Provenance `trace` expander on the outcome sheet — trigger: debugging demand from a consumer
-- [ ] Per-rung tag colors on the ladder — trigger: a consumer opts into TAGCOLOR for tiers
-
-### Future Consideration (deferred)
-
-- [ ] Cost/usage surfacing in the model card — defer: needs a usage data contract not yet defined
-- [ ] Multi-key / key-rotation UI — defer: no consumer needs it; would tempt library-side storage
-
-## Feature Prioritization Matrix
-
-| Feature | User Value | Implementation Cost | Priority |
-|---------|------------|---------------------|----------|
-| Masked key entry + reveal toggle | HIGH | LOW | P1 |
-| Provider selector (segmented/dropdown by count) | HIGH | LOW | P1 |
-| `keyState` validation render (no library validation) | MEDIUM | LOW | P1 |
-| Model card list + selection + empty state | HIGH | LOW | P1 |
-| Ordered tier ladder (display-only) | HIGH | MEDIUM | P1 |
-| Offline-only toggle | MEDIUM | LOW | P1 |
-| Max-tier cap on the ladder | HIGH | MEDIUM | P1 |
-| Loud failure state | HIGH | MEDIUM | P1 |
-| "Handled by" provenance indicator | MEDIUM | LOW | P1 |
-| Single-or-batch confirm (one shape, `List`) | HIGH | MEDIUM | P1 |
-| Per-item include/exclude (`PerItem`) | MEDIUM | MEDIUM | P1 (needed for CT) |
-| Destructive severity emphasis | MEDIUM | LOW | P2 |
-| `onValidateKey` test round-trip slot | MEDIUM | LOW | P2 |
-| Provenance trace expander | LOW | LOW | P3 |
-
-## Competitor / prior-art feature analysis
-
-| Feature | Prior art A | Prior art B | Our approach |
-|---------|-------------|-------------|--------------|
-| API-key entry | OpenAI/Anthropic settings (masked, reveal, last-4 shown) | 1Password/secret managers (masked default + reveal) | Masked default + reveal toggle + set/not-set via last-4 prop; library stores nothing |
-| Provider/model select | ChatGPT/Claude model pickers (dropdown for models) | VS Code Copilot model dropdown | Segmented for ≤4 providers, exposed dropdown for models (Material 3 count rule) |
-| Escalation/tier display | CI/CD stage pipelines (ordered rungs) | Feature-flag "environment ladder" UIs | Vertical ordered ladder, cap marker rendered on the ladder, capped rungs greyed-but-present |
-| Outcome + provenance | LLM tool-call "handled by tool X" chips; "generated with model Y" footers | Observability "which route handled this" badges | Nullable `handledBy` chip; loud error-container failure state |
-| Single-vs-batch confirm | Gmail bulk-action confirm; file-manager "apply to all" | IDE refactor-preview (per-item checkboxes) | One composable: `items: List` (single = list-of-one) + AllOrNothing/PerItem selection mode |
-
-## Consolidated states-matrix implications (feeds CAT-01)
-
-| Composable | Cell 1 | Cell 2 | Cell 3 | Cell 4 (the "interesting" one) |
-|-----------|--------|--------|--------|-------------------------------|
-| Provider/key card | Empty | Filled-hidden | Filled-revealed | Error/Invalid (+ Validating preview) |
-| Model card | Empty/disabled (no provider) | Loading | Loaded-with-selection | Error |
-| Command-approach card | All-enabled/no-cap | Cap-set (rungs above greyed) | Offline-only on (network rungs annotated) | Offline-only + cap combined (derived) |
-| Outcome sheet | Success | Failure (loud) | Success-with-provenance | Failure-with-retry |
-| Needs-confirmation | Single confirm | Batch all-or-nothing | Batch per-item (partial) | Destructive single (risk emphasis) |
-
-## Consolidated anti-feature list (the reusability litmus for this milestone)
-
-1. **No secret persistence** in the library (keys are props in, changes out).
-2. **No network / OkHttp / engine dependency** — no key validation, no model fetch, no tier execution in the library (INV-01).
-3. **No domain nouns** — provider names, model names, tier names, success/failure copy all arrive as props; nothing hardcoded.
-4. **No two-composable single/batch split** — one confirm composable, `items: List` where single = list-of-one.
-5. **No silent failures** — VOUT-03 failures are loud, sticky, and visible.
-6. **No dark-pattern confirm** — cancel is as reachable as confirm; destructive variant biases toward caution.
-7. **No ladder execution/reordering** — the approach card displays + emits policy (offline-only, cap) only; it never enforces or reorders the ladder.
+---
 
 ## Sources
 
-- [Segmented button | Jetpack Compose | Android Developers](https://developer.android.com/develop/ui/compose/components/segmented-button) — segmented for small all-visible sets; single-choice semantics
-- [Choices of Choices: User Selection Components in Compose Material 3 (Medium)](https://medium.com/@kerry.bisset/choices-of-choices-exploring-user-selection-components-in-jetpack-compose-with-material-3-e7fd9b1418c6) — segmented vs dropdown by option count
-- [SingleChoiceSegmentedButtonRow – Material 3 Compose (composables.com)](https://composables.com/docs/androidx.compose.material3/material3/components/SingleChoiceSegmentedButtonRow) — single-choice usage
-- [Password Pattern | UX Patterns for Developers](https://uxpatterns.dev/patterns/forms/password) — masked default + reveal toggle, single field
-- [Creating an Accessible Password Field for WCAG Compliance | ADA Compliance Pros](https://www.adacompliancepros.com/blog/accessible-password-field) — accessible reveal toggle, focus retention
-- Frozen contract §6.3 + SB `MutationGate`/`VoiceConfirmGate` and CT weak-match confirm (project `.planning/` — REQUIREMENTS.md, ROADMAP.md, PROJECT.md)
+- Sonner `src/index.tsx` and `src/styles.css`, `main` branch (constants, pause conditions, collapsed height, expand/collapse, swipe threshold and velocity, reduced-motion media query). HIGH: primary source.
+- MDC-Android `Snackbar.getDuration`, `BaseTransientBottomBar` (touch and drag pause, `DISMISS_EVENT_CONSECUTIVE`), `SwipeDismissBehavior` (0.5 threshold, alpha), `master`. HIGH: primary source.
+- androidx-main `compose/material3` `SnackbarHost.kt` (mutex queue, cancel cleanup, host-driven `delay`, a11y semantics), `Scaffold.kt` (snackbar offset, `systemBarsForVisualComponents`), `SwipeToDismissBox.kt` (56dp). HIGH: primary source; check that the BOM 2026.04.01 behavior matches.
+- Eevis Panula, "Android, Animations and Reduced Motion" (2022) and the Inclusive Android Apps newsletter: Compose 1.2+ honors Remove animations. MEDIUM.
+- `docs/design/snackbar-go-to-item/index.html` interactive mock (4 s idle collapse, pause-all, 800 ms floor, 90px swipe, 4-6px slop). Project source.
+- SecondBrain `SNACKBAR-NAV-SURVEY.md` (G1-G12, hidden-behind-sheet hosts, Undo-all dropping snackbars, same-destination opens). Project source.
 
 ---
-*Feature research for: AI-voice command UI — prop-driven presentational Compose composables*
-*Researched: 2026-09-29*
+*Feature research for: v2.8 Snackbar go-to-item + stacked feedback*
+*Researched: 2026-10-17*

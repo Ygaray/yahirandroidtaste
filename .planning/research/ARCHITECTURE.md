@@ -1,225 +1,247 @@
-# Architecture Research
+# Architecture Research: v2.8 Snackbar go-to-item + stacked feedback
 
-**Domain:** Additive integration of a prop-driven AI-voice UI cohort into an existing reusable Jetpack Compose design-system library (`yahirandroidtaste`)
-**Researched:** 2026-09-29
-**Confidence:** HIGH (grounded in the live source: `ComponentRegistry.kt`, `ComponentRegistryDriftGuardTest.kt`, `ExplorerIndexScreen.kt`, `model/`, `API.md`)
+**Domain:** Additive change to the feedback layer of a reusable Compose design library (`yahirandroidtaste`)
+**Researched:** 2026-10-17
+**Confidence:** HIGH for integration points (read from live source: `feedback/*.kt`, `OutcomeSheet*.kt`,
+`ReceiptRow.kt`, `ComponentRegistry.kt`, the drift guards, `api.txt`, detekt config). HIGH for the M3 baseline
+(disassembled `material3-android-1.4.0`: `SnackbarHostState` = `Mutex` + a single `currentSnackbarData`;
+`toMillis` = 10000/4000 → `AccessibilityManager.calculateRecommendedTimeoutMillis`). HIGH that
+`TestCoroutineScheduler.timeSource` exists (javap on `kotlinx-coroutines-test-jvm 1.11.0`). The state-machine
+design below is my recommendation (MEDIUM until Phase 25 tests prove it).
+*(Replaces the v2.4 ARCHITECTURE.md, which is still in git history.)*
 
-## Executive Answer (the five questions, up front)
-
-1. **Package:** put every new composable **flat in `component/`** — NOT a `component/voice/` sub-package. All ~60 existing components are flat; the "families" are a *registry taxonomy*, not a package layout. **Family:** register the whole cohort in **one new tenth registry family, "Voice Command"** (`voiceCommandFamilyEntries`), mirroring how Progress/Metrics (family 8) and Tactile Foundation (family 9) each landed as a cohesive new-family drop. Do **not** scatter the cohort across Cards/Sheets/Feedback.
-2. **Prop models:** all-`val` immutable data classes in `model/` — `VoiceProviderUiModel`, `VoiceModelUiModel`, `CommandTierUiModel` (the ladder is `List<CommandTierUiModel>`), `HandledByUiModel`, a **sealed `VoiceOutcomeUiState`**, and `ConfirmRequestUiModel` + `ProposedItemUiModel` (batch is `List`, single = list-of-1). Generic field names only; the consumer maps engine output → these at the call site.
-3. **P11 ↔ P12:** **one composable with a single sealed state param**, not siblings. The ROADMAP is explicit ("extends the outcome sheet with a confirmation state", P12 depends on P11). Ship the sealed `VoiceOutcomeUiState` type in P11 (Success / Failure) so P12 is purely additive — a new `NeedsConfirmation` subtype + one `when` branch, no signature change → Metalava stays additive.
-4. **Build order:** P10 ∥ P11 (independent) → P12 (gates on P11) → P13 (gates on all). Integration points: `SheetScaffold`, `ClearableTextField`, `SegmentedOptionSelector`, `AppChip`/`ChipBar`, `DynamicActionButton`. **Do not** use `AttentionCue` for failure (its KDoc forbids it) or `ConfirmationDialog` for the confirm state (roadmap wants it *in* the sheet).
-5. **Gallery:** one `ComponentRegistry.Entry` per new composable in `voiceCommandFamilyEntries`, each with `tier = PATTERN` (required, no default) + a 4-cell states matrix; add the family to `ExplorerFamilies` consts + `ORDERED_KEYS`. Fake fixtures live in the family-screen file (auto-excluded from the drift guard — `explorer/` is denylisted).
-
-> ⚠ **Doc-drift flag:** `CLAUDE.md` and the milestone brief say "**seven** ComponentRegistry family lists." The live `ComponentRegistry.entries` concatenates **nine** (`cards + chips + sheets + buttonsFab + pickers + feedback + emptyState + progress + tactileFoundation`). Adding Voice Command makes **ten**. P13 should correct the "seven" wording where it appears.
-
-## Standard Architecture
-
-### System Overview — where the cohort sits
+## System overview
 
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│  CONSUMER APP (SecondBrain / CalTracker) — owns the domain + engine    │
-│  ┌────────────────────┐   maps engine outcome → props   ┌───────────┐ │
-│  │ voice-action-engine │ ─────────────────────────────► │ call site │ │
-│  │ (OkHttp, tiers…)    │                                 └─────┬─────┘ │
-│  └────────────────────┘                                        │ props │
-└────────────────────────────────────────────────────────────────┼──────┘
-                                one-way dependency (INV-01)        ▼
-┌──────────────────────────────────────────────────────────────────────┐
-│  yahirandroidtaste LIBRARY  (Android SDK + Compose + Hilt + …only)     │
-│                                                                        │
-│  model/  (immutable, domain-free)     component/  (flat, @Composable)  │
-│  ┌───────────────────────────┐        ┌────────────────────────────┐  │
-│  │ VoiceProviderUiModel      │        │ VoiceProviderSettingsCard   │  │
-│  │ VoiceModelUiModel         │  props │ VoiceModelSettingsCard      │  │
-│  │ CommandTierUiModel        │ ─────► │ CommandApproachSettingsCard │  │
-│  │ HandledByUiModel          │        │ VoiceOutcomeSheet(+Content) │  │
-│  │ VoiceOutcomeUiState (seal)│        └──────────────┬─────────────┘  │
-│  │ ConfirmRequestUiModel     │           reuses      │                 │
-│  │ ProposedItemUiModel       │        ┌──────────────▼─────────────┐  │
-│  └───────────────────────────┘        │ SheetScaffold, AppChip,    │  │
-│                                        │ ClearableTextField,        │  │
-│  explorer/  (denylisted from guard)    │ SegmentedOptionSelector,   │  │
-│  ┌───────────────────────────┐        │ DynamicActionButton        │  │
-│  │ voiceCommandFamilyEntries │        └────────────────────────────┘  │
-│  │ (registry + gallery)      │  ← ComponentRegistry.entries (SSOT)     │
-│  └───────────────────────────┘                                        │
-└──────────────────────────────────────────────────────────────────────┘
+ consumer app (owns NavController, Hilt app, FeedbackController adapter)
+   │  emit(event) ──launch──► FeedbackStackState.show / .emitTrackedWithUndo(store, event)
+   │  onOpenTarget(target) ◄── FeedbackStackHost / OutcomeSheet / UndoCenterScreen   (key → route)
+ ──┼───────────────────────────────────────────────────────────────────────────────
+ feedback/  FeedbackTarget(key, openLabel)   FeedbackResult {Opened, Undone, Dismissed, TimedOut}
+            FeedbackStackState ── items: SnapshotStateList<FeedbackStackItem> (newest first, ≤ maxVisible)
+              │  each item: CompletableDeferred<FeedbackResult>, timer job, spent flag
+              └─► FeedbackStackHost (reads items, writes resolve/pause/fan)  ── Phase 26 deck UI
+            UndoHistoryStore (@Singleton) ── UndoHistoryEntry(+target) ── UndoCenterScreen(+onOpenTarget overload)
+ model/     FeedbackEvent.Notify/WithUndo(+target)   Success(+target)   BatchRowResultUiModel(+target)
+ component/ OutcomeSheet ×2 (+onOpenTarget) → OutcomeSheetContent / OutcomeSheetReceiptContent → internal OpenTargetRow
 ```
 
-### Component Responsibilities
+The one-way rule holds: the library never sees a route or a NavController. A target is an opaque key plus a
+TalkBack label, and every surface reports it back through one `(FeedbackTarget) -> Unit`.
 
-| Component | Responsibility | Implementation |
-|-----------|----------------|----------------|
-| `component/*` (new files, flat) | Render voice settings/outcome UI from props+callbacks; hold no key, make no network call | Presentation-only `@Composable`, hoisted state, matches existing flat-package convention |
-| `model/*` (new immutable models) | Carry the domain-neutral shapes the consumer maps its engine output into | All-`val` `data class` / sealed interface — Compose-`STABLE`-inferable |
-| `voiceCommandFamilyEntries` (new `explorer/VoiceCommandFamilyScreen.kt`) | Register the cohort + drive its gallery detail pages | Slice of `ComponentRegistry.entries`, one `Entry` per composable, `tier=PATTERN` |
-| `ExplorerFamilies` (edit) | Declare + order the new family | Add const `VOICE_COMMAND` and an `ORDERED_KEYS` row |
+## New vs modified files
 
-## Recommended Project Structure
+| File (under `src/main/java/.../yahirandroidtaste/`) | New/Mod | Phase | What changes |
+|---|---|---|---|
+| `feedback/FeedbackTarget.kt` | NEW | 25 | `@Immutable data class FeedbackTarget(val key: String, val openLabel: String)`. It goes in `feedback/` next to `UndoPreview`; `model/` already imports `feedback/`, so `Success` and the batch-row model can reference it. |
+| `feedback/FeedbackResult.kt` | NEW | 25 | `enum class FeedbackResult { Opened, Undone, Dismissed, TimedOut }` |
+| `feedback/FeedbackStackState.kt` | NEW | 25 (26 adds timer tuning) | The public state class, `@Composable rememberFeedbackStackState(maxVisible = 3)`, the internal `FeedbackStackItem`, and the timer |
+| `feedback/FeedbackStackHost.kt` | NEW | 25 tracer, 26 full | Public host. Phase 26 adds the internal `FeedbackDeck` / `FeedbackCard` (internal composables, so the guard ignores them). |
+| `component/OpenTargetRow.kt` | NEW (internal) | 27 | A label-less tappable row with a › chevron, shared by Classic, Receipt and batch rows (see Pitfall A) |
+| `feedback/FeedbackEvent.kt` | MOD | 25 | Appends `target: FeedbackTarget? = null` as the LAST param of `Notify` and `WithUndo`. `DismissScreen` is untouched. |
+| `feedback/UndoHistoryEntry.kt` | MOD | 25 | Appends `val target: FeedbackTarget? = null` after `consumedGuard` (the ctor is internal, so only `copy` / `componentN` matter: a new last param keeps every positional `copy` compiling). Adds a computed `val openableTarget get() = target?.takeIf { status == Available }`. `withStatus` carries `target` automatically. |
+| `feedback/UndoHistoryStore.kt` | MOD | 25 | One new overload: `append(message, preview = null, groupId: String? = null, target: FeedbackTarget?, undoAction)`. `target` has NO default, so the two existing overloads stay the only candidates for every current call (see Pattern 4). |
+| `feedback/UndoTracking.kt` | MOD | 25 | The existing `SnackbarHostState.emitTrackedWithUndo` now appends via the target overload (`target = event.target`); everything else stays byte-identical. Adds `suspend fun FeedbackStackState.emitTrackedWithUndo(store, event): FeedbackResult` in the same file, so "the ONE place" both sequences live stays one file. |
+| `model/VoiceOutcomeUiState.kt` | MOD | 27 | `Success` gets `target: FeedbackTarget? = null` after `endAction` |
+| `model/BatchRowResultUiModel.kt` | MOD | 27 | Gets `target: FeedbackTarget? = null` after `detail` |
+| `component/OutcomeSheet.kt` | MOD | 27 | Both overloads end in `onOpenTarget: ((FeedbackTarget) -> Unit)? = null`. Internal `OutcomeSheetContent`, `SuccessBody` and `BatchResultsList` gain a defaulted `onOpenTarget`. |
+| `component/OutcomeSheetReceipt.kt` | MOD | 27 | Same threading through `OutcomeSheetReceipt`, `OutcomeSheetReceiptContent` and `ReceiptSuccessBody`; the POL-01 pill-shape fix in `ReceiptHandledByPill`; the POL-02 dot in `handledByDotColor` |
+| `feedback/UndoCenterScreen.kt` | MOD | 27 | New public overload; both overloads delegate to a private `UndoCenterScreenImpl`; `UndoHistoryRow` gets `onOpen: (() -> Unit)?` |
+| `explorer/FeedbackFamilyScreen.kt`, `explorer/ComponentRegistry.kt` | MOD | 25 (demos 28) | Registers `FeedbackStackHost` (tier PATTERN) and allowlists `rememberFeedbackStackState` |
+| `explorer/ExplorerActivity.kt`, `ReleaseDemos.kt`, `VoiceCommandFamilyScreen.kt` | MOD | 28 | `HubSchemeScope` at the Explorer root (DEMO-02); stack and go-to-item demos in EN and DE |
+| `api.txt`, `API.md`, `README.md` | MOD | 25, 26, 27, 29 | `CatalogDocsDriftGuardTest` compares the registry counts against `API.md` / `README.md` (66/5/71 today), so **Phase 25 must bump the docs counts** in the same commit that registers the host |
+| `src/test/.../V271CallSiteCanaryTest.kt` | NEW | 25 (grows in 27) | Every v2.7.1 call shape of the touched types compiles unchanged |
 
-```
-src/main/java/io/github/ygaray/yahirandroidtaste/
-├── component/                          # FLAT — every component lives here (no sub-packages)
-│   ├── VoiceProviderSettingsCard.kt    # P10 — provider select + API-key entry
-│   ├── VoiceModelSettingsCard.kt       # P10 — model select
-│   ├── CommandApproachSettingsCard.kt  # P10 — tier ladder + offline-only + max-tier cap
-│   └── VoiceOutcomeSheet.kt            # P11 (Success/Failure) → P12 (NeedsConfirmation)
-│                                       #   host + `VoiceOutcomeSheetContent` body (split convention)
-├── model/                              # immutable, all-val, domain-free UI models
-│   ├── VoiceProviderUiModel.kt
-│   ├── VoiceModelUiModel.kt
-│   ├── CommandTierUiModel.kt
-│   ├── HandledByUiModel.kt
-│   ├── VoiceOutcomeUiState.kt          # sealed: Success | Failure | NeedsConfirmation
-│   ├── ConfirmRequestUiModel.kt
-│   └── ProposedItemUiModel.kt
-└── explorer/                           # denylisted from the drift guard
-    └── VoiceCommandFamilyScreen.kt     # voiceCommandFamilyEntries + fake fixtures + family screen
-```
+## FeedbackStackState design (Phase 25 core, Phase 26 timing)
 
-### Structure Rationale
-
-- **Flat `component/`:** 60 existing components are flat; the drift guard, `API.md`, and every `*FamilyScreen.kt` import from `component.X` flat. A `component/voice/` sub-package would be the *only* nested one — inconsistent, and buys nothing (the family taxonomy already provides logical grouping). Note: it would still be drift-guard-safe (the guard denylists only `explorer/`, so any package under the scan root is covered), so the reason to avoid it is convention, not safety.
-- **One new family, not scatter:** Cards is specifically the five card archetypes (Text/List/Album/Voice) — settings cards are an altitude mismatch there. A cohesive family keeps the gallery legible and honors this project's *stewardship/coherence* mandate. Direct precedent: Tactile Foundation (Phase 123, `DS-01`) shipped as one cohesive family.
-- **Host-vs-content split for the sheet:** existing sheets ship both `…Sheet` (owns `ModalBottomSheet`) and `…Content` (body only) and register both; `VoiceOutcomeSheet` should follow so a consumer can embed the body in its own host.
-
-## Architectural Patterns
-
-### Pattern 1: One outcome sheet, sealed state param (P11 → P12)
-
-**What:** A single `VoiceOutcomeSheet(state: VoiceOutcomeUiState, …)` renders all outcome modes via a `when`.
-**When:** Whenever P11 and P12 are the same visual surface differing only by mode — which the ROADMAP asserts.
-**Trade-offs:** One registered composable + one gallery tile (simpler catalog) vs. a slightly larger `when`. The additive win is decisive: shipping the sealed type in P11 makes P12 a new subtype + branch with **zero** signature change → Metalava `apiCheck` passes trivially.
+**Model.** No `Mutex` serializes `show()`. That serialization is exactly the M3 queue we are replacing: M3
+holds a `Mutex` around a single `currentSnackbarData`. Concurrency comes from **one
+`CompletableDeferred<FeedbackResult>` per item**, and `complete()` returning `false` for every call after the
+first IS the exactly-one-result guarantee: Opened, Undone, swipe, timer and eviction all race through the
+same CAS, and the first one wins. List mutation (insert plus cap eviction) is a short **non-suspending**
+critical section under a plain `synchronized(lock)`. A `Mutex` adds nothing here because nothing in that
+section suspends.
 
 ```kotlin
-sealed interface VoiceOutcomeUiState {
-    data class Success(val summary: String, val handledBy: HandledByUiModel) : VoiceOutcomeUiState
-    data class Failure(val reason: String, val handledBy: HandledByUiModel?) : VoiceOutcomeUiState
-    // Added in P12 — purely additive:
-    data class NeedsConfirmation(val request: ConfirmRequestUiModel) : VoiceOutcomeUiState
+@Stable class FeedbackStackState internal constructor(
+    val maxVisible: Int,
+    internal val timeSource: TimeSource = TimeSource.Monotonic,          // tests: testScheduler.timeSource
+) {
+    constructor(maxVisible: Int = 3) : this(maxVisible, TimeSource.Monotonic)
+    internal val items = mutableStateListOf<FeedbackStackItem>()          // newest first; host reads
+    internal var timeoutFor: (base: Long, hasControls: Boolean) -> Long = { b, _ -> b } // host wires a11y
+    private val paused = MutableStateFlow(PauseState())                   // pointerDown || fanned
+
+    suspend fun show(event: FeedbackEvent): FeedbackResult = showInternal(event, entryId = null)
+
+    internal suspend fun showInternal(event: FeedbackEvent, entryId: String?, onShown: (FeedbackStackItem) -> Unit = {}) =
+        coroutineScope {
+            val item = FeedbackStackItem(event.toVisuals(), entryId)        // DismissScreen → message-only, Short (D-13)
+            val evicted = synchronized(lock) { items.add(0, item); if (items.size > maxVisible) items.removeAt(items.lastIndex) else null }
+            evicted?.result?.complete(FeedbackResult.Dismissed)            // D-06: the oldest leaves early
+            onShown(item)
+            val timer = launch { runTimer(item) }
+            try { item.result.await() }
+            finally { timer.cancel(); item.result.complete(FeedbackResult.Dismissed); synchronized(lock) { items.remove(item) } }
+        }
+
+    internal fun resolve(item: FeedbackStackItem, r: FeedbackResult): Boolean = item.result.complete(r)
+    internal fun setPointerDown(down: Boolean) { paused.update { it.copy(pointer = down) } }
+    internal fun setFanned(fanned: Boolean) { paused.update { it.copy(fanned = fanned) } }
 }
-// Carry confirm/cancel on the state arm (cohesion — they only exist for confirmation),
-// or as nullable sheet callbacks. Prefer on the arm.
 ```
 
-### Pattern 2: Single-or-batch as a uniform list
-
-**What:** `ConfirmRequestUiModel(reason: String, items: List<ProposedItemUiModel>)`; a single risk-confirm is a list of size 1, a batch weak-match is size N.
-**When:** The one shape must satisfy both SB `MutationGate`/`VoiceConfirmGate` risk-confirm (single) and CT weak-match (single **or** batch) with **no** library change per consumer (VOUT-04, success criterion 4).
-**Trade-offs:** Consumer always wraps even a single item — trivial. The alternative (a `Single | Batch` sealed split) forces a library edit if a consumer's cardinality assumption shifts; the list shape is future-proof and domain-neutral.
-
-### Pattern 3: Immutable, `STABLE`-inferable models (the `TagChipUiModel` lesson)
-
-**What:** Every new `model/` type is all-`val`. Avoid the `var color` trap that made `TagChipUiModel` un-`STABLE` and forced an out-of-primary-constructor workaround.
-**When:** Always, for a widely-shared prop type on many composables.
-**Trade-offs:** None here — voice models have no ABI-history to preserve, so start clean and immutable, keeping every voice composable skippable by the Compose runtime.
-
-## Data Flow
-
-### Prop-in / callback-out (no state held in the library)
-
-```
-[engine outcome / settings]  (consumer)
-        ↓ map to model
-[VoiceOutcomeUiState / *UiModel]  → prop → [Composable] → render
-        ↑ callback (onSelectProvider / onToggleOffline / onConfirm / onCancel)
-[consumer handles it]  (persists key, calls engine — all outside the library)
-```
-
-**Key flows:**
-1. **Settings (P10):** consumer passes current provider/model/ladder/toggles as props; card emits selection/toggle/cap changes via callbacks. Library persists nothing, makes no network call (success criterion 1).
-2. **Outcome (P11):** consumer maps the engine result to `Success`/`Failure` incl. `HandledByUiModel`; the sheet renders it, failure loud.
-3. **Confirmation (P12):** consumer maps a pending gate to `NeedsConfirmation(ConfirmRequestUiModel)`; confirm/cancel callbacks return the decision to the consumer.
-
-## Registry & Gallery Wiring (Question 5, concretely)
-
-Each new composable needs **one** `ComponentRegistry.Entry` in `voiceCommandFamilyEntries`:
+- **How `show()` suspends and resolves.** It suspends on `item.result.await()` in the caller's coroutine. The
+  host (Phase 25 tracer, then Phase 26) calls `resolve(item, Opened | Undone | Dismissed)`; the timer calls
+  `resolve(item, TimedOut)`; eviction completes the oldest item with `Dismissed`. The item leaves `items` in
+  `show()`'s `finally`. If the caller's coroutine is cancelled, the item is removed and stays resolved, so
+  nothing is left visible.
+- **`show()` never runs `undoAction`.** As with M3's `ActionPerformed`, the caller acts on `Undone`. This is
+  what lets the tracked path route undo through `store.attemptUndo` exactly once (FSTK-07).
+- **Per-item timer, owned by the state, not by the host.** The timer runs inside `show()`, so it is
+  testable with no composition (Phase 25 SC3) and is cancelled automatically when the item resolves.
+  Pause/resume with the remaining time:
+  ```kotlin
+  var remaining = timeoutFor(item.baseMillis, item.hasControls).milliseconds  // Indefinite → never launched
+  while (remaining > Duration.ZERO) {
+      paused.first { !it.any }                         // wait while touched / fanned
+      val mark = timeSource.markNow()
+      val pausedAgain = withTimeoutOrNull(remaining) { paused.first { it.any } }
+      remaining -= mark.elapsedNow()
+      if (pausedAgain == null) break
+  }
+  resolve(item, FeedbackResult.TimedOut)
+  ```
+  The pause is **deck-wide**: the design prototype does `items.forEach(pauseTimer)` on pointerdown. Its
+  "remaining ≥ 800 ms" floor on resume is worth copying as a constant (a resumed card never vanishes
+  instantly). The pause signal is a `StateFlow`, not snapshot state, on purpose: `snapshotFlow` only sees
+  writes after `Snapshot.sendApplyNotifications()`, which plain JVM tests don't trigger.
+- **Accessibility timeout.** `rememberFeedbackStackState` reads `LocalAccessibilityManager.current` and sets
+  `timeoutFor = { b, c -> am?.calculateRecommendedTimeoutMillis(b, containsIcons = true, containsText = true, containsControls = c) ?: b }`,
+  matching M3's `toMillis` exactly. Base values: Short 4000, Long 10000; `hasControls = hasUndo || target != null` (D-04).
+- **Undone elsewhere (D-14).** The stack's `emitTrackedWithUndo` uses `showInternal(..., onShown = { item -> launch { store.entries.first { es -> es.none { it.id == id && it.status == Available } }; item.spent = true } })`.
+  While `spent` is true the card hides Undo and the chevron. The watcher also fires on cap eviction.
 
 ```kotlin
-ComponentRegistry.Entry(
-    name = "VoiceOutcomeSheet",              // MUST match the fn name exactly (drift-guard scans source text)
-    family = ExplorerFamilies.VOICE_COMMAND, // new const
-    tier = ComponentRegistry.Tier.PATTERN,   // required, no default — domain nouns in name/params
-    states = listOf(
-        StateCell("Default"),                        // Success variant
-        StateCell("Pressed / Selected"),             // real cell or curated null + reason
-        StateCell("Disabled"),
-        StateCell("Focused"),
-    ),
-    content = { VoiceOutcomeSheetVariants() },        // Success / Failure / single-confirm / batch-confirm demos
-)
+suspend fun FeedbackStackState.emitTrackedWithUndo(store: UndoHistoryStore, event: FeedbackEvent.WithUndo): FeedbackResult {
+    val id = store.append(event.message, event.preview, target = event.target, undoAction = event.undoAction) // BEFORE visible
+    val result = showInternal(event, entryId = id, onShown = { /* spent watcher */ })
+    if (result == FeedbackResult.Undone) store.attemptUndo(id)    // the only undo path; CAS guard vs Undo Center
+    return result
+}
 ```
+It returns `FeedbackResult`, unlike the `Unit`-returning M3 variant. This is additive and costs nothing.
 
-Then edit `ExplorerFamilies`: add `const val VOICE_COMMAND = "voice_command"` and a `VOICE_COMMAND to "Voice Command"` row in `ORDERED_KEYS`; append `voiceCommandFamilyEntries` to the `ComponentRegistry.entries` concatenation. The outcome sheet's states matrix is the natural place to showcase Success/Failure and single-vs-batch confirm — making the gallery the living proof that both consumers' shapes render. Fake fixtures go **in the family-screen file** (infrastructure; `explorer/` is the drift guard's only denylisted package).
+**How the host consumes state.** `FeedbackStackHost(state, onOpenTarget, modifier, undoLabel, dismissLabel)`
+reads `state.items` (snapshot state, so it recomposes) and renders newest-first. A body tap runs
+`if (item.target != null && !item.spent && state.resolve(item, Opened)) onOpenTarget(item.target)`; the
+guard stops a double tap from navigating twice. Undo calls `resolve(Undone)`. A swipe or the Dismiss custom
+action calls `resolve(Dismissed)`. `pointerInput` press/release calls `setPointerDown`, and fan-out/collapse
+calls `setFanned`. Because `show()` removes the item at once, the **host keeps a local "exiting" copy for
+exit animation**, as M3's `FadeInFadeOutWithScale` does. Consumers put the host in
+`Scaffold(snackbarHost = { FeedbackStackHost(...) })`. `FeedbackStackItem` stays **internal** (a minimal API;
+it can be made public later, additively).
 
-## Anti-Patterns
+## OutcomeSheet / UndoCenter: source-compat placement
 
-### Anti-Pattern 1: Using `AttentionCue` for failure states
-**What people do:** Reuse `AttentionCue` (Feedback family) for P11's loud failure.
-**Why it's wrong:** Its KDoc explicitly says it is a *"Caution/verify signal glyph — **never** a failure signal."* Using it for failure violates the component's own contract and undercuts the "loud, visible failure" requirement (VOUT-03).
-**Do this instead:** Give failure a distinct loud treatment (error-color container + icon) inside the sheet body — a small internal element or an error-tinted surface, not the caution glyph.
+- **`OutcomeSheet`, both overloads:** append `onOpenTarget: ((FeedbackTarget) -> Unit)? = null` LAST. Neither
+  overload ends in a lambda today (`colors` and `sheetState` are last), so the CLAUDE.md "never after a
+  trailing lambda" rule is not violated. `FeedbackTarget` is not experimental, so a plain defaulted param
+  is right here; a separate overload, as `sheetState` needed, is not. The no-state overload forwards
+  `onOpenTarget` into the hoisted one. A target row renders only when `success.target != null &&
+  onOpenTarget != null`. Otherwise the code path is v2.7.1's, and the existing `OutcomeSheet*Test` files stay
+  untouched (FOPEN-01).
+- **`UndoCenterScreen`:** it ends in the trailing lambda `onClear`, so it **cannot** take an appended param.
+  The new overload is `(entries, onNavigateBack, onUndo, groups = emptyList(), onUndoGroup = null,
+  onOpenTarget: (FeedbackTarget) -> Unit, onClear)`. `onOpenTarget` is **required and non-null**, which is the
+  only thing that tells the two overloads apart: every v2.7.1 call (including `UndoCenterScreen(e, b, u) { }`)
+  matches only the old one. It sits after defaulted params, so callers must name it (the same idiom as
+  `sheetState`). detekt `LongParameterList` (6, `ignoreDefaultParameters: true`) counts 5 params: OK. A row is
+  openable iff `entry.openableTarget != null`. Add the tap as `onTap` in the existing `detectTapGestures`
+  (which already owns `onPress` for the peek) plus `semantics { onClick(label = target.openLabel) }`. Do not
+  stack a second `clickable`, because it would swallow the press-to-peek.
 
-### Anti-Pattern 2: A separate confirmation dialog/sibling for P12
-**What people do:** Reach for `ConfirmationDialog` (Feedback family) or a new sibling composable.
-**Why it's wrong:** The ROADMAP requires the confirm state to live **in the outcome sheet** (VOUT-04, "the outcome sheet renders a needs-confirmation state"); a sibling fragments the surface and forces a second gallery tile + registry entry.
-**Do this instead:** The sealed-state param on `VoiceOutcomeSheet` (Pattern 1). Reuse `DynamicActionButton` for confirm (save/destructive role) and cancel (neutral).
+## ComponentRegistry placement
 
-### Anti-Pattern 3: A `component/voice/` sub-package
-**What people do:** Nest the new files to "group" them.
-**Why it's wrong:** Breaks the established flat convention (60 flat files, every import is `component.X`) for zero benefit — grouping already comes from the registry family.
-**Do this instead:** Flat `component/`, grouped via the `voiceCommandFamilyEntries` registry family.
+| Symbol | Where | Why |
+|---|---|---|
+| `FeedbackStackHost` | `feedbackFamilyEntries` (`FeedbackFamilyScreen.kt`), `tier = PATTERN` | A visual composable with built-in conventions (deck, swipe, undo). The Phase 25 tracer entry may have a minimal states matrix; Phase 28 enriches it. `ComponentPlaygroundIntegrityTest` requires `preview` whenever `controls` is non-empty. |
+| `rememberFeedbackStackState` | `INTENTIONALLY_UNREGISTERED` | A public top-level `@Composable` (so the guard's column-0 scan catches it), but a state factory, not a visual. Reason: "state holder for FeedbackStackHost; exercised through its entry". This is the hub's first public `remember*`. |
+| `FeedbackCard`, `FeedbackDeck`, `OpenTargetRow` | `internal` | The guard scans public only, so no action is needed |
+| `OutcomeSheet` / `UndoCenterScreen` overloads | none | The guard checks names; both are registered already |
 
-### Anti-Pattern 4: A `var` field on a shared model
-**What people do:** Add mutable styling metadata to a model (as `TagChipUiModel.color` had to, for ABI reasons).
-**Why it's wrong:** Any `var` disqualifies the class from Compose `STABLE` inference, de-optimizing every composable that takes it.
-**Do this instead:** All-`val`. These are new models with no ABI history to protect.
+Total after v2.8: +1 registered, +1 allowlisted. Phase 25 must update the API.md and README.md counts, or
+`CatalogDocsDriftGuardTest` goes red.
 
-## Integration Points
+## Patterns to follow
 
-### Reused existing primitives
+1. **Opaque target, one app-level router.** The store is a `@Singleton` that outlives screens, so an
+   entry may hold data only (D-08). The consumer's `onOpenTarget` decodes `key` → route and can skip a
+   same-destination open.
+2. **Deferred-per-item CAS for "exactly one".** Never track "resolved" with a boolean beside the deferred.
+   `complete()`'s return value is the guard.
+3. **Library derives, caller clears.** Library-owned state (`UndoHistoryEntry`, stack items) derives
+   "not openable" from the entry's status. Caller-built state (`Success`, `BatchRowResultUiModel`) is
+   cleared by the caller after Undo (D-14), and the KDoc says so.
+4. **No-default discriminator param for overloads.** Use the shape `store.append(..., groupId, ...)` already
+   uses: a new overload is reachable only when its new param is named, so existing calls never become
+   ambiguous.
 
-| New surface | Reuse | Notes |
-|-------------|-------|-------|
-| `VoiceProviderSettingsCard` | `ClearableTextField` (key entry), `AppChip`/`ChipBar` or `SortControl` (provider select), `DynamicActionButton` (apply) | Holds no key; emits via callback |
-| `VoiceModelSettingsCard` | `AppChip`/`ChipBar` or `SegmentedOptionSelector` | Model list from props |
-| `CommandApproachSettingsCard` | `SegmentedOptionSelector` (offline-only toggle + max-tier cap — 2-option toggle w/ disabled+reason), ordered rows for the ladder | Ladder = `List<CommandTierUiModel>`; ladder render is new |
-| `VoiceOutcomeSheet` | `SheetScaffold` (host + drag handle), `AppChip`/`CountBadge` (handled-by indicator), `DynamicActionButton` (confirm/cancel) | Host/content split; failure ≠ `AttentionCue` |
+## Anti-patterns
 
-### Internal boundaries
+- **Pitfall A, reusing `ReceiptRow(onClick=…)` for go-to-item.** Its summary always sets `stateDescription`
+  to Expanded/Collapsed and draws the expand chevron when `onClick != null` (`ReceiptRow.kt:299`). TalkBack
+  would announce "Collapsed" on a navigation row. Use the internal `OpenTargetRow` (Role.Button, `onClickLabel
+  = openLabel`, › icon, no state description), styled to match ReceiptRow's padding and type.
+- **Timers in a host `LaunchedEffect` (the M3 way).** These would make FSTK-06 untestable without
+  composition and would stop timers whenever the host leaves composition. M3 gets away with it because only
+  one item is visible at a time.
+- **Serial `emit` in the consumer.** `FeedbackDispatcher.emit` is `suspend`. A controller that `await`s each
+  `show()` turns the deck back into a queue. INTEGRATION.md must say `scope.launch { state.show(e) }` per
+  event (Phase 29).
+- **Calling `event.undoAction` from the stack path,** or `show()` running it, would double-undo against the
+  Undo Center.
 
-| Boundary | Communication | Notes |
-|----------|---------------|-------|
-| consumer ↔ library | props in / callbacks out | one-way (INV-01); no OkHttp, no engine module, no consumer import |
-| composable ↔ registry | `Entry` in `voiceCommandFamilyEntries` | name string must match fn name; drift guard is a source-text scan |
-| family ↔ explorer index | `ExplorerFamilies.ORDERED_KEYS` | add the tenth row |
+## Test strategy
 
-## Build Order (P10 → P13)
+| Layer | Harness | Covers |
+|---|---|---|
+| State machine | Plain JVM `runTest` (no Robolectric). `FeedbackStackState(3, testScheduler.timeSource)`. Each `show` runs under `async`, then `runCurrent()`. | One result per `show` (second `resolve` returns false); 4th arrival → oldest `Dismissed`; newest-first order; `advanceTimeBy(3999)` pending / `+1` → `TimedOut`; Long = 10000; pause then resume keeps the remainder (floor); fanned pauses all; Indefinite never times out; cancellation removes the item; DismissScreen mapping |
+| Tracked path | JVM, real `UndoHistoryStore`, counting `undoAction` | Append before the first `items` emission; Undone → exactly one invocation; a racing `store.attemptUndo` still gives one; Opened/Dismissed/TimedOut give zero; target copied; `openableTarget == null` after Undone/Failed; `spent` flips when undone from the Center |
+| Store / entry | Extend `UndoHistoryStoreTest` | New overload with and without a group; `withStatus` keeps the target; eviction unaffected |
+| Host / deck UI | Robolectric `createComposeRule` | Body tap → `onOpenTarget` once + `Opened`; no target → `SemanticsMatcher.keyNotDefined(OnClick)` and no chevron tag; `swipeRight()` → `Dismissed` and no undo; semantics (Role.Button, onClickLabel, LiveRegion Polite, custom actions Undo + Dismiss, traversal newest-first); pointer down → `paused` true. **Don't assert wall-clock timeouts here:** the timer runs on the `show()` caller's dispatcher, not `mainClock`. |
+| Sheet / Center | Robolectric | Target row present iff target and callback; batch rows mixed; the existing `OutcomeSheet*Test` and `UndoCenterScreen*Test` pass **unedited** (parity proof); long DE at 360dp, `fontScale = 2f` |
+| Compat | `V271CallSiteCanaryTest` + `apiCheck` on a regenerated `api.txt` | Notify/WithUndo positional + named; `store.append` trailing-lambda shapes; `UndoHistoryEntry.copy`; both `OutcomeSheet` overloads; `UndoCenterScreen(e, b, u) { }` resolves to the old overload |
+| Pill | Pure function + Robolectric | `handledByDotColor` contrast ≥ 3:1 vs pill container (light, dark, and a fixed dynamic sample palette); multi-line pill text bounds inside the shape at 2.0 |
 
-1. **P10 ∥ P11** (independent per ROADMAP). Land the models each needs. **Critical:** define the sealed `VoiceOutcomeUiState` with `Success` + `Failure` in P11 *and* leave the sheet's param typed as the sealed interface, so P12 is additive.
-2. **P12** (gates on P11): add `NeedsConfirmation` subtype + `ConfirmRequestUiModel`/`ProposedItemUiModel` + one `when` branch. No signature change.
-3. **P13** (gates on all): register every new composable in `voiceCommandFamilyEntries` with `tier=PATTERN` + 4-cell states; add the family to `ExplorerFamilies`; run the drift guard, Metalava `apiCheck` (strictly additive vs `v2.3.0`), detekt (zero baseline); correct the "seven families" doc drift; cut `v2.4.0`.
+## Suggested build order
 
-## Validation gates the cohort must clear (P13)
+1. **P25a (types):** `FeedbackTarget`, `FeedbackResult`, `target` on `Notify`/`WithUndo`, the canary. No behavior yet.
+2. **P25b (store):** `UndoHistoryEntry.target` + `openableTarget`, the store overload, existing `emitTrackedWithUndo` passes the target.
+3. **P25c (state):** `FeedbackStackState` with deferred, eviction and timer (the timer can land here: it's pure, and FSTK-06 is *accepted* in 26) + JVM tests.
+4. **P25d (tracked + tracer):** stack `emitTrackedWithUndo` + spent watcher; tracer `FeedbackStackHost`; register + allowlist; docs counts; `api.txt`.
+5. **P26:** internal deck/card, gestures (swipe, peek-tap fan, idle re-collapse), pause wiring, a11y timeout wiring in `remember…`, semantics.
+6. **P27 (needs only 25b):** model `target` fields → `OpenTargetRow` → both OutcomeSheet styles + batch rows → UndoCenter overload → pill fixes (independent; can go first in the phase).
+7. **P28:** `HubSchemeScope` at Explorer root, demos EN/DE + registry render tests, then the TalkBack sweep (fixes land here).
+8. **P29:** API/STYLE/INTEGRATION (incl. the `launch`-per-emit rule and the key→route router), full gates, proposal.
 
-- **ComponentRegistryDriftGuardTest** — every new public top-level `@Composable` registered XOR allowlisted (denylist scan already covers new files/packages automatically).
-- **Metalava `apiCheck`** — additive only; the sealed-type-in-P11 approach keeps P12 additive.
-- **detekt** — zero baseline; do not regenerate a baseline to bury findings.
-- **Registry `init` invariants** — no duplicate `Entry.name`, no entry both registered and allowlisted.
-- **INV-01** — no OkHttp / `voice-action-engine` dependency; every composable prop-driven.
+## Open questions (resolve in Phase 25 discuss)
+
+- **The card's second line and tone dot have no source in D-09.** `FeedbackEvent` carries only `message`
+  and `target`; the brief's "item name" second line and the tone dot need a field. Options: append
+  `supportingText: String? = null` (plus maybe a tone) to `Notify`/`WithUndo` now, or derive the tone from
+  the variant (WithUndo = neutral). This must be settled in Phase 25, because the event shape freezes there.
+- **Sheet-window snackbars.** SecondBrain's `SheetFeedbackHost` shows snackbars above a modal sheet. Inside
+  the sheet it needs its own `FeedbackStackState` + host (a second, independent deck sharing the store);
+  confirm with the consumer.
+- **When the entry is undone from the Undo Center while the snackbar shows:** hide Undo/chevron
+  (recommended) or auto-dismiss?
 
 ## Sources
 
-- `src/main/java/.../explorer/ComponentRegistry.kt` — `Entry` shape, required `tier`, 9-list concatenation, `init` invariants (HIGH)
-- `src/test/java/.../explorer/ComponentRegistryDriftGuardTest.kt` — denylist scan (`explorer/` only), source-text detection (HIGH)
-- `src/main/java/.../explorer/ExplorerIndexScreen.kt` — `ExplorerFamilies` consts + `ORDERED_KEYS` (HIGH)
-- `src/main/java/.../model/TagChipUiModel.kt` — the `var`/Compose-`STABLE` lesson (HIGH)
-- `API.md` — host-vs-content split convention, `AttentionCue` "never a failure signal", `SheetScaffold`/`SegmentedOptionSelector`/`ClearableTextField`/`DynamicActionButton` signatures (HIGH)
-- `.planning/ROADMAP.md` — P10∥P11, P12-extends-P11-sheet, P13 gates + ship criteria (HIGH)
-- `.planning/PROJECT.md` — INV-01 one-way dependency, prop-driven mandate, VOUT-04 dual-consumer confirm shape (HIGH)
-
----
-*Architecture research for: AI-voice UI cohort integration into `yahirandroidtaste`*
-*Researched: 2026-09-29*
+- Live source (HIGH): `feedback/{FeedbackEvent,UndoTracking,UndoHistoryEntry,UndoHistoryStore,UndoCenterScreen}.kt`,
+  `component/{OutcomeSheet,OutcomeSheetReceipt,ReceiptRow}.kt`, `explorer/ComponentRegistry.kt`,
+  `src/test/.../explorer/{ComponentRegistryDriftGuardTest,CatalogDocsDriftGuardTest}.kt`, `api.txt`, `config/detekt/detekt.yml`
+- `material3-android-1.4.0` bytecode (HIGH): `SnackbarHostState` (Mutex + single data), `SnackbarHostKt.toMillis`
+- `kotlinx-coroutines-test-jvm 1.11.0` bytecode (HIGH): `TestCoroutineScheduler.getTimeSource()`
+- Design prototype `docs/design/snackbar-go-to-item/index.html` (deck-wide pause, 800 ms floor); `.planning/research/v2.8-BRIEF.md` D-01..D-17

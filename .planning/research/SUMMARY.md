@@ -1,239 +1,149 @@
 # Project Research Summary
 
-**Project:** yahirandroidtaste
-**Milestone:** v2.4
-**Domain:** Reusable Jetpack Compose design-system library — additive, prop-driven AI-voice command UI cohort (settings surfaces + outcome/confirm surfaces)
-**Researched:** 2026-09-29
-**Confidence:** HIGH
+**Project:** yahirandroidtaste (reusable Compose design-system library)
+**Milestone:** v2.8
+**Domain:** Additive feedback-layer change: stacked tap-to-open snackbar deck, go-to-item rows on OutcomeSheet / Undo Center, pill polish
+**Researched:** 2026-10-17
+**Confidence:** HIGH (APIs javap-verified against BOM 2026.04.01; integration points read from live source; the state-machine design is MEDIUM until Phase 25 tests prove it)
 
 ## Executive Summary
 
-Milestone v2.4 adds a cohort of **generic, presentational Compose composables** to the reusable
-`yahirandroidtaste` hub: two settings cards (provider/API-key, model), a command-approach card
-(tier ladder + offline-only + max-tier cap), and a single outcome/confirm sheet that renders
-success, loud-failure, and needs-confirmation states. The defining constraint — repeated across all
-four research streams — is that this is a **display-and-emit** slice: the library renders whatever
-the consumer passes and emits decisions via callbacks; it never validates a key, fetches a model
-list, calls a provider, parses an engine result, or enforces the tier ladder. That is INV-01 (the
-one-way-dependency invariant) and it is a hard ship gate (Phase 13 SC-3).
+v2.8 replaces M3's one-at-a-time snackbar with a Receipt-card deck of up to 3 cards (D-01). Tapping a card body opens the referenced item through an opaque `FeedbackTarget(key, openLabel)`, and the same target model lights up chevron rows in both OutcomeSheet styles and the Undo Center. The reference systems point at a well-understood combination: the Sonner deck, notification-style tap-to-open and MDC's pause-on-touch. v2.8 is stricter than Sonner on overflow (it evicts instead of hiding), which is safe only because the existing `UndoHistoryStore` keeps every undo. All four research files agree that the decisions D-01..D-17 hold up. None of them reopens a decision.
 
-The recommended approach is **zero new dependencies, all-additive public API.** Every control maps
-to a stock Material 3 / Compose API already resolvable from the pinned Compose BOM `2026.04.01`
-(including the two first-in-tree APIs, `ExposedDropdownMenuBox` and `PasswordVisualTransformation`),
-and every new symbol is net-new (no growth of shipped types). The architecture is settled: new
-composables land **flat in `component/`**, new immutable all-`val` models in `model/`, and the whole
-cohort registers as **one new tenth ComponentRegistry family** ("Voice Command" label), with the
-outcome sheet built as a **single sealed-state composable** so Phase 12's confirmation state is a
-purely additive subtype on the Phase 11 shell.
+The stack answer is simple: **no new dependency, no catalog change, no BOM bump.** Everything needed (foundation `anchoredDraggable`, `pointerInput` Initial-pass observers, stable semantics APIs, `TestCoroutineScheduler.timeSource`) is already on the classpath and none of it is `@Experimental`. The architecture splits into three parts: a plain `@Stable FeedbackStackState` that owns the item list, one `CompletableDeferred` per item, and a per-item timer on an injected `TimeSource`, so it can be tested on virtual time with no composition. A public `FeedbackStackHost` renders that state. An internal `OpenTargetRow` handles the sheet and Undo Center rows. Undo stays routed only through `store.attemptUndo`.
 
-The risks are almost entirely about silent erosion of reusability and API stability, not technical
-difficulty. The top four: (1) a domain noun leaking into a public name/param/string (the repo's
-`DomainVocabularyDriftGuardTest` mechanically rejects a `Voice`-headed composable name); (2) the
-needs-confirmation prop shape fitting only one consumer — mitigated by modeling single as a
-`List`-of-one batch and paper-validating both SB and CT call-sites before coding; (3) a non-additive
-`copy()`/data-class ABI break (the documented `TagChipUiModel` lesson) — mitigated by all-new,
-constructor-frozen, all-`val` models; and (4) missing `ComponentRegistry` registration, which only
-fails in the **full** test suite, not scoped executor runs. All are prevented at authoring time with
-Phase 13 as the backstop gate.
+The risks sit almost entirely in four places: race and resolution correctness, source-compat placement of the new params, a second drift guard that planners don't budget for (`DomainVocabularyDriftGuardTest` fails on the `Feedback` head token), and gesture/semantics interplay (pause vs tap vs swipe vs peek, newest-first traversal against newest-at-bottom visuals, Undo Center hold-to-peek). Each one has a concrete prevention, mapped below. The existing 25-29 roadmap shape is correct; research mainly adds decisions that Phase 25 must lock before the event shape freezes.
 
 ## Key Findings
 
 ### Recommended Stack
 
-**No stack additions and no version changes.** All in-scope UI is generic, prop-driven, and
-presentational — Material 3 plus the library's already-declared Compose surface covers 100%. The two
-APIs the design needs that aren't yet used in-tree ship inside the pinned Compose BOM `2026.04.01`,
-so they add no coordinate. Adding anything network/serialization/engine-shaped (OkHttp, Retrofit,
-kotlinx-serialization, a `voice-action-engine` dependency) would break INV-01 and fail the Phase 13
-ship gate — these are forbidden, not merely discouraged.
+Stay on BOM 2026.04.01 (ui/foundation/animation 1.11.0, material3 1.4.0, coroutines-test 1.11.0). Do not add any snackbar or toast library, View-Material, material-color-utilities or Roborazzi. Keep experimental types (`AnchoredDraggableState`, `SheetState`, `SwipeToDismissBoxState`) out of public signatures.
 
-**Core technologies (all already declared):**
-- Compose BOM `2026.04.01` — single source of Compose versions; every needed API resolves from it, no per-artifact bump
-- `material3` (via BOM) — Cards, `ModalBottomSheet`, `Switch`, `SegmentedButton`, `ExposedDropdownMenuBox`, `OutlinedTextField`; the primitive layer for every control
-- `compose.ui` + `material-icons-extended` (via BOM) — `PasswordVisualTransformation` for key masking, plus failure/tier glyphs
-- Hilt `2.60.1` (bindings-only) — available if a `@Singleton` holder is ever needed; almost certainly not (these are stateless). Never add `@HiltAndroidApp`/`@AndroidEntryPoint`
-
-Reuse, don't reinvent: `SheetScaffold` (house `ModalBottomSheet` wrapper), `SegmentedOptionSelector`,
-`ClearableTextField`, `AppChip`/`ChipBar`, `DynamicActionButton`, and the theme's `error`/
-`errorContainer` roles for the loud-failure state.
+**Core technologies:**
+- Own `@Stable FeedbackStackState` + `CompletableDeferred<FeedbackResult>` per item: M3 `SnackbarHostState` is Mutex-serialized and single-visible, so a deck can't be built on it. `complete()` returning false is the exactly-once guard.
+- Injected `TimeSource.WithComparableMarks` (tests: `testScheduler.timeSource`): virtual-time pause/resume with no composition. Never use `SystemClock` or `currentTimeMillis`.
+- Foundation `anchoredDraggable` (Start/Settled/End anchors), not M3 `SwipeToDismissBox`: it's the house precedent, it isn't deprecation-churned, and it composes with the deck's `graphicsLayer`. (PITFALLS lists the M3 `onDismiss` overload as viable. STACK's reasons win.)
+- Timeouts: copy M3 `toMillis` (Short 4000, Long 10000, Indefinite skips the timer), passed through `calculateRecommendedTimeoutMillis(…, containsControls = hasUndo || hasTarget)`. The host reads `LocalAccessibilityManager` and pushes it into the state.
+- Semantics: `clickable(onClickLabel, Role.Button)`, `liveRegion = Polite` per card, `customActions` (Undo, Dismiss) + `dismiss{}`, `isTraversalGroup` + `traversalIndex`. Chevron is `Icons.AutoMirrored.Filled.KeyboardArrowRight` with `contentDescription = null`.
 
 ### Expected Features
 
-This is a presentational slice, so "features" = component-behavior expectations and, critically, the
-**prop-shape + 4-cell states-matrix** per composable.
-
 **Must have (table stakes):**
-- Provider/key card — provider selector (segmented ≤4 / dropdown if more), masked key entry default-hidden with reveal toggle, `keyState` render (library never validates), set/not-set via last-4 prop
-- Model card — `models` list + selection + empty/disabled (no provider) / loading / error states
-- Command-approach card — ordered display-only tier ladder + offline-only toggle + max-tier cap rendered *on* the ladder (capped rungs greyed-but-present); derived per-rung availability computed in the composable from primitives
-- Outcome sheet — success/failure from props, nullable "handled by" provenance chip, and a **loud** (error-color, icon, headline, reason) failure state
-- Needs-confirmation — **one composable, one prop shape**: `reason` + `items: List` (single = list-of-one) + `AllOrNothing`/`PerItem` selection mode + symmetric confirm/cancel
-- Every composable registered in `ComponentRegistry` with a full 4-cell states matrix
+- Exactly one terminal result per `show()`. A double tap opens once. Cancellation removes the card and yields no result (documented exception).
+- Eviction at the cap animates out as `Dismissed`. Independent per-card timers on wall-clock `delay`, not the animation clock (reduced motion).
+- Pause resumes the *remaining* time. Tap slop separates tap from swipe. Swipe dismisses in both directions with no reveal step.
+- Collapsed: only the front card is swipeable, and a peek tap fans the deck out (never opens). Auto-collapse after idle (mock: 4 s) and at 1 card or fewer.
+- Host applies no insets (Scaffold slot). KDoc covers IME/overlay use. Width cap (~560dp). Works as a separate sheet-local host.
+- a11y: non-gesture dismiss, polite announce once, newest-first traversal, decorative chevron.
+- Go-to rows: whole row, at least 48dp, `Role.Button` + `onClickLabel`. No target means v2.7.1 code path and tree.
 
-**Should have (competitive / additive slots):**
-- `onValidateKey` "test key" action slot (state + callback only; consumer does the probe)
-- Per-item include/exclude for `PerItem` batch (needed for CT weak-match "confirm each")
-- Destructive `severity` emphasis on confirm; per-rung tag colors (reuse v2.3.0 TAGCOLOR); provenance `trace` expander
+**Should have (differentiators):**
+- Dismissing never loses an undo (store-backed). One `onOpenTarget` router for every surface.
+- Live store sync: a visible card drops Undo and the chevron when its entry is undone elsewhere.
+- Deck-wide pause (avoids re-stacking under a finger mid-swipe).
 
-**Defer (v2+ / consumer wave):**
-- Cost/usage surfacing in the model card (needs an undefined usage contract)
-- Multi-key / key-rotation UI (no consumer needs it; tempts library-side storage)
+**Defer / reject:**
+- Haptic tick on swipe threshold (v2.8.1). Coalescing identical messages (later, caller-keyed).
+- Anti-features: "Open" text action, Undo & open (D-12), swipe-to-undo, hidden overflow, Back-to-collapse, countdown bar, Indefinite-by-default for targeted cards, persisting the deck, `onOpen` lambdas, the library navigating or hiding the sheet itself.
 
 ### Architecture Approach
 
-The cohort integrates additively into the existing library: composables **flat in `component/`**
-(the 60 existing components are flat; families are a registry taxonomy, not a package layout);
-immutable all-`val` models in `model/`; and one new tenth registry family, `voiceCommandFamilyEntries`,
-mirroring how Progress/Metrics and Tactile Foundation each landed as a cohesive new-family drop.
-Data flow is strictly prop-in / callback-out; the library holds nothing and calls nothing.
+New files go in `feedback/`: `FeedbackTarget`, `FeedbackResult` (enum), `FeedbackStackState` (+ `rememberFeedbackStackState`, internal `FeedbackStackItem`, timer) and `FeedbackStackHost` (tracer in 25; internal `FeedbackDeck`/`FeedbackCard` in 26). There's also an internal `component/OpenTargetRow` (27). List mutation is a short non-suspending `synchronized` section with no Mutex. The pause signal is a `StateFlow` (snapshotFlow doesn't fire in plain JVM tests). The host keeps a local "exiting" copy for exit animation, because `show()` removes the item immediately.
 
 **Major components:**
-1. New `component/*` composables — render voice settings/outcome UI from props+callbacks; presentation-only, hoisted state
-2. New `model/*` immutable models — a sealed outcome/confirm state + supporting UI models the consumer maps its engine output into (all-`val`, Compose-`STABLE`-inferable)
-3. One sealed-state outcome sheet (host + content split) — Success/Failure in Phase 11; `NeedsConfirmation` added as an additive subtype + one `when` branch in Phase 12
-4. New registry family + gallery wiring — one `Entry` per composable (`tier = PATTERN`, 4-cell states), plus the family in `ExplorerFamilies` consts + `ORDERED_KEYS`
-
-> **Doc-drift flag:** `CLAUDE.md`/the brief say "seven" registry families; the live code
-> concatenates nine, and this cohort makes ten. Phase 13 should correct that wording.
+1. `FeedbackStackState`: items (newest first, at most `maxVisible`), resolve CAS, cap eviction, per-item timer with deck-wide pause, `emitTrackedWithUndo(store, event)` (append before visible, `attemptUndo` only on `Undone`, "spent" watcher on `store.entries`).
+2. `FeedbackStackHost`: renders the deck, wires gestures/pause/fan-out/semantics, calls `onOpenTarget` only after `resolve(Opened)` returns true, reads `rememberUpdatedState(onOpenTarget)`.
+3. `OpenTargetRow` + threading: `OutcomeSheet` (both overloads, Classic and Receipt) gets `onOpenTarget: ((FeedbackTarget) -> Unit)? = null` appended LAST. The new `UndoCenterScreen` overload has a **required** `onOpenTarget` before trailing `onClear`. `UndoHistoryEntry.target` goes after `consumedGuard`, with a computed `openableTarget`. A new `store.append` overload takes a required `target`.
 
 ### Critical Pitfalls
 
-1. **Domain noun/assumption leak into a "generic" composable** — a name, param, string, or enum encodes one consumer's domain. The repo's `DomainVocabularyDriftGuardTest` mechanically rejects a public composable whose head token isn't allowlisted. Settle a structural naming vocabulary at the top of Phase 10; keep every user-facing string a prop with no domain default; never allowlist a domain head token to silence the guard.
-2. **Needs-confirmation shape too narrow for both consumers** — fits SB's risk-confirm OR CT's weak-match, not both. Model the structural union: `reason: String` + `items: List` (single = size 1) + slot APIs (`trailingContent`) for per-consumer badges. Paper-validate both SB `MutationGate` and CT weak-match call-sites against one signature *before* coding (Phase 12 SC-4).
-3. **Non-additive API / `copy()`-ABI break** — growing a `data class` primary constructor is an unfixable ABI removal (`@JvmOverloads` can't paper over synthetic members). Prefer all-new symbols; freeze model constructors on first authoring; add later fields as defaulted body properties or use non-`data`/interface+slots; keep models all-`val` (a `var` also kills `STABLE`).
-4. **Missing `ComponentRegistry` registration — full-suite-only guard** — CATALOG-03's drift guard fails only in the full suite, not scoped executor tests, so a phase looks green while the gallery silently lacks the component. Register-as-you-author (name + 4-cell states + tier) and run `./gradlew testDebugUnitTest` (full suite) at least once per phase.
-5. **Forbidden dependency/coupling** — OkHttp/serialization/engine sneaking in to "make it work." Hold the line: the library renders passed-in state and never fetches/validates/parses/calls. No new `build.gradle.kts` dependency this milestone.
-6. **Silent/subtle failure state** — happy-path-first authoring leaves failure a muted subtitle or an empty `when` branch. Treat failure as first-class (error color/icon/headline/reason), make the `when` exhaustive with a loud fallback, and drive the failure/cancel branches explicitly in Gate-1 self-UAT.
-
-### Cross-cutting tension to resolve: composable naming vs. family/model naming
-
-The research streams **split** on voice naming and this must be an explicit decision, not a silent
-pick:
-
-- **ARCHITECTURE** proposes `Voice*`-prefixed composable names/models (`VoiceProviderSettingsCard`,
-  `VoiceOutcomeSheet`, `VoiceOutcomeUiState`, …) and a "Voice Command" family.
-- **PITFALLS** shows the live `DomainVocabularyDriftGuardTest` **rejects** any public composable
-  whose head token is `Voice` — only `VoiceCard`/`MicButton`/`VoiceRenameTagsSheet` are grandfathered
-  in `DOMAIN_VOCABULARY`, and `Voice` is not in `PRIMITIVE_NOUN_ALLOWLIST`. A new `Voice…`
-  composable goes RED at build time.
-
-**Reconciliation (recommended, flag for discuss/planning):** the two are separable concerns.
-- **Composable names must be structural primitives** — e.g. `CommandOutcomeSheet` / `ConfirmationSheet`,
-  `ProviderKeyCard`, `ApproachLadderCard`, `ModelSelectorCard` — using already-allowlisted head tokens
-  (`Card`, `Sheet`, `Bar`, `Ladder`, `Badge`, `Field`, `Selector`, `State`, `Confirmation`). Note
-  even these head tokens (`Command`, `Approach`, `Provider`) must be checked against the live
-  allowlist; some may themselves need resolution.
-- **The family label and UI-model class names are a separate question** — the family display string
-  ("Voice Command") and model class names are not scanned by the composable head-token guard, so they
-  have more latitude, but they should still read domain-neutral where practical.
-
-Do **not** silently adopt the `Voice*` names from ARCHITECTURE, and do **not** reflexively allowlist
-`Voice`/`Command` into `PRIMITIVE_NOUN_ALLOWLIST` to make the guard pass. This is a naming decision
-to settle **at the top of Phase 10** (discuss/planning) and reuse across all phases.
+1. **Side effects before the result is claimed:** every resolver does `if (deferred.complete(r)) sideEffect()`. Never use a Boolean flag, and never resolve from `onAnimationEnd`. Phase 25 needs race tests for every resolver pair.
+2. **Cancellation / no-host hangs and zombie cards:** remove the card in `finally`, rethrow cancellation, and decide timer ownership and host-attached gating in 25.
+3. **Undo routed around the store:** the host never touches `undoAction`. Only the stack's `emitTrackedWithUndo` calls `attemptUndo`, once. Leave `SnackbarHostState.emitTrackedWithUndo` byte-identical apart from forwarding `target`.
+4. **Source-compat traps:** append `target` after `consumedGuard`/`duration`/`preview`; use a new `append` overload, not a param before the trailing lambda; `UndoCenterScreen`'s `onOpenTarget` must be required (a default causes ambiguity); `OutcomeSheet` params go at the end, not after `modifier`; add no `FeedbackEvent` subtype. Add a `V271CallSiteCanaryTest`.
+5. **The second drift guard + docs counts:** add `"Feedback"` to `PRIMITIVE_NOUN_ALLOWLIST`, register `FeedbackStackHost` (PATTERN) and allowlist `rememberFeedbackStackState`. Bump the API.md/README.md counts (66/5/71 today) in the same Phase 25 commit, or `CatalogDocsDriftGuardTest` goes red.
+6. **Gesture/semantics/row traps (26/27):** use `key(item.id)`; a non-consuming Initial-pass pause observer (not `waitForUpOrCancellation` or `collectIsPressedAsState`); `zIndex` so peek strips don't steal taps; no `clearAndSetSemantics`; `traversalIndex` on the merged card node. Don't reuse `ReceiptRow(onClick)`, which announces "Collapsed". An Undo Center `clickable` kills hold-to-peek, so use one `detectTapGestures` with a manual `semantics { onClick }`.
 
 ## Implications for Roadmap
 
-The roadmap is already fixed at four phases (10–13); research confirms the ordering and loads each
-with its prop-shapes, reuse targets, and pitfalls.
+The existing 25-29 structure matches the research's build order. Keep it. Every phase rewrites `api.txt`, so they run in series.
 
-### Phase 10: Settings surfaces (provider/key, model, command-approach cards)
-**Rationale:** Independent of the outcome sheet; the largest authoring surface; the phase where the
-**naming vocabulary must be settled** and reused everywhere after.
-**Delivers:** Three prop-driven settings cards (provider/key with masked-reveal entry + `keyState`;
-model with list/selection/empty-loading-error; command-approach with ordered ladder + offline-only +
-max-tier cap rendered on the ladder).
-**Uses:** `ExposedDropdownMenuBox`/`SegmentedOptionSelector`, `PasswordVisualTransformation`,
-`ClearableTextField`, `Switch`, theme roles — all from the pinned BOM, zero new deps.
-**Avoids:** Domain-noun leak (Pitfall 1 — settle names here), forbidden dep (Pitfall 5 — cards hold
-no key, call nothing), non-additive API (Pitfall 3 — all-new symbols).
+### Phase 25: Feedback target model & stack state
+**Rationale:** The event/entry/state shapes freeze here, and everything else depends on them.
+**Delivers:** `FeedbackTarget`, `FeedbackResult`, `target` on `Notify`/`WithUndo`/`UndoHistoryEntry`, the store overload, `FeedbackStackState` (deferred CAS, eviction, timer on `TimeSource`, cancel rule), the stack `emitTrackedWithUndo` + spent watcher, a tracer host, registry + vocabulary + docs-count updates, the canary, `api.txt`.
+**Order:** 25a types, then 25b store, then 25c state + JVM tests, then 25d tracked path + tracer + guards.
+**Avoids:** Pitfalls 1, 2, 3, 4, 5, 13.
 
-### Phase 11: Outcome/failure sheet (sealed-state shell)
-**Rationale:** Independent of Phase 10, runs in parallel; must ship the **sealed** `Outcome` state
-(Success/Failure) and a sheet param typed as the sealed interface so Phase 12 is purely additive.
-**Delivers:** One outcome sheet inside `SheetScaffold` with success, a **loud** failure state, and a
-nullable "handled by" provenance chip; host+content split.
-**Implements:** The sealed-state outcome-sheet architecture (Pattern 1).
-**Avoids:** Silent/subtle failure (Pitfall 6 — this phase owns the loud-failure gate; do not use
-`AttentionCue`, whose KDoc forbids failure use), non-additive API (freeze the sealed type here).
+### Phase 26: Receipt-card stacked snackbar deck
+**Rationale:** Needs the 25 state and host signature. All gesture, timer and semantics complexity lives here.
+**Delivers:** Internal deck/card, `anchoredDraggable` swipe, peek-tap fan-out + idle collapse, deck-wide pause with a resume floor, a11y timeout wiring, D-11 semantics, back-card height clamp, fan-out height cap, peek hit area, width cap.
+**Avoids:** Pitfalls 6, 7, 8 (tree level), 9 (in-sheet host behavior).
 
-### Phase 12: Needs-confirmation state (additive subtype)
-**Rationale:** Gates on Phase 11's sheet — `NeedsConfirmation` is a new subtype + one `when` branch,
-no signature change. This phase exists to satisfy **both** consumers with one shape.
-**Delivers:** `reason` + `items: List` (single = list-of-one) + `AllOrNothing`/`PerItem` +
-symmetric confirm/cancel + optional per-item slot and destructive severity.
-**Avoids:** The narrow-confirm-shape trap (Pitfall 2 — paper-validate SB `MutationGate` and CT
-weak-match call-sites against one signature before coding), silent cancel/reject state (Pitfall 6).
+### Phase 27: Open from the sheet & Undo Center, pill fixes
+**Rationale:** Needs only 25b, but runs after 26 because of `api.txt` sequencing. The pill fixes are independent and can go first.
+**Delivers:** `Success.target`, `BatchRowResultUiModel.target`, `OpenTargetRow`, both OutcomeSheet styles, the UndoCenter overload (tap opens, long-press peeks), POL-01 custom capped-radius `Shape` (not `onTextLayout`, which flickers), POL-02 dot fallback that leaves `ToneDefaults` untouched.
+**Avoids:** Pitfalls 4, 10, 11, 12. The existing OutcomeSheet/UndoCenter tests must pass **unedited**.
 
-### Phase 13: Catalog & ship (integrity gate)
-**Rationale:** Gates on all prior phases; the hard verification gate, not new feature surface.
-**Delivers:** Every composable registered in `voiceCommandFamilyEntries` (4-cell states + tier),
-the tenth family wired into `ExplorerFamilies`, full-suite green, Metalava strictly-additive vs
-`v2.3.0`, detekt zero-baseline, the "seven families" doc-drift corrected, and `v2.4.0` cut.
-**Avoids:** Missing registration (Pitfall 4 — full suite, not scoped tests), non-additive API
-(Pitfall 3 — `apiCheck` + `verify-api-additive.sh`), forbidden dep (Pitfall 5 — grep sources +
-`build.gradle.kts`).
+### Phase 28: TalkBack sweep & Explorer demos
+**Delivers:** `HubSchemeScope` at the Explorer root, deck + go-to-item + sheet-local host + `hide()`-then-navigate demos (EN/DE), demos for the new overloads (no guard forces them), TalkBack sweep on the TESTER, reduced-motion check. Restore device state afterwards (`wm density 450`, font 1.0, TalkBack off). Park undrivable checks for Yahir; never waive them.
 
-### Phase Ordering Rationale
-- P10 ∥ P11 are genuinely independent (settings vs outcome); running them in parallel is safe.
-- P12 depends on P11 because it extends the same sealed sheet; shipping the sealed type early keeps
-  P12 additive (decisive for Metalava).
-- P13 is last because it is the aggregate integrity gate (registry + additive API + no-dep + ship).
-- Every pitfall is a per-composable authoring discipline (P10–12) with P13 as the mechanical backstop
-  — the *thinking* must not be deferred to P13, since a break authored in P10 and caught in P13 costs
-  a P10 rework.
+### Phase 29: Docs & v2.8.0 cut readiness
+**Delivers:** API/STYLE/INTEGRATION docs: `scope.launch` per emit (a serial await turns the deck back into a queue), the key-to-route router, one root host + an optional sheet host with a per-host cap, overlay insets, and the snackbar-dismiss vs row reveal-confirm swipe distinction. Gates rerun with `--rerun-tasks`. A proposal with `git log origin/main..HEAD`. No tag, no push.
 
 ### Research Flags
 
-Phases likely needing deeper attention during planning:
-- **Phase 10:** The command-approach card is the one **non-standard** surface (no off-the-shelf
-  Material pattern for a tier ladder + on-ladder cap marker + derived offline availability). Its
-  interaction model and states matrix warrant deliberate design in discuss/plan. Also the phase that
-  must resolve the **naming-vocabulary tension** above.
-- **Phase 12:** The dual-consumer confirm prop shape is the sharpest design risk; plan must include
-  both worked call-sites (SB + CT) as acceptance evidence before authoring.
-
-Phases with standard patterns (lighter research):
-- **Phase 11:** Well-understood M3 bottom-sheet + loud-error patterns; house `SheetScaffold` exists.
-- **Phase 13:** Mechanical integrity gate against existing, documented guards and tooling.
+- **Needs discuss/research depth:** Phase 25 (event-shape and contract decisions below), Phase 26 (gesture disambiguation, fan-out sizing, traversal; highest novelty).
+- **Standard patterns, skip extra research:** Phase 27 (patterns already specified in detail), 28 (known device ritual), 29 (docs + gates).
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | Grounded in the live `build.gradle.kts` / `libs.versions.toml` and in-tree API greps; "no new deps" is verified, not inferred |
-| Features | HIGH | Established M3/Compose UX patterns; prop-shapes derived from the frozen §6.3 contract + SB `MutationGate`/`VoiceConfirmGate` and CT weak-match |
-| Architecture | HIGH | Grounded in live source (`ComponentRegistry.kt`, drift-guard tests, `ExplorerIndexScreen.kt`, `model/`, `API.md`) |
-| Pitfalls | HIGH | Grounded in the repo's own live guards, the documented v2.0 `copy()`-ABI break, and the cross-repo HANDOFF |
+| Stack | HIGH | javap on the exact resolved AARs; no dependency change |
+| Features | HIGH | Primary-source reads of Sonner, MDC and M3; reduced-motion behavior MEDIUM |
+| Architecture | HIGH / MEDIUM | Integration points from live source; the state machine is unproven until 25 |
+| Pitfalls | HIGH | Repo-grounded; the ModalBottomSheet window finding is LOW alone but corroborated by SB's `SheetFeedbackHost` |
 
 **Overall confidence:** HIGH
 
-### Gaps to Address
-- **Naming vocabulary (composable head tokens):** the exact structural names must be checked against
-  the live `PRIMITIVE_NOUN_ALLOWLIST`/`DOMAIN_VOCABULARY` — `Command`/`Approach`/`Provider` head
-  tokens may themselves need a decision. Resolve in Phase 10 discuss/planning; do not assume.
-- **Command-approach card interaction design:** no prior-art Material pattern; the ladder + on-ladder
-  cap + derived offline-availability presentation needs a concrete states-matrix decision in Phase 10.
-- **Confirm shape per-item vs top-level callbacks:** whether confirm/cancel live on the sealed arm or
-  as nullable sheet callbacks, and the exact `PerItem` selection API, should be nailed down with both
-  consumer call-sites in Phase 12 planning.
-- **"Handled by" nullability on failure:** confirm the provenance indicator renders on failure
-  ("attempted by X, failed") not only on success — a Gate-1 verification item.
+### Gaps to Address (deduplicated open questions, by owning phase)
+
+- **[25]** Second line ("item name") and tone dot have no source in D-09. Add `supportingText: String? = null` (and maybe a tone) to `Notify`/`WithUndo` now, or derive the tone from the variant? Must be settled before the event shape freezes.
+- **[25]** Cancellation contract: remove the card and rethrow with no result (recommended), documented as "exactly one result, or cancellation".
+- **[25/26]** Timer ownership and gating: timer in `show()` (testable, recommended) vs host. Does it start at enqueue or at first composition? Do timers run only while a host is attached and the lifecycle is STARTED? Does `show()` with no host suspend like M3?
+- **[25]** A visible card whose entry is undone or evicted elsewhere: hide Undo + chevron and keep the card (recommended), or auto-dismiss? Does a losing snackbar Undo tap still resolve `Undone`?
+- **[25]** Programmatic dismiss is absent from D-09: add `dismissAll()` / `dismiss(target)` resolving `Dismissed`? Additive; confirm with teamlead@vae-bilingual.
+- **[25]** `FeedbackResult` shape: enum (a 5th value later is a source break) vs sealed.
+- **[25]** Require a non-blank `openLabel` (validate in `FeedbackTarget` init?).
+- **[25]** Clock seam choice and the a11y-manager handoff from host to state (internal setter vs per item).
+- **[26]** Pause scope and floor: whole deck (recommended, matches the mock) and the resume floor value (mock 800 ms vs ~1 s).
+- **[26]** Press-and-hold: suppress the open after a long-press timeout or movement past slop?
+- **[26]** Swipe threshold: ~56dp positional or fling (mock 90px)?
+- **[26]** Back-card height clamp to the front card when collapsed; fanned-out column overflow (scroll vs overlap) at landscape + font 2.0 + IME.
+- **[26]** Peek hit area (~48dp strip) and whether a "Show all" a11y action is needed. Optional `expand`/`collapse` semantics on the deck.
+- **[26/28]** Live region only on the entering card (avoid burst re-announce). A possible duplicate "Dismiss" (custom action + `dismiss`) in TalkBack: raise it with the designer, don't silently drop one.
+- **[26/28]** Edge-swipe vs system back gesture on the TESTER; reduced-motion ("Remove animations") behavior.
+- **[26/28/29]** Sheet-local host: confirm with SecondBrain that the sheet gets its own `FeedbackStackState` (per-host cap, cancelled on sheet close).
+- **[27/28]** Opening from a modal OutcomeSheet: does the library `hide()` before `onOpenTarget`, or does the caller do it? Recommendation: the library only calls back; KDoc and the demo show hide-then-navigate.
+- **[27]** Defensive chevron hiding on batch rows whose own undo state is Undone (when the caller forgot to clear the target).
+- **[27]** POL-02 fallback form when the dot fails 3:1: contrast ring vs darker tone. Proven against a synthetic dynamic scheme, since the Explorer pin hides the failure.
+- **[29]** STYLE.md wording that reveal-confirm swipe applies to destructive rows only.
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- `.planning/research/STACK.md` — no-new-deps finding grounded in `build.gradle.kts`, `libs.versions.toml`, in-tree API greps, pinned Compose BOM `2026.04.01`
-- `.planning/research/FEATURES.md` — per-phase prop-shapes, states matrices, anti-features; frozen §6.3 contract + SB/CT confirm concepts
-- `.planning/research/ARCHITECTURE.md` — flat `component/`, one new registry family, sealed-state sheet; grounded in `ComponentRegistry.kt`, drift-guard tests, `ExplorerIndexScreen.kt`, `model/`, `API.md`
-- `.planning/research/PITFALLS.md` — domain drift guard, `copy()`-ABI break (`TagChipUiModel`), CATALOG-03 full-suite-only guard, INV-01, loud-failure rule; grounded in live guards + cross-repo HANDOFF
-- `.planning/ROADMAP.md`, `.planning/PROJECT.md`, root `CLAUDE.md` — phase success criteria, INV-01, additive + human-gated ship ritual
+- Compose BOM 2026.04.01 POM; javap of ui/foundation 1.11.0, material3 1.4.0 (`SnackbarHostState`, `toMillis`, `FadeInFadeOutWithScale` semantics, `SwipeToDismissBox`), ui-test 1.11.0, coroutines-test 1.11.0
+- Live repo: `feedback/*.kt`, `OutcomeSheet*.kt`, `ReceiptRow.kt`, `UndoCenterScreen.kt`, `ComponentRegistry`, Registry/Vocabulary/CatalogDocs drift guards, `api.txt`, detekt configs, RETROSPECTIVE, STYLE.md
+- Sonner `main`, MDC-Android Snackbar/BaseTransientBottomBar/SwipeDismissBehavior, androidx-main `SnackbarHost`/`Scaffold`/`SwipeToDismissBox`
+- `v2.8-BRIEF.md` (D-01..D-17), the design mock `docs/design/snackbar-go-to-item/index.html`, SecondBrain `SNACKBAR-NAV-SURVEY.md`
 
 ### Secondary (MEDIUM confidence)
-- Material 3 segmented-button / dropdown count guidance; password-field accessibility patterns (cited in FEATURES.md) — established UX consensus
+- developer.android.com traversal / swipe-to-dismiss docs (Context7); reduced-motion write-ups (Eevis Panula)
 
 ### Tertiary (LOW confidence)
-- None load-bearing; all findings resolve to repo source or the frozen contract
+- SO 78525894 and zenn.dev on snackbars behind ModalBottomSheet (corroborated by the consumer precedent)
 
 ---
-*Research completed: 2026-09-29*
+*Research completed: 2026-10-17*
 *Ready for roadmap: yes*

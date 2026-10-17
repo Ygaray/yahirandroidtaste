@@ -1,139 +1,204 @@
-# Stack Research
+# Stack Research: v2.8 Snackbar go-to-item + stacked feedback
 
-**Domain:** Reusable Jetpack Compose design-system library — presentational AI-voice command UI (settings + outcome/confirm surfaces)
-**Researched:** 2026-09-29
-**Confidence:** HIGH
+**Domain:** Custom Compose snackbar stack (deck) host, tap-to-open targets, a11y semantics, inside the existing `yahirandroidtaste` Android library
+**Researched:** 2026-10-17
+**Confidence:** HIGH. Every API below was checked with `javap` against the artifacts that BOM `2026.04.01` actually resolves in `~/.gradle/caches`. That covers signatures, `@Deprecated` markers and `@Experimental*` opt-in markers. It is not taken from docs memory.
 
-## Headline: NO new dependencies
+## Bottom line
 
-**Milestone v2.4 (Phases 10–13) needs zero stack additions and zero version changes.** Every
-composable in scope is generic, prop-driven, and presentational — Material3 plus the library's
-already-declared Compose surface covers 100% of it. The only two Material3/Compose APIs the design
-calls for that are *not yet used in the tree* — `ExposedDropdownMenuBox` and
-`PasswordVisualTransformation` — already ship inside the pinned Compose BOM `2026.04.01`, so they
-add **no** new coordinate. This finding is grounded in the actual `build.gradle.kts`,
-`gradle/libs.versions.toml`, and in-tree API usage (verified below), not in generic knowledge.
+**No new dependency. No catalog change. No BOM bump.** Everything v2.8 needs is already on the
+compile classpath through `compose-bom 2026.04.01`, `material3`, `ui` (which pulls in `foundation` and
+`animation`) and `kotlinx-coroutines` (transitive, already used by `UndoHistoryStore`). The
+test side already has `ui-test-junit4`, Robolectric 4.16.1 and `kotlinx-coroutines-test` 1.11.0.
+None of the APIs we need is `@Experimental*`, so no opt-in leaks into the public surface or into
+consumers. That keeps the Metalava `apiCheck` and dependency-allowlist invariants clean.
 
-Adding anything network- or engine-shaped (OkHttp, Retrofit, kotlinx-serialization, Moshi, a
-`voice-action-engine` module) would **break the one-way-dependency invariant (INV-01)** and fail the
-Phase 13 ship gate (Success Criterion 3: "declares no OkHttp or `voice-action-engine` dependency").
-See **What NOT to Use**.
+## Resolved versions (BOM 2026.04.01, from the cached BOM POM)
 
-## Recommended Stack
+| Artifact | Resolved | Notes |
+|---|---|---|
+| `androidx.compose.ui:ui` | **1.11.0** | semantics, `LocalAccessibilityManager`, `pointerInput` |
+| `androidx.compose.foundation:foundation` | **1.11.0** | `anchoredDraggable`, `awaitEachGesture`, `clickable` |
+| `androidx.compose.animation:animation(-core)` | **1.11.0** | `Animatable`, `animateFloatAsState`, `AnimatedVisibility` |
+| `androidx.compose.material3:material3` | **1.4.0** | `SnackbarDuration` (already used by `FeedbackEvent`), `SwipeToDismissBox` (rejected, see below) |
+| `androidx.compose.runtime:runtime` | 1.11.0 | `mutableStateListOf`, `snapshotFlow`, `@Stable` |
+| `androidx.compose.ui:ui-test(-junit4)` | 1.11.0 | `performCustomAccessibilityActionWithLabel`, `DeviceConfigurationOverride` |
+| `kotlinx-coroutines-test` | 1.11.0 | `TestCoroutineScheduler.timeSource` (virtual-clock `TimeSource`) |
 
-### Core Technologies (all already declared — no change)
+## Recommended APIs, by concern
 
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Compose BOM | `2026.04.01` (pinned) | Version-aligns every Compose artifact | Already the module's single source of Compose versions; every API below resolves from it — no per-artifact bump needed |
-| `androidx.compose.material3:material3` | via BOM | Cards, `ModalBottomSheet`, `Switch`, `Slider`, `SegmentedButton`, `ExposedDropdownMenuBox`, `OutlinedTextField` | The design system's primitive layer; every voice-settings/outcome control is a stock M3 component. BOM `2026.04.01` is long past M3 stabilization of all these APIs |
-| `androidx.compose.ui:ui` (+ `ui-graphics`, `ui-tooling-preview`) | via BOM | `PasswordVisualTransformation` (in `androidx.compose.ui.text.input`), layout, previews | Masking the API-key field needs nothing beyond `androidx.compose.ui` — already declared |
-| `androidx.compose.material:material-icons-extended` | via BOM | Tier/approach + failure iconography (e.g. warning, offline, check) | Already declared; gives the "loud failure" and "handled by tier" indicators their glyphs with no new dep |
-| Hilt (bindings-only) | `2.60.1` | If any voice composable needs a `@Singleton` state holder | Already the library's bindings-only pattern (`UndoHistoryStore`). Almost certainly **not** needed — these are stateless prop-driven composables — but available without change. Never add `@HiltAndroidApp`/`@AndroidEntryPoint` |
+### 1. Stack state (Phase 25): `FeedbackStackState`
 
-### Supporting Libraries
+| API | Package | Why |
+|---|---|---|
+| Plain `@Stable class FeedbackStackState` holding a `mutableStateListOf<StackItem>()` | `androidx.compose.runtime` | M3 `SnackbarHostState` is single-visible by design: an internal `Mutex` queues `showSnackbar`, so a deck can't be built on it. Own the list. |
+| `CompletableDeferred<FeedbackResult>` per item, `show()` = append + `await()` | `kotlinx.coroutines` | Gives exactly-one-result for free. Complete it from whichever path wins (open / undo / swipe / timeout / cap eviction) with `complete()`. That returns `false` for the losers, so there's no double resolution. |
+| `rememberSaveable`? **No.** Use `remember { FeedbackStackState(maxVisible) }` | runtime | The items hold suspended continuations and undo lambdas, so they can't be saved. M3's `SnackbarHostState` isn't saveable either. |
+| Injected `timeSource: TimeSource.WithComparableMarks = TimeSource.Monotonic` (internal ctor param) | `kotlin.time` (stdlib) | The pause-remaining timer has to measure elapsed time. Tests pass `testScheduler.timeSource` (verified present in coroutines-test 1.11.0), so FSTK-01/06 run on virtual time with **no composition** (Phase 25 criterion 3). Never use `SystemClock`/`System.nanoTime` directly. |
 
-None required. The library's other declared deps (`coil-compose`, `navigation-compose`,
-`reorderable`, `osmdroid-android`, `lifecycle-runtime-compose`) are irrelevant to this milestone and
-need no touching.
+**Timeout mapping.** Copy M3's private `SnackbarDuration.toMillis` exactly. I verified it in the
+`material3-1.4.0` bytecode. It's `internal`, so it can't be called from our code:
 
-### Development Tools (unchanged, already wired)
-
-| Tool | Purpose | Notes |
-|------|---------|-------|
-| Metalava `apiCheck` (`me.tylerbwong.gradle.metalava:0.5.0`) | Enforces strictly-additive public API vs `v2.3.0` | Phase 13 SC-2 gate; new composables are additions only |
-| detekt `1.23.8` (zero-baseline) | Static analysis | Keep green at zero baseline — do not regenerate a baseline to bury a finding |
-| ComponentRegistry drift guard + Robolectric Compose-UI tests | Registers every new public composable + locks its 4-cell states matrix | Phase 13 SC-1; register in the right family screen (Sheets, and a Settings/Pickers surface for the cards) |
-
-## Material3 / Compose APIs available in Compose BOM `2026.04.01`
-
-Mapped to each phase. "In-tree" = the exact API is already imported and used in this repo (verified by
-source grep), so there is precedent and a house wrapper to reuse.
-
-| Phase | Need | Material3 / Compose API | Status in BOM `2026.04.01` | In-tree today |
-|-------|------|--------------------------|-----------------------------|---------------|
-| P10 provider/key card | Provider selection dropdown | `ExposedDropdownMenuBox` + `ExposedDropdownMenu` (M3) | Stable, available | Not yet used — first use; no new dep |
-| P10 provider/key card | API-key entry (secure) | `OutlinedTextField` + `PasswordVisualTransformation` (`androidx.compose.ui.text.input`) + a reveal `IconButton` | Stable, available | `OutlinedTextField` in 3 files; `PasswordVisualTransformation` first use |
-| P10 model card | Model pick (list/dropdown) | `ExposedDropdownMenuBox` **or** `SegmentedButton` row for few models | Stable, available | `SegmentedOptionSelector` already wraps `SingleChoiceSegmentedButtonRow` |
-| P10 command-approach card | Tier-ladder display (ordered approaches) | `Column`/`Row` of M3 `ListItem`/`AssistChip` + icons — pure layout | Stable, available | Cards/chips families already exist |
-| P10 command-approach card | Offline-only toggle | `Switch` (M3) | Stable, available | `Switch(` used in 1 file — precedent |
-| P10 command-approach card | Max-tier cap control | `SingleChoiceSegmentedButtonRow` (discrete tiers) — preferred over `Slider` for a small discrete ladder; `Slider`/`Slider` steps available if a continuous feel is wanted | Stable, available | `SegmentedButton` in 6 files; `Slider` in 3 files |
-| P11 outcome/failure sheet | Domain-neutral outcome sheet | `ModalBottomSheet` via the house `SheetScaffold` wrapper | Stable, available | `ModalBottomSheet` in 13 files; `SheetScaffold` wraps it |
-| P11 | "handled by: tier/approach" indicator | `AssistChip`/`Badge`/`Text` + `material-icons-extended` glyph | Stable, available | Chips + icons families exist |
-| P11 | Loud, visible failure state | `error`/`errorContainer` color roles from the theme + icon; not silent | Stable, available | Theme tokens already defined |
-| P12 needs-confirmation state | reason string + single-or-batch proposed items + confirm/cancel | Same `ModalBottomSheet` content + `LazyColumn`/`Column` of items + two `Button`s | Stable, available | Sheet + list patterns exist |
-
-Every row resolves from the already-declared `androidx.compose.material3:material3` and
-`androidx.compose.ui:ui` artifacts under the pinned BOM. There is nothing to install.
-
-## Installation
-
-```bash
-# Nothing to install. No change to build.gradle.kts or gradle/libs.versions.toml.
-# New composables live under src/main/.../component/ (or a new voice/ package) and compile
-# against the already-declared Material3 + Compose UI surface.
+```kotlin
+val original = when (duration) { Short -> 4_000L; Long -> 10_000L; Indefinite -> Long.MAX_VALUE }
+accessibilityManager?.calculateRecommendedTimeoutMillis(
+    original, containsIcons = true, containsText = true, containsControls = hasUndo || hasTarget,
+) ?: original
 ```
 
-## Integration Points (reuse, don't reinvent)
+- `AccessibilityManager.calculateRecommendedTimeoutMillis(Long, Boolean, Boolean, Boolean): Long` and
+  `LocalAccessibilityManager` are stable in ui 1.11.0.
+- M3 passes `containsControls = actionLabel != null`. D-04 widens that to Undo **or** target.
+- Read `LocalAccessibilityManager.current` in the **host** and push it into the state with an internal
+  setter, or pass it per item. Don't capture it in `show()`, which runs outside composition.
+- `Long.MAX_VALUE` (Indefinite) must skip the timer entirely. Don't `delay(Long.MAX_VALUE)` and do
+  arithmetic on it.
 
-- **`SheetScaffold`** (`component/SheetScaffold.kt`) — the single house wrapper over
-  `ModalBottomSheet` (drag handle, window insets). The P11 outcome/failure sheet and the P12
-  confirmation state should render **inside** `SheetScaffold`, not call `ModalBottomSheet` directly
-  — that is the library-wide convention.
-- **`SegmentedOptionSelector`** (`component/SegmentedOptionSelector.kt`) — existing generic wrapper
-  over `SingleChoiceSegmentedButtonRow`. Reuse for the max-tier cap and/or few-model selection;
-  extend only if a >2-option variant is needed (keep additive, register the new entry).
-- **`ComponentRegistry`** (`explorer/ComponentRegistry.kt`) — every new public composable must be
-  registered in its family screen (Sheets for the outcome/confirm sheet; a settings surface —
-  likely Pickers/Cards or a new family) XOR allowlisted in `INTENTIONALLY_UNREGISTERED`. Drift guard
-  fails the build otherwise (Phase 13 SC-1).
-- **Snackbar/undo + reveal-confirm conventions** — preserve; the confirmation state is an explicit
-  in-sheet confirm/cancel (props + callbacks), not a swipe.
-- **Theme tokens** (`theme/`) — use the existing `error`/`errorContainer` color roles for the "loud
-  failure" states rather than hardcoded colors.
+### 2. Swipe-to-dismiss (Phase 26): use `foundation` `anchoredDraggable`, not M3 `SwipeToDismissBox`
 
-## Alternatives Considered
+**Recommendation:** `Modifier.anchoredDraggable(state, Orientation.Horizontal, enabled = …)` with
+`AnchoredDraggableState(initialValue = Settled)` and three anchors `{ Start at -width, Settled at 0, End at +width }`.
+Set the anchors via `updateAnchors(DraggableAnchors { … })` once the card width is measured. When
+`settledValue != Settled`, resolve `Dismissed`.
 
-| Recommended | Alternative | When to Use Alternative |
-|-------------|-------------|-------------------------|
-| `SegmentedButton` for max-tier cap (discrete ladder) | `Slider` with `steps` | If the tier ladder is long enough (5+) that segments crowd; `Slider` is already in-tree so either is dependency-free |
-| `ExposedDropdownMenuBox` for provider/model | `SingleChoiceSegmentedButtonRow` | Few (≤3) providers/models → segmented reads better; many → dropdown. Both are stock M3, no dep either way |
-| `PasswordVisualTransformation` + reveal toggle | Plain `OutlinedTextField` | Never for an API key — masking is table-stakes; both are dependency-free |
+Why this and not `SwipeToDismissBox`:
 
-## What NOT to Use
+| Factor | `anchoredDraggable` (foundation 1.11.0) | `SwipeToDismissBox` (M3 1.4.0) |
+|---|---|---|
+| House precedent | Already used by `SwipeableActionRow`, `RevealActionRow` and 5 cards, with the same `AnchoredDraggableState(initialValue)` ctor | Not used anywhere in the hub |
+| API churn | Stable. The non-deprecated ctors are `(T)` and `(T, DraggableAnchors)` | 1.4.0 deprecated the old `SwipeToDismissBox` overload ("use updated signature with onDismissed") and every `confirmValueChange` ctor/remember. This is the second reshuffle in two releases. |
+| Deck integration | We own the offset, so it composes with the deck's `graphicsLayer` (peek translation, 0.94/0.88 scale, swipe fade via `progress(from, to)`) | It forces a `Row`-scoped `backgroundContent` slot and its own layout. The fade/scale fights its internal offset. |
+| Enable only the front card when collapsed | `enabled =` per card | `enableDismissFromStartToEnd/EndToStart` only |
+| Programmatic dismiss for the a11y `dismiss` action | `state.animateTo(End)` (extension, stable) | `state.dismiss(direction)`. Equivalent, but it buys nothing here. |
 
-The one-way-dependency invariant (INV-01) and Phase 13 SC-3 make these **forbidden**, not merely
-discouraged. The library renders voice-command *state*; it never *performs* voice commands.
+Details to follow:
+- Don't use the deprecated `AnchoredDraggableState(T, confirmValueChange)` ctors or the
+  deprecated `progress` property. Use `progress(from, to)`. Detekt/compiler warnings on deprecations
+  would otherwise creep in.
+- Fling/threshold: take the defaults (`AnchoredDraggableDefaults.flingBehavior(state, positionalThreshold, …)`
+  is available if tuning is needed). Thresholds now live on the fling behavior, not the state.
+- Key each card with `key(item.id) { … }` so a card's draggable state survives deck reordering and
+  cap eviction. Don't use `LazyColumn`: there are at most 3 items, and lazy lists add item-animation
+  and semantics-ordering complications for nothing.
 
-| Avoid | Why | Use Instead |
-|-------|-----|-------------|
-| **OkHttp / Retrofit / Ktor** (any HTTP client) | Networking belongs to the consumer's engine. The library holds no keys and makes no calls (P10 SC-1). Adding it breaks INV-01 and fails Phase 13 SC-3 | Consumer's app owns the client; the library takes provider/model/key **as props + callbacks** |
-| **kotlinx-serialization / Moshi / Gson** (any (de)serializer) | Implies the library parses engine/wire payloads — a domain assumption. Outcomes/confirm data arrive as already-typed Kotlin props | Consumer maps its engine outcome → the composable's plain data-class/enum params |
-| **A `voice-action-engine` module dependency** (or any consumer module) | Directly inverts the one-way dependency; the hub would import a consumer/engine. Explicitly barred by Phase 13 SC-3 | The engine lives entirely consumer-side; the hub exposes a domain-neutral shell the consumer feeds |
-| **Any speech/STT/ASR SDK, audio-recording lib, or on-device ML runtime** | Capturing/recognizing speech is engine work, not presentation. `MicButton` is already a prop-driven trigger, not a recorder | Consumer wires the mic/STT; the library only renders the button + resulting state |
-| **A key-store / EncryptedSharedPreferences / DataStore persistence dep** | The library "holds no secrets" and does no key persistence (P10 SC-1). Persistence is host-owned | Key is a prop in, edits emit via callback; consumer persists it |
-| **New `@HiltAndroidApp` / `@AndroidEntryPoint`** | Bindings-only Hilt invariant; the consumer owns the Hilt `Application` | If a `@Singleton` holder is ever needed, `@Inject constructor()` bindings-only — but these stateless composables likely need none |
-| **Domain nouns in any public symbol** | Domain-vocabulary drift guard flags app-specific names; these are generic surfaces | Neutral names ("outcome", "approach", "tier", "proposed item"); content arrives via props |
+### 3. Pause-on-touch (D-05)
 
-## Version Compatibility
+**Recommendation:** a non-consuming `Initial`-pass observer on each card. It sees every pointer
+before the children do (body `clickable`, Undo `TextButton`, the `anchoredDraggable`) and never steals
+events:
 
-| Package | Compatible With | Notes |
-|---------|-----------------|-------|
-| Compose BOM `2026.04.01` | AGP `9.2.1`, Kotlin `2.3.20`, `kotlin.plugin.compose` | Already the working, shipped combination (through `v2.3.0`). No change means no compatibility risk |
-| `ExposedDropdownMenuBox`, `PasswordVisualTransformation` | Compose BOM `2026.04.01` | Both long-stable APIs resolved by the existing `material3` / `ui` artifacts — first use in-tree, but no new coordinate and no version bump |
-| Metalava `apiCheck` | New additive composables | Additions pass; run `./gradlew apiDump` to refresh `api.txt` after adding public symbols, then `apiCheck` stays green vs `v2.3.0` |
+```kotlin
+Modifier.pointerInput(item.id) {
+    awaitEachGesture {
+        awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+        onPause()
+        try {
+            do { val e = awaitPointerEvent(PointerEventPass.Initial) } while (e.changes.any { it.pressed })
+        } finally { onResume() }   // runs on cancellation too (card removed mid-press)
+    }
+}
+```
+
+- Use `awaitEachGesture`, `awaitFirstDown(Boolean, PointerEventPass)` (foundation 1.11.0, stable) and
+  `awaitPointerEvent(pass)`.
+- Do **not** use `waitForUpOrCancellation()` here. It returns `null` as soon as a child consumes
+  (the drag does), so the timer would resume mid-swipe.
+- Do **not** rely on `interactionSource.collectIsPressedAsState()`. Press is delayed by the tap
+  timeout and cancelled when a drag starts, so the timer would run during the touch.
+- The second pause source, "deck fanned out", is plain state (`isExpanded`) in `FeedbackStackState`.
+  Model pause as a **counter or set of reasons** (`pointerDown[id]`, `expanded`), not one boolean, so
+  releasing a finger doesn't resume a fanned-out deck.
+
+### 4. Semantics (D-11, A11Y-01): all in `androidx.compose.ui.semantics`, all stable in ui 1.11.0
+
+| Need | API (verified signature) |
+|---|---|
+| Body = one node, button, open label | `Modifier.clickable(onClickLabel = target.openLabel, role = Role.Button, onClick = …)`. `clickable` already merges descendants. With no target, omit `clickable` (no click action in the tree, per FOPEN-02). |
+| Undo stays a separate stop | Keep Undo a `TextButton` child. Merging stops at children that are themselves clickable, so it stays its own focus node. |
+| Undo also as a custom action | `semantics { customActions = listOf(CustomAccessibilityAction(undoLabel) { …; true }, CustomAccessibilityAction(dismissLabel) { …; true }) }` (`setCustomActions(List<CustomAccessibilityAction>)`) |
+| Dismiss = swipe equivalent | `semantics { dismiss(label = dismissLabel) { …; true } }` (`dismiss(String?, () -> Boolean)`). M3's own `SnackbarHost` sets exactly `dismiss` + `liveRegion` + `paneTitle` (verified in `SnackbarHostKt$FadeInFadeOutWithScale`). |
+| Announce on arrival | `semantics { liveRegion = LiveRegionMode.Polite }` on the card body |
+| Newest-first in the tree | Emit cards newest-first in composition. If the visual z-order needs the newest drawn last, use `Modifier.zIndex` for drawing and `semantics { isTraversalGroup = true }` on the deck plus `traversalIndex` (`setTraversalIndex(Float)`) per card, rather than reordering composition. |
+| Fan out via a11y | Optional: `expand { … }` / `collapse { … }` on the deck (stable, same file) |
+
+Tests use `performSemanticsAction(SemanticsActions.Dismiss)`,
+`performCustomAccessibilityActionWithLabel(label)` (ui-test 1.11.0, no opt-in), and
+`SemanticsMatcher.expectValue(SemanticsProperties.LiveRegion, LiveRegionMode.Polite)`.
+
+### 5. Deck visuals (D-01)
+
+`Modifier.graphicsLayer { translationY; scaleX; scaleY; alpha }`, driven by `animateFloatAsState`
+(`Animatable` for the swipe-return), plus `AnimatedVisibility(enter = fadeIn() + slideInVertically())`
+for arrival. These are animation 1.11.0 APIs, already used across the hub. Card surface:
+`MaterialTheme.colorScheme.surfaceContainerHighest` with `RoundedCornerShape(16.dp)`. The tone dot
+reuses the v2.6 tone tokens. The chevron is `Icons.AutoMirrored.Filled.KeyboardArrowRight` from
+`material-icons-extended`, already a dependency. Use the AutoMirrored variant so it flips in RTL.
+The idle re-collapse after fan-out is a `LaunchedEffect(isExpanded, lastInteraction) { delay(idle); collapse() }`.
+
+### 6. Phase 27 ride-alongs
+
+- **POL-01 pill at font scale 2.0:** measure lines with `onTextLayout { lineCount }` (or
+  `TextLayoutResult`), then switch `RoundedCornerShape(50%)` to a capped `RoundedCornerShape(12.dp)`
+  when `lineCount > 1`. No new API.
+- **POL-02 dot 3:1 contrast:** compute it in a unit test with `Color.luminance()` (`ui-graphics`, already a dep):
+  `(L1 + 0.05) / (L2 + 0.05) >= 3.0`. Use the hub light/dark schemes plus `dynamicLightColorScheme(context)` /
+  `dynamicDarkColorScheme` (M3 1.4.0, API 31+, fine at minSdk 35) under Robolectric. Robolectric gives the
+  framework default palette, so also add one or two hard-coded sample schemes captured from the TESTER.
+- **Long-string / font-scale tests:** `DeviceConfigurationOverride(FontScale(2f) then ForcedSize(DpSize(360.dp, …)))`
+  from ui-test 1.11.0. Already used in `SegmentedOptionSelectorTest` and `PlaceMapPickerTest`.
+
+### 7. Undo Center target derivation (FTGT-02, D-14)
+
+`UndoHistoryStore` already exposes a `StateFlow`. The host and Undo Center read it with
+`collectAsStateWithLifecycle()` (`lifecycle-runtime-compose` 2.9.4, already a dep). They derive
+"openable" from `entry.status == Available && entry.target != null`. Nothing new.
+
+## What NOT to add
+
+| Don't add | Why | Use instead |
+|---|---|---|
+| Any snackbar/toast library (e.g. third-party "stacked toast" libs, Accompanist) | Breaks the dependency allowlist (Android SDK, AndroidX/Compose, Hilt, Coil, navigation-compose, reorderable, osmdroid). It's also unnecessary. | The `foundation` + `ui` primitives above |
+| `com.google.android.material:material` or `material-color-utilities` for POL-02 | Not on the allowlist, and it pulls in the View-system Material | `Color.luminance()` + M3 `dynamic*ColorScheme` |
+| A Compose BOM bump (e.g. to a newer `2026.x`) | It's not needed, and it ripples into both consumers' resolution and the zero-baseline detekt/Metalava state mid-milestone | Stay on `2026.04.01` |
+| `navigation-compose` types in any v2.8 signature | D-08: the library must not know routes. `FeedbackTarget` is an opaque `key` | `onOpenTarget: (FeedbackTarget) -> Unit` callback |
+| `@ExperimentalMaterial3Api`/`@ExperimentalFoundationApi` types in public params (`SheetState`, `AnchoredDraggableState`, `SwipeToDismissBoxState`) | They force opt-in on consumers (see the v2.7.0 overload decision) and leak implementation detail into `api.txt` | Keep swipe/drag state private to the host. The public surface is only `FeedbackTarget`, `FeedbackResult`, `FeedbackStackState`, `rememberFeedbackStackState` and `FeedbackStackHost` |
+| `kotlinx-coroutines-core` as an explicit catalog entry | Already transitive via compose runtime, and already used in `main` (`Mutex`/`StateFlow`) | Leave as is |
+| Roborazzi / screenshot tooling | Declined by Yahir in v2.6 (Key Decisions) | Robolectric semantics/state assertions + Gate-1 device screencaps |
+
+## Alternatives considered
+
+| Category | Recommended | Alternative | Why not |
+|---|---|---|---|
+| Swipe | `foundation.anchoredDraggable` | M3 `SwipeToDismissBox` | Deprecation churn in 1.4.0, layout slot fights the deck transforms, no house precedent |
+| Stack state | Own `@Stable` class + `CompletableDeferred` | Several `SnackbarHostState`s | Each one is internally serialized and owns its timer, so there's no pause, no cap eviction and no shared deck state |
+| Timer clock | Injected `TimeSource` + `delay` | Frame clock (`withFrameMillis`) | The frame clock needs composition. Phase 25 requires state tests without composition. |
+| Pause detection | `Initial`-pass `awaitEachGesture` observer | `collectIsPressedAsState` / `waitForUpOrCancellation` | Delayed press, and early resume when a child consumes |
+| Deck layout | `Box` + `key(id)` + `graphicsLayer` | `LazyColumn` | At most 3 items. Lazy adds animation/semantics-order complexity. |
+
+## Integration points (existing code touched)
+
+- `feedback/FeedbackEvent.kt`: append `target: FeedbackTarget? = null` **after** `duration` on
+  `Notify`/`WithUndo` (they're data classes, so `componentN` grows at the end only). Keep the
+  `SnackbarDuration` type: the stack reuses it, which avoids a parallel duration enum.
+- `feedback/UndoHistoryEntry.kt` (internal ctor) and `UndoHistoryStore.append(...)`: carry `target`.
+- `feedback/UndoTracking.kt`: the existing `SnackbarHostState.emitTrackedWithUndo` must forward
+  `event.target` into the store (FTGT-02). The new `FeedbackStackState.emitTrackedWithUndo` mirrors
+  its order: append, then show, then `store.attemptUndo(id)` on `Undone` only.
+- `feedback/` gets new files (`FeedbackTarget.kt`, `FeedbackStackState.kt`, `FeedbackStackHost.kt`).
+  Both public `@Composable`s are registered or allowlisted in `ComponentRegistry` (drift guard).
+- `modifier/SwipeableActionRow.kt`: reference pattern only. Don't reuse it for snackbar swipe. Its
+  reveal-then-confirm semantics (left=delete, right=edit) is the wrong convention for D-07 dismiss.
 
 ## Sources
 
-- `build.gradle.kts` + `gradle/libs.versions.toml` (this repo, read 2026-09-29) — confirmed declared
-  deps and pinned Compose BOM `2026.04.01`; no HTTP/serialization/engine dep present — HIGH
-- In-tree source grep (this repo) — confirmed `ModalBottomSheet` (13 files, via `SheetScaffold`),
-  `SegmentedButton`/`SingleChoiceSegmentedButtonRow` (6 files, `SegmentedOptionSelector`), `Slider`
-  (3), `OutlinedTextField` (3), `Switch` (1); `ExposedDropdownMenu` + `PasswordVisualTransformation`
-  not yet used (first use, no new dep) — HIGH
-- `.planning/ROADMAP.md` Phases 10–13 success criteria + `.planning/PROJECT.md` §6.3 scope +
-  root `CLAUDE.md` invariants — confirmed the "no OkHttp / no engine / prop-driven" gate — HIGH
-
----
-*Stack research for: reusable Compose design-system — presentational AI-voice command UI*
-*Researched: 2026-09-29*
+- `~/.gradle/caches/modules-2/files-2.1/androidx.compose/compose-bom/2026.04.01/*.pom`: resolved
+  versions (HIGH)
+- `javap` on `ui-android-1.11.0.aar`, `foundation-android-1.11.0.aar`, `material3-android-1.4.0.aar`,
+  `ui-test-android-1.11.0.aar`, `kotlinx-coroutines-test-jvm-1.11.0.jar`: signatures, `@Deprecated`
+  messages, absence of `@Experimental*` markers (control: `ModalBottomSheetKt` shows 5 hits) (HIGH)
+- `material3` `SnackbarHostKt.toMillis` bytecode: 4000/10000/MAX and the
+  `calculateRecommendedTimeoutMillis(orig, true, true, hasAction)` argument order (HIGH)
+- `material3` `SnackbarHostKt$FadeInFadeOutWithScale$1$1`: M3's own `dismiss` + `liveRegion` +
+  `paneTitle` semantics (HIGH)
+- Hub source: `modifier/SwipeableActionRow.kt`, `RevealActionRow.kt`, `feedback/*`, `gradle/libs.versions.toml`,
+  `build.gradle.kts` (HIGH)
