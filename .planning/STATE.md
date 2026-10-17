@@ -1,21 +1,16 @@
 ---
 gsd_state_version: "1.0"
-milestone: v2.6
-milestone_name: Receipt voice surfaces + ProviderKeyCard lifecycle
-status: Awaiting next milestone
-stopped_at: Phase 24 complete — all phases complete
-last_updated: "2026-10-14T20:53:16.083Z"
-last_activity: 2026-10-14
-last_activity_desc: Milestone v2.6 completed and archived
-state_head: fc6660ac3492ec0bda41321e40a1b73b09517e4d
+milestone: v2.8
+milestone_name: Snackbar go-to-item + stacked feedback
+status: planning
+last_updated: "2026-10-17T06:31:31.145Z"
+last_activity: 2026-10-17
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 19
-  completed_plans: 19
-  percent: 100
-current_phase: 24
-current_phase_name: all complete; phase 24 settled
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -29,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-10-14)
 
 ## Current Position
 
-Phase: Milestone v2.6 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-10-14 — Milestone v2.6 completed and archived
+Status: Defining requirements
+Last activity: 2026-10-17 — Milestone v2.8 started
 
 ## Performance Metrics
 
