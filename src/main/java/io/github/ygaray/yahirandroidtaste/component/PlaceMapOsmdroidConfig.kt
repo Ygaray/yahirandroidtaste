@@ -2,14 +2,35 @@ package io.github.ygaray.yahirandroidtaste.component
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.database.DatabaseErrorHandler
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import android.os.Build
 import android.util.Log
 import java.io.File
+import java.security.MessageDigest
+import java.util.concurrent.atomic.AtomicBoolean
 import org.osmdroid.config.Configuration
 
 private const val USER_AGENT_HEADER = "User-Agent"
 private const val LOG_TAG = "YatOsmdroid"
 private const val OSM_TILE_POLICY_URL = "https://operations.osmfoundation.org/policies/tiles/"
+
+/** The hub's own prefs file for osmdroid; the consumer owns the request-property slots in it. */
+internal const val OSMDROID_PREFS_NAME = "yahirandroidtaste_osmdroid"
+
+/** Boolean the hub owns: set once a placeholder scan has completed on this install. */
+internal const val PREF_PLACEHOLDER_PURGED = "placeholder_tiles_purged"
+
+private const val TILE_CACHE_DB_NAME = "cache.db"
+
+/** True once this process has done (or started) its first placeholder scan. */
+private val placeholderScanStarted = AtomicBoolean(false)
+
+/** Test hook: makes the next [configureOsmdroid] behave like the first call of a new process. */
+internal fun resetPlaceholderScanForTests() {
+    placeholderScanStarted.set(false)
+}
 
 /**
  * Prefix of the application-id class the OSM tile server blocks outright (the Android template
@@ -40,7 +61,11 @@ internal const val BLOCKED_PLACEHOLDER_PACKAGE_PREFIX = "com.example."
  *  2. **Honor tile-server cache headers.** osmdroid's expiry-override handling is left at its
  *     default here — this function never calls an API that overrides cache expiry.
  *  3. **No bulk or offline tile pre-fetching.** This function calls no bulk-download or
- *     cache-manager API; it only configures where tiles are written once fetched.
+ *     cache-manager API; it only configures where tiles are written once fetched. It also clears
+ *     placeholder tiles that earlier blocked fetches cached ([purgePlaceholderTiles]): on the
+ *     first call of each process and whenever the install flag [PREF_PLACEHOLDER_PURGED] is unset.
+ *     That purge deletes only rows matching the placeholder fingerprint (size AND md5), is not keyed
+ *     on a user-agent change, and uses no cache-manager or whole-cache wipe API.
  *
  * `osmdroidBasePath` and `osmdroidTileCache` are pointed at the host app's private `cacheDir`
  * (never shared external storage) so no storage permission is required, tiles are confined to
@@ -51,7 +76,7 @@ internal const val BLOCKED_PLACEHOLDER_PACKAGE_PREFIX = "com.example."
  */
 internal fun configureOsmdroid(context: Context, userAgent: String) {
     val appContext = context.applicationContext
-    val prefs = appContext.getSharedPreferences("yahirandroidtaste_osmdroid", Context.MODE_PRIVATE)
+    val prefs = appContext.getSharedPreferences(OSMDROID_PREFS_NAME, Context.MODE_PRIVATE)
     // load() first: it resets Configuration's userAgentValue, so anything set before load() would
     // be discarded.
     Configuration.getInstance().load(appContext, prefs)
@@ -79,7 +104,19 @@ internal fun configureOsmdroid(context: Context, userAgent: String) {
     }
     val basePath = File(appContext.cacheDir, "osmdroid")
     Configuration.getInstance().osmdroidBasePath = basePath
-    Configuration.getInstance().osmdroidTileCache = File(basePath, "tiles")
+    val tileCache = File(basePath, "tiles")
+    Configuration.getInstance().osmdroidTileCache = tileCache
+    // Evaluated BEFORE the install-flag test: a second call in the same process must not rescan.
+    val firstScanThisProcess = !placeholderScanStarted.getAndSet(true)
+    if (firstScanThisProcess || !prefs.getBoolean(PREF_PLACEHOLDER_PURGED, false)) {
+        try {
+            if (purgePlaceholderTiles(File(tileCache, TILE_CACHE_DB_NAME)) >= 0) {
+                prefs.edit().putBoolean(PREF_PLACEHOLDER_PURGED, true).apply()
+            }
+        } catch (_: RuntimeException) {
+            // best effort: a failed scan is retried on the next call and never breaks map creation
+        }
+    }
 }
 
 private fun hostVersionName(context: Context): String? =
@@ -121,6 +158,76 @@ internal fun buildFallbackUserAgent(
     versionName: String?,
     androidRelease: String,
 ): String = "$packageName/${versionName?.trim().orEmpty().ifEmpty { "0" }} (Android $androidRelease)"
+
+/**
+ * Byte length of the "access blocked" placeholder tile the OSM server answers with. A content
+ * fingerprint of a public placeholder image, not a security control.
+ */
+internal const val PLACEHOLDER_TILE_SIZE = 6987
+
+/** md5 (lowercase hex) of the blocked placeholder tile; together with the size it is the fingerprint. */
+internal const val PLACEHOLDER_TILE_MD5 = "c069a15b2cc2d6b6f527ad09eb93c61a"
+
+/**
+ * POL-03 — deletes the cached blocked placeholder tiles from an osmdroid `SqlTileWriter` database
+ * ([dbFile], table `tiles`). A blocked fetch caches the placeholder and re-stamps a fresh expiry on
+ * it, so without this an app that fixes its agent would keep showing blocked tiles for a week.
+ *
+ * Only rows whose tile has exactly [sizeBytes] bytes AND the md5 [md5Hex] are deleted; a size-only
+ * match and every real tile survive. Best-effort and silent: returns the number of deleted rows,
+ * `0` when there is nothing to do (including a missing file, which is never created) and `-1` when
+ * the scan could not run (unreadable file, no `tiles` table, lock error). Never throws.
+ *
+ * Bound arguments only. Android binds every argument as text, so the length is compared through
+ * `CAST(? AS INTEGER)`; an uncast text argument never equals an integer length.
+ */
+internal fun purgePlaceholderTiles(
+    dbFile: File,
+    sizeBytes: Int = PLACEHOLDER_TILE_SIZE,
+    md5Hex: String = PLACEHOLDER_TILE_MD5,
+): Int {
+    if (!dbFile.isFile) return 0
+    var db: SQLiteDatabase? = null
+    return try {
+        // A no-op error handler: the default one DELETES a database it finds corrupt, and this
+        // purge must never remove the cache file itself.
+        db =
+            SQLiteDatabase.openDatabase(
+                dbFile.path,
+                null,
+                SQLiteDatabase.OPEN_READWRITE,
+                DatabaseErrorHandler { },
+            )
+        val matches = mutableListOf<Pair<Long, String>>()
+        db.rawQuery(
+            "SELECT key, provider, tile FROM tiles WHERE length(tile) = CAST(? AS INTEGER)",
+            arrayOf(sizeBytes.toString()),
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                val provider = cursor.getString(1)
+                if (provider != null && md5HexOf(cursor.getBlob(2)) == md5Hex) {
+                    matches += cursor.getLong(0) to provider
+                }
+            }
+        }
+        var deleted = 0
+        for ((key, provider) in matches) {
+            deleted += db.delete("tiles", "key = ? AND provider = ?", arrayOf(key.toString(), provider))
+        }
+        deleted
+    } catch (_: SQLiteException) {
+        -1
+    } finally {
+        try {
+            db?.close()
+        } catch (_: SQLiteException) {
+            // best effort
+        }
+    }
+}
+
+private fun md5HexOf(bytes: ByteArray): String =
+    MessageDigest.getInstance("MD5").digest(bytes).joinToString("") { "%02x".format(it) }
 
 /** True when the OSM tile server refuses this class of agent: blank, or a placeholder app id. */
 internal fun isBlockedClassUserAgent(resolved: String): Boolean =
