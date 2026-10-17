@@ -1073,6 +1073,7 @@ package io.github.ygaray.yahirandroidtaste.feedback {
 
   public final class UndoTrackingKt {
     method public static suspend Object? emitTrackedWithUndo(androidx.compose.material3.SnackbarHostState, io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore store, io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent.WithUndo event, kotlin.coroutines.Continuation<? super kotlin.Unit>);
+    method public static suspend Object? emitTrackedWithUndo(io.github.ygaray.yahirandroidtaste.feedback.FeedbackStackState, io.github.ygaray.yahirandroidtaste.feedback.UndoHistoryStore store, io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent.WithUndo event, kotlin.coroutines.Continuation<? super io.github.ygaray.yahirandroidtaste.feedback.FeedbackResult>);
   }
 
 }
