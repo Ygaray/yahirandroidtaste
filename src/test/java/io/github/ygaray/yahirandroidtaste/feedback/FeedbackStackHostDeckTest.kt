@@ -384,6 +384,45 @@ class FeedbackStackHostDeckTest {
         state.dismissAll()
     }
 
+    @Test
+    fun peekTapOnABackCardWithoutAnUndo_offCentre_stillFansAndNeverOpens() {
+        val state = FeedbackStackState()
+        val opened = mutableListOf<FeedbackTarget>()
+        val results = mutableMapOf<String, FeedbackResult>()
+        setHost(state, opened)
+        showAll(state, results, "Back", "Front")
+
+        card("Back").performTouchInput { click(Offset(width * 0.15f, 4.dp.toPx())) }
+        composeTestRule.waitForIdle()
+
+        assertTrue("the blocker must stay harmless on a card with no Undo", state.pauseState.value.fanned)
+        assertTrue(opened.isEmpty())
+        assertTrue(results.isEmpty())
+        state.dismissAll()
+    }
+
+    @Test
+    fun peekTapOnASpentBackCard_stillFansAndNeverOpens() {
+        val state = FeedbackStackState()
+        val store = UndoHistoryStore()
+        val opened = mutableListOf<FeedbackTarget>()
+        val results = mutableMapOf<String, FeedbackResult>()
+        setHost(state, opened)
+        showTracked(state, store, withUndo("Spent"), "Spent", results)
+        scope.launch { store.attemptUndo(store.entries.value.single().id) }
+        composeTestRule.waitForIdle()
+        show(state, notify("Front"), "Front", results)
+        assertFalse(state.pauseState.value.fanned)
+
+        card("Spent").performTouchInput { click(Offset(width * 0.85f, 4.dp.toPx())) }
+        composeTestRule.waitForIdle()
+
+        assertTrue("the blocker must stay harmless on a spent card", state.pauseState.value.fanned)
+        assertTrue(opened.isEmpty())
+        assertNull(results["Front"])
+        state.dismissAll()
+    }
+
     /**
      * A CONTROL, not a blocker guard: it passes with the blocker removed, because a collapsed back card
      * has its drag disabled and a drag past the slop suppresses the peek tap on its own. The blocker
