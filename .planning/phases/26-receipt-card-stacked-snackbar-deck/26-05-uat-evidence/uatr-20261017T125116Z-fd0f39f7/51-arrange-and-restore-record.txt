@@ -1,0 +1,26 @@
+Phase 26 Gate-1 arrange / restore record (tester SM-S908U, adb serial R5CT10XNKQN, Android 15, API 35)
+
+Build identity
+  library HEAD 1f3237e0e86574601dce7281dedbd2ae52622f0b (src/ clean)
+  library AAR  mavenLocal com.github.Ygaray:yahirandroidtaste:1.10.0 deleted then republished with clean publishReleasePublicationToMavenLocal, md5 0a99c53b341c65004221e762aa3d75e6
+               (contains FEEDBACK_FANNED_MIN_CAP and FEEDBACK_DEPTH_SCALE_MIN, i.e. the code-review fixes)
+  harness APK  throwaway scratchpad app (DeckActivity + DeckA11yService + MainActivity->Explorer), md5 828186cd8056c6b7c740e2d187a44b2f, never committed
+  A first run uatr-20261017T124745Z-9d9776fb was abandoned (APK rebuilt to add a moderate German button); nothing in the verdicts comes from it.
+
+Device baseline BEFORE the run (all restored, re-read AFTER the run):
+  wm density           Physical density: 450 (no override)   -> after: unchanged, wm density never written
+  system font_scale    1.0                                    -> set to 2.0 for the German checks, restored to 1.0 (read back 1.0)
+  secure enabled_accessibility_services  null                 -> enabled the throwaway DeckA11yService for SC5 only, deleted (read back null)
+  secure accessibility_enabled           0                    -> set 1 for SC5 only, set back to 0 (read back 0)
+  secure accessibility_interactive_ui_timeout_ms      null    -> 12000 for the SC4 recommended-timeout leg only, deleted (read back null)
+  secure accessibility_non_interactive_ui_timeout_ms  null    -> 7000 for the SC4 recommended-timeout leg only, deleted (read back null)
+
+Pixel probe of 04-sc1-burst4-collapsed-screen.png (light theme, baseline M3 MaterialTheme in the harness)
+  front card body (700,2130) = (230,224,233) = #E6E0E9 = M3 surfaceContainerHighest
+  tone dot (73,2078)         = (103,80,164)  = #6750A4 = M3 primary (targeted card)
+  card top-left corner: left-edge inset 31,26,19,10,5,1,0px at dy 0,4,8,16,24,32,40 -> corner radius about 40px = 14 to 16dp at 2.8125 px/dp
+
+Deck geometry from 03-sc1-burst4-collapsed-ui.xml (px at 2.8125 px/dp)
+  front card [23,2000][1057,2158] width 1034, height 158 (56dp)
+  middle card top 1961 (peek 39px = 13.9dp), width 972 -> 972/1034 = 0.940
+  back card   top 1922 (peek 39px = 13.9dp), width 910 -> 910/1034 = 0.880

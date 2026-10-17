@@ -1,0 +1,496 @@
+{
+  "schema": "gsd.uat-run/v1",
+  "run_id": "uatr-20261017T125116Z-fd0f39f7",
+  "status": "finished",
+  "phase": "26",
+  "plan": "05",
+  "prefix": "26-05",
+  "surface": "android",
+  "project": "sha:df197faf5105af0ed516c727e2aafb44f5ef5743:.",
+  "phase_dir": "phases/26-receipt-card-stacked-snackbar-deck",
+  "required_surface": {
+    "surface": "android",
+    "source": "marker:AGENT-DEVICE-TESTING.md"
+  },
+  "surface_override": null,
+  "device": {
+    "addr": "R5CT10XNKQN",
+    "serial": "R5CT10XNKQN",
+    "model": "SM-S908U",
+    "label": null
+  },
+  "app": {
+    "package": "io.github.ygaray.yahirandroidtasteharness",
+    "apk_path": "/data/app/~~0fHRHrQ9p_VE2Lz4Ib8xPg==/io.github.ygaray.yahirandroidtasteharness-YKEym3jthKhdtj3OxsgITQ==/base.apk",
+    "apk_sha256": "376f837d95f1735722090016f0c9fcbe0ae6f4fa527199368b132daa79d9b00c"
+  },
+  "head_at_start": "1f3237e0e86574601dce7281dedbd2ae52622f0b",
+  "started_at": "2026-10-17T12:51:16.852Z",
+  "finished_at": "2026-10-17T13:03:56.576Z",
+  "capture_count": 51,
+  "captures": [
+    {
+      "label": "unit-detekt-apicheck-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "01-unit-detekt-apicheck-summary.txt",
+      "sha256": "68545b7035fdad84238c92dbdf4eaa31706e0560a4e3a593211e9b8591131df0",
+      "bytes": 3040,
+      "at": "2026-10-17T12:51:23.614Z"
+    },
+    {
+      "label": "api-source-additive-v271",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "02-api-source-additive-v271.txt",
+      "sha256": "8486e91493cbd51be2085920654e3f357797c3c606e5a987d66e01d27becf387",
+      "bytes": 212,
+      "at": "2026-10-17T12:51:23.776Z"
+    },
+    {
+      "label": "sc1-burst4-collapsed-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "03-sc1-burst4-collapsed-ui.xml",
+      "sha256": "bff2e011e8a8ccd6ae3ccf22cf8c68582a94c7bff3f2e44b876ac86878a6b40f",
+      "bytes": 25569,
+      "at": "2026-10-17T12:51:32.353Z"
+    },
+    {
+      "label": "sc1-burst4-collapsed-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "04-sc1-burst4-collapsed-screen.png",
+      "sha256": "afa1283b20c0b69456b2863ad6aeddf29d19c4223ff12878ecdb44b13574b423",
+      "bytes": 111952,
+      "at": "2026-10-17T12:51:32.988Z"
+    },
+    {
+      "label": "sc1-burst4-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "05-sc1-burst4-log.log",
+      "sha256": "bedaa4af274b8592667930bb4e6dda56757ae88ab81b5e9d99cba82e8a9c3713",
+      "bytes": 332,
+      "at": "2026-10-17T12:51:33.403Z"
+    },
+    {
+      "label": "sc1-fourth-show-evicts-tracked-undo-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "06-sc1-fourth-show-evicts-tracked-undo-ui.xml",
+      "sha256": "ca0c27cd4a0a67f9914d595b3082b8dddd726fdc9f717cb2383735f9e6ead01a",
+      "bytes": 24176,
+      "at": "2026-10-17T12:51:47.063Z"
+    },
+    {
+      "label": "sc1-fourth-show-evicts-tracked-undo-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "07-sc1-fourth-show-evicts-tracked-undo-log.log",
+      "sha256": "78ec7dcedb4ae9ce74c4abec247d1b82d36815b9ec88f33f5df0335e9e3d81dd",
+      "bytes": 332,
+      "at": "2026-10-17T12:51:47.448Z"
+    },
+    {
+      "label": "sc1-german-moderate-360dp-font2-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "08-sc1-german-moderate-360dp-font2-ui.xml",
+      "sha256": "4614a8d841ce9c03e26b1570ded0869bfe9121f444c692c79c571738b0273191",
+      "bytes": 18384,
+      "at": "2026-10-17T12:51:59.742Z"
+    },
+    {
+      "label": "sc1-german-moderate-360dp-font2-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "09-sc1-german-moderate-360dp-font2-screen.png",
+      "sha256": "a69dcf11299b75bd5daea7801d6b99d1c147b7081997341c6bedc0fefd091c4b",
+      "bytes": 183299,
+      "at": "2026-10-17T12:52:00.357Z"
+    },
+    {
+      "label": "sc1-german-extreme-360dp-font2-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "10-sc1-german-extreme-360dp-font2-ui.xml",
+      "sha256": "138be33017a21f4efce81d9364f43cb837dd03d8d1ac88eb02f25dd335788d5d",
+      "bytes": 7628,
+      "at": "2026-10-17T12:52:22.474Z"
+    },
+    {
+      "label": "sc2-untargeted-front-card-tap-does-nothing-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "11-sc2-untargeted-front-card-tap-does-nothing-ui.xml",
+      "sha256": "4aa5605b876cce6a4ed6284056ed8ac70199b3a2ff60fa163420683b0d6936a5",
+      "bytes": 25226,
+      "at": "2026-10-17T12:52:43.030Z"
+    },
+    {
+      "label": "sc3-peek-tap-fans-deck-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "12-sc3-peek-tap-fans-deck-ui.xml",
+      "sha256": "26a480e293123f5381597529e171e8949f81b33c66f2f709674f9f24ac2eec63",
+      "bytes": 27634,
+      "at": "2026-10-17T12:52:52.846Z"
+    },
+    {
+      "label": "sc3-peek-tap-fans-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "13-sc3-peek-tap-fans-deck-screen.png",
+      "sha256": "72b773b526a6aec40f8acd489a3de2975fbb4f9c99780b01baac656a59cc0e51",
+      "bytes": 107869,
+      "at": "2026-10-17T12:52:53.510Z"
+    },
+    {
+      "label": "sc3-fanned-held-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "14-sc3-fanned-held-screen.png",
+      "sha256": "9d7f90de621321a55fb49763b3009e2cd0bbf353e4ae094fea890622d08885d0",
+      "bytes": 122307,
+      "at": "2026-10-17T12:53:08.362Z"
+    },
+    {
+      "label": "sc3-fanned-held-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "15-sc3-fanned-held-ui.xml",
+      "sha256": "26a480e293123f5381597529e171e8949f81b33c66f2f709674f9f24ac2eec63",
+      "bytes": 27634,
+      "at": "2026-10-17T12:53:11.087Z"
+    },
+    {
+      "label": "sc2-target-body-taps-open-once-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "16-sc2-target-body-taps-open-once-ui.xml",
+      "sha256": "4aa5605b876cce6a4ed6284056ed8ac70199b3a2ff60fa163420683b0d6936a5",
+      "bytes": 25226,
+      "at": "2026-10-17T12:53:27.766Z"
+    },
+    {
+      "label": "sc2-target-bodies-open-once-each-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "17-sc2-target-bodies-open-once-each-ui.xml",
+      "sha256": "e2a2e068cba3a4af833764cd15017aadca2e5dc5737ef05a8d39f888c0837909",
+      "bytes": 21756,
+      "at": "2026-10-17T12:53:43.358Z"
+    },
+    {
+      "label": "sc2-target-bodies-open-once-each-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "18-sc2-target-bodies-open-once-each-log.log",
+      "sha256": "ac8c102bbf594ade3c1d2d7a93e173b6ee9c45013cf830653501d2eb87fe354c",
+      "bytes": 256,
+      "at": "2026-10-17T12:53:43.764Z"
+    },
+    {
+      "label": "sc3-fanned-three-cards-with-undo-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "19-sc3-fanned-three-cards-with-undo-ui.xml",
+      "sha256": "1a4679723bbd361d654ac06202cdc390f7474879d5f0433d3638e41876b024aa",
+      "bytes": 27715,
+      "at": "2026-10-17T12:54:01.550Z"
+    },
+    {
+      "label": "sc3-fanned-undo-tap-resolves-undone-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "20-sc3-fanned-undo-tap-resolves-undone-ui.xml",
+      "sha256": "3193a98c3689281addf0a67415c15276be656824a7b4e86d359fd199ba73b7c4",
+      "bytes": 25307,
+      "at": "2026-10-17T12:54:11.007Z"
+    },
+    {
+      "label": "sc3-fanned-undo-tap-resolves-undone-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "21-sc3-fanned-undo-tap-resolves-undone-ui.xml",
+      "sha256": "9ed75e891757457875738bcacf549ba558a9019b5364bdd3863e53041ac2dcb8",
+      "bytes": 24256,
+      "at": "2026-10-17T12:54:22.816Z"
+    },
+    {
+      "label": "sc3-swipe-one-card-dismissed-only-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "22-sc3-swipe-one-card-dismissed-only-ui.xml",
+      "sha256": "a291d66cd452f812e6c8abe291f415efd75128c768fe0e3d6eea1bfb43ced182",
+      "bytes": 21842,
+      "at": "2026-10-17T12:54:34.027Z"
+    },
+    {
+      "label": "sc3-swipe-tracked-undo-card-dismissed-not-undone-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "23-sc3-swipe-tracked-undo-card-dismissed-not-undone-ui.xml",
+      "sha256": "3d84c2959c2615ec107f5da19fc2e45008bd22d63606ce85eededcb67550aff6",
+      "bytes": 23614,
+      "at": "2026-10-17T12:54:47.704Z"
+    },
+    {
+      "label": "sc3-idle-recollapse-a-fanned-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "24-sc3-idle-recollapse-a-fanned-ui.xml",
+      "sha256": "3d84c2959c2615ec107f5da19fc2e45008bd22d63606ce85eededcb67550aff6",
+      "bytes": 23614,
+      "at": "2026-10-17T12:54:58.788Z"
+    },
+    {
+      "label": "sc3-idle-recollapse-b-after-idle-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "25-sc3-idle-recollapse-b-after-idle-ui.xml",
+      "sha256": "2d4c5982fbf7a3fc1daa56b87d316ea2f9f8317311b5fe68deff61f454b50af0",
+      "bytes": 22911,
+      "at": "2026-10-17T12:55:07.369Z"
+    },
+    {
+      "label": "sc3-two-card-deck-back-undo-sliver-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "26-sc3-two-card-deck-back-undo-sliver-ui.xml",
+      "sha256": "e2ac0decdaebe873ce5a2f2e177213b440a582bf6b1549aa0228839a2e6c22b5",
+      "bytes": 24052,
+      "at": "2026-10-17T12:55:20.908Z"
+    },
+    {
+      "label": "sc3-two-card-deck-back-undo-sliver-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "27-sc3-two-card-deck-back-undo-sliver-screen.png",
+      "sha256": "42fab04c93d2c1610a1071aa58ee6dad53d2c44863c0116ee768dc3c98f21a3b",
+      "bytes": 126208,
+      "at": "2026-10-17T12:55:21.562Z"
+    },
+    {
+      "label": "sc3-peek-tap-on-back-card-undo-sliver-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "28-sc3-peek-tap-on-back-card-undo-sliver-ui.xml",
+      "sha256": "e2306b714fd2c465cfa1b3229062647e7c2c8661a53469da147d50ee9c5e641e",
+      "bytes": 21960,
+      "at": "2026-10-17T12:55:33.426Z"
+    },
+    {
+      "label": "sc3-peek-tap-on-back-card-undo-sliver-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "29-sc3-peek-tap-on-back-card-undo-sliver-log.log",
+      "sha256": "7df32523d769715c6baf46b70a1c126da45e7606e4669d2233c1e63f20ff3c01",
+      "bytes": 134,
+      "at": "2026-10-17T12:55:33.968Z"
+    },
+    {
+      "label": "sc3-control-peek-tap-away-from-undo-fans-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "30-sc3-control-peek-tap-away-from-undo-fans-ui.xml",
+      "sha256": "9e30ae3d8a36c14f9ade1cb671c12f693076462cbca8df14f2786a5894830181",
+      "bytes": 29409,
+      "at": "2026-10-17T12:55:48.296Z"
+    },
+    {
+      "label": "sc3-swipe-on-collapsed-peek-strip-no-dismiss-no-fan-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "31-sc3-swipe-on-collapsed-peek-strip-no-dismiss-no-fan-ui.xml",
+      "sha256": "970a173f259760b1919029d1cad4d2935c6a909a2b2b830c0a9723dfd4a3d6f8",
+      "bytes": 23475,
+      "at": "2026-10-17T12:56:03.497Z"
+    },
+    {
+      "label": "sc3-swipe-collapsed-front-card-dismissed-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "32-sc3-swipe-collapsed-front-card-dismissed-ui.xml",
+      "sha256": "946545d6ad9c21e6ea63a9b6ec23c8aa3be0a5fa892446ccf43cf30cf2cb1008",
+      "bytes": 22784,
+      "at": "2026-10-17T12:56:13.234Z"
+    },
+    {
+      "label": "sc3-swipe-collapsed-front-card-dismissed-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "33-sc3-swipe-collapsed-front-card-dismissed-log.log",
+      "sha256": "1df92da4f1701176f0d25f794b3f6877579aea26808f86913a9a04686a192afd",
+      "bytes": 76,
+      "at": "2026-10-17T12:56:13.707Z"
+    },
+    {
+      "label": "sc4-short-4s-long-10s-plain-timeouts-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "34-sc4-short-4s-long-10s-plain-timeouts-log.log",
+      "sha256": "789d501904881c1012773a4770319d17ab175739c13120b81982554bfa071406",
+      "bytes": 278,
+      "at": "2026-10-17T12:56:38.852Z"
+    },
+    {
+      "label": "sc4-pointer-hold-pauses-timer-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "35-sc4-pointer-hold-pauses-timer-log.log",
+      "sha256": "7fa310e1db621a21ebe00ee5808d0dba0ddd5f7353d06cbed4062eaddd81fc11",
+      "bytes": 139,
+      "at": "2026-10-17T12:56:59.714Z"
+    },
+    {
+      "label": "sc4-fanned-deck-past-4s-both-short-cards-alive-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "36-sc4-fanned-deck-past-4s-both-short-cards-alive-ui.xml",
+      "sha256": "1b41bf29184fa1b3525f0d70f60626edb77a65b3c4977f07924ca1bb1a42e328",
+      "bytes": 23466,
+      "at": "2026-10-17T12:57:30.683Z"
+    },
+    {
+      "label": "sc4-fanned-pause-then-resume-timeouts-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "37-sc4-fanned-pause-then-resume-timeouts-log.log",
+      "sha256": "04f609ef1db906cb1c380beba476e9f5cc13282de2e0d62346619e7a38110259",
+      "bytes": 278,
+      "at": "2026-10-17T12:57:45.116Z"
+    },
+    {
+      "label": "sc4-a11y-recommended-timeout-scaling-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "38-sc4-a11y-recommended-timeout-scaling-log.log",
+      "sha256": "ca321d9812d33cd16a59643d732387a9febd4ebc2939f530f6aba94461e627c6",
+      "bytes": 417,
+      "at": "2026-10-17T12:58:38.613Z"
+    },
+    {
+      "label": "wr01-ime-open-then-fan-padded-host-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "39-wr01-ime-open-then-fan-padded-host-screen.png",
+      "sha256": "70c3352bd6a14d3aaa96abd6957da94f2e80e33bca8d224a95e1d402bdee3653",
+      "bytes": 195173,
+      "at": "2026-10-17T12:59:45.082Z"
+    },
+    {
+      "label": "wr01-ime-open-then-fan-padded-host-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "40-wr01-ime-open-then-fan-padded-host-ui.xml",
+      "sha256": "00e59cb20d00c03cca04605b0fc6398157d5e1948483af67a9ca3a23c031aa86",
+      "bytes": 23472,
+      "at": "2026-10-17T12:59:47.671Z"
+    },
+    {
+      "label": "wr01-fan-then-ime-opens-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "41-wr01-fan-then-ime-opens-screen.png",
+      "sha256": "74e776a4330cb637664112f579336e823b6c2bd66f4cf8eb4a67cdd3afed1456",
+      "bytes": 196439,
+      "at": "2026-10-17T13:00:09.474Z"
+    },
+    {
+      "label": "wr01-fan-then-ime-opens-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "42-wr01-fan-then-ime-opens-ui.xml",
+      "sha256": "cc304bc7da707289a60f8cc4e84434d02dd88f2ea6e569579d9286d71668f888",
+      "bytes": 25568,
+      "at": "2026-10-17T13:00:12.206Z"
+    },
+    {
+      "label": "explorer-burst-x4-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "43-explorer-burst-x4-ui.xml",
+      "sha256": "8231a171e9ed2f015d288f37449b93e3c9b4e2d49f8261ce2a40fa989b153324",
+      "bytes": 22196,
+      "at": "2026-10-17T13:01:12.357Z"
+    },
+    {
+      "label": "explorer-burst-x4-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "44-explorer-burst-x4-screen.png",
+      "sha256": "09dc4fa657de5a7531a1426a3d3c02d1b2cb541e46a9833239f1c94351392b22",
+      "bytes": 143652,
+      "at": "2026-10-17T13:01:13.003Z"
+    },
+    {
+      "label": "explorer-short-note-timed-out-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "45-explorer-short-note-timed-out-ui.xml",
+      "sha256": "72ea401ca7285fa52ac571e1b3bf702cead3c3f71d618e60b4631716aeea5876",
+      "bytes": 15930,
+      "at": "2026-10-17T13:01:29.632Z"
+    },
+    {
+      "label": "explorer-long-note-still-showing-at-5s-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "46-explorer-long-note-still-showing-at-5s-ui.xml",
+      "sha256": "3200587670f8521b845100f534a5af92c00fd0fe1fcd26d5f73b988aa83db497",
+      "bytes": 20102,
+      "at": "2026-10-17T13:01:42.262Z"
+    },
+    {
+      "label": "explorer-long-note-timed-out-after-10s-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "47-explorer-long-note-timed-out-after-10s-ui.xml",
+      "sha256": "72ea401ca7285fa52ac571e1b3bf702cead3c3f71d618e60b4631716aeea5876",
+      "bytes": 15930,
+      "at": "2026-10-17T13:01:51.830Z"
+    },
+    {
+      "label": "sc5-a11y-tree-collapsed-deck-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "48-sc5-a11y-tree-collapsed-deck-log.log",
+      "sha256": "a31afe3ad63690aedd71abff7101d8a193f8f8a574ba57ecf3eee897cba8d46a",
+      "bytes": 29487,
+      "at": "2026-10-17T13:02:12.985Z"
+    },
+    {
+      "label": "sc5-a11y-tree-fanned-deck-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "49-sc5-a11y-tree-fanned-deck-log.log",
+      "sha256": "2a599f45418098b7adbdcb74170f21d2f03794b9a82bcbee05ebed2e65c2c20e",
+      "bytes": 24562,
+      "at": "2026-10-17T13:02:31.362Z"
+    },
+    {
+      "label": "sc5-a11y-actions-click-dismiss-undo-custom-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "50-sc5-a11y-actions-click-dismiss-undo-custom-log.log",
+      "sha256": "14b4cb0635dbacbd6d67e983334e5b9fbea37069a4d523113a79f06902a4f40f",
+      "bytes": 13456,
+      "at": "2026-10-17T13:03:01.065Z"
+    },
+    {
+      "label": "arrange-and-restore-record",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "51-arrange-and-restore-record.txt",
+      "sha256": "82e013e4d5d05aadcafa86e14477fc11982868df0364cfa32c063ef6174e3f18",
+      "bytes": 2315,
+      "at": "2026-10-17T13:03:45.803Z"
+    }
+  ],
+  "sig": {
+    "alg": "HMAC-SHA256",
+    "value": "2bea3b255fb6885769d14be96ca08a8a1509c3bc588ad6fce2a12f5983f23a06"
+  }
+}

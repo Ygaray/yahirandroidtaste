@@ -1,0 +1,96 @@
+10-17 07:02:38.839 30957 30957 I P26     : open b4 n=1
+10-17 07:02:38.840 30957 30957 I P26A    : act 'Burst four' click/ -> true
+10-17 07:02:38.840 30957 30957 I P26     : result B4=Opened t=1885260841
+10-17 07:02:38.901 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:38.905 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] srcLive=1 srcText=null cls=android.view.View
+10-17 07:02:38.908 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:38.914 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:38.919 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=OPENED=b4 N=1 UNDORUNS=0 cls=android.view.View
+10-17 07:02:38.922 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=RESULTS=B1:Dismissed,B4:Opened cls=android.view.View
+10-17 07:02:38.927 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:38.929 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:38.933 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:38.935 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:41.533 30957 30957 I P26A    : act 'Burst three' dismiss/ -> true
+10-17 07:02:41.533 30957 30957 I P26     : result B3=Dismissed t=1885263534
+10-17 07:02:41.591 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:41.597 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:41.601 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=1 srcText=null cls=android.view.View
+10-17 07:02:41.605 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=RESULTS=B1:Dismissed,B4:Opened,B3:Dismissed cls=android.view.View
+10-17 07:02:41.611 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:41.614 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:41.617 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:51.648 30957 30957 I P26A    : act 'Burst two' custom/Undo -> true
+10-17 07:02:51.650 30957 30957 I P26     : undoAction ran B2
+10-17 07:02:51.650 30957 30957 I P26     : result B2=Undone t=1885273651
+10-17 07:02:51.709 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=null srcText=null cls=android.view.View
+10-17 07:02:51.722 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:51.729 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=ENTRIES=Burst tw/Undone cls=android.view.View
+10-17 07:02:51.734 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=RESULTS=B1:Dismissed,B4:Opened,B3:Dismissed,B2:Undone cls=android.view.View
+10-17 07:02:51.735 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=null srcText=null cls=android.view.View
+10-17 07:02:52.927 30957 30957 I P26     : show TG t=1885274927
+10-17 07:02:52.950 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.ViewGroup
+10-17 07:02:52.976 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:52.980 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=1 srcText=null cls=android.view.View
+10-17 07:02:52.983 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:52.990 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:52.995 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:53.042 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:53.077 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:53.591 30957 30957 I P26     : show PL t=1885275592
+10-17 07:02:53.624 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.ViewGroup
+10-17 07:02:53.639 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:53.643 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:53.646 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:53.650 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:53.652 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=1 srcText=null cls=android.view.View
+10-17 07:02:53.660 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:53.665 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:53.714 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:54.928 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:54.931 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:54.933 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:54.938 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:54.942 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:55.033 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:55.035 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:55.037 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:55.041 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:55.042 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=1 srcText=null cls=android.view.View
+10-17 07:02:55.044 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:55.144 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:55.151 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:55.153 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:55.159 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:55.161 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=1 srcText=null cls=android.view.View
+10-17 07:02:55.165 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:56.294 30957 30957 I P26A    : act 'Target note' custom/Dismiss -> true
+10-17 07:02:56.295 30957 30957 I P26     : result TG=Dismissed t=1885278295
+10-17 07:02:56.360 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:56.364 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:56.369 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=OPENED=b4 N=1 UNDORUNS=1 cls=android.view.View
+10-17 07:02:56.374 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=ENTRIES=Burst tw/Undone cls=android.view.View
+10-17 07:02:56.379 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=RESULTS=B1:Dismissed,B4:Opened,B3:Dismissed,B2:Undone,TG:Dismissed cls=android.view.View
+10-17 07:02:56.388 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:56.395 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:57.876 30957 30957 I P26     : show UI t=1885279876
+10-17 07:02:57.917 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.ViewGroup
+10-17 07:02:57.929 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] srcLive=1 srcText=null cls=android.view.View
+10-17 07:02:57.943 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:57.949 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:57.952 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:57.954 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:57.957 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=1 srcText=null cls=android.view.View
+10-17 07:02:57.962 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=ENTRIES=Undo not/Available;Burst tw/Undone cls=android.view.View
+10-17 07:02:57.965 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:57.971 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:57.976 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:58.003 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:59.211 30957 30957 I P26A    : act 'Undo note' dismiss/ -> true
+10-17 07:02:59.212 30957 30957 I P26     : result UI=Dismissed t=1885281213
+10-17 07:02:59.261 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] srcLive=1 srcText=null cls=android.view.View
+10-17 07:02:59.264 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:59.269 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:59.273 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:59.279 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 07:02:59.282 30957 30957 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View

@@ -1,0 +1,39 @@
+Phase 26 Gate-1 rung 1: ./gradlew testDebugUnitTest detekt apiCheck --rerun --no-build-cache --no-daemon
+HEAD 1f3237e0e86574601dce7281dedbd2ae52622f0b  BUILD SUCCESSFUL (tasks detekt, metalavaCheckCompatibilityRelease, testDebugUnitTest executed)
+result classes=157 tests=1599 skipped=22 failures=0 errors=0
+component.ToneFoundationInvariantsTest tests=5 skipped=0 failures=0 errors=0
+explorer.CatalogDocsDriftGuardTest tests=10 skipped=0 failures=0 errors=0
+explorer.ComponentRegistryDriftGuardTest tests=1 skipped=0 failures=0 errors=0
+explorer.ComponentRegistrySearchTest tests=6 skipped=0 failures=0 errors=0
+explorer.ComponentRegistryTierTest tests=4 skipped=0 failures=0 errors=0
+explorer.DomainVocabularyDriftGuardTest tests=2 skipped=0 failures=0 errors=0
+explorer.LibraryInvariantsGuardTest tests=5 skipped=0 failures=0 errors=0
+explorer.ProviderKeyLifecycleDemoRegistryRenderTest tests=11 skipped=0 failures=0 errors=0
+explorer.ReceiptDemosRegistryRenderTest tests=14 skipped=0 failures=0 errors=0
+explorer.ReceiptRowRegistryRenderTest tests=7 skipped=0 failures=0 errors=0
+explorer.ToneAtomsRegistryRenderTest tests=10 skipped=0 failures=0 errors=0
+explorer.UndoGroupDemoRegistryRenderTest tests=6 skipped=0 failures=0 errors=0
+feedback.FeedbackDeckLayoutTest tests=15 skipped=0 failures=0 errors=0
+feedback.FeedbackDeckMetricsTest tests=18 skipped=0 failures=0 errors=0
+feedback.FeedbackStackAssumptionProbeTest tests=11 skipped=0 failures=0 errors=0
+feedback.FeedbackStackHostDeckTest tests=26 skipped=0 failures=0 errors=0
+feedback.FeedbackStackHostLongLabelTest tests=7 skipped=0 failures=0 errors=0
+feedback.FeedbackStackHostSemanticsTest tests=16 skipped=0 failures=0 errors=0
+feedback.FeedbackStackHostSwipeTest tests=20 skipped=0 failures=0 errors=0
+feedback.FeedbackStackHostTest tests=12 skipped=0 failures=0 errors=0
+feedback.FeedbackStackPauseTest tests=18 skipped=0 failures=0 errors=0
+feedback.FeedbackStackSourceContractTest tests=15 skipped=0 failures=0 errors=0
+feedback.FeedbackStackStateTest tests=25 skipped=0 failures=0 errors=0
+feedback.FeedbackStackStateTimeoutTest tests=21 skipped=0 failures=0 errors=0
+feedback.FeedbackStackTrackedUndoTest tests=18 skipped=0 failures=0 errors=0
+feedback.FeedbackTargetTest tests=11 skipped=0 failures=0 errors=0
+feedback.RememberFeedbackStackStateTest tests=6 skipped=0 failures=0 errors=0
+feedback.UndoCenterRowsTest tests=13 skipped=0 failures=0 errors=0
+feedback.UndoCenterScreenDefaultParityTest tests=5 skipped=0 failures=0 errors=0
+feedback.UndoCenterScreenGroupsTest tests=25 skipped=0 failures=0 errors=0
+feedback.UndoCenterScreenLongLabelTest tests=4 skipped=0 failures=0 errors=0
+feedback.UndoCenterScreenSourceCompatV251Test tests=2 skipped=0 failures=0 errors=0
+feedback.UndoCenterScreenSourceContractTest tests=7 skipped=0 failures=0 errors=0
+feedback.UndoCenterScreenTest tests=4 skipped=0 failures=0 errors=0
+feedback.UndoHistoryStoreTest tests=33 skipped=0 failures=0 errors=0
+feedback.UndoTrackingMaterialPathTest tests=6 skipped=0 failures=0 errors=0
