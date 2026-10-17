@@ -30,6 +30,10 @@ internal fun handledByPillCornerRadius(heightPx: Float, capPx: Float): Float =
  * carries the font scale), that is (line height + 2 x [verticalPadding]) / 2. A [lineHeight] that is not
  * in sp (Unspecified or em) cannot be converted to pixels in a draw pass without throwing, so it is
  * replaced by a fixed 16sp (PD-16).
+ *
+ * Known limit (IN-02): with such a custom typography the fallback only approximates the font's real
+ * one-line height, so when that is taller than 16sp a one-line pill reaches a radius just below a full
+ * capsule. The default theme's `bodySmall` line height is in sp and is exact; nothing throws either way.
  */
 internal fun handledByPillCapPx(density: Density, lineHeight: TextUnit, verticalPadding: Dp): Float {
     val resolved = if (lineHeight.isSp) lineHeight else FallbackLineHeight
@@ -41,7 +45,7 @@ internal fun handledByPillCapPx(density: Density, lineHeight: TextUnit, vertical
  * `min(height / 2, cap)`, the cap being half the height of a one-line pill ([handledByPillCapPx]).
  *
  * A one-line pill therefore has radius `height / 2`, exactly the old `CircleShape` capsule at every
- * font scale. A pill that wraps to several lines keeps the one-line corner geometry instead of growing
+ * font scale (for a theme whose body-small line height is in sp, see [handledByPillCapPx]). A pill that wraps to several lines keeps the one-line corner geometry instead of growing
  * a half-height arc that would cut through the text near the corners.
  *
  * It is computed in [createOutline] from the final size and the draw [Density], never from text layout
