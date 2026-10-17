@@ -3,6 +3,7 @@ package io.github.ygaray.yahirandroidtaste.component
 import android.app.Application
 import android.content.Context
 import android.content.ContextWrapper
+import android.database.sqlite.SQLiteDatabase
 import android.os.Build
 import android.util.Log
 import java.io.File
@@ -40,7 +41,7 @@ class PlaceMapOsmdroidConfigTest {
     private lateinit var originalRequestProperties: Map<String, String>
 
     private val osmPrefs
-        get() = application.getSharedPreferences("yahirandroidtaste_osmdroid", Context.MODE_PRIVATE)
+        get() = application.getSharedPreferences(OSMDROID_PREFS_NAME, Context.MODE_PRIVATE)
 
     @Before
     fun setUp() {
@@ -49,6 +50,8 @@ class PlaceMapOsmdroidConfigTest {
         originalTileCache = Configuration.getInstance().osmdroidTileCache
         originalRequestProperties = HashMap(Configuration.getInstance().additionalHttpRequestProperties)
         osmPrefs.edit().clear().commit()
+        File(application.cacheDir, "osmdroid").deleteRecursively()
+        resetPlaceholderScanForTests()
         ShadowLog.clear()
     }
 
@@ -62,6 +65,8 @@ class PlaceMapOsmdroidConfigTest {
             putAll(originalRequestProperties)
         }
         osmPrefs.edit().clear().commit()
+        File(application.cacheDir, "osmdroid").deleteRecursively()
+        resetPlaceholderScanForTests()
     }
 
     /**
@@ -322,5 +327,133 @@ class PlaceMapOsmdroidConfigTest {
             "expected the pre-suite original userAgentValue, not a leaked test value",
             Configuration.getInstance().userAgentValue == originalUserAgent,
         )
+    }
+
+    // ---- POL-03 placeholder purge trigger ------------------------------------------------------
+
+    private val cacheDb: File
+        get() = File(File(File(application.cacheDir, "osmdroid"), "tiles"), "cache.db")
+
+    private val placeholderBytes: ByteArray by lazy {
+        checkNotNull(javaClass.classLoader!!.getResourceAsStream("osm-blocked-placeholder.png")) {
+            "fixture osm-blocked-placeholder.png missing"
+        }.use { it.readBytes() }
+    }
+
+    private fun realTileBytes(): ByteArray = ByteArray(4472) { (it * 31 + 7).toByte() }
+
+    private fun seedCache(vararg rows: Pair<Long, ByteArray>) {
+        cacheDb.parentFile!!.mkdirs()
+        val db = SQLiteDatabase.openOrCreateDatabase(cacheDb, null)
+        try {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS tiles (key INTEGER , provider TEXT, tile BLOB, " +
+                    "expires INTEGER, PRIMARY KEY (key, provider));",
+            )
+            rows.forEach { (key, tile) ->
+                db.execSQL(
+                    "INSERT INTO tiles (key, provider, tile, expires) VALUES (?, ?, ?, ?)",
+                    arrayOf<Any>(key, "Mapnik", tile, 4102444800000L),
+                )
+            }
+        } finally {
+            db.close()
+        }
+    }
+
+    private fun cachedKeys(): List<Long> {
+        val db = SQLiteDatabase.openDatabase(cacheDb.path, null, SQLiteDatabase.OPEN_READONLY)
+        try {
+            db.rawQuery("SELECT key FROM tiles ORDER BY key", null).use { c ->
+                val out = mutableListOf<Long>()
+                while (c.moveToNext()) out += c.getLong(0)
+                return out
+            }
+        } finally {
+            db.close()
+        }
+    }
+
+    private val purgedFlag: Boolean
+        get() = osmPrefs.getBoolean(PREF_PLACEHOLDER_PURGED, false)
+
+    @Test
+    fun purgeRunsOnTheFirstCallOfAProcess_andSetsTheInstallFlag() {
+        seedCache(1L to placeholderBytes, 2L to realTileBytes())
+        assertFalse(purgedFlag)
+        configureOsmdroid(application, "Probe/1.0 (+https://example.org)")
+        assertEquals(listOf(2L), cachedKeys())
+        assertTrue(purgedFlag)
+    }
+
+    @Test
+    fun secondCallInTheSameProcessDoesNotRescan() {
+        seedCache(2L to realTileBytes())
+        configureOsmdroid(application, "Probe/1.0 (+https://example.org)")
+        assertTrue(purgedFlag)
+        seedCache(1L to placeholderBytes)
+        configureOsmdroid(application, "Probe/1.0 (+https://example.org)")
+        assertEquals(listOf(1L, 2L), cachedKeys())
+    }
+
+    @Test
+    fun aNewProcessScansAgain_evenWhenTheInstallFlagIsSet() {
+        seedCache(2L to realTileBytes())
+        configureOsmdroid(application, "Probe/1.0 (+https://example.org)")
+        assertTrue(purgedFlag)
+        seedCache(1L to placeholderBytes)
+        resetPlaceholderScanForTests()
+        configureOsmdroid(application, "Probe/1.0 (+https://example.org)")
+        assertEquals(listOf(2L), cachedKeys())
+        assertTrue(purgedFlag)
+    }
+
+    @Test
+    fun failedScanLeavesTheFlagUnsetAndNeverThrows() {
+        cacheDb.parentFile!!.mkdirs()
+        cacheDb.writeBytes(ByteArray(4096) { (it % 251).toByte() })
+        configureOsmdroid(application, "Probe/1.0 (+https://example.org)")
+        assertFalse(purgedFlag)
+        assertTrue(cacheDb.exists())
+    }
+
+    @Test
+    fun failedScanIsRetriedOnTheNextCall() {
+        cacheDb.parentFile!!.mkdirs()
+        cacheDb.writeBytes(ByteArray(4096) { (it % 251).toByte() })
+        configureOsmdroid(application, "Probe/1.0 (+https://example.org)")
+        assertFalse(purgedFlag)
+        cacheDb.delete()
+        seedCache(1L to placeholderBytes, 2L to realTileBytes())
+        configureOsmdroid(application, "Probe/1.0 (+https://example.org)")
+        assertEquals(listOf(2L), cachedKeys())
+        assertTrue(purgedFlag)
+    }
+
+    @Test
+    fun changingTheAgentNeverWipesRealTiles() {
+        seedCache(1L to realTileBytes(), 2L to realTileBytes())
+        configureOsmdroid(application, "AgentA/1.0 (+https://example.org)")
+        configureOsmdroid(application, "AgentB/2.0 (+https://example.org)")
+        assertEquals(listOf(1L, 2L), cachedKeys())
+    }
+
+    @Test
+    fun missingCacheFile_setsTheFlag_andCreatesNothing() {
+        configureOsmdroid(application, "Probe/1.0 (+https://example.org)")
+        assertTrue(purgedFlag)
+        assertFalse(cacheDb.exists())
+    }
+
+    @Test
+    fun mapCreationPathStillSetsBaseAndTileCache() {
+        seedCache(1L to placeholderBytes)
+        configureOsmdroid(application, "Probe/1.0 (+https://example.org)")
+        assertEquals(File(application.cacheDir, "osmdroid"), Configuration.getInstance().osmdroidBasePath)
+        assertEquals(
+            File(File(application.cacheDir, "osmdroid"), "tiles"),
+            Configuration.getInstance().osmdroidTileCache,
+        )
+        assertEquals("Probe/1.0 (+https://example.org)", requestProperties()["User-Agent"])
     }
 }

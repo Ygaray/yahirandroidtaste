@@ -9,11 +9,28 @@ import android.os.Build
 import android.util.Log
 import java.io.File
 import java.security.MessageDigest
+import java.util.concurrent.atomic.AtomicBoolean
 import org.osmdroid.config.Configuration
 
 private const val USER_AGENT_HEADER = "User-Agent"
 private const val LOG_TAG = "YatOsmdroid"
 private const val OSM_TILE_POLICY_URL = "https://operations.osmfoundation.org/policies/tiles/"
+
+/** The hub's own prefs file for osmdroid; the consumer owns the request-property slots in it. */
+internal const val OSMDROID_PREFS_NAME = "yahirandroidtaste_osmdroid"
+
+/** Boolean the hub owns: set once a placeholder scan has completed on this install. */
+internal const val PREF_PLACEHOLDER_PURGED = "placeholder_tiles_purged"
+
+private const val TILE_CACHE_DB_NAME = "cache.db"
+
+/** True once this process has done (or started) its first placeholder scan. */
+private val placeholderScanStarted = AtomicBoolean(false)
+
+/** Test hook: makes the next [configureOsmdroid] behave like the first call of a new process. */
+internal fun resetPlaceholderScanForTests() {
+    placeholderScanStarted.set(false)
+}
 
 /**
  * Prefix of the application-id class the OSM tile server blocks outright (the Android template
@@ -44,7 +61,11 @@ internal const val BLOCKED_PLACEHOLDER_PACKAGE_PREFIX = "com.example."
  *  2. **Honor tile-server cache headers.** osmdroid's expiry-override handling is left at its
  *     default here — this function never calls an API that overrides cache expiry.
  *  3. **No bulk or offline tile pre-fetching.** This function calls no bulk-download or
- *     cache-manager API; it only configures where tiles are written once fetched.
+ *     cache-manager API; it only configures where tiles are written once fetched. It also clears
+ *     placeholder tiles that earlier blocked fetches cached ([purgePlaceholderTiles]): on the
+ *     first call of each process and whenever the install flag [PREF_PLACEHOLDER_PURGED] is unset.
+ *     That purge deletes only rows matching the placeholder fingerprint (size AND md5), is not keyed
+ *     on a user-agent change, and uses no cache-manager or whole-cache wipe API.
  *
  * `osmdroidBasePath` and `osmdroidTileCache` are pointed at the host app's private `cacheDir`
  * (never shared external storage) so no storage permission is required, tiles are confined to
@@ -55,7 +76,7 @@ internal const val BLOCKED_PLACEHOLDER_PACKAGE_PREFIX = "com.example."
  */
 internal fun configureOsmdroid(context: Context, userAgent: String) {
     val appContext = context.applicationContext
-    val prefs = appContext.getSharedPreferences("yahirandroidtaste_osmdroid", Context.MODE_PRIVATE)
+    val prefs = appContext.getSharedPreferences(OSMDROID_PREFS_NAME, Context.MODE_PRIVATE)
     // load() first: it resets Configuration's userAgentValue, so anything set before load() would
     // be discarded.
     Configuration.getInstance().load(appContext, prefs)
@@ -83,7 +104,19 @@ internal fun configureOsmdroid(context: Context, userAgent: String) {
     }
     val basePath = File(appContext.cacheDir, "osmdroid")
     Configuration.getInstance().osmdroidBasePath = basePath
-    Configuration.getInstance().osmdroidTileCache = File(basePath, "tiles")
+    val tileCache = File(basePath, "tiles")
+    Configuration.getInstance().osmdroidTileCache = tileCache
+    // Evaluated BEFORE the install-flag test: a second call in the same process must not rescan.
+    val firstScanThisProcess = !placeholderScanStarted.getAndSet(true)
+    if (firstScanThisProcess || !prefs.getBoolean(PREF_PLACEHOLDER_PURGED, false)) {
+        try {
+            if (purgePlaceholderTiles(File(tileCache, TILE_CACHE_DB_NAME)) >= 0) {
+                prefs.edit().putBoolean(PREF_PLACEHOLDER_PURGED, true).apply()
+            }
+        } catch (_: RuntimeException) {
+            // best effort: a failed scan is retried on the next call and never breaks map creation
+        }
+    }
 }
 
 private fun hostVersionName(context: Context): String? =
