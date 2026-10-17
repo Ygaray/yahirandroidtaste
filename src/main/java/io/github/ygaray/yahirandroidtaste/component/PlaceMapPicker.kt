@@ -125,9 +125,13 @@ private val CAMERA_FIT_BORDER: Dp = 32.dp
  * and Robolectric tests) the map area renders a same-size, same-tagged placeholder instead of
  * constructing a [MapView] (D-05); the `MapView` surface itself is device-only verified.
  *
- * [userAgent] should be the host app's application id (D-06); [configureOsmdroid] runs before any
- * `MapView` is constructed so every consumer is OSM tile-policy compliant by default, including
- * the host's own `INTERNET` permission requirement.
+ * [userAgent] should be an identifying agent of the form `AppName/version (+contact)` (D-06); a
+ * blank agent is replaced by `<packageName>/<versionName> (Android <release>)` with a logged
+ * warning, a bare package name is expanded the same way, and OSM blocks blank agents and
+ * placeholder application ids (template ids such as the Android Studio default) with a 6987-byte
+ * placeholder tile. [configureOsmdroid] runs before any `MapView` is constructed so every
+ * consumer is OSM tile-policy compliant by default, including the host's own `INTERNET`
+ * permission requirement.
  *
  * **Final signature (HUBW-02 complete):** [pinLatitude] through [radiusStepMeters] are the
  * core pin/radius/map contract from the first slice of this widget; every parameter after
@@ -177,8 +181,10 @@ private val CAMERA_FIT_BORDER: Dp = 32.dp
  * @param maxRadiusMeters Inclusive upper bound for [radiusMeters].
  * @param defaultRadiusMeters What a non-finite [radiusMeters] sanitizes to; must lie within
  *   `[minRadiusMeters, maxRadiusMeters]`.
- * @param userAgent The identifying User-Agent osmdroid's tile requests carry (D-06) -- pass the
- *   host application's id.
+ * @param userAgent The identifying User-Agent osmdroid's tile requests carry (D-06) -- pass an
+ *   agent of the form `AppName/version (+contact)`. A blank agent is replaced by
+ *   `<packageName>/<versionName> (Android <release>)` with a warning, and a bare package name is
+ *   expanded the same way; OSM blocks blank agents and placeholder application ids.
  * @param modifier Applied to the outer [Column].
  * @param radiusStepMeters The radius grid step in meters, or `0f` for whole-meter granularity.
  * @param onUseCurrentLocation Invoked on a tap of "Use current location", only while
