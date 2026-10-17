@@ -839,6 +839,10 @@ package io.github.ygaray.yahirandroidtaste.feedback {
     enum_constant public static final io.github.ygaray.yahirandroidtaste.feedback.FeedbackResult Undone;
   }
 
+  public final class FeedbackStackHostKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static void FeedbackStackHost(io.github.ygaray.yahirandroidtaste.feedback.FeedbackStackState state, kotlin.jvm.functions.Function1<io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget,kotlin.Unit> onOpenTarget, optional androidx.compose.ui.Modifier modifier, optional String undoLabel, optional String dismissLabel);
+  }
+
   @androidx.compose.runtime.Stable public final class FeedbackStackState {
     ctor public FeedbackStackState();
     ctor public FeedbackStackState(optional int maxVisible);
@@ -846,6 +850,10 @@ package io.github.ygaray.yahirandroidtaste.feedback {
     method @InaccessibleFromKotlin public int getMaxVisible();
     method public suspend Object? show(io.github.ygaray.yahirandroidtaste.feedback.FeedbackEvent event, kotlin.coroutines.Continuation<? super io.github.ygaray.yahirandroidtaste.feedback.FeedbackResult>);
     property public int maxVisible;
+  }
+
+  public final class FeedbackStackStateKt {
+    method @KotlinOnly @androidx.compose.runtime.Composable public static io.github.ygaray.yahirandroidtaste.feedback.FeedbackStackState rememberFeedbackStackState(optional int maxVisible);
   }
 
   @androidx.compose.runtime.Immutable public final class FeedbackTarget {

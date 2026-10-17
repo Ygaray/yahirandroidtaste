@@ -20,14 +20,14 @@ and the CATALOG drift guard.
 | 3. Sheets | 18 | Bottom-sheet / editor / popup content surfaces and their scaffolding |
 | 4. Buttons / FAB | 5 | The expandable create-FAB, dynamic action buttons and the round outlined icon button (v2.6.0) |
 | 5. Pickers | 6 | Accent-color, icon, crop, and segmented-option pickers |
-| 6. Feedback | 3 | Confirmation dialog, the Undo Center (with group rows since v2.6.0), and the attention-cue glyph |
+| 6. Feedback | 4 | Confirmation dialog, the Undo Center (with group rows since v2.6.0), the attention-cue glyph, and the stacked snackbar host |
 | 7. Empty-state | 1 | The shared empty-state surface |
 | 8. Progress / Metrics | 5 | Determinate ring / count-up / hero-card primitives for at-a-glance stat display, plus the stacked multi-segment bar (v2.6.0) |
 | 9. Tactile Foundation | 4 | Elevation ladder, Space Grotesk display ramp, gradient/tint accent surfaces, and the Heat relatedness ramp |
 | 10. Voice Command | 5 | Provider/API-key (with the v2.6.0 key lifecycle), model, and command-approach settings cards, plus the outcome/undo/confirmation sheet (Classic and Receipt styles) and the tap-to-clarify bar |
 
-**66 registered public composables** across the ten families, plus **5 intentionally-unregistered**
-structural sub-parts (see the end of this doc) = **71 public composables total**. Every component
+**67 registered public composables** across the ten families, plus **6 intentionally-unregistered**
+structural sub-parts (see the end of this doc) = **73 public composables total**. Every component
 renders inside `YahirAndroidTasteTheme` (family 7's theme wrapper — see the tail note). Every
 `Modifier` parameter defaults to `Modifier`; only the load-bearing parameters are listed below.
 
@@ -131,6 +131,7 @@ these render its body) plus the shared scaffolding and editor rows.
 | `ConfirmationDialog` | Standard confirm/cancel dialog | `title, body, onDismissRequest, …` confirm/dismiss callbacks |
 | `UndoCenterScreen` | The Undo Center — a history of undoable actions (backed by `UndoHistoryStore`, see `INTEGRATION.md`) | `entries: List<UndoHistoryEntry>, onNavigateBack, onUndo: (String) -> Unit`, `groups: List<UndoGroupRowUiModel> = emptyList()` and `onUndoGroup: ((String) -> Unit)? = null` (v2.6.0, VUNDO-02: a group row with label, member count, status and "Undo all" above its indented members), then the trailing `onClear: () -> Unit` — a positional four-argument call must now name `onClear` or pass it as the trailing lambda (see the v2.6.0 compatibility scope below) |
 | `AttentionCue` | Caution/verify signal glyph — never a failure signal | `text: String?, style: AttentionCueDefaults.Style, icon: ImageVector, tint: Color` |
+| `FeedbackStackHost` | The stacked snackbar host: renders the `FeedbackStackState` cards newest-first. A body tap on a card that carries a `FeedbackTarget` calls `onOpenTarget` (once, only for the tap that resolved the card) and resolves `Opened`; Undo resolves `Undone`; a card without a target is inert; a card whose undo entry was spent elsewhere stays visible but inert. Swipe, deck motion and pause are not part of this surface yet | `state: FeedbackStackState, onOpenTarget: (FeedbackTarget) -> Unit, modifier, undoLabel: String = "Undo", dismissLabel: String = "Dismiss"` (both labels caller-localizable; `dismissLabel` labels each card's Dismiss accessibility action). Push events with `state.show(event)` or `state.emitTrackedWithUndo(store, event)`; get the state from `rememberFeedbackStackState(maxVisible = 3)`. `show` returns a `FeedbackResult`: `Opened`, `Undone`, `Dismissed` or `TimedOut` |
 
 ## 7. Empty-state
 
@@ -421,7 +422,7 @@ behaviour and are not part of this list.
 
 ---
 
-## Intentionally-unregistered sub-parts (5)
+## Intentionally-unregistered sub-parts (6)
 
 Public composables that are **not** standalone catalog tiles (structural sub-parts, exercised
 indirectly), tracked in `ComponentRegistry.INTENTIONALLY_UNREGISTERED`:
@@ -433,6 +434,7 @@ indirectly), tracked in `ComponentRegistry.INTENTIONALLY_UNREGISTERED`:
 | `RevealActionRow` | Swipe-reveal mechanics for arbitrary 0-2 action slots — infrastructure, not an independent visual archetype; exercised indirectly via callers' own row demos. |
 | `YahirAndroidTasteTheme` | The theme wrapper every component (and every gallery screen) renders inside — it *is* the chrome, not a showcaseable tile. Wrap your UI in it: `YahirAndroidTasteTheme { … }`. |
 | `SheetHeaderMenu` | Header/menu/rename chrome extracted from `TextCardBottomSheet`/`ListCardBottomSheet` (WO-2) — infrastructure, not an independently showcase-able archetype; already exercised indirectly via every sheet entry's own header/menu/rename interaction. |
+| `rememberFeedbackStackState` | Non-visual state holder remembered by callers and passed to `FeedbackStackHost`; exercised indirectly via the `FeedbackStackHost` entry. |
 
 ## Adding / changing components (breaking-change note)
 

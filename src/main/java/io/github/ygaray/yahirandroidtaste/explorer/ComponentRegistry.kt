@@ -123,7 +123,10 @@ object ComponentRegistry {
         "SheetHeaderMenu" to
             "Header/menu/rename chrome extracted from TextCardBottomSheet/ListCardBottomSheet " +
             "(WO-2) — infrastructure, not an independently showcase-able archetype; already " +
-            "exercised indirectly via every sheet entry's own header/menu/rename interaction."
+            "exercised indirectly via every sheet entry's own header/menu/rename interaction.",
+        "rememberFeedbackStackState" to
+            "State holder remembered by callers and passed to FeedbackStackHost; non-visual, " +
+            "exercised indirectly via the FeedbackStackHost entry."
     )
 
     init {
