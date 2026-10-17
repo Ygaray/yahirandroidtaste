@@ -77,9 +77,9 @@ All phase behaviors have automated verification (no layout/motion contract until
 - [x] Wave 0 covers all MISSING references
 - [x] No watch-mode flags
 - [x] Feedback latency < 60s
-- [ ] _(finalizer-only, post-execution)_ `nyquist_compliant` — leave `false` at plan time
+- [x] `nyquist_compliant: true` set by the finalizer (zero automatable gaps)
 
-**Approval:** pending
+**Approval:** validated 2026-10-17
 
 ---
 
