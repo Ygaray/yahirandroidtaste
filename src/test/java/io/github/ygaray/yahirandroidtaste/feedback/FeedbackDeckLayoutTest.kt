@@ -253,6 +253,27 @@ class FeedbackDeckLayoutTest {
         box(0).assertIsDisplayed()
     }
 
+    // ---- WR-03: an arrival while fanned and overflowing is scrolled into view ----
+
+    @Test
+    fun arrivalWhileFannedAndCapped_isScrolledIntoView() {
+        val items = mutableStateOf(deckItems(3).reversed())
+        composeTestRule.setContent {
+            Box(Modifier.height(300.dp)) {
+                FeedbackDeck(items = items.value, fanned = true) { item, _ ->
+                    Box(Modifier.fillMaxWidth().height(120.dp).testTag("id${item.id}"))
+                }
+            }
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("id2", useUnmergedTree = true).assertIsDisplayed()
+
+        items.value = listOf(FeedbackStackItem(3L, "m3", null, null, false, null, null)) + items.value
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("id3", useUnmergedTree = true).assertIsDisplayed()
+    }
+
     @Test
     fun fanToggle_returnsToCollapsedGeometry() {
         val fanned = mutableStateOf(false)

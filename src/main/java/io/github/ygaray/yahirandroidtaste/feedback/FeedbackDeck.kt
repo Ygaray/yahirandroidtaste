@@ -61,8 +61,8 @@ private const val FAN_SETTLE_TIMEOUT_MILLIS = 2_000L
  * into a bottom-anchored column of natural-height cards, oldest on top, separated by
  * [FEEDBACK_FANNED_GAP]; the fanned deck is capped at the smaller of 60 percent of the available
  * height and what the keyboard leaves of it (only the part of the keyboard that actually covers the
- * host counts, and never below a small floor), and its cards scroll inside the cap, newest in view.
- * An unbounded height (a deck inside a scrolling parent) is neither capped nor scrolled. Cards share
+ * host counts, and never below a small floor), and its cards scroll inside the cap, newest in view, also when
+ * a card arrives while the deck is fanned. An unbounded height (a deck inside a scrolling parent) is neither capped nor scrolled. Cards share
  * one width, the smaller of the incoming width and [FEEDBACK_DECK_MAX_WIDTH], centered. No items lay
  * out as 0 by 0.
  *
@@ -101,7 +101,12 @@ internal fun FeedbackDeck(
     var spaceBelowPx by remember { mutableIntStateOf(0) }
     val scroll = rememberScrollState()
     val latestOnPointerChange by rememberUpdatedState(onPointerChange)
-    ScrollToNewestWhenFanned(fanned = fanned, fan = fan, scroll = scroll)
+    ScrollToNewestWhenFanned(
+        fanned = fanned,
+        newestId = items.firstOrNull()?.id,
+        fan = fan,
+        scroll = scroll
+    )
     BoxWithConstraints(
         modifier = modifier
             .testTag(FEEDBACK_STACK_DECK_TEST_TAG)
@@ -138,10 +143,18 @@ internal fun FeedbackDeck(
     }
 }
 
-/** After the fan settles, brings the newest (bottom) card into view when the cards overflow the cap. */
+/**
+ * After the fan settles, brings the newest (bottom) card into view when the cards overflow the cap.
+ * It runs again when a newer card arrives while fanned, which would land below the fold otherwise.
+ */
 @Composable
-private fun ScrollToNewestWhenFanned(fanned: Boolean, fan: State<Float>, scroll: ScrollState) {
-    LaunchedEffect(fanned) {
+private fun ScrollToNewestWhenFanned(
+    fanned: Boolean,
+    newestId: Long?,
+    fan: State<Float>,
+    scroll: ScrollState
+) {
+    LaunchedEffect(fanned, newestId) {
         if (fanned) {
             withTimeoutOrNull(FAN_SETTLE_TIMEOUT_MILLIS) {
                 snapshotFlow { fan.value }.first { it >= 1f }
