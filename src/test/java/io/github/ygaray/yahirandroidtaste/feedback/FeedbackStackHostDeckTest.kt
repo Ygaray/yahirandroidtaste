@@ -124,6 +124,37 @@ class FeedbackStackHostDeckTest {
         listOf(node) + node.children.flatMap { flatten(it) }
 
     @Test
+    fun swappingTheState_startsCollapsed_andTheNewStateIsPausedOnlyWhenFanned() {
+        val stateA = FeedbackStackState()
+        val stateB = FeedbackStackState()
+        val current = mutableStateOf(stateA)
+        val results = mutableMapOf<String, FeedbackResult>()
+        composeTestRule.setContent {
+            scope = rememberCoroutineScope()
+            FeedbackStackHost(state = current.value, onOpenTarget = {})
+        }
+        showAll(stateA, results, "A1", "A2", "A3")
+        showAll(stateB, results, "B1", "B2", "B3")
+        tapStrip("A1")
+        assertTrue(stateA.pauseState.value.fanned)
+
+        current.value = stateB
+        composeTestRule.waitForIdle()
+
+        assertFalse("the old state must not stay paused", stateA.pauseState.value.fanned)
+        assertFalse(stateB.pauseState.value.fanned)
+        // The deck is collapsed again, so the strip peeks at 14dp as in a fresh host.
+        val newest = card("B3").getUnclippedBoundsInRoot()
+        val oldest = card("B1").getUnclippedBoundsInRoot()
+        assertEquals(28f, (newest.top - oldest.top).value, 1f)
+
+        tapStrip("B1")
+        assertTrue(stateB.pauseState.value.fanned)
+        stateA.dismissAll()
+        stateB.dismissAll()
+    }
+
+    @Test
     fun peekTap_fansDeck_neverOpens_andPausesTimers() {
         val state = FeedbackStackState()
         val opened = mutableListOf<FeedbackTarget>()

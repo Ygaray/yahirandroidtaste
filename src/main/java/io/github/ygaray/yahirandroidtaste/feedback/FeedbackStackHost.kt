@@ -76,22 +76,24 @@ fun FeedbackStackHost(
 ) {
     state.BindAccessibilityTimeout()
     val currentOnOpenTarget by rememberUpdatedState(onOpenTarget)
-    var fanned by remember { mutableStateOf(false) }
+    // The local flags belong to one state: handing the host a different state starts it collapsed and
+    // with no pointer down, so the deck the user sees always matches the pause the state holds.
+    var fanned by remember(state) { mutableStateOf(false) }
     // The fan is a pause reason for every timer; the state lives beyond composition, so a host that
     // leaves while fanned or mid-press must not leave a reason set behind (T-26-11).
-    var pointerDown by remember { mutableStateOf(false) }
-    var interactionTick by remember { mutableIntStateOf(0) }
-    LaunchedEffect(fanned) { state.setFanned(fanned) }
+    var pointerDown by remember(state) { mutableStateOf(false) }
+    var interactionTick by remember(state) { mutableIntStateOf(0) }
+    LaunchedEffect(state, fanned) { state.setFanned(fanned) }
     // Re-collapse after the idle delay. Every pointer event bumps interactionTick, which restarts the
     // wait, and a held finger (pointerDown) keeps the effect from counting at all.
-    LaunchedEffect(fanned, interactionTick, pointerDown) {
+    LaunchedEffect(state, fanned, interactionTick, pointerDown) {
         if (fanned && !pointerDown) {
             delay(state.idleCollapseMillis)
             fanned = false
         }
     }
     // One card or none has nothing to fan, so the deck folds back at once.
-    LaunchedEffect(state.items.size) {
+    LaunchedEffect(state, state.items.size) {
         if (state.items.size <= 1) fanned = false
     }
     DisposableEffect(state) { onDispose { state.resetPause() } }
