@@ -61,10 +61,31 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
+| FTGT-01 | Phase 25 | Pending |
+| FTGT-02 | Phase 25 | Pending |
+| FSTK-01 | Phase 25 | Pending |
+| FSTK-07 | Phase 25 | Pending |
+| FSTK-02 | Phase 26 | Pending |
+| FSTK-03 | Phase 26 | Pending |
+| FSTK-04 | Phase 26 | Pending |
+| FSTK-05 | Phase 26 | Pending |
+| FSTK-06 | Phase 26 | Pending |
+| A11Y-01 | Phase 26 | Pending |
+| FOPEN-01 | Phase 27 | Pending |
+| FOPEN-02 | Phase 27 | Pending |
+| FOPEN-03 | Phase 27 | Pending |
+| POL-01 | Phase 27 | Pending |
+| POL-02 | Phase 27 | Pending |
+| A11Y-02 | Phase 28 | Pending |
+| DEMO-02 | Phase 28 | Pending |
+| DEMO-03 | Phase 28 | Pending |
+| SHIP-05 | Phase 29 | Pending |
 
 **Coverage:**
 - v2.8 requirements: 19 total
-- Mapped to phases: 0 (roadmap pending)
+- Mapped to phases: 19 (Phases 25-29)
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-10-17*
+*Last updated: 2026-10-17 after the v2.8 roadmap (traceability filled)*
