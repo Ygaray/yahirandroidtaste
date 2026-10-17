@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -58,9 +59,20 @@ fun FeedbackStackHost(
     var fanned by remember { mutableStateOf(false) }
     // The fan is a pause reason for every timer; the state lives beyond composition, so a host that
     // leaves while fanned or mid-press must not leave a reason set behind (T-26-11).
+    var pointerDown by remember { mutableStateOf(false) }
+    var interactionTick by remember { mutableIntStateOf(0) }
     LaunchedEffect(fanned) { state.setFanned(fanned) }
     DisposableEffect(state) { onDispose { state.resetPause() } }
-    FeedbackDeck(items = state.items, modifier = modifier, fanned = fanned) { item, index ->
+    FeedbackDeck(
+        items = state.items,
+        modifier = modifier,
+        fanned = fanned,
+        onPointerChange = { down ->
+            state.setPointerDown(down)
+            pointerDown = down
+            interactionTick++
+        }
+    ) { item, index ->
         FeedbackCard(
             item = item,
             undoLabel = undoLabel,

@@ -2,6 +2,8 @@ package io.github.ygaray.yahirandroidtaste.feedback
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.WindowInsets
@@ -11,11 +13,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
@@ -58,12 +64,18 @@ private const val FAN_SETTLE_TIMEOUT_MILLIS = 2_000L
  * Composition and the semantics tree stay newest first: every slot carries a `traversalIndex` equal
  * to its list index, because the draw order (zIndex) would otherwise reverse the reading order. No
  * exit animation is added: a resolved card leaves at once.
+ *
+ * [onPointerChange] reports whether any pointer is pressed anywhere inside the deck (a card body, a
+ * peek strip, an Undo button). It is observed on the initial pass without consuming anything, so
+ * the cards' own gestures are untouched, and it reports `false` again on release, on cancellation
+ * and when the deck leaves composition mid-press, so a pause driven by it cannot stick.
  */
 @Composable
 internal fun FeedbackDeck(
     items: List<FeedbackStackItem>,
     modifier: Modifier = Modifier,
     fanned: Boolean = false,
+    onPointerChange: (Boolean) -> Unit = {},
     card: @Composable (item: FeedbackStackItem, index: Int) -> Unit
 ) {
     // One spring drives both geometries; the State object (not its value) goes to the layout so only
@@ -75,11 +87,28 @@ internal fun FeedbackDeck(
     )
     val ime = WindowInsets.ime
     val scroll = rememberScrollState()
+    val latestOnPointerChange by rememberUpdatedState(onPointerChange)
     ScrollToNewestWhenFanned(fanned = fanned, fan = fan, scroll = scroll)
     BoxWithConstraints(
         modifier = modifier
             .testTag(FEEDBACK_STACK_DECK_TEST_TAG)
             .semantics { isTraversalGroup = true }
+            .pointerInput(Unit) {
+                // Non-consuming, initial-pass observer: the first down anywhere pauses the deck, and
+                // it stays paused until no pointer is pressed. It must not wait for up or cancellation
+                // on the child pass, which resumes early when a child consumes a drag.
+                awaitEachGesture {
+                    awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                    latestOnPointerChange(true)
+                    try {
+                        do {
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                        } while (event.changes.any { it.pressed })
+                    } finally {
+                        latestOnPointerChange(false)
+                    }
+                }
+            }
     ) {
         // A vertical scroll container refuses an infinite max height, so an unbounded host gets the
         // plain, uncapped deck.

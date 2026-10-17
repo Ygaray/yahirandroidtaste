@@ -1,6 +1,8 @@
 package io.github.ygaray.yahirandroidtaste.feedback
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,8 +20,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.testTag
@@ -76,6 +80,7 @@ internal fun FeedbackCard(
     val latestPeekTap by rememberUpdatedState(onPeekTap)
     val latestCollapsedBack by rememberUpdatedState(collapsedBack)
     val latestOpenTarget by rememberUpdatedState(openTarget)
+    val travel = remember { PressTravel() }
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -106,14 +111,33 @@ internal fun FeedbackCard(
                 }
             }
             .pointerInput(item.id) {
+                // Not a second tap owner: it only records, without consuming, whether the finger
+                // travelled past the touch slop. detectTapGestures alone still reports a tap after a
+                // drag that nothing consumes, and a drag release must never open or fan (T-26-10).
+                val slop = viewConfiguration.touchSlop
+                awaitEachGesture {
+                    val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                    travel.pastSlop = false
+                    do {
+                        val event = awaitPointerEvent(PointerEventPass.Initial)
+                        val own = event.changes.firstOrNull { it.id == down.id }
+                        if (own != null && (own.position - down.position).getDistance() > slop) {
+                            travel.pastSlop = true
+                        }
+                    } while (event.changes.any { it.pressed })
+                }
+            }
+            .pointerInput(item.id) {
                 detectTapGestures(
                     // A long hold lets the user read; releasing it neither opens nor fans (D-03).
                     onLongPress = { },
                     onTap = {
-                        if (latestCollapsedBack) {
-                            latestPeekTap()
-                        } else {
-                            latestOpenTarget?.let { latestBodyTap(it) }
+                        if (!travel.pastSlop) {
+                            if (latestCollapsedBack) {
+                                latestPeekTap()
+                            } else {
+                                latestOpenTarget?.let { latestBodyTap(it) }
+                            }
                         }
                     }
                 )
@@ -130,6 +154,11 @@ internal fun FeedbackCard(
             onUndo = onUndo
         )
     }
+}
+
+/** Whether the current press travelled past the touch slop; a plain holder, not snapshot state. */
+private class PressTravel {
+    var pastSlop = false
 }
 
 private val DotSize = 8.dp
