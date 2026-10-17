@@ -103,7 +103,29 @@ Plans:
   5. In the semantics tree each card body is one merged node with `Role.Button`, `onClickLabel = openLabel` and a Polite live region. Undo is a separate focusable child and also a custom action. A Dismiss custom action (labeled `dismissLabel`) and `dismiss` semantics remove the card the way a swipe does. Deck cards stay in the tree newest-first, collapsed or fanned out (A11Y-01).
 
 **Notes**: Any new public composable is registered or allowlisted here; `apiCheck` stays green on the regenerated `api.txt`. The TalkBack device confirmation of these semantics happens in Phase 28's sweep.
-**Plans**: TBD
+**Plans:** 5 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 26-01-PLAN.md — pause-aware card timer on an injectable clock (deck-wide pause, 800 ms floor) and the Wave 0 Compose probes (FSTK-06)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 26-02-PLAN.md — collapsed and fanned Receipt-card deck: metrics, FeedbackDeck, FeedbackCard with capped Undo, 60 percent fan cap, DE and ES long-label tests (FSTK-02, FSTK-03)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 26-03-PLAN.md — single-owner tap gesture, peek-tap fan, long-hold suppression, deck-wide pointer pause observer, idle collapse and cleanup (FSTK-03, FSTK-04, FSTK-06)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 26-04-PLAN.md — swipe-to-dismiss with seeded anchors, Dismissed only, source-contract crash guard (FSTK-05)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 26-05-PLAN.md — A11Y-01 merged-button semantics, Explorer burst demo buttons, API.md row, full phase gate and Gate-1 inputs (A11Y-01, FSTK-02)
+
 **UI hint**: yes
 
 ### Phase 27: Open from the sheet & Undo Center, pill fixes
