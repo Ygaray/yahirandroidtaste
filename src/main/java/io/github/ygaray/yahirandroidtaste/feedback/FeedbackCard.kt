@@ -25,6 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -106,6 +107,12 @@ internal fun FeedbackCard(
         state = drag,
         positionalThreshold = { with(density) { FEEDBACK_SWIPE_THRESHOLD.toPx() } }
     )
+    // A card that stops being swipeable mid-drag (a newer arrival pushed it to the back of a collapsed
+    // deck) stays draggable until it settles. The flag flips twice per swipe, so it costs no
+    // per-frame recomposition.
+    val displaced by remember(drag) {
+        derivedStateOf { (drag.offset.takeUnless { it.isNaN() } ?: 0f) != 0f }
+    }
     val latestOnDismiss by rememberUpdatedState(onDismiss)
     // A settle away from the middle anchor means the card was swiped off. The only thing a swipe may
     // do is resolve the card Dismissed; it never runs Undo and never opens the target (FSTK-05).
@@ -190,7 +197,7 @@ internal fun FeedbackCard(
             .anchoredDraggable(
                 state = drag,
                 orientation = Orientation.Horizontal,
-                enabled = !collapsedBack,
+                enabled = !collapsedBack || displaced,
                 flingBehavior = fling
             ),
         propagateMinConstraints = true
