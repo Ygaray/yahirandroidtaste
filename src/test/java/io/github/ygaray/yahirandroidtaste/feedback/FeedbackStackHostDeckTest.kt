@@ -1,7 +1,10 @@
 package io.github.ygaray.yahirandroidtaste.feedback
 
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsNode
@@ -473,6 +476,167 @@ class FeedbackStackHostDeckTest {
         val d = card("D").getUnclippedBoundsInRoot()
         assertTrue(b.top < c.top && c.top < d.top)
         assertEquals(deck().getUnclippedBoundsInRoot().bottom.value, d.bottom.value, 1f)
+        state.dismissAll()
+    }
+
+    // ---- Idle collapse, auto-collapse and disposal cleanup (plan 26-03, task 3) ----
+
+    /** Shows three cards without a target (so a body tap is inert), then fans the deck. */
+    private fun fannedInertDeck(state: FeedbackStackState) {
+        setHost(state)
+        listOf("A", "B", "C").forEach { show(state, notify(it, withTarget = false), it, mutableMapOf()) }
+        tapStrip("A")
+        assertTrue(state.pauseState.value.fanned)
+    }
+
+    /** Advances the Compose clock by [millis] with no frame rounding, then runs one frame. */
+    private fun advanceClock(millis: Long) {
+        composeTestRule.mainClock.advanceTimeBy(millis, ignoreFrameDuration = true)
+        composeTestRule.mainClock.advanceTimeByFrame()
+    }
+
+    private fun tops(vararg messages: String): List<Float> =
+        messages.map { card(it).getUnclippedBoundsInRoot().top.value }
+
+    @Test
+    fun idleCollapse_reCollapsesAfterTheIdleDelay_notBefore() {
+        val state = FeedbackStackState()
+        fannedInertDeck(state)
+        // A body tap on an inert card restarts the wait at a known instant (the fan spring is done).
+        tapBody("B")
+        assertTrue(state.pauseState.value.fanned)
+
+        composeTestRule.mainClock.autoAdvance = false
+        advanceClock(state.idleCollapseMillis - 500)
+        assertTrue("collapsed before the idle delay", state.pauseState.value.fanned)
+
+        advanceClock(1_000)
+        assertFalse("still fanned after the idle delay", state.pauseState.value.fanned)
+        state.dismissAll()
+    }
+
+    @Test
+    fun pointerActivityWhileFanned_restartsTheIdleWait() {
+        val state = FeedbackStackState()
+        fannedInertDeck(state)
+        tapBody("B")
+
+        composeTestRule.mainClock.autoAdvance = false
+        advanceClock(3_000)
+        assertTrue(state.pauseState.value.fanned)
+
+        composeTestRule.mainClock.autoAdvance = true
+        tapBody("B")
+        composeTestRule.mainClock.autoAdvance = false
+        // 3000 + 3000 would have collapsed without the restart; only 3000 have passed since it.
+        advanceClock(3_000)
+        assertTrue("the activity did not restart the idle wait", state.pauseState.value.fanned)
+
+        advanceClock(1_500)
+        assertFalse(state.pauseState.value.fanned)
+        state.dismissAll()
+    }
+
+    @Test
+    fun noCollapseWhileAPointerIsDown() {
+        val state = FeedbackStackState()
+        fannedInertDeck(state)
+
+        card("B").performTouchInput { down(bodyPoint(width, height)) }
+        composeTestRule.waitForIdle()
+        composeTestRule.mainClock.autoAdvance = false
+        advanceClock(state.idleCollapseMillis * 2)
+        assertTrue("collapsed under a held finger", state.pauseState.value.fanned)
+        assertTrue(state.pauseState.value.pointer)
+
+        composeTestRule.mainClock.autoAdvance = true
+        card("B").performTouchInput { up() }
+        composeTestRule.waitForIdle()
+        composeTestRule.mainClock.autoAdvance = false
+        advanceClock(state.idleCollapseMillis + 500)
+        assertFalse(state.pauseState.value.fanned)
+        state.dismissAll()
+    }
+
+    @Test
+    fun fannedDeck_collapsesWhenOnlyOneCardRemains() {
+        val state = FeedbackStackState()
+        fannedInertDeck(state)
+
+        composeTestRule.runOnIdle { state.resolve(state.items.last(), FeedbackResult.Dismissed) }
+        composeTestRule.waitForIdle()
+        assertEquals(2, state.items.size)
+        assertTrue("two cards can still fan", state.pauseState.value.fanned)
+
+        composeTestRule.runOnIdle { state.resolve(state.items.last(), FeedbackResult.Dismissed) }
+        composeTestRule.waitForIdle()
+        assertEquals(1, state.items.size)
+        assertFalse(state.pauseState.value.fanned)
+        state.dismissAll()
+    }
+
+    @Test
+    fun hostLeavesComposition_whileFanned_clearsPause() {
+        val state = FeedbackStackState()
+        var showHost by mutableStateOf(true)
+        composeTestRule.setContent {
+            scope = rememberCoroutineScope()
+            if (showHost) FeedbackStackHost(state = state, onOpenTarget = {})
+        }
+        listOf("A", "B", "C").forEach { show(state, notify(it, withTarget = false), it, mutableMapOf()) }
+        tapStrip("A")
+        assertTrue(state.pauseState.value.fanned)
+
+        composeTestRule.runOnIdle { showHost = false }
+        composeTestRule.waitForIdle()
+
+        assertEquals(FeedbackPauseState(), state.pauseState.value)
+        state.dismissAll()
+    }
+
+    @Test
+    fun hostLeavesComposition_midPress_clearsPause() {
+        val state = FeedbackStackState()
+        var showHost by mutableStateOf(true)
+        composeTestRule.setContent {
+            scope = rememberCoroutineScope()
+            if (showHost) FeedbackStackHost(state = state, onOpenTarget = {})
+        }
+        show(state, notify("Plain", withTarget = false), "Plain", mutableMapOf())
+        card("Plain").performTouchInput { down(bodyPoint(width, height)) }
+        composeTestRule.waitForIdle()
+        assertTrue(state.pauseState.value.pointer)
+
+        composeTestRule.runOnIdle { showHost = false }
+        composeTestRule.waitForIdle()
+
+        assertEquals(FeedbackPauseState(), state.pauseState.value)
+        state.dismissAll()
+    }
+
+    @Test
+    fun fannedOrder_isStableAcrossFanAndCollapse() {
+        val state = FeedbackStackState()
+        setHost(state)
+        listOf("A", "B", "C").forEach { show(state, notify(it, withTarget = false), it, mutableMapOf()) }
+        assertEquals(tops("A", "B", "C").sorted(), tops("A", "B", "C"))
+
+        tapStrip("A")
+        assertTrue(state.pauseState.value.fanned)
+        assertEquals(tops("A", "B", "C").sorted(), tops("A", "B", "C"))
+        val fannedHeight = deck().getUnclippedBoundsInRoot().height
+
+        composeTestRule.mainClock.autoAdvance = false
+        advanceClock(state.idleCollapseMillis + 1_000)
+        composeTestRule.mainClock.autoAdvance = true
+        composeTestRule.waitForIdle()
+        assertFalse(state.pauseState.value.fanned)
+        assertTrue(deck().getUnclippedBoundsInRoot().height < fannedHeight)
+        assertEquals(tops("A", "B", "C").sorted(), tops("A", "B", "C"))
+
+        tapStrip("A")
+        assertTrue(state.pauseState.value.fanned)
+        assertEquals(tops("A", "B", "C").sorted(), tops("A", "B", "C"))
         state.dismissAll()
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import kotlinx.coroutines.delay
 
 /** Test tag on every card of [FeedbackStackHost]. */
 internal const val FEEDBACK_STACK_ITEM_TEST_TAG = "feedback_stack_item"
@@ -62,6 +63,18 @@ fun FeedbackStackHost(
     var pointerDown by remember { mutableStateOf(false) }
     var interactionTick by remember { mutableIntStateOf(0) }
     LaunchedEffect(fanned) { state.setFanned(fanned) }
+    // Re-collapse after the idle delay. Every pointer event bumps interactionTick, which restarts the
+    // wait, and a held finger (pointerDown) keeps the effect from counting at all.
+    LaunchedEffect(fanned, interactionTick, pointerDown) {
+        if (fanned && !pointerDown) {
+            delay(state.idleCollapseMillis)
+            fanned = false
+        }
+    }
+    // One card or none has nothing to fan, so the deck folds back at once.
+    LaunchedEffect(state.items.size) {
+        if (state.items.size <= 1) fanned = false
+    }
     DisposableEffect(state) { onDispose { state.resetPause() } }
     FeedbackDeck(
         items = state.items,
