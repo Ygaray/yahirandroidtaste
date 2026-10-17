@@ -1,12 +1,16 @@
 package io.github.ygaray.yahirandroidtaste.feedback
 
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.AccessibilityManager
+import androidx.compose.ui.platform.LocalAccessibilityManager
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -228,4 +232,39 @@ private fun SnackbarDuration.toBaseMillis(): Long? = when (this) {
     SnackbarDuration.Short -> SHORT_MILLIS
     SnackbarDuration.Long -> LONG_MILLIS
     SnackbarDuration.Indefinite -> null
+}
+
+/**
+ * Remember a [FeedbackStackState] across recomposition and bind the composition's accessibility
+ * manager to it, so card timers honour the user's recommended timeout (FSTK-01).
+ *
+ * Treat [maxVisible] as constant: changing it creates a new state and drops the old cards. Do not
+ * hoist the result into a ViewModel or a singleton, because callers' coroutines are suspended on
+ * it. With no [FeedbackStackHost] showing the cards, a non-Indefinite card still times out, but an
+ * Indefinite card never resolves until its caller is cancelled or `dismissAll` runs.
+ *
+ * @param maxVisible how many cards may be visible at once; a value below 1 reads back as 1.
+ */
+@Composable
+fun rememberFeedbackStackState(maxVisible: Int = DEFAULT_MAX_VISIBLE): FeedbackStackState {
+    val state = remember(maxVisible) { FeedbackStackState(maxVisible) }
+    state.BindAccessibilityTimeout()
+    return state
+}
+
+/**
+ * Bind the current `LocalAccessibilityManager` to this state while the caller is in composition
+ * (D-06). Internal on purpose: the registry guard only scans public composables. Bindings are
+ * reference-counted by the state, so [FeedbackStackHost] and [rememberFeedbackStackState] can both
+ * call this and neither clears the other.
+ */
+@Composable
+internal fun FeedbackStackState.BindAccessibilityTimeout() {
+    val manager = LocalAccessibilityManager.current
+    DisposableEffect(this, manager) {
+        if (manager != null) attachAccessibility(manager)
+        onDispose {
+            if (manager != null) detachAccessibility(manager)
+        }
+    }
 }
