@@ -91,3 +91,7 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
     - On the TESTER, render the picker in the Explorer with a real-id UA, then pull the cached tile (or capture the request) and assert its md5/size is not the 6987-byte placeholder and that no `x-blocked` placeholder is cached.
     - Plus a unit/Robolectric test that `additionalHttpRequestProperties["User-Agent"]` equals the resolved UA after `configureOsmdroid`.
     - The host curl matrix stays as a supporting check.
+- **POL-03 cache purge amended (teamlead, 2026-10-17):** do NOT key the purge on "resolved UA changed". A UA carries versionName, so every app update would wipe the cache and cause needless re-downloads, which the tile policy discourages. Supersedes the "clear the tile cache once" line above.
+  - Purge only placeholder rows: cached tiles whose bytes match the blocked PNG (size 6987 B plus its md5, pinned as a constant from the probe).
+  - When: once per install (flag in the hub's osmdroid prefs), and again whenever a placeholder is detected.
+  - Same approach as SB's contingency, so the two don't conflict.
