@@ -183,7 +183,37 @@ Plans:
      - The host `curl -A` probe with the exact resolved strings supports this check.
 
 **Notes**: Defects the sweep finds are fixed in this phase. Already in the code, so verify rather than rebuild: the hoisted-`sheetState` demo that calls `hide()` (`VoiceCommandFamilyScreen.kt`, added in `v2.7.0` `5206be9`, fixed in `v2.7.1` `a5b29eb`), and `heading()` on the Undo Center group label (`UndoGroupHeaderRow`). `HubSchemeScope` (`ReleaseDemos.kt`) wraps only the Receipt and tone demos today. Device work uses the TESTER (`R5CT10XNKQN`) only; after UAT, restore its density with `wm density 450`. If TalkBack can't be driven agentically, park those checks for Yahir; never waive them. Screencaps are kept for the owner.
-**Plans**: TBD
+**Plans:** 7 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 28-01-PLAN.md — POL-03 part 1: caller user agent injected into `additionalHttpRequestProperties["User-Agent"]` after every `load()`, honest fallback agent, one `Log.w` for a blocked agent, `PlaceMapPicker` KDoc ask, hub-owned Explorer agent, host probe script (POL-03)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 28-02-PLAN.md — POL-03 part 2: placeholder-tile purge (6987 B plus md5, once per install and per process, never a wipe), real placeholder fixture, offline tile-cache check tool (POL-03)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 28-03-PLAN.md — `ExplorerTheme` helper pins the hub scheme on every Explorer screen, the Activity and the not-found fallback, plus a source-scan guard (DEMO-02, D-01)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 28-04-PLAN.md — stacked-snackbar stage (fire, burst past the cap, swipe, tap to open) and Undo Center target rows, English and German, with registry render tests (DEMO-03, D-02)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 28-05-PLAN.md — sheet go-to-item demos (Success single, mixed batch; Receipt and Classic; English and German), hoisted `sheetState` `hide()` demo test, registry/CATALOG verification (DEMO-03, DEMO-02)
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [ ] 28-06-PLAN.md — Layer-1 TalkBack sweep assertions, Undo Center group-header heading test, openable Undo Center row as one merged button, locked forms pinned (A11Y-02, D-03)
+
+**Wave 7** *(blocked on Wave 6 completion)*
+
+- [ ] 28-07-PLAN.md — phase hygiene contract, read-only TESTER restore oracle, fresh full gate, and the Gate-1 contract (TESTER sweep, wire-level POL-03 check, DEMO-03 on device, restore, parking list) (A11Y-02, DEMO-02, DEMO-03, POL-03)
+
 **UI hint**: yes
 
 ### Phase 29: Docs & v2.8.0 cut readiness
