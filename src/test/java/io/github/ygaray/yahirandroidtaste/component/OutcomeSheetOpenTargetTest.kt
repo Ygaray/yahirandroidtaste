@@ -446,4 +446,38 @@ class OutcomeSheetOpenTargetTest {
     @Test
     fun bothStyles_rowCarriesButtonRole_openLabelClickLabel_noStateDescription_classic() =
         assertNoStateDescription(OutcomeSheetStyle.Classic)
+
+    // --- IN-04: the Classic open-target body must not drift from the pinned Classic body ---------------
+
+    /**
+     * [SuccessBodyOpenTarget] copies the structure of the pinned `SuccessBody` so the v2.5.1 functions
+     * stay byte-equal. Until they can be folded together, this pins that for a Success without any
+     * target the two Classic contents render the identical semantics tree, so a new slot added to one
+     * body but not the other fails here.
+     */
+    @Test
+    fun classicOpenTargetBody_withoutATarget_rendersLikeThePinnedClassicBody() {
+        val success = OutcomeFixtures.success(
+            handledBy = OutcomeFixtures.handledBy(),
+            editableContent = OutcomeFixtures.editableProbe,
+            batchResults = OutcomeFixtures.batchResults(),
+            undo = OutcomeFixtures.undo()
+        )
+        var useOpenTargetBody by mutableStateOf(false)
+        composeTestRule.setContent {
+            if (useOpenTargetBody) {
+                OutcomeSheetContentOpenTarget(success = success, onOpenTarget = { })
+            } else {
+                OutcomeSheetContent(outcome = success)
+            }
+        }
+        composeTestRule.waitForIdle()
+        val pinned = SemanticsDump.allRoots(composeTestRule)
+        useOpenTargetBody = true
+        composeTestRule.waitForIdle()
+        val openTargetBody = SemanticsDump.allRoots(composeTestRule)
+
+        assertEquals(pinned, openTargetBody)
+        assertFalse(openTargetBody.contains(OPEN_TARGET_ROW_TEST_TAG))
+    }
 }
