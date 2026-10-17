@@ -10,6 +10,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicInteger
@@ -591,5 +592,130 @@ class UndoHistoryStoreTest {
             entries.any { it.id == secondMemberId }
         )
         assertTrue(entries.any { it.id == overflowId })
+    }
+
+    // ---- (FTGT-02) target on the entry ----
+
+    private val ftgtTarget = FeedbackTarget(key = "item-42", openLabel = "Open")
+
+    @Test
+    fun appendWithTarget_storesItOnTheAvailableEntry() = runTest {
+        val store = UndoHistoryStore()
+
+        val id = store.append(message = "m", preview = null, groupId = null, target = ftgtTarget) { }
+
+        val entry = store.entries.value.single { it.id == id }
+        assertEquals(ftgtTarget, entry.target)
+        assertEquals(UndoStatus.Available, entry.status)
+        assertEquals(ftgtTarget, entry.openableTarget)
+    }
+
+    @Test
+    fun appendOverloadsWithoutTarget_leaveTargetAndOpenableTargetNull() = runTest {
+        val store = UndoHistoryStore()
+
+        val threeArg = store.append("m") { }
+        val grouped = store.append("m", groupId = "g") { }
+        val explicitNull = store.append(message = "m", preview = null, groupId = null, target = null) { }
+
+        listOf(threeArg, grouped, explicitNull).forEach { id ->
+            val entry = store.entries.value.single { it.id == id }
+            assertNull(entry.target)
+            assertNull(entry.openableTarget)
+        }
+    }
+
+    @Test
+    fun openableTarget_isNullAfterUndone_butTargetIsKept() = runTest {
+        val store = UndoHistoryStore()
+        val id = store.append(message = "m", preview = null, groupId = null, target = ftgtTarget) { }
+        assertEquals(ftgtTarget, store.entries.value.single().openableTarget)
+
+        store.attemptUndo(id)
+
+        val entry = store.entries.value.single()
+        assertEquals(UndoStatus.Undone, entry.status)
+        assertNull(entry.openableTarget)
+        assertEquals(ftgtTarget, entry.target)
+    }
+
+    @Test
+    fun openableTarget_isNullAfterFailed_butTargetIsKept() = runTest {
+        val store = UndoHistoryStore()
+        val id = store.append(message = "m", preview = null, groupId = null, target = ftgtTarget) {
+            error("stale state")
+        }
+
+        store.attemptUndo(id)
+
+        val entry = store.entries.value.single()
+        assertEquals(UndoStatus.Failed, entry.status)
+        assertNull(entry.openableTarget)
+        assertEquals(ftgtTarget, entry.target)
+    }
+
+    @Test
+    fun withStatusAndCopy_keepTheTarget() = runTest {
+        val store = UndoHistoryStore()
+        store.append(message = "m", preview = null, groupId = null, target = ftgtTarget) { }
+        val entry = store.entries.value.single()
+
+        assertEquals(ftgtTarget, entry.withStatus(UndoStatus.Undone).target)
+        assertEquals(ftgtTarget, entry.copy(status = UndoStatus.Failed).target)
+        assertNull(entry.withStatus(UndoStatus.Undone).openableTarget)
+    }
+
+    @Test
+    fun appendWithTarget_recordsGroupMembershipOnlyWhenGroupIdIsNonNull() = runTest {
+        val store = UndoHistoryStore()
+
+        val groupedId = store.append(message = "m", preview = null, groupId = "g", target = ftgtTarget) { }
+        val ungroupedId = store.append(message = "m", preview = null, groupId = null, target = ftgtTarget) { }
+
+        assertEquals("g", store.groupIdOf(groupedId))
+        assertTrue(store.group("g").any { it.id == groupedId })
+        assertEquals(ftgtTarget, store.group("g").single().target)
+        assertNull(store.groupIdOf(ungroupedId))
+    }
+
+    @Test
+    fun attemptUndoOnTargetedEntry_underTwoConcurrentCallers_runsUndoExactlyOnce() = runTest {
+        val store = UndoHistoryStore()
+        val runs = AtomicInteger(0)
+        val gate = CompletableDeferred<Unit>()
+        val id = store.append(message = "m", preview = null, groupId = null, target = ftgtTarget) {
+            runs.incrementAndGet()
+            gate.await()
+        }
+
+        coroutineScope {
+            val first = launch { store.attemptUndo(id) }
+            val second = launch { store.attemptUndo(id) }
+            gate.complete(Unit)
+            first.join()
+            second.join()
+        }
+
+        assertEquals(1, runs.get())
+        assertEquals(UndoStatus.Undone, store.entries.value.single().status)
+    }
+
+    @Test
+    fun evictionPast50_stillWorksWhenEntriesCarryTargets() = runTest {
+        val store = UndoHistoryStore()
+
+        repeat(51) { i ->
+            store.append(
+                message = "m-$i",
+                preview = null,
+                groupId = null,
+                target = FeedbackTarget(key = "item-$i", openLabel = "Open")
+            ) { }
+        }
+
+        val entries = store.entries.value
+        assertEquals(50, entries.size)
+        assertEquals("the oldest Available entry was evicted", "m-1", entries.last().message)
+        assertEquals("m-50", entries.first().message)
     }
 }

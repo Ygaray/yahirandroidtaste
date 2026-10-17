@@ -168,6 +168,13 @@ class V271CallSiteCanaryTest {
         assertEquals("g", store.groupIdOf(groupedPositional))
         assertNull(store.groupIdOf(ctFunctionValue))
         assertEquals(6, store.entries.value.size)
+
+        // Phase 25 (FTGT-02): entries created through any v2.7.1 shape carry no target.
+        listOf(ungrouped, withPreview, namedPreview, grouped, groupedPositional, ctFunctionValue).forEach { id ->
+            val entry = store.entries.value.single { it.id == id }
+            assertNull(entry.target)
+            assertNull(entry.openableTarget)
+        }
     }
 
     // ------------------------------------------------------------------------------------------
@@ -199,6 +206,13 @@ class V271CallSiteCanaryTest {
         assertNotNull(undoAction)
         assertEquals(UndoPreview.Tag("x"), preview)
         assertEquals(UndoStatus.Available, status)
+
+        // Phase 25 (FTGT-02): the widened entry keeps a null target through copy and withStatus.
+        assertNull(entry.target)
+        assertNull(entry.openableTarget)
+        assertNull(undone.target)
+        assertNull(failed.target)
+        assertNull(undone.openableTarget)
     }
 
     // ------------------------------------------------------------------------------------------
