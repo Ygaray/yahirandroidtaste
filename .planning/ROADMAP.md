@@ -112,7 +112,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 26-02-PLAN.md — collapsed and fanned Receipt-card deck: metrics, FeedbackDeck, FeedbackCard with capped Undo, 60 percent fan cap, DE and ES long-label tests (FSTK-02, FSTK-03)
+- [x] 26-02-PLAN.md — collapsed and fanned Receipt-card deck: metrics, FeedbackDeck, FeedbackCard with capped Undo, 60 percent fan cap, DE and ES long-label tests (FSTK-02, FSTK-03)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -377,7 +377,7 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 25. Feedback target model & stack state | v2.8 | 5/5 | Not started |  |
-| 26. Receipt-card stacked snackbar deck | v2.8 | 1/5 | Not started |  |
+| 26. Receipt-card stacked snackbar deck | v2.8 | 2/5 | Not started |  |
 | 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 0/TBD | Not started | - |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 0/TBD | Not started | - |
 | 29. Docs & v2.8.0 cut readiness | v2.8 | 0/TBD | Not started | - |
