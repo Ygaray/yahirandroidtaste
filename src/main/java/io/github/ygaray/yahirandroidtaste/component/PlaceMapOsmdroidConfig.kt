@@ -32,6 +32,17 @@ internal fun resetPlaceholderScanForTests() {
     placeholderScanStarted.set(false)
 }
 
+/** True once this process has run [Configuration.load] (at most once per process, POL-03). */
+private val osmdroidLoaded = AtomicBoolean(false)
+
+/** Guards the load-once decision and the request-property edits against concurrent callers. */
+private val osmdroidLoadLock = Any()
+
+/** Test hook: makes the next [configureOsmdroid] load the configuration again. */
+internal fun resetOsmdroidLoadForTests() {
+    osmdroidLoaded.set(false)
+}
+
 /**
  * Prefix of the application-id class the OSM tile server blocks outright (the Android template
  * placeholder ids). The single occurrence of this literal in main code: it only detects the
@@ -55,9 +66,11 @@ internal const val BLOCKED_PLACEHOLDER_PACKAGE_PREFIX = "com.example."
  *     ([resolveOsmdroidUserAgent] replaces a blank agent, or a bare package name, with
  *     `<packageName>/<versionName> (Android <release>)` and logs one warning), never osmdroid's
  *     library-default agent. The resolved agent is also injected as the `User-Agent` request
- *     property after every `load()`, because the MAPNIK tile source normalizes the agent to
- *     `<packageName>/<versionCode>` and ignores `userAgentValue`. Callers should pass an
- *     identifying agent of the form `AppName/version (+contact)`.
+ *     property right after the single per-process `load()`, and re-applied without a reload on
+ *     later calls when missing or different, because the MAPNIK tile source normalizes the agent
+ *     to `<packageName>/<versionCode>` and ignores `userAgentValue`. `load()` is called at most
+ *     once per process because it clears and refills a plain HashMap that tile threads iterate.
+ *     Callers should pass an identifying agent of the form `AppName/version (+contact)`.
  *  2. **Honor tile-server cache headers.** osmdroid's expiry-override handling is left at its
  *     default here — this function never calls an API that overrides cache expiry.
  *  3. **No bulk or offline tile pre-fetching.** This function calls no bulk-download or
@@ -77,9 +90,6 @@ internal const val BLOCKED_PLACEHOLDER_PACKAGE_PREFIX = "com.example."
 internal fun configureOsmdroid(context: Context, userAgent: String) {
     val appContext = context.applicationContext
     val prefs = appContext.getSharedPreferences(OSMDROID_PREFS_NAME, Context.MODE_PRIVATE)
-    // load() first: it resets Configuration's userAgentValue, so anything set before load() would
-    // be discarded.
-    Configuration.getInstance().load(appContext, prefs)
     val resolvedAgent =
         resolveOsmdroidUserAgent(
             userAgent,
@@ -87,13 +97,20 @@ internal fun configureOsmdroid(context: Context, userAgent: String) {
             hostVersionName(appContext),
             Build.VERSION.RELEASE,
         )
-    Configuration.getInstance().userAgentValue = resolvedAgent
-    // load() re-fills the request properties from persisted prefs on every call, so the header is
-    // injected in memory after EVERY load (never written back to prefs: the consumer owns that
-    // slot). Case variants are removed first so exactly one User-Agent entry remains.
-    val requestProperties = Configuration.getInstance().additionalHttpRequestProperties
-    requestProperties.keys.removeAll { it.equals(USER_AGENT_HEADER, ignoreCase = true) }
-    requestProperties[USER_AGENT_HEADER] = resolvedAgent
+    synchronized(osmdroidLoadLock) {
+        val configuration = Configuration.getInstance()
+        if (!osmdroidLoaded.get()) {
+            // load() runs at most once per process: it clears and refills the plain-HashMap request
+            // properties that tile download threads iterate. It also resets userAgentValue, so the
+            // agent and the header are set after it. A load that throws leaves the flag false.
+            Configuration.getInstance().load(appContext, prefs)
+            osmdroidLoaded.set(true)
+        }
+        if (configuration.userAgentValue != resolvedAgent) {
+            configuration.userAgentValue = resolvedAgent
+        }
+        applyUserAgentHeader(configuration.additionalHttpRequestProperties, resolvedAgent)
+    }
     if (sanitizeUserAgent(userAgent).isEmpty() || isBlockedClassUserAgent(resolvedAgent)) {
         Log.w(
             LOG_TAG,
@@ -116,6 +133,24 @@ internal fun configureOsmdroid(context: Context, userAgent: String) {
         } catch (_: RuntimeException) {
             // best effort: a failed scan is retried on the next call and never breaks map creation
         }
+    }
+}
+
+/**
+ * Makes [requestProperties] carry exactly one `User-Agent` entry equal to [resolvedAgent], in
+ * memory only (the consumer owns the persisted slot, the hub never writes it). The map is touched
+ * only when needed: case variants are removed only when present, and the header is put only when
+ * missing or different (a put on an existing key is not a structural modification, so a tile
+ * thread iterating the map is not disturbed).
+ */
+private fun applyUserAgentHeader(requestProperties: MutableMap<String, String>, resolvedAgent: String) {
+    val variants =
+        requestProperties.keys.filter {
+            it != USER_AGENT_HEADER && it.equals(USER_AGENT_HEADER, ignoreCase = true)
+        }
+    variants.forEach { requestProperties.remove(it) }
+    if (requestProperties[USER_AGENT_HEADER] != resolvedAgent) {
+        requestProperties[USER_AGENT_HEADER] = resolvedAgent
     }
 }
 
