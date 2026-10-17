@@ -171,6 +171,44 @@ class FeedbackStackHostTest {
     }
 
     @Test
+    fun targetedUndoCard_exposesUndoAsMergedAccessibilityAction_andItResolvesUndone() {
+        val state = FeedbackStackState()
+        val opened = mutableListOf<FeedbackTarget>()
+        var result: FeedbackResult? = null
+        var undoRuns = 0
+        setHost(state, opened, undoLabel = "Rückgängig", dismissLabel = "Schließen")
+        scope.launch {
+            result = state.show(withUndo("Eintrag gelöscht", target) { undoRuns++ })
+        }
+        composeTestRule.waitForIdle()
+
+        // Merged tree (the one TalkBack sees): the clickable card swallows the Undo button.
+        val actions = composeTestRule.onNodeWithTag(FEEDBACK_STACK_ITEM_TEST_TAG)
+            .fetchSemanticsNode().config[SemanticsActions.CustomActions]
+        assertEquals(listOf("Rückgängig", "Schließen"), actions.map { it.label })
+        composeTestRule.runOnIdle { actions.first().action() }
+        composeTestRule.waitForIdle()
+
+        assertEquals(FeedbackResult.Undone, result)
+        assertTrue(opened.isEmpty())
+        assertEquals(0, undoRuns)
+        composeTestRule.onNodeWithTag(FEEDBACK_STACK_ITEM_TEST_TAG).assertDoesNotExist()
+    }
+
+    @Test
+    fun notifyCard_hasNoUndoAccessibilityAction() {
+        val state = FeedbackStackState()
+        setHost(state)
+        scope.launch { state.show(notify("Item saved", target)) }
+        composeTestRule.waitForIdle()
+
+        val actions = composeTestRule.onNodeWithTag(FEEDBACK_STACK_ITEM_TEST_TAG)
+            .fetchSemanticsNode().config[SemanticsActions.CustomActions]
+        assertEquals(listOf("Dismiss"), actions.map { it.label })
+        state.dismissAll()
+    }
+
+    @Test
     fun cardWithoutTarget_hasNoClickAction_tapDoesNothing_andShowsNoChevron() {
         val state = FeedbackStackState()
         val opened = mutableListOf<FeedbackTarget>()

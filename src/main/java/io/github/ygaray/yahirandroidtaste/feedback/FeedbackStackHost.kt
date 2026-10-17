@@ -50,11 +50,13 @@ internal const val FEEDBACK_STACK_CHEVRON_TEST_TAG = "feedback_stack_chevron"
  *   host never runs an undo lambda; the tracked path (`emitTrackedWithUndo`) does that.
  * - A card without a target has no click action. A card whose backing undo entry was spent
  *   elsewhere stays on screen, hides Undo and the chevron, and its body is inert.
- * - Each card has one Dismiss accessibility action labelled [dismissLabel] that resolves it as
- *   [FeedbackResult.Dismissed].
+ * - Each card has a Dismiss accessibility action labelled [dismissLabel] that resolves it as
+ *   [FeedbackResult.Dismissed]. A `WithUndo` card that is not spent also has an Undo accessibility
+ *   action labelled [undoLabel], so TalkBack can reach Undo even when a target makes the card
+ *   clickable (which merges the Undo button into the card's semantics).
  *
  * Push events with `state.show(event)` or `state.emitTrackedWithUndo(store, event)`. The swipe
- * gesture, deck motion, pause and merged-button semantics are not part of this surface yet.
+ * gesture, deck motion and pause are not part of this surface yet.
  *
  * @param state the stack state, usually from [rememberFeedbackStackState].
  * @param onOpenTarget called with the card's [FeedbackTarget] after a successful body tap.
@@ -115,12 +117,24 @@ private fun FeedbackStackCard(
             .fillMaxWidth()
             .testTag(FEEDBACK_STACK_ITEM_TEST_TAG)
             .semantics {
-                customActions = listOf(
-                    CustomAccessibilityAction(dismissLabel) {
-                        onDismiss()
-                        true
+                // A targeted card is clickable, which merges its descendants, so the Undo button
+                // is invisible to TalkBack there; expose Undo as an action on the card root too.
+                customActions = buildList {
+                    if (item.hasUndo && !spent) {
+                        add(
+                            CustomAccessibilityAction(undoLabel) {
+                                onUndo()
+                                true
+                            }
+                        )
                     }
-                )
+                    add(
+                        CustomAccessibilityAction(dismissLabel) {
+                            onDismiss()
+                            true
+                        }
+                    )
+                }
             }
             .then(clickModifier),
         shape = MaterialTheme.shapes.large,
