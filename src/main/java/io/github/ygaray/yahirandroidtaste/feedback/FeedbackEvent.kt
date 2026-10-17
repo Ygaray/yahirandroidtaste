@@ -10,8 +10,9 @@ import androidx.compose.material3.SnackbarDuration
  *  - [WithUndo]      — show a snackbar with an undo action (suspend lambda)
  *  - [DismissScreen] — show a message and dismiss/navigate back
  *
- * This is a PURE ADDITION in Phase 31 (D-11): zero call sites, zero consumers.
- * Emitters and collectors are wired in Phase 32 (FEED-01/02/03).
+ * Events are rendered by the Material3 snackbar path and by the card stack
+ * (`FeedbackStackState` / `FeedbackStackHost`). [Notify] and [WithUndo] carry an optional
+ * [FeedbackTarget] and supporting text (added after v2.7.1, appended with defaults).
  *
  * The legacy per-module event types (formerly in CardUiModels.kt)
  * were removed in Phase 32, Plan 08 after all consumers migrated.
@@ -64,6 +65,9 @@ sealed interface FeedbackEvent {
 
     /**
      * Show a message and signal the current screen to dismiss / navigate back.
+     *
+     * The feedback card stack only displays the message (as a plain card with no target and no
+     * undo); it sends no dismiss signal, so the caller owns dismissing the screen.
      *
      * @param message Text to display (e.g. "Saved", "Deleted").
      */

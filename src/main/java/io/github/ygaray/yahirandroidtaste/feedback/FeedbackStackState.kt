@@ -37,6 +37,9 @@ private const val DEFAULT_MAX_VISIBLE = 3
  *    (Short 4000 ms, Long 10000 ms, Indefinite never times out);
  *  - [dismissAll] resolves every visible card as [FeedbackResult.Dismissed].
  *
+ * A [FeedbackEvent.DismissScreen] is shown as a plain message card; the stack sends no dismiss
+ * signal, so the caller owns dismissing the screen.
+ *
  * A plain `show(FeedbackEvent.WithUndo)` only reports [FeedbackResult.Undone]; it never runs the
  * event's undo lambda. Use the tracked path in `UndoTracking.kt` for store-backed undo.
  *
