@@ -476,4 +476,28 @@ class FeedbackStackStateTest {
         assertEquals(FeedbackResult.TimedOut, shown.await())
         assertTrue(state.items.isEmpty())
     }
+
+    @Test
+    fun throwingOnEnqueued_removesTheCard_insteadOfLeakingASlot() = runTest {
+        val state = FeedbackStackState()
+        var failure: Throwable? = null
+        val shown = async {
+            try {
+                state.showInternal(
+                    indefinite("boom"),
+                    entryId = null,
+                    watch = null,
+                    onEnqueued = { error("callback failed") }
+                )
+            } catch (e: IllegalStateException) {
+                failure = e
+                null
+            }
+        }
+        runCurrent()
+
+        assertNull(shown.await())
+        assertNotNull(failure)
+        assertTrue(state.items.isEmpty())
+    }
 }

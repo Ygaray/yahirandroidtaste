@@ -170,12 +170,13 @@ class FeedbackStackState(maxVisible: Int = DEFAULT_MAX_VISIBLE) {
         onEnqueued: ((FeedbackStackItem) -> Unit)? = null
     ): FeedbackResult = coroutineScope {
         val item = enqueue(event, entryId)
-        onEnqueued?.invoke(item)
         var timer: Job? = null
         var watcher: Job? = null
         try {
-            // Everything after enqueue lives inside the try, so a throwing step below still
-            // reaches the finally and the card is removed instead of leaking a slot.
+            // Everything after enqueue lives inside the try, so a throwing step below (the
+            // onEnqueued callback included) still reaches the finally and the card is removed
+            // instead of leaking a slot.
+            onEnqueued?.invoke(item)
             timer = item.baseMillis?.let { base ->
                 val millis = scaledMillis(base, item.hasControls)
                 launch { runTimer(item, millis) }
