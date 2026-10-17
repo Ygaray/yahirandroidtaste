@@ -1,0 +1,14 @@
+gradle testDebugUnitTest detekt apiCheck --rerun --no-build-cache --no-daemon -> BUILD SUCCESSFUL (3m47s), HEAD 7c19bab
+V271CallSiteCanaryTest tests 8 skipped 0 failures 0 errors 0
+CatalogDocsDriftGuardTest tests 10 skipped 0 failures 0 errors 0
+ComponentRegistryDriftGuardTest tests 1 skipped 0 failures 0 errors 0
+DomainVocabularyDriftGuardTest tests 2 skipped 0 failures 0 errors 0
+FeedbackStackHostTest tests 12 skipped 0 failures 0 errors 0
+FeedbackStackStateTest tests 24 skipped 0 failures 0 errors 0
+FeedbackStackStateTimeoutTest tests 21 skipped 0 failures 0 errors 0
+FeedbackStackTrackedUndoTest tests 18 skipped 0 failures 0 errors 0
+FeedbackTargetTest tests 11 skipped 0 failures 0 errors 0
+RememberFeedbackStackStateTest tests 6 skipped 0 failures 0 errors 0
+UndoHistoryStoreTest tests 33 skipped 0 failures 0 errors 0
+UndoTrackingMaterialPathTest tests 6 skipped 0 failures 0 errors 0
+TOTAL tests 1452 failures 0 errors 0 (22 skipped, none in phase-25 classes)

@@ -1,0 +1,173 @@
+{
+  "schema": "gsd.uat-run/v1",
+  "run_id": "uatr-20261017T093534Z-c9306f1b",
+  "status": "finished",
+  "phase": "25",
+  "plan": "05",
+  "prefix": "25-05",
+  "surface": "android",
+  "project": "sha:df197faf5105af0ed516c727e2aafb44f5ef5743:.",
+  "phase_dir": "phases/25-feedback-target-model-stack-state",
+  "required_surface": {
+    "surface": "android",
+    "source": "marker:AGENT-DEVICE-TESTING.md"
+  },
+  "surface_override": null,
+  "device": {
+    "addr": "R5CT10XNKQN",
+    "serial": "R5CT10XNKQN",
+    "model": "SM-S908U",
+    "label": null
+  },
+  "app": {
+    "package": "io.github.ygaray.yahirandroidtasteharness",
+    "apk_path": "/data/app/~~BcaJWA3pYR8X5QxmxqfjJw==/io.github.ygaray.yahirandroidtasteharness-w2xH94shwFueD3EhfxDnRg==/base.apk",
+    "apk_sha256": "34febb200ad66d5f1aa9a60704a3b3a0b7f6ca9808ac11fbe14baff975ab02eb"
+  },
+  "head_at_start": "7c19bab146ad5e77269838db5a08587a5b34c7cc",
+  "started_at": "2026-10-17T09:35:34.812Z",
+  "finished_at": "2026-10-17T09:38:53.351Z",
+  "capture_count": 15,
+  "captures": [
+    {
+      "label": "explorer-stack-three-cards-newest-first",
+      "kind": "ui",
+      "source": "cli",
+      "file": "01-explorer-stack-three-cards-newest-first.xml",
+      "sha256": "bd648d86a353227d8ced6b591f9f2550e608b6ae141387ed8b16045698dda2f3",
+      "bytes": 19439,
+      "at": "2026-10-17T09:35:54.033Z"
+    },
+    {
+      "label": "explorer-stack-three-cards-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "02-explorer-stack-three-cards-screen.png",
+      "sha256": "85e42bce9e381779a5e714c531094385f351173174a3ec47259dc6e2f6b42059",
+      "bytes": 143708,
+      "at": "2026-10-17T09:35:55.056Z"
+    },
+    {
+      "label": "explorer-after-plain-tap-undo-open",
+      "kind": "ui",
+      "source": "cli",
+      "file": "03-explorer-after-plain-tap-undo-open.xml",
+      "sha256": "98fa860cbd0f18593969358857b1bfa3895cec285eac3582c6858ec06115786d",
+      "bytes": 15274,
+      "at": "2026-10-17T09:36:14.997Z"
+    },
+    {
+      "label": "consumer-tracked-card-up-entry-in-store-german-undo",
+      "kind": "ui",
+      "source": "cli",
+      "file": "04-consumer-tracked-card-up-entry-in-store-german-undo.xml",
+      "sha256": "d30335485255b8d1240f0109d7eaf83a1825a7b9175ada551453bb4909ebd3f2",
+      "bytes": 12428,
+      "at": "2026-10-17T09:36:27.829Z"
+    },
+    {
+      "label": "consumer-card-undo-once-entry-undone-not-openable",
+      "kind": "ui",
+      "source": "cli",
+      "file": "05-consumer-card-undo-once-entry-undone-not-openable.xml",
+      "sha256": "2fd6efc44d620c27ca61864ed9d0933e59218b71f7101db00a565c934b6156a3",
+      "bytes": 9635,
+      "at": "2026-10-17T09:36:34.266Z"
+    },
+    {
+      "label": "consumer-p25-log-card-undo",
+      "kind": "log",
+      "source": "cli",
+      "file": "06-consumer-p25-log-card-undo.log",
+      "sha256": "453458d8787b95d23010433ab5485c4a08242aa61402e86b3936f1c178206ab3",
+      "bytes": 121,
+      "at": "2026-10-17T09:36:34.821Z"
+    },
+    {
+      "label": "consumer-race-center-first-card-spent",
+      "kind": "ui",
+      "source": "cli",
+      "file": "07-consumer-race-center-first-card-spent.xml",
+      "sha256": "8c2a31057fbdc3490d3bd5b45ded0217aa1e2b35ff87fdbcaa591f5bf3097130",
+      "bytes": 11024,
+      "at": "2026-10-17T09:36:54.087Z"
+    },
+    {
+      "label": "consumer-p25-log-race",
+      "kind": "log",
+      "source": "cli",
+      "file": "08-consumer-p25-log-race.log",
+      "sha256": "662a731d89cd5db027418938399234916e44efb29fcaefc0fbf9dfef4cd68a36",
+      "bytes": 189,
+      "at": "2026-10-17T09:37:01.480Z"
+    },
+    {
+      "label": "consumer-m3-tracked-target-entry",
+      "kind": "ui",
+      "source": "cli",
+      "file": "09-consumer-m3-tracked-target-entry.xml",
+      "sha256": "27639273addaafed310f42f773097d7b68bf9507211281b4a094f10306d75387",
+      "bytes": 11739,
+      "at": "2026-10-17T09:37:35.495Z"
+    },
+    {
+      "label": "consumer-p25-log-open-timeout",
+      "kind": "log",
+      "source": "cli",
+      "file": "10-consumer-p25-log-open-timeout.log",
+      "sha256": "c13db1cd575986a02120739a74eebb67ad18a30c52e26134667131fe6c5e01d9",
+      "bytes": 182,
+      "at": "2026-10-17T09:37:36.095Z"
+    },
+    {
+      "label": "consumer-m3-undo-entry-undone-not-openable",
+      "kind": "ui",
+      "source": "cli",
+      "file": "11-consumer-m3-undo-entry-undone-not-openable.xml",
+      "sha256": "aa222b249e4f47a5924502d10e2113a3b3e72424cbea80580f548bbaf0535afb",
+      "bytes": 9639,
+      "at": "2026-10-17T09:37:53.416Z"
+    },
+    {
+      "label": "consumer-german-undo-label-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "12-consumer-german-undo-label-screen.png",
+      "sha256": "ea18acd7124a12a4bc23a418afbc7264eec360c2242f2af5fb4fe6b0954a5aab",
+      "bytes": 119450,
+      "at": "2026-10-17T09:38:05.051Z"
+    },
+    {
+      "label": "unit-detekt-apicheck-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "13-unit-detekt-apicheck-summary.txt",
+      "sha256": "1e9d01016f38f4906bd3d5bcbbdd47f9509c12e4b53481cfcc847d93f97a2470",
+      "bytes": 975,
+      "at": "2026-10-17T09:38:43.589Z"
+    },
+    {
+      "label": "fatal-crash-scan",
+      "kind": "log",
+      "source": "cli",
+      "file": "14-fatal-crash-scan.log",
+      "sha256": "629f5c99a8c152fb8fc472f83ecb0cea3af783a9c1f2c7a3480e46d02ae1a1e8",
+      "bytes": 63,
+      "at": "2026-10-17T09:38:44.222Z",
+      "empty": true
+    },
+    {
+      "label": "api-source-additive-v271",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "15-api-source-additive-v271.txt",
+      "sha256": "8486e91493cbd51be2085920654e3f357797c3c606e5a987d66e01d27becf387",
+      "bytes": 212,
+      "at": "2026-10-17T09:38:52.891Z"
+    }
+  ],
+  "sig": {
+    "alg": "HMAC-SHA256",
+    "value": "065cdcf86a919210321b6f9ed23bfc1cd243970449778338e9bec47872ea6f35"
+  }
+}
