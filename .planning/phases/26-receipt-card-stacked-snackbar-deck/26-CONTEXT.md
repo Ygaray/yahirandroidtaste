@@ -79,3 +79,7 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
 999.4 voice-surface polish → v2.8.1; combined "Undo & open"; share/MCP deep links; SB sheet-swap blink (app-side).
 
 </deferred>
+
+## Runtime Decisions
+
+- **D-06 [peek-target] amended (ui-designer, 2026-10-17, settles FA-1):** keep the 14dp visual peek strip. It is Yahir's locked look (brief D-01, ROADMAP SC1, the approved mock). Don't add transparent height (it would move the FAB) and don't borrow the front card's top edge (it would steal the open-tap). The pointer target is the union of the visible strips: 14dp with two cards, 28dp with three. The 48dp requirement is met on the semantics path instead: the deck exposes an expand ("show all") custom action / `expand` semantics, so TalkBack and switch users never need to hit the strip. The planned 26-02/26-03 design already does this; FA-1 is resolved, no plan change.
