@@ -1,0 +1,5 @@
+tap(440,1929): cards-visible=3 [('Undo note', 1631), ('Undo note', 1835), ('Undo note', 2039)] | RESULTS= | OPENED=none N=0 UNDORUNS=0
+tap(430,1968): cards-visible=3 [('Undo note', 1631), ('Undo note', 1835), ('Undo note', 2039)] | RESULTS= | OPENED=none N=0 UNDORUNS=0
+tap(440,1902): cards-visible=3 [('Undo note', 1631), ('Undo note', 1835), ('Undo note', 2039)] | RESULTS= | OPENED=none N=0 UNDORUNS=0
+tap(430,1941): cards-visible=3 [('Undo note', 1631), ('Undo note', 1835), ('Undo note', 2039)] | RESULTS= | OPENED=none N=0 UNDORUNS=0
+tap(900,1929): cards-visible=3 [('Undo note', 1631), ('Undo note', 1835), ('Undo note', 2039)] | RESULTS= | OPENED=none N=0 UNDORUNS=0

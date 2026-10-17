@@ -1,0 +1,18 @@
+Phase 26 Gate-1 RE-VERIFICATION (cycle 2 of 3) arrange / restore record, tester SM-S908U, adb serial R5CT10XNKQN, Android 15
+
+Build identity
+  library HEAD e3c87d9cadfc3c5885cdfde5f2dabad0af689cb1 (src/ clean: 0 changed files)
+  library AAR  mavenLocal com.github.Ygaray:yahirandroidtaste:1.10.0 deleted, then republished with clean publishReleasePublicationToMavenLocal
+               md5 e15dbb7884198b87df16cbcab44fb95b; classes.jar contains FeedbackCardKt$CollapsedBackTouchBlocker$1$1 (the 26-06 fix) and the harness dex references CollapsedBackTouchBlocker
+  harness APK  throwaway scratchpad app, never committed: md5 d4408f10ff3663f642ca4491c5b5b1dc (sha256 prefix 4869d8e4925e). An earlier build (sha256 prefix 13d863a654f0, differing only by the a11y observer matcher) bound a first run (uatr-20261017T135441Z-8f46db08), which was abandoned when the APK was rebuilt; its un-committed dir was deleted; nothing in the verdicts comes from it.
+
+Device state AFTER the run (read back now)
+  wm density                 : Physical density: 450 
+  wm size                    : Physical size: 1440x3088 Override size: 1080x2316   (Override size 1080x2316 was already set before the run)
+  system font_scale          : 1.0   (baseline 1.0, set to 2.0 for the German leg, restored)
+  secure enabled_accessibility_services : null   (baseline null)
+  secure accessibility_enabled          : 0   (baseline 0)
+  secure accessibility_interactive_ui_timeout_ms     : null   (baseline null)
+  secure accessibility_non_interactive_ui_timeout_ms : null   (baseline null)
+  harness package            : 0 installed (0 = uninstalled)
+  stay-awake (svc power stayon true) was set at preflight; baseline unchanged otherwise

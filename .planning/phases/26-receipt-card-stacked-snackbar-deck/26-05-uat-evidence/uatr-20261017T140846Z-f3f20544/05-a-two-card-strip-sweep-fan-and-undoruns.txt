@@ -1,0 +1,8 @@
+tap(430,1965): cards-visible=2 [('Undo note', 1858), ('Plain note', 2050)] | RESULTS= | OPENED=none N=0 UNDORUNS=0
+tap(430,1999): cards-visible=2 [('Undo note', 1858), ('Plain note', 2050)] | RESULTS= | OPENED=none N=0 UNDORUNS=0
+tap(357,1985): cards-visible=2 [('Undo note', 1858), ('Plain note', 2050)] | RESULTS= | OPENED=none N=0 UNDORUNS=0
+tap(508,1985): cards-visible=2 [('Undo note', 1858), ('Plain note', 2050)] | RESULTS= | OPENED=none N=0 UNDORUNS=0
+tap(345,1985): cards-visible=2 [('Undo note', 1858), ('Plain note', 2050)] | RESULTS= | OPENED=none N=0 UNDORUNS=0
+tap(520,1985): cards-visible=2 [('Undo note', 1858), ('Plain note', 2050)] | RESULTS= | OPENED=none N=0 UNDORUNS=0
+tap(432,1975): cards-visible=2 [('Undo note', 1858), ('Plain note', 2050)] | RESULTS= | OPENED=none N=0 UNDORUNS=0
+tap(800,1985): cards-visible=2 [('Undo note', 1858), ('Plain note', 2050)] | RESULTS= | OPENED=none N=0 UNDORUNS=0

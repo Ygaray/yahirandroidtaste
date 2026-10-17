@@ -1,0 +1,3 @@
+tap(430,1947): cards-visible=3 [('Burst two', 1677), ('Burst three', 1869), ('Burst four', 2050)] | RESULTS=B1:Dismissed | OPENED=none N=0 UNDORUNS=0
+(idle: no touch for 7 s)
+after idle: cards-visible=1 [('Burst four', 2050)] | RESULTS=B1:Dismissed | OPENED=none N=0 UNDORUNS=0

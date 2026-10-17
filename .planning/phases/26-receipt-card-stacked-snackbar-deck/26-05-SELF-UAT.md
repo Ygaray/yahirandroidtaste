@@ -1,17 +1,18 @@
 ---
-status: failed
-result: has_fail
+status: resolved
+result: all_pass
 gate: 1
 evidence_schema: 3
-uat_run: uatr-20261017T125116Z-fd0f39f7
+uat_run: uatr-20261017T140846Z-f3f20544
+prior_uat_run: "uatr-20261017T125116Z-fd0f39f7 (cycle 1, has_fail on SC3; history kept in the body)"
 phase: 26-receipt-card-stacked-snackbar-deck
 source:
   - "26-ROADMAP success criteria"
 device: SM-S908U (R5CT10XNKQN)
-apk: io.github.ygaray.yahirandroidtasteharness (sha256 376f837d95f1)
-run: 2026-10-17T12:51:16.852Z
+apk: io.github.ygaray.yahirandroidtasteharness (sha256 4869d8e4925e)
+run: 2026-10-17T14:08:46.697Z
 command_guard_breaches: 0
-command_guard_refusals: 4
+command_guard_refusals: 5
 ---
 
 <!-- Gate-1 self-UAT, phase 26 (consolidated per phase; evidence under the last plan, 26-05). -->
@@ -56,7 +57,8 @@ result: passed
 - **Evidence:** `11`, `14`, `17`, `18`.
 
 ### 3. SC3 — tapping the peek of a collapsed deck fans it out into a column where every card's body and Undo can be tapped; it re-collapses after idle; a horizontal swipe on one card removes exactly that card as Dismissed, nothing undone, others stay (FSTK-04, FSTK-05)
-result: failed
+result: passed
+- **Cycle-1 result (historical, superseded):** `failed` on 2026-10-17 12:51Z against `1f3237e` (the failing leg is kept below). Gap-closure plan 26-06 fixed it and the 2026-10-17 Addendum at the end of this file re-verified SC3 `passed` on HEAD `e3c87d9` (uat_run `uatr-20261017T140846Z-f3f20544`).
 - **Rung:** 5 (screenshots) and 4 (tree) and 3 (log).
 - **Target:** device (tester).
 - **Expected:** a tap on the peek strip of a collapsed deck fans it, whatever is at the tapped spot; in the fanned column every card's body and Undo respond; re-collapse after idle; swipe removes exactly one card with `Dismissed` and never undoes.
@@ -91,7 +93,7 @@ result: passed
 - **Observed:** card nodes (`48`, `49`): `a11yFocusable=true`, `live=1` (polite), actions `Open b4` (the openLabel, only on targeted cards), `1048576:Dismiss` (ACTION_DISMISS), custom `Dismiss`, and `Undo` before `Dismiss` on the card with Undo (`[…|16:Open b2|1048576:Dismiss|2131230721:Undo|2131230722:Dismiss]`); a plain card has no click action and no Button node. A node of class `android.widget.Button` with the card's bounds exists only under targeted cards (the `Role.Button` projection). The Undo button is a separate focusable child (`focusable=true a11yFocusable=true`, e.g. `[356,1933][500,1961]`). Card order: `traversalBefore` chains give B4 → B3 → B2 for the cards in both states (newest first). Actions (`50`): click → `open b4 n=1`, `B4=Opened`; dismiss → `B3=Dismissed`; custom Undo → `undoAction ran B2`, `B2=Undone`; custom Dismiss → `TG=Dismissed`; dismiss on a tracked Undo card → `UI=Dismissed` with no `undoAction ran`. Units: `FeedbackStackHostSemanticsTest` 16, `FeedbackStackSourceContractTest` 15 green. Falsification attempt on the order: the same chains put the OLDEST card's Undo button OUTSIDE its card (fanned: Undo(B2) → B4 → B3 → B2; collapsed: B4 → Undo(B2) → B3 → B2). The criterion speaks of the cards, which are in order, so this does not fail it, but it is a reading-order defect to confirm with TalkBack, see Notes.
 - **Evidence:** `48`, `49`, `50`.
 
-## Summary
+## Summary (cycle 1, 2026-10-17 12:51Z, superseded by the Addendum)
 
 total: 5
 passed: 4
@@ -114,11 +116,76 @@ infra: 0
 - **Command guard.** Four Bash calls were refused fail-closed before running, all `uninspectable` (an inline `python3 -c`, a script path that did not exist yet, a shell `for` loop over `adb … settings get`, and a mistyped `cd` that pointed `./gradlew` at a directory without one); none was forbidden and none ran. Each was re-issued in a literal form. `command_guard_refusals: 4`, `command_guard_breaches: 0`.
 - **Residual device differences:** none. The Samsung pencil overlay at the right edge of the screenshots is a pre-existing device overlay, not the app.
 
-## Findings routed to gap-closure (if any)
+## Findings routed to gap-closure (cycle 1, resolved by plan 26-06)
 
 - SC3 (FSTK-04): **a peek tap that lands on a back card's Undo button runs Undo instead of fanning the deck.** Root cause: `src/main/java/io/github/ygaray/yahirandroidtaste/feedback/FeedbackCard.kt:239` passes `showUndo = item.hasUndo && !spent` to `FeedbackCardRow` without regard to `collapsedBack`, so the clickable `DynamicActionButton` (`FeedbackCard.kt:305`) of a back card stays hit-testable; `FeedbackDeck.kt` places a back card's top 14dp (the peek) above the next card, and the Undo button's top part falls inside it. The button consumes the down and up before the card root's single `detectTapGestures` owner (`FeedbackCard.kt:190`, the only place that calls `onPeekTap`) can see a tap. Falsifying evidence: `26`/`27` (blank strip, Undo sliver `[356,1972][509,2000]`), `28`/`29` (`undoAction ran UI`, `UI=Undone`, `UNDORUNS` 1 → 2, no fan), control `30` (tap at x=800 fans). The suite is green because `FeedbackStackHostDeckTest.tapStrip` taps the strip centre, never over an Undo. Suggested direction for gap-closure (its call): make the Undo of a `collapsedBack` card non-interactive to touch (its tap should fall through to the peek-tap-fans path) while keeping the Undo custom action and the card's merged semantics, add a regression test that taps the strip over the Undo's x-range in a 2- and a 3-card deck and asserts the deck fans and no Undo runs, and keep the strip tap behaviour from SC3. Route: `/gsd-plan-phase 26 --gaps` then `/gsd-execute-phase 26 --gaps-only` (cycle 1/3; escalate to the human at the cap).
 - Not routed (not criterion failures, forwarded as notes): the oldest card's Undo child reading order (Phase 28 sweep), keyboard-opens-while-fanned showing the oldest card, the German font-2.0 body width, strip ghosting.
 
-## Verdict
+## Verdict (cycle 1, superseded by the Addendum)
 
 4 of 5 criteria PASS (SC1, SC2, SC4, SC5); **SC3 FAILS** on the real tester against HEAD `1f3237e` (library AAR md5 `0a99c53b…`): tapping the peek over a back card's Undo runs Undo instead of fanning. Gate-1 is not satisfied and the phase is BLOCKED for gap-closure; no Gate-2 entry is registered until a re-run passes (a failing phase is not registered as a passing pending item).
+
+## Addendum — 2026-10-17 re-verification after gap-closure plan 26-06 (cycle 2 of 3)
+
+Cycle 1 (above) failed SC3 on `1f3237e`. Plan 26-06 (`030634b`, `e216c65`, then the code-review-2 fixes up to `e3c87d9`) added a card-wide, semantics-free `CollapsedBackTouchBlocker` above a collapsed back card. This addendum re-derives every criterion from the ROADMAP wording and re-observes it on the real tester; it does not rely on `26-06-SUMMARY.md` or its unit tests. The cycle-1 body above is kept as the verdict history; only SC3's machine result line was changed to `passed` (with the original `failed` recorded as a bullet inside that block) and the frontmatter now points at the new run.
+
+**Build identity.** Library HEAD `e3c87d9` (`git status --short src` empty). mavenLocal `com.github.Ygaray:yahirandroidtaste:1.10.0` deleted, then rebuilt with `./gradlew clean publishReleasePublicationToMavenLocal --no-daemon -q`; AAR md5 `e15dbb7884198b87df16cbcab44fb95b`; its `classes.jar` contains `FeedbackCardKt$CollapsedBackTouchBlocker$1$1` and the harness dex references `CollapsedBackTouchBlocker` (proof the fix is in the tested artifact). Throwaway harness (scratchpad, never committed; the cycle-1 `DeckActivity` consumer plus `DeckA11yService`), rebuilt with `--refresh-dependencies`, APK md5 `d4408f10ff3663f642ca4491c5b5b1dc` (sha256 prefix `4869d8e4925e`). One extra harness rebuild (an observer matcher so a custom action can be found by its `Open …` label on a collapsed card) changed the installed APK mid-run; `uat-run` refused the next capture, so that first run (`uatr-20261017T135441Z-8f46db08`) was abandoned with `uat-run abandon`, its un-committed dir deleted, and every leg was re-driven on the final APK in the run below. **Run:** `uatr-20261017T140846Z-f3f20544`, 43 signed captures, `uat-run verify` = verified (`26-05-uat-evidence/uatr-20261017T140846Z-f3f20544/`).
+**Target and leases.** Tester `R5CT10XNKQN` over USB only (wireless address never addressed), `device:tester` and `build` leases taken with `yrig lease request` and released at the end; one Gradle invocation at a time, always `--no-daemon`, never `--stop`. Device awake, no keyguard on user 0 (`deviceLocked=1` belongs to the Secure Folder user).
+**Rung 1 (fresh).** `./gradlew testDebugUnitTest detekt apiCheck --rerun --no-build-cache --no-daemon -q` exit 0 in 2m32s: 157 result classes, **1613 tests, 22 skipped (pre-existing `@Ignore`s), 0 failures, 0 errors**; `bash tools/verify-api-source-additive.sh v2.7.1` → `API SOURCE-ADDITIVE OK` (signature_changes=0). Ingested as `42`.
+**Arrange vs Act.** Cards were pushed through the harness buttons (Arrange: UndoI+Plain; UndoI x3; Tgt+UndoI+Plain; Burst4; ShortPlain/Long/Tgt/Undo). The behaviour under test was driven with real `adb input` taps and swipes (Act); the harness only prints results, open count, undo-run count and store entries. The tap coordinates are the cycle-1 failing ones: strip `[54,1961][1026,2000]`, Undo sliver `[356,1972][509,2000]`, tap (430,1985).
+**Device state** (record `43`, read back after restore): density 450 (never written, `wm density reset` never run), `font_scale` 1.0 (2.0 only for the German leg), accessibility service/enabled/timeout settings back to null/0/null/null, harness uninstalled. `Override size 1080x2316` was already set before the run.
+
+### Re-verified: SC3 — peek tap over a collapsed back card's Undo fans the deck (FSTK-04, FSTK-05)
+result: passed (cycle-1 FAIL fixed; the criterion's other legs re-confirmed)
+- **Rung:** 5 (screenshots `02`, `07`, `10`) plus 4 (trees) plus 3 (log).
+- **Expected:** a tap on the peek strip of a collapsed deck fans it whatever is at the tapped spot and runs nothing; in the fan every card's body and Undo respond; idle re-collapse; a swipe removes exactly one card as Dismissed and never undoes.
+- **Did (drove), two-card deck, the exact cycle-1 failure.** Collapsed state (`01`, same geometry as cycle 1: strip `[54,1961][1026,2000]`, clickable Undo sliver `[356,1972][509,2000]`; screenshot `02` read: the strip is blank, only "Plain note" visible). Tapped **(430,1985)**: tree `03` shows the deck fanned (back card `[23,1796][1057,1977]` with "Undo note" and its Undo, front "Plain note"), `UNDORUNS=0`, `RESULTS=` empty, store entry `Available`; log `04` has no `undoAction ran`. Cycle 1 ran Undo here. Falsification sweep (`05`, one line per tap, deck re-collapsed between taps): y=1965 (the band just above the Undo's bounds, where cycle 1 flagged touch-slop widening), y=1999, x=357 and x=508 (the Undo's left/right edges), x=345 and x=520 (just outside), (432,1975) and the control (800,1985): all eight fan (`cards-visible=2`) with `UNDORUNS=0`.
+- **Did, three-card deck, every card has an Undo** (`06` collapsed: back strip `[85,1899][995,1938]` sliver `[368,1919][511,1938]`, middle strip `[54,1938][1026,1977]` sliver `[356,1960][509,1977]`; `07` screenshot read: deepest strip blank, middle strip shows only the faint ghosted text, as noted in cycle 1). Taps (`08`): deepest sliver (440,1929), middle sliver (430,1968), band above each sliver (440,1902) and (430,1941), control (900,1929): all five fan to three full cards (`cards-visible=3`, text y 1631/1835/2039), `UNDORUNS=0`, `RESULTS=` empty. Fan signed at `09`; fanned screenshot with a finger held `10` (read: three separate full cards, each with a bold primary "Undo" and a chevron).
+- **Did, Burst4 deck** (back card has Undo AND a target, the other fixture shape): tap (430,1947) on its Undo sliver `[356,1933][500,1961]` fans to three cards, `UNDORUNS=0`, then no touch for 7 s collapses it again (`26`, `25`).
+- **Did, Undo still works where it should** (the blocker must be bound to the collapsed back state): in the fanned three-card deck a tap on the oldest card's Undo (426,1659) → `UI:Undone`, `UNDORUNS=1`, the other two cards stay (`11`); a tap on the **collapsed front** card's Undo (426,2067) → `UNDORUNS=2` (`12`, log `13`: exactly two `undoAction ran`, both from deliberate Undo taps).
+- **Did, swipes** (Tgt + UndoI + Plain deck; `14`–`18`): a swipe across the collapsed strip (y=1985) and one starting ON the Undo sliver (430,1985) neither fan, dismiss nor undo (`15`, `RESULTS=` empty, `UNDORUNS=0`); a swipe on the collapsed front card → `PL:Dismissed`, the card behind becomes the front (`17`); fanned, a swipe on the middle "Undo note" card → `UI:Dismissed` only, `UNDORUNS=0`, the entry stays `Available` (`17`, `18`). (`16` was captured after the idle collapse because a capture outlasts the 4 s timer; the swipe result is in `17`/`18`.)
+- **Units:** `FeedbackStackHostDeckTest` and `FeedbackStackHostSemanticsTest` green inside the 1613 (the 26-06 tests: the four that tap the Undo's own bounds, the touch-slop control, the drag control, the three semantics guards).
+
+### Re-verified: SC1 — up to 3 Receipt cards, tucked ~14dp at 0.94 / 0.88; 4th show() evicts the oldest as Dismissed and a tracked entry stays; long German at 360dp and font 2.0 wraps (FSTK-02)
+result: passed (re-confirmed)
+- **Rung:** 5 + 4 + 3.
+- **Observed:** Burst4 (`22`–`24`): `RESULTS=B1:Dismissed` (oldest evicted), three cards; back card `[85,1922][995,1961]` (910 px wide = 0.880 of the 1034 px front), front `[23,2000][1057,2158]`, strip 39 px = 13.9dp (`22`; middle card 972 px = 0.940, seen in the SC5 tree `38`). Tracked eviction (`27`–`29`): UndoI then Plain, Tgt, Plain → `UI:Dismissed`, `ENTRIES=Undo not/Available`, `UNDORUNS=0`. German (`32`, `33` screenshot read; harness host at the top so the card has room): 360dp host, font 2.0, card `[34,109][1047,1730]`, message `[136,132][426,1077]`, second line `[136,1077][426,1707]` (both inside the card), "Rückgängig" `[460,844][922,995]` on the card: the same numbers as cycle 1. (`30`/`31` is the same leg with the host at the bottom of a short Column, where the harness layout, not the card, clips it; not relied on.) The cycle-1 UX note on the 103dp body column stands.
+
+### Re-verified: SC2 — body tap on a targeted card calls onOpenTarget once and resolves Opened; a card with no target does nothing; chevron only on targeted cards, no action label (FSTK-03)
+result: passed (re-confirmed)
+- **Rung:** 5 (chevron, `19` read: chevron on "Target note" and "Undo note", none on "Plain note", no "Open …" text) + 4 + 3.
+- **Observed** (`20`, `21`): fanned, Target body tap → `open tg n=1`, `TG:Opened`; the Undo-with-target card tapped twice in quick succession → one `open ui n=2`, one `UI:Opened`; untargeted Plain front body tap → no change. (`17`/`18` also contain a Target tap that landed after the deck had re-collapsed — a script-timing slip, superseded by `20`/`21`.)
+
+### Re-verified: SC4 — Short 4 s / Long 10 s through the recommended timeout; timer stops while a pointer is down or the deck is fanned and resumes the remainder (FSTK-06)
+result: passed (re-confirmed)
+- **Rung:** 3 (logcat `SystemClock.elapsedRealtime` stamps) + rung 1 (virtual-clock suites in the 1613).
+- **Observed:** plain Short `show SP t=…874` → `TimedOut …899` = **4025 ms**; plain Long = **10010 ms** (`34`). Finger held on the front card 6 s from +1.2 s: `TimedOut` after **10007 ms** (`35`). Two Short cards fanned at about +1.4 s with periodic touches: both still present at +7.5 s (text y 1869 and 2050), timed out at **14.3 s** (`36`). With `accessibility_non_interactive_ui_timeout_ms`=7000 / `accessibility_interactive_ui_timeout_ms`=12000 (deleted afterwards): plain Short **7.02 s**, Short with target **12.02 s**, Short with Undo **12.02 s** (`37`).
+
+### Re-verified: SC5 — one merged Role.Button card node with onClickLabel = openLabel and a Polite live region; Undo a separate focusable child and a custom action; Dismiss custom action and `dismiss` remove the card like a swipe; cards stay newest first (A11Y-01)
+result: passed (re-confirmed)
+- **Rung:** 4 (real `AccessibilityNodeInfo` tree from the enabled harness `AccessibilityService`, plus performed actions). TalkBack itself not run (Phase 28 / Gate-2).
+- **Observed:** collapsed three-card deck (`38`): back card B2 `click=true a11yFocusable=true live=1` with `acts=[16:Open b2|1048576:Dismiss|2131230721:Undo|2131230722:Dismiss]` (identical to cycle 1, so the blocker added no semantics change); its Undo is still a separate child `[356,1933][500,1961] click=true focusable=true a11yFocusable=true`; front card `Open b4` + Dismiss. The collapsed back card's custom **Undo** action, performed via the service on the collapsed deck (no fan first), → `act 'Open b2' custom/Undo -> true`, `undoAction ran B2`, `B2=Undone` (`40`): the semantics path is intact under the touch layer. Fanned (`39`) and actions (`41`): ACTION_CLICK on "Burst four" → `open b4 n=1`, `B4=Opened`; ACTION_DISMISS on "Burst three" → `B3=Dismissed`. Traversal order: cards newest first as in cycle 1; the oldest card's Undo child still sits outside its card in the chain (unchanged cycle-1 note, Phase 28).
+
+### Summary (Addendum)
+
+total: 5
+passed: 5
+partial: 0
+failed: 0
+infra: 0
+
+### Notes / anomalies (Addendum)
+
+- **Convergence:** SC3 failed in cycle 1 and passed in cycle 2 (cap 3); no escalation needed.
+- **Mid-run harness rebuild** (above): an abandoned first run, deleted, not used for any verdict; the signed run is a single APK end to end.
+- **Command guard:** `command_guard_breaches: 0`. `command_guard_refusals: 5` in this run, all `uninspectable` fail-closed refusals of my own inline `python3` helper calls (a path the guard could not resolve, or a script written by the same command); none was a forbidden command, each was re-issued as a script file that existed beforehand. The four cycle-1 refusals recorded above still stand.
+- **Residual risk I could not exercise:** the physical touch-slop widening is only observable with a real finger; `adb input tap` produces a point touch, so I probed the strip from 4 px below its top edge to 1 px above the front card and 11 px outside the Undo's left and right bounds. The blocker is card-wide, so it does not depend on the slop geometry.
+- **Cycle-1 notes still open (not criterion failures):** the oldest card's Undo child reading order, keyboard-opens-while-fanned showing the oldest card, the German font-2.0 body width, strip ghosting.
+
+### Findings routed to gap-closure (Addendum)
+
+None.
+
+### Verdict (Addendum)
+
+**ALL 5 criteria PASS** on the real tester against HEAD `e3c87d9` (library AAR md5 `e15dbb78…`, harness APK sha256 `4869d8e4925e`, uat_run `uatr-20261017T140846Z-f3f20544`). The SC3 defect (a peek tap on a back card's Undo ran Undo) is fixed: the exact cycle-1 tap and a sweep of the strip fan the deck, Undo still works on a fanned card and on a collapsed front card, swipes and the semantics path are unchanged, and SC1/SC2/SC4/SC5 re-confirm with no regression from the new touch layer. Gate-1 is satisfied; the Gate-2 obligation is registered in `.planning/uat-pending/26-receipt-card-stacked-snackbar-deck.md`.

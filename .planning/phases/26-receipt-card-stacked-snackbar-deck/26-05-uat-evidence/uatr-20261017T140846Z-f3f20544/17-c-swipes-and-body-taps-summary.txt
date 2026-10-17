@@ -1,0 +1,9 @@
+    "file": "14-c-tgt-undo-plain-collapsed-ui.xml",
+after swipe across the middle strip (y=1985, over the Undo sliver): cards-visible=1 [('Plain note', 2050)] | RESULTS= | OPENED=none N=0 UNDORUNS=0
+after swipe STARTING on the Undo sliver (430,1985): cards-visible=1 [('Plain note', 2050)] | RESULTS= | OPENED=none N=0 UNDORUNS=0
+    "file": "15-c-swipes-over-collapsed-strips-no-fan-no-dismiss-no-undo-ui.xml",
+after swipe on the collapsed front card (Plain): cards-visible=1 [('Undo note', 2039)] | RESULTS=PL:Dismissed | OPENED=none N=0 UNDORUNS=0
+fanned: swiped the Undo note card (middle): cards-visible=2 [('Target note', 1869), ('Plain note', 2050)] | RESULTS=PL:Dismissed,UI:Dismissed | OPENED=none N=0 UNDORUNS=0
+    "file": "16-c-fanned-swipe-removes-only-that-card-dismissed-ui.xml",
+fanned: body tap on Target card: cards-visible=1 [('Plain note', 2050)] | RESULTS=PL:Dismissed,UI:Dismissed | OPENED=none N=0 UNDORUNS=0
+body tap on untargeted Plain front card: cards-visible=1 [('Plain note', 2050)] | RESULTS=PL:Dismissed,UI:Dismissed | OPENED=none N=0 UNDORUNS=0

@@ -1,0 +1,4 @@
+git HEAD: e3c87d9 (src clean)
+cmd: ./gradlew testDebugUnitTest detekt apiCheck --rerun --no-build-cache --no-daemon -q  -> exit 0, 2m32s, detekt + metalavaCheckCompatibilityRelease executed
+result classes=157 tests=1613 skipped=22 failures=0 errors=0
+bash tools/verify-api-source-additive.sh v2.7.1 -> API SOURCE-ADDITIVE OK baseline=v2.7.1 removed_classes=0 removed_members=0 required_param_changes=0 signature_changes=0

@@ -1,0 +1,8 @@
+--- state at ~+7.5s while fanned:
+TextView     click=false text='Short plain' desc='' [125,1869][318,1926]
+TextView     click=false text='Short plain two' desc='' [125,2050][394,2107]
+--------- beginning of main
+10-17 08:17:22.673 22534 22534 I P26     : show SP t=1889744673
+10-17 08:17:23.039 22534 22534 I P26     : show SQ t=1889745040
+10-17 08:17:36.982 22534 22534 I P26     : result SP=TimedOut t=1889758982
+10-17 08:17:37.349 22534 22534 I P26     : result SQ=TimedOut t=1889759349

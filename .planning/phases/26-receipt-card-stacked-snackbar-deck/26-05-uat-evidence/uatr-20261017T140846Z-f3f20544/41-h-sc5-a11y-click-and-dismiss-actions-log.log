@@ -1,0 +1,19 @@
+--------- beginning of main
+10-17 08:18:51.758 23249 23249 I P26     : open b4 n=1
+10-17 08:18:51.759 23249 23249 I P26A    : act 'Burst four' click/x -> true
+10-17 08:18:51.760 23249 23249 I P26     : result B4=Opened t=1889833760
+10-17 08:18:51.828 23249 23249 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] srcLive=0 srcText=OPENED=b4 N=1 UNDORUNS=1 cls=android.view.View
+10-17 08:18:51.833 23249 23249 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] srcLive=0 srcText=RESULTS=B1:Dismissed,B2:Undone,B4:Opened cls=android.view.View
+10-17 08:18:51.836 23249 23249 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 08:18:51.841 23249 23249 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=RESULTS=B1:Dismissed,B2:Undone,B4:Opened cls=android.view.View
+10-17 08:18:51.844 23249 23249 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 08:18:51.848 23249 23249 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=OPENED=b4 N=1 UNDORUNS=1 cls=android.view.View
+10-17 08:18:51.853 23249 23249 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 08:18:51.860 23249 23249 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 08:18:53.092 23249 23249 I P26A    : act 'Burst three' dismiss/x -> true
+10-17 08:18:53.093 23249 23249 I P26     : result B3=Dismissed t=1889835093
+10-17 08:18:53.145 23249 23249 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] srcLive=0 srcText=RESULTS=B1:Dismissed,B2:Undone,B4:Opened,B3:Dismissed cls=android.view.View
+10-17 08:18:53.154 23249 23249 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=RESULTS=B1:Dismissed,B2:Undone,B4:Opened,B3:Dismissed cls=android.view.View
+10-17 08:18:53.156 23249 23249 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=null srcText=null cls=android.view.View
+10-17 08:18:53.164 23249 23249 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=0 srcText=null cls=android.view.View
+10-17 08:18:53.165 23249 23249 I P26A    : event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] srcLive=null srcText=null cls=android.view.View

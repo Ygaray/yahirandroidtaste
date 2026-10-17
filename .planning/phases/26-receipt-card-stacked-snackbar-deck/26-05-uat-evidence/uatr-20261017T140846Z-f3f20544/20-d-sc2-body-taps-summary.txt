@@ -1,0 +1,4 @@
+    "file": "19-d-fanned-chevron-only-on-targeted-screen.png",
+fanned: Target body tap: cards-visible=2 [('Undo note', 1858), ('Plain note', 2050)] | RESULTS=TG:Opened | OPENED=tg N=1 UNDORUNS=0
+fanned: DOUBLE tap on the Undo-with-target card body: cards-visible=1 [('Plain note', 2050)] | RESULTS=TG:Opened,UI:Opened | OPENED=ui N=2 UNDORUNS=0
+untargeted Plain front body tap: cards-visible=1 [('Plain note', 2050)] | RESULTS=TG:Opened,UI:Opened | OPENED=ui N=2 UNDORUNS=0

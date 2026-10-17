@@ -1,0 +1,10 @@
+--------- beginning of main
+10-17 08:17:46.987 23039 23039 I P26     : show SP t=1889768987
+10-17 08:17:54.005 23039 23039 I P26     : result SP=TimedOut t=1889776005
+10-17 08:17:56.048 23039 23039 I P26     : show ST t=1889778048
+10-17 08:18:08.065 23039 23039 I P26     : result ST=TimedOut t=1889790066
+10-17 08:18:10.117 23039 23039 I P26     : show SU t=1889792118
+10-17 08:18:22.130 23039 23039 I P26     : result SU=TimedOut t=1889804131
+Deleted 1 rows
+Deleted 1 rows
+restored: null null
