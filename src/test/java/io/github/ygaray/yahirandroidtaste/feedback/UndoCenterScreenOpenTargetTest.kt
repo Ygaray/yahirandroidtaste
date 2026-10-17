@@ -372,6 +372,35 @@ class UndoCenterScreenOpenTargetTest {
     }
 
     @Test
+    fun openableRow_isFocusable_andExposesALongClickAction() {
+        val store = UndoHistoryStore()
+        val id = store.append("Tag deleted", preview = UndoPreview.Tag("Work"), target = target) { }
+        show(store)
+
+        val config = composeTestRule.onNodeWithTag(rowTag(id)).fetchSemanticsNode().config
+        assertTrue("the row must be a focus target", config.contains(SemanticsProperties.Focused))
+        assertTrue("TalkBack needs a long-click action for the preview", config.contains(SemanticsActions.OnLongClick))
+    }
+
+    @Test
+    fun longClickAction_showsThePeek_andHidesItAgainWithoutARelease() {
+        val store = UndoHistoryStore()
+        val id = store.append("Tag deleted", preview = UndoPreview.Tag("Work"), target = target) { }
+        show(store)
+
+        composeTestRule.onNodeWithTag(rowTag(id)).performSemanticsAction(SemanticsActions.OnLongClick)
+        composeTestRule.waitForIdle()
+        peek().assertExists()
+        assertTrue("a long-click action must never open", opened.isEmpty())
+
+        composeTestRule.mainClock.advanceTimeBy(4_000)
+        composeTestRule.waitForIdle()
+        peek().assertDoesNotExist()
+        assertTrue(opened.isEmpty())
+        assertTrue(undone.isEmpty())
+    }
+
+    @Test
     fun opaqueKey_neverAppearsInTheSemanticsTree() {
         val store = UndoHistoryStore()
         store.append("Tag deleted", target = FeedbackTarget("KEY-DO-NOT-LEAK-31415", "Open item")) { }

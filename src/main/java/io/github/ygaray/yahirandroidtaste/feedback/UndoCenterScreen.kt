@@ -1,8 +1,12 @@
 package io.github.ygaray.yahirandroidtaste.feedback
 
 import android.text.format.DateUtils
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,8 +50,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.onClick
-import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -399,12 +401,15 @@ private fun UndoHistoryRow(entry: UndoHistoryEntry, onUndo: () -> Unit, modifier
 
 /**
  * An openable row (FOPEN-03, D-04 [undo-center-tap]): ONE merged `Role.Button` node whose click
- * opens the entry's [target], driven by a single tap/long-press owner. There is deliberately no
- * `clickable` here: a clickable consumes the pointer-down in the Main pass and would kill the
- * hold-to-peek. A hold never opens and never undoes; it shows the read-only [UndoPreviewPeek]
- * from `onLongPress`, so a plain tap never flashes it (PD-11). The nested Undo button consumes its
- * own pointer-down, so tapping it neither opens nor peeks. [target] and [onOpen] are read through
- * `rememberUpdatedState` because the pointer block is keyed by the entry id only.
+ * opens the entry's [target], driven by a single `combinedClickable` owner. The owner gives the
+ * row press indication, a focus target with key activation and a long-click semantics action for
+ * free. A hold never opens and never undoes; it shows the read-only [UndoPreviewPeek] from
+ * `onLongClick`, so a plain tap never flashes it (PD-11), and the peek is hidden again when the
+ * press is released or cancelled. A long-click that arrives with no press in flight (TalkBack, a
+ * keyboard) has no release to hide the peek, so it dismisses itself after [PEEK_ACTION_DISMISS_MS].
+ * The nested Undo button consumes its own pointer-down, so tapping it neither opens nor peeks.
+ * [target] and [onOpen] are read through `rememberUpdatedState` so a stale callback never fires
+ * after the entry is spent.
  */
 @Composable
 private fun UndoHistoryOpenRow(
@@ -415,28 +420,40 @@ private fun UndoHistoryOpenRow(
     modifier: Modifier = Modifier
 ) {
     var showPeek by remember(entry.id) { mutableStateOf(false) }
+    var pressed by remember(entry.id) { mutableStateOf(false) }
+    val interactionSource = remember(entry.id) { MutableInteractionSource() }
     val latestTarget by rememberUpdatedState(target)
     val latestOpen by rememberUpdatedState(onOpen)
+    LaunchedEffect(interactionSource) {
+        interactionSource.interactions.collect { interaction ->
+            when (interaction) {
+                is PressInteraction.Press -> pressed = true
+                is PressInteraction.Release, is PressInteraction.Cancel -> {
+                    pressed = false
+                    showPeek = false
+                }
+            }
+        }
+    }
+    LaunchedEffect(showPeek, pressed) {
+        if (showPeek && !pressed) {
+            delay(PEEK_ACTION_DISMISS_MS)
+            showPeek = false
+        }
+    }
     Box(
         modifier = modifier
             .testTag("$UNDO_ROW_TEST_TAG_PREFIX${entry.id}")
-            .semantics(mergeDescendants = true) {
-                role = Role.Button
-                onClick(label = target.openLabel.ifBlank { entry.message }) {
-                    latestOpen(latestTarget)
-                    true
-                }
-            }
-            .pointerInput(entry.id) {
-                detectTapGestures(
-                    onPress = {
-                        tryAwaitRelease()
-                        showPeek = false
-                    },
-                    onLongPress = { showPeek = true },
-                    onTap = { latestOpen(latestTarget) }
-                )
-            }
+            .semantics(mergeDescendants = true) {}
+            .combinedClickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current,
+                onClickLabel = target.openLabel.ifBlank { entry.message },
+                role = Role.Button,
+                onLongClickLabel = "Preview",
+                onLongClick = { showPeek = true },
+                onClick = { latestOpen(latestTarget) }
+            )
     ) {
         ListItem(
             headlineContent = { Text(entry.message) },
@@ -448,6 +465,9 @@ private fun UndoHistoryOpenRow(
         }
     }
 }
+
+/** How long a peek raised by a press-less long-click action stays visible before it hides itself. */
+private const val PEEK_ACTION_DISMISS_MS = 3_000L
 
 /** The trailing slot of an openable row: the live Undo button, then a decorative chevron (PD-12). */
 @Composable
