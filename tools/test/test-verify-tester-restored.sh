@@ -131,7 +131,7 @@ run FAKE_WM_DENSITY='garbled' --
 check "$RC" "2" "unparsable density exits 2"
 
 # 10. A wireless serial is refused before any adb call.
-run -- --serial 100.118.21.106:1496
+run -- --serial 192.0.2.1:1496
 check "$RC" "2" "wireless serial exits 2"
 check "$(wc -c < "$LOG" | tr -d ' ')" "0" "wireless serial: the fake adb log is empty"
 
