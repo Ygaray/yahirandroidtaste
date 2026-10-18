@@ -21,6 +21,8 @@ import org.junit.Test
  *    `provider_key_*` tag are stable; explorer-only `demo_` tags and the internal kebab-case undo
  *    tags are in neither list;
  *  - `INTEGRATION.md` names the v2.6.0 entry points;
+ *  - the v2.8.0 text names the member surface, the map agent guidance and the INTEGRATION wiring, and
+ *    names no consumer app (Phase 29, SHIP-05);
  *  - the `### Additions in v2.8.0` section of `API.md` names every v2.8.0 target-and-stack symbol
  *    (Phase 29 tracer) inside that section, and `api.txt` still declares each one.
  */
@@ -354,6 +356,55 @@ class CatalogDocsDriftGuardTest {
         breaks.forEach { name ->
             assertTrue("the API.md section 11 lead-in must name the positional break $name", apiLead.contains(name))
             assertTrue("the INTEGRATION.md 5b lead-in must name the positional break $name", integrationLead.contains(name))
+        }
+    }
+
+    /** The INTEGRATION.md text from the line that starts with [startPrefix] to the next `## ` heading. */
+    private fun integrationBlock(integration: String, startPrefix: String): String {
+        val lines = integration.lines()
+        assertEquals("INTEGRATION.md needs exactly one line starting with $startPrefix", 1, lines.count { it.startsWith(startPrefix) })
+        val start = lines.indexOfFirst { it.startsWith(startPrefix) }
+        val end = (start + 1 until lines.size).firstOrNull { lines[it].startsWith("## ") } ?: lines.size
+        return lines.subList(start, end).joinToString("\n")
+    }
+
+    @Test
+    fun `INTEGRATION md names the v2_8_0 entry points and the map agent guidance`() {
+        val integration = doc("INTEGRATION.md")
+        val wiring = integrationBlock(integration, "**(vi)")
+        assertTrue("the (vi) block is too short (vacuity guard): ${wiring.length}", wiring.length > 1500)
+        listOf(
+            "FeedbackStackHost", "rememberFeedbackStackState", "FeedbackTarget", "onOpenTarget",
+            "emitTrackedWithUndo", "OutcomeSheet", "UndoCenterScreen"
+        ).forEach { name ->
+            assertTrue("INTEGRATION.md (vi) must name $name", wholeWord(name).containsMatchIn(wiring))
+        }
+        val map = integrationBlock(integration, "### 5c.")
+        assertTrue("the 5c block is too short (vacuity guard): ${map.length}", map.length > 400)
+        listOf("PlaceMapPicker", "INTERNET", "AppName/version (+contact)").forEach { text ->
+            assertTrue("INTEGRATION.md 5c must contain $text", map.contains(text))
+        }
+    }
+
+    @Test
+    fun `the v2_8_0 doc text names no consumer app and claims no focus move`() {
+        val integration = doc("INTEGRATION.md")
+        val blocks = listOf(
+            "API.md v2.8.0 section" to v280Section(doc("API.md")),
+            "INTEGRATION.md (vi)" to integrationBlock(integration, "**(vi)"),
+            "INTEGRATION.md 5c" to integrationBlock(integration, "### 5c.")
+        )
+        blocks.forEach { (name, text) -> assertTrue("$name is empty (vacuity guard)", text.length > 400) }
+        // Each forbidden literal is assembled from fragments so this source trips no source scanner.
+        val forbidden = listOf(
+            "Second" + "Brain", "Cal" + "Tracker", "second" + "brain", "cal" + "tracker",
+            "takes accessibility" + " focus", "moves accessibility" + " focus",
+            "announce" + "ForAccessibility", "request" + "Focus"
+        )
+        blocks.forEach { (name, text) ->
+            forbidden.forEach { word ->
+                assertTrue("$name must not contain '$word'", !text.contains(word))
+            }
         }
     }
 

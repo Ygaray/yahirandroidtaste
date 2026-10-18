@@ -312,6 +312,116 @@ fun close() = scope.launch { sheetState.hide() }.invokeOnCompletion { outcome = 
   opens fully expanded with its pinned Cancel / Confirm bar on screen; a hoisted plain
   `rememberModalBottomSheetState()` would still open a tall sheet at half height.
 
+**(vi) v2.8.0: go-to-item snackbars, sheet rows and the Undo Center.** All of this is opt-in. With no
+`target` on an event, a `Success` or a history entry, and no `onOpenTarget` passed, every v2.7.1 call
+site compiles and renders as before. The full signatures and rules are in `API.md` "Additions in
+v2.8.0".
+
+1. **One state, one host.** Remember ONE `FeedbackStackState` at the app root with
+   `rememberFeedbackStackState()` (three cards visible by default) and place
+   `FeedbackStackHost(state, onOpenTarget, modifier, undoLabel, dismissLabel)` in the Scaffold snackbar
+   slot or as an overlay. The host adds no inset padding. Pass already-localized `undoLabel` and
+   `dismissLabel`.
+2. **Emit with a coroutine per event.** Call `scope.launch { state.emitTrackedWithUndo(store, event) }`
+   (or `state.show(event)` when nothing needs tracking). Never await events serially: each call
+   suspends until its card resolves. Resolve localized strings in composition, before the launch; a
+   string-resource lookup is not allowed inside the launched block.
+3. **One app-level `onOpenTarget`.** A `FeedbackTarget(key, openLabel)` carries an opaque key that your
+   app encodes and decodes. Write ONE function that maps keys to routes and pass the same function to
+   all three surfaces:
+
+```kotlin
+// A neutral key scheme: "note:42" opens a note, "list:7" opens a list.
+fun openTarget(target: FeedbackTarget) {
+    val id = target.key.substringAfter(':')
+    when (target.key.substringBefore(':')) {
+        "note" -> navController.navigate("note/$id") { launchSingleTop = true }
+        "list" -> navController.navigate("list/$id") { launchSingleTop = true }
+        else -> Unit   // an unknown key is a no-op
+    }
+}
+
+scope.launch {
+    state.emitTrackedWithUndo(
+        store,
+        FeedbackEvent.WithUndo(
+            message = noteDeletedText,                 // localized in composition, before the launch
+            undoAction = { restoreNote(42) },
+            target = FeedbackTarget(key = "note:42", openLabel = openNoteLabel),
+            supportingText = noteTitle,
+        ),
+    )
+}
+
+FeedbackStackHost(state = state, onOpenTarget = ::openTarget, undoLabel = undoText, dismissLabel = dismissText)
+
+OutcomeSheet(
+    outcome = VoiceOutcomeUiState.Success(
+        summary = "Saved",
+        target = FeedbackTarget("list:7", openListLabel),
+        targetLabel = "Groceries",                     // the row title; falls back to summary when null or blank
+        targetDetail = "List, 3 items",
+    ),
+    onDismissRequest = { outcome = null },
+    style = OutcomeSheetStyle.Receipt,
+    onOpenTarget = ::openTarget,
+)
+
+UndoCenterScreen(
+    entries = entries,
+    onNavigateBack = { navController.navigateUp() },
+    onUndo = viewModel::onUndo,
+    groups = groups,
+    onUndoGroup = { id -> viewModel.onUndoGroup(id) },
+    onOpenTarget = ::openTarget,
+    onClear = viewModel::onClear,
+)
+```
+
+   The library never parses the key. The handler must be idempotent (a double tap is not debounced by
+   the sheet or the Undo Center) and should skip the navigation when the app is already on the
+   destination, because the library cannot know your routes. Never log the key; `FeedbackTarget.toString()`
+   prints only the `openLabel` for the same reason.
+4. **Clear the target after Undo.** Snackbar cards and Undo Center rows lose their target library-side
+   once the store entry is Undone or Failed. `Success.target` and `BatchRowResultUiModel.target` are your
+   state, so clear them yourself after Undo or Undo all. A batch row with its own `target` opens that
+   row's item; a row without one is not clickable.
+5. **Slide a sheet down before navigating.** `OutcomeSheet` never hides itself and never calls
+   `onDismissRequest` when a row opens. To slide it down first, hoist `sheetState` as in item (v), call
+   `hide()` inside the handler and then navigate.
+6. **The Material3 helper is unchanged.** `SnackbarHostState.emitTrackedWithUndo(store, event)` keeps
+   working, forwards `event.target` into the history entry so the Undo Center can open it, and still
+   shows no open affordance on the Material3 snackbar.
+7. **Positional-call note.** The new `UndoCenterScreen` overload above requires `onOpenTarget`, so the
+   v2.7.1 overload stays the one a call without it binds to. Name `onClear` (or pass it as the trailing
+   lambda) as in item (iii).
+8. **Seeing it work.** The Explorer gallery has a `FeedbackStackHost` page with an English and a German
+   stage, go-to-item demos under `OutcomeSheet`, and target rows under `UndoCenterScreen`.
+9. **TalkBack.** How the deck and the refused-undo message behave with TalkBack is in `docs/STYLE.md`
+   section 7.
+
+### 5c. The map picker and the OSM tile policy (v2.8.0)
+
+`PlaceMapPicker` draws OpenStreetMap tiles, and tile.openstreetmap.org enforces a tile usage policy.
+To stay inside it:
+
+- Declare the `INTERNET` permission in your own manifest. The library manifest does not.
+- Pass `userAgent = "AppName/version (+contact)"` to `PlaceMapPicker`, never the bare application id. A
+  template application id such as `com.example.*` is blocked by the tile server, which answers with a
+  6987-byte placeholder tile instead of the map.
+- The hub sets the `User-Agent` header in memory through osmdroid's `additionalHttpRequestProperties`,
+  right after a single `load()` per process, and never writes osmdroid's persisted request-property
+  preference (that slot is yours). Call it before any other osmdroid map exists in the process.
+- A blank agent is replaced by `<packageName>/<versionName> (Android <release>)` and logs a `Log.w`
+  warning. A bare package name that is not a template id is expanded to the same fallback silently, and
+  a bare template id still logs the warning. The warning is logged when the map surface is configured,
+  once per picker instance.
+- Placeholder tiles that earlier blocked fetches left in the cache are removed by a background scan on
+  the first call of every process and, on later calls, only while the install flag is unset. Only tiles
+  whose size and md5 both match the placeholder are deleted; the cache is never wiped as a whole.
+- Tiles live in your app's private cache directory, so no storage permission is needed and the OS may
+  evict them under storage pressure.
+
 ## 6. (Optional) The component gallery
 
 The library ships a self-launching `ExplorerActivity` (declared in its own `AndroidManifest.xml` as
