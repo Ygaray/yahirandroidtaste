@@ -16,7 +16,7 @@
 #   env ADB: the adb executable (default `adb`).
 #
 # Exit: 0 every check OK (RESTORED=yes); 1 any check differs (RESTORED=no);
-#       2 usage error, a wireless serial (host:port, refused before any adb call), or a device that
+#       2 usage error (including a --package that is not a plain dotted package name), a wireless serial (host:port, refused before any adb call), or a device that
 #         cannot be read. 2 is INFRA, never a pass.
 set -euo pipefail
 
@@ -40,7 +40,12 @@ while [ "$#" -gt 0 ]; do
     --services) need_value "$@"; WANT_SERVICES="$2"; shift 2 ;;
     --a11y-enabled) need_value "$@"; WANT_A11Y="$2"; shift 2 ;;
     --touch-exploration) need_value "$@"; WANT_TOUCH="$2"; shift 2 ;;
-    --package) need_value "$@"; PACKAGES+=("$2"); shift 2 ;;
+    --package)
+      need_value "$@"
+      # `adb shell` joins its arguments and hands them to the device shell, so quoting here does not
+      # protect the value: only a plain dotted package name may reach adb.
+      [[ "$2" =~ ^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z0-9_]+)+$ ]] || die "invalid package name: $2"
+      PACKAGES+=("$2"); shift 2 ;;
     *) die "unknown option: $1" ;;
   esac
 done

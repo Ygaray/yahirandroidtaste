@@ -124,6 +124,15 @@ run -- --serial 100.118.21.106:1496
 check "$RC" "2" "wireless serial exits 2"
 check "$(wc -c < "$LOG" | tr -d ' ')" "0" "wireless serial: the fake adb log is empty"
 
+# 10b. A --package that is not a plain dotted package name never reaches the device shell.
+for bad_pkg in 'a;b' 'com.x; reboot' 'com.x$(id)' 'com.x`id`' 'com.x|id' 'com.x&id' 'com.x id' '-a.b' 'single' 'com..x' '.com.x' 'com.x.'; do
+  run -- --package "$bad_pkg"
+  check "$RC" "2" "invalid package '$bad_pkg' exits 2"
+  check "$(wc -c < "$LOG" | tr -d ' ')" "0" "invalid package '$bad_pkg': the fake adb log is empty"
+done
+run -- --package com.harness.fixture_2.Sub
+check "$RC" "0" "a valid dotted package name with digits and underscores is accepted"
+
 # 11. Usage errors.
 run -- --bogus
 check "$RC" "2" "unknown option exits 2"
