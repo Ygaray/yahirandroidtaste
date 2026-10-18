@@ -37,6 +37,11 @@ this file says how anything in the hub should look and behave. Paths are under
 - **Do** keep the handled-by pill a capsule on one line, and keep its corner radius capped when the text
   wraps, so no glyph is cut by a rounded end (`component/HandledByPillShape.kt` `rememberHandledByPillShape`, proven
   by `HandledByPillShapeTest`).
+- **Do** keep a button whose label can wrap (the deck card's Undo) a capsule on one line and cap its
+  corner radius once it wraps (`component/CappedPillShape.kt` `rememberTextButtonCappedShape`, proven by
+  `FeedbackCardUndoShapeTest`). **Do** let a deck card that is taller than the space it gets scroll its own
+  content inside the card, never an ellipsis and never a cut line (`feedback/FeedbackCard.kt`, proven by
+  `FeedbackCardTallContentTest`).
 
 ## 3. Type
 
