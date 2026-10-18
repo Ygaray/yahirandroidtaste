@@ -119,7 +119,7 @@ these render its body) plus the shared scaffolding and editor rows.
 |-----------|---------|----------------|
 | `AccentColorPicker` | Accent-color swatch picker | `selectedColor: Long, onColorSelected: (Long) -> Unit` |
 | `DateTimePicker` | Date/time field pair with Material3 calendar/clock panels | `selectedDate: LocalDate?, onDateSelected, selectedTime: LocalTime?, onTimeSelected, showDate = true, showTime, minDate, is24Hour, enabled, testTag` |
-| `PlaceMapPicker` | Map-based place/radius picker (search, saved places, current-location, pin + radius) | `pinLatitude: Double?, pinLongitude: Double?, onPinChange, radiusMeters: Float, onRadiusChange, minRadiusMeters, maxRadiusMeters, defaultRadiusMeters, userAgent: String, …` search/saved-places callbacks — the hub never geocodes; the caller resolves and reports back |
+| `PlaceMapPicker` | Map-based place/radius picker (search, saved places, current-location, pin + radius) | `pinLatitude: Double?, pinLongitude: Double?, onPinChange, radiusMeters: Float, onRadiusChange, minRadiusMeters, maxRadiusMeters, defaultRadiusMeters, userAgent: String, …` search/saved-places callbacks — the hub never geocodes; the caller resolves and reports back. Pass `userAgent = "AppName/version (+contact)"`, never the bare application id (see "Map picker tile agent (POL-03)" in the v2.8.0 section) |
 | `IconPickerGrid` | Module/tag icon grid picker | `selectedIcon: String, onIconSelected: (String) -> Unit` — public parameters unchanged; the grid includes a built-in live case-insensitive name-substring search field with an empty-state when nothing matches |
 | `CropOverlay` | Crop-rectangle overlay for image editing | `bitmapWidth, bitmapHeight, aspectRatio: Float?, …` |
 | `SegmentedOptionSelector` | Two-option segmented toggle with an always-visible disabled+reason affordance; labels too long for their half wrap to at most two lines, then ellipsize, staying inside the segment (never under the selected check icon); both segments keep equal height (v2.5.1) | `selectedIndex: Int, options: List<String>, onSelect: (Int) -> Unit, modifier, enabled: Boolean, disabledReason: String?`, `disabledOptions: Set<Int> = emptySet()` (v2.6.0: a disabled segment ignores taps and is announced as not selected), `style: SegmentedOptionStyle = SegmentedOptionStyle.Material` (v2.6.0; `Pill` is single-line with an ellipsis, so a long localized label truncates there where Material wraps to two lines) |
@@ -129,7 +129,7 @@ these render its body) plus the shared scaffolding and editor rows.
 | Composable | Purpose | Key parameters |
 |-----------|---------|----------------|
 | `ConfirmationDialog` | Standard confirm/cancel dialog | `title, body, onDismissRequest, …` confirm/dismiss callbacks |
-| `UndoCenterScreen` | The Undo Center — a history of undoable actions (backed by `UndoHistoryStore`, see `INTEGRATION.md`) | `entries: List<UndoHistoryEntry>, onNavigateBack, onUndo: (String) -> Unit`, `groups: List<UndoGroupRowUiModel> = emptyList()` and `onUndoGroup: ((String) -> Unit)? = null` (v2.6.0, VUNDO-02: a group row with label, member count, status and "Undo all" above its indented members), then the trailing `onClear: () -> Unit` — a positional four-argument call must now name `onClear` or pass it as the trailing lambda (see the v2.6.0 compatibility scope below) |
+| `UndoCenterScreen` | The Undo Center — a history of undoable actions (backed by `UndoHistoryStore`, see `INTEGRATION.md`) | `entries: List<UndoHistoryEntry>, onNavigateBack, onUndo: (String) -> Unit`, `groups: List<UndoGroupRowUiModel> = emptyList()` and `onUndoGroup: ((String) -> Unit)? = null` (v2.6.0, VUNDO-02: a group row with label, member count, status and "Undo all" above its indented members), then the trailing `onClear: () -> Unit` — a positional four-argument call must now name `onClear` or pass it as the trailing lambda (see the v2.6.0 compatibility scope below). Since v2.8.0 a second overload `(entries, onNavigateBack, onUndo, groups, onUndoGroup, onOpenTarget: (FeedbackTarget) -> Unit, onClear)` makes a row open its item on tap: `onOpenTarget` is required there so v2.7.1 trailing-lambda calls stay unambiguous, only an Available row whose entry has an `openableTarget` opens, a hold shows the preview and never opens, and group headers and Undone or Failed rows never open; the v2.7.1 overload is untouched |
 | `AttentionCue` | Caution/verify signal glyph — never a failure signal | `text: String?, style: AttentionCueDefaults.Style, icon: ImageVector, tint: Color` |
 | `FeedbackStackHost` | The stacked snackbar host: renders the `FeedbackStackState` cards newest-first. A body tap on a card that carries a `FeedbackTarget` calls `onOpenTarget` (once, only for the tap that resolved the card) and resolves `Opened`; Undo resolves `Undone`; a card without a target is inert; a card whose undo entry was spent elsewhere stays visible but inert. The cards form a Receipt-card deck of up to three by default (the state's `maxVisible`; newest in front, older cards tucked 14dp behind it); tapping a peek strip fans the deck out (it re-collapses after 4 s idle and the fanned column is capped at 60 percent of the available height); a horizontal swipe dismisses one card with `Dismissed` and never undoes; every card's timer pauses while a pointer is down or the deck is fanned. Each card is one merged `Role.Button` node with a Polite live region, Undo as a separate child and custom action, and Dismiss as a custom action and `dismiss` semantics | `state: FeedbackStackState, onOpenTarget: (FeedbackTarget) -> Unit, modifier, undoLabel: String = "Undo", dismissLabel: String = "Dismiss"` (both labels caller-localizable; `dismissLabel` labels each card's Dismiss accessibility action). Push events with `state.show(event)` or `state.emitTrackedWithUndo(store, event)`; get the state from `rememberFeedbackStackState(maxVisible = 3)`. `show` returns a `FeedbackResult`: `Opened`, `Undone`, `Dismissed` or `TimedOut`. The state, the result, the target and the tracked path are described in "Additions in v2.8.0" below |
 
@@ -196,7 +196,7 @@ control entirely, with no reserved space (conditional-render-no-dead-space).
 | `ProviderKeyCard` | Provider dropdown plus a hoisted API-key field; the card stores, validates and transmits nothing; the field is masked by default with a reveal toggle, and every edit is trimmed of leading/trailing whitespace before `onKeyChange` (pure formatting, no validation). Since v2.6.0 it can own the whole key lifecycle: a provider with a saved key shows a summary (check icon plus the fingerprint) with Update and Clear instead of the field | `providers, selectedProviderId, onProviderSelected, keyValue, onKeyChange, keyState, keyLabel, modifier`, `emptyProvidersReason = "No providers configured yet"`, `providerLabel = "Provider"`, then the v2.6.0 key-lifecycle parameters, all off by default: `savedKeys: Map<String, SavedKeyUiModel> = emptyMap()`, `editingSavedKey: Boolean = false`, `actions: ProviderKeyActions? = null`, `labels: ProviderKeyLabels = ProviderKeyDefaults.labels()` — see section 11 |
 | `ModelSelectCard` | Model dropdown over the caller's model list, with a disabled reason caption when the list is empty | `models, selectedModelId, onModelSelected, emptyReason, modifier`, `modelLabel = "Model"` |
 | `ApproachLadderCard` | Command-approach settings card: the caller's tier ladder in list order, an optional offline-only toggle, an optional max-tier cap and an optional router toggle | `ladder, offlineOnly, onOfflineOnlyChange, maxTierId, onMaxTierChange, modifier`, `unavailableLabel = "Unavailable"`, `cappedLabel = "Capped"`, `needsNetworkLabel = "Needs network"`, `onlineLabel = "Online"`, `offlineOnlyLabel = "Offline only"`, `router: Boolean? = null`, `onRouterChange: ((Boolean) -> Unit)? = null`, `routerOnLabel = "Router on"`, `routerOffLabel = "Router off"` |
-| `OutcomeSheet` | Bottom sheet rendering a command outcome (success, failure or needs-confirmation) with its undo affordances | `outcome: VoiceOutcomeUiState, onDismissRequest, modifier`, `style: OutcomeSheetStyle = OutcomeSheetStyle.Classic` and `colors: OutcomeSheetColors = OutcomeSheetDefaults.colors()` (v2.6.0; `Classic` is the unchanged earlier look, `Receipt` is the badge, title row, pinned action bar and `ReceiptRow` look); after v2.6.0 an overload adds a required, named `sheetState: SheetState` (hoist it to `hide()` a finished sheet, see section 11 "Additions after v2.6.0") — the overridable strings live on the models in the table below |
+| `OutcomeSheet` | Bottom sheet rendering a command outcome (success, failure or needs-confirmation) with its undo affordances | `outcome: VoiceOutcomeUiState, onDismissRequest, modifier`, `style: OutcomeSheetStyle = OutcomeSheetStyle.Classic` and `colors: OutcomeSheetColors = OutcomeSheetDefaults.colors()` (v2.6.0; `Classic` is the unchanged earlier look, `Receipt` is the badge, title row, pinned action bar and `ReceiptRow` look); after v2.6.0 an overload adds a required, named `sheetState: SheetState` (hoist it to `hide()` a finished sheet, see section 11 "Additions after v2.6.0") — the overridable strings live on the models in the table below. Since v2.8.0 both overloads end in `onOpenTarget: ((FeedbackTarget) -> Unit)? = null` (the go-to-item row of a `Success` that carries a `target`; the sheet never hides itself, never calls `onDismissRequest` and never navigates, and the handler must be idempotent) |
 | `ClarificationBar` | Tap-to-clarify bar: a question, option chips in exact list order and a dismiss control; renders nothing for an empty option list | `question, options, onSelect, onDismiss, modifier`, `dismissLabel = "Dismiss"` |
 
 **`ApproachLadderCard` behaviour (v2.5.0):**
@@ -341,6 +341,49 @@ shows the cards.
 | `UndoHistoryEntry` | Appended `target: FeedbackTarget? = null`, and the computed `openableTarget: FeedbackTarget?` | `openableTarget` is the `target` only while the status is `Available`, and `null` once the entry is `Undone` or `Failed`, so a stale entry can never be opened. `target` keeps the original value for display. |
 | `UndoHistoryStore.append(message, preview, groupId, target, undoAction)` | A new overload that carries a `target` onto the entry | `target` has no default on purpose, so every v2.7.1 `append` call shape still binds to the older overloads. `groupId` is `String? = null` and is recorded only when non-null, so a grouped entry can carry a target; `undoAction` stays last for the trailing-lambda form. |
 
+The second half covers what the sheets and the Undo Center do with a target, the two pill fixes and
+the map picker tile agent.
+
+| Surface | Addition | Behaviour |
+|---------|----------|-----------|
+| `VoiceOutcomeUiState.Success` | Appended `target: FeedbackTarget? = null`, `targetLabel: String? = null` and `targetDetail: String? = null` | The go-to-item row sits under the title in both styles and shows only when `target` is set AND the caller passed `onOpenTarget` to `OutcomeSheet`. Its title is `targetLabel`, falling back to `summary` when `targetLabel` is null or blank (pass it to name the item, because `summary` repeats the heading); `targetDetail` is an optional second line; `target.openLabel` is the TalkBack click label only and is never drawn. The row is locked (dimmed, no click) while `inFlight`. With no target the sheet renders as in v2.7.1. |
+| `BatchRowResultUiModel` | Appended `target: FeedbackTarget? = null` | A batch row with a target gets a chevron and a click that opens that row's own item; a row without one gets neither. Rows are locked while the success is in flight. |
+| `OutcomeSheet(..., onOpenTarget)` | `onOpenTarget: ((FeedbackTarget) -> Unit)? = null`, appended last on BOTH overloads (the overload with `sheetState` keeps its required, named `sheetState` before it) | A tap calls the handler once with the target. The library never hides the sheet, never calls `onDismissRequest` and never navigates. The handler must be idempotent, because a double tap is not debounced. To slide the sheet down first, hoist `sheetState`, call `hide()`, then navigate. |
+| `UndoCenterScreen` (second overload) | `(entries, onNavigateBack, onUndo, groups, onUndoGroup, onOpenTarget, onClear)` with `onOpenTarget: (FeedbackTarget) -> Unit` REQUIRED | Required so that v2.7.1 trailing-lambda calls of the first overload stay unambiguous. Only an Available row whose entry has an `openableTarget` opens on tap; a hold shows the preview and never opens; group headers and Undone or Failed rows never open. The v2.7.1 overload is untouched. |
+
+**Who clears the target after Undo.** Snackbar cards and Undo Center rows derive openability from the
+store entry: `UndoHistoryEntry.openableTarget` is `null` once the entry is Undone or Failed, a
+library-side rule. `Success.target` and `BatchRowResultUiModel.target` are caller-built state that the
+library cannot check against the store, so the CALLER clears them after Undo or Undo all.
+
+**One handler for every surface.** The same app-level `onOpenTarget` serves `FeedbackStackHost`,
+`OutcomeSheet` and the second `UndoCenterScreen` overload. It maps the opaque `FeedbackTarget.key` to a
+route; the library never parses the key. An unknown key should be a no-op, and the handler should skip
+navigation when the app is already on the destination. See `INTEGRATION.md` item (vi).
+
+**Fixes**
+
+| Id | Fix | Behaviour |
+|----|-----|-----------|
+| POL-01 | Handled-by pill corner radius | The corner radius is capped when the pill's text wraps, to the one-line geometry, so a pill that wraps to several lines no longer gets a half-height arc that cuts through the text near the corners; a one-line pill is the exact old capsule at every font scale (`HandledByPillShapeTest`). |
+| POL-02 | Handled-by dot contrast | The dot keeps its color, and a contrast ring is drawn only when the fill has less than 3:1 against the pill (`surfaceContainerHighest`), so the warn dot stays visible under dynamic color (`OutcomeSheetReceipt.kt`, `HandledByDotContrastTest`). |
+
+**Map picker tile agent (POL-03).** `PlaceMapPicker` draws OpenStreetMap tiles, and the OSM tile policy
+needs an identifying agent. The host app declares the `INTERNET` permission itself; the library
+manifest does not. Pass `userAgent = "AppName/version (+contact)"` and never the bare application id.
+A template application id such as `com.example.*` is blocked by tile.openstreetmap.org, which answers
+with a 6987-byte placeholder tile instead of the map. The hub sets the `User-Agent` header in memory
+through osmdroid's `additionalHttpRequestProperties`, right after a single `load()` per process, and
+re-applies it without a reload when it is missing or different. It never writes osmdroid's persisted
+request-property preference (the host owns that slot). Call it before any osmdroid map exists in the
+process. A blank agent is replaced by `<packageName>/<versionName> (Android <release>)` and logs a
+`Log.w` warning. A bare package name that is not a template id is expanded to the same fallback
+silently, while a bare template id still logs the warning, because the expanded agent keeps the template
+prefix. The warning is logged each time the map surface is configured (once per picker instance), so it
+is neither once per install nor once per process. Cached placeholder tiles are deleted only when both
+their size and md5 match, by a background scan on the first call of every process and, on later calls,
+only while the install flag is still unset; the whole tile cache is never wiped.
+
 ### XR-178-01 mapping
 
 - **a.** The refused / partial undo surface of `OutcomeSheet` is an Assertive live region
@@ -434,7 +477,7 @@ change or disappear in any release; do not depend on them.
 
 Also outside the contract: the internal kebab-case tags of the Undo Center (`undo-row-<id>`,
 `undo-group-header-<groupId>`, `undo-group-undo-all-<groupId>` and the preview peek tags) and every
-`demo_` tag, which belongs to the Explorer gallery and is not library API. Tags of earlier families
+`demo_` tag, which belongs to the Explorer gallery and is not library API. The internal v2.8.0 test tags `feedback_stack_*`, `open_target_*` and `undo-open-chevron-<id>` are likewise not part of the contract. Tags of earlier families
 (`approach_ladder_card_*`, `clarification_bar_*`, `model_select_card_*` and so on) keep their existing
 behaviour and are not part of this list.
 
@@ -592,6 +635,16 @@ defaulted.
   `sheetState` overload (fully compatible). `V260CallSiteCanaryTest` compiles the consumers' v2.6.0
   named shapes without the Material 3 opt-in, and `verify-api-source-additive.sh v2.6.0` lists the three
   `NeedsConfirmation` signatures as its reviewed exceptions (section 11, "Additions after v2.6.0").
+
+**v2.8.0 compatibility scope.** Every v2.8.0 addition is appended with a default, and no new
+`@Deprecated(HIDDEN)` shim was added. The one required-parameter addition is the NEW `UndoCenterScreen`
+overload, whose `onOpenTarget` is required; the v2.7.1 signature is untouched, so every v2.7.1 call
+still binds to it. `OutcomeSheet` gains a trailing optional `onOpenTarget` on both overloads; its
+previous last parameters were `colors` and `sheetState`, neither a function type, so no trailing lambda
+is displaced. Positional `copy` and `componentN` of `Notify`, `WithUndo`, `UndoHistoryEntry`,
+`BatchRowResultUiModel` and `Success` keep their v2.7.1 positions, because the new members are appended.
+Guards: `V271CallSiteCanaryTest`, `tools/verify-api-source-additive.sh v2.7.1` and
+`CatalogDocsDriftGuardTest`. Reviewed exceptions: none expected; the gate runs of the cut re-confirm it.
 
 **Voice label fragments — how the sheet joins them (v2.5.0, VI18N-04).** The label fields are plain
 text fragments; `OutcomeSheet` composes them with fixed separators: a single ASCII space between a

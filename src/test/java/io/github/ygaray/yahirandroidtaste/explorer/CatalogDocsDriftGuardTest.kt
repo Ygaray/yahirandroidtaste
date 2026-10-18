@@ -225,6 +225,39 @@ class CatalogDocsDriftGuardTest {
         assertTrue("no longer in api.txt (the list went stale): $goneFromApi", goneFromApi.isEmpty())
     }
 
+    @Test
+    fun `the API md v2_8_0 section names the member surface and the map agent guidance`() {
+        val section = v280Section(doc("API.md"))
+        assertTrue("the v2.8.0 section is too short (vacuity guard): ${section.length}", section.length > 4000)
+        val apiTxt = readApiTxt()
+        assertTrue("api.txt is unexpectedly small", apiTxt.length > 50_000)
+
+        val members = listOf("onOpenTarget", "openableTarget", "targetLabel", "targetDetail", "supportingText")
+        val words = members + listOf("emitTrackedWithUndo", "FeedbackTarget")
+        val missingWords = words.filterNot { wholeWord(it).containsMatchIn(section) }
+        assertTrue("the v2.8.0 section does not name: $missingWords", missingWords.isEmpty())
+
+        val literals = listOf("AppName/version (+contact)", "INTERNET", "additionalHttpRequestProperties")
+        val missingLiterals = literals.filterNot { section.contains(it) }
+        assertTrue("the v2.8.0 section lacks the map agent guidance: $missingLiterals", missingLiterals.isEmpty())
+
+        val goneFromApi = members.filterNot { wholeWord(it).containsMatchIn(apiTxt) }
+        assertTrue("no longer in api.txt (the member list went stale): $goneFromApi", goneFromApi.isEmpty())
+    }
+
+    @Test
+    fun `the API md UndoCenterScreen and OutcomeSheet rows name onOpenTarget`() {
+        val lines = doc("API.md").lines()
+        fun row(prefix: String): String {
+            val matches = lines.filter { it.startsWith(prefix) }
+            assertEquals("exactly one table row must start with $prefix", 1, matches.size)
+            return matches.single()
+        }
+        assertTrue("UndoCenterScreen row must name onOpenTarget", wholeWord("onOpenTarget").containsMatchIn(row("| `UndoCenterScreen` | The Undo Center")))
+        assertTrue("OutcomeSheet row must name onOpenTarget", wholeWord("onOpenTarget").containsMatchIn(row("| `OutcomeSheet` | Bottom sheet")))
+        assertTrue("PlaceMapPicker row must carry the agent form", row("| `PlaceMapPicker` | Map-based").contains("AppName/version"))
+    }
+
     // ---------------------------------------------------------------------------------------
     // Stable tags
     // ---------------------------------------------------------------------------------------
