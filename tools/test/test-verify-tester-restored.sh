@@ -88,6 +88,17 @@ check "$RC" "0" "font scale 1.0 equals the default"
 run FAKE_FONT_SCALE=1.15 -- --font-scale 1.15
 check "$RC" "0" "font scale equals a recorded non-default expectation"
 
+# 5b. Junk is never equal to a number: garbled readings and garbled expectations are mismatches.
+run FAKE_FONT_SCALE=garbage --
+check "$RC" "1" "a garbled font_scale reading exits 1, not OK"
+check_grep "$OUT" '^FAIL font_scale ' "garbled font_scale names its check"
+run FAKE_FONT_SCALE=garbage -- --font-scale junk
+check "$RC" "1" "a garbled reading against a garbled expectation is not equal"
+run FAKE_FONT_SCALE=1.0abc --
+check "$RC" "1" "a numeric prefix is not equal to 1.0"
+run FAKE_FONT_SCALE=0 -- --font-scale 0.0
+check "$RC" "0" "a real zero equals a real zero"
+
 # 6. A non-null accessibility service list differs from the null expectation, and matches a recorded one.
 run FAKE_SERVICES='com.harness/.Observer' --
 check "$RC" "1" "enabled service exits 1"

@@ -99,7 +99,11 @@ FONT_N=$(norm_null "$FONT_GOT")
 [ "$FONT_N" = "null" ] && FONT_N="1.0"
 FONT_W=$(norm_null "$WANT_FONT")
 [ "$FONT_W" = "null" ] && FONT_W="1.0"
-if awk -v a="$FONT_N" -v b="$FONT_W" 'BEGIN { exit !(a + 0 == b + 0) }'; then
+# awk treats any non-numeric text as 0 and a numeric prefix as its number, so only a plain decimal
+# on both sides may be compared numerically; anything else is a mismatch, never an OK.
+NUM_RE='^[0-9]+(\.[0-9]+)?$'
+if [[ "$FONT_N" =~ $NUM_RE ]] && [[ "$FONT_W" =~ $NUM_RE ]] \
+  && awk -v a="$FONT_N" -v b="$FONT_W" 'BEGIN { exit !(a + 0 == b + 0) }'; then
   ok font_scale
 else
   bad font_scale "$(trim "$FONT_GOT")" "$WANT_FONT"
