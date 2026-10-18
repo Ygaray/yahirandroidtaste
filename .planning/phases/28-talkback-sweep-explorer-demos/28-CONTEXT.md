@@ -131,3 +131,9 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
     - The observer shows the focus or announce event carrying the message text.
     - The message is never read twice.
   - **Cap:** this is cycle 2 of 3. If it fails, cycle 3 tries the other route, and a third failure escalates to Yahir.
+- **2026-10-18, ui-designer: C-1 acceptance confirmed after the final Gate-1 run (HEAD ca69f92):**
+  - **Accepted.** The ruling's purpose is met: the refusal is spoken once on every showing, 27 of 27, and 14 of 14 with TalkBack alone, never read twice.
+  - **The "observer event carries the text" clause was a proxy for that.** On the device, Compose's live-region event is a content-change event with `text=[]`, and TalkBack reads the node's description. That is a property of how Compose emits live regions, not a silent announcement. So the clause is satisfied in substance and is recorded here as a designer decision, not waived.
+  - **Residual risk for Gate-2:**
+    - It relies on the position-stability heuristic (300 ms / 6 frames / 1.5 s cap), proven on one TalkBack build (Samsung 15.1.01.1).
+    - Criterion 22 (explicit swipe focus, TalkBack alone) and the other four physical steps stay parked for Yahir.
