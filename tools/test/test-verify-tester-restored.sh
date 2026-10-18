@@ -133,6 +133,17 @@ done
 run -- --package com.harness.fixture_2.Sub
 check "$RC" "0" "a valid dotted package name with digits and underscores is accepted"
 
+# 10c. Only a plain USB serial is accepted: mDNS wireless names and other shapes are refused too.
+for bad_serial in 'adb-R5CT10XNKQN-abc123._adb-tls-connect._tcp' 'adb-XXXX-yyyy._adb-tls-connect._tcp.' \
+    'emulator-5554' 'R5CT10XNKQN;reboot' 'R5CT.10' 'host.local' '-s' 'R5CT10XNKQN extra'; do
+  run -- --serial "$bad_serial"
+  check "$RC" "2" "serial '$bad_serial' exits 2"
+  check "$(wc -c < "$LOG" | tr -d ' ')" "0" "serial '$bad_serial': the fake adb log is empty"
+done
+run -- --serial R5CT10XNKQN
+check "$RC" "0" "the plain USB serial is accepted"
+check_grep "$(cat "$LOG")" '^-s R5CT10XNKQN ' "a plain USB serial reaches adb"
+
 # 11. Usage errors.
 run -- --bogus
 check "$RC" "2" "unknown option exits 2"

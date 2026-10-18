@@ -16,8 +16,9 @@
 #   env ADB: the adb executable (default `adb`).
 #
 # Exit: 0 every check OK (RESTORED=yes); 1 any check differs (RESTORED=no);
-#       2 usage error (including a --package that is not a plain dotted package name), a wireless serial (host:port, refused before any adb call), or a device that
-#         cannot be read. 2 is INFRA, never a pass.
+#       2 usage error (including a --package that is not a plain dotted package name), a serial that
+#         is not a plain USB serial (host:port or an adb-*._adb-tls-connect._tcp mDNS name, refused
+#         before any adb call), or a device that cannot be read. 2 is INFRA, never a pass.
 set -euo pipefail
 
 ADB="${ADB:-adb}"
@@ -50,10 +51,11 @@ while [ "$#" -gt 0 ]; do
   esac
 done
 
-# The wireless personal phone is addressed as host:port; the tester is USB only.
-case "$SERIAL" in
-  *:*) die "refusing a wireless serial ($SERIAL): the tester is addressed by its USB serial only" ;;
-esac
+# Allowlist, not blocklist: the tester is addressed by its plain USB serial (letters and digits).
+# This rejects host:port (the wireless personal phone), adb-<serial>-<suffix>._adb-tls-connect._tcp
+# mDNS names, and anything with a dot, dash, underscore or shell metacharacter, before any adb call.
+[[ "$SERIAL" =~ ^[A-Za-z0-9]+$ ]] \
+  || die "refusing serial ($SERIAL): the tester is addressed by its plain USB serial only"
 
 adb_get(){ "$ADB" -s "$SERIAL" "$@"; }
 
