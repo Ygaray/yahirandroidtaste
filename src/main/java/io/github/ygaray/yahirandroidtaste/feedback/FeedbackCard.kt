@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.dismiss
 import androidx.compose.ui.semantics.invisibleToUser
@@ -150,6 +151,12 @@ internal fun FeedbackCard(
                 // One announcement per arriving card: every body is Polite and nothing it announces
                 // changes after arrival (D-07 [live-region]); the order is newest first (A11Y-01).
                 liveRegion = LiveRegionMode.Polite
+                // The name comes from the data, not from what is drawn: a back card of a collapsed
+                // deck clips its text out of the peek strip and the platform then exposes no text
+                // for it (Gate-1 C-5, an unnamed "Button" stop). A description replaces the merged
+                // text for speech, it is not appended, so the message is spoken once; the second
+                // line is part of the name because the replaced text would otherwise drop it.
+                contentDescription = feedbackCardName(item.message, item.supportingText)
                 traversalIndex = index.toFloat()
                 dismiss(label = dismissLabel) {
                     onDismiss()
@@ -285,6 +292,14 @@ private fun CollapsedBackTouchBlocker(modifier: Modifier) {
     Box(modifier = modifier.pointerInput(Unit) { })
 }
 
+/**
+ * The accessibility name of a card: the message, followed by the second line when there is one.
+ * Exactly the text the expanded card draws and speaks, so a card without a second line is named by
+ * its message alone and no label is ever spoken twice.
+ */
+private fun feedbackCardName(message: String, supportingText: String?): String =
+    if (supportingText.isNullOrBlank()) message else "$message, $supportingText"
+
 /** The three resting places of a swipe: off to the start side, in place, off to the end side. */
 private enum class FeedbackCardAnchor { Start, Settled, End }
 
@@ -346,7 +361,12 @@ private fun FeedbackCardRow(
                         label = undoLabel,
                         role = ActionButtonDefaults.ActionButtonRole.Neutral,
                         onClick = onUndo,
-                        modifier = Modifier.testTag(FEEDBACK_STACK_UNDO_TEST_TAG),
+                        // Same node as the button (one layout node, one semantics config), so it
+                        // adds no focus stop: the caller's label is its name even when the drawn
+                        // text is clipped away in a collapsed deck (Gate-1 C-5).
+                        modifier = Modifier
+                            .testTag(FEEDBACK_STACK_UNDO_TEST_TAG)
+                            .semantics { contentDescription = undoLabel },
                         emphasis = ActionButtonEmphasis.Text
                     )
                 }
