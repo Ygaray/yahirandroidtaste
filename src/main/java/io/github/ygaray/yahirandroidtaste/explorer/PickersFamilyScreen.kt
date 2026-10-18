@@ -36,7 +36,9 @@ import java.time.LocalTime
 
 // A hub-owned real identifying agent for the Explorer's PlaceMapPicker demos, so the Explorer's
 // tile requests are not satisfied by the harness package id and a wire check can tell the
-// fix from the normalized fallback.
+// fix from the normalized fallback. The `2.8` is the hub release line this agent identifies to OSM;
+// bump it with the version in the release ritual (ECOSYSTEM.md section 7) and in
+// ExplorerMapUserAgentTest, which pins the literal.
 internal const val EXPLORER_MAP_USER_AGENT =
     "YahirAndroidTasteExplorer/2.8 (+https://github.com/Ygaray/yahirandroidtaste)"
 

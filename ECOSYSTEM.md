@@ -601,6 +601,10 @@ rather than importing an unused pattern.)*
 - Removing/renaming a public composable, or changing a component's required parameters, is a
   **breaking change** → major-ish bump, human-gated. (The package rename in Phase 101 is itself such
   a break — every consumer import path changes.)
+- The release version is the git tag, so it is not readable from the code. One literal repeats it:
+  the Explorer's OSM user agent (`EXPLORER_MAP_USER_AGENT` in `explorer/PickersFamilyScreen.kt`,
+  pinned by `ExplorerMapUserAgentTest`). Bump both when the release line changes, so the agent the
+  gallery identifies itself with to OpenStreetMap stays accurate.
 - Each consumer pins **one tag** and repins on its own cadence; one hub release does not force every
   consumer to move at once.
 - The full, ordered ritual is **`~/.claude/context/workflows/repin.md` (§ Mechanism B)** — edit the
