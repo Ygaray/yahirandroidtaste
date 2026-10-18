@@ -21,7 +21,12 @@ private const val OSM_TILE_POLICY_URL = "https://operations.osmfoundation.org/po
 /** The hub's own prefs file for osmdroid; the consumer owns the request-property slots in it. */
 internal const val OSMDROID_PREFS_NAME = "yahirandroidtaste_osmdroid"
 
-/** Boolean the hub owns: set once a placeholder scan has completed on this install. */
+/**
+ * Boolean the hub owns: set once a placeholder scan has completed on this install. It does not
+ * suppress the first scan of each process (a blocked fetch can re-cache a placeholder, so every
+ * process looks once); it only stops later calls in the same process from retrying after a scan has
+ * succeeded. A failed scan leaves it unset so the next call retries.
+ */
 internal const val PREF_PLACEHOLDER_PURGED = "placeholder_tiles_purged"
 
 private const val TILE_CACHE_DB_NAME = "cache.db"
@@ -94,9 +99,11 @@ internal const val BLOCKED_PLACEHOLDER_PACKAGE_PREFIX = "com.example."
  *  3. **No bulk or offline tile pre-fetching.** This function calls no bulk-download or
  *     cache-manager API; it only configures where tiles are written once fetched. It also clears
  *     placeholder tiles that earlier blocked fetches cached ([purgePlaceholderTiles]): on the
- *     first call of each process and whenever the install flag [PREF_PLACEHOLDER_PURGED] is unset.
- *     That purge deletes only rows matching the placeholder fingerprint (size AND md5), is not keyed
- *     on a user-agent change, and uses no cache-manager or whole-cache wipe API.
+ *     first call of each process (a full `tiles` scan, run on a background thread so the main
+ *     thread never waits on it) and, on later calls, only while the install flag
+ *     [PREF_PLACEHOLDER_PURGED] is still unset. That purge deletes only rows matching the
+ *     placeholder fingerprint (size AND md5), is not keyed on a user-agent change, and uses no
+ *     cache-manager or whole-cache wipe API.
  *
  * `osmdroidBasePath` and `osmdroidTileCache` are pointed at the host app's private `cacheDir`
  * (never shared external storage) so no storage permission is required, tiles are confined to
