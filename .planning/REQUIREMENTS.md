@@ -30,15 +30,15 @@
 ### Accessibility
 
 - [x] **A11Y-01**: Each snackbar body is one merged node with `Role.Button`, `onClickLabel = openLabel`, a polite live region, Undo as a separate focusable child plus a custom action, and a Dismiss custom action / `dismiss` semantics; deck items stay in the tree newest-first (D-11).
-- [ ] **A11Y-02**: TalkBack sweep (999.2, scoped): a clickable ReceiptRow reads as one button with its expanded/collapsed state and Undo as a separate stop; the refused-undo "Couldn't undo" assertive live region is spoken; the saved-key summary reads as one item with Update/Clear as separate buttons; the Undo Center group header is a heading; the new sheet row targets announce their open label.
+- [x] **A11Y-02**: TalkBack sweep (999.2, scoped): a clickable ReceiptRow reads as one button with its expanded/collapsed state and Undo as a separate stop; the refused-undo "Couldn't undo" assertive live region is spoken; the saved-key summary reads as one item with Update/Clear as separate buttons; the Undo Center group header is a heading; the new sheet row targets announce their open label.
 
 ### Explorer and polish
 
-- [ ] **DEMO-02**: The whole Explorer renders in the pinned hub color scheme (999.3), and a hoisted `OutcomeSheet` `sheetState` demo calls `hide()`.
-- [ ] **DEMO-03**: The Explorer shows the stacked snackbar host (fire/burst/swipe/open demo) and the sheet go-to-item rows, in English and German; new public composables are registered in `ComponentRegistry`.
+- [x] **DEMO-02**: The whole Explorer renders in the pinned hub color scheme (999.3), and a hoisted `OutcomeSheet` `sheetState` demo calls `hide()`.
+- [x] **DEMO-03**: The Explorer shows the stacked snackbar host (fire/burst/swipe/open demo) and the sheet go-to-item rows, in English and German; new public composables are registered in `ComponentRegistry`.
 - [x] **POL-01**: The handled-by pill keeps its text inside its shape when it wraps at font scale 2.0 (corner radius capped when multi-line, or equivalent).
 - [x] **POL-02**: The Grammar (warn) handled-by dot stays clearly visible on the pill under dynamic color (contrast-safe dot).
-- [ ] **POL-03**: The map picker's user agent actually reaches the OSM tile server, and a blocked agent is never silent.
+- [x] **POL-03**: The map picker's user agent actually reaches the OSM tile server, and a blocked agent is never silent.
   - osmdroid 6.1.20's MAPNIK normalizes the UA to `<packageName>/<versionCode>` and ignores `userAgentValue`. So `configureOsmdroid` sets `additionalHttpRequestProperties["User-Agent"]` to the resolved caller UA after EVERY `load()` (internal, no API change).
   - The hub never writes the `osmdroid.additionalHttpRequestProperty.User-Agent` prefs key (SB owns it), and the caller param wins (test-pinned).
   - A blank or bare-package-name UA falls back to `"<pkg>/<versionName> (Android <sdk>)"`.
@@ -84,10 +84,10 @@
 | FOPEN-03 | Phase 27 | Complete |
 | POL-01 | Phase 27 | Complete |
 | POL-02 | Phase 27 | Complete |
-| POL-03 | Phase 28 | Pending |
-| A11Y-02 | Phase 28 | Pending |
-| DEMO-02 | Phase 28 | Pending |
-| DEMO-03 | Phase 28 | Pending |
+| POL-03 | Phase 28 | Complete |
+| A11Y-02 | Phase 28 | Complete |
+| DEMO-02 | Phase 28 | Complete |
+| DEMO-03 | Phase 28 | Complete |
 | SHIP-05 | Phase 29 | Pending |
 
 **Coverage:**

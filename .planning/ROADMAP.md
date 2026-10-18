@@ -47,7 +47,7 @@ locked (Yahir, 2026-10-17, via director@office): `.planning/research/v2.8-BRIEF.
 - [x] **Phase 25: Feedback target model & stack state** - `FeedbackTarget` on events and Undo history, `FeedbackStackState` + result contract, tracked undo through the store, the `FeedbackStackHost` entry point (D-08, D-09) (completed 2026-10-17)
 - [x] **Phase 26: Receipt-card stacked snackbar deck** - Direction A deck (max 3), tap-to-open with chevron, fan-out, swipe dismiss, timeouts with pause, merged-button semantics (D-01..D-07, D-11) (completed 2026-10-17)
 - [x] **Phase 27: Open from the sheet & Undo Center, pill fixes** - Label-less go-to-item rows in Receipt and Classic `OutcomeSheet` and in the Undo Center; handled-by pill at font scale 2.0 and a contrast-safe Grammar dot (D-09, D-10) (completed 2026-10-17)
-- [ ] **Phase 28: TalkBack sweep & Explorer demos** - Scoped TalkBack sweep on the TESTER (999.2), pinned hub scheme + `hide()` demo (999.3), stacked-snackbar and go-to-item demos in English and German
+- [x] **Phase 28: TalkBack sweep & Explorer demos** - Scoped TalkBack sweep on the TESTER (999.2), pinned hub scheme + `hide()` demo (999.3), stacked-snackbar and go-to-item demos in English and German (completed 2026-10-18)
 - [ ] **Phase 29: Docs & v2.8.0 cut readiness** - API/STYLE/INTEGRATION docs, additive `apiCheck`, full gates, long-string and Gate-1 device checks, then a `v2.8.0` proposal to Yahir (no tag cut by the agent)
 
 ## Phase Details
@@ -183,7 +183,7 @@ Plans:
      - The host `curl -A` probe with the exact resolved strings supports this check.
 
 **Notes**: Defects the sweep finds are fixed in this phase. Already in the code, so verify rather than rebuild: the hoisted-`sheetState` demo that calls `hide()` (`VoiceCommandFamilyScreen.kt`, added in `v2.7.0` `5206be9`, fixed in `v2.7.1` `a5b29eb`), and `heading()` on the Undo Center group label (`UndoGroupHeaderRow`). `HubSchemeScope` (`ReleaseDemos.kt`) wraps only the Receipt and tone demos today. Device work uses the TESTER (`R5CT10XNKQN`) only; after UAT, restore its density with `wm density 450`. If TalkBack can't be driven agentically, park those checks for Yahir; never waive them. Screencaps are kept for the owner.
-**Plans:** 7 plans
+**Plans:** 12/12 plans complete
 
 Plans:
 **Wave 1**

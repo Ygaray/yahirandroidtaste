@@ -2,20 +2,20 @@
 gsd_state_version: "1.0"
 milestone: v2.8
 milestone_name: Snackbar go-to-item + stacked feedback
-current_phase: 28
-current_phase_name: TalkBack sweep & Explorer demos
-status: executing
-stopped_at: Phase 27 complete, ready to plan Phase 28
-last_updated: "2026-10-17T20:50:30.756Z"
-last_activity: 2026-10-17
-last_activity_desc: Phase 28 execution started
-state_head: 48f73a80daf11812622cc00f8f3d3c86ed2826d7
+current_phase: 29
+current_phase_name: Docs & v2.8.0 cut readiness
+status: planning
+stopped_at: Phase 28 complete, ready to plan Phase 29
+last_updated: "2026-10-18T09:58:19.932Z"
+last_activity: 2026-10-18
+last_activity_desc: Phase 28 complete, transitioned to Phase 29
+state_head: 4346946964c9a4bb84df6f91e86daa0208d04d75
 progress:
   total_phases: 5
-  completed_phases: 3
-  total_plans: 22
-  completed_plans: 15
-  percent: 60
+  completed_phases: 4
+  total_plans: 27
+  completed_plans: 27
+  percent: 80
 ---
 
 # Project State
@@ -29,18 +29,18 @@ See: .planning/PROJECT.md (updated 2026-10-17)
 
 ## Current Position
 
-Phase: 28 (TalkBack sweep & Explorer demos) — EXECUTING
-Plan: 1 of 7
-Status: Executing Phase 28
-Last activity: 2026-10-17 — Phase 28 execution started
+Phase: 29 — Docs & v2.8.0 cut readiness
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-10-18 — Phase 28 complete, transitioned to Phase 29
 
-Progress: [██████░░░░] 60%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity (milestone v2.8):**
 
-- Total plans completed: 15
+- Total plans completed: 27
 - Average duration: - min
 - Total execution time: 0 hours
 - Previous milestone (v2.6): 19 plans across Phases 20-24
@@ -52,7 +52,7 @@ Progress: [██████░░░░] 60%
 | 25 | 5 | - | - |
 | 26 | 6 | - | - |
 | 27 | 4 | - | - |
-| 28 | - | - | - |
+| 28 | 12 | - | - |
 | 29 | - | - | - |
 
 **Recent Trend:**
@@ -127,7 +127,7 @@ Items acknowledged and carried forward, most recent first:
 ## Session Continuity
 
 Last session: 2026-10-17
-Stopped at: Phase 27 complete, ready to plan Phase 28
+Stopped at: Phase 28 complete, ready to plan Phase 29
 Resume file: None
 
 ## Operator Next Steps
