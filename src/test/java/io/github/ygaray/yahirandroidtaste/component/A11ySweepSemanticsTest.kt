@@ -40,7 +40,6 @@ import io.github.ygaray.yahirandroidtaste.theme.YahirAndroidTasteTheme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -381,6 +380,5 @@ class A11ySweepSemanticsTest {
                 assertFalse("$s: no normalization to the other form", batch.contains(other))
             }
         }
-        assertNotNull(style)
     }
 }

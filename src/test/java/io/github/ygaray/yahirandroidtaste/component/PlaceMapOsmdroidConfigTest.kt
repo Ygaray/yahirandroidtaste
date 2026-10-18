@@ -13,7 +13,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -515,8 +514,8 @@ class PlaceMapOsmdroidConfigTest {
         val mapBefore = requestProperties()
         mapBefore["X-Probe"] = "kept"
         configureOsmdroid(application, agentA)
-        // load() clears and refills the map from prefs: a surviving unrelated entry proves no reload.
-        assertSame(mapBefore, requestProperties())
+        // load() clears and refills the map from prefs: the surviving unrelated entry is the proof
+        // (the map instance itself is the same either way, so its identity proves nothing).
         assertEquals("kept", requestProperties()["X-Probe"])
         assertEquals(agentA, requestProperties()["User-Agent"])
     }
