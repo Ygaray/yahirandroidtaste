@@ -1,0 +1,49 @@
+# G1-8 restore record 2026-10-18T06:43:26Z
+$ bash tools/verify-tester-restored.sh --density 450 --font-scale 1.0 --services null   (run 1)
+OK density
+OK font_scale
+OK enabled_accessibility_services
+OK accessibility_enabled
+OK touch_exploration_enabled
+RESTORED=yes
+exit=0
+$ same again (run 2, the restore step is idempotent)
+OK density
+OK font_scale
+OK enabled_accessibility_services
+OK accessibility_enabled
+OK touch_exploration_enabled
+RESTORED=yes
+exit=0
+
+== tester baseline 2026-10-18T06:43:27Z serial=R5CT10XNKQN
+get-state: device
+model: SM-S908U  sdk: 35
+wakefulness:   mWakefulness=Awake
+keyguard:     isKeyguardShowing=false
+wm density:
+Physical density: 450
+wm size:
+Physical size: 1440x3088
+Override size: 1080x2316
+system font_scale: 1.0
+secure enabled_accessibility_services: null
+secure accessibility_enabled: 0
+secure touch_exploration_enabled: 0
+packages (talkback|example):
+package:com.samsung.android.accessibility.talkback
+package:com.example.yat28head
+package:com.example.yat28control
+package:com.example.yat28obs
+package:com.example.secondbrain
+foreground:   mCurrentFocus=Window{289e102 u0 com.sec.android.app.launcher/com.sec.android.app.launcher.activities.LauncherActivity}
+
+# installed on the tester after the run that this run added (left installed per the dispatch ruling, for Yahir to remove):
+com.example.yat28head versionName=versionName=1 versionCode=1 apk=package:/data/app/~~EGQmKsEUsFd6356dKTekNw==/com.example.yat28head-74bZ0UzFIhbO7gKzEJLHPQ==/base.apk
+com.example.yat28control versionName=versionName=1 versionCode=1 apk=package:/data/app/~~xhpKsLhZe9ekJSwks6lWBw==/com.example.yat28control-4ZV3vSCCCOfcryco1frapw==/base.apk
+com.example.yat28obs versionName=versionName=1 versionCode=1 apk=package:/data/app/~~rdxBIBi-Q3LjeV3553i6WA==/com.example.yat28obs-6puVJ-vU0-GL5Zf4DAnNGg==/base.apk
+Error: java.lang.SecurityException: Shell does not have permission to access user 150
+ com.android.server.am.ActivityManagerService.handleIncomingUser:16 android.app.ActivityManager.handleIncomingUser:5628 com.android.server.pm.PackageManagerShellCommand.translateUserId:24 
+# untouched: com.example.secondbrain package:com.example.secondbrain
+# TalkBack developer settings: 'Display speech output' toggled false -> true -> false (read back false); all other switches read back as at the start
+# stay_on_while_plugged_in: 15 (never changed)

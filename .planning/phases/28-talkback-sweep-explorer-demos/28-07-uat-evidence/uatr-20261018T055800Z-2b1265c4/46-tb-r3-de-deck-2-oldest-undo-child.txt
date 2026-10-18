@@ -1,0 +1,14 @@
+# TalkBack speech observation: r3-de-deck-2-oldest-undo-child
+# trigger: adb shell "nohup sh -c "am broadcast -a com.example.yat28obs.ACT --es text '*' --es act focus --ei idx 0 --ei x 740 --ei y 1970" >/dev/null 2>&1 &"   frames: 20 (screencap back to back, ~0.3 s apart)   host-start 1792305143.922917420 device-clock 1792305143 host-clock 1792305143
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: erie vier: Eintrag geandert und @ . > Double-tap to Eintrag offnen, Actions available, swipe up or swipe down and double-tap to activate,
+t+0.7s f02: berle vier: Eintrag geandert unc gespeichert {| Ruckgangig, Button
+t+2.7s f09: (no overlay)
+t+3.0s f10: berle vier: Eintrag geandert unc gespeichert {| Double-tap to activate
+t+5.2s f18: (no overlay)
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-18 00:32:23.884 I/P28A    (17055): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Rückgängig srcStateDesc=null
+10-18 00:32:23.923 I/SamsungTTS(29438): [Synthesize] text = SDCEe6b3a+EmDLBhYomSZSGAIiVH1z6ZFdvCGyHBrQk=
+10-18 00:32:24.080 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][89760b/1.87s]
+10-18 00:32:26.308 I/SamsungTTS(29438): [Synthesize] text = g52myyBucG+0rLyegMvELEuhkriL4ur05ZQvIln21oc=
+10-18 00:32:26.486 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][99360b/2.07s]

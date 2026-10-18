@@ -1,0 +1,61 @@
+Phase 28 Gate-1 re-verification, gap cycle 2 of 3 (plan 28-11), driven results, tester R5CT10XNKQN, HEAD ad6784c
+harness com.example.yat28head md5 873e1df29d8fdf551b2f3fcdcb081e3a (AAR md5 b75b14b641f5c9fd1c9d07ee027a7187); observer com.example.yat28obs md5 8ca991e1341991a9d1072460b9eafe49 (also logs TYPE_VIEW_FOCUSED events now)
+Times are the device clock 2026-10-18 00:01 to 00:43 (host 2026-10-18 06:00 to 06:43 UTC).
+
+== C-1: refused-undo message, Voice Command > OutcomeSheet > "Success, loud undo-refused substate (VUNDO-01)" ==
+Method as the earlier runs: TalkBack (Samsung 15.1.01.1) with its developer switch "Display speech output" on (overlay frames OCR-read), plus the observer's events, plus the Samsung TTS requests.
+NEW this run: the TTS log lines "[Synthesize] text = <encrypted>" are kept, so identical utterances can be counted by their (identical) encrypted text, not only by their length.
+
+Result per showing (25 valid showings; tally in 62-r3-c1-tally-all-showings-final.txt):
+  TalkBack ALONE (observer not bound, the real user setup): 13 valid showings, spoken 13 of 13, every one spoken MORE THAN ONCE
+  (one round, alone-4, was not a showing: I did not send BACK, the sheet of round 3 was still open and the taps landed inside it; excluded).
+  observer bound, focus first then ACTION_CLICK: 4 of 4 spoken, 4 of 4 more than once.
+  observer bound, focus first then two real taps: 4 of 4 spoken, 4 of 4 more than once.
+  observer bound, two real taps without prior focus (confounded by the first tap's focus speech): 4 of 4 spoken, 4 of 4 more than once.
+In EVERY showing the TTS log has TWO synthesis requests of the same encrypted text (a 349440 byte / 7.28 s utterance, 7.4 to 9.0 s apart: the second is queued behind the first, with the 1.42 s "Bottom Sheet" between them when it is spoken), and the overlay line of each utterance shows the phrase
+  "Couldn't undo: Item changed since, Card deleted changed since, Couldn't undo: Item changed since, Card deleted changed since"
+  i.e. the phrase TWICE inside one utterance. So the message is spoken as two utterances with the phrase twice in each (four copies; the visible sheet draws the message once, screen 05).
+  (Earlier, with explicit focus, the same message was ONE 4.13 s utterance with the phrase once: first-run transcript 69.)
+Observer events at the sheet appearance (all rounds with the observer bound, identical in shape):
+  TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] desc=null cls=android.view.View srcLive=2 srcText=null srcLabel="Couldn't undo: ... / Couldn't undo: ..."   (the live-region event; event text still EMPTY; about 0.5 s before the focus events)
+  TYPE_VIEW_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.ViewGroup srcLabel="Close sheet / Logged 2 items"            (input focus, first on the sheet container)
+  TYPE_VIEW_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=2 srcLabel="Couldn't undo ... / Couldn't undo ..."   (input focus on the refusal node: the new focus event, about 3 ms later)
+  TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] ... srcLive=2                                                                   (a second live-region content change, changeTypes 0)
+  TYPE_VIEW_ACCESSIBILITY_FOCUSED srcLabel="Drag handle" (TalkBack first lands on the drag handle), then 4 to 40 ms later
+  TYPE_VIEW_ACCESSIBILITY_FOCUSED cls=android.view.View srcLive=2 srcLabel="Couldn't undo ... / Couldn't undo ..."                  (TalkBack's accessibility focus ends on the refusal node)
+  Every event's own `text` is [] and `contentDescription` is null; the message is reachable only through the source node (its two child nodes).
+Tree of the refusal node with the sheet open (evidence 04): n d=10 cls=android.view.View b=45,1942,1035,2136 focusable=true a11yFocusable=true live=2 children=2 acts=[2 (clear focus):|256:|512:|128:|131072:]
+  child 1: cls=android.view.View desc="Couldn't undo: Item changed since, Card deleted changed since" (the new explicit contentDescription, exposed as its own node)
+  child 2: cls=android.widget.TextView text="Couldn't undo: Item changed since, Card deleted changed since" (the drawn Text)
+  TalkBack builds the name from both children, so the message is in the name twice; and it speaks that name twice (live-region announcement plus the focus read).
+Compared with the previous run (06399f7a / 950399e): spoken 6 of 22 and 0 of 5 on TalkBack alone, then; now 25 of 25 spoken (the focus route works) but never once: every showing is read twice, each reading with the phrase doubled.
+
+== C-5 / collapsed deck, English (Feedback > FeedbackStackHost; Dismiss all, then Burst x4; 3 visible cards) ==
+observer dump (evidence 29), focusable nodes in tree order:
+  View b=104,249,976,288 (oldest card strip) a11yFocusable=true label 'Burst two / Undo'  acts=[256|512|64|16:Open item|131072|1048576:Dismiss|2131230721:Undo|2131230722:Dismiss]
+  View b=376,260,520,288 (that card's Undo child) focusable=true a11yFocusable=true label 'Undo' acts=[1|256|512|64|16|131072]
+  (middle strip View b=75,288,1005,327: imp=false a11yFocusable=false, NOT in the focus order; its acts remain [1048576:Dismiss|2131230721:Dismiss])
+  View b=45,327,1035,485 (front card) a11yFocusable=true label 'Burst four / Burst four' acts=[256|512|64|16:Open item|131072|1048576:Dismiss|2131230721:Dismiss]
+  No focusable node has an empty label (the previous run: the oldest card's Undo child and the oldest strip were unnamed).
+TalkBack speech per stop (point-targeted ACTION_ACCESSIBILITY_FOCUS, one-finger swipe navigation cannot be driven; evidence 33 to 42):
+  oldest strip: "Burst two, Button" then the hint "Double-tap to Open item, Actions available, ..."   (named, once; its text is clipped so only the description is spoken)
+  oldest Undo child: "Undo, Button" then "Double-tap to activate"                                    (named, once)
+  middle strip point (540,308): no node, no focus event, no speech
+  front card: "Burst four, Button, Burst four" then the hint ...   x4 identical (40, 41, 42 and 36)  => the message is spoken TWICE at this stop. (Previous run: "Button, Burst four", once.)
+  front card with Undo (after "Note with Undo and target"): "Item deleted, Button, Item deleted" (twice, evidence 52); its Undo child "Undo, Undo, Button" (twice, evidence 53).
+Front card actions with an Undo event: acts=[16:Open item|1048576:Dismiss|2131230721:Undo|2131230722:Dismiss] plus a separate Undo child node (evidence 51): Open, Undo, Dismiss all present (system + custom Dismiss).
+Fanned deck (real tap on the oldest strip, TalkBack off; evidence 31, screen 32): 'Burst two / Burst two / Undo / Undo', Undo child 'Undo / Undo', 'Burst three / Burst three', 'Burst four / Burst four': three cards and the Undo child all focusable and named; the screen shows Burst two Undo >, Burst three, Burst four >. The fan collapses by itself after about 3 s idle, and TalkBack cannot fan the deck (no touch pass-through with TalkBack on), so the SPEECH of a fanned card could not be recorded; the node structure is the same as the collapsed front card (a description child plus the text), whose speech is doubled.
+
+== C-5 / collapsed deck, German (Serie x4) ==
+observer dump (evidence 43): oldest strip View b=104,1945,976,1984 label 'Serie zwei: Eintrag entfernt / Serie zwei: Eintrag entfernt / Rückgängig' acts=[16:Eintrag öffnen|1048576:Verwerfen|2131230721:Rückgängig|2131230722:Verwerfen]; Undo child View b=620,1956,866,1984 label 'Rückgängig'; front View b=45,2023,1035,2181; middle strip View b=75,1984,1005,2023 imp=false a11yFocusable=false (hidden).
+speech (evidence 45 to 48): oldest strip "Serie zwei: Eintrag entfernt, Serie zwei: Eintrag entfernt, Button" (DOUBLED in German: its text is partly drawn); oldest Undo child "Rückgängig, Button" (once); middle point silent; front card "Serie vier: Eintrag geändert und gespeichert, Button, Serie vier: Eintrag geändert und gespeichert" (DOUBLED).
+fanned (evidence 49, screen 50): 'Serie zwei ...', Undo 'Rückgängig / Rückgängig', 'Serie drei: Hinweis ohne Ziel', 'Serie vier ...' all focusable and named.
+
+== C-2 smoke (UndoCenterScreen > go-to-item rows) ==
+observer (evidence 54): row A is ONE node View b=0,1611,1080,1814 click=true lclick=true a11yFocusable=true label 'Changed item A / 0 minutes ago / Undo' acts=[1|64|16:Open item A|32:Preview]; Undo is a separate node View b=804,1645,967,1780 click=true a11yFocusable=true acts=[1|64|16].
+real tap on the row body: Opened: none -> Opened: demo-row-a, and the row keeps its Undo. Hold 4.5 s: the lifted peek card "Changed item A" (screen 55) and the readout stays "Opened: none". Undo tap: row A turns "Undone", readout stays "Opened: none" (screen 56). Keyboard: on a fresh page TAB x24 reached the row, ENTER gave "Opened: demo-row-a" (screen 57).
+D-11 / D-07 smoke: see the deck dumps above: the Undo is a separate child with its custom action (2131230721:Undo on the card); both the system 1048576:Dismiss and the custom Dismiss on the visible cards, English and German (Verwerfen).
+
+== Restore ==
+bash tools/verify-tester-restored.sh --density 450 --font-scale 1.0 --services null printed RESTORED=yes twice; density never changed (physical 450, size override 1080x2316 untouched), font scale never changed; TalkBack developer switches back to the recorded eight values.
+Operator slips (all mine, none affects a verdict): alone-4 was not a showing (no BACK before it); the first fclick attempt hit BACK on the Voice Command page (no sheet open); one pf.sh focus on an already-focused node produced no speech (re-run after moving focus); a few of my own commands were refused by the guard as uninspectable (listed in the SELF-UAT).

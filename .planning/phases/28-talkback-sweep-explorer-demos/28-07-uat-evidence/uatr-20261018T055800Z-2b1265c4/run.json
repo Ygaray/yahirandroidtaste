@@ -1,0 +1,631 @@
+{
+  "schema": "gsd.uat-run/v1",
+  "run_id": "uatr-20261018T055800Z-2b1265c4",
+  "status": "finished",
+  "phase": "28",
+  "plan": "07",
+  "prefix": "28-07",
+  "surface": "android",
+  "project": "sha:df197faf5105af0ed516c727e2aafb44f5ef5743:.",
+  "phase_dir": "phases/28-talkback-sweep-explorer-demos",
+  "required_surface": {
+    "surface": "android",
+    "source": "marker:AGENT-DEVICE-TESTING.md"
+  },
+  "surface_override": null,
+  "device": {
+    "addr": "R5CT10XNKQN",
+    "serial": "R5CT10XNKQN",
+    "model": "SM-S908U",
+    "label": null
+  },
+  "app": {
+    "package": "com.example.yat28head",
+    "apk_path": "/data/app/~~EGQmKsEUsFd6356dKTekNw==/com.example.yat28head-74bZ0UzFIhbO7gKzEJLHPQ==/base.apk",
+    "apk_sha256": "b1a0dd4d1eda1cdc53622eff3c86bf8eb7c0d9e3e44366a7c0c113da4533a4f9"
+  },
+  "head_at_start": "ad6784c1b4f8606019526db1d363fdf7aa56125f",
+  "started_at": "2026-10-18T05:58:00.727Z",
+  "finished_at": "2026-10-18T06:44:21.596Z",
+  "capture_count": 66,
+  "captures": [
+    {
+      "label": "run3-g10-baseline-before",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "01-run3-g10-baseline-before.txt",
+      "sha256": "cf3c0582404fc7abd3970943608831ba76681bbab2b7441ad8aa9efdfe2332d7",
+      "bytes": 739,
+      "at": "2026-10-18T05:58:09.802Z"
+    },
+    {
+      "label": "run3-build-identity",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "02-run3-build-identity.txt",
+      "sha256": "09d700f1bef9700c1b767e198fab34ab9ad4dc4c2bd8bb14bd570077d58c72aa",
+      "bytes": 1925,
+      "at": "2026-10-18T05:58:10.091Z"
+    },
+    {
+      "label": "run3-tb-developer-switches-before-display-speech-on",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "03-run3-tb-developer-switches-before-display-speech-on.xml",
+      "sha256": "ec7faf8c34cb8f81a7d3d2771bfee2ab53903fe6512f1dda5ee824a8e532f187",
+      "bytes": 34429,
+      "at": "2026-10-18T05:59:45.260Z"
+    },
+    {
+      "label": "r3-c1-observer-dump-refusal-node-two-children",
+      "kind": "log",
+      "source": "cli",
+      "file": "04-r3-c1-observer-dump-refusal-node-two-children.log",
+      "sha256": "cbd38d1fb3ad6a97fd09cc819ebffb1ad8158e0e58384386bd511eac80d1b461",
+      "bytes": 10705,
+      "at": "2026-10-18T06:23:13.869Z"
+    },
+    {
+      "label": "r3-c1-refused-sheet-open-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "05-r3-c1-refused-sheet-open-screen.png",
+      "sha256": "951360bec88cd9b6bd7d9b6223a5c15954feb82fadf8c93ff9bd613207f4b383",
+      "bytes": 187701,
+      "at": "2026-10-18T06:23:14.635Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "06-tb-r3-c1-alone-1.txt",
+      "sha256": "b6cdf3419a4c48d04770de61bfbc4d2f88b521b967f1088855c23b7d37d86911",
+      "bytes": 1175,
+      "at": "2026-10-18T06:23:58.241Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "07-tb-r3-c1-alone-2.txt",
+      "sha256": "43e2459bed1b5b09dfcfdd132161310087ee953b0681c685ad261ee43f48471f",
+      "bytes": 1175,
+      "at": "2026-10-18T06:23:58.431Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "08-tb-r3-c1-alone-3.txt",
+      "sha256": "e2a8510429b15158f71c6e29ca877df6ef006344fa1c882df7b7b8388a24242c",
+      "bytes": 1175,
+      "at": "2026-10-18T06:23:58.645Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "09-tb-r3-c1-alone-4.txt",
+      "sha256": "37125b26596dd9e5f371c6d17633c9f5938ae3818a000c4a12b2b0a756d5844f",
+      "bytes": 554,
+      "at": "2026-10-18T06:23:58.827Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-5",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "10-tb-r3-c1-alone-5.txt",
+      "sha256": "0e85c03fff1553e00657fb2f354deb1c3cb91c6ddb4f966667706f811b1c2c9c",
+      "bytes": 1013,
+      "at": "2026-10-18T06:23:59.013Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-6",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "11-tb-r3-c1-alone-6.txt",
+      "sha256": "f1c7b0df06ce32366de473c0cc69d82b1952b8deb723163f2d299f0af30b07c1",
+      "bytes": 1175,
+      "at": "2026-10-18T06:23:59.221Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-7",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "12-tb-r3-c1-alone-7.txt",
+      "sha256": "604384f648465b6f82009887e1628d1a9b6464967b61e0ea4a559aa878bde69e",
+      "bytes": 1175,
+      "at": "2026-10-18T06:23:59.423Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-8",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "13-tb-r3-c1-alone-8.txt",
+      "sha256": "f95746872ee84d9d758ad94c3e5681ab54263d01e632f6246199910b2c7d4ed7",
+      "bytes": 1175,
+      "at": "2026-10-18T06:23:59.638Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-9",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "14-tb-r3-c1-alone-9.txt",
+      "sha256": "a8ba7d21569fd76ac859274700abf3949ea66cb8e837118da5f4ddb93c2586a3",
+      "bytes": 1175,
+      "at": "2026-10-18T06:23:59.853Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-10",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "15-tb-r3-c1-alone-10.txt",
+      "sha256": "6ae25b2d3c2cc326adaf0a2208f50b78ab72fe3f8c3758922358c25b992c44d2",
+      "bytes": 1176,
+      "at": "2026-10-18T06:24:00.052Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-11",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "16-tb-r3-c1-alone-11.txt",
+      "sha256": "a34468207cf3ffdd1a2e23b11e1c6141b3a903e4ee121501bb028cc78f8d85b2",
+      "bytes": 1176,
+      "at": "2026-10-18T06:24:00.237Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-12",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "17-tb-r3-c1-alone-12.txt",
+      "sha256": "a6aa21d57e9aca0e6942780b3f634a2925b2dd72c52cf89190b617d941ceb341",
+      "bytes": 1176,
+      "at": "2026-10-18T06:24:00.426Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-13",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "18-tb-r3-c1-alone-13.txt",
+      "sha256": "89de1da1f159567444006d72036a61fd3509748781cf72ee9afe6cb076ac122e",
+      "bytes": 1176,
+      "at": "2026-10-18T06:24:00.619Z"
+    },
+    {
+      "label": "tb-r3-c1-alone-14",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "19-tb-r3-c1-alone-14.txt",
+      "sha256": "cc9b5766ecb91b60d26705c24bb354d78c0ff8b69fb1b5887e89fb15970018db",
+      "bytes": 1176,
+      "at": "2026-10-18T06:24:00.809Z"
+    },
+    {
+      "label": "tb-r3-c1-fclick-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "20-tb-r3-c1-fclick-1.txt",
+      "sha256": "99ecedf8fb2adae9f21754f682c89d3f53d72156a3ca0728b4ae60e97098c55b",
+      "bytes": 3727,
+      "at": "2026-10-18T06:24:01.018Z"
+    },
+    {
+      "label": "tb-r3-c1-fclick-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "21-tb-r3-c1-fclick-2.txt",
+      "sha256": "837716f3f4483a88d747a03877f322bb3e3b48fd3dc3f05e5529660543a4a656",
+      "bytes": 3727,
+      "at": "2026-10-18T06:24:01.199Z"
+    },
+    {
+      "label": "tb-r3-c1-fclick-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "22-tb-r3-c1-fclick-3.txt",
+      "sha256": "b9379abb55a2315a412c2c70b08a435cbe76f2ce6c955222d8b60ef77ee61747",
+      "bytes": 3727,
+      "at": "2026-10-18T06:24:01.393Z"
+    },
+    {
+      "label": "tb-r3-c1-fclick-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "23-tb-r3-c1-fclick-4.txt",
+      "sha256": "dd3ada7b9b973adbb81c1567c4ed7461bacfe83811c692ebc542f3d25f159cac",
+      "bytes": 3856,
+      "at": "2026-10-18T06:24:01.581Z"
+    },
+    {
+      "label": "tb-r3-c1-ftaps-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "24-tb-r3-c1-ftaps-1.txt",
+      "sha256": "de2c7d24536fe1c57bb32d6e949f195ed805892ee7045edf6d921e4d6bbaf940",
+      "bytes": 3273,
+      "at": "2026-10-18T06:24:01.782Z"
+    },
+    {
+      "label": "tb-r3-c1-ftaps-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "25-tb-r3-c1-ftaps-2.txt",
+      "sha256": "ba4eeec5a84b81915f1db5d2bb8ef30e2caae60182a2fc36b68953b1156e2a21",
+      "bytes": 3273,
+      "at": "2026-10-18T06:24:01.997Z"
+    },
+    {
+      "label": "tb-r3-c1-ftaps-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "26-tb-r3-c1-ftaps-3.txt",
+      "sha256": "bb4067468f1b41be829febdd1703c45fafb6a722acddbb9d1eeca1c198b86b7a",
+      "bytes": 3534,
+      "at": "2026-10-18T06:24:02.291Z"
+    },
+    {
+      "label": "tb-r3-c1-ftaps-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "27-tb-r3-c1-ftaps-4.txt",
+      "sha256": "ae8c0f9bb12d7feb5ddcf66e02090d9fd86de107c1115661d2941b1e066bfe49",
+      "bytes": 3516,
+      "at": "2026-10-18T06:24:02.476Z"
+    },
+    {
+      "label": "r3-c1-tally-all-showings",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "28-r3-c1-tally-all-showings.txt",
+      "sha256": "50568c0af7c5326ba515267bae65590be9ce7bf5fe86093d5fa11399b4c4ea43",
+      "bytes": 4078,
+      "at": "2026-10-18T06:24:02.670Z"
+    },
+    {
+      "label": "r3-en-collapsed-deck-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "29-r3-en-collapsed-deck-observer-dump.log",
+      "sha256": "169dfc182d83df955e7e9b6867d5c8fb00933fb680c035b6009cfb26d55b7790",
+      "bytes": 27474,
+      "at": "2026-10-18T06:25:37.385Z"
+    },
+    {
+      "label": "r3-en-collapsed-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "30-r3-en-collapsed-deck-screen.png",
+      "sha256": "f324931347cc5d85c4d90e368be29295ebffe2abcf44a07cdfa4cefbd23285c1",
+      "bytes": 160723,
+      "at": "2026-10-18T06:25:38.100Z"
+    },
+    {
+      "label": "r3-en-fanned-deck-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "31-r3-en-fanned-deck-observer-dump.log",
+      "sha256": "31df79940e618a6e014a056e5f40c81abfb53b8986f5cc5e91e5a16041e57ac9",
+      "bytes": 38044,
+      "at": "2026-10-18T06:28:51.355Z"
+    },
+    {
+      "label": "r3-en-fanned-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "32-r3-en-fanned-deck-screen.png",
+      "sha256": "39205c2a23871a8bab182f269d3fce563b957e814aef309da60541218eb82250",
+      "bytes": 152583,
+      "at": "2026-10-18T06:28:56.698Z"
+    },
+    {
+      "label": "tb-r3-en-deck-1-oldest-strip",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "33-tb-r3-en-deck-1-oldest-strip.txt",
+      "sha256": "f1c00c63b5fb60d85cf1edca6c94be2f7abed83cb4ee8d7897bc795baf95fd91",
+      "bytes": 1477,
+      "at": "2026-10-18T06:29:13.318Z"
+    },
+    {
+      "label": "tb-r3-en-deck-2-oldest-undo-child",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "34-tb-r3-en-deck-2-oldest-undo-child.txt",
+      "sha256": "d2bf7fb93847dceb9926bb5509386c8f5710e372faa1279a86d05b73c2f0f522",
+      "bytes": 1365,
+      "at": "2026-10-18T06:29:13.552Z"
+    },
+    {
+      "label": "tb-r3-en-deck-3-middle-strip-point",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "35-tb-r3-en-deck-3-middle-strip-point.txt",
+      "sha256": "f4cbc546b11a5adb1e296b1d0c635d89a9e674a54ae934a336b824da1dcc5a02",
+      "bytes": 668,
+      "at": "2026-10-18T06:29:13.782Z"
+    },
+    {
+      "label": "tb-r3-en-deck-4-front-card",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "36-tb-r3-en-deck-4-front-card.txt",
+      "sha256": "2960b93960469994859714a5f79cf1417975a041103b201591ed40936396ef57",
+      "bytes": 1471,
+      "at": "2026-10-18T06:29:14.010Z"
+    },
+    {
+      "label": "tb-r3-en-deck-1-oldest-strip-b",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "37-tb-r3-en-deck-1-oldest-strip-b.txt",
+      "sha256": "dff17bae3fffe7fd6176ef855b6ac7f61ecd8a8a44456626363ad27fa2a62439",
+      "bytes": 1665,
+      "at": "2026-10-18T06:31:17.941Z"
+    },
+    {
+      "label": "tb-r3-en-deck-1-oldest-strip-c",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "38-tb-r3-en-deck-1-oldest-strip-c.txt",
+      "sha256": "1abc40bea997bf19f5af952b7ba5539468ae94ac1209f8eb0350035087f33006",
+      "bytes": 1562,
+      "at": "2026-10-18T06:31:18.176Z"
+    },
+    {
+      "label": "tb-r3-en-deck-1-oldest-strip-d",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "39-tb-r3-en-deck-1-oldest-strip-d.txt",
+      "sha256": "1a8d1cae186372680a69093cdc958ff1f3976d53bbaa9165addd1ac2d7fe4ebc",
+      "bytes": 1562,
+      "at": "2026-10-18T06:31:18.408Z"
+    },
+    {
+      "label": "tb-r3-en-deck-4-front-card-b",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "40-tb-r3-en-deck-4-front-card-b.txt",
+      "sha256": "c77bc21901b8162cc77fb7a6cc220a8ddb8a6de48f31d52378f4977bb2d1195e",
+      "bytes": 1556,
+      "at": "2026-10-18T06:31:18.637Z"
+    },
+    {
+      "label": "tb-r3-en-deck-4-front-card-c",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "41-tb-r3-en-deck-4-front-card-c.txt",
+      "sha256": "6ad4dfb4f9062dea657b251ebd23b5f7846c274cc0062d5a0b1e2c8922ae1760",
+      "bytes": 1474,
+      "at": "2026-10-18T06:31:18.871Z"
+    },
+    {
+      "label": "tb-r3-en-deck-4-front-card-d",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "42-tb-r3-en-deck-4-front-card-d.txt",
+      "sha256": "9e3fb9f3b7a66eb340672742441b9405d119295d9768ffee6b0ae6837e83aeae",
+      "bytes": 1474,
+      "at": "2026-10-18T06:31:19.101Z"
+    },
+    {
+      "label": "r3-de-collapsed-deck-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "43-r3-de-collapsed-deck-observer-dump.log",
+      "sha256": "f6602e2152279dbe9c8aa52c01094688686930afc91bd9859c7943f2bad6dfde",
+      "bytes": 15588,
+      "at": "2026-10-18T06:32:00.955Z"
+    },
+    {
+      "label": "r3-de-collapsed-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "44-r3-de-collapsed-deck-screen.png",
+      "sha256": "8438a24eec4780d33280bed5fc5c11cc3b80906fd8eb02617c8d838b31daf2b8",
+      "bytes": 148417,
+      "at": "2026-10-18T06:32:01.602Z"
+    },
+    {
+      "label": "tb-r3-de-deck-1-oldest-strip",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "45-tb-r3-de-deck-1-oldest-strip.txt",
+      "sha256": "7fadaf1cdbb6e6b93f110ffec0eb005d2b915fe01b740bd4e4ce03578778c127",
+      "bytes": 1852,
+      "at": "2026-10-18T06:33:08.382Z"
+    },
+    {
+      "label": "tb-r3-de-deck-2-oldest-undo-child",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "46-tb-r3-de-deck-2-oldest-undo-child.txt",
+      "sha256": "19bc342741175f614d390190309baff70b985d442bb45e554ad051fc6d572e6c",
+      "bytes": 1621,
+      "at": "2026-10-18T06:33:08.634Z"
+    },
+    {
+      "label": "tb-r3-de-deck-3-middle-strip-point",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "47-tb-r3-de-deck-3-middle-strip-point.txt",
+      "sha256": "83fe4ba5fa376acabc842100a8feb57fe13d79a890ca723e539850a293e34b4e",
+      "bytes": 669,
+      "at": "2026-10-18T06:33:08.896Z"
+    },
+    {
+      "label": "tb-r3-de-deck-4-front-card",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "48-tb-r3-de-deck-4-front-card.txt",
+      "sha256": "ab6795efb337f58fe26f95eb5c4a87491d499478685773e122feaed89c6d19d2",
+      "bytes": 1555,
+      "at": "2026-10-18T06:33:09.136Z"
+    },
+    {
+      "label": "r3-de-fanned-deck-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "49-r3-de-fanned-deck-observer-dump.log",
+      "sha256": "ca4e46072cc4ea07d8cbfe220cba3333d78c36dc34c58b29e56a8da122705fbd",
+      "bytes": 28905,
+      "at": "2026-10-18T06:33:22.492Z"
+    },
+    {
+      "label": "r3-de-fanned-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "50-r3-de-fanned-deck-screen.png",
+      "sha256": "ce6689c0288aa373cd75f8e0e43f604d4dc87d7c3f9cd8990d6d70704e60dd17",
+      "bytes": 168232,
+      "at": "2026-10-18T06:33:27.902Z"
+    },
+    {
+      "label": "r3-en-front-with-undo-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "51-r3-en-front-with-undo-observer-dump.log",
+      "sha256": "4365fa38650c55b90c2e8d30a44ca4d9f0790d94a108d1a1de110f798693aa0e",
+      "bytes": 29952,
+      "at": "2026-10-18T06:33:56.245Z"
+    },
+    {
+      "label": "tb-r3-en-deck-5-front-with-undo",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "52-tb-r3-en-deck-5-front-with-undo.txt",
+      "sha256": "3522f50736b0252c58b8cc41cd701334f6a3c402e8cfbb4cc1a6febcfbaf120c",
+      "bytes": 1755,
+      "at": "2026-10-18T06:34:38.710Z"
+    },
+    {
+      "label": "tb-r3-en-deck-6-front-undo-child",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "53-tb-r3-en-deck-6-front-undo-child.txt",
+      "sha256": "d70cb4ae2b054cbaa4cf17cf36180b9aa5edeea585c82ef6a706465531eaa646",
+      "bytes": 1480,
+      "at": "2026-10-18T06:34:38.920Z"
+    },
+    {
+      "label": "r3-uc-go-to-item-rows-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "54-r3-uc-go-to-item-rows-observer-dump.log",
+      "sha256": "86f1e36d493534774f54edc2176e9075d57b4c2493ad2cc8b75359d6887bb5a2",
+      "bytes": 16614,
+      "at": "2026-10-18T06:35:50.535Z"
+    },
+    {
+      "label": "r3-uc-en-hold-peek-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "55-r3-uc-en-hold-peek-screen.png",
+      "sha256": "71d116e62d475cef5a1d3534b518065af9c3fbeb23129ff7640ab8be151b1267",
+      "bytes": 192450,
+      "at": "2026-10-18T06:36:34.871Z"
+    },
+    {
+      "label": "r3-uc-en-after-undo-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "56-r3-uc-en-after-undo-screen.png",
+      "sha256": "1a2735c969bd4c77342a8aac50602e34a980b4fe1b782e4c8b8e2ee40950b82e",
+      "bytes": 188713,
+      "at": "2026-10-18T06:36:57.226Z"
+    },
+    {
+      "label": "r3-uc-en-keyboard-enter-opened-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "57-r3-uc-en-keyboard-enter-opened-screen.png",
+      "sha256": "7ab15e677ec38214b8985e520100b6d865ecf5a97fd056e83efd1396ba746cfb",
+      "bytes": 182990,
+      "at": "2026-10-18T06:38:45.153Z"
+    },
+    {
+      "label": "tb-r3-c1-cold-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "58-tb-r3-c1-cold-1.txt",
+      "sha256": "f3a6d31a2dddb60f6e76b8213628436c9d5d6497617efd34b2708d87f2205728",
+      "bytes": 3931,
+      "at": "2026-10-18T06:42:33.625Z"
+    },
+    {
+      "label": "tb-r3-c1-cold-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "59-tb-r3-c1-cold-2.txt",
+      "sha256": "bc5f8b02a6bb52b157c75758456039e04229d3ae5d061ce207f10aa62a003649",
+      "bytes": 4009,
+      "at": "2026-10-18T06:42:33.860Z"
+    },
+    {
+      "label": "tb-r3-c1-cold-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "60-tb-r3-c1-cold-3.txt",
+      "sha256": "ba9258a78885afe962efc5ce348d175a1beced4ac6dea97a6b1970cd4eff825b",
+      "bytes": 3797,
+      "at": "2026-10-18T06:42:34.089Z"
+    },
+    {
+      "label": "tb-r3-c1-cold-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "61-tb-r3-c1-cold-4.txt",
+      "sha256": "54e99e2285b3e8196a3344d62fddb2c3279e4e338e58d5a3550f43af8d6b170a",
+      "bytes": 4053,
+      "at": "2026-10-18T06:42:34.300Z"
+    },
+    {
+      "label": "r3-c1-tally-all-showings-final",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "62-r3-c1-tally-all-showings-final.txt",
+      "sha256": "b9438da8cfc7d2f2c59f09fc187b80745bcd4204c364799a9e64b3d4feda8fc7",
+      "bytes": 4789,
+      "at": "2026-10-18T06:42:34.520Z"
+    },
+    {
+      "label": "run3-driven-results-running-log",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "63-run3-driven-results-running-log.txt",
+      "sha256": "df884d2bc9609729a88c4cb10672b8790f27b406d18d123e804c5eda4be0678d",
+      "bytes": 9735,
+      "at": "2026-10-18T06:44:16.235Z"
+    },
+    {
+      "label": "run3-g18-restore-record-oracle-twice-and-readback",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "64-run3-g18-restore-record-oracle-twice-and-readback.txt",
+      "sha256": "997cc0f4507c81dbfdb7735e546e0daae519b7fdf5ca46214d0bd0a53502ab09",
+      "bytes": 2368,
+      "at": "2026-10-18T06:44:16.437Z"
+    },
+    {
+      "label": "run3-tb-developer-switches-after-restore",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "65-run3-tb-developer-switches-after-restore.xml",
+      "sha256": "ec7faf8c34cb8f81a7d3d2771bfee2ab53903fe6512f1dda5ee824a8e532f187",
+      "bytes": 34429,
+      "at": "2026-10-18T06:44:16.666Z"
+    },
+    {
+      "label": "run3-tb-developer-switches-display-speech-on",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "66-run3-tb-developer-switches-display-speech-on.xml",
+      "sha256": "acd40704011771ab9344f60a8cc5bb4a2a4ef048270bc308f61f1ae81af5cad6",
+      "bytes": 34428,
+      "at": "2026-10-18T06:44:16.850Z"
+    }
+  ],
+  "sig": {
+    "alg": "HMAC-SHA256",
+    "value": "59abccccecb1148098a747491ebac5337fa0da7aa8079f3b9b1d41b113d2a31c"
+  }
+}

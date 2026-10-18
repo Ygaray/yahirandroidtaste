@@ -1,0 +1,37 @@
+# Phase 28 Gate-1 re-verification, gap cycle 2 (28-11), C-1 refusal message: per-showing tally
+# HEAD ad6784c, AAR md5 b75b14b641f5c9fd1c9d07ee027a7187, harness APK md5 873e1df29d8fdf551b2f3fcdcb081e3a, observer md5 8ca991e1341991a9d1072460b9eafe49
+# message-utterances = Samsung TTS synthesis requests of the refusal text: [Synthesize] generation done lines of 349440 bytes / 7.28 s (the encrypted text of every one of them is the same string 'blndMGaYLtVK2Or4...'; the earlier single-copy message was a 198240 byte / 4.13 s utterance)
+# overlay-copies = how many times the phrase "Couldn't undo: Item changed since, Card deleted changed since" appears in ONE overlay line of the TalkBack 'Display speech output' transcript (the overlay shows what TalkBack speaks)
+# sheet-name = a 1.42 s utterance (the pane title 'Bottom Sheet')
+# SPOKEN = at least one message-utterance. READ-ONCE would need exactly 1 utterance with 1 overlay copy.
+
+## alone -- TalkBack ALONE, observer NOT bound (the real user setup): one real tap focuses Show sheet, wait 6 s, two quick real taps (double tap)
+out-r3-c1-alone-1: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=0
+out-r3-c1-alone-2: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=0
+out-r3-c1-alone-3: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=0
+out-r3-c1-alone-4: NOT A SHOWING (operator error: the sheet of round 3 was still open, no BACK was sent, so the taps landed inside the open sheet; excluded from the tally)
+out-r3-c1-alone-5: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=0  (the synth-request line of the first utterance fell before the logcat clear; its 'generation done' line is there)
+out-r3-c1-alone-6: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=0
+out-r3-c1-alone-7: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=0
+out-r3-c1-alone-8: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=0
+out-r3-c1-alone-9: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=0
+out-r3-c1-alone-10: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=0
+out-r3-c1-alone-11: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=0
+out-r3-c1-alone-12: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=0
+out-r3-c1-alone-13: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=0
+out-r3-c1-alone-14: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=0
+TALLY alone: showings=13 spoken=13 spoken-more-than-once=13
+
+## fclick -- observer bound: TalkBack focus on Show sheet via ACTION_ACCESSIBILITY_FOCUS, wait 6 s, ACTION_CLICK
+out-r3-c1-fclick-1: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=1
+out-r3-c1-fclick-2: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=1
+out-r3-c1-fclick-3: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=1
+out-r3-c1-fclick-4: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=1
+TALLY fclick: showings=4 spoken=4 spoken-more-than-once=4
+
+## ftaps -- observer bound: TalkBack focus on Show sheet via ACTION_ACCESSIBILITY_FOCUS, wait 6 s, two quick real taps
+out-r3-c1-ftaps-1: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=1
+out-r3-c1-ftaps-2: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=1
+out-r3-c1-ftaps-3: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=1
+out-r3-c1-ftaps-4: SPOKEN+TWICE  message-utterances=2  overlay-copies-in-one-line=2  sheet-name-utterances=1
+TALLY ftaps: showings=4 spoken=4 spoken-more-than-once=4

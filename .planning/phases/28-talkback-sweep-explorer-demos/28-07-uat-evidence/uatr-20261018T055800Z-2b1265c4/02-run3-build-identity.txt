@@ -1,0 +1,11 @@
+Phase 28 Gate-1 re-verification, gap cycle 2 (28-11). Built 2026-10-18T05:58:09Z
+HEAD=ad6784c1b4f8606019526db1d363fdf7aa56125f src-changes=0
+exit=0
+b75b14b641f5c9fd1c9d07ee027a7187  /home/yahir/.m2/repository/com/github/Ygaray/yahirandroidtaste/1.10.0/yahirandroidtaste-1.10.0.aar
+AAR under test: mavenLocal com.github.Ygaray:yahirandroidtaste:1.10.0 deleted then 'clean publishReleasePublicationToMavenLocal --no-daemon -q' at HEAD ad6784c (git status --short src tools empty). Previous (cycle-1 re-run) AAR md5 06399f7a3d4624373de59d0d5af8e02a at 950399e.
+Harness com.example.yat28head rebuilt (--refresh-dependencies): 873e1df29d8fdf551b2f3fcdcb081e3a  /tmp/claude-1000/-home-yahir-Projects-Reusable-android-yahirandroidtaste/cfae8b42-f068-499e-9d28-6d6749c3bca4/scratchpad/p28/head.apk
+Installed APK pulled back from the device: 873e1df29d8fdf551b2f3fcdcb081e3a  /tmp/claude-1000/-home-yahir-Projects-Reusable-android-yahirandroidtaste/cfae8b42-f068-499e-9d28-6d6749c3bca4/scratchpad/p28/installed-head3.apk
+sha256 prefix of installed head: b1a0dd4d1eda1cdc
+New-build-only symbol in the installed APK dex strings: OutcomeSheetKt$awaitSheetSettled (6 string hits in classes6.dex of the new APK, 0 in the cycle-1 re-run APK, md5 e008b40072d32bec8d11e89dfdc52240); the AAR classes.jar of the new build has OutcomeSheetKt$awaitSheetSettled$1.class, the old AAR has none.
+Observer com.example.yat28obs REBUILT this run (logs TYPE_VIEW_FOCUSED events too): 8ca991e1341991a9d1072460b9eafe49  /tmp/claude-1000/-home-yahir-Projects-Reusable-android-yahirandroidtaste/cfae8b42-f068-499e-9d28-6d6749c3bca4/scratchpad/p28/obs3.apk; installed copy: 8ca991e1341991a9d1072460b9eafe49  /tmp/claude-1000/-home-yahir-Projects-Reusable-android-yahirandroidtaste/cfae8b42-f068-499e-9d28-6d6749c3bca4/scratchpad/p28/installed-obs3.apk (previous observer md5 97b8a97454a183c894ac9ee6622dd292).
+Control harness (v2.7.1) not rebuilt or touched.

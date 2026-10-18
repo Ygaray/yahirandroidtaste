@@ -1,0 +1,22 @@
+# TalkBack speech observation: r3-c1-ftaps-4
+# trigger: adb shell "input tap 217 1488; input tap 217 1488"   frames: 50 (screencap back to back, ~0.3 s apart)   host-start 1792304552.329163383 device-clock 1792304552 host-clock 1792304552
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.5s f01: (no overlay)
+t+0.8s f02: Bottom Sheet
+t+2.3s f07: Couldn't undo: Item changed since, Card deleted changed since, Couldn't undo: Item changed since, Card deleted changed since
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-18 00:22:32.377 I/P28A    (17055): event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] desc=null cls=android.view.View srcLive=2 srcText=null srcLabel=Couldn't undo: Item changed since, Card deleted changed since srcStateDesc=null
+10-18 00:22:32.444 I/SamsungTTS(29438): [Synthesize] text = aFFcw8ly5dy3IOmh1KamMA==
+10-18 00:22:32.565 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][68160b/1.42s]
+10-18 00:22:32.619 I/P28A    (17055): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=0 text=[] desc=null cls=androidx.compose.material3.ModalBottomSheetDialogWrapper srcLive=0 srcText=null srcLabel= srcStateDesc=null
+10-18 00:22:32.646 I/P28A    (17055): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=0 text=[] desc=null cls=androidx.compose.material3.ModalBottomSheetDialogWrapper srcLive=0 srcText=null srcLabel= srcStateDesc=null
+10-18 00:22:32.680 I/P28A    (17055): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=16 text=[Bottom Sheet] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Drag handle / Logged 2 items / Undo all (2) / Card deleted / Tag removed / Couldn't un
+10-18 00:22:32.867 I/P28A    (17055): event type=TYPE_VIEW_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.ViewGroup srcLive=0 srcText=null srcLabel=Close sheet / Logged 2 items srcStateDesc=null
+10-18 00:22:32.875 I/P28A    (17055): event type=TYPE_VIEW_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=2 srcText=null srcLabel=Couldn't undo: Item changed since, Card deleted changed since / Couldn't undo: Item changed since, Card del
+10-18 00:22:32.878 I/P28A    (17055): event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=2 srcText=null srcLabel=Couldn't undo: Item changed since, Card deleted changed since / Couldn't undo: Item changed since
+10-18 00:22:32.880 I/P28A    (17055): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Drag handle srcStateDesc=null
+10-18 00:22:32.903 I/P28A    (17055): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=2 srcText=null srcLabel=Couldn't undo: Item changed since, Card deleted changed since / Couldn't undo: Item changed s
+10-18 00:22:33.941 I/SamsungTTS(29438): [Synthesize] text = blndMGaYLtVK2Or4VJMebW/q/Ri4nHHVrVP0bXrJMlHmWiUA9QCleV8wZkUgTYVJBuxdjdNqjuQb
+10-18 00:22:34.653 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][349440b/7.28s]
+10-18 00:22:41.318 I/SamsungTTS(29438): [Synthesize] text = blndMGaYLtVK2Or4VJMebW/q/Ri4nHHVrVP0bXrJMlHmWiUA9QCleV8wZkUgTYVJBuxdjdNqjuQb
+10-18 00:22:42.050 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][349440b/7.28s]

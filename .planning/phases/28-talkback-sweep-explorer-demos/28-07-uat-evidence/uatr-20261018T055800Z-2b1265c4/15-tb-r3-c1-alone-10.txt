@@ -1,0 +1,10 @@
+# TalkBack speech observation: r3-c1-alone-10
+# trigger: adb shell "input tap 217 1488; input tap 217 1488"   frames: 50 (screencap back to back, ~0.3 s apart)   host-start 1792304191.008204742 device-clock 1792304190 host-clock 1792304191
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: (no overlay)
+t+1.0s f03: Couldn't undo: Item changed since, Card deleted changed since, Couldn't undo: Item changed since, Card deleted changed since
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-18 00:16:31.250 I/SamsungTTS(29438): [Synthesize] text = blndMGaYLtVK2Or4VJMebW/q/Ri4nHHVrVP0bXrJMlHmWiUA9QCleV8wZkUgTYVJBuxdjdNqjuQb
+10-18 00:16:31.978 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][349440b/7.28s]
+10-18 00:16:38.644 I/SamsungTTS(29438): [Synthesize] text = blndMGaYLtVK2Or4VJMebW/q/Ri4nHHVrVP0bXrJMlHmWiUA9QCleV8wZkUgTYVJBuxdjdNqjuQb
+10-18 00:16:39.366 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][349440b/7.28s]
