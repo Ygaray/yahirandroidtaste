@@ -242,7 +242,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 29-03-PLAN.md — `docs/STYLE.md` v2.8 deck, go-to-item, pill and TalkBack rules; `STYLE.REVERTED.md` entries; `AGENT-DEVICE-TESTING.md` note; STYLE guard test (SHIP-05)
+- [x] 29-03-PLAN.md — `docs/STYLE.md` v2.8 deck, go-to-item, pill and TalkBack rules; `STYLE.REVERTED.md` entries; `AGENT-DEVICE-TESTING.md` note; STYLE guard test (SHIP-05)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -460,4 +460,4 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 | 26. Receipt-card stacked snackbar deck | v2.8 | 6/6 | Not started |  |
 | 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 4/4 | Not started |  |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 12/12 | Not started |  |
-| 29. Docs & v2.8.0 cut readiness | v2.8 | 2/6 | Not started |  |
+| 29. Docs & v2.8.0 cut readiness | v2.8 | 3/6 | Not started |  |
