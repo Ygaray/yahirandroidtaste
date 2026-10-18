@@ -18,7 +18,19 @@ import org.junit.Test
  */
 class Phase28HygieneSourceContractTest {
 
-    private val root = "src/main/java/io/github/ygaray/yahirandroidtaste/"
+    /** The main source root, found by walking up from the working directory (IDE or Gradle). */
+    private val root: String = run {
+        val relative = "src/main/java/io/github/ygaray/yahirandroidtaste/"
+        var dir: File? = File(".").absoluteFile
+        var depth = 0
+        while (dir != null && depth < 8) {
+            val candidate = File(dir, relative)
+            if (candidate.isDirectory) return@run candidate.path + File.separator
+            dir = dir.parentFile
+            depth++
+        }
+        error("Could not resolve $relative from ${File(".").absoluteFile}")
+    }
 
     private val configPath = "component/PlaceMapOsmdroidConfig.kt"
     private val pickerPath = "component/PlaceMapPicker.kt"
@@ -35,7 +47,9 @@ class Phase28HygieneSourceContractTest {
     private fun code(path: String): String = code(File(root + path))
 
     private fun explorerFiles(): List<File> =
-        File(root + "explorer").listFiles { f -> f.isFile && f.extension == "kt" }!!.sortedBy { it.name }
+        checkNotNull(File(root + "explorer").listFiles { f -> f.isFile && f.extension == "kt" }) {
+            "explorer source dir not found under $root"
+        }.sortedBy { it.name }
 
     private fun count(haystack: String, needle: String): Int =
         SourceContractTestSupport.countOccurrences(haystack, needle)
