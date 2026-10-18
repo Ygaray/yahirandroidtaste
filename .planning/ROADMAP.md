@@ -238,7 +238,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 29-02-PLAN.md — API.md sheet / Undo Center / POL-01..03 / compatibility scope and edited rows; INTEGRATION.md `(vi)` one app-level `onOpenTarget` and `5c` OSM tile policy; four guard tests (SHIP-05)
+- [x] 29-02-PLAN.md — API.md sheet / Undo Center / POL-01..03 / compatibility scope and edited rows; INTEGRATION.md `(vi)` one app-level `onOpenTarget` and `5c` OSM tile policy; four guard tests (SHIP-05)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -460,4 +460,4 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 | 26. Receipt-card stacked snackbar deck | v2.8 | 6/6 | Not started |  |
 | 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 4/4 | Not started |  |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 12/12 | Not started |  |
-| 29. Docs & v2.8.0 cut readiness | v2.8 | 1/6 | Not started |  |
+| 29. Docs & v2.8.0 cut readiness | v2.8 | 2/6 | Not started |  |
