@@ -127,7 +127,8 @@ private val CAMERA_FIT_BORDER: Dp = 32.dp
  *
  * [userAgent] should be an identifying agent of the form `AppName/version (+contact)` (D-06); a
  * blank agent is replaced by `<packageName>/<versionName> (Android <release>)` with a logged
- * warning, a bare package name is expanded the same way, and OSM blocks blank agents and
+ * warning, a bare package name is expanded the same way (silently, unless it is a placeholder
+ * application id, which logs the warning), and OSM blocks blank agents and
  * placeholder application ids (template ids such as the Android Studio default) with a 6987-byte
  * placeholder tile. [configureOsmdroid] runs before any `MapView` is constructed so every
  * consumer is OSM tile-policy compliant by default, including the host's own `INTERNET`

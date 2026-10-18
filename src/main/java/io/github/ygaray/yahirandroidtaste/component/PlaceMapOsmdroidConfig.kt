@@ -90,8 +90,9 @@ internal const val BLOCKED_PLACEHOLDER_PACKAGE_PREFIX = "com.example."
  * serve:
  *  1. **Identifying User-Agent.** [configureOsmdroid] always sets a non-blank `userAgentValue`
  *     ([resolveOsmdroidUserAgent] replaces a blank agent, or a bare package name, with
- *     `<packageName>/<versionName> (Android <release>)` and logs one warning), never osmdroid's
- *     library-default agent. The resolved agent is also injected as the `User-Agent` request
+ *     `<packageName>/<versionName> (Android <release>)`; a blank agent or a placeholder application
+ *     id logs one warning, a bare non-placeholder package name is expanded silently), never
+ *     osmdroid's library-default agent. The resolved agent is also injected as the `User-Agent` request
  *     property right after the single per-process `load()`, and re-applied without a reload on
  *     later calls when missing or different, because the MAPNIK tile source normalizes the agent
  *     to `<packageName>/<versionCode>` and ignores `userAgentValue`. `load()` is called at most
