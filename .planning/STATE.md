@@ -3,18 +3,18 @@ gsd_state_version: "1.0"
 milestone: v2.8
 milestone_name: Snackbar go-to-item + stacked feedback
 current_phase: 29
-current_phase_name: docs-v2-8-0-cut-readiness
+current_phase_name: Docs & v2.8.0 cut readiness
 status: executing
-stopped_at: Phase 28 complete, ready to plan Phase 29
-last_updated: "2026-10-18T10:38:07.382Z"
+stopped_at: Completed 29-01-PLAN.md
+last_updated: "2026-10-18T10:45:10.155Z"
 last_activity: 2026-10-18
-last_activity_desc: Phase 28 complete, transitioned to Phase 29
-state_head: fc405472ea87f5eae29226fdd7bcc37c4b727674
+last_activity_desc: Phase 29 execution started
+state_head: ebe8afb05f1ddc2cc82ca20c4e14d921dce6337e
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 33
-  completed_plans: 27
+  completed_plans: 28
   percent: 80
 ---
 
@@ -29,10 +29,10 @@ See: .planning/PROJECT.md (updated 2026-10-17)
 
 ## Current Position
 
-Phase: 29 (docs-v2-8-0-cut-readiness) — READY TO EXECUTE
-Plan: Not started
+Phase: 29 (Docs & v2.8.0 cut readiness) — EXECUTING
+Plan: 2 of 6
 Status: Ready to execute
-Last activity: 2026-10-18 — Phase 28 complete, transitioned to Phase 29
+Last activity: 2026-10-18 — Phase 29 execution started
 
 Progress: [████████░░] 80%
 
@@ -65,6 +65,7 @@ Progress: [████████░░] 80%
 
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
+| Phase 29 P01 | 12 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,7 @@ Recent decisions affecting current work:
 - Roadmap: already in the code, so Phase 28 verifies rather than rebuilds: the hoisted-`sheetState` demo that calls `hide()` (`VoiceCommandFamilyScreen.kt`, `5206be9` v2.7.0, `a5b29eb` v2.7.1) and `heading()` on the Undo Center group label (`UndoGroupHeaderRow`). `HubSchemeScope` (`ReleaseDemos.kt`) wraps only the Receipt and tone demos today.
 - Carried from v2.5: commits that re-signature a composable are classified lane 2 by the pre-commit hook, so use `HUB_LANE_OVERRIDE=2` (the detected lane). Regenerate `api.txt` in the same commit as the signature change.
 - Carried from v2.7.0: an experimental-typed param (e.g. a Material3 `@ExperimentalMaterial3Api` state) goes in a separate overload, not a defaulted param, so existing call sites need no opt-in.
+- [Phase 29]: 29-01: docs describe shipped source where plan text differs (UndoHistoryStore.append groupId is String? = null)
 
 ### Pending Todos
 
@@ -126,8 +128,8 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-18
-Stopped at: Phase 28 complete, ready to plan Phase 29
+Last session: 2026-10-18T10:45:09.949Z
+Stopped at: Completed 29-01-PLAN.md
 Resume file: None
 
 ## Operator Next Steps

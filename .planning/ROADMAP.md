@@ -234,7 +234,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 29-01-PLAN.md — tracer: v2.8.0 drift guard + API.md `Additions in v2.8.0` (target and stack half), Spanish handled-by pill Robolectric case (SHIP-05, D-03)
+- [x] 29-01-PLAN.md — tracer: v2.8.0 drift guard + API.md `Additions in v2.8.0` (target and stack half), Spanish handled-by pill Robolectric case (SHIP-05, D-03)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -460,4 +460,4 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 | 26. Receipt-card stacked snackbar deck | v2.8 | 6/6 | Not started |  |
 | 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 4/4 | Not started |  |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 12/12 | Not started |  |
-| 29. Docs & v2.8.0 cut readiness | v2.8 | 0/TBD | Not started | - |
+| 29. Docs & v2.8.0 cut readiness | v2.8 | 1/6 | Not started |  |
