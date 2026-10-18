@@ -24,7 +24,9 @@ import org.junit.Test
  *  - the v2.8.0 text names the member surface, the map agent guidance and the INTEGRATION wiring, and
  *    names no consumer app (Phase 29, SHIP-05);
  *  - the `### Additions in v2.8.0` section of `API.md` names every v2.8.0 target-and-stack symbol
- *    (Phase 29 tracer) inside that section, and `api.txt` still declares each one.
+ *    (Phase 29 tracer) inside that section, and `api.txt` still declares each one;
+ *  - `docs/STYLE.md` reaches v2.8, carries the deck, go-to-item and pill rules, and its TalkBack
+ *    section names the live-region route and no focus move (Phase 29, SHIP-05).
  */
 class CatalogDocsDriftGuardTest {
 
@@ -405,6 +407,54 @@ class CatalogDocsDriftGuardTest {
             forbidden.forEach { word ->
                 assertTrue("$name must not contain '$word'", !text.contains(word))
             }
+        }
+    }
+
+    /** The `docs/STYLE.md` text of section [number], from its `## N.` heading to the next `## ` heading. */
+    private fun styleSection(style: String, number: Int): String {
+        val lines = style.lines()
+        val prefix = "## $number. "
+        assertEquals("STYLE.md needs exactly one '$prefix' heading", 1, lines.count { it.startsWith(prefix) })
+        val start = lines.indexOfFirst { it.startsWith(prefix) }
+        val end = (start + 1 until lines.size).firstOrNull { lines[it].startsWith("## ") } ?: lines.size
+        val section = lines.subList(start, end).joinToString("\n")
+        assertTrue("STYLE.md section $number is empty (vacuity guard)", section.length > 200)
+        return section
+    }
+
+    @Test
+    fun `STYLE md carries the v2_8 deck and go-to-item rules and a current TalkBack section`() {
+        val style = doc("docs/STYLE.md")
+        assertTrue("STYLE.md is too short (vacuity guard): ${style.length}", style.length > 3000)
+
+        val header = style.substringBefore("## 1. ")
+        assertTrue("the STYLE.md header must reach v2.8", header.contains("v2.8"))
+
+        val colors = styleSection(style, 1)
+        val shape = styleSection(style, 2)
+        val sheets = styleSection(style, 4)
+        val feedback = styleSection(style, 5)
+        val signOff = styleSection(style, 7)
+
+        assertTrue("section 1 must state the 3:1 dot rule", colors.contains("3:1"))
+        assertTrue("section 2 must state the capped pill corner radius", shape.contains("capped"))
+        assertTrue("section 4 must name onOpenTarget", wholeWord("onOpenTarget").containsMatchIn(sheets))
+        listOf("FeedbackStackHost", "chevron", "swipe").forEach { word ->
+            assertTrue("section 5 must mention $word", feedback.contains(word, ignoreCase = true))
+        }
+
+        assertTrue("section 7 must name the live region", signOff.contains("live region"))
+        assertTrue("section 7 must list the physical gestures as Gate-2 owner steps", signOff.contains("Gate-2"))
+        assertTrue("section 7 must say the library does not move focus", signOff.contains("never moves focus"))
+        // Each forbidden literal is assembled from fragments so this source trips no source scanner.
+        val staleBacklog = "open as" + " backlog"
+        val focusMoves = listOf(
+            "takes accessibility" + " focus", "moves accessibility" + " focus",
+            "announce" + "ForAccessibility", "request" + "Focus"
+        )
+        assertTrue("section 7 still carries the stale backlog sentence", !signOff.contains(staleBacklog))
+        focusMoves.forEach { phrase ->
+            assertTrue("STYLE.md must not contain '$phrase'", !style.contains(phrase))
         }
     }
 
