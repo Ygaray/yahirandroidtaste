@@ -43,7 +43,8 @@ import org.robolectric.annotation.GraphicsMode
  * NATIVE graphics gives real font metrics and real wrapping. The semantics tree cannot show a shape,
  * so the geometry is checked on the outline the production accessor builds, against the measured
  * text box, and a source contract proves the pill uses that accessor. A control with `CircleShape`
- * must FAIL the same corner check, so the check cannot pass vacuously.
+ * must FAIL the same corner check, so the check cannot pass vacuously. The wrapped case runs in German
+ * and in Spanish at 360dp and font scale 2.0 (Phase 29, D-03 [spanish-check], Robolectric half).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35], qualifiers = "w360dp-h800dp")
@@ -56,7 +57,10 @@ class HandledByPillShapeTest {
     private val germanPrefix = "Bearbeitet von"
     private val germanTier = "Verarbeitung auf dem Gerät ohne Netzwerkverbindung"
     private val germanProvider = "Lokale Grammatik offline"
-    private val germanPillText = "$germanPrefix $germanTier · $germanProvider"
+
+    private val spanishPrefix = "Gestionado por"
+    private val spanishTier = "Procesamiento en el dispositivo sin conexión de red"
+    private val spanishProvider = "Gramática local sin conexión"
 
     /** The four corners of the pill text box in the painted rectangle's local space, plus the shape and density. */
     private class Measured(
@@ -74,7 +78,7 @@ class HandledByPillShapeTest {
         return results.single()
     }
 
-    private fun measureWrappedGermanPill(): Measured {
+    private fun measureWrappedPill(prefix: String, tier: String, provider: String): Measured {
         var shape: Shape? = null
         var density: Density? = null
         composeTestRule.setContent {
@@ -87,9 +91,9 @@ class HandledByPillShapeTest {
                         OutcomeSheetReceiptContent(
                             OutcomeFixtures.success(
                                 handledBy = OutcomeFixtures.handledBy(
-                                    prefixLabel = germanPrefix,
-                                    tier = germanTier,
-                                    provider = germanProvider,
+                                    prefixLabel = prefix,
+                                    tier = tier,
+                                    provider = provider,
                                     onDevice = true
                                 )
                             )
@@ -103,7 +107,7 @@ class HandledByPillShapeTest {
         val capturedDensity = checkNotNull(density)
         val pill = composeTestRule.onNodeWithTag("outcome_sheet_handled_by", useUnmergedTree = true)
             .fetchSemanticsNode()
-        val textInteraction = composeTestRule.onNodeWithText(germanPillText, useUnmergedTree = true)
+        val textInteraction = composeTestRule.onNodeWithText("$prefix $tier · $provider", useUnmergedTree = true)
         val text = textInteraction.fetchSemanticsNode()
 
         // The tag sits after the inner padding, so the tagged bounds are the CONTENT area; the painted
@@ -130,6 +134,11 @@ class HandledByPillShapeTest {
     private fun Outline.requireRounded() = this as? Outline.Rounded
         ?: error("expected Outline.Rounded but was $this")
 
+    private fun measureWrappedGermanPill(): Measured = measureWrappedPill(germanPrefix, germanTier, germanProvider)
+
+    private fun measureWrappedSpanishPill(): Measured =
+        measureWrappedPill(spanishPrefix, spanishTier, spanishProvider)
+
     @Test
     fun wrappedLongGermanPill_atFontScale2_keepsEveryTextCornerInsideTheShape() {
         val m = measureWrappedGermanPill()
@@ -143,6 +152,26 @@ class HandledByPillShapeTest {
     @Test
     fun controlCircleShape_failsTheSameCornerCheck_whenWrapped() {
         val m = measureWrappedGermanPill()
+        assertTrue("the pill must wrap to several lines, had ${m.textLineCount}", m.textLineCount > 1)
+
+        val outline = CircleShape.createOutline(m.paintedSize, LayoutDirection.Ltr, m.density).requireRounded()
+        val outside = m.textCorners.filterNot { outline.roundRect.contains(it) }
+        assertTrue("the CircleShape control must lose at least one corner, so the check is not vacuous", outside.isNotEmpty())
+    }
+
+    @Test
+    fun wrappedLongSpanishPill_atFontScale2_keepsEveryTextCornerInsideTheShape() {
+        val m = measureWrappedSpanishPill()
+        assertTrue("the pill must wrap to several lines, had ${m.textLineCount}", m.textLineCount > 1)
+
+        val outline = m.shape.createOutline(m.paintedSize, LayoutDirection.Ltr, m.density).requireRounded()
+        val outside = m.textCorners.filterNot { outline.roundRect.contains(it) }
+        assertTrue("every text corner must lie inside the painted shape, outside: $outside", outside.isEmpty())
+    }
+
+    @Test
+    fun controlCircleShape_failsTheSameCornerCheck_whenWrapped_inSpanish() {
+        val m = measureWrappedSpanishPill()
         assertTrue("the pill must wrap to several lines, had ${m.textLineCount}", m.textLineCount > 1)
 
         val outline = CircleShape.createOutline(m.paintedSize, LayoutDirection.Ltr, m.density).requireRounded()
