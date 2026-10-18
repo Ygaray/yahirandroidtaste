@@ -95,6 +95,22 @@ internal fun feedbackFannedCap(available: Int, imeOverlap: Int, floorPx: Int = 0
     return minOf(share, keyboardRoom).coerceAtLeast(0)
 }
 
+/** Least height of a card; a short card never goes below it. */
+internal val FEEDBACK_CARD_MIN_HEIGHT: Dp = 56.dp
+
+/**
+ * The tallest a card may measure in a host [available] px high that holds [count] cards: the host
+ * height minus one [peekPx] strip per older card, so the strips stay visible above the front card.
+ * The result never goes below [floorPx] (the card minimum), itself limited to [available], and is
+ * never negative. An unbounded [available] (`Constraints.Infinity`) stays `Constraints.Infinity`:
+ * a deck inside a scrolling parent is not clamped.
+ */
+internal fun feedbackCardMaxHeight(available: Int, count: Int, peekPx: Int, floorPx: Int): Int {
+    if (available == Constraints.Infinity) return Constraints.Infinity
+    val reserved = (count - 1).coerceAtLeast(0) * peekPx
+    return maxOf(available - reserved, minOf(floorPx, available)).coerceAtLeast(0)
+}
+
 /** Linear interpolation of two pixel values by [fraction] (0 gives [start], 1 gives [stop]). */
 internal fun feedbackLerp(start: Int, stop: Int, fraction: Float): Int =
     (start + (stop - start) * fraction).roundToInt()

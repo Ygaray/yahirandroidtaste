@@ -10,13 +10,16 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
@@ -78,6 +81,13 @@ internal const val FEEDBACK_STACK_DOT_TEST_TAG = "feedback_stack_dot"
  * directly. The root merges its descendants, so the Undo and Dismiss accessibility actions stay on
  * the root, Undo first.
  *
+ * A card whose content is taller than the space the deck gives it ([feedbackCardMaxHeight]) scrolls
+ * that content vertically inside itself, the 8dp padding included: no ellipsis and no line cap, and
+ * the card, its shadow and the peek strips stay where they are. A vertical drag scrolls the card and
+ * neither dismisses nor opens it; a horizontal drag still dismisses. A back card of a collapsed deck
+ * and a card with an unbounded height (a deck inside a scrolling parent) never scroll, and a short
+ * card has nothing to scroll, so it looks and measures as before.
+ *
  * The peek tap fans the deck wherever it lands on the strip, over an Undo included: a back card of a
  * collapsed deck keeps its Undo composed, measured and in the semantics tree (the semantic click and
  * the custom action still resolve it), but a semantics-free touch blocker sits above its content, so
@@ -116,6 +126,7 @@ internal fun FeedbackCard(
     val latestCollapsedBack by rememberUpdatedState(collapsedBack)
     val latestOpenTarget by rememberUpdatedState(openTarget)
     val travel = remember { PressTravel() }
+    val cardScroll = rememberScrollState()
     val density = LocalDensity.current
     // Seeded with the Settled anchor so the offset is a number from the very first frame; the Start
     // and End anchors arrive once the width is measured. Remembered per item id, so a list change
@@ -260,14 +271,26 @@ internal fun FeedbackCard(
             color = MaterialTheme.colorScheme.surfaceContainerHighest,
             shadowElevation = Dimens.Elevation.Level2
         ) {
-            FeedbackCardRow(
-                item = item,
-                undoLabel = undoLabel,
-                showUndo = item.hasUndo && !spent,
-                showChevron = openable,
-                openable = openable,
-                onUndo = onUndo
-            )
+            // propagateMinConstraints keeps the row at the card width and the Surface at its measured
+            // size. The scroll needs a bounded max height (a vertical scroll container throws on an
+            // infinite one) and is off while there is nothing to scroll, so a short card keeps its
+            // exact layout and adds no scroll pointer handling.
+            BoxWithConstraints(propagateMinConstraints = true) {
+                val scrollable = constraints.hasBoundedHeight && !collapsedBack
+                FeedbackCardRow(
+                    item = item,
+                    undoLabel = undoLabel,
+                    showUndo = item.hasUndo && !spent,
+                    showChevron = openable,
+                    openable = openable,
+                    onUndo = onUndo,
+                    modifier = if (scrollable) {
+                        Modifier.verticalScroll(cardScroll, enabled = cardScroll.maxValue > 0)
+                    } else {
+                        Modifier
+                    }
+                )
+            }
         }
         if (collapsedBack) {
             CollapsedBackTouchBlocker(Modifier.matchParentSize())
@@ -314,7 +337,6 @@ private class PressTravel {
 
 private val DotSize = 8.dp
 private val SlotGap = 12.dp
-private val CardMinHeight = 56.dp
 
 /**
  * The card's content row: tone dot, body, optional Undo, optional chevron, in that logical order.
@@ -329,7 +351,8 @@ private fun FeedbackCardRow(
     showUndo: Boolean,
     showChevron: Boolean,
     openable: Boolean,
-    onUndo: () -> Unit
+    onUndo: () -> Unit,
+    modifier: Modifier
 ) {
     // The dot mirrors interactivity: a spent card keeps its target but cannot open, so it goes quiet.
     val dotColor = if (openable) {
@@ -406,8 +429,9 @@ private fun FeedbackCardRow(
                 )
             }
         },
-        modifier = Modifier
-            .defaultMinSize(minHeight = CardMinHeight)
+        // The scroll modifier comes first so the 8dp padding scrolls together with the text.
+        modifier = modifier
+            .defaultMinSize(minHeight = FEEDBACK_CARD_MIN_HEIGHT)
             .padding(start = 16.dp, top = 8.dp, end = 8.dp, bottom = 8.dp)
     ) { measurables, constraints ->
         val dotMeasurable = measurables[0]

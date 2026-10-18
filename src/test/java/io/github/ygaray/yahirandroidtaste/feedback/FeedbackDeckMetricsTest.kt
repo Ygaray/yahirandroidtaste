@@ -114,6 +114,31 @@ class FeedbackDeckMetricsTest {
         assertEquals(180, feedbackFannedCap(available = 300, imeOverlap = 60, floorPx = 96))
     }
 
+    // ---- card max height (Phase 29 gap plan 07) ----
+
+    @Test
+    fun cardMaxHeight_unboundedHostStaysUnbounded() {
+        assertEquals(
+            Constraints.Infinity,
+            feedbackCardMaxHeight(available = Constraints.Infinity, count = 3, peekPx = 14, floorPx = 56)
+        )
+    }
+
+    @Test
+    fun cardMaxHeight_reservesOnePeekStripPerOlderCard() {
+        assertEquals(360, feedbackCardMaxHeight(available = 360, count = 1, peekPx = 14, floorPx = 56))
+        assertEquals(346, feedbackCardMaxHeight(available = 360, count = 2, peekPx = 14, floorPx = 56))
+        assertEquals(332, feedbackCardMaxHeight(available = 360, count = 3, peekPx = 14, floorPx = 56))
+        assertEquals(360, feedbackCardMaxHeight(available = 360, count = 0, peekPx = 14, floorPx = 56))
+    }
+
+    @Test
+    fun cardMaxHeight_neverBelowTheFloorOrTheHost() {
+        assertEquals(56, feedbackCardMaxHeight(available = 60, count = 3, peekPx = 14, floorPx = 56))
+        assertEquals(40, feedbackCardMaxHeight(available = 40, count = 3, peekPx = 14, floorPx = 56))
+        assertEquals(0, feedbackCardMaxHeight(available = 0, count = 3, peekPx = 14, floorPx = 56))
+    }
+
     @Test
     fun lerp_interpolatesBothEndsAndTheMiddle() {
         assertEquals(10, feedbackLerp(10, 30, 0f))

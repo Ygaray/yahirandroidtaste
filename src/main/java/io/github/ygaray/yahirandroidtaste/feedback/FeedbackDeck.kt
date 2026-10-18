@@ -56,6 +56,10 @@ private const val FAN_SETTLE_TIMEOUT_MILLIS = 2_000L
  * lowest at its natural height and every older card tucks behind it, its top edge one peek strip
  * above the next newer card, scaled about its top center and faded.
  *
+ * A card is never taller than the host height minus one peek strip per older card
+ * ([feedbackCardMaxHeight]); a card whose content is taller scrolls that content inside itself, so
+ * the deck never needs to scroll for it. An unbounded height is not clamped.
+ *
  * Collapsed, older cards are measured at the newest card's height, so a taller older card can never
  * show more than its strip or hang below the front card (the clamp). With [fanned] the cards spring
  * into a bottom-anchored column of natural-height cards, oldest on top, separated by
@@ -139,7 +143,13 @@ internal fun FeedbackDeck(
         // plain, uncapped deck.
         val capped = Modifier.fanHeightCap(fan, imeInsets) { spaceBelowPx }
         val container = if (constraints.hasBoundedHeight) capped.verticalScroll(scroll) else capped
-        DeckLayout(items = items, fan = fan, modifier = container, card = card)
+        DeckLayout(
+            items = items,
+            fan = fan,
+            hostMaxHeight = constraints.maxHeight,
+            modifier = container,
+            card = card
+        )
     }
 }
 
@@ -195,6 +205,7 @@ private fun Modifier.fanHeightCap(
 private fun DeckLayout(
     items: List<FeedbackStackItem>,
     fan: State<Float>,
+    hostMaxHeight: Int,
     modifier: Modifier,
     card: @Composable (item: FeedbackStackItem, index: Int) -> Unit
 ) {
@@ -211,14 +222,15 @@ private fun DeckLayout(
         modifier = modifier
     ) { measurables, constraints ->
         // The spring overshoots; a value outside 0..1 would place cards beyond both geometries.
-        measureDeck(measurables, constraints, fan.value.coerceIn(0f, 1f))
+        measureDeck(measurables, constraints, fan.value.coerceIn(0f, 1f), hostMaxHeight)
     }
 }
 
 private fun MeasureScope.measureDeck(
     measurables: List<Measurable>,
     constraints: Constraints,
-    progress: Float
+    progress: Float,
+    hostMaxHeight: Int
 ): MeasureResult {
     val count = measurables.size
     if (count == 0) {
@@ -230,7 +242,13 @@ private fun MeasureScope.measureDeck(
     val available = if (constraints.hasBoundedWidth) constraints.maxWidth else capPx
     val cardWidth = minOf(available, capPx)
     val deckWidth = constraints.constrainWidth(if (constraints.hasBoundedWidth) available else cardWidth)
-    val natural = Constraints(minWidth = cardWidth, maxWidth = cardWidth, maxHeight = constraints.maxHeight)
+    // The deck's own max height is infinite inside the container's vertical scroll, so the space a
+    // card may take comes from the host: its height minus the peek strips of the older cards.
+    val cardMaxHeight = minOf(
+        constraints.maxHeight,
+        feedbackCardMaxHeight(hostMaxHeight, count, peekPx, FEEDBACK_CARD_MIN_HEIGHT.roundToPx())
+    )
+    val natural = Constraints(minWidth = cardWidth, maxWidth = cardWidth, maxHeight = cardMaxHeight)
 
     val front = measurables[0].measure(natural)
     val placeables = buildList<Placeable> {
