@@ -1,7 +1,6 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,18 +22,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import io.github.ygaray.yahirandroidtaste.feedback.FeedbackTarget
@@ -274,47 +275,68 @@ internal fun UndoAffordanceBody(undo: UndoAffordanceUiModel, locked: Boolean) {
                 ?.let { ", $it ${refused.changedSinceSuffix}" }
                 ?: ""
             val refusedMessage = "${refused.refusedPrefix} ${refused.reason}$suffix"
-            val focusRequester = remember { FocusRequester() }
             val position = remember { RefusalPosition() }
-            // The one route that makes TalkBack read the refusal (Gate-1 C-1): once the sheet has
-            // settled, input focus moves to the message node, which Compose reports as a view-focused
-            // event that TalkBack follows with its accessibility focus. Keyed on the message itself
-            // (a value), so an equal state never asks twice and a new refusal asks once more.
+            // The message reaches speech through ONE mechanism: the Assertive live region of the
+            // surface, and only once the sheet has settled. The live-region event of a node that
+            // appears together with its sheet fires about 0.2 s before the sheet window exists and
+            // TalkBack drops it (Gate-1 C-1, evidence 20/70). So the surface is composed at once, for
+            // layout, but silent (no name, its drawn Text hidden from accessibility); when the sheet is
+            // at rest it is replaced by the same surface carrying the name: a new live-region node
+            // appearing after the window exists, which is the one event TalkBack speaks. No focus move
+            // and no announcement: a second mechanism on the same node was read a second time (Gate-1
+            // run 2). A different message later (a new refusal in the open sheet) is a new showing and
+            // goes the same way.
+            var spoken by remember { mutableStateOf(false) }
             LaunchedEffect(refusedMessage) {
-                awaitSheetSettled(position)
-                focusRequester.requestFocus()
+                spoken = false
+                awaitPositionAtRest(position)
+                spoken = true
             }
-            // Loud per VOUT-03's discipline: error-container surface, never AttentionCue.
-            Surface(
-                color = MaterialTheme.colorScheme.errorContainer,
-                contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                shape = MaterialTheme.expressive.cardShapeLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = Dimens.ContentSpacing)
-                    .testTag("outcome_sheet_undo_refused")
-                    // TalkBack announces the surface when it appears; semantics only (VXR-01, D-12).
-                    // Merging descendants gives the live-region node the message text: the change
-                    // event of an unmerged live-region node has empty text and TalkBack stays
-                    // silent (Gate-1 C-1, 28-07-SELF-UAT.md evidence 20/70).
-                    .semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Assertive }
-                    // The name is explicit so the node is never unnamed. A description replaces the
-                    // merged text for speech, it is not appended, so the focus move reads it once. The
-                    // live region stays (A11Y-02 item 2): its event fires about 0.2 s before the sheet
-                    // window exists and is mostly dropped, so the focus event is the read that counts;
-                    // if both fire, the focus read interrupts the live one rather than queueing a copy.
-                    .semantics { contentDescription = refusedMessage }
-                    .onGloballyPositioned { position.y = it.positionInWindow().y }
-                    .focusRequester(focusRequester)
-                    .focusable()
-            ) {
-                Text(
-                    text = refusedMessage,
-                    style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.padding(Dimens.HorizontalPadding)
-                )
+            ReplaceWhenChanged(spoken) {
+                // Loud per VOUT-03's discipline: error-container surface, never AttentionCue.
+                Surface(
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    shape = MaterialTheme.expressive.cardShapeLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = Dimens.ContentSpacing)
+                        .testTag("outcome_sheet_undo_refused")
+                        // TalkBack announces the surface when it appears; semantics only (VXR-01, D-12).
+                        // Merging descendants gives the live-region node the message text: the change
+                        // event of an unmerged live-region node has empty text and TalkBack stays
+                        // silent (Gate-1 C-1, 28-07-SELF-UAT.md evidence 20/70).
+                        .semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Assertive }
+                        // The explicit name is the ONLY speech source (the drawn Text below is hidden
+                        // from accessibility, a merging node would otherwise expose both and TalkBack
+                        // speaks both, Gate-1 C-6). It is absent until the sheet has settled.
+                        .semantics { if (spoken) contentDescription = refusedMessage }
+                        .onGloballyPositioned { position.y = it.positionInWindow().y }
+                ) {
+                    Text(
+                        text = refusedMessage,
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier
+                            .padding(Dimens.HorizontalPadding)
+                            .semantics { hideFromAccessibility() }
+                    )
+                }
             }
         }
+    }
+}
+
+/**
+ * Composes [content] and, when [flag] flips, composes it again as a NEW node instead of updating the
+ * old one. The two call sites of [content] are two groups, so a flip removes one and inserts the other.
+ * Used for the refusal surface: its accessibility event is the node appearing, not a property changing.
+ */
+@Composable
+private fun ReplaceWhenChanged(flag: Boolean, content: @Composable () -> Unit) {
+    if (flag) {
+        content()
+    } else {
+        content()
     }
 }
 
@@ -334,7 +356,7 @@ private const val SETTLE_STABLE_FRAMES = 6
  * Gives up after [SETTLE_MAX_MILLIS] so the message is always reached, even where the position never
  * stops changing. Reads the node's own geometry because the sheet state is not visible from here.
  */
-private suspend fun awaitSheetSettled(position: RefusalPosition) {
+private suspend fun awaitPositionAtRest(position: RefusalPosition) {
     val start = withFrameNanos { it }
     var last = Float.NaN
     var stableFrames = 0

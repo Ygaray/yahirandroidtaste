@@ -41,9 +41,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.dismiss
+import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.onClick
@@ -153,9 +155,11 @@ internal fun FeedbackCard(
                 liveRegion = LiveRegionMode.Polite
                 // The name comes from the data, not from what is drawn: a back card of a collapsed
                 // deck clips its text out of the peek strip and the platform then exposes no text
-                // for it (Gate-1 C-5, an unnamed "Button" stop). A description replaces the merged
-                // text for speech, it is not appended, so the message is spoken once; the second
-                // line is part of the name because the replaced text would otherwise drop it.
+                // for it (Gate-1 C-5, an unnamed "Button" stop). It is the ONE speech source of the
+                // card: a description is NOT a replacement for the merged text on the platform node,
+                // it becomes a child node next to every visible Text and TalkBack speaks both (Gate-1
+                // C-6), so the drawn lines below are hidden from accessibility. The second line is
+                // part of the name because the hidden lines no longer speak it.
                 contentDescription = feedbackCardName(item.message, item.supportingText)
                 traversalIndex = index.toFloat()
                 dismiss(label = dismissLabel) {
@@ -342,16 +346,22 @@ private fun FeedbackCardRow(
                     .testTag(FEEDBACK_STACK_DOT_TEST_TAG)
             )
             Column {
+                // The card root carries the spoken name once (feedbackCardName), so the two drawn lines
+                // are hidden from the platform node: a merging node exposes its own description as a
+                // child node and every visible descendant Text as another, and TalkBack speaks both
+                // (Gate-1 C-6). They stay drawn and stay in the semantics tree, only not in speech.
                 Text(
                     text = item.message,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.semantics { hideFromAccessibility() }
                 )
                 item.supportingText?.let { supporting ->
                     Text(
                         text = supporting,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.semantics { hideFromAccessibility() }
                     )
                 }
             }
@@ -363,10 +373,24 @@ private fun FeedbackCardRow(
                         onClick = onUndo,
                         // Same node as the button (one layout node, one semantics config), so it
                         // adds no focus stop: the caller's label is its name even when the drawn
-                        // text is clipped away in a collapsed deck (Gate-1 C-5).
+                        // text is clipped away in a collapsed deck (Gate-1 C-5). The name is the only
+                        // speech source: the button's own click, role and focus semantics stay on this
+                        // node, but its drawn label (a descendant) contributes none, otherwise the
+                        // platform tree holds the label twice and TalkBack reads "Undo, Undo" (C-6).
                         modifier = Modifier
                             .testTag(FEEDBACK_STACK_UNDO_TEST_TAG)
-                            .semantics { contentDescription = undoLabel },
+                            .semantics(mergeDescendants = true) {
+                                contentDescription = undoLabel
+                                role = Role.Button
+                                onClick {
+                                    onUndo()
+                                    true
+                                }
+                            }
+                            // Innermost of mine, so it clears what is inside it: the button's own
+                            // semantics and its drawn label, both re-declared above as the single name,
+                            // role and click. Everything outside it (the tag, the lines above) stays.
+                            .clearAndSetSemantics { },
                         emphasis = ActionButtonEmphasis.Text
                     )
                 }
