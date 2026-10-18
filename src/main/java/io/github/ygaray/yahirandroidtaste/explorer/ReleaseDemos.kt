@@ -924,7 +924,10 @@ internal fun GoToItemSheetDemos() {
     }
     shown?.let { demo ->
         val slideDown: () -> Unit = {
-            scope.launch { sheetState.hide() }.invokeOnCompletion { shown = null }
+            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                // a cancelled hide() (for example interrupted by a drag) leaves the sheet visible
+                if (!sheetState.isVisible) shown = null
+            }
         }
         HubSchemeScope {
             OutcomeSheet(
@@ -934,8 +937,11 @@ internal fun GoToItemSheetDemos() {
                 sheetState = sheetState,
                 onOpenTarget = { target ->
                     scope.launch { sheetState.hide() }.invokeOnCompletion {
-                        shown = null
-                        readout = "${localized(demo.german, "Opened", "Geöffnet")}: ${target.key}"
+                        // a cancelled hide() (for example interrupted by a drag) leaves the sheet visible
+                        if (!sheetState.isVisible) {
+                            shown = null
+                            readout = "${localized(demo.german, "Opened", "Geöffnet")}: ${target.key}"
+                        }
                     }
                 }
             )
