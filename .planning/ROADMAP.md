@@ -229,7 +229,32 @@ Plans:
   4. A `v2.8.0` proposal (commit sha, the `git log origin/main..HEAD` range, gate results) reaches Yahir through the teamlead. The agent creates no tag (neither `v2.8.0` nor a milestone marker), pushes nothing and repins no consumer from the hub.
 
 **Notes**: A tag push publishes every unpushed commit reachable from it, so the proposal lists the full unpushed range. Version, tag and sequencing confirmations route through the teamlead/orchestrator first.
-**Plans**: TBD
+**Plans:** 6 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 29-01-PLAN.md — tracer: v2.8.0 drift guard + API.md `Additions in v2.8.0` (target and stack half), Spanish handled-by pill Robolectric case (SHIP-05, D-03)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 29-02-PLAN.md — API.md sheet / Undo Center / POL-01..03 / compatibility scope and edited rows; INTEGRATION.md `(vi)` one app-level `onOpenTarget` and `5c` OSM tile policy; four guard tests (SHIP-05)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 29-03-PLAN.md — `docs/STYLE.md` v2.8 deck, go-to-item, pill and TalkBack rules; `STYLE.REVERTED.md` entries; `AGENT-DEVICE-TESTING.md` note; STYLE guard test (SHIP-05)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 29-04-PLAN.md — `tools/verify-junit-fresh.sh` and `tools/verify-publish-range.sh` with fixture tests; classify the scan hits and neutralize the shipped-path tailnet fixture address (SHIP-05, D-01)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 29-05-PLAN.md — Gate-1 on the TESTER: fresh rung-1 battery, Spanish/German long-string probe at 360dp and font 2.0 with a throwaway harness, restore oracle, SELF-UAT and Gate-2 fragment (SHIP-05, D-03)
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [ ] 29-06-PLAN.md — release-flip commit (README.md, CLAUDE.md to v2.8.0), forced-fresh battery on that commit, unpushed-range scan, `29-PROPOSAL.md` (no tag, no push) (SHIP-05, D-01, D-02)
 
 ## Completed Milestones
 
