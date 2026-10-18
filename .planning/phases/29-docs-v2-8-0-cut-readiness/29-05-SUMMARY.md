@@ -3,7 +3,7 @@ phase: 29-docs-v2-8-0-cut-readiness
 plan: 05
 subsystem: testing
 tags: [gate-1, self-uat, tester-device, long-string, spanish, german, font-scale-2, release-gate]
-status: blocked
+status: complete
 requires:
   - phase: 29-04
     provides: "tools/verify-junit-fresh.sh and tools/verify-publish-range.sh, the forced-fresh battery as plain commands"
@@ -99,3 +99,26 @@ Other flags: the tester's Samsung edge-panel overlay (a grey pencil button at th
 ## Next
 
 Plan 29-06 may proceed only if `uat-run verify` reported verified AND no criterion failed. The run verified, but SC3 failed, so 29-06 must NOT proceed: run gap closure for SC3, re-run this Gate-1, then 29-06.
+
+
+## Re-verification 2026-10-18 (gap cycle 2 of 3, after gap plan 29-07)
+
+**Verdict: PASS.** SC3 passes on all 28 base scene-runs; the verdict above (`has_fail`, blocked) is kept as history. `29-05-SELF-UAT.md` now carries a dated `## Addendum`, `status: resolved`, `result: all_pass`; plan 29-06 may proceed. SHIP-05 is NOT marked complete here: it is closed only by plan 29-06 writing the v2.8.0 proposal and recording the forced-fresh battery on the gated commit.
+
+- **New signed run:** `uatr-20261018T134126Z-99ff70b7` (`.planning/phases/29-docs-v2-8-0-cut-readiness/29-05-uat-evidence/uatr-20261018T134126Z-99ff70b7/`), 74 captures (38 screen, 35 ui, 1 log), `uat-run verify` = verified, one warning (empty logcat capture, signed negative evidence).
+- **Build identity:** HEAD `f08c866` (library `src` equals `.gate/PLAN07_SRC_HEAD` `0bad7b6`); stale mavenLocal 1.10.0 deleted and republished; AAR md5 `c8d83de76279bf687de54733a2149430` (first run `684df61c...`), `classes.jar` has the v2.8 classes plus `CappedPillShape`; harness `com.example.yat29ls` APK md5 `c21d775dc9e01b233647267564a8711a` (first run `fd18a7bc...`), the md5 pulled back from the device is identical.
+- **The two named checks:** es-snackbar at font 2.0 passes (every Undo glyph whole over four lines, pressed ripple shows a capped rounded rectangle; the card `[0,84][1080,2172]` is inside the window; one vertical swipe on the card brings "por la noche" into view with the card unchanged); de-snackbar at 1.0 and 2.0 passes (a one-line "Rückgängig" is a capsule, evidence 72 and 73). The other 26 base scene-runs pass again, the six scrolled captures reach the end of every sheet and list, and every `ui` dump has 0 nodes outside 0..1080.
+- **Rung 1 re-run fresh on HEAD (plan 29-07 changed the tree):** 1942 tests, 22 skipped, 0 failures, 0 errors, `JUNIT-FRESH OK` with the three plan 29-07 classes present, 43 of 43 tasks executed, `run-all.sh` exit 0, additive check OK (`signature_changes=0`), `api.txt` unchanged. Plan 29-06 repeats it on the gated commit.
+- **Three Gate-2 observations re-measured and handed to the owner (not decided):** the German stacked-card text column at font 2.0 (about 101 dp, text x 110 to 414 px, mid-word breaks), the German batch Receipt sheet actions at font 2.0 (below the fold, fully above the navigation bar after one swipe), the German "Bearbeiten" pill wrap at font 2.0 ("Bearbeite/n", two lines, nothing clipped).
+
+### Device residue (re-verification)
+
+- `wm density` 450 to 480 to 450 (never `reset`), `font_scale` 1.0 to 2.0 to 1.0; `bash tools/verify-tester-restored.sh --density 450 --font-scale 1.0 --services null` printed `RESTORED=yes`, exit 0, twice. TalkBack and the observer were never enabled.
+- Global `stay_on_while_plugged_in` = 15, read at the start of this run before any change; this run did not call `svc power stayon`. The first run set it through the playbook without reading the prior value, so the original is unknowable: left at 15 and listed for Yahir as a state change.
+- Installed (re-installed over itself with `install -r`) one throwaway package, `com.example.yat29ls`. Left installed for Yahir to remove, nothing uninstalled and no data cleared: `com.example.yat29ls`, `com.example.yat28head`, `com.example.yat28control`, `com.example.yat28obs`.
+- Leases: `device:tester` and `build` waited for behind another seat (about 80 minutes), held from 07:39, released with `yrig lease done`; `build` was taken once more for the rung-1 re-run and released; both read `free` at the end. No tag, no push, no repin, no rig message.
+- Command guard: 0 breaches, `5` fail-closed refusals (benign, re-run in readable form).
+
+### Owner flags (re-verification)
+
+The Gate-2 fragment `.planning/uat-pending/29-docs-v2-8-0-cut-readiness.md` and the regenerated `.planning/HUMAN-UAT-PENDING.md` now carry the v2.8.0 owner review items and the Phase 25 to 28 carry-forward list (physical TalkBack steps, the German font-2.0 narrow column, the German batch Receipt actions, the "Bearbeiten" wrap, the four throwaway packages, the `stay_on_while_plugged_in` state change). Plan 29-06 may proceed; `uat-run verify` reported verified and no criterion failed.

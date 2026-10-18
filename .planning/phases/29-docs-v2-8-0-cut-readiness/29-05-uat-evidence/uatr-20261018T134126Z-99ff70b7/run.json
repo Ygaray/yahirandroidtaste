@@ -1,0 +1,704 @@
+{
+  "schema": "gsd.uat-run/v1",
+  "run_id": "uatr-20261018T134126Z-99ff70b7",
+  "status": "finished",
+  "phase": "29",
+  "plan": "05",
+  "prefix": "29-05",
+  "surface": "android",
+  "project": "sha:df197faf5105af0ed516c727e2aafb44f5ef5743:.",
+  "phase_dir": "phases/29-docs-v2-8-0-cut-readiness",
+  "required_surface": {
+    "surface": "android",
+    "source": "marker:AGENT-DEVICE-TESTING.md"
+  },
+  "surface_override": null,
+  "device": {
+    "addr": "R5CT10XNKQN",
+    "serial": "R5CT10XNKQN",
+    "model": "SM-S908U",
+    "label": null
+  },
+  "app": {
+    "package": "com.example.yat29ls",
+    "apk_path": "/data/app/~~5CJ9KZn-AyIkaGQQxlj9Mg==/com.example.yat29ls-7DNXbPMz1mo8F-C6dyZX2w==/base.apk",
+    "apk_sha256": "967753645c2047f8518b30fb0d5275a05ad2114053710d82a91a2aaffa872f1b"
+  },
+  "head_at_start": "f08c86651a423b280c6b9c1ea186b4ab2dd3f17a",
+  "started_at": "2026-10-18T13:41:26.300Z",
+  "finished_at": "2026-10-18T13:50:08.935Z",
+  "capture_count": 74,
+  "captures": [
+    {
+      "label": "s01-es-snackbar-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "01-s01-es-snackbar-f20-screen.png",
+      "sha256": "ade7f2caf8ee6798d1cd9813d704fa2a36708831d4d2b4e919c2584619cd08f5",
+      "bytes": 176203,
+      "at": "2026-10-18T13:41:37.041Z"
+    },
+    {
+      "label": "s01-es-snackbar-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "02-s01-es-snackbar-f20-ui.xml",
+      "sha256": "ce7401ed100d1a804bd3d3197de26fb936094688f3ae85284bbafd2c0492dfe4",
+      "bytes": 7502,
+      "at": "2026-10-18T13:41:39.645Z"
+    },
+    {
+      "label": "s01-es-snackbar-f20-scrolled-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "03-s01-es-snackbar-f20-scrolled-screen.png",
+      "sha256": "d118c1eae6397f3f9afb826c729aa4c669df631afb155215641bfc79915aada6",
+      "bytes": 177820,
+      "at": "2026-10-18T13:42:16.278Z"
+    },
+    {
+      "label": "s01-es-snackbar-f20-scrolled-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "04-s01-es-snackbar-f20-scrolled-ui.xml",
+      "sha256": "d240044b694714f2cea6cc9c7ea5ea59692b45f5b90bc9aea55be95e7631a03d",
+      "bytes": 7501,
+      "at": "2026-10-18T13:42:18.820Z"
+    },
+    {
+      "label": "s02-de-snackbar-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "05-s02-de-snackbar-f20-screen.png",
+      "sha256": "af6a6ed02da6dca6a1ac5898d2c68634a8ddbdb848dbb9e47f54151a31a56c0f",
+      "bytes": 174817,
+      "at": "2026-10-18T13:42:42.159Z"
+    },
+    {
+      "label": "s02-de-snackbar-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "06-s02-de-snackbar-f20-ui.xml",
+      "sha256": "b6cd1abefc37bd6ff5a0a826317a2527e53e5849f2fcd00c5c33f4be05b2e4f3",
+      "bytes": 7803,
+      "at": "2026-10-18T13:42:44.740Z"
+    },
+    {
+      "label": "s03-es-sheet-single-receipt-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "07-s03-es-sheet-single-receipt-f20-screen.png",
+      "sha256": "635053cf948adf2b5b3c3bf8a9aa4739e11f3fcd9b84913bb322a0c750464fca",
+      "bytes": 154544,
+      "at": "2026-10-18T13:42:49.802Z"
+    },
+    {
+      "label": "s03-es-sheet-single-receipt-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "08-s03-es-sheet-single-receipt-f20-ui.xml",
+      "sha256": "5430616612a6c9096af14bd21f08ef3a5fffa31a6467324c029bf72444743faa",
+      "bytes": 9066,
+      "at": "2026-10-18T13:42:52.414Z"
+    },
+    {
+      "label": "s04-es-sheet-single-classic-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "09-s04-es-sheet-single-classic-f20-screen.png",
+      "sha256": "460197953513f9084820e1fdd4cd178d3df7683f5ab56b468228993d9bbd04aa",
+      "bytes": 140089,
+      "at": "2026-10-18T13:42:57.368Z"
+    },
+    {
+      "label": "s04-es-sheet-single-classic-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "10-s04-es-sheet-single-classic-f20-ui.xml",
+      "sha256": "ec06c9950e5a0dd879b4cd22effd4b456ff58dfe8b5a5bc4c7ba3619311edecb",
+      "bytes": 7108,
+      "at": "2026-10-18T13:42:59.973Z"
+    },
+    {
+      "label": "s05-de-sheet-single-receipt-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "11-s05-de-sheet-single-receipt-f20-screen.png",
+      "sha256": "f3cfd59e3b527621e33a05a46598c338fcae9a19b6793557cfd37897d05b0449",
+      "bytes": 160946,
+      "at": "2026-10-18T13:43:05.051Z"
+    },
+    {
+      "label": "s05-de-sheet-single-receipt-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "12-s05-de-sheet-single-receipt-f20-ui.xml",
+      "sha256": "4d11972ad91b4a511587da4530c8b44ef44ba37a1cc6ac38af6aa4bb92884dde",
+      "bytes": 9056,
+      "at": "2026-10-18T13:43:07.604Z"
+    },
+    {
+      "label": "s06-de-sheet-single-classic-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "13-s06-de-sheet-single-classic-f20-screen.png",
+      "sha256": "0be3149f159271f1af3d60c0029c4c04e0d91a85cdfdf6d4f59845ebe80bcf44",
+      "bytes": 141593,
+      "at": "2026-10-18T13:43:12.595Z"
+    },
+    {
+      "label": "s06-de-sheet-single-classic-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "14-s06-de-sheet-single-classic-f20-ui.xml",
+      "sha256": "b64ca8ba6d7b7ff23893d93cc5594caa1b1e78a39d26f28c08874b93fc866300",
+      "bytes": 7094,
+      "at": "2026-10-18T13:43:15.198Z"
+    },
+    {
+      "label": "s07-es-sheet-batch-receipt-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "15-s07-es-sheet-batch-receipt-f20-screen.png",
+      "sha256": "157a98d79fa0cf7ada86dc44a16785091faa8f08cdcd7e671de054682e8f9c4b",
+      "bytes": 185326,
+      "at": "2026-10-18T13:43:20.219Z"
+    },
+    {
+      "label": "s07-es-sheet-batch-receipt-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "16-s07-es-sheet-batch-receipt-f20-ui.xml",
+      "sha256": "0b4eef38ce3bd351ce85d233d354c3f52a2b34a503d5acc93874d08d838b5cbb",
+      "bytes": 9555,
+      "at": "2026-10-18T13:43:22.809Z"
+    },
+    {
+      "label": "s08-es-sheet-batch-classic-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "17-s08-es-sheet-batch-classic-f20-screen.png",
+      "sha256": "3c57b1921c1b712662647f434a6d64fc42954b244542b3b47d593110e8db7989",
+      "bytes": 187466,
+      "at": "2026-10-18T13:43:27.873Z"
+    },
+    {
+      "label": "s08-es-sheet-batch-classic-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "18-s08-es-sheet-batch-classic-f20-ui.xml",
+      "sha256": "6fff4f4d15a4dbbeffe0c0371a2efe7fb30b25d6f24ad4b867451c29adee3e51",
+      "bytes": 9555,
+      "at": "2026-10-18T13:43:30.535Z"
+    },
+    {
+      "label": "s09-de-sheet-batch-receipt-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "19-s09-de-sheet-batch-receipt-f20-screen.png",
+      "sha256": "5459ba3e91e50307a2cb729601c6fcce3a42f10cced2046d6c0befebcba7d1b4",
+      "bytes": 186481,
+      "at": "2026-10-18T13:43:35.504Z"
+    },
+    {
+      "label": "s09-de-sheet-batch-receipt-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "20-s09-de-sheet-batch-receipt-f20-ui.xml",
+      "sha256": "e9616455e29aa338cefac098387ae2736112e5e89369db855aaee72723066928",
+      "bytes": 8775,
+      "at": "2026-10-18T13:43:38.156Z"
+    },
+    {
+      "label": "s10-de-sheet-batch-classic-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "21-s10-de-sheet-batch-classic-f20-screen.png",
+      "sha256": "291bdbddf3194a54b924edd73f3a24b2789c31e9bcd5970f8f6c542a6a3a09e7",
+      "bytes": 184716,
+      "at": "2026-10-18T13:43:43.217Z"
+    },
+    {
+      "label": "s10-de-sheet-batch-classic-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "22-s10-de-sheet-batch-classic-f20-ui.xml",
+      "sha256": "f3e21762eabe0649dad003cf75620a69904186f665e4658dbe54a54c7b9924bc",
+      "bytes": 8774,
+      "at": "2026-10-18T13:43:45.845Z"
+    },
+    {
+      "label": "s11-es-undo-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "23-s11-es-undo-f20-screen.png",
+      "sha256": "2e05280bf8d293849c5b478c0885b96bf17bc1913e8274c6f8a1f708ac64ba16",
+      "bytes": 185699,
+      "at": "2026-10-18T13:43:50.840Z"
+    },
+    {
+      "label": "s11-es-undo-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "24-s11-es-undo-f20-ui.xml",
+      "sha256": "a54e07a8982f45e004e05133338e378385623cd1711ebef67ca924de53480623",
+      "bytes": 9741,
+      "at": "2026-10-18T13:43:53.430Z"
+    },
+    {
+      "label": "s12-de-undo-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "25-s12-de-undo-f20-screen.png",
+      "sha256": "511b26849b7e1ed1c4c9c822cb96538f1330fdfe560967f39a978d47d661ddeb",
+      "bytes": 199917,
+      "at": "2026-10-18T13:43:58.388Z"
+    },
+    {
+      "label": "s12-de-undo-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "26-s12-de-undo-f20-ui.xml",
+      "sha256": "5ab932730b428083738ae6a11b07b2a5cc04e85c91e5ccf820ad620dd4179113",
+      "bytes": 9736,
+      "at": "2026-10-18T13:44:01.008Z"
+    },
+    {
+      "label": "s13-es-pill-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "27-s13-es-pill-f20-screen.png",
+      "sha256": "82e0e81993db0420bbdb6267793e0c45c22c2ca33a38329182dfbc498a4b97a4",
+      "bytes": 124981,
+      "at": "2026-10-18T13:44:05.954Z"
+    },
+    {
+      "label": "s13-es-pill-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "28-s13-es-pill-f20-ui.xml",
+      "sha256": "6a8234b0be91bc766fa28647a8f47be834c090296fd64bfd9de2a414729ec4a5",
+      "bytes": 8391,
+      "at": "2026-10-18T13:44:08.583Z"
+    },
+    {
+      "label": "s14-de-pill-f20-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "29-s14-de-pill-f20-screen.png",
+      "sha256": "f9b861eaeb477d03f49c06bf1f5b836b4d86cf300c91e8a1fdef216af83f1c2f",
+      "bytes": 130577,
+      "at": "2026-10-18T13:44:13.556Z"
+    },
+    {
+      "label": "s14-de-pill-f20-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "30-s14-de-pill-f20-ui.xml",
+      "sha256": "b93cb44d571e8b6e110a8cc46a1adfb0c9bd333e41a5e230377faf3781fab0e0",
+      "bytes": 8391,
+      "at": "2026-10-18T13:44:16.135Z"
+    },
+    {
+      "label": "s07-es-sheet-batch-receipt-f20-scrolled-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "31-s07-es-sheet-batch-receipt-f20-scrolled-screen.png",
+      "sha256": "6b08c7aa2f9dd0b989cd2fbabe4c973430f91fa2a7bbb69db52aa6400f1aef5e",
+      "bytes": 206946,
+      "at": "2026-10-18T13:44:32.971Z"
+    },
+    {
+      "label": "s07-es-sheet-batch-receipt-f20-scrolled-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "32-s07-es-sheet-batch-receipt-f20-scrolled-ui.xml",
+      "sha256": "9a6c3978ace12006e121e98ad2e4bca67e9fe1aaf1e9ee8b4ba5835feb454a76",
+      "bytes": 9553,
+      "at": "2026-10-18T13:44:35.542Z"
+    },
+    {
+      "label": "s08-es-sheet-batch-classic-f20-scrolled-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "33-s08-es-sheet-batch-classic-f20-scrolled-screen.png",
+      "sha256": "83bbdcb4224108f25abcc224289c4c217e412309429e5dcb081863c95a399e03",
+      "bytes": 202795,
+      "at": "2026-10-18T13:44:42.984Z"
+    },
+    {
+      "label": "s08-es-sheet-batch-classic-f20-scrolled-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "34-s08-es-sheet-batch-classic-f20-scrolled-ui.xml",
+      "sha256": "c9d29da1a55a488625c21702613982e3dddbe719ca2ee3e86b00d5c301fbc955",
+      "bytes": 8253,
+      "at": "2026-10-18T13:44:45.589Z"
+    },
+    {
+      "label": "s09-de-sheet-batch-receipt-f20-scrolled-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "35-s09-de-sheet-batch-receipt-f20-scrolled-screen.png",
+      "sha256": "34365593af0ca0a5ebcb874e3788fc21484a260b7a72d78126984d292eced24e",
+      "bytes": 194307,
+      "at": "2026-10-18T13:44:53.134Z"
+    },
+    {
+      "label": "s09-de-sheet-batch-receipt-f20-scrolled-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "36-s09-de-sheet-batch-receipt-f20-scrolled-ui.xml",
+      "sha256": "1384a01d5e8244b2f0b515ab94771707cbf382e38790b2879c3015806e0d6179",
+      "bytes": 9218,
+      "at": "2026-10-18T13:44:55.830Z"
+    },
+    {
+      "label": "s10-de-sheet-batch-classic-f20-scrolled-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "37-s10-de-sheet-batch-classic-f20-scrolled-screen.png",
+      "sha256": "16d777de91d3d7986fd814dc9441cf2c9a50452db324f41c812d81de2182149c",
+      "bytes": 204273,
+      "at": "2026-10-18T13:45:03.309Z"
+    },
+    {
+      "label": "s10-de-sheet-batch-classic-f20-scrolled-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "38-s10-de-sheet-batch-classic-f20-scrolled-ui.xml",
+      "sha256": "1e835410a354861b5b14466cd35e1f13833c18fb9c46ac8d6fa37a5eaf3350a5",
+      "bytes": 7572,
+      "at": "2026-10-18T13:45:05.914Z"
+    },
+    {
+      "label": "s11-es-undo-f20-scrolled-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "39-s11-es-undo-f20-scrolled-screen.png",
+      "sha256": "6f30b3460682f25ae790fa31b5abe88895020ef51bb219aba9833588f672965f",
+      "bytes": 191297,
+      "at": "2026-10-18T13:45:13.405Z"
+    },
+    {
+      "label": "s11-es-undo-f20-scrolled-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "40-s11-es-undo-f20-scrolled-ui.xml",
+      "sha256": "cf3eb7a02439118c693d10bb2c32af0fc246cd149df3d675ccfc68d9ea7d0740",
+      "bytes": 10073,
+      "at": "2026-10-18T13:45:16.038Z"
+    },
+    {
+      "label": "s12-de-undo-f20-scrolled-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "41-s12-de-undo-f20-scrolled-screen.png",
+      "sha256": "a95d71e66e67cdd64b5c09d6c7d3a84be189eab63bef13b1d2e4e89a6dad9c57",
+      "bytes": 202063,
+      "at": "2026-10-18T13:45:23.492Z"
+    },
+    {
+      "label": "s12-de-undo-f20-scrolled-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "42-s12-de-undo-f20-scrolled-ui.xml",
+      "sha256": "ff23c10747098013805dfb710c0e3eba908e28e2e82a13c3f9afee937da56478",
+      "bytes": 10068,
+      "at": "2026-10-18T13:45:26.118Z"
+    },
+    {
+      "label": "s01-es-snackbar-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "43-s01-es-snackbar-f10-screen.png",
+      "sha256": "0ebe51e5dbf672a7b26ddbfcc805d4b6ea61835fba7aecc19f9ab8351df82708",
+      "bytes": 127159,
+      "at": "2026-10-18T13:45:33.271Z"
+    },
+    {
+      "label": "s01-es-snackbar-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "44-s01-es-snackbar-f10-ui.xml",
+      "sha256": "8ad683a0231b61df3cd400b35a2d96c461982ffaa58de7a387d75f7f967b7e70",
+      "bytes": 7874,
+      "at": "2026-10-18T13:45:35.883Z"
+    },
+    {
+      "label": "s02-de-snackbar-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "45-s02-de-snackbar-f10-screen.png",
+      "sha256": "b85f6afc1e8dd57cf76c0e20c646ca60248e1f68e11b3ab27cc524d6b33f8a3c",
+      "bytes": 116323,
+      "at": "2026-10-18T13:45:40.870Z"
+    },
+    {
+      "label": "s02-de-snackbar-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "46-s02-de-snackbar-f10-ui.xml",
+      "sha256": "c871b879ab37641d75f318ac9fc5d970fb955f7fc5fbdc9fd4ac49c4f2bf67f4",
+      "bytes": 7821,
+      "at": "2026-10-18T13:45:43.462Z"
+    },
+    {
+      "label": "s03-es-sheet-single-receipt-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "47-s03-es-sheet-single-receipt-f10-screen.png",
+      "sha256": "c71c36aef2ecd5ae096afdb6cd357e56ff0ffa85ae5f0f7ff23046654783c1c0",
+      "bytes": 95497,
+      "at": "2026-10-18T13:45:48.463Z"
+    },
+    {
+      "label": "s03-es-sheet-single-receipt-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "48-s03-es-sheet-single-receipt-f10-ui.xml",
+      "sha256": "c5f04a62d59dca98b4f6782d62604346278e61301e404b86808ac7eeb60054e9",
+      "bytes": 9081,
+      "at": "2026-10-18T13:45:51.065Z"
+    },
+    {
+      "label": "s04-es-sheet-single-classic-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "49-s04-es-sheet-single-classic-f10-screen.png",
+      "sha256": "95fcdb51094c5d2f8ae28395d33d9118d2b6ed9a4cd2ba0aeea52c12c88e2cd1",
+      "bytes": 85557,
+      "at": "2026-10-18T13:45:56.059Z"
+    },
+    {
+      "label": "s04-es-sheet-single-classic-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "50-s04-es-sheet-single-classic-f10-ui.xml",
+      "sha256": "d110448bfc1eebaf01ed40c81b167c7c301cf9f766f3adf0b4725ccee599093a",
+      "bytes": 7119,
+      "at": "2026-10-18T13:45:58.707Z"
+    },
+    {
+      "label": "s05-de-sheet-single-receipt-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "51-s05-de-sheet-single-receipt-f10-screen.png",
+      "sha256": "3007b754a6c5de32eab63bd543bb147db0091b78b4d421696ab2caecc4bf95eb",
+      "bytes": 101257,
+      "at": "2026-10-18T13:46:03.786Z"
+    },
+    {
+      "label": "s05-de-sheet-single-receipt-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "52-s05-de-sheet-single-receipt-f10-ui.xml",
+      "sha256": "636e832aeaf3027d812f8066605410daf66e7ebb539182bd31261eaf0d5c3d78",
+      "bytes": 9071,
+      "at": "2026-10-18T13:46:06.447Z"
+    },
+    {
+      "label": "s06-de-sheet-single-classic-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "53-s06-de-sheet-single-classic-f10-screen.png",
+      "sha256": "cc402f70aeb3df8a01e6878f862680efa7b0922482d7e2391f2a0ac8fe25d339",
+      "bytes": 91328,
+      "at": "2026-10-18T13:46:11.422Z"
+    },
+    {
+      "label": "s06-de-sheet-single-classic-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "54-s06-de-sheet-single-classic-f10-ui.xml",
+      "sha256": "a99aebf8375d5c4c648fed7934699b1ff98dbbb045697240b8283b87acf44365",
+      "bytes": 7105,
+      "at": "2026-10-18T13:46:14.019Z"
+    },
+    {
+      "label": "s07-es-sheet-batch-receipt-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "55-s07-es-sheet-batch-receipt-f10-screen.png",
+      "sha256": "0eeeb38ef73301de774f339bef94060cad9139023d4207a7de724034f1b48a43",
+      "bytes": 152369,
+      "at": "2026-10-18T13:46:18.986Z"
+    },
+    {
+      "label": "s07-es-sheet-batch-receipt-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "56-s07-es-sheet-batch-receipt-f10-ui.xml",
+      "sha256": "6835f3a652ae73ec5426ae77d3bc3812d448fd9d4e82cb968152f461602f3629",
+      "bytes": 12248,
+      "at": "2026-10-18T13:46:21.635Z"
+    },
+    {
+      "label": "s08-es-sheet-batch-classic-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "57-s08-es-sheet-batch-classic-f10-screen.png",
+      "sha256": "b0ff408d3b3543a3ee6b3e0cc08ddf330e35df0cd816a3532b6583fd15fb3cbb",
+      "bytes": 143033,
+      "at": "2026-10-18T13:46:26.669Z"
+    },
+    {
+      "label": "s08-es-sheet-batch-classic-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "58-s08-es-sheet-batch-classic-f10-ui.xml",
+      "sha256": "a18d730c4f5e72cea80c62a4b74a035bc8a0111f9c37e797a23843790f8c962e",
+      "bytes": 10292,
+      "at": "2026-10-18T13:46:29.301Z"
+    },
+    {
+      "label": "s09-de-sheet-batch-receipt-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "59-s09-de-sheet-batch-receipt-f10-screen.png",
+      "sha256": "d93a58cc4e9cae11245550312591faaef2ed87bd94cfe2092d6c1b9414d5e5c6",
+      "bytes": 167700,
+      "at": "2026-10-18T13:46:34.281Z"
+    },
+    {
+      "label": "s09-de-sheet-batch-receipt-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "60-s09-de-sheet-batch-receipt-f10-ui.xml",
+      "sha256": "36d8fcec0acc3a45895cab6be7811c318297dea8a75344837fc0c0b47ffe3ad6",
+      "bytes": 12226,
+      "at": "2026-10-18T13:46:36.928Z"
+    },
+    {
+      "label": "s10-de-sheet-batch-classic-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "61-s10-de-sheet-batch-classic-f10-screen.png",
+      "sha256": "24bf95e945de1c244ceacec1057edba2077ba2741279bd96745130782fbbc781",
+      "bytes": 157776,
+      "at": "2026-10-18T13:46:41.933Z"
+    },
+    {
+      "label": "s10-de-sheet-batch-classic-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "62-s10-de-sheet-batch-classic-f10-ui.xml",
+      "sha256": "fb26488062acbfc2dd0e9cc37860d77e5c0a1a5b5eb63d6c471855b5de15fb3e",
+      "bytes": 10266,
+      "at": "2026-10-18T13:46:44.548Z"
+    },
+    {
+      "label": "s11-es-undo-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "63-s11-es-undo-f10-screen.png",
+      "sha256": "130b69945d0d31e780e9547e427b75e80e3cd533a675a06e0c2e4406051ce3af",
+      "bytes": 116017,
+      "at": "2026-10-18T13:46:49.540Z"
+    },
+    {
+      "label": "s11-es-undo-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "64-s11-es-undo-f10-ui.xml",
+      "sha256": "0c8129ec44ef9ffec7b165d05e8442394087dcb7bb83e515c6b656614b203dce",
+      "bytes": 10061,
+      "at": "2026-10-18T13:46:52.128Z"
+    },
+    {
+      "label": "s12-de-undo-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "65-s12-de-undo-f10-screen.png",
+      "sha256": "c4760fcf595f8040cc319e3a74a51ee080fc626e62a841b8672463ca7ec8dd78",
+      "bytes": 129616,
+      "at": "2026-10-18T13:46:57.103Z"
+    },
+    {
+      "label": "s12-de-undo-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "66-s12-de-undo-f10-ui.xml",
+      "sha256": "d89f561e258200ef0b3b4c0a90229fe71110e07af785a135cb4d94409df60f54",
+      "bytes": 10056,
+      "at": "2026-10-18T13:46:59.758Z"
+    },
+    {
+      "label": "s13-es-pill-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "67-s13-es-pill-f10-screen.png",
+      "sha256": "94ae2049ee949e70a984854be769b6ca0a3eb41020a918698671899457c857c1",
+      "bytes": 85607,
+      "at": "2026-10-18T13:47:04.714Z"
+    },
+    {
+      "label": "s13-es-pill-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "68-s13-es-pill-f10-ui.xml",
+      "sha256": "0b8012d152d9fb78f12c9ea46f53ce8eda357e79b73d4f62fce21db6b733937b",
+      "bytes": 8391,
+      "at": "2026-10-18T13:47:07.336Z"
+    },
+    {
+      "label": "s14-de-pill-f10-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "69-s14-de-pill-f10-screen.png",
+      "sha256": "7a5fc4685abd8ac4957a7b734b435bf47514f1ab7f86fa38b29171324a86ef68",
+      "bytes": 88269,
+      "at": "2026-10-18T13:47:12.330Z"
+    },
+    {
+      "label": "s14-de-pill-f10-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "70-s14-de-pill-f10-ui.xml",
+      "sha256": "7c0cb3943929804833c59d7af41f41721b05cfef4289338adb798ac8e38cd54f",
+      "bytes": 8391,
+      "at": "2026-10-18T13:47:14.948Z"
+    },
+    {
+      "label": "logcat-fatal-check",
+      "kind": "log",
+      "source": "cli",
+      "file": "71-logcat-fatal-check.log",
+      "sha256": "629f5c99a8c152fb8fc472f83ecb0cea3af783a9c1f2c7a3480e46d02ae1a1e8",
+      "bytes": 63,
+      "at": "2026-10-18T13:47:20.844Z",
+      "empty": true
+    },
+    {
+      "label": "s02-de-snackbar-f10-undo-pressed-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "72-s02-de-snackbar-f10-undo-pressed-screen.png",
+      "sha256": "f24db5ac22fdb76f4ded5d8097a73e08c4b472a9deb9a9cf1424d685d9c0ab01",
+      "bytes": 118548,
+      "at": "2026-10-18T13:48:40.623Z"
+    },
+    {
+      "label": "s02-de-snackbar-f20-undo-pressed-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "73-s02-de-snackbar-f20-undo-pressed-screen.png",
+      "sha256": "97b3b191cc03b85deab3f0f0e8c3861b79ac37163d78c32b57c6e26bdab9adfc",
+      "bytes": 177906,
+      "at": "2026-10-18T13:49:03.102Z"
+    },
+    {
+      "label": "s01-es-snackbar-f20-undo-pressed-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "74-s01-es-snackbar-f20-undo-pressed-screen.png",
+      "sha256": "871992d9e21fc56055e29fbf9eb00ddecf8a43503c5c7b05ab869b89c716ed48",
+      "bytes": 180556,
+      "at": "2026-10-18T13:49:11.086Z"
+    }
+  ],
+  "sig": {
+    "alg": "HMAC-SHA256",
+    "value": "54386dd5caa2c570030df99cc840537aef3d801dbeeede5de560d97b0379b6f3"
+  }
+}
