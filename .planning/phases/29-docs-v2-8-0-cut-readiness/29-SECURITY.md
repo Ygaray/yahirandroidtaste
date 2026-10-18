@@ -4,13 +4,13 @@ slug: "docs-v2-8-0-cut-readiness"
 status: verified
 threats_open: 0
 asvs_level: 1
-audited_head: 388cbad10882f7d068ca02b23c156f7d5f1316f6
+audited_head: a00a2d32c1e21ee47b64718d72f28779b1aa4b79
 created: "2026-10-18"
 ---
 
 # Phase 29 - Security
 
-> Per-phase security contract: threat register, accepted risks, and audit trail. Audited by gsd-security-auditor (ASVS L1, block_on high) over plans 29-01 to 29-05 and 29-07. Plan 29-06's threats (T-29-27 to T-29-33 and its T-29-SC) are pending until that plan executes and are re-verified in a follow-up audit pass.
+> Per-phase security contract: threat register, accepted risks, and audit trail. Audited by gsd-security-auditor (ASVS L1, block_on high) over plans 29-01 to 29-05 and 29-07. Plan 29-06 threats were re-verified after that plan executed (second pass, 47 of 47 closed).
 
 ---
 
@@ -58,9 +58,16 @@ created: "2026-10-18"
 | T-29-37 | Repudiation | stale Gradle result as proof | high | mitigate | forced-fresh run, no UP-TO-DATE on the gate tasks, JUNIT-FRESH OK | closed |
 | T-29-40 | Repudiation | green Robolectric read as a Gate-1 pass | medium | mitigate | Hand-over says it is not a pass; Addendum from a signed run exists | closed |
 | T-29-SC (plans 01-05, 07) | Tampering | package installs | high | accept | no dependency file changed over 732ea62..HEAD; harness is a throwaway outside the repo | closed (accepted) |
-| T-29-27 to T-29-33, T-29-SC (plan 29-06) | various | publish and cut-readiness | n/a | n/a | verified when plan 29-06 completes | pending |
+| T-29-27 | Info disclosure | addresses, home paths or keys to the PUBLIC repo (29-06) | high | mitigate | full-history scan origin/main..GATED_HEAD, classes and counts only, 0 credential hits, history residue disclosed | closed |
+| T-29-28 | Elevation | agent tag, push or repin (29-06) | high | mitigate | no v2.8 tag local or remote; remote main unchanged; create_tag false | closed |
+| T-29-29 | Tampering | wrong tag target or code change after GATED_HEAD | high | mitigate | commits after ce855d2 touch only .planning; src, api.txt, build.gradle.kts identical to the Gate-1 tested tree | closed |
+| T-29-30 | Repudiation | stale Gradle result as proof (29-06) | high | mitigate | forced-fresh run on GATED_HEAD, 43 of 43 tasks executed, JUNIT-FRESH OK | closed |
+| T-29-31 | Tampering | supply-chain drift | high | mitigate | build and dependency files identical to v2.7.1 | closed |
+| T-29-32 | Info disclosure | tag push publishes unreviewed commits | medium | mitigate | full 314-commit range listed in the proposal and range file | closed |
+| T-29-33 | Info disclosure | debris swept into a commit (29-06) | high | mitigate | explicit-path commits; no debris in the phase window | closed |
+| T-29-SC (plan 29-06) | Tampering | package installs | high | accept | no dependency change in plan 29-06 | closed (accepted) |
 
-*Status: open, closed, pending (plan not yet executed). Only open threats at or above block_on count toward threats_open.*
+*Status: open, closed. Only open threats at or above block_on count toward threats_open.*
 
 ---
 
@@ -70,6 +77,7 @@ created: "2026-10-18"
 |---------|------------|-----------|-------------|------|
 | AR-29-01 | T-29-SC (plans 01-05, 07) | no package or dependency changes in the phase; the Gate-1 harness is a throwaway built outside the repo | gsd-security-auditor (premise verified) | 2026-10-18 |
 | AR-29-02 | T-29-13 (history residue) | commit 32bd7d5 (phase 28, unpushed) still carries a tailnet address in a test fixture in history; the tree no longer does. History is not rewritten; the director decides at the push ask | disclosed in 29-04-SUMMARY, carried to the 29-06 proposal | 2026-10-18 |
+| AR-29-03 | T-29-SC (plan 29-06) | no package or dependency changed in plan 29-06; build files identical to v2.7.1 | gsd-security-auditor (premise verified) | 2026-10-18 |
 
 ---
 
@@ -77,7 +85,8 @@ created: "2026-10-18"
 
 | Audit Date | Threats Total | Closed | Open | Run By |
 |------------|---------------|--------|------|--------|
-| 2026-10-18 | 39 executed + 8 pending (plan 29-06) | 39 | 0 | gsd-security-auditor |
+| 2026-10-18 | 39 (plans 01-05, 07) | 39 | 0 | gsd-security-auditor |
+| 2026-10-18 | 47 (adds plan 29-06 threats, re-audit at a00a2d3 .. HEAD) | 47 | 0 | gsd-security-auditor |
 
 ---
 
@@ -88,4 +97,4 @@ created: "2026-10-18"
 - [x] `threats_open: 0` confirmed
 - [x] `status: verified` set in frontmatter
 
-**Approval:** verified 2026-10-18 (plan 29-06 threats re-checked after that plan)
+**Approval:** verified 2026-10-18
