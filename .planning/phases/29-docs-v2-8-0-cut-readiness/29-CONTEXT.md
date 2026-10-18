@@ -100,3 +100,14 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
     - The last line of the message can be scrolled into view.
     - The single-line Undo is still a pill (a shape regression guard).
   - **Device:** re-run SC3 on the tester (R5CT10XNKQN) with the same Spanish and German long-string scenes, plus the 27 that already pass. This is gap cycle 2 of 3.
+- **2026-10-18, ui-designer: code-review dispositions for the four findings the fixer left open (29-REVIEW.md):**
+  - **The common reason:** each would need a `src/main` edit after the Gate-1 SC3 device pass on 0bad7b6. That would move the proposed tag target (ce855d2) off the device-tested tree. None of them is a defect in the v2.8.0 contract as documented. They are dispositioned as documented acceptable skips and tracked for v2.8.1, not hidden.
+  - **WR-01 (`BoxWithConstraints` makes the deck non-intrinsic-safe): accepted for v2.8.0 and tracked for v2.8.1.** It isn't new exposure: `FeedbackDeck` has wrapped the whole deck in `BoxWithConstraints` since Phase 26 (present at 55f5288), so `FeedbackStackHost` was already a SubcomposeLayout host before 29-07. The card-level one adds nothing an intrinsic query wouldn't already hit at the deck.
+    - **Why it can wait:** `FeedbackStackHost` is a screen-level overlay, documented to wrap screen content, so an `IntrinsicSize` parent is not a supported placement.
+    - **v2.8.1:** replace both `BoxWithConstraints` uses with measure-time boundedness (a `Modifier.layout` or a custom `Layout`), add an `IntrinsicSize.Max` test, and add an API.md line.
+  - **IN-01 (the internal `shape` is honoured for Text only): accepted, v2.8.1 tidy-up.** It is internal, its only caller passes Text, and there is no consumer exposure.
+  - **IN-02 (the single-line capsule test is partly self-referential): accepted, v2.8.1 test hardening.** The capsule regression is also guarded by `CappedPillShapeTest` and by the device captures (de-snackbar one-line capsule at both scales, Gate-1 run 2).
+  - **IN-05 (Undo can scroll out of touch reach in a tall scrolled card): accepted as the reviewer recommended for the cut.**
+    - TalkBack reaches Undo through the custom action.
+    - It only happens in the long-string font-2.0 edge case that 29-07 made readable at all.
+    - **v2.8.1:** pin Undo outside the scrolled region and record the choice in docs/STYLE.md §5.

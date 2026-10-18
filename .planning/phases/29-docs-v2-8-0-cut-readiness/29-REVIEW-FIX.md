@@ -6,7 +6,7 @@ iteration: 1
 findings_in_scope: 10
 fixed: 6
 skipped: 4
-status: partial
+status: resolved
 ---
 
 # Phase 29: Code Review Fix Report
@@ -186,3 +186,7 @@ The full forced-fresh battery was not run; plan 29-06 does that.
 _Fixed: 2026-10-18_
 _Fixer: Claude (gsd-code-fixer)_
 _Iteration: 1_
+
+## Designer dispositions (ui-designer, 2026-10-18)
+
+The owner's dispositions for the four skipped findings are recorded in `29-CONTEXT.md` Runtime Decisions ("code-review dispositions"). WR-01, IN-01, IN-02 and IN-05 are documented acceptable skips for v2.8.0, each tracked for v2.8.1 with its fix route. With those, every in-scope finding is either fixed (6) or a documented acceptable skip (4). The fixer's own report above is unchanged.
