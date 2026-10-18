@@ -58,7 +58,10 @@ internal fun resetPlaceholderPurgeExecutorForTests() {
 /** True once this process has run [Configuration.load] (at most once per process, POL-03). */
 private val osmdroidLoaded = AtomicBoolean(false)
 
-/** Guards the load-once decision and the request-property edits against concurrent callers. */
+/**
+ * Guards the load-once decision and the request-property edits against concurrent hub callers only;
+ * osmdroid's own tile threads never take it (see the precondition on [configureOsmdroid]).
+ */
 private val osmdroidLoadLock = Any()
 
 /** Test hook: makes the next [configureOsmdroid] load the configuration again. */
@@ -93,6 +96,11 @@ internal const val BLOCKED_PLACEHOLDER_PACKAGE_PREFIX = "com.example."
  *     later calls when missing or different, because the MAPNIK tile source normalizes the agent
  *     to `<packageName>/<versionCode>` and ignores `userAgentValue`. `load()` is called at most
  *     once per process because it clears and refills a plain HashMap that tile threads iterate.
+ *     **Precondition:** that guarantee covers hub callers only. The lock below serializes
+ *     [configureOsmdroid] against itself, not against osmdroid's own tile download threads, which
+ *     iterate the map without a lock. The first call per process is therefore safe only if no
+ *     osmdroid `MapView` (or other osmdroid user, such as a consumer's own `Configuration.load`)
+ *     is already running in the process; call [configureOsmdroid] before any osmdroid map exists.
  *     Callers should pass an identifying agent of the form `AppName/version (+contact)`.
  *  2. **Honor tile-server cache headers.** osmdroid's expiry-override handling is left at its
  *     default here — this function never calls an API that overrides cache expiry.
