@@ -43,6 +43,7 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.dismiss
+import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
@@ -98,7 +99,8 @@ internal fun FeedbackCard(
     collapsedBack: Boolean,
     onPeekTap: () -> Unit,
     index: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hiddenFromAccessibility: Boolean = false
 ) {
     val target = item.target
     val spent = item.spent
@@ -177,6 +179,13 @@ internal fun FeedbackCard(
                     )
                 }
             }
+            // The middle strip of a collapsed deck shows nothing a screen reader could read (Gate-1
+            // evidence 97: focusable, empty label, silent stop). Every card stays reachable once the
+            // deck is fanned, and the front and the oldest card stay stops (ui-designer ruling,
+            // 28-CONTEXT, 2026-10-17). No label, description or action is added.
+            .then(
+                if (hiddenFromAccessibility) Modifier.semantics { invisibleToUser() } else Modifier
+            )
             .pointerInput(item.id) {
                 // Not a second tap owner: it only records, without consuming, whether the finger
                 // travelled past the touch slop. A drag release must never open or fan (T-26-10).

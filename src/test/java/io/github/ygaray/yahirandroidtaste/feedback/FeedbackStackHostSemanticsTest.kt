@@ -525,6 +525,120 @@ class FeedbackStackHostSemanticsTest {
         state.dismissAll()
     }
 
+    // ---- Plan 28-10: the silent middle peek strip is not an accessibility stop (Gate-1 C-3/C-4) ----
+
+    /** True when the card whose merged text contains [message] is hidden from accessibility. */
+    private fun isInvisibleToUser(message: String): Boolean =
+        cardByText(message).fetchSemanticsNode().config
+            .getOrNull(SemanticsProperties.InvisibleToUser) != null
+
+    /** The cards a screen reader can stop on: every card not flagged invisible to the user. */
+    private fun accessibleCards(): List<SemanticsNode> =
+        composeTestRule.onAllNodesWithTag(FEEDBACK_STACK_ITEM_TEST_TAG).fetchSemanticsNodes()
+            .filter { it.config.getOrNull(SemanticsProperties.InvisibleToUser) == null }
+
+    private fun mergedLabel(node: SemanticsNode): String =
+        (
+            mergedTexts(node) +
+                (node.config.getOrNull(SemanticsProperties.ContentDescription).orEmpty())
+            ).joinToString(" ").trim()
+
+    private fun assertNoAccessibleCardHasAnEmptyLabel() {
+        val cards = accessibleCards()
+        assertTrue("a collapsed deck of three must keep two accessible cards", cards.size == 2)
+        cards.forEach {
+            assertTrue("an accessibility stop must not be silent", mergedLabel(it).isNotEmpty())
+        }
+    }
+
+    @Test
+    fun collapsedDeckOfThree_middleCardIsInvisibleToUser_andFrontAndOldestAreNot() {
+        val state = FeedbackStackState()
+        setHost(state)
+        showThree(state)
+
+        assertFalse(state.pauseState.value.fanned)
+        assertTrue("the middle strip must be hidden", isInvisibleToUser("Mittlerer"))
+        assertFalse("the front card must stay a stop", isInvisibleToUser("Neuester"))
+        assertFalse("the oldest strip must stay a stop", isInvisibleToUser("Ältester"))
+        state.dismissAll()
+    }
+
+    @Test
+    fun collapsedDeckOfThree_hasNoFocusableNodeWithAnEmptyLabel() {
+        val state = FeedbackStackState()
+        setHost(state)
+        showThree(state)
+
+        assertNoAccessibleCardHasAnEmptyLabel()
+        state.dismissAll()
+    }
+
+    @Test
+    fun collapsedDeckOfThreeInGerman_hasNoFocusableNodeWithAnEmptyLabel() {
+        val state = FeedbackStackState()
+        val results = mutableMapOf<String, FeedbackResult>()
+        setHost(state, undoLabel = "Rückgängig machen", dismissLabel = "Meldung schließen")
+        listOf(
+            "Serie zwei: Eintrag entfernt",
+            "Serie eins: Eintrag gespeichert",
+            "Serie drei: Eintrag verschoben"
+        ).forEach { message -> show(state, withUndo(message), message, results) }
+
+        assertFalse(state.pauseState.value.fanned)
+        assertTrue(isInvisibleToUser("Serie eins: Eintrag gespeichert"))
+        assertFalse(isInvisibleToUser("Serie drei: Eintrag verschoben"))
+        assertFalse(isInvisibleToUser("Serie zwei: Eintrag entfernt"))
+        assertNoAccessibleCardHasAnEmptyLabel()
+        state.dismissAll()
+    }
+
+    @Test
+    fun collapsedDeckOfOneOrTwo_hidesNoCard() {
+        val state = FeedbackStackState()
+        val results = mutableMapOf<String, FeedbackResult>()
+        setHost(state)
+        show(state, notify("Ältester", target), "Ältester", results)
+        assertFalse(isInvisibleToUser("Ältester"))
+
+        show(state, notify("Neuester", target), "Neuester", results)
+        assertEquals(2, cardCount())
+        assertFalse(state.pauseState.value.fanned)
+        assertFalse(isInvisibleToUser("Neuester"))
+        assertFalse(isInvisibleToUser("Ältester"))
+        state.dismissAll()
+    }
+
+    @Test
+    fun fannedDeckOfThree_hidesNoCard() {
+        val state = FeedbackStackState()
+        setHost(state)
+        showThree(state)
+
+        tapStrip("Ältester")
+
+        assertTrue(state.pauseState.value.fanned)
+        listOf("Neuester", "Mittlerer", "Ältester").forEach {
+            assertFalse("$it must be accessible once fanned", isInvisibleToUser(it))
+        }
+        state.dismissAll()
+    }
+
+    @Test
+    fun tapOnTheHiddenMiddleStrip_stillFansTheDeck() {
+        val state = FeedbackStackState()
+        setHost(state)
+        showThree(state)
+        assertTrue(isInvisibleToUser("Mittlerer"))
+        assertFalse(state.pauseState.value.fanned)
+
+        tapStrip("Mittlerer")
+
+        assertTrue(state.pauseState.value.fanned)
+        assertFalse(isInvisibleToUser("Mittlerer"))
+        state.dismissAll()
+    }
+
     @Test
     fun emptyDeck_exposesNoCardNode() {
         val state = FeedbackStackState()
