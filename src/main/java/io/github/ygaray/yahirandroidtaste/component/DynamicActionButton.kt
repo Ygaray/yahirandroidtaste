@@ -18,6 +18,7 @@ import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -173,6 +174,34 @@ internal fun emphasisColors(
     }
 }
 
+/**
+ * The Text-emphasis [DynamicActionButton] with a corner radius that stays capped once the label wraps
+ * ([rememberTextButtonCappedShape]). Internal and used only by the feedback card's Undo: a public
+ * shape parameter on [DynamicActionButton] would widen the source-compatible surface, and the card is
+ * the one place a long localized label (Spanish, German at font scale 2.0) wraps to several lines
+ * inside a fully rounded button and is cut by its own ends. In every other respect it renders exactly
+ * what `DynamicActionButton(emphasis = ActionButtonEmphasis.Text)` renders.
+ */
+@Composable
+internal fun CappedPillTextActionButton(
+    label: String,
+    role: ActionButtonDefaults.ActionButtonRole,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    EmphasisActionButton(
+        label = label,
+        role = role,
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier,
+        emphasis = ActionButtonEmphasis.Text,
+        icon = null,
+        shape = rememberTextButtonCappedShape()
+    )
+}
+
 @Composable
 @Suppress("LongParameterList")
 private fun EmphasisActionButton(
@@ -182,7 +211,8 @@ private fun EmphasisActionButton(
     enabled: Boolean,
     modifier: Modifier,
     emphasis: ActionButtonEmphasis,
-    icon: ImageVector?
+    icon: ImageVector?,
+    shape: Shape? = null
 ) {
     val palette = emphasisColors(emphasis, role, MaterialTheme.colorScheme)
     val labelStyle = if (emphasis == ActionButtonEmphasis.TextSmall) {
@@ -211,6 +241,7 @@ private fun EmphasisActionButton(
         ActionButtonEmphasis.Text -> TextButton(
             onClick = onClick,
             enabled = enabled,
+            shape = shape ?: ButtonDefaults.textShape,
             colors = ButtonDefaults.textButtonColors(contentColor = palette.content),
             contentPadding = PaddingValues(
                 horizontal = Dimens.ActionButton.TextHorizontalPadding,

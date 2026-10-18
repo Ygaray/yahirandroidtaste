@@ -59,8 +59,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.component.ActionButtonDefaults
-import io.github.ygaray.yahirandroidtaste.component.ActionButtonEmphasis
-import io.github.ygaray.yahirandroidtaste.component.DynamicActionButton
+import io.github.ygaray.yahirandroidtaste.component.CappedPillTextActionButton
 import io.github.ygaray.yahirandroidtaste.theme.Dimens
 import kotlinx.coroutines.flow.first
 
@@ -390,7 +389,7 @@ private fun FeedbackCardRow(
             }
             if (showUndo) {
                 Box {
-                    DynamicActionButton(
+                    CappedPillTextActionButton(
                         label = undoLabel,
                         role = ActionButtonDefaults.ActionButtonRole.Neutral,
                         onClick = onUndo,
@@ -413,8 +412,7 @@ private fun FeedbackCardRow(
                             // Innermost of mine, so it clears what is inside it: the button's own
                             // semantics and its drawn label, both re-declared above as the single name,
                             // role and click. Everything outside it (the tag, the lines above) stays.
-                            .clearAndSetSemantics { },
-                        emphasis = ActionButtonEmphasis.Text
+                            .clearAndSetSemantics { }
                     )
                 }
             }
