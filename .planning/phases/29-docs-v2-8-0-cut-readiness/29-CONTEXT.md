@@ -64,3 +64,23 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
 999.4 voice-surface polish → v2.8.1; combined "Undo & open"; share/MCP deep links; SB sheet-swap blink (app-side).
 
 </deferred>
+
+## Runtime Decisions
+
+- **2026-10-18, ui-designer: carry-forward from Phases 25 to 28, to cover in the docs (API.md, CHANGELOG/README, INTEGRATION.md):**
+  - **POL-03, the OSM tile user agent.** Document that `PlaceMapPicker`'s `userAgent` should be `"AppName/version (+contact)"` and not the bare application id: a `com.example.*` id is blocked by tile.openstreetmap.org. Also document that the hub sets the header via `additionalHttpRequestProperties` after a single `load()` per process; that a blank or bare-package UA falls back to `"<pkg>/<versionName> (Android <sdk>)"` with one `Log.w`; and that placeholder tiles are purged once per install. This is a call to SecondBrain/CalTracker integrators. It names no consumer app, keeping the hub domain-agnostic.
+  - **TalkBack behavior worth a line in the docs:**
+    - The refused-undo message takes accessibility focus once when its sheet settles.
+    - Collapsed deck cards are named from `item.message`, and Undo from `undoLabel`.
+    - Both Dismiss forms are kept (D-07).
+  - **Gate-2 for Yahir, recorded, not fixed here:**
+    - The physical TalkBack steps parked by Phases 25 to 28 (the spoken cross-card order, the Dismiss duplicate in the menu, the refusal read-out by swipe with TalkBack alone).
+    - The German font-2.0 narrow body column on the stacked card.
+    - The German batch Receipt sheet's actions under the nav bar at font 2.0.
+    - Three throwaway harness apps left on the tester (`com.example.yat28head/control/obs`).
+- **Process rules for every worker this phase dispatches (teamlead, INC-2026-10-17-04):**
+  - Never use `--no-verify`. If a hook blocks a commit, stop and report it; do not bypass it.
+  - Commit explicit files only, never debris.
+  - Never run `./gradlew --stop`.
+  - No tag, no push.
+  - The proposal goes to director@office (D-01) with the range from `git log origin/main..HEAD` and the scan result for 100.x IPs, /home/yahir paths and keys.
