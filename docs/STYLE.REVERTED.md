@@ -4,6 +4,21 @@ Read before editing `STYLE.md`. Newest first. One entry per idea: what was tried
 it's recorded. "SB" is SecondBrain and "CT" is CalTracker. Their refs are paths inside those repos'
 `.planning/`.
 
+- **2026-10-18 — Moving TalkBack focus to speak the refused-undo message.** The 28-11 route moved input
+  focus to the message after the sheet settled, on a node that was also a live region. Gate-1 run 2 heard
+  the message twice, because a second mechanism on the same node was read a second time. Replaced by the
+  single Assertive live region that becomes audible once the sheet has settled; the library never moves
+  focus. → `.planning/phases/28-talkback-sweep-explorer-demos/28-12-SUMMARY.md`, C-1 section of
+  `.planning/phases/28-talkback-sweep-explorer-demos/28-VERIFICATION.md`
+- **2026-10-18 — A focusable, unlabeled middle peek strip in the collapsed deck.** TalkBack stopped on it in
+  silence, because the clipped strip exposes no text. Hidden from accessibility instead; the front and the
+  oldest card stay stops, and a fanned deck hides nothing. →
+  `.planning/phases/28-talkback-sweep-explorer-demos/28-10-SUMMARY.md`
+- **2026-10-17 — A text Open action label on snackbars.** A text "Open" action beside Undo was considered
+  for the go-to-item snackbar. Rejected for a body tap plus a trailing chevron and no action label (brief
+  D-02 and D-03; the options page fixes "no action label" in all three directions, and Yahir chose
+  direction A on 2026-10-17). → `docs/design/snackbar-go-to-item/index.html`,
+  `.planning/research/v2.8-BRIEF.md`
 - **2026-10-14 — Tall sheets opening at the partial detent.** The pinned Confirm landed under the nav
   bar. Now the hub opens them fully expanded. → YAT v2.7.1, `.planning/cross-repo/HANDOFF.md`
 - **2026-10-14 — Leaving dynamic color on in hue-coded demos.** Warn turned mauve. Pin the hub scheme
