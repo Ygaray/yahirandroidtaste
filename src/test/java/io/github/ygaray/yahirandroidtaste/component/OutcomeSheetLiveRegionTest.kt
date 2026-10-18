@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
@@ -13,6 +15,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.model.VoiceOutcomeUiState
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -85,5 +89,42 @@ class OutcomeSheetLiveRegionTest {
         host(OutcomeFixtures.success())
 
         liveRegionNodes().assertCountEquals(0)
+    }
+
+    // -- Gate-1 C-1 (Phase 28-09): the live-region node itself carries the message --------------
+
+    private fun refusedNodeText(): String {
+        val config = composeTestRule.onNodeWithTag("outcome_sheet_undo_refused", useUnmergedTree = false)
+            .fetchSemanticsNode().config
+        return config.getOrNull(SemanticsProperties.Text).orEmpty().joinToString(" ") { it.text }
+    }
+
+    @Test
+    fun `refusedSurface liveRegionNodeCarriesTheFullMessageAsItsOwnText`() {
+        host(
+            OutcomeFixtures.success(
+                undo = OutcomeFixtures.undo(refused = OutcomeFixtures.refused(changedItem = "Oats"))
+            )
+        )
+
+        assertEquals("Couldn't undo: it was edited elsewhere, Oats changed since", refusedNodeText())
+    }
+
+    @Test
+    fun `refusedSurface withoutChangedItem nodeTextHasNoSuffix`() {
+        host(OutcomeFixtures.failure(undo = OutcomeFixtures.undo(refused = OutcomeFixtures.refused())))
+
+        assertEquals("Couldn't undo: it was edited elsewhere", refusedNodeText())
+    }
+
+    @Test
+    fun `refusedSurface isStillTheOnlyAssertiveRegion andHasNoClickAction`() {
+        host(OutcomeFixtures.success(undo = OutcomeFixtures.undo(refused = OutcomeFixtures.refused())))
+
+        liveRegionNodes().assertCountEquals(1)
+        val config = composeTestRule.onNodeWithTag("outcome_sheet_undo_refused", useUnmergedTree = false)
+            .fetchSemanticsNode().config
+        assertEquals(LiveRegionMode.Assertive, config.getOrNull(SemanticsProperties.LiveRegion))
+        assertNull(config.getOrNull(SemanticsActions.OnClick))
     }
 }

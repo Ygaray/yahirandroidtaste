@@ -129,13 +129,20 @@ class OutcomeSheetClassicParitySourceContractTest {
 
     // -- Live region: delta (d) ------------------------------------------------------------------
 
+    // Deliberate edit of a pinned contract (Phase 28, plan 28-09): Phase 22 decision A9 pinned "the
+    // live region does not merge descendants" with device evidence as its stated trigger for
+    // revisiting it. Gate-1 cycle 1 of Phase 28 produced that evidence (the live-region event text
+    // was empty and TalkBack stayed silent, finding C-1), and PD-4 of 28-06 pre-recorded this exact
+    // edit: the live-region node now merges descendants so the node itself carries the message.
     @Test
     fun `refused surface carries the assertive live region directly after its testTag`() {
         val undoBody = body("UndoAffordanceBody")
         assertTrue(
-            undoBody.contains(".testTag(\"outcome_sheet_undo_refused\").semantics{liveRegion=LiveRegionMode.Assertive}")
+            undoBody.contains(
+                ".testTag(\"outcome_sheet_undo_refused\")" +
+                    ".semantics(mergeDescendants=true){liveRegion=LiveRegionMode.Assertive}"
+            )
         )
-        assertFalse("the live region must not merge descendants", undoBody.contains("mergeDescendants"))
         assertEquals(
             "exactly one live region in the Classic file",
             1,

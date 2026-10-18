@@ -272,7 +272,10 @@ internal fun UndoAffordanceBody(undo: UndoAffordanceUiModel, locked: Boolean) {
                     .padding(top = Dimens.ContentSpacing)
                     .testTag("outcome_sheet_undo_refused")
                     // TalkBack announces the surface when it appears; semantics only (VXR-01, D-12).
-                    .semantics { liveRegion = LiveRegionMode.Assertive }
+                    // Merging descendants gives the live-region node the message text: the change
+                    // event of an unmerged live-region node has empty text and TalkBack stays
+                    // silent (Gate-1 C-1, 28-07-SELF-UAT.md evidence 20/70).
+                    .semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Assertive }
             ) {
                 val suffix = refused.changedItem
                     ?.let { ", $it ${refused.changedSinceSuffix}" }
