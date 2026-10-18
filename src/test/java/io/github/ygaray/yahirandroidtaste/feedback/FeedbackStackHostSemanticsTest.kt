@@ -9,6 +9,7 @@ import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.click
@@ -636,6 +637,174 @@ class FeedbackStackHostSemanticsTest {
 
         assertTrue(state.pauseState.value.fanned)
         assertFalse(isInvisibleToUser("Mittlerer"))
+        state.dismissAll()
+    }
+
+    // ---- Plan 28-11: every focusable card node is named from the data (Gate-1 C-5) ----
+
+    /**
+     * What a screen reader speaks for [node]: its ContentDescription when it has one (the platform
+     * prefers it and does not append the text), otherwise its Text.
+     */
+    private fun accessibleName(node: SemanticsNode): String {
+        val description = node.config.getOrNull(SemanticsProperties.ContentDescription)
+        if (!description.isNullOrEmpty()) return description.joinToString(", ").trim()
+        return mergedTexts(node).joinToString(", ").trim()
+    }
+
+    /** Every node of the merged tree a screen reader can land on: it offers a click or an action. */
+    private fun focusableNodes(): List<SemanticsNode> = composeTestRule.onAllNodes(
+        SemanticsMatcher("focusable card node") {
+            it.config.contains(SemanticsActions.OnClick) ||
+                it.config.contains(SemanticsActions.CustomActions) ||
+                it.config.contains(SemanticsActions.Dismiss)
+        }
+    ).fetchSemanticsNodes()
+
+    private fun assertEveryFocusableNodeIsNamed(expectedCards: Int) {
+        val stops = focusableNodes()
+            .filter { it.config.getOrNull(SemanticsProperties.InvisibleToUser) == null }
+        val roots = stops.filter { it.config.getOrNull(SemanticsProperties.TestTag) == FEEDBACK_STACK_ITEM_TEST_TAG }
+        assertTrue("expected at least $expectedCards card stops, got ${roots.size}", roots.size >= expectedCards)
+        stops.forEach {
+            assertTrue(
+                "a focusable node must have a name, but this one is empty: ${it.config}",
+                accessibleName(it).isNotEmpty()
+            )
+        }
+    }
+
+    private fun showThreeWithUndo(state: FeedbackStackState, messages: List<String>) {
+        val results = mutableMapOf<String, FeedbackResult>()
+        messages.forEach { message -> show(state, withUndo(message), message, results) }
+    }
+
+    @Test
+    fun collapsedDeckOfThree_everyVisibleFocusableNodeHasAName() {
+        val state = FeedbackStackState()
+        setHost(state, undoLabel = "Undo", dismissLabel = "Dismiss")
+        showThreeWithUndo(state, listOf("Burst two", "Burst three", "Burst four"))
+
+        assertFalse(state.pauseState.value.fanned)
+        assertTrue("the middle strip must stay hidden", isInvisibleToUser("Burst three"))
+        assertEveryFocusableNodeIsNamed(expectedCards = 2)
+        state.dismissAll()
+    }
+
+    @Test
+    fun collapsedDeckOfThreeInGerman_everyVisibleFocusableNodeHasAName() {
+        val state = FeedbackStackState()
+        setHost(state, undoLabel = "Rückgängig machen", dismissLabel = "Meldung schließen")
+        showThreeWithUndo(
+            state,
+            listOf("Serie zwei: Eintrag entfernt", "Serie eins: Eintrag gespeichert", "Serie drei: Eintrag verschoben")
+        )
+
+        assertFalse(state.pauseState.value.fanned)
+        assertTrue(isInvisibleToUser("Serie eins: Eintrag gespeichert"))
+        assertEveryFocusableNodeIsNamed(expectedCards = 2)
+        state.dismissAll()
+    }
+
+    @Test
+    fun fannedDeckOfThree_everyFocusableNodeHasAName() {
+        val state = FeedbackStackState()
+        setHost(state, undoLabel = "Undo", dismissLabel = "Dismiss")
+        showThreeWithUndo(state, listOf("Burst two", "Burst three", "Burst four"))
+
+        tapStrip("Burst two")
+
+        assertTrue(state.pauseState.value.fanned)
+        assertEveryFocusableNodeIsNamed(expectedCards = 3)
+        state.dismissAll()
+    }
+
+    @Test
+    fun decksOfOneAndTwo_everyFocusableNodeHasAName() {
+        val state = FeedbackStackState()
+        val results = mutableMapOf<String, FeedbackResult>()
+        setHost(state, undoLabel = "Undo", dismissLabel = "Dismiss")
+        show(state, withUndo("Only card"), "Only card", results)
+        assertEveryFocusableNodeIsNamed(expectedCards = 1)
+
+        show(state, withUndo("Second card"), "Second card", results)
+        assertEquals(2, cardCount())
+        assertEveryFocusableNodeIsNamed(expectedCards = 2)
+        state.dismissAll()
+    }
+
+    @Test
+    fun cardRoot_nameIsExactlyTheMessage_notDoubled() {
+        val state = FeedbackStackState()
+        setHost(state, undoLabel = "Undo", dismissLabel = "Dismiss")
+        val long = "A rather long message that wraps over several lines in a narrow card, ".repeat(3).trim()
+        scope.launch { state.show(withUndo(long)) }
+        composeTestRule.waitForIdle()
+
+        val card = mergedCard().fetchSemanticsNode()
+        assertEquals(long, accessibleName(card))
+        assertEquals(listOf(long), card.config.getOrNull(SemanticsProperties.ContentDescription))
+        // Exactly one copy: the description replaces the merged text for speech, it is not appended.
+        assertEquals(1, Regex(Regex.escape(long)).findAll(accessibleName(card)).count())
+        state.dismissAll()
+    }
+
+    @Test
+    fun undoChild_nameIsTheCallersUndoLabel_andStaysSeparate() {
+        val state = FeedbackStackState()
+        setHost(state, undoLabel = "Rückgängig machen", dismissLabel = "Meldung schließen")
+        scope.launch { state.show(withUndo("Eintrag gelöscht")) }
+        composeTestRule.waitForIdle()
+
+        val undo = composeTestRule.onNodeWithTag(FEEDBACK_STACK_UNDO_TEST_TAG, useUnmergedTree = true)
+            .fetchSemanticsNode()
+        assertEquals(listOf("Rückgängig machen"), undo.config.getOrNull(SemanticsProperties.ContentDescription))
+        assertEquals("Rückgängig machen", accessibleName(undo))
+        // Still its own focusable child with its click, and still not part of the card's merged name.
+        assertNotNull(undo.config.getOrNull(SemanticsActions.OnClick))
+        assertTrue(isDescendantOf(undo, FEEDBACK_STACK_ITEM_TEST_TAG))
+        val card = mergedCard().fetchSemanticsNode()
+        assertEquals("Eintrag gelöscht", accessibleName(card))
+        assertTrue(card.config[SemanticsActions.CustomActions].any { it.label == "Rückgängig machen" })
+        state.dismissAll()
+    }
+
+    @Test
+    fun cardNameComesFromAnExplicitContentDescription_notOnlyFromTheDrawnText() {
+        val state = FeedbackStackState()
+        val results = mutableMapOf<String, FeedbackResult>()
+        setHost(state, undoLabel = "Undo", dismissLabel = "Dismiss")
+        show(state, withUndo("Burst two"), "Burst two", results)
+        show(state, notify("Burst three"), "Burst three", results)
+
+        // Robolectric shows unclipped text, so the property itself is the proof that a clipped or
+        // zero-height text layout cannot leave the node unnamed on a device.
+        listOf("Burst two", "Burst three").forEach { message ->
+            val config = cardByText(message).fetchSemanticsNode().config
+            assertEquals(listOf(message), config.getOrNull(SemanticsProperties.ContentDescription))
+        }
+        val undo = composeTestRule.undoOf("Burst two").fetchSemanticsNode()
+        assertEquals(listOf("Undo"), undo.config.getOrNull(SemanticsProperties.ContentDescription))
+        state.dismissAll()
+    }
+
+    @Test
+    fun cardWithASecondLine_nameKeepsTheSecondLine_afterTheMessage() {
+        val state = FeedbackStackState()
+        setHost(state, undoLabel = "Undo", dismissLabel = "Dismiss")
+        scope.launch {
+            state.show(
+                FeedbackEvent.Notify(
+                    message = "Saved",
+                    duration = SnackbarDuration.Indefinite,
+                    supportingText = "Draft"
+                )
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        // The description replaces the merged text for speech, so it must still carry the second line.
+        assertEquals("Saved, Draft", accessibleName(mergedCard().fetchSemanticsNode()))
         state.dismissAll()
     }
 
