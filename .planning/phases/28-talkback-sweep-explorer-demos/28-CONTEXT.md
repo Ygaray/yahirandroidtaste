@@ -114,3 +114,20 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
   - **C-3 (oldest card's Undo order):** keep. The device shows each card's Undo child directly after its own card, in both the collapsed and the fanned deck. That keeps an action next to the item it acts on (D-11 honored). No `traversalBefore`/`traversalAfter` is set, and none is added. The cross-card order TalkBack speaks comes from `traversalIndex`, which the node dump can't show, so the spoken swipe order across cards is parked for Yahir's Gate-2 (never waived).
   - **C-4 (double Dismiss):** keep both forms (D-07). The system `ACTION_DISMISS` (1048576) serves TalkBack's dismiss gesture and generic services. The custom Dismiss is the localized entry in the actions menu ("Verwerfen" in German). The duplicate in the menu is cosmetic, and Gate-2 notes it for Yahir.
   - **New, fix in this phase: the collapsed deck's middle peek strip is a focusable node with an empty label, and TalkBack stops on it in silence (German evidence 97).** A silent stop is a defect. It must stop taking focus, with no label added, because every card is already a full merged node with Open/Undo/Dismiss (the P26 FA-1 ruling), so no TalkBack fan action is needed. The fix stays internal with no API change. It may touch FeedbackCard.kt/FeedbackStackHost.kt for this one node only. The locked card forms (D-11 Undo child plus custom action, D-07 both Dismiss forms) stay as they are. Lane 2 is allowed if the hook says so.
+- **2026-10-18, ui-designer: rulings for gap cycle 2 (28-11) after the Gate-1 re-run (SELF-UAT addendum 73b5451):**
+  - **C-5 (unnamed stops in the collapsed deck): label them, never hide them.** The collapsed back cards stay in the focus order: the P26 FA-1 ruling makes every card a full merged node with Open/Undo/Dismiss, and TalkBack has no fan action, so hiding them would cut TalkBack users off from those cards. Name the nodes from the data, not from what is drawn:
+    - The card's merged node carries `item.message` (the same text the expanded card speaks).
+    - The Undo child carries the caller's `undoLabel`.
+    - A clipped or zero-height text layout must never leave a node unnamed.
+    - Only the middle strip's empty hit area stays hidden (28-10).
+  - **Unit test:** no focusable node in the collapsed or fanned deck has an empty name, in English or German.
+  - **The fix is internal:** no API change, and the D-11/D-07 forms stay.
+  - **C-1 route: (b), with (a) only as the fallback inside the same cycle.** When the sheet carrying the refusal settles, accessibility focus (not just input focus) moves to the refusal message node, so TalkBack reads it once. That is the standard pattern for a dialog that opens with an important message, and it needs no deprecated `announceForAccessibility`.
+    - **If (b) is infeasible:** if research shows Compose cannot reliably move accessibility focus there, switch to (a): one deferred announcement after the sheet settles (re-trigger the live region with non-empty text). Record the choice.
+    - **No double read:** never use both, so the message is never read twice.
+    - **Event text:** the live-region node must still carry non-empty text (fix `text=[]`).
+  - **Device acceptance (TalkBack alone, the real setup):**
+    - The message is spoken on every showing, at least 5 of 5.
+    - The observer shows the focus or announce event carrying the message text.
+    - The message is never read twice.
+  - **Cap:** this is cycle 2 of 3. If it fails, cycle 3 tries the other route, and a third failure escalates to Yahir.
