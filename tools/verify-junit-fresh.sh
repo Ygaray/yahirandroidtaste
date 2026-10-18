@@ -16,7 +16,12 @@
 #   CLASS <name> tests=<n> | CLASS <name> MISSING   (one per --require)
 #   JUNIT-FRESH OK | JUNIT-FRESH FAIL <reason>[,<reason>...]
 #
-# Exit: 0 fresh, tests above 0, no failures, no errors, every required class ran with tests above 0;
+# A skipped test did not run: "ran" is counted as tests minus skipped, both in total and per class,
+# so a class whose tests are all @Ignore'd (or all skipped by a failed assume) fails as zero_<Class>.
+# The TOTALS and CLASS lines still print the raw tests= attribute.
+#
+# Exit: 0 fresh, executed tests above 0, no failures, no errors, every required class ran with
+#         executed tests above 0;
 #       1 any of those fails (the final line names every reason);
 #       2 usage error (nothing is evaluated).
 set -euo pipefail
@@ -77,23 +82,24 @@ echo "TOTALS tests=$T skipped=$S failures=$F errors=$E"
 REASONS=()
 [ "$FILES" -gt 0 ] || REASONS+=("no_files")
 [ "$STALE" -eq 0 ] || REASONS+=("stale")
-if [ "$FILES" -gt 0 ] && [ "$T" -eq 0 ]; then REASONS+=("no_tests"); fi
+if [ "$FILES" -gt 0 ] && [ $((T - S)) -le 0 ]; then REASONS+=("no_tests"); fi
 [ "$F" -eq 0 ] || REASONS+=("failures")
 [ "$E" -eq 0 ] || REASONS+=("errors")
 
 for cls in "${REQUIRED[@]+"${REQUIRED[@]}"}"; do
-  CT=""; FOUND=0
+  CT=""; CX=0; FOUND=0
   while IFS= read -r -d '' f; do
     FOUND=1
-    read -r t _ <<< "$(attrs "$f")"
+    read -r t sk _ <<< "$(attrs "$f")"
     CT=$(( ${CT:-0} + ${t:-0} ))
+    CX=$(( CX + ${t:-0} - ${sk:-0} ))
   done < <(find "$DIR" -maxdepth 1 -type f \( -name "TEST-*.$cls.xml" -o -name "TEST-$cls.xml" \) -print0)
   if [ "$FOUND" -eq 0 ]; then
     echo "CLASS $cls MISSING"
     REASONS+=("missing_$cls")
   else
     echo "CLASS $cls tests=$CT"
-    [ "$CT" -gt 0 ] || REASONS+=("zero_$cls")
+    [ "$CX" -gt 0 ] || REASONS+=("zero_$cls")
   fi
 done
 

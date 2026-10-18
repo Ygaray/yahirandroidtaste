@@ -88,6 +88,26 @@ check "$RC" "1" "a required class with zero tests exits 1"
 check_grep "$OUT" '^CLASS ZeroTest tests=0$' "zero-test class line"
 check_grep "$OUT" '^JUNIT-FRESH FAIL .*zero_ZeroTest' "final line names the zero-test class"
 
+# 5b. Skipped tests are not executed tests: a required class whose tests are all skipped, and a
+# directory whose total executed count is zero, both fail.
+D5B="$TMP/d5b"
+mk_suite "$D5B" AlphaTest 10 0 0 0 "$FRESH"
+mk_suite "$D5B" AllSkippedTest 3 3 0 0 "$FRESH"
+run "$D5B" --marker "$MARKER" --require AllSkippedTest
+check "$RC" "1" "a required class whose tests are all skipped exits 1"
+check_grep "$OUT" '^CLASS AllSkippedTest tests=3$' "all-skipped class line keeps the tests= token"
+check_grep "$OUT" '^JUNIT-FRESH FAIL .*zero_AllSkippedTest' "final line names the all-skipped class"
+D5C="$TMP/d5c"
+mk_suite "$D5C" AllSkippedTest 3 3 0 0 "$FRESH"
+mk_suite "$D5C" AlsoSkippedTest 2 2 0 0 "$FRESH"
+run "$D5C" --marker "$MARKER"
+check "$RC" "1" "a directory where every test was skipped exits 1"
+check_grep "$OUT" '^JUNIT-FRESH FAIL .*no_tests' "final line names no_tests when nothing executed"
+D5D="$TMP/d5d"
+mk_suite "$D5D" PartlySkippedTest 4 1 0 0 "$FRESH"
+run "$D5D" --marker "$MARKER" --require PartlySkippedTest
+check "$RC" "0" "a partly skipped required class still passes"
+
 # 6. A required class is matched by its exact simple name, not by a suffix of another class.
 D6="$TMP/d6"
 mk_suite "$D6" ExtraAlphaTest 4 0 0 0 "$FRESH"
