@@ -120,7 +120,9 @@ fun FeedbackStackHost(
             onDismiss = { state.resolve(item, FeedbackResult.Dismissed) },
             collapsedBack = !fanned && index > 0,
             onPeekTap = { if (state.items.size > 1) fanned = true },
-            index = index
+            index = index,
+            // The deck holds at most three cards, so a collapsed deck has exactly one middle strip.
+            hiddenFromAccessibility = !fanned && index > 0 && index < state.items.size - 1
         )
     }
 }
