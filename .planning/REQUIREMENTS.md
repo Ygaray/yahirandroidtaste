@@ -49,7 +49,7 @@
 
 ### Ship
 
-- [ ] **SHIP-05**: Docs (API.md, STYLE.md, INTEGRATION/CATALOG as needed) describe the new API; `apiCheck` shows additions only; tests + detekt green; long-string (DE/ES ~360dp, font scale 2.0) and Gate-1 device checks pass; the `v2.8.0` tag + push are proposed to Yahir (not cut by the agent).
+- [x] **SHIP-05**: Docs (API.md, STYLE.md, INTEGRATION/CATALOG as needed) describe the new API; `apiCheck` shows additions only; tests + detekt green; long-string (DE/ES ~360dp, font scale 2.0) and Gate-1 device checks pass; the `v2.8.0` tag + push are proposed to Yahir (not cut by the agent).
 
 ## Future Requirements
 
@@ -88,7 +88,7 @@
 | A11Y-02 | Phase 28 | Complete |
 | DEMO-02 | Phase 28 | Complete |
 | DEMO-03 | Phase 28 | Complete |
-| SHIP-05 | Phase 29 | Pending |
+| SHIP-05 | Phase 29 | Complete |
 
 **Coverage:**
 

@@ -48,7 +48,7 @@ locked (Yahir, 2026-10-17, via director@office): `.planning/research/v2.8-BRIEF.
 - [x] **Phase 26: Receipt-card stacked snackbar deck** - Direction A deck (max 3), tap-to-open with chevron, fan-out, swipe dismiss, timeouts with pause, merged-button semantics (D-01..D-07, D-11) (completed 2026-10-17)
 - [x] **Phase 27: Open from the sheet & Undo Center, pill fixes** - Label-less go-to-item rows in Receipt and Classic `OutcomeSheet` and in the Undo Center; handled-by pill at font scale 2.0 and a contrast-safe Grammar dot (D-09, D-10) (completed 2026-10-17)
 - [x] **Phase 28: TalkBack sweep & Explorer demos** - Scoped TalkBack sweep on the TESTER (999.2), pinned hub scheme + `hide()` demo (999.3), stacked-snackbar and go-to-item demos in English and German (completed 2026-10-18)
-- [ ] **Phase 29: Docs & v2.8.0 cut readiness** - API/STYLE/INTEGRATION docs, additive `apiCheck`, full gates, long-string and Gate-1 device checks, then a `v2.8.0` proposal to Yahir (no tag cut by the agent)
+- [x] **Phase 29: Docs & v2.8.0 cut readiness** - API/STYLE/INTEGRATION docs, additive `apiCheck`, full gates, long-string and Gate-1 device checks, then a `v2.8.0` proposal to Yahir (no tag cut by the agent) (completed 2026-10-18)
 
 ## Phase Details
 
@@ -229,7 +229,7 @@ Plans:
   4. A `v2.8.0` proposal (commit sha, the `git log origin/main..HEAD` range, gate results) reaches Yahir through the teamlead. The agent creates no tag (neither `v2.8.0` nor a milestone marker), pushes nothing and repins no consumer from the hub.
 
 **Notes**: A tag push publishes every unpushed commit reachable from it, so the proposal lists the full unpushed range. Version, tag and sequencing confirmations route through the teamlead/orchestrator first.
-**Plans:** 7 plans
+**Plans:** 7/7 plans complete
 
 Plans:
 **Wave 1**
