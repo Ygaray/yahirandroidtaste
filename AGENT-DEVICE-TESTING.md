@@ -149,6 +149,16 @@ Same as the global template (rungs 0–5: `./gradlew testDebugUnitTest`, `uiauto
 - **`DELETE_FAILED_INTERNAL_ERROR` on `adb uninstall` before a fresh harness install** is harmless
   when the package was never installed (or already removed) — `adb install -r` after it still
   succeeds; don't treat it as a device fault.
+- **TalkBack-level Gate-1 (optional housekeeping, not a gate; from the Phase 28 method notes):**
+  `uiautomator dump` cannot see heading, live region or speech, so the run uses a throwaway observer
+  `AccessibilityService` built in the session scratchpad, in its own package and never committed. It logs
+  class, text, heading, `stateDescription`, live region, the action list with labels and the
+  content-changed events. `am start -S` force-stops the harness and disables the observer, so re-enable
+  it after each launch where a dump or an action is needed. `uiautomator dump` suppresses every other
+  accessibility service while it runs, so navigate with TalkBack off and observe speech with TalkBack on.
+  A baseline control harness against an older tag is built by exporting that tag with `git archive` into
+  the scratchpad and repeating the delete-then-republish procedure of D2. The physical one-finger
+  gestures cannot be synthesized; they stay Gate-2.
 
 ## When to involve the human
 
