@@ -250,7 +250,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 29-05-PLAN.md — Gate-1 on the TESTER: fresh rung-1 battery, Spanish/German long-string probe at 360dp and font 2.0 with a throwaway harness, restore oracle, SELF-UAT and Gate-2 fragment (SHIP-05, D-03)
+- [x] 29-05-PLAN.md — Gate-1 on the TESTER: fresh rung-1 battery, Spanish/German long-string probe at 360dp and font 2.0 with a throwaway harness, restore oracle, SELF-UAT and Gate-2 fragment (SHIP-05, D-03)
 
 **Wave 6** *(gap closure for the Gate-1 SC3 failure; blocked on Wave 5 completion)*
 
@@ -258,7 +258,7 @@ Plans:
 
 **Wave 7** *(blocked on Wave 6 completion and the Gate-1 SC3 re-verification on the tester)*
 
-- [ ] 29-06-PLAN.md — release-flip commit (README.md, CLAUDE.md to v2.8.0), forced-fresh battery on that commit, unpushed-range scan, `29-PROPOSAL.md` (no tag, no push) (SHIP-05, D-01, D-02)
+- [x] 29-06-PLAN.md — release-flip commit (README.md, CLAUDE.md to v2.8.0), forced-fresh battery on that commit, unpushed-range scan, `29-PROPOSAL.md` (no tag, no push) (SHIP-05, D-01, D-02)
 
 ## Completed Milestones
 
@@ -464,4 +464,4 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 | 26. Receipt-card stacked snackbar deck | v2.8 | 6/6 | Not started |  |
 | 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 4/4 | Not started |  |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 12/12 | Not started |  |
-| 29. Docs & v2.8.0 cut readiness | v2.8 | 6/7 | Not started |  |
+| 29. Docs & v2.8.0 cut readiness | v2.8 | 7/7 | Not started |  |

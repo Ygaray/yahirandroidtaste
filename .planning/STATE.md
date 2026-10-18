@@ -4,17 +4,17 @@ milestone: v2.8
 milestone_name: Snackbar go-to-item + stacked feedback
 current_phase: 29
 current_phase_name: Docs & v2.8.0 cut readiness
-status: executing
-stopped_at: Completed 29-07-PLAN.md (awaiting Gate-1 SC3 re-run Addendum before 29-06)
-last_updated: "2026-10-18T12:19:28.597Z"
+status: verifying
+stopped_at: Completed 29-06-PLAN.md
+last_updated: "2026-10-18T14:25:34.443Z"
 last_activity: 2026-10-18
 last_activity_desc: Phase 29 execution started
-state_head: b9889a076719c7da32fcb71b0fb81f80694b91a4
+state_head: 942f3e263e877c6eb4fa993aeccfc6d31f6f6d0d
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 34
-  completed_plans: 32
+  completed_plans: 34
   percent: 80
 ---
 
@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-10-17)
 
 Phase: 29 (Docs & v2.8.0 cut readiness) — EXECUTING
 Plan: 6 of 6
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-10-18 — Phase 29 execution started
 
 Progress: [████████░░] 80%
@@ -70,6 +70,7 @@ Progress: [████████░░] 80%
 | Phase 29 P03 | 25 min | 3 tasks | 4 files |
 | Phase 29 P04 | 20 min | 3 tasks | 5 files |
 | Phase 29 P07 | 25 min | 3 tasks | 11 files |
+| Phase 29 P06 | 55 min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -132,8 +133,8 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-18T12:19:28.535Z
-Stopped at: Completed 29-07-PLAN.md (awaiting Gate-1 SC3 re-run Addendum before 29-06)
+Last session: 2026-10-18T14:25:34.350Z
+Stopped at: Completed 29-06-PLAN.md
 Resume file: None
 
 ## Operator Next Steps
