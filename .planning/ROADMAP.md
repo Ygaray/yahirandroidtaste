@@ -254,7 +254,7 @@ Plans:
 
 **Wave 6** *(gap closure for the Gate-1 SC3 failure; blocked on Wave 5 completion)*
 
-- [ ] 29-07-PLAN.md — gap closure (Gate-1 SC3, Spanish stacked card at font 2.0): the card's Undo keeps a capped-radius shape through an internal path, a card taller than the deck's space scrolls its own content; Robolectric RED then GREEN, `api.txt` byte-identical, fresh unit gate (SHIP-05, D-03)
+- [x] 29-07-PLAN.md — gap closure (Gate-1 SC3, Spanish stacked card at font 2.0): the card's Undo keeps a capped-radius shape through an internal path, a card taller than the deck's space scrolls its own content; Robolectric RED then GREEN, `api.txt` byte-identical, fresh unit gate (SHIP-05, D-03)
 
 **Wave 7** *(blocked on Wave 6 completion and the Gate-1 SC3 re-verification on the tester)*
 
@@ -464,4 +464,4 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 | 26. Receipt-card stacked snackbar deck | v2.8 | 6/6 | Not started |  |
 | 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 4/4 | Not started |  |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 12/12 | Not started |  |
-| 29. Docs & v2.8.0 cut readiness | v2.8 | 4/6 | Not started |  |
+| 29. Docs & v2.8.0 cut readiness | v2.8 | 6/7 | Not started |  |
