@@ -12,7 +12,8 @@ Exit codes:
   1  the assertion failed
   2  usage error, missing file, unreadable database or missing tiles table
 
-Read-only (mode=ro URI), parameterized statements, no network, no writes. The input is treated as
+Read-only (mode=ro&immutable=1 URI: the input is a snapshot pulled off a device, so SQLite must not
+look for or create -wal/-shm sidecars), parameterized statements, no network, no writes. The input is treated as
 untrusted: a malformed file exits 2.
 """
 import hashlib
@@ -34,7 +35,7 @@ def usage(msg=None):
 
 
 def count_rows(path):
-    uri = "file:" + quote(str(path.resolve())) + "?mode=ro"
+    uri = "file:" + quote(str(path.resolve())) + "?mode=ro&immutable=1"
     conn = sqlite3.connect(uri, uri=True)
     try:
         total = conn.execute("SELECT count(*) FROM tiles").fetchone()[0]

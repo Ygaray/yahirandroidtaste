@@ -7,13 +7,13 @@
 # Fetches exactly one tile (https://tile.openstreetmap.org/3/2/3.png). Never loops, never requests
 # a second tile (OSM tile usage policy: https://operations.osmfoundation.org/policies/tiles/).
 #
-# A response is "blocked" when an x-blocked response header is present OR the body is the
-# 6987-byte placeholder tile (md5 c069a15b2cc2d6b6f527ad09eb93c61a).
+# A response is "blocked" when an x-blocked response header is present (including on a 403 or 429)
+# OR the body is the 6987-byte placeholder tile (md5 c069a15b2cc2d6b6f527ad09eb93c61a).
 #
 # Prints one line: AGENT=<agent> BLOCKED=<yes|no> SIZE=<bytes> MD5=<md5>
 # Exit codes: 0 outcome matches the expectation (default: a real tile; --expect-blocked: the
-# blocked placeholder), 1 it does not, 2 usage error, curl failure or non-200 status (a network
-# problem is infrastructure, never a pass).
+# blocked placeholder), 1 it does not, 2 usage error, curl failure or a non-200 status other than a
+# 403/429 carrying x-blocked (a network problem is infrastructure, never a pass).
 set -euo pipefail
 
 PLACEHOLDER_SIZE=6987
@@ -39,8 +39,13 @@ if ! status="$(curl -sS --max-time 20 -A "$agent" -D "$tmp/headers" -o "$tmp/bod
   exit 2
 fi
 if [ "$status" != "200" ]; then
-  echo "ERROR: unexpected HTTP status $status (not a verdict)" >&2
-  exit 2
+  # A 403/429 that carries an x-blocked header is the server's own verdict, not infrastructure.
+  if { [ "$status" = "403" ] || [ "$status" = "429" ]; } && grep -qi '^x-blocked:' "$tmp/headers"; then
+    :
+  else
+    echo "ERROR: unexpected HTTP status $status (not a verdict)" >&2
+    exit 2
+  fi
 fi
 
 size="$(wc -c < "$tmp/body" | tr -d ' ')"
