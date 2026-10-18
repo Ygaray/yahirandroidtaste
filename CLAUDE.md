@@ -14,10 +14,10 @@ breadth, consistency and ease of reuse over release-engineering ceremony.
 
 - **Import root:** `io.github.ygaray.yahirandroidtaste` (publisher-owned, consumer-name-free;
   renamed to this publisher-owned root in Phase 101 / LIB-03).
-- **JitPack coordinate:** `com.github.Ygaray:yahirandroidtaste:<tag>` (current release: `v2.7.1`,
-  Receipt voice surfaces + ProviderKeyCard lifecycle, the confirm-sheet handler pill, a hoistable
-  `OutcomeSheet` sheet state, tall sheets that open fully expanded and localizable Undo Center group
-  words; see `API.md`).
+- **JitPack coordinate:** `com.github.Ygaray:yahirandroidtaste:<tag>` (current release: `v2.8.0`,
+  go-to-item snackbars: `FeedbackTarget`, a stacked `FeedbackStackHost` deck, `onOpenTarget` on
+  `OutcomeSheet` and `UndoCenterScreen`, a TalkBack sweep, the OSM tile user-agent fix and long-label
+  hardening of the stacked card; see `API.md`).
 - **Public repo:** `github.com/Ygaray/yahirandroidtaste`
 - **Consumers:** SecondBrain, CalTracker (both repin by tag and recompile).
 

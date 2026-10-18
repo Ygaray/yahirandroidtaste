@@ -30,7 +30,7 @@ library's bindings into its `SingletonComponent`. See **[`INTEGRATION.md`](INTEG
 
 ## Install (JitPack)
 
-> **Current release: `v2.6.0`** (`com.github.Ygaray:yahirandroidtaste:v2.6.0`). Tags are immutable
+> **Current release: `v2.8.0`** (`com.github.Ygaray:yahirandroidtaste:v2.8.0`). Tags are immutable
 > and cutting one is human-gated; see `CLAUDE.md`.
 
 Add the JitPack repository in your **`settings.gradle.kts`** (inside
@@ -51,7 +51,7 @@ Then depend on it in your module's **`build.gradle.kts`**. Pin an immutable rele
 commit-SHA) — never `main-SNAPSHOT`:
 
 ```kotlin
-implementation("com.github.Ygaray:yahirandroidtaste:v2.6.0")
+implementation("com.github.Ygaray:yahirandroidtaste:v2.8.0")
 ```
 
 ## Usage
