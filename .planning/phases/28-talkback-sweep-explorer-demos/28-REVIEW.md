@@ -48,7 +48,7 @@ findings:
   warning: 4
   info: 9
   total: 14
-status: issues_found
+status: resolved
 ---
 
 # Phase 28: Code Review Report
