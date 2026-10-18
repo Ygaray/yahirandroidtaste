@@ -25,7 +25,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-17)
 
 **Core value:** An agent building one of Yahir's apps finds the widget it needs already here, coherent and legible, and drops it in instead of writing a new one.
-**Current focus:** Phase 28 — TalkBack sweep & Explorer demos
+**Current focus:** Phase 29 — Docs & v2.8.0 cut readiness
 
 ## Current Position
 
@@ -126,7 +126,7 @@ Items acknowledged and carried forward, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-17
+Last session: 2026-10-18
 Stopped at: Phase 28 complete, ready to plan Phase 29
 Resume file: None
 
