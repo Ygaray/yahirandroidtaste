@@ -84,3 +84,19 @@ Match the approved mock (direction A) and docs/STYLE.md; Yahir's picks: keep the
   - Never run `./gradlew --stop`.
   - No tag, no push.
   - The proposal goes to director@office (D-01) with the range from `git log origin/main..HEAD` and the scan result for 100.x IPs, /home/yahir paths and keys.
+- **2026-10-18, ui-designer: Gate-1 SC3 failure (Spanish stacked card at font 2.0), scope and treatment ruling:**
+  - **Scope:** Phase 29 MAY take this one `src/main` fix as gap plan 29-07. The defect is in v2.8's own new surface (the Phase 26 card's Undo), and shipping v2.8.0 with clipped text fails the milestone's long-string bar. The "no library code" line in this phase's plans yields to it for this fix only.
+    - The fix stays internal: `api.txt` byte-identical, additive check OK vs v2.7.1, and no new public param on `DynamicActionButton`.
+    - Lane 2 via `HUB_LANE_OVERRIDE=2` is allowed. Never use `--no-verify`.
+  - **Treatment, both parts:**
+    1. **Undo shape:** the card's Undo uses the capped-radius rule the handled-by pill already uses (`HandledByPillShape`: a pill while it is one line, a rounded rectangle with the radius capped at about one line height once it wraps). Its text is never cut by its own corners. Apply it through an internal path (an internal shape parameter or an internal button variant used only by `FeedbackCard`), so the public `DynamicActionButton` signature does not change.
+    2. **Card height:** a card whose content is taller than the space `measureDeck` gives it scrolls its content vertically inside the card, so every line is reachable.
+       - No ellipsis and no line cap, so the message is never hidden.
+       - The horizontal swipe-to-dismiss, tap-to-open, hold-to-peek and the timer pause while touched keep working.
+       - Vertical drags scroll the card; they don't dismiss it.
+       - Short cards (the common case) look exactly as today.
+  - **Tests:** Robolectric at font 2.0, Spanish and German, with the long Undo and a long message. Assert:
+    - The Undo label's text bounds fit inside the button.
+    - The last line of the message can be scrolled into view.
+    - The single-line Undo is still a pill (a shape regression guard).
+  - **Device:** re-run SC3 on the tester (R5CT10XNKQN) with the same Spanish and German long-string scenes, plus the 27 that already pass. This is gap cycle 2 of 3.
