@@ -20,7 +20,9 @@ import org.junit.Test
  *    as a test-only hook, never both; the 17 VTAG-01 tags, the two confirmation tags and every
  *    `provider_key_*` tag are stable; explorer-only `demo_` tags and the internal kebab-case undo
  *    tags are in neither list;
- *  - `INTEGRATION.md` names the v2.6.0 entry points.
+ *  - `INTEGRATION.md` names the v2.6.0 entry points;
+ *  - the `### Additions in v2.8.0` section of `API.md` names every v2.8.0 target-and-stack symbol
+ *    (Phase 29 tracer) inside that section, and `api.txt` still declares each one.
  */
 class CatalogDocsDriftGuardTest {
 
@@ -34,6 +36,14 @@ class CatalogDocsDriftGuardTest {
         "Dimens.ActionButton", "Dimens.OutcomeReceipt", "Dimens.PillChip", "Dimens.ReceiptRow",
         "Dimens.RoundIconButton", "Dimens.SegmentedPill", "Dimens.StackedProgressBar"
     )
+
+    /** Public types and functions of the v2.8.0 target-and-stack half (Phase 29, SHIP-05). */
+    private val newInV280 = listOf(
+        "FeedbackTarget", "FeedbackResult", "FeedbackStackState", "FeedbackStackHost",
+        "rememberFeedbackStackState"
+    )
+
+    private val v280Heading = "### Additions in v2.8.0"
 
     /** The 17 tags of VTAG-01 (Y-14). */
     private val vtag01 = listOf(
@@ -177,6 +187,40 @@ class CatalogDocsDriftGuardTest {
             val declared = Regex("(class|enum|interface) " + Regex.escape(name) + " [{i]").containsMatchIn(apiTxt)
             val composable = Regex("static void " + Regex.escape(name) + "\\(").containsMatchIn(apiTxt)
             declared || composable
+        }
+        assertTrue("no longer in api.txt (the list went stale): $goneFromApi", goneFromApi.isEmpty())
+    }
+
+    /** The API.md section that starts at [v280Heading] and ends before the next `###` or `##` heading. */
+    private fun v280Section(api: String): String {
+        val lines = api.lines()
+        assertEquals(
+            "API.md needs exactly one '$v280Heading' heading",
+            1,
+            lines.count { it == v280Heading }
+        )
+        val start = lines.indexOfFirst { it == v280Heading }
+        val end = (start + 1 until lines.size).firstOrNull {
+            lines[it].startsWith("### ") || lines[it].startsWith("## ")
+        } ?: lines.size
+        return lines.subList(start, end).joinToString("\n")
+    }
+
+    @Test
+    fun `every symbol new in v2_8_0 is named in the API md v2_8_0 section and declared in api txt`() {
+        assertEquals("the v2.8.0 symbol list changed size (vacuity guard)", 5, newInV280.size)
+        val section = v280Section(doc("API.md"))
+        assertTrue("the v2.8.0 section is too short (vacuity guard): ${section.length}", section.length > 1000)
+        val apiTxt = readApiTxt()
+        assertTrue("api.txt is unexpectedly small", apiTxt.length > 50_000)
+
+        val missingFromSection = newInV280.filterNot { wholeWord(it).containsMatchIn(section) }
+        assertTrue("the v2.8.0 section does not name: $missingFromSection", missingFromSection.isEmpty())
+
+        val goneFromApi = newInV280.filterNot { name ->
+            val type = Regex("(class|enum|interface) " + Regex.escape(name) + " [{i]").containsMatchIn(apiTxt)
+            val function = Regex("static (void|\\S+) " + Regex.escape(name) + "\\(").containsMatchIn(apiTxt)
+            type || function
         }
         assertTrue("no longer in api.txt (the list went stale): $goneFromApi", goneFromApi.isEmpty())
     }
