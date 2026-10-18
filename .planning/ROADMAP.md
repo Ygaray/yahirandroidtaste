@@ -246,7 +246,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 29-04-PLAN.md — `tools/verify-junit-fresh.sh` and `tools/verify-publish-range.sh` with fixture tests; classify the scan hits and neutralize the shipped-path tailnet fixture address (SHIP-05, D-01)
+- [x] 29-04-PLAN.md — `tools/verify-junit-fresh.sh` and `tools/verify-publish-range.sh` with fixture tests; classify the scan hits and neutralize the shipped-path tailnet fixture address (SHIP-05, D-01)
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
@@ -460,4 +460,4 @@ only on Phase 25, but it runs after 26 because every phase rewrites the shared `
 | 26. Receipt-card stacked snackbar deck | v2.8 | 6/6 | Not started |  |
 | 27. Open from the sheet & Undo Center, pill fixes | v2.8 | 4/4 | Not started |  |
 | 28. TalkBack sweep & Explorer demos | v2.8 | 12/12 | Not started |  |
-| 29. Docs & v2.8.0 cut readiness | v2.8 | 3/6 | Not started |  |
+| 29. Docs & v2.8.0 cut readiness | v2.8 | 4/6 | Not started |  |

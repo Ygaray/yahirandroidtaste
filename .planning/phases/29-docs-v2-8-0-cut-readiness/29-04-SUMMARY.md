@@ -64,7 +64,7 @@ After the neutralization commit (HEAD `e6749e6`, 295 commits):
 | Path | Class | Count | Area | Verdict |
 |------|-------|-------|------|---------|
 | tools/test/test-verify-tester-restored.sh (line 134) | tailnet_ip | 1 | shipped | fixture value (the tester's wireless tailnet address 100.118.x.x with port 1496), neutralized in e6749e6 |
-| .planning/phases/26..29 plans, summaries, research, self-UAT logs (8 files) | tailnet_ip | 9 | planning | reviewed and accepted, not scrubbed (prose naming the tester's wireless address; the already-pushed tree holds the same class and the v2.6 gate accepted it) |
+| .planning/phases/26..29 plans, summaries, research, self-UAT logs (7 files) | tailnet_ip | 9 | planning | reviewed and accepted, not scrubbed (prose naming the tester's wireless address; the already-pushed tree holds the same class and the v2.6 gate accepted it) |
 | .planning/phases/26..29 prose and evidence logs (17 files) | home_path | 34 | planning | reviewed and accepted, not scrubbed |
 | .planning/phases/29 plan and research text (4 files) | ts_net | 5 | planning | reviewed and accepted, not scrubbed (documents the scan class itself) |
 | credential, all paths | credential | 0 | n/a | none found, net or history |
