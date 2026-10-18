@@ -1,0 +1,20 @@
+# cr01-after-seeded-relaunch-verify  (pulled from the tester with: adb -s R5CT10XNKQN exec-out run-as <package> cat cache/osmdroid/tiles/cache.db)
+# 53248 bytes, md5 cbbc64dde806773eacf8351f1bfb9f81; sidecars: (none = no -wal/-shm existed on the device)
+$ python3 -I tools/verify-osm-tile-cache.py cache.db 
+PLACEHOLDER_ROWS=0 REAL_ROWS=12 TOTAL_ROWS=12
+exit=0
+# per-row summary
+columns: ['key', 'provider', 'tile', 'expires']
+key=219 provider=Mapnik bytes=3280 md5=23ac7ce802be expires=1792814851362 real
+key=220 provider=Mapnik bytes=661 md5=217ecc3013fb expires=1792815555423 real
+key=227 provider=Mapnik bytes=9218 md5=b3f9cf37a2d7 expires=1792823926464 real
+key=228 provider=Mapnik bytes=6808 md5=e97de58ae784 expires=1792813864472 real
+key=16422252660 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792461095276 real
+key=16422252661 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792422820948 real
+key=16422285428 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792687882247 real
+key=16422285429 provider=Mapnik bytes=1443 md5=ab8a45bd0c65 expires=1792718249065 real
+key=16642981887 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792879962696 real
+key=16642981888 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792347601308 real
+key=16643014655 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792899687317 real
+key=16643014656 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792307261808 real
+rows=12 placeholder=0

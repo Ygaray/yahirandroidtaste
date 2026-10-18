@@ -1,0 +1,5 @@
+# TalkBack speech observation: p1-kbd-alt-left-previous-from-undo
+# trigger: adb shell "nohup sh -c "input keyboard keycombination KEYCODE_ALT_LEFT KEYCODE_DPAD_LEFT" >/dev/null 2>&1 &"   frames: 20 (screencap back to back, ~0.3 s apart)   host-start 1792292452.347953009 device-clock 1792292452 host-clock 1792292452
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: (no overlay)
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)

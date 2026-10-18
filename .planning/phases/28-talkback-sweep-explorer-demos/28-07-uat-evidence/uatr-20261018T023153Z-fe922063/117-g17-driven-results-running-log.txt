@@ -1,0 +1,29 @@
+G1-7 / G1-4 driven results, transcribed from the uiautomator dumps taken after each real tap (HEAD harness com.example.yat28head, density 450, TalkBack off). The screenshots and observer dumps in this run back the same facts; this file is the running log.
+
+FeedbackStackHost page, English stage
+- "Note with target" tapped, then the card body tapped        -> "Last result: Opened", "Opened: demo-note"
+- "Burst x4" (4 Indefinite cards, 350 ms apart)               -> "Last result: Dismissed" (the oldest evicted past the cap of 3), front card "Burst four", two peek strips behind it (screen 33)
+- tap on a peek strip                                          -> deck fanned: Burst two (with Undo), Burst three, Burst four, oldest on top (screen 35)
+- swipe the front card away (input swipe 150 1550 1000 1550 160) -> front card gone, "Burst three" is the new front, "Last result: Dismissed" (screen 45)
+- tap the front card without a target (Burst three)           -> nothing opens ("Opened: none" unchanged), card stays
+- Dismiss all, Burst x4, tap the front card (Burst four)      -> "Last result: Opened", "Opened: demo-burst-4" (screen 46)
+German stage (Serie x4 / Hinweis mit Rückgängig und Ziel / Alle verwerfen) -> "Letztes Ergebnis: Verworfen", "Geöffnet: keins"; at density 480 (360 dp) and font_scale 2.0 the front card text wraps (3 lines, or 7 narrow lines next to the Rückgängig button), Undo and the chevron stay on the card, nothing clipped (screens 47, 48)
+
+Go-to-item sheet demos (OutcomeSheetDemo page, one shared readout under the section label)
+Receipt single EN  tap "Item A"          -> sheet slides down, "Opened: demo-item-1"
+Receipt single DE  tap "Eintrag A"       -> "Geöffnet: demo-item-1"  (prefix flips, so it updated)
+Classic single EN  tap "Item A"          -> "Opened: demo-item-1"
+Classic single DE  tap "Eintrag A"       -> "Geöffnet: demo-item-1"
+Receipt batch EN   tap "Item A"          -> "Opened: demo-batch-a"; reopen, tap "Item C" -> "Opened: demo-batch-c"
+Receipt batch DE   tap "Eintrag A"       -> "Geöffnet: demo-batch-a"
+Receipt batch      tap the target-less "Item B" -> readout unchanged, sheet stays open (screen 44)
+Classic batch EN   tap "Item C"          -> "Opened: demo-batch-c"; tap "Item A" -> "Opened: demo-batch-a"
+Classic batch DE   tap "Eintrag A"       -> "Geöffnet: demo-batch-a"
+At density 480 / font_scale 2.0, German single and batch Receipt sheets: title, rows, chevrons and the Bearbeiten / Fertig buttons are all fully visible (the batch sheet scrolls; at scroll end the buttons clear the navigation bar, screens 51, 52).
+
+UndoCenterScreen go-to-item rows
+- English row A, one tap                                       -> "Opened: demo-row-a", row A still shows Undo (no undo ran); taps on row B (no target) and row C (Undone) change nothing
+- German row A held 4.5 s                                      -> the peek card shows while held (screen 41), "Geöffnet: keins" after release (a hold opens nothing)
+- German row A, tap on its Undo button                         -> row shows "Undone", "Geöffnet: keins" (undo did not open), the row node has click=false and no open action any more (log 42)
+- English demo, keyboard: TAB x3 focuses row A, ENTER           -> "Opened: none" becomes "Opened: demo-row-a" (screen 43)
+- 360 dp / font 2.0, German rows                                -> "Eintrag A geändert / 1 minute ago", "Undo", chevron all visible (screen 50)

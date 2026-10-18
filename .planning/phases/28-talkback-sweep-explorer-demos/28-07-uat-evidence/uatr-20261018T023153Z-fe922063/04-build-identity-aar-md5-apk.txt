@@ -1,0 +1,11 @@
+tag v2.7.1 exported with git archive
+exit=0
+41959a0847c8291fb8b1f0dee44f9354  /home/yahir/.m2/repository/com/github/Ygaray/yahirandroidtaste/1.10.0/yahirandroidtaste-1.10.0.aar
+
+HEAD=830caebfc27d4331d6842d7e61be82f3e93f2870 src-changes=0
+exit=0
+d8218b7c08eab0b2cb54c5118063b4d2  /home/yahir/.m2/repository/com/github/Ygaray/yahirandroidtaste/1.10.0/yahirandroidtaste-1.10.0.aar
+
+control harness APK (com.example.yat28control, built against the v2.7.1 AAR): 45368b4987d5c02721703590af71f1b1  /tmp/claude-1000/-home-yahir-Projects-Reusable-android-yahirandroidtaste/cfae8b42-f068-499e-9d28-6d6749c3bca4/scratchpad/p28/control.apk
+head harness APK (com.example.yat28head, built against the HEAD AAR): 99b4b32472f24f398eeddfd5b6eeee9d  /tmp/claude-1000/-home-yahir-Projects-Reusable-android-yahirandroidtaste/cfae8b42-f068-499e-9d28-6d6749c3bca4/scratchpad/p28/head.apk sha256 4617e1d69474f34e
+HEAD AAR classes.jar present

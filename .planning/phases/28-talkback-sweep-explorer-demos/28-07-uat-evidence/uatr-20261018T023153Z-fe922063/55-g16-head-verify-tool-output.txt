@@ -1,0 +1,32 @@
+# g16-head-verify  (pulled from the tester with: adb -s R5CT10XNKQN exec-out run-as <package> cat cache/osmdroid/tiles/cache.db)
+# 94208 bytes, md5 20867d89eeb3ca6443bf6a21524184a0; sidecars: (none = no -wal/-shm existed on the device)
+$ python3 -I tools/verify-osm-tile-cache.py cache.db 
+PLACEHOLDER_ROWS=0 REAL_ROWS=24 TOTAL_ROWS=24
+exit=0
+# per-row summary
+columns: ['key', 'provider', 'tile', 'expires']
+key=216 provider=Mapnik bytes=3399 md5=ed25fe5fe204 expires=1792817709616 real
+key=217 provider=Mapnik bytes=4390 md5=c45e98c1df68 expires=1792823667736 real
+key=218 provider=Mapnik bytes=4643 md5=a5e44ecfd145 expires=1792817326028 real
+key=219 provider=Mapnik bytes=3128 md5=836f292e6644 expires=1792819501100 real
+key=220 provider=Mapnik bytes=661 md5=217ecc3013fb expires=1792815232843 real
+key=221 provider=Mapnik bytes=237 md5=307ad13aaa66 expires=1792821623793 real
+key=222 provider=Mapnik bytes=1047 md5=4878c3664532 expires=1792822442147 real
+key=223 provider=Mapnik bytes=103 md5=71b1904ec24f expires=1792820108391 real
+key=224 provider=Mapnik bytes=1105 md5=ffdc43a33cdd expires=1792816829650 real
+key=225 provider=Mapnik bytes=3688 md5=6718615281e7 expires=1792821426772 real
+key=226 provider=Mapnik bytes=11832 md5=6e016e445041 expires=1792820191061 real
+key=227 provider=Mapnik bytes=9354 md5=bbf51c673c78 expires=1792815316165 real
+key=228 provider=Mapnik bytes=6808 md5=e97de58ae784 expires=1792813541886 real
+key=229 provider=Mapnik bytes=103 md5=ef520345a594 expires=1792820007822 real
+key=230 provider=Mapnik bytes=904 md5=7df0e8e0d91e expires=1792820199119 real
+key=231 provider=Mapnik bytes=103 md5=71b1904ec24f expires=1792822732359 real
+key=16422252660 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792461095276 real
+key=16422252661 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792422820948 real
+key=16422285428 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792687882247 real
+key=16422285429 provider=Mapnik bytes=1443 md5=ab8a45bd0c65 expires=1792718249065 real
+key=16642981887 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792879962696 real
+key=16642981888 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792347601308 real
+key=16643014655 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792899687317 real
+key=16643014656 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792307261808 real
+rows=24 placeholder=0

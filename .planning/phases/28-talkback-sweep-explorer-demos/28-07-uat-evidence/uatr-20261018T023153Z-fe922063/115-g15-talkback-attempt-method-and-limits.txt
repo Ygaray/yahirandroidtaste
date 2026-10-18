@@ -1,0 +1,15 @@
+G1-5 TalkBack attempt, method and limits (Phase 28 Gate-1, tester R5CT10XNKQN, Samsung TalkBack 15.1.01.1 already on the device, no third-party tool)
+
+How TalkBack was driven
+- Enabled only through the secure settings: enabled_accessibility_services = "<TalkBack component>:<throwaway observer component>", accessibility_enabled = 1.
+  TalkBack component: com.samsung.android.accessibility.talkback/com.samsung.android.marvin.talkback.TalkBackService
+  Observer: com.example.yat28obs/.ObsService (local source, built in the session scratchpad, never committed; its own package so the head harness APK hash of the signed run never changes).
+- TalkBack's own developer setting "Display speech output" was switched on through its settings screen (TalkBack off at that time) so the phrase it speaks is drawn in an overlay at the bottom of the screen; switched off again at the end (read back false).
+  The Samsung TTS log carries the spoken text encrypted ("[Synthesize] text = <base64>"), so logcat gives only utterance durations; the overlay text is the transcript.
+- Focus was moved with ACTION_ACCESSIBILITY_FOCUS from the observer (TalkBack then speaks the node exactly as when the user lands on it), clicks with ACTION_CLICK; screencaps were taken back to back (about 0.3 s apart) right after the trigger and the overlay box was OCR-read (tesseract; umlauts are sometimes dropped by the OCR).
+  Every speech observation is the file tb-<name>.txt in this run (overlay transcript with time offsets, plus the observer events and the TTS utterance durations of the same window).
+
+What could not be driven
+- One-finger swipe gestures (next/previous item, heading navigation) and the keyboard shortcuts of TalkBack: adb "input swipe", "input touchscreen swipe", "input keycombination ALT+DPAD" and "input keyboard keycombination" were not recognised by TalkBack's gesture or keyboard handling (a swipe over the sheet scrim just dismissed the sheet). So "swipe-order" and "heading navigation" are physical-only.
+- uiautomator dump suppresses every other accessibility service while it runs (the observer and TalkBack rebind afterwards), so navigation with uiautomator was done with TalkBack off, speech observations with TalkBack on.
+- The Samsung background freezer froze the observer process a few seconds after the last binder call until the observer called startForeground (fixed in the observer build).

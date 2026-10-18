@@ -1,0 +1,9 @@
+# TalkBack speech observation: p1-accordion-row1-collapsed-focus
+# trigger: adb shell "am broadcast -a com.example.yat28obs.ACT --es text 'Accordion row 1' --es act focus --ei idx 0"   frames: 16 (screencap back to back, ~0.3 s apart)   host-start 1792292213.552994082 device-clock 1792292213 host-clock 1792292213
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.5s f01: Accordion row 750 Vv ap to open row 3 Total Collapsed, Accordion row 1, Tap to open row 1, 2 Button
+t+0.8s f02: Vv Tap to open row 3 Total Collapsed, Accordion row 1, Tap to open row 1, 250, Total, Button
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 20:56:53.514 I/P28A    (32524): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Accordion row 1 / Tap to open row 1 / 250 / Total srcStateDesc=Collapsed
+10-17 20:56:54.051 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][258240b/5.38s]
+10-17 20:56:59.701 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][116160b/2.42s]

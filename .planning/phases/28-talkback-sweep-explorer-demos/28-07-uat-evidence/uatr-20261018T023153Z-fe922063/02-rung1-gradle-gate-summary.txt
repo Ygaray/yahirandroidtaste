@@ -1,0 +1,12 @@
+$ ./gradlew testDebugUnitTest detekt apiCheck --rerun-tasks --no-build-cache --no-daemon   (main checkout, HEAD 830caeb)
+> Task :detekt
+> Task :compileDebugKotlin
+> Task :metalavaCheckCompatibilityRelease
+> Task :apiCheck
+> Task :compileDebugUnitTestKotlin
+> Task :testDebugUnitTest
+BUILD SUCCESSFUL in 5m 31s
+43 actionable tasks: 43 executed
+exit=0
+UP-TO-DATE lines for the three gate tasks: 0
+result classes=179 tests=1866 failures=0 errors=0 skipped=22

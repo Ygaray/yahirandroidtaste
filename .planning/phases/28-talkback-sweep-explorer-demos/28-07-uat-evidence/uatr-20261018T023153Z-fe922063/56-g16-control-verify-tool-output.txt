@@ -1,0 +1,20 @@
+# g16-control-verify  (pulled from the tester with: adb -s R5CT10XNKQN exec-out run-as <package> cat cache/osmdroid/tiles/cache.db)
+# 122880 bytes, md5 a05ec3d74d7a38c32c5432bde4734a75; sidecars: (none = no -wal/-shm existed on the device)
+$ python3 -I tools/verify-osm-tile-cache.py cache.db --expect-placeholder
+PLACEHOLDER_ROWS=12 REAL_ROWS=0 TOTAL_ROWS=12
+exit=0
+# per-row summary
+columns: ['key', 'provider', 'tile', 'expires']
+key=219 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792899805107 PLACEHOLDER
+key=220 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792899804854 PLACEHOLDER
+key=227 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792899805300 PLACEHOLDER
+key=228 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792899804854 PLACEHOLDER
+key=16422252660 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792899804721 PLACEHOLDER
+key=16422252661 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792899805346 PLACEHOLDER
+key=16422285428 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792899805226 PLACEHOLDER
+key=16422285429 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792899804620 PLACEHOLDER
+key=16642981887 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792899805471 PLACEHOLDER
+key=16642981888 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792899804144 PLACEHOLDER
+key=16643014655 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792899804148 PLACEHOLDER
+key=16643014656 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792899805437 PLACEHOLDER
+rows=12 placeholder=12

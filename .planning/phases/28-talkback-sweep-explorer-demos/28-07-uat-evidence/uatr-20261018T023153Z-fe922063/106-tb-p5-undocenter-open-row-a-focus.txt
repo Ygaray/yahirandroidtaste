@@ -1,0 +1,10 @@
+# TalkBack speech observation: p5-undocenter-open-row-A-focus
+# trigger: adb shell "nohup sh -c "am broadcast -a com.example.yat28obs.ACT --es text 'Changed item A' --es act focus --ei idx 0 " >/dev/null 2>&1 &"   frames: 26 (screencap back to back, ~0.3 s apart)   host-start 1792292709.234639304 device-clock 1792292709 host-clock 1792292709
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: (no overlay)
+t+0.7s f02: JnNdo F Istory Clear histor Changed item A, 0 minutes ago, Button, In list, 3 items
+t+5.4s f18: <—_ Undor Istory Clear history Double-tap to Open item A, Double-tap and hold to Preview
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 21:05:09.203 I/P28A    (32524): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Changed item A / 0 minutes ago / Undo srcStateDesc=null
+10-17 21:05:09.651 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][202560b/4.22s]
+10-17 21:05:14.401 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][195360b/4.07s]

@@ -1,0 +1,9 @@
+# TalkBack speech observation: speech-g14-sheet-batch-receipt-en
+# trigger: adb shell "nohup sh -c "am broadcast -a com.example.yat28obs.ACT --es text 'Done' --es act focus --ei idx 0 " >/dev/null 2>&1 &"   frames: 12 (screencap back to back, ~0.3 s apart)   host-start 1792292995.668635108 device-clock 1792292995 host-clock 1792292995
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: Done, Button
+t+2.4s f08: Double-tap to activate
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 21:09:55.558 I/P28A    (32524): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Done srcStateDesc=null
+10-17 21:09:55.696 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][72960b/1.52s]
+10-17 21:09:57.768 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][99360b/2.07s]

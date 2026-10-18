@@ -1,0 +1,72 @@
+# cr01-seeded-input-verify  (pulled from the tester with: adb -s R5CT10XNKQN exec-out run-as <package> cat cache/osmdroid/tiles/cache.db)
+# 487424 bytes, md5 6c806759c8b1d6f8f165ddb6e7b88c8e; sidecars: (none = no -wal/-shm existed on the device)
+$ python3 -I tools/verify-osm-tile-cache.py cache.db --expect-placeholder
+PLACEHOLDER_ROWS=56 REAL_ROWS=8 TOTAL_ROWS=64
+exit=0
+# per-row summary
+columns: ['key', 'provider', 'tile', 'expires']
+key=216 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=217 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=218 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=219 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=220 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=221 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=222 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=223 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=224 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=225 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=226 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=227 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=228 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=229 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=230 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=231 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900000 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900001 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900002 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900003 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900004 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900005 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900006 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900007 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900008 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900009 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900010 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900011 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900012 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900013 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900014 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900015 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900016 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900017 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900018 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900019 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900020 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900021 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900022 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900023 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900024 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900025 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900026 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900027 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900028 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900029 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900030 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900031 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900032 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900033 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900034 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900035 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900036 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900037 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900038 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=900039 provider=Mapnik bytes=6987 md5=c069a15b2cc2 expires=1792813592123 PLACEHOLDER
+key=16422252660 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792461095276 real
+key=16422252661 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792422820948 real
+key=16422285428 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792687882247 real
+key=16422285429 provider=Mapnik bytes=1443 md5=ab8a45bd0c65 expires=1792718249065 real
+key=16642981887 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792879962696 real
+key=16642981888 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792347601308 real
+key=16643014655 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792899687317 real
+key=16643014656 provider=Mapnik bytes=103 md5=87fc8ea1962e expires=1792307261808 real
+rows=64 placeholder=56

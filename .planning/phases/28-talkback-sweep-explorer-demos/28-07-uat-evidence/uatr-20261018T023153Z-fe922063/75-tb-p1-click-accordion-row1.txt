@@ -1,0 +1,8 @@
+# TalkBack speech observation: p1-click-accordion-row1
+# trigger: adb shell "nohup sh -c "am broadcast -a com.example.yat28obs.ACT --es text 'Accordion row 1' --es act click --ei idx 0 " >/dev/null 2>&1 &"   frames: 24 (screencap back to back, ~0.3 s apart)   host-start 1792292368.285784799 device-clock 1792292368 host-clock 1792292368
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: (no overlay)
+t+0.7s f02: JURE TU y ap to open row 2 Tot | Expanded 4
+t+2.9s f09: (no overlay)
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 20:59:28.502 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][66240b/1.38s]

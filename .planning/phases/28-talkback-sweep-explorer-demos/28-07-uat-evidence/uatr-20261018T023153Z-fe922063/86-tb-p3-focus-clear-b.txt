@@ -1,0 +1,12 @@
+# TalkBack speech observation: p3-focus-clear-b
+# trigger: adb shell "nohup sh -c "am broadcast -a com.example.yat28obs.ACT --es text 'Clear' --es act focus --ei idx 1 " >/dev/null 2>&1 &"   frames: 22 (screencap back to back, ~0.3 s apart)   host-start 1792292633.639447875 device-clock 1792292633 host-clock 1792292633
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: (no overlay)
+t+0.7s f02: Clear, Button
+t+2.5s f08: (no overlay)
+t+2.8s f09: Double-tap to activate
+t+4.9s f16: (no overlay)
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 21:03:53.630 I/P28A    (32524): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Clear srcStateDesc=null
+10-17 21:03:53.791 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][72960b/1.52s]
+10-17 21:03:55.941 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][99360b/2.07s]

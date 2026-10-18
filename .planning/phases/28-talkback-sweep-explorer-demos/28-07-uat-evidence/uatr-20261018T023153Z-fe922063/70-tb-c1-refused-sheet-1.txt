@@ -1,0 +1,18 @@
+# TalkBack speech observation: c1-refused-sheet-1
+# trigger: adb shell "input tap 217 1473; input tap 217 1473"   frames: 40 (screencap back to back, ~0.3 s apart)   host-start 1792291912.960598319 device-clock 1792291912 host-clock 1792291912
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.5s f01: UUdUeC ~18 Double-tap to activate
+t+0.8s f02: Double-tap to activate
+t+1.7s f05: Bottom Sheet
+t+3.2s f10: Drag handle
+t+4.9s f16: Double-tap to activate, Actions available, use Tap with 3 fingers to view
+t+12.0s f40: (no overlay)
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 20:51:53.306 I/P28A    (29823): event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] desc=null cls=android.view.View srcLive=2 srcText=null srcLabel=Couldn't undo: Item changed since, Card deleted changed since srcStateDesc=null
+10-17 20:51:53.343 I/P28A    (29823): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=0 text=[] desc=null cls=androidx.compose.material3.ModalBottomSheetDialogWrapper srcLive=0 srcText=null srcLabel= srcStateDesc=null
+10-17 20:51:53.374 I/P28A    (29823): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=0 text=[] desc=null cls=androidx.compose.material3.ModalBottomSheetDialogWrapper srcLive=0 srcText=null srcLabel= srcStateDesc=null
+10-17 20:51:53.474 I/P28A    (29823): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=16 text=[Bottom Sheet] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Drag handle / Logged 2 items / Undo all (2) / Card deleted / Tag removed / Couldn't un
+10-17 20:51:53.627 I/P28A    (29823): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Drag handle srcStateDesc=null
+10-17 20:51:54.055 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][68160b/1.42s]
+10-17 20:51:55.576 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][75360b/1.57s]
+10-17 20:51:57.646 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][236640b/4.93s]

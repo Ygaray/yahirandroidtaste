@@ -1,0 +1,7 @@
+# host probes, run 2026-10-17T20:3x local (tools/probe-osm-user-agent.sh, one tile each: https://tile.openstreetmap.org/3/2/3.png)
+$ bash tools/probe-osm-user-agent.sh "YahirAndroidTasteExplorer/2.8 (+https://github.com/Ygaray/yahirandroidtaste)"
+AGENT=YahirAndroidTasteExplorer/2.8 (+https://github.com/Ygaray/yahirandroidtaste) BLOCKED=no SIZE=4473 MD5=ccb5da77a581b6e93e4aa8fa6e4409d0
+exit=0
+$ bash tools/probe-osm-user-agent.sh --expect-blocked "com.example.probe/1.0 (Android 15)"
+AGENT=com.example.probe/1.0 (Android 15) BLOCKED=yes SIZE=6987 MD5=c069a15b2cc2d6b6f527ad09eb93c61a
+exit=0

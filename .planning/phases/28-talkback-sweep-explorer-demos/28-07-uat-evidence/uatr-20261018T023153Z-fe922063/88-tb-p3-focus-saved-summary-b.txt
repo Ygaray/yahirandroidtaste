@@ -1,0 +1,9 @@
+# TalkBack speech observation: p3-focus-saved-summary-b
+# trigger: adb shell "nohup sh -c "am broadcast -a com.example.yat28obs.ACT --es text 'Saved' --es act focus --ei idx 1 " >/dev/null 2>&1 &"   frames: 22 (screencap back to back, ~0.3 s apart)   host-start 1792292624.010395291 device-clock 1792292623 host-clock 1792292624
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: (no overlay)
+t+0.7s f02: Saved : key-...c3d4
+t+2.6s f08: (no overlay)
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 21:03:44.034 I/P28A    (32524): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Saved · key-…c3d4 srcStateDesc=null
+10-17 21:03:44.343 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][206880b/4.31s]

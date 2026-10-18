@@ -1,0 +1,9 @@
+# TalkBack speech observation: c1-focus-refused-message-text
+# trigger: adb shell "nohup sh -c "am broadcast -a com.example.yat28obs.ACT --es text 'Item changed since' --es act focus --ei idx 0 " >/dev/null 2>&1 &"   frames: 36 (screencap back to back, ~0.3 s apart)   host-start 1792295388.283932719 device-clock 1792295388 host-clock 1792295388
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: (no overlay)
+t+0.7s f02: Couldn't undo: Item changed since, Card deleted changed since
+t+6.6s f22: (no overlay)
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 21:49:48.228 I/P28A    (13455): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=Couldn't undo: Item changed since, Card deleted changed since srcLabel=Couldn't undo: Item changed since, C
+10-17 21:49:48.659 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][198240b/4.13s]

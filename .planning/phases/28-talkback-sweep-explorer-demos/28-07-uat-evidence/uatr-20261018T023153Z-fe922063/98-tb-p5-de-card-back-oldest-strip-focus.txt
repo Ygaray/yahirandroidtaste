@@ -1,0 +1,10 @@
+# TalkBack speech observation: p5-de-card-back-oldest-strip-focus
+# trigger: adb shell "nohup sh -c "am broadcast -a com.example.yat28obs.ACT --es text '*' --es act focus --ei idx 0 --ei x 540 --ei y 1964" >/dev/null 2>&1 &"   frames: 30 (screencap back to back, ~0.3 s apart)   host-start 1792293574.912613043 device-clock 1792293574 host-clock 1792293574
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.5s f01: (no overlay)
+t+0.7s f02: berle vier: Eintrag geandert unc gespeichert | Serie zwei: Eintrag entfernt, Button |
+t+4.4s f14: erie vier: Eintrag geandert unc @ . > Double-tap to Eintrag offnen, Actions available, use Tap with 3 fingers to view
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 21:19:34.896 I/P28A    (13455): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=1 srcText=null srcLabel=Serie zwei: Eintrag entfernt srcStateDesc=null
+10-17 21:19:35.190 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][145440b/3.03s]
+10-17 21:19:39.061 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][255360b/5.32s]

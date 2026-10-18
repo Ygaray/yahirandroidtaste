@@ -1,0 +1,31 @@
+HEAD=830caeb src/tools changes: 0
+$ bash tools/verify-api-source-additive.sh v2.7.1
+SEAMS: none
+API SOURCE-ADDITIVE OK baseline=v2.7.1 removed_classes=0 removed_members=0 enum_constants_intact=73 required_param_changes=0 added_classes=5 added_members=48 signature_changes=0 accepted_exceptions=0
+$ bash tools/test/run-all.sh (tail)
+== /home/yahir/Projects/Reusable/android/yahirandroidtaste/tools/test/test-classify-hub-change.sh ==
+PASS=12 FAIL=0
+  ok
+== /home/yahir/Projects/Reusable/android/yahirandroidtaste/tools/test/test-precommit-hook.sh ==
+PASS=6 FAIL=0
+  ok
+== /home/yahir/Projects/Reusable/android/yahirandroidtaste/tools/test/test-verify-additive-diff.sh ==
+PASS=5 FAIL=0
+  ok
+== /home/yahir/Projects/Reusable/android/yahirandroidtaste/tools/test/test-verify-api-source-additive.sh ==
+  ok
+== /home/yahir/Projects/Reusable/android/yahirandroidtaste/tools/test/test-verify-binary-abi.sh ==
+PASS=52 FAIL=0
+  ok
+== /home/yahir/Projects/Reusable/android/yahirandroidtaste/tools/test/test-verify-osm-tile-cache.sh ==
+PASS=15 FAIL=0
+  ok
+== /home/yahir/Projects/Reusable/android/yahirandroidtaste/tools/test/test-verify-tester-restored.sh ==
+PASS=82 FAIL=0
+  ok
+$ git diff --quiet c1681ff HEAD -- api.txt: exit=0
+$ git diff --exit-code api.txt (working tree after apiDump-free apiCheck): exit=0
+$ git diff --quiet c1681ff HEAD -- FeedbackCard.kt FeedbackStackHost.kt OutcomeSheet.kt: exit=0
+$ git tag --list 'v2.8*': []
+$ debris in phase commits: [0 paths]
+registry counts: 67 registered, 6 intentionally unregistered = 73 (guards ComponentRegistryDriftGuardTest/CatalogDocsDriftGuardTest green in the 1866-test run)

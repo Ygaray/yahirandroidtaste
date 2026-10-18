@@ -1,0 +1,75 @@
+# C-3 / C-4 evidence, raw lines copied from the signed observer logs of this run (evidence only; the decisions belong to the ui-designer seat)
+
+## 37-g14-c3c4-stack-collapsed-deck-dump-from-y1000.log
+order-raw stack-collapsed-deck focusables=17 withBefore=0 withAfter=0
+order-node stack-collapsed-deck View@45,188,549,288 label='Long note with Undo' before=null after=null
+order-node stack-collapsed-deck View@45,288,375,423 label='Dismiss all' before=null after=null
+order-node stack-collapsed-deck TextView@45,423,517,491 label='Last result: Dismissed' before=null after=null
+order-node stack-collapsed-deck TextView@45,491,461,559 label='Opened: demo-note' before=null after=null
+order-node stack-collapsed-deck View@104,1336,976,1375 label='' before=null after=null
+order-node stack-collapsed-deck View@376,1347,520,1375 label='' before=null after=null
+order-node stack-collapsed-deck View@75,1375,1005,1414 label='' before=null after=null
+order-node stack-collapsed-deck View@45,1414,1035,1572 label='Burst four' before=null after=null
+order-node stack-collapsed-deck TextView@45,1617,1035,1721 label='FeedbackStackHost — German labels (Rückgängig, V' before=null after=null
+order-node stack-collapsed-deck View@45,1732,469,1867 label='Hinweis mit Ziel' before=null after=null
+order-node stack-collapsed-deck View@45,1867,764,2002 label='Hinweis mit Rückgängig und Ziel' before=null after=null
+order-node stack-collapsed-deck View@45,2002,503,2137 label='Einfacher Hinweis' before=null after=null
+order-node stack-collapsed-deck View@45,2137,326,2272 label='Serie x4' before=null after=null
+order-node stack-collapsed-deck View@11,97,146,232 label='Back' before=null after=null
+order-node stack-collapsed-deck TextView@157,125,705,204 label='FeedbackStackHost' before=null after=null
+order-node stack-collapsed-deck TextView@739,142,848,187 label='Pattern' before=null after=null
+order-node stack-collapsed-deck View@934,97,1069,232 label='Switch to dark theme' before=null after=null
+order-chain-before stack-collapsed-deck heads=17: ['Long note with Undo'<View> -(before)-> END] ['Dismiss all'<View> -(before)-> END] ['Last result: Dismissed'<TextView> -(before)-> END] ['Opened: demo-note'<TextView> -(before)-> END] [''<View> -(before)-> END] [''<View> -(before)-> END] [''<View> -(before)-> END] ['Burst four'<View> -(before)-> END] ['FeedbackStackHost — German l'<TextView> -(b
+-- card nodes with their full actionList:
+n d=12 cls=android.view.View b=104,1336,976,1375 click=true a11yFocusable=true imp=true heading=false state=null pane=null live=1 dismissable=false enabled=true role=null children=2 label= tb=null ta=null acts=[64:|16:Open item|1048576:Dismiss|2131230721:Undo|2131230722:Dismiss]
+n d=12 cls=android.view.View b=75,1375,1005,1414 click=false a11yFocusable=true imp=true heading=false state=null pane=null live=1 dismissable=false enabled=true role=null children=1 label= tb=null ta=null acts=[64:|1048576:Dismiss|2131230721:Dismiss]
+n d=12 cls=android.view.View b=45,1414,1035,1572 click=true a11yFocusable=true imp=true heading=false state=null pane=null live=1 dismissable=false enabled=true role=null children=2 label=Burst four tb=null ta=null acts=[64:|16:Open item|1048576:Dismiss|2131230721:Dismiss]
+
+## 38-g14-c3c4-stack-fanned-deck-dump-from-y1000.log
+order-raw stack-fanned-deck focusables=17 withBefore=0 withAfter=0
+order-node stack-fanned-deck View@45,188,549,288 label='Long note with Undo' before=null after=null
+order-node stack-fanned-deck View@45,288,375,423 label='Dismiss all' before=null after=null
+order-node stack-fanned-deck TextView@45,423,517,491 label='Last result: Dismissed' before=null after=null
+order-node stack-fanned-deck TextView@45,491,461,559 label='Opened: demo-note' before=null after=null
+order-node stack-fanned-deck View@45,1029,1035,1210 label='Burst two / Undo' before=null after=null
+order-node stack-fanned-deck View@354,1052,517,1187 label='Undo' before=null after=null
+order-node stack-fanned-deck View@45,1233,1035,1391 label='Burst three' before=null after=null
+order-node stack-fanned-deck View@45,1414,1035,1572 label='Burst four' before=null after=null
+order-node stack-fanned-deck TextView@45,1617,1035,1721 label='FeedbackStackHost — German labels (Rückgängig, V' before=null after=null
+order-node stack-fanned-deck View@45,1732,469,1867 label='Hinweis mit Ziel' before=null after=null
+order-node stack-fanned-deck View@45,1867,764,2002 label='Hinweis mit Rückgängig und Ziel' before=null after=null
+order-node stack-fanned-deck View@45,2002,503,2137 label='Einfacher Hinweis' before=null after=null
+order-node stack-fanned-deck View@45,2137,326,2272 label='Serie x4' before=null after=null
+order-node stack-fanned-deck View@11,97,146,232 label='Back' before=null after=null
+order-node stack-fanned-deck TextView@157,125,705,204 label='FeedbackStackHost' before=null after=null
+order-node stack-fanned-deck TextView@739,142,848,187 label='Pattern' before=null after=null
+order-node stack-fanned-deck View@934,97,1069,232 label='Switch to dark theme' before=null after=null
+order-chain-before stack-fanned-deck heads=17: ['Long note with Undo'<View> -(before)-> END] ['Dismiss all'<View> -(before)-> END] ['Last result: Dismissed'<TextView> -(before)-> END] ['Opened: demo-note'<TextView> -(before)-> END] ['Burst two / Undo'<View> -(before)-> END] ['Undo'<View> -(before)-> END] ['Burst three'<View> -(before)-> END] ['Burst four'<View> -(before)-> END] ['FeedbackStackHost
+-- card nodes with their full actionList:
+n d=12 cls=android.view.View b=104,1336,976,1375 click=true a11yFocusable=true imp=true heading=false state=null pane=null live=1 dismissable=false enabled=true role=null children=2 label= tb=null ta=null acts=[64:|16:Open item|1048576:Dismiss|2131230721:Undo|2131230722:Dismiss]
+n d=12 cls=android.view.View b=75,1375,1005,1414 click=false a11yFocusable=true imp=true heading=false state=null pane=null live=1 dismissable=false enabled=true role=null children=1 label= tb=null ta=null acts=[64:|1048576:Dismiss|2131230721:Dismiss]
+n d=12 cls=android.view.View b=45,1414,1035,1572 click=true a11yFocusable=true imp=true heading=false state=null pane=null live=1 dismissable=false enabled=true role=null children=2 label=Burst four tb=null ta=null acts=[64:|16:Open item|1048576:Dismiss|2131230721:Dismiss]
+
+## 40-g14-c3c4-stack-de-collapsed-deck-dump-from-y1900.log
+order-raw stack-de-collapsed focusables=16 withBefore=5 withAfter=0
+order-node stack-de-collapsed View@45,222,764,357 label='Hinweis mit Rückgängig und Ziel' before=View@45,357,503,492 after=null
+order-node stack-de-collapsed View@45,357,503,492 label='Einfacher Hinweis' before=View@45,492,326,627 after=null
+order-node stack-de-collapsed View@45,492,326,627 label='Serie x4' before=null after=null
+order-node stack-de-collapsed View@45,627,451,762 label='Kurzer Hinweis' before=null after=null
+order-node stack-de-collapsed View@45,762,744,897 label='Langer Hinweis mit Rückgängig' before=null after=null
+order-node stack-de-collapsed View@45,897,438,1032 label='Alle verwerfen' before=null after=null
+order-node stack-de-collapsed TextView@45,1032,644,1100 label='Letztes Ergebnis: Verworfen' before=null after=null
+order-node stack-de-collapsed TextView@45,1100,371,1168 label='Geöffnet: keins' before=null after=null
+order-node stack-de-collapsed View@104,1945,976,1984 label='Serie zwei: Eintrag entfernt' before=null after=null
+order-node stack-de-collapsed View@620,1956,866,1984 label='' before=null after=null
+order-node stack-de-collapsed View@75,1984,1005,2023 label='' before=null after=null
+order-node stack-de-collapsed View@45,2023,1035,2181 label='Serie vier: Eintrag geändert und gespeichert' before=null after=null
+order-node stack-de-collapsed View@11,97,146,232 label='Back' before=TextView@157,125,705,204 after=null
+order-node stack-de-collapsed TextView@157,125,705,204 label='FeedbackStackHost' before=TextView@739,142,848,187 after=null
+order-node stack-de-collapsed TextView@739,142,848,187 label='Pattern' before=View@934,97,1069,232 after=null
+order-node stack-de-collapsed View@934,97,1069,232 label='Switch to dark theme' before=null after=null
+order-chain-before stack-de-collapsed heads=11: ['Hinweis mit Rückgängig und Z'<View> -(before)-> 'Einfacher Hinweis'<View> -(before)-> 'Serie x4'<View> -(before)-> END] ['Kurzer Hinweis'<View> -(before)-> END] ['Langer Hinweis mit Rückgängi'<View> -(before)-> END] ['Alle verwerfen'<View> -(before)-> END] ['Letztes Ergebnis: Verworfen'<TextView> -(before)-> END] ['Geöffnet: keins'<TextView> -
+-- card nodes with their full actionList:
+n d=12 cls=android.view.View b=104,1945,976,1984 click=true a11yFocusable=true imp=true heading=false state=null pane=null live=1 dismissable=false enabled=true role=null children=2 label=Serie zwei: Eintrag entfernt tb=null ta=null acts=[64:|16:Eintrag öffnen|1048576:Verwerfen|2131230721:Rückgängig|2131230722:Verwerfen]
+n d=12 cls=android.view.View b=75,1984,1005,2023 click=false a11yFocusable=true imp=true heading=false state=null pane=null live=1 dismissable=false enabled=true role=null children=1 label= tb=null ta=null acts=[64:|1048576:Verwerfen|2131230721:Verwerfen]
+n d=12 cls=android.view.View b=45,2023,1035,2181 click=true a11yFocusable=true imp=true heading=false state=null pane=null live=1 dismissable=false enabled=true role=null children=2 label=Serie vier: Eintrag geändert und gespeichert tb=null ta=null acts=[64:|16:Eintrag öffnen|1048576:Verwerfen|2131230721:Verwerfen]

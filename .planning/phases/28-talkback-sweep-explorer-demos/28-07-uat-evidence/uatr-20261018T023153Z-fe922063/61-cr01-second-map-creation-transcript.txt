@@ -1,0 +1,8 @@
+pid before: 27515   back at 21:46:02.671
+tap 'PlaceMapPicker' -> 216 650
+re-entered at 21:46:06.541
+db after the second map creation: placeholder=0 real=12 total=12
+pid after: 27515  (same pid = same process)
+logcat lines matching CME / sqlite lock / fatal / YatOsmdroid since the clear:
+(end of matches)
+map visible (hint text present): 1

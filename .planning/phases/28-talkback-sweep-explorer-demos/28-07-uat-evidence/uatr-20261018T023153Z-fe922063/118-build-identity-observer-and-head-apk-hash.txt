@@ -1,0 +1,3 @@
+observer package (separate from the harness so the signed run's head APK hash stays fixed): com.example.yat28obs, final build md5 97b8a97454a183c894ac9ee6622dd292, sha256 prefix 57f18b0235a758aa; three earlier builds of it were replaced during the run (notificationTimeout 0, overlay poll, foreground service, point-mode actions)
+head harness APK sha256 prefix 4617e1d69474f34e (installed once, never rebuilt; same hash as at uat-run start 4617e1d6...)
+installed head APK on device sha256: 4617e1d69474f34e

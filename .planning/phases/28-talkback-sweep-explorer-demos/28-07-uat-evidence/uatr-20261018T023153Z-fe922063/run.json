@@ -1,0 +1,1126 @@
+{
+  "schema": "gsd.uat-run/v1",
+  "run_id": "uatr-20261018T023153Z-fe922063",
+  "status": "finished",
+  "phase": "28",
+  "plan": "07",
+  "prefix": "28-07",
+  "surface": "android",
+  "project": "sha:df197faf5105af0ed516c727e2aafb44f5ef5743:.",
+  "phase_dir": "phases/28-talkback-sweep-explorer-demos",
+  "required_surface": {
+    "surface": "android",
+    "source": "marker:AGENT-DEVICE-TESTING.md"
+  },
+  "surface_override": null,
+  "device": {
+    "addr": "R5CT10XNKQN",
+    "serial": "R5CT10XNKQN",
+    "model": "SM-S908U",
+    "label": null
+  },
+  "app": {
+    "package": "com.example.yat28head",
+    "apk_path": "/data/app/~~c0NHYeJj_ueXqdi3Tz22Vg==/com.example.yat28head-6pGqCrtv1JJsO5UduyB4dw==/base.apk",
+    "apk_sha256": "4617e1d69474f34efd17dc9cb31561123d0b519e071fe52db1514304527ac333"
+  },
+  "head_at_start": "830caebfc27d4331d6842d7e61be82f3e93f2870",
+  "started_at": "2026-10-18T02:31:53.735Z",
+  "finished_at": "2026-10-18T03:54:25.848Z",
+  "capture_count": 121,
+  "captures": [
+    {
+      "label": "g10-baseline-before",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "01-g10-baseline-before.txt",
+      "sha256": "df2298b61b711f53b16f5738e35a2ed0885c0436cf92b270590bf25accf5aada",
+      "bytes": 622,
+      "at": "2026-10-18T02:32:49.486Z"
+    },
+    {
+      "label": "rung1-gradle-gate-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "02-rung1-gradle-gate-summary.txt",
+      "sha256": "f718f17af2dec840742c02f543f9a0a89babbcb19c8101b8fdb6f444ef0aa2b4",
+      "bytes": 456,
+      "at": "2026-10-18T02:32:49.692Z"
+    },
+    {
+      "label": "rung1-tools-api-additive-runall",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "03-rung1-tools-api-additive-runall.txt",
+      "sha256": "60a30af7b85271ecda64d5a448bc2a783f22220cf329d427a639c590bd22cd70",
+      "bytes": 1623,
+      "at": "2026-10-18T02:32:49.890Z"
+    },
+    {
+      "label": "build-identity-aar-md5-apk",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "04-build-identity-aar-md5-apk.txt",
+      "sha256": "33633d72c1f137e5d287cd2df73957c62760ec655b14cb9a10230965b9d00087",
+      "bytes": 919,
+      "at": "2026-10-18T02:32:50.094Z"
+    },
+    {
+      "label": "g16-host-probes-osm-ua",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "05-g16-host-probes-osm-ua.txt",
+      "sha256": "a2ac0bebd77b37ccfd73cf2e2ef1d16aaa464f184d36072045d657e041412f9e",
+      "bytes": 593,
+      "at": "2026-10-18T02:32:50.335Z"
+    },
+    {
+      "label": "g11-head-tonecard-warn-light",
+      "kind": "screen",
+      "source": "cli",
+      "file": "06-g11-head-tonecard-warn-light.png",
+      "sha256": "486d78ec8300bc16f3bbf224a36af47437ff572ce9e654a4e208fb329151a405",
+      "bytes": 148436,
+      "at": "2026-10-18T02:33:38.876Z"
+    },
+    {
+      "label": "g11-head-tonecard-tree",
+      "kind": "ui",
+      "source": "cli",
+      "file": "07-g11-head-tonecard-tree.xml",
+      "sha256": "7eda79cc0df88ad101ea59892f05fab49ada922ccfdd5678521c81f9ab4e9e70",
+      "bytes": 13828,
+      "at": "2026-10-18T02:33:41.484Z"
+    },
+    {
+      "label": "g11-control-v271-tonecard-warn-light",
+      "kind": "screen",
+      "source": "cli",
+      "file": "08-g11-control-v271-tonecard-warn-light.png",
+      "sha256": "f15e182d0bc7c3b2dde49f27628b5cfa97cca8331b6b4f74dbe8d89cc89cb155",
+      "bytes": 148360,
+      "at": "2026-10-18T02:34:21.714Z"
+    },
+    {
+      "label": "g11-head-tonecard-warn-dark",
+      "kind": "screen",
+      "source": "cli",
+      "file": "09-g11-head-tonecard-warn-dark.png",
+      "sha256": "77bf24e7bbfc82ecf92b8fc532923b698f4d958d25d89e57728e69c906f2801f",
+      "bytes": 144802,
+      "at": "2026-10-18T02:34:44.235Z"
+    },
+    {
+      "label": "g11-head-after-toggle-for-light-return",
+      "kind": "screen",
+      "source": "cli",
+      "file": "10-g11-head-after-toggle-for-light-return.png",
+      "sha256": "77bf24e7bbfc82ecf92b8fc532923b698f4d958d25d89e57728e69c906f2801f",
+      "bytes": 144802,
+      "at": "2026-10-18T02:34:45.068Z"
+    },
+    {
+      "label": "g11-head-tonecard-warn-light-again",
+      "kind": "screen",
+      "source": "cli",
+      "file": "11-g11-head-tonecard-warn-light-again.png",
+      "sha256": "31cdf503bfc8d4cea11fa2d203e8bd10e45765205251c345d74340729994174a",
+      "bytes": 148643,
+      "at": "2026-10-18T02:34:48.929Z"
+    },
+    {
+      "label": "g11-montage-control-head-light-dark",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "12-g11-montage-control-head-light-dark.png",
+      "sha256": "d476a5e395c9e7bd3a935ecf3c3f6b16bd6c0e584aa5463094238be5bf6eb286",
+      "bytes": 39563,
+      "at": "2026-10-18T02:35:33.777Z"
+    },
+    {
+      "label": "g12-receiptrow-collapsed-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "13-g12-receiptrow-collapsed-observer-dump.log",
+      "sha256": "e7b86e45e2c5c93e01fceb63c1953640655612fb2a5f5a9a2f711acc6914431d",
+      "bytes": 25619,
+      "at": "2026-10-18T02:36:28.880Z"
+    },
+    {
+      "label": "g12-receiptrow-expanded-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "14-g12-receiptrow-expanded-observer-dump.log",
+      "sha256": "91ba87e1d5395175dc46bb9c2cc43f0ce018f5ce586dfcb5cf7072d175fa1546",
+      "bytes": 25724,
+      "at": "2026-10-18T02:36:32.603Z"
+    },
+    {
+      "label": "g12-receiptrow-accordion-collapsed-and-trailing-undo-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "15-g12-receiptrow-accordion-collapsed-and-trailing-undo-dump.log",
+      "sha256": "a521aec14b618dd01df70cf30b967fc3144cb5890052b32cdc3996264a99fc78",
+      "bytes": 30889,
+      "at": "2026-10-18T02:37:02.227Z"
+    },
+    {
+      "label": "g12-receiptrow-accordion-expanded-after-real-tap",
+      "kind": "log",
+      "source": "cli",
+      "file": "16-g12-receiptrow-accordion-expanded-after-real-tap.log",
+      "sha256": "16ed545f97eceb9d6c94870b5ad8d7ff261200a21b4c0a14263f29ba5012e9e8",
+      "bytes": 32194,
+      "at": "2026-10-18T02:37:07.905Z"
+    },
+    {
+      "label": "g12-receiptrow-accordion-expanded-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "17-g12-receiptrow-accordion-expanded-screen.png",
+      "sha256": "e503b5b45be924a258f8b7009bc3a13750599cb8a95277d42f36a87dbd71b404",
+      "bytes": 155582,
+      "at": "2026-10-18T02:37:08.656Z"
+    },
+    {
+      "label": "g12-providerkey-lifecycle-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "18-g12-providerkey-lifecycle-observer-dump.log",
+      "sha256": "8ce42c07fec6b88ad4383044b29141033d8e13157898402963898ad47af079ad",
+      "bytes": 19453,
+      "at": "2026-10-18T02:37:44.639Z"
+    },
+    {
+      "label": "g12-undocenter-group-header-heading-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "19-g12-undocenter-group-header-heading-dump.log",
+      "sha256": "e448d36a42f2ddffe38ffbabef8a1e74c927a23880c3d51d0f523518473baa14",
+      "bytes": 25797,
+      "at": "2026-10-18T02:38:14.234Z"
+    },
+    {
+      "label": "g13-c1-refused-live-region-events-and-node-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "20-g13-c1-refused-live-region-events-and-node-dump.log",
+      "sha256": "1835e298cbe4f5c8afe95aa6592707ca628b8598c131b2c36b0ba0c3cbf506fd",
+      "bytes": 19904,
+      "at": "2026-10-18T02:39:12.613Z"
+    },
+    {
+      "label": "g13-c1-refused-sheet-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "21-g13-c1-refused-sheet-screen.png",
+      "sha256": "f41c6a4869e10b0495df678c624b2d6fce8ae2ef59ce28599a4acf14a869f0da",
+      "bytes": 188059,
+      "at": "2026-10-18T02:39:13.296Z"
+    },
+    {
+      "label": "g13-c1-refused-live-region-events-second-showing",
+      "kind": "log",
+      "source": "cli",
+      "file": "22-g13-c1-refused-live-region-events-second-showing.log",
+      "sha256": "053af2fdfbf499e7cdc86e2fd33f05572563c290d43f8ef809f1ccc315d1f45a",
+      "bytes": 8175,
+      "at": "2026-10-18T02:39:25.819Z"
+    },
+    {
+      "label": "g14-undocenter-target-rows-c2-structure-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "23-g14-undocenter-target-rows-c2-structure-observer-dump.log",
+      "sha256": "420bb06a8e293a8633722f8038c8acd573a85f36291923f3709839437819688c",
+      "bytes": 29450,
+      "at": "2026-10-18T03:06:13.173Z"
+    },
+    {
+      "label": "g14-undocenter-target-rows-german-actionlist-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "24-g14-undocenter-target-rows-german-actionlist-dump.log",
+      "sha256": "ad4c4e02cc8a1147b28c03d54e5da0f091fb7995e9ec4d1aaf93d31ac40a467c",
+      "bytes": 24815,
+      "at": "2026-10-18T03:06:46.658Z"
+    },
+    {
+      "label": "g14-sheet-single-receipt-en-actionlist-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "25-g14-sheet-single-receipt-en-actionlist-dump.log",
+      "sha256": "69574240fba79ffedbed06145954d830eb493cc001c06e85b77028f7617d8314",
+      "bytes": 10012,
+      "at": "2026-10-18T03:08:07.653Z"
+    },
+    {
+      "label": "g14-sheet-single-receipt-de",
+      "kind": "log",
+      "source": "cli",
+      "file": "26-g14-sheet-single-receipt-de.log",
+      "sha256": "3ea5d38edf0ff1e5f9c7ea0876eacb57e347dbad80bcb6967ee3b728ff8d5e6c",
+      "bytes": 10351,
+      "at": "2026-10-18T03:08:57.769Z"
+    },
+    {
+      "label": "g14-sheet-batch-receipt-en",
+      "kind": "log",
+      "source": "cli",
+      "file": "27-g14-sheet-batch-receipt-en.log",
+      "sha256": "097a58d440984b16ae61f32e8452ea5604bf89b12dff3a84e08baa76bff688bb",
+      "bytes": 15350,
+      "at": "2026-10-18T03:09:55.517Z"
+    },
+    {
+      "label": "g14-sheet-batch-receipt-de",
+      "kind": "log",
+      "source": "cli",
+      "file": "28-g14-sheet-batch-receipt-de.log",
+      "sha256": "690393e59a6732700e319a4bdf6ea853d12a3158d69340fddc354432610ec798",
+      "bytes": 15765,
+      "at": "2026-10-18T03:10:53.894Z"
+    },
+    {
+      "label": "g14-sheet-single-classic-en",
+      "kind": "log",
+      "source": "cli",
+      "file": "29-g14-sheet-single-classic-en.log",
+      "sha256": "2d21129485610f96806163f8c4e78a82bb1e83e83c9e1cafc51ced9e7c92d1c2",
+      "bytes": 8681,
+      "at": "2026-10-18T03:11:17.709Z"
+    },
+    {
+      "label": "g14-sheet-single-classic-de",
+      "kind": "log",
+      "source": "cli",
+      "file": "30-g14-sheet-single-classic-de.log",
+      "sha256": "c6f7935e2b0e6324455350294a9019c9fdcef4784645196baaa525e5e70a4aed",
+      "bytes": 8832,
+      "at": "2026-10-18T03:11:41.885Z"
+    },
+    {
+      "label": "g14-sheet-batch-classic-en",
+      "kind": "log",
+      "source": "cli",
+      "file": "31-g14-sheet-batch-classic-en.log",
+      "sha256": "62a8f658c7df8b299931cc861d3eb8fd39fd136db3a1f82c9b491dbc918e687b",
+      "bytes": 12690,
+      "at": "2026-10-18T03:12:07.812Z"
+    },
+    {
+      "label": "g14-sheet-batch-classic-de",
+      "kind": "log",
+      "source": "cli",
+      "file": "32-g14-sheet-batch-classic-de.log",
+      "sha256": "fc98216537238e61e92dbff82ab9a35be2554ceb7b0a5bcadbe817d9641dceb3",
+      "bytes": 13077,
+      "at": "2026-10-18T03:12:35.257Z"
+    },
+    {
+      "label": "g17-en-burst4-collapsed-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "33-g17-en-burst4-collapsed-deck-screen.png",
+      "sha256": "aa8e67882acbb8148108a9ee52dfd3a00873950dd5443a970cf520e94941c16f",
+      "bytes": 135978,
+      "at": "2026-10-18T03:14:30.685Z"
+    },
+    {
+      "label": "g14-c3c4-stack-collapsed-actionlist-and-traversal-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "34-g14-c3c4-stack-collapsed-actionlist-and-traversal-dump.log",
+      "sha256": "0e51faee1c13f991622d78d14ab389cf8ec2a92005b410f3a7c21cbff88a28dc",
+      "bytes": 17888,
+      "at": "2026-10-18T03:14:47.969Z"
+    },
+    {
+      "label": "g17-en-burst4-fanned-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "35-g17-en-burst4-fanned-deck-screen.png",
+      "sha256": "0bc244291eb9257a2d88f4006badc1202d4b4c7b42a0127296cfc1c20dd67c57",
+      "bytes": 150962,
+      "at": "2026-10-18T03:14:49.900Z"
+    },
+    {
+      "label": "g14-c3c4-stack-fanned-actionlist-and-traversal-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "36-g14-c3c4-stack-fanned-actionlist-and-traversal-dump.log",
+      "sha256": "ede95f46221e934258a5958b7b7514f7e51f5c8e89928d7003a30db72bb25370",
+      "bytes": 20962,
+      "at": "2026-10-18T03:15:01.130Z"
+    },
+    {
+      "label": "g14-c3c4-stack-collapsed-deck-dump-from-y1000",
+      "kind": "log",
+      "source": "cli",
+      "file": "37-g14-c3c4-stack-collapsed-deck-dump-from-y1000.log",
+      "sha256": "e77c6db2672e4bed2b31250515cf413b62053bc2cf609b35af3b8fab306a262e",
+      "bytes": 17993,
+      "at": "2026-10-18T03:15:42.806Z"
+    },
+    {
+      "label": "g14-c3c4-stack-fanned-deck-dump-from-y1000",
+      "kind": "log",
+      "source": "cli",
+      "file": "38-g14-c3c4-stack-fanned-deck-dump-from-y1000.log",
+      "sha256": "31fb80843d012c9ea72062b721caa0b648877168df6483db546f3b81defd37c5",
+      "bytes": 17992,
+      "at": "2026-10-18T03:15:46.549Z"
+    },
+    {
+      "label": "g17-de-burst4-collapsed-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "39-g17-de-burst4-collapsed-deck-screen.png",
+      "sha256": "85818746e7e69334b4ef30d77f78e9ebf422f697aa7026abce7c0928086441a5",
+      "bytes": 148413,
+      "at": "2026-10-18T03:18:51.613Z"
+    },
+    {
+      "label": "g14-c3c4-stack-de-collapsed-deck-dump-from-y1900",
+      "kind": "log",
+      "source": "cli",
+      "file": "40-g14-c3c4-stack-de-collapsed-deck-dump-from-y1900.log",
+      "sha256": "ec01a2e125f33f4b4874183f887601bb76af8bef593117d32a7557a8fbc5c157",
+      "bytes": 13691,
+      "at": "2026-10-18T03:18:53.937Z"
+    },
+    {
+      "label": "g14-c2-hold-row-a-peek-visible-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "41-g14-c2-hold-row-a-peek-visible-screen.png",
+      "sha256": "5ce826159ea4b186776075837ce0e14b5a8f23f2872f9f66434aa97c9c494f8f",
+      "bytes": 131388,
+      "at": "2026-10-18T03:21:34.751Z"
+    },
+    {
+      "label": "g14-c2-undo-center-row-after-undo-no-click-no-chevron",
+      "kind": "log",
+      "source": "cli",
+      "file": "42-g14-c2-undo-center-row-after-undo-no-click-no-chevron.log",
+      "sha256": "4c91ed70cb43cf5154b926d7dd75823c13c891b48d6772228758952c1e8a8ba7",
+      "bytes": 15707,
+      "at": "2026-10-18T03:21:57.376Z"
+    },
+    {
+      "label": "g14-c2-keyboard-focus-on-openable-row-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "43-g14-c2-keyboard-focus-on-openable-row-screen.png",
+      "sha256": "309fa1d861f64c65155c025379cab183486f7b0a650ddea5437fe675f13248b5",
+      "bytes": 187914,
+      "at": "2026-10-18T03:25:13.769Z"
+    },
+    {
+      "label": "g17-batch-receipt-after-tapping-nontarget-row-b-sheet-still-open",
+      "kind": "screen",
+      "source": "cli",
+      "file": "44-g17-batch-receipt-after-tapping-nontarget-row-b-sheet-still-open.png",
+      "sha256": "6756b1dc8398f56aa3e705cd5b4551b71751c9ad496896510859ee0a094317e9",
+      "bytes": 163270,
+      "at": "2026-10-18T03:32:34.862Z"
+    },
+    {
+      "label": "g17-en-after-swiping-front-card-away-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "45-g17-en-after-swiping-front-card-away-screen.png",
+      "sha256": "7e0bca617def5596ec6ff113dd5088684c71d4ec9f7ed364ba1a20c74c85c997",
+      "bytes": 136196,
+      "at": "2026-10-18T03:34:36.616Z"
+    },
+    {
+      "label": "g17-en-after-tap-to-open-burst-four-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "46-g17-en-after-tap-to-open-burst-four-screen.png",
+      "sha256": "044e94a662a6b3216303c21d3136a39a9d80203ccbe0b354b7feb6b8084b2371",
+      "bytes": 140949,
+      "at": "2026-10-18T03:35:12.411Z"
+    },
+    {
+      "label": "g17-de-stage-360dp-font2-note-with-undo-and-target-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "47-g17-de-stage-360dp-font2-note-with-undo-and-target-screen.png",
+      "sha256": "be86f647ffcb23b9ebeb1fcd770ce5eb70a281e1b7f0a3cc2199fa02ad8771c9",
+      "bytes": 175681,
+      "at": "2026-10-18T03:35:54.670Z"
+    },
+    {
+      "label": "g17-de-stage-360dp-font2-burst4-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "48-g17-de-stage-360dp-font2-burst4-screen.png",
+      "sha256": "015f1722942744194139f0d4e875a644f3143918decd1067a2596b2c24db3415",
+      "bytes": 167215,
+      "at": "2026-10-18T03:36:28.221Z"
+    },
+    {
+      "label": "g17-de-undocenter-rows-360dp-font2-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "49-g17-de-undocenter-rows-360dp-font2-screen.png",
+      "sha256": "e790571fe6d3e6660169268908d88926bdf35e84df258e643e54d926f3447f13",
+      "bytes": 195368,
+      "at": "2026-10-18T03:37:20.091Z"
+    },
+    {
+      "label": "g17-de-undocenter-rows-360dp-font2-row-a-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "50-g17-de-undocenter-rows-360dp-font2-row-a-screen.png",
+      "sha256": "608bcc29e351d6a0449af58582c3d86dba4d8a467d93d8e90416983624a005a5",
+      "bytes": 202238,
+      "at": "2026-10-18T03:37:40.999Z"
+    },
+    {
+      "label": "g17-de-sheet-single-receipt-360dp-font2-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "51-g17-de-sheet-single-receipt-360dp-font2-screen.png",
+      "sha256": "62a96ca48d100492ad56cd8510222079adb3308a0e9366565bc4a4a5baa2b1b8",
+      "bytes": 199145,
+      "at": "2026-10-18T03:39:45.630Z"
+    },
+    {
+      "label": "g17-de-sheet-batch-receipt-360dp-font2-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "52-g17-de-sheet-batch-receipt-360dp-font2-screen.png",
+      "sha256": "7c0c5200274b6d60c3b573f146d220010207a79fcb800b24188324652a66d810",
+      "bytes": 167292,
+      "at": "2026-10-18T03:40:04.845Z"
+    },
+    {
+      "label": "g16-head-harness-pulled-cache-db-com-example-yat28head",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "53-g16-head-harness-pulled-cache-db-com-example-yat28head.db",
+      "sha256": "22542d4244c48162eed73708d0aa5d19a2b2034d18470f0892ccf91e208f854b",
+      "bytes": 94208,
+      "at": "2026-10-18T03:42:59.311Z"
+    },
+    {
+      "label": "g16-control-v271-map-picker-shows-blocked-tiles-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "54-g16-control-v271-map-picker-shows-blocked-tiles-screen.png",
+      "sha256": "c8c2a38c30edc5cd907d9124f868298604bf29a9403e28e82117a10f39eb70c5",
+      "bytes": 299981,
+      "at": "2026-10-18T03:43:49.693Z"
+    },
+    {
+      "label": "g16-head-verify-tool-output",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "55-g16-head-verify-tool-output.txt",
+      "sha256": "bcf0e266a88597c96e0d04802e36bf70a5dba89204c426ed74c802210ff4be17",
+      "bytes": 2379,
+      "at": "2026-10-18T03:43:53.802Z"
+    },
+    {
+      "label": "g16-control-verify-tool-output",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "56-g16-control-verify-tool-output.txt",
+      "sha256": "536c806a536502ad47ca669f8d941aa7f2f67a26cb2765605b248c5c2f05bb19",
+      "bytes": 1552,
+      "at": "2026-10-18T03:43:53.972Z"
+    },
+    {
+      "label": "g16-control-v271-pulled-cache-db-com-example-yat28control",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "57-g16-control-v271-pulled-cache-db-com-example-yat28control.db",
+      "sha256": "b2701abaae3d65e564d7d71169c0efb911eee21affba793cb141b93361512ff9",
+      "bytes": 122880,
+      "at": "2026-10-18T03:43:54.156Z"
+    },
+    {
+      "label": "cr01-seeded-first-launch-map-after-purge-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "58-cr01-seeded-first-launch-map-after-purge-screen.png",
+      "sha256": "9fad3fdea1b0df23e64fc7fd5224405d15fa078e0a691ab1a13215af2ff1a7d5",
+      "bytes": 226430,
+      "at": "2026-10-18T03:45:33.631Z"
+    },
+    {
+      "label": "cr01-second-map-creation-same-process-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "59-cr01-second-map-creation-same-process-screen.png",
+      "sha256": "09b0ef72eb5ab74e14e909175903c8963d024089bfda701c3c09b33b157b247e",
+      "bytes": 227540,
+      "at": "2026-10-18T03:46:31.438Z"
+    },
+    {
+      "label": "cr01-second-map-creation-logcat-no-cme-no-lock",
+      "kind": "log",
+      "source": "cli",
+      "file": "60-cr01-second-map-creation-logcat-no-cme-no-lock.log",
+      "sha256": "54d4a0aa0a3b0b88c16efce2231992d265acdd0ddd10e6c76a657c3b69e67de9",
+      "bytes": 1634,
+      "at": "2026-10-18T03:46:31.897Z"
+    },
+    {
+      "label": "cr01-second-map-creation-transcript",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "61-cr01-second-map-creation-transcript.txt",
+      "sha256": "a659476489366f50a24cf2b7cd39d8828d17547580e9f710689c086a86bc1944",
+      "bytes": 340,
+      "at": "2026-10-18T03:46:32.086Z"
+    },
+    {
+      "label": "cr01-seeded-second-process-logcat-no-cme-no-lock",
+      "kind": "log",
+      "source": "cli",
+      "file": "62-cr01-seeded-second-process-logcat-no-cme-no-lock.log",
+      "sha256": "0a0aa81f6cae350085c783f0557afe775de01f2f6be8ce0a09c59937c58ae83d",
+      "bytes": 1634,
+      "at": "2026-10-18T03:47:10.782Z"
+    },
+    {
+      "label": "cr01-seeded-second-process-map-after-purge-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "63-cr01-seeded-second-process-map-after-purge-screen.png",
+      "sha256": "5f0211aa341636c21d7ede29d1266f09985964dea0fe4cfdba8b592a766b3040",
+      "bytes": 226318,
+      "at": "2026-10-18T03:47:11.485Z"
+    },
+    {
+      "label": "cr01-run1-db-poll-raw-samples-every-0p3s",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "64-cr01-run1-db-poll-raw-samples-every-0p3s.txt",
+      "sha256": "33259470f0e4900c0de0f69a98c04c377afaf4ce5e3d1af0df011cd2a9b6fbd5",
+      "bytes": 17528,
+      "at": "2026-10-18T03:47:26.777Z"
+    },
+    {
+      "label": "cr01-run2-db-poll-raw-samples-every-0p3s",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "65-cr01-run2-db-poll-raw-samples-every-0p3s.txt",
+      "sha256": "22e1c25626c6f945d511948b4f96efa45f394634ae311fb0c83698dc3cb0a558",
+      "bytes": 18998,
+      "at": "2026-10-18T03:47:26.989Z"
+    },
+    {
+      "label": "cr01-after-seeded-relaunch-verify-tool-output",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "66-cr01-after-seeded-relaunch-verify-tool-output.txt",
+      "sha256": "4614761f16a56db2edb54e22e611052487abec8fa3450646bf7e46841df16f4d",
+      "bytes": 1453,
+      "at": "2026-10-18T03:47:34.811Z"
+    },
+    {
+      "label": "cr01-seeded-input-verify-tool-output",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "67-cr01-seeded-input-verify-tool-output.txt",
+      "sha256": "135c976fe101c7c2791ab1e18c268bf60cdf25977060fca5871b9d18e3819320",
+      "bytes": 6087,
+      "at": "2026-10-18T03:47:39.317Z"
+    },
+    {
+      "label": "tb-c1-refused-sheet-overlay-montage-45-frame-run",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "68-tb-c1-refused-sheet-overlay-montage-45-frame-run.png",
+      "sha256": "2314d64f33f8ab19a035c5730e54c623f819f343ffa7f9937474df628a35c2f0",
+      "bytes": 68290,
+      "at": "2026-10-18T03:50:25.447Z"
+    },
+    {
+      "label": "tb-c1-focus-refused-message-text",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "69-tb-c1-focus-refused-message-text.txt",
+      "sha256": "ca136fec9616e1fce5d07b494b76c4f70a49dae5cbe15f2b66f00b168fed3a10",
+      "bytes": 1127,
+      "at": "2026-10-18T03:50:25.664Z"
+    },
+    {
+      "label": "tb-c1-refused-sheet-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "70-tb-c1-refused-sheet-1.txt",
+      "sha256": "1be4eea5c4bbb4afbb1a476db16bb051069cbb99e48b4039551ebe6d8164fb9a",
+      "bytes": 2228,
+      "at": "2026-10-18T03:50:25.866Z"
+    },
+    {
+      "label": "tb-p1-accordion-row1-click-then-expanded-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "71-tb-p1-accordion-row1-click-then-expanded-focus.txt",
+      "sha256": "a82b0e1249aa3ec782eba64569cb02a320ad9c02e6c0f5410a62f525e5006103",
+      "bytes": 971,
+      "at": "2026-10-18T03:50:26.099Z"
+    },
+    {
+      "label": "tb-p1-accordion-row1-collapsed-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "72-tb-p1-accordion-row1-collapsed-focus.txt",
+      "sha256": "7241aab0017af673a7e8f217a1abead1c8c9b0e04b79c91de3115a0f678c3e96",
+      "bytes": 1272,
+      "at": "2026-10-18T03:50:26.305Z"
+    },
+    {
+      "label": "tb-p1-accordion-row1-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "73-tb-p1-accordion-row1-focus.txt",
+      "sha256": "b31d4e7be5534ffba21af41bbbf0377979c82a5d517bf468364ac24799357ac3",
+      "bytes": 620,
+      "at": "2026-10-18T03:50:26.524Z"
+    },
+    {
+      "label": "tb-p1-alt-left-previous-from-undo",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "74-tb-p1-alt-left-previous-from-undo.txt",
+      "sha256": "43ec6fe251e00150b5c11a0b87d5df13702d322ef58e850824521f79c3310b43",
+      "bytes": 620,
+      "at": "2026-10-18T03:50:26.744Z"
+    },
+    {
+      "label": "tb-p1-click-accordion-row1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "75-tb-p1-click-accordion-row1.txt",
+      "sha256": "5d08920bc4b650c942533432eff09c74a9bfd87b7f5843fcdf22056bbde24e03",
+      "bytes": 838,
+      "at": "2026-10-18T03:50:26.959Z"
+    },
+    {
+      "label": "tb-p1-focus-accordion-row1-collapsed",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "76-tb-p1-focus-accordion-row1-collapsed.txt",
+      "sha256": "d8e0702f4a21886ec36805f394f35c4b62b3678ab42c30e403fd4936d37e0bdd",
+      "bytes": 1381,
+      "at": "2026-10-18T03:50:27.163Z"
+    },
+    {
+      "label": "tb-p1-focus-accordion-row2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "77-tb-p1-focus-accordion-row2.txt",
+      "sha256": "a2a2fdb621a566deb5ee643cde1351c6123a4a1c2a746cb4448edd5053c05ad7",
+      "bytes": 1372,
+      "at": "2026-10-18T03:50:27.371Z"
+    },
+    {
+      "label": "tb-p1-focus-trailing-row-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "78-tb-p1-focus-trailing-row-summary.txt",
+      "sha256": "7c54631ec27e53b97aa792a8ebb5281f670f67139bb07c5cb46c3d4097e0e001",
+      "bytes": 1324,
+      "at": "2026-10-18T03:50:27.575Z"
+    },
+    {
+      "label": "tb-p1-focus-trailing-row-undo",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "79-tb-p1-focus-trailing-row-undo.txt",
+      "sha256": "7dfdca69c2c11fdd81f81375650ad0476c9e691b56094a0d3c6e0c9a02a1c07f",
+      "bytes": 1199,
+      "at": "2026-10-18T03:50:27.842Z"
+    },
+    {
+      "label": "tb-p1-kbd-alt-left-previous-from-undo",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "80-tb-p1-kbd-alt-left-previous-from-undo.txt",
+      "sha256": "06f68a0149e74fa85566edb1a036b38b65e6d2558847a0b6794bc164e9db570e",
+      "bytes": 633,
+      "at": "2026-10-18T03:50:28.055Z"
+    },
+    {
+      "label": "tb-p1-swipe-next-from-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "81-tb-p1-swipe-next-from-summary.txt",
+      "sha256": "72c4744baff41a329e19f7292c58c3a64692f9ceb33fa574883396548166d3ec",
+      "bytes": 593,
+      "at": "2026-10-18T03:50:28.278Z"
+    },
+    {
+      "label": "tb-p1-swipe-previous-from-undo",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "82-tb-p1-swipe-previous-from-undo.txt",
+      "sha256": "60b3900347eca7907467a0b4ddfeae65059f9f05a87359470f6d695ebf900e1a",
+      "bytes": 594,
+      "at": "2026-10-18T03:50:28.488Z"
+    },
+    {
+      "label": "tb-p3-de-focus-clear",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "83-tb-p3-de-focus-clear.txt",
+      "sha256": "79f8cb34b61fd78105331eb182c87da6a38935e8590353c04917c696801178cc",
+      "bytes": 1159,
+      "at": "2026-10-18T03:50:28.709Z"
+    },
+    {
+      "label": "tb-p3-de-focus-saved-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "84-tb-p3-de-focus-saved-summary.txt",
+      "sha256": "ecbfb55f95cfb62ad66048ab7f146648c7b748680f035a5e1b4c625d7b48c5b4",
+      "bytes": 1031,
+      "at": "2026-10-18T03:50:28.930Z"
+    },
+    {
+      "label": "tb-p3-de-focus-update",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "85-tb-p3-de-focus-update.txt",
+      "sha256": "f80876b393dfee3aef1e56a3f62652c86db5485dfa70780b4c166f38f9c9d39a",
+      "bytes": 1172,
+      "at": "2026-10-18T03:50:29.157Z"
+    },
+    {
+      "label": "tb-p3-focus-clear-b",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "86-tb-p3-focus-clear-b.txt",
+      "sha256": "aafe1df1cac565fb4d5e653535302149009dcb1601f316a8729e2297709b3cde",
+      "bytes": 1146,
+      "at": "2026-10-18T03:50:29.352Z"
+    },
+    {
+      "label": "tb-p3-focus-clear",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "87-tb-p3-focus-clear.txt",
+      "sha256": "8653aade0700c480eb824e99f7e3d2006a06f0ed6e896aee5fabc69a4d2a200b",
+      "bytes": 1093,
+      "at": "2026-10-18T03:50:29.546Z"
+    },
+    {
+      "label": "tb-p3-focus-saved-summary-b",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "88-tb-p3-focus-saved-summary-b.txt",
+      "sha256": "2d65aa9d1676f5139da77ca7524b73dbb492c8ae79bf5889db4e2424ba45fff1",
+      "bytes": 1012,
+      "at": "2026-10-18T03:50:29.771Z"
+    },
+    {
+      "label": "tb-p3-focus-saved-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "89-tb-p3-focus-saved-summary.txt",
+      "sha256": "3ea5515403b2766ba7af120df56cedd68f5c428b5311622deebbe6e21cba8a3a",
+      "bytes": 1101,
+      "at": "2026-10-18T03:50:29.993Z"
+    },
+    {
+      "label": "tb-p3-focus-update",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "90-tb-p3-focus-update.txt",
+      "sha256": "27fb0a0f7ea47277d900b73c6217b0240b9cb050a7bce86e84d6e2fe243d12b0",
+      "bytes": 1123,
+      "at": "2026-10-18T03:50:30.187Z"
+    },
+    {
+      "label": "tb-p4-focus-group-header-batch-edit",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "91-tb-p4-focus-group-header-batch-edit.txt",
+      "sha256": "50575f62b4e64203f15005ebc5676c017bffc57841d4b280d42f78fa1e329eaf",
+      "bytes": 1039,
+      "at": "2026-10-18T03:50:30.416Z"
+    },
+    {
+      "label": "tb-p4-focus-group-subtitle",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "92-tb-p4-focus-group-subtitle.txt",
+      "sha256": "b3320162c7e44776d23d0154c53ea3abaf01c10eafafdb43f77678edf1478c02",
+      "bytes": 1026,
+      "at": "2026-10-18T03:50:30.613Z"
+    },
+    {
+      "label": "tb-p4-focus-group-undo-all",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "93-tb-p4-focus-group-undo-all.txt",
+      "sha256": "a57792f25d6c99095057065e3052e0ef56470d77a66dbe5fa561babd3a87bbc4",
+      "bytes": 1162,
+      "at": "2026-10-18T03:50:30.822Z"
+    },
+    {
+      "label": "tb-p5-card-burst-three-plain-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "94-tb-p5-card-burst-three-plain-focus.txt",
+      "sha256": "3e69386e6c90ca0589fe22c62a7006df80cfbbe64f84e85c5cf462a3e7e07faa",
+      "bytes": 657,
+      "at": "2026-10-18T03:50:31.017Z"
+    },
+    {
+      "label": "tb-p5-card-burst-two-undo-card-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "95-tb-p5-card-burst-two-undo-card-focus.txt",
+      "sha256": "aafee799af7c8797b7e04a4a25581fd6071574b0b14c5f9dbf90de81f87dc402",
+      "bytes": 657,
+      "at": "2026-10-18T03:50:31.219Z"
+    },
+    {
+      "label": "tb-p5-card-front-burst-four-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "96-tb-p5-card-front-burst-four-focus.txt",
+      "sha256": "05209bde15a33d86d6b6b68d5d9b218a092885d3e4c49adfeec342165153494d",
+      "bytes": 1327,
+      "at": "2026-10-18T03:50:31.412Z"
+    },
+    {
+      "label": "tb-p5-de-card-back-middle-strip-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "97-tb-p5-de-card-back-middle-strip-focus.txt",
+      "sha256": "df9d45c8a2d40d0215058a8aba31f3adc031853df905ff2360965ac6d288742e",
+      "bytes": 858,
+      "at": "2026-10-18T03:50:31.610Z"
+    },
+    {
+      "label": "tb-p5-de-card-back-oldest-strip-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "98-tb-p5-de-card-back-oldest-strip-focus.txt",
+      "sha256": "30912954b4ecb4364761586ebad63ffac1aa3fc790d5741cc6a1fa1eaef92f0a",
+      "bytes": 1324,
+      "at": "2026-10-18T03:50:31.806Z"
+    },
+    {
+      "label": "tb-p5-de-card-front-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "99-tb-p5-de-card-front-focus.txt",
+      "sha256": "80994f47c943fe219a594b6606a326e7646dcb04efd8a7a10d6ad340d9fe5547",
+      "bytes": 1344,
+      "at": "2026-10-18T03:50:32.010Z"
+    },
+    {
+      "label": "tb-p5-de-undocenter-open-row-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "100-tb-p5-de-undocenter-open-row-focus.txt",
+      "sha256": "2bdc264ff25a6abe00cc6e801f1f019cfcb958863ab1b442e4baf166a4f83485",
+      "bytes": 1240,
+      "at": "2026-10-18T03:50:32.206Z"
+    },
+    {
+      "label": "tb-p5-fan-then-focus-burst-two",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "101-tb-p5-fan-then-focus-burst-two.txt",
+      "sha256": "62e92006cb4e77593f6c03ac40a765d7c749cc74389371353a46a784787d6832",
+      "bytes": 801,
+      "at": "2026-10-18T03:50:32.397Z"
+    },
+    {
+      "label": "tb-p5-sheet-batch-receipt-en-item-a-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "102-tb-p5-sheet-batch-receipt-en-item-a-focus.txt",
+      "sha256": "5b07eb876104ac9907f721c8019a0dc958d7a4fbf6a9f93462bbd4556ee9d45a",
+      "bytes": 1175,
+      "at": "2026-10-18T03:50:32.596Z"
+    },
+    {
+      "label": "tb-p5-sheet-batch-receipt-en-item-b-nontarget-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "103-tb-p5-sheet-batch-receipt-en-item-b-nontarget-focus.txt",
+      "sha256": "363d39e6fcd4d9fdc6c596a2aa9edcd78b57bb2e8bfd7ca7c09d2e472745ee63",
+      "bytes": 1011,
+      "at": "2026-10-18T03:50:32.799Z"
+    },
+    {
+      "label": "tb-p5-sheet-single-receipt-de-row-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "104-tb-p5-sheet-single-receipt-de-row-focus.txt",
+      "sha256": "f54a05127a1613539e9acc580918d081f7562141b087b55ed874927d0a03c913",
+      "bytes": 1201,
+      "at": "2026-10-18T03:50:33.004Z"
+    },
+    {
+      "label": "tb-p5-sheet-single-receipt-en-row-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "105-tb-p5-sheet-single-receipt-en-row-focus.txt",
+      "sha256": "36079d6c0583f5128cb0d19367c6b006223d99d9aed8e4f3c1cd510d02714bf8",
+      "bytes": 1203,
+      "at": "2026-10-18T03:50:33.205Z"
+    },
+    {
+      "label": "tb-p5-undocenter-open-row-a-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "106-tb-p5-undocenter-open-row-a-focus.txt",
+      "sha256": "0f6e4fb1588ef531af5ff9a199a5ec6d751a9be887c30ba11e8af677da06b329",
+      "bytes": 1291,
+      "at": "2026-10-18T03:50:33.415Z"
+    },
+    {
+      "label": "tb-p5-undocenter-undo-button-a-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "107-tb-p5-undocenter-undo-button-a-focus.txt",
+      "sha256": "31cabd1dded878f1d5ce1c357b7bf73ec2b6b6fa681860719080ede475c16810",
+      "bytes": 1194,
+      "at": "2026-10-18T03:50:33.609Z"
+    },
+    {
+      "label": "tb-speech-g14-sheet-batch-classic-de",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "108-tb-speech-g14-sheet-batch-classic-de.txt",
+      "sha256": "2607445194fd6a2f6375c4b7b16c43a1b39963c7350b9db3095baa86c08a47f0",
+      "bytes": 732,
+      "at": "2026-10-18T03:50:33.811Z"
+    },
+    {
+      "label": "tb-speech-g14-sheet-batch-classic-en",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "109-tb-speech-g14-sheet-batch-classic-en.txt",
+      "sha256": "09ce7fbf5b2f8eb8b2fac55e7b408ee11166c2058633271357974a7ad4fdeb88",
+      "bytes": 856,
+      "at": "2026-10-18T03:50:34.012Z"
+    },
+    {
+      "label": "tb-speech-g14-sheet-batch-receipt-de",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "110-tb-speech-g14-sheet-batch-receipt-de.txt",
+      "sha256": "7f4e48eb30ba61da94dfeaa35838f9dc10dfc538b67905303e9e51e8d32a38e0",
+      "bytes": 856,
+      "at": "2026-10-18T03:50:34.223Z"
+    },
+    {
+      "label": "tb-speech-g14-sheet-batch-receipt-en",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "111-tb-speech-g14-sheet-batch-receipt-en.txt",
+      "sha256": "95f9796e2803df8269e5fa4d33db609422ea11a1f1e29e1e8112fcc3bc972b3e",
+      "bytes": 1085,
+      "at": "2026-10-18T03:50:34.412Z"
+    },
+    {
+      "label": "tb-speech-g14-sheet-single-classic-de",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "112-tb-speech-g14-sheet-single-classic-de.txt",
+      "sha256": "f5c20f018b9176fc081b918cacd6658d882d22652d772c2e992e453ed895c48e",
+      "bytes": 914,
+      "at": "2026-10-18T03:50:34.607Z"
+    },
+    {
+      "label": "tb-speech-g14-sheet-single-classic-en",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "113-tb-speech-g14-sheet-single-classic-en.txt",
+      "sha256": "40537641c2bc7beb81659ae51d8a34767be4f35ef8bcf79591b30e98db7e1690",
+      "bytes": 897,
+      "at": "2026-10-18T03:50:34.812Z"
+    },
+    {
+      "label": "tb-speech-g14-sheet-single-receipt-de",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "114-tb-speech-g14-sheet-single-receipt-de.txt",
+      "sha256": "ed1fb4b15233116d777459a6fc27d168aeae130b1485c68ff9b4a17e75598183",
+      "bytes": 1114,
+      "at": "2026-10-18T03:50:35.009Z"
+    },
+    {
+      "label": "g15-talkback-attempt-method-and-limits",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "115-g15-talkback-attempt-method-and-limits.txt",
+      "sha256": "61467e4cc46343039b5e75bc9810dd48def3173f0df40910ab7e5ce3beddbbf3",
+      "bytes": 2403,
+      "at": "2026-10-18T03:53:20.265Z"
+    },
+    {
+      "label": "g14-c3-c4-raw-evidence-lines",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "116-g14-c3-c4-raw-evidence-lines.txt",
+      "sha256": "4ea33aab5b71c40b0a88d76f0166d5ad65dacc4549d85fd3cef995749a576273",
+      "bytes": 9507,
+      "at": "2026-10-18T03:53:20.461Z"
+    },
+    {
+      "label": "g17-driven-results-running-log",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "117-g17-driven-results-running-log.txt",
+      "sha256": "ac4aeb8ad5c9c9e4e7af3911c6c5d50198bf6813a0818715aa7c42a1eff8d748",
+      "bytes": 3445,
+      "at": "2026-10-18T03:53:20.661Z"
+    },
+    {
+      "label": "build-identity-observer-and-head-apk-hash",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "118-build-identity-observer-and-head-apk-hash.txt",
+      "sha256": "dfb8f9706f434b21a8e145da62d49034b88e068488a893b2551669fb7999b6b5",
+      "bytes": 507,
+      "at": "2026-10-18T03:53:20.937Z"
+    },
+    {
+      "label": "g18-restore-record-oracle-twice-and-readback",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "119-g18-restore-record-oracle-twice-and-readback.txt",
+      "sha256": "6a85a4def7f6eca197b1f73ecdc296214d98ba39af179bbb157151f54cbd86af",
+      "bytes": 2368,
+      "at": "2026-10-18T03:53:21.200Z"
+    },
+    {
+      "label": "g11-hoisted-sheet-open-before-cancel-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "120-g11-hoisted-sheet-open-before-cancel-screen.png",
+      "sha256": "584956d4f0a883de215808c187eb6552c817747fc6710afbc80c4588e92a0a32",
+      "bytes": 212378,
+      "at": "2026-10-18T03:53:58.709Z"
+    },
+    {
+      "label": "g11-hoisted-sheet-closed-after-cancel-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "121-g11-hoisted-sheet-closed-after-cancel-screen.png",
+      "sha256": "84388ba88d6e8b73ce135c42c0c32ae4dc8e8d7e516a21ea84049b0589138edf",
+      "bytes": 234679,
+      "at": "2026-10-18T03:54:06.624Z"
+    }
+  ],
+  "sig": {
+    "alg": "HMAC-SHA256",
+    "value": "a66ad1cb629bc3f01743852388e1cac80c58856f6094623c180351a2609eb0a4"
+  }
+}

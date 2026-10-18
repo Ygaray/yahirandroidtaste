@@ -1,0 +1,20 @@
+10-17 21:46:03.217 29286 29286 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-17 21:46:03.220 29286 29286 I AndroidRuntime: Using default boot image
+10-17 21:46:03.220 29286 29286 I AndroidRuntime: Leaving lock profiling enabled
+10-17 21:46:03.221 29286 29286 D AndroidRuntime: addProductProperty not brand or 7
+10-17 21:46:03.304 29286 29286 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-17 21:46:04.481 29286 29286 D AndroidRuntime: Shutting down VM
+10-17 21:46:05.581 27515 27515 I OsmDroid: Using tile source: Mapnik
+10-17 21:46:05.581 27515 27515 I OsmDroid: Tile cache increased from 0 to 9
+10-17 21:46:05.587 27515 27515 I OsmDroid: Using tile source: Mapnik
+10-17 21:46:05.587 27515 27515 I OsmDroid: Tile cache increased from 0 to 9
+10-17 21:46:05.593 27515 27515 I OsmDroid: Using tile source: Mapnik
+10-17 21:46:05.593 27515 27515 I OsmDroid: Tile cache increased from 0 to 9
+10-17 21:46:05.596 27515 27515 I OsmDroid: Using tile source: Mapnik
+10-17 21:46:05.596 27515 27515 I OsmDroid: Tile cache increased from 0 to 9
+10-17 21:46:20.619 29387 29387 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+10-17 21:46:20.622 29387 29387 I AndroidRuntime: Using default boot image
+10-17 21:46:20.622 29387 29387 I AndroidRuntime: Leaving lock profiling enabled
+10-17 21:46:20.623 29387 29387 D AndroidRuntime: addProductProperty not brand or 7
+10-17 21:46:20.701 29387 29387 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+10-17 21:46:21.976 29387 29387 D AndroidRuntime: Shutting down VM

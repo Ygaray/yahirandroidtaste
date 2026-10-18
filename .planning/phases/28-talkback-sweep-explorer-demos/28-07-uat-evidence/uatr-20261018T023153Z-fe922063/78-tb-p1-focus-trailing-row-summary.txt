@@ -1,0 +1,12 @@
+# TalkBack speech observation: p1-focus-trailing-row-summary
+# trigger: adb shell "nohup sh -c "am broadcast -a com.example.yat28obs.ACT --es text 'Subtitle detail' --es act focus --ei idx 1 " >/dev/null 2>&1 &"   frames: 30 (screencap back to back, ~0.3 s apart)   host-start 1792292495.272024118 device-clock 1792292495 host-clock 1792292495
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: (no overlay)
+t+0.7s f02: r ¥ FIL se EY | | ap to open row 2 Total Collapsed, Item title, Subtitle detail, 1,250, Button
+t+5.8s f18: (no overlay)
+t+6.1s f19: JURE TU y ap to open row 2 Tot {| Double-tap to activate 4
+t+8.5s f27: (no overlay)
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 21:01:35.191 I/P28A    (32524): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Item title / Subtitle detail / 1,250 srcStateDesc=Collapsed
+10-17 21:01:35.726 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][241440b/5.03s]
+10-17 21:01:41.043 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][99360b/2.07s]

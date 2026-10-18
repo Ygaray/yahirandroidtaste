@@ -1,0 +1,6 @@
+# TalkBack speech observation: p5-de-card-back-middle-strip-focus
+# trigger: adb shell "nohup sh -c "am broadcast -a com.example.yat28obs.ACT --es text '*' --es act focus --ei idx 0 --ei x 540 --ei y 2003" >/dev/null 2>&1 &"   frames: 30 (screencap back to back, ~0.3 s apart)   host-start 1792293596.616245612 device-clock 1792293596 host-clock 1792293596
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: (no overlay)
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 21:19:56.620 I/P28A    (13455): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=1 srcText=null srcLabel= srcStateDesc=null
