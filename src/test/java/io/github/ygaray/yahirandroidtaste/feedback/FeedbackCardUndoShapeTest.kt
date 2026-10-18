@@ -236,4 +236,42 @@ class FeedbackCardUndoShapeTest {
         assertFalse(public.contains("CappedPill"))
         assertFalse(public.contains("rememberTextButtonCappedShape"))
     }
+
+    /**
+     * The measured tests take the shape from their own `rememberTextButtonCappedShape()` call, so they
+     * cannot see whether the card's button really paints it. This pins the two hand-offs that make the
+     * fix work: the capped button passes the capped shape into `EmphasisActionButton`, and that function
+     * forwards `shape` into the `TextButton` of its Text branch (not back to `ButtonDefaults.textShape`).
+     */
+    @Test
+    fun theCappedShapeReachesTheTextButton_throughEmphasisActionButton() {
+        val button = SourceContractTestSupport.stripComments(
+            File("src/main/java/io/github/ygaray/yahirandroidtaste/component/DynamicActionButton.kt").readText()
+        )
+        val capped = SourceContractTestSupport.functionBody(button, "fun CappedPillTextActionButton(")
+            .filterNot { it.isWhitespace() }
+        assertTrue("the capped button must call EmphasisActionButton", capped.contains("EmphasisActionButton("))
+        assertTrue(
+            "the capped button must hand the capped shape to EmphasisActionButton",
+            capped.contains("shape=rememberTextButtonCappedShape()")
+        )
+        assertTrue("the capped button is the Text emphasis", capped.contains("emphasis=ActionButtonEmphasis.Text,"))
+        val emphasis = SourceContractTestSupport.functionBody(button, "fun EmphasisActionButton(")
+            .filterNot { it.isWhitespace() }
+        val textBranchStart = emphasis.indexOf("ActionButtonEmphasis.Text->TextButton(")
+        val textSmallStart = emphasis.indexOf("ActionButtonEmphasis.TextSmall->")
+        assertTrue("the Text branch must exist before the TextSmall branch", textBranchStart in 0 until textSmallStart)
+        val textBranch = emphasis.substring(textBranchStart, textSmallStart)
+        assertTrue(
+            "the Text branch must forward its shape to the TextButton",
+            textBranch.contains("shape=shape?:ButtonDefaults.textShape")
+        )
+        val card = SourceContractTestSupport.stripComments(
+            File("src/main/java/io/github/ygaray/yahirandroidtaste/feedback/FeedbackCard.kt").readText()
+        )
+        assertTrue(
+            "the card Undo is the capped variant",
+            SourceContractTestSupport.functionBody(card, "fun FeedbackCardRow(").contains("CappedPillTextActionButton(")
+        )
+    }
 }
