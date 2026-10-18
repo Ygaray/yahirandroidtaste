@@ -22,7 +22,7 @@
 #          [--diff-file <path>] [--history-file <path>]
 #   --diff-file / --history-file are TEST overrides: scan that text instead of `git diff` /
 #   `git log -p` (the fixture uses them to feed a credential-shaped line without committing one).
-#   env PUBLISH_RANGE_HOST_USER   the user name in the home-path class (default: yahir)
+#   env PUBLISH_RANGE_HOST_USER   the user name in the home-path class (default: the account running the tool)
 #   env PUBLISH_RANGE_TEST_BLANK_CLASS  TEST hook: replace one class pattern with a never-matching
 #                                 one so its positive control must fail
 #
@@ -39,12 +39,16 @@
 #   SUMMARY net_credential=.. net_shipped=.. net_planning=.. history_credential=..
 #           history_shipped=.. history_planning=.. outside=.. binary=.. fastforward=..
 #           (net_* sum the hits; history_* count the unique class/commit/path lines)
-#   RESULT OK | RESULT REVIEW | RESULT INVALID
+#   CAVEAT history_shipped=<n> ... / CAVEAT binary=<n> ...   only when RESULT would be OK but that
+#                                 class is not enforced (printed just before the RESULT line)
+#   RESULT OK | RESULT OK (history_shipped=<n> binary=<n> not enforced) | RESULT REVIEW | RESULT INVALID
 #
 # area=planning is a path under .planning/ (prose and evidence); anything else is shipped.
 # Exit: 0 RESULT OK: no credential (net or history), no shipped-path hit in the net diff, nothing
 #         outside the allowlist, and the base is an ancestor of the head. Hits under .planning/ and
-#         history-only shipped hits are reported but do not fail the scan;
+#         history-only shipped hits are reported but do not fail the scan. When history_shipped or
+#         binary is above 0 the verdict line reads "RESULT OK (history_shipped=<n> binary=<n> not
+#         enforced)" and CAVEAT lines precede it: a bare "RESULT OK" means those two were 0;
 #       1 RESULT REVIEW: a human decision is needed;
 #       2 usage error, or a failed positive control (RESULT INVALID: the scan itself is invalid).
 set -euo pipefail
@@ -111,14 +115,15 @@ done < <(git "${GIT_DIFF_OPTS[@]}" --no-renames --name-only "$RANGE_SPEC")
 echo "OUTSIDE count=$OUTSIDE"
 
 # ---- the four classes, assembled from fragments ----
-HOST_USER="${PUBLISH_RANGE_HOST_USER:-yahir}"
+HOST_USER="${PUBLISH_RANGE_HOST_USER:-${USER:-$(id -un)}}"
 P_TAILNET='(^|[^0-9.])'"1""00"'\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
 P_TSNET='\.ts''\.net'
 P_HOME='/ho''me/'"$HOST_USER"
 CRED_PATS=(
-  's''k-[A-Za-z0-9_-]{16,}'
+  '(^|[^A-Za-z0-9])s''k-[A-Za-z0-9_-]{16,}'
   'AI''za[0-9A-Za-z_-]{30,}'
-  'gh''p_[A-Za-z0-9]{30,}'
+  'gh''[pousr]_[A-Za-z0-9]{30,}'
+  'github_''pat_[A-Za-z0-9_]{30,}'
   'xo''x[baprs]-[A-Za-z0-9-]{10,}'
   'Author''ization: Bearer [A-Za-z0-9._-]{20,}'
   'BE''GIN [A-Z ]*PRIVATE KEY'
@@ -150,9 +155,10 @@ control tailnet_ip "$P_TAILNET" "addr=1""00.64.1.9:22"
 control ts_net "$P_TSNET" "host=box.ts"".net"
 control home_path "$P_HOME" "cd /ho""me/$HOST_USER/work"
 CRED_SAMPLES=(
-  "s""k-$F20"
+  "key=s""k-$F20"
   "AI""za$F30"
   "gh""p_$F30"
+  "github_""pat_$F30"
   "xo""xb-$F20"
   "Author""ization: Bearer $F30"
   "-----BE""GIN RSA PRIVATE KEY-----"
@@ -228,6 +234,14 @@ scan_class credential "$P_CRED"
 echo "SUMMARY net_credential=$NET_CRED net_shipped=$NET_SHIPPED net_planning=$NET_PLANNING history_credential=$H_CRED history_shipped=$H_SHIPPED history_planning=$H_PLANNING outside=$OUTSIDE binary=$BINARY fastforward=$FF"
 
 if [ "$NET_CRED" -eq 0 ] && [ "$H_CRED" -eq 0 ] && [ "$NET_SHIPPED" -eq 0 ] && [ "$OUTSIDE" -eq 0 ] && [ "$FF" = "yes" ]; then
+  # OK is not a clean bill for two classes the scan cannot enforce: say so on the verdict line itself,
+  # so a caller reading only the last line or the exit code still sees the exposure.
+  if [ "$H_SHIPPED" -gt 0 ] || [ "$BINARY" -gt 0 ]; then
+    [ "$H_SHIPPED" -eq 0 ] || echo "CAVEAT history_shipped=$H_SHIPPED shipped-path hits were added and later removed; they still ship in history (see the HISTORY lines)"
+    [ "$BINARY" -eq 0 ] || echo "CAVEAT binary=$BINARY files were not text-scanned (see $OUTDIR/binary-files.txt); review them by eye"
+    echo "RESULT OK (history_shipped=$H_SHIPPED binary=$BINARY not enforced)"
+    exit 0
+  fi
   echo "RESULT OK"
   exit 0
 fi

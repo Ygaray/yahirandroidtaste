@@ -15,6 +15,9 @@ SCRIPT="$DIR/verify-publish-range.sh"
 export GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1
 export GIT_AUTHOR_EMAIL=t@example.invalid GIT_COMMITTER_EMAIL=t@example.invalid
 
+# The home-path fixtures use a fixed user name; the tool's own default is the running account.
+export PUBLISH_RANGE_HOST_USER=yahir
+
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 
 pass=0; fail=0
@@ -85,6 +88,7 @@ check_grep "$OUT" '^OUTSIDE count=0$' "no path outside the allowlist"
 check_grep "$OUT" '^BINARY files=0$' "no binary files"
 check_grep "$OUT" '^SUMMARY net_credential=0 net_shipped=0 net_planning=0 history_credential=0 history_shipped=0 history_planning=0 outside=0 binary=0 fastforward=yes$' "summary is all zero"
 check_grep "$OUT" '^RESULT OK$' "result OK"
+check_nogrep "$OUT" '^CAVEAT ' "a clean range prints no CAVEAT line"
 check "$([ -s "$OUTD/range.diff" ] && [ -s "$OUTD/range-log.txt" ] && [ -s "$OUTD/authors.txt" ] && echo yes)" "yes" "the three artifact files are written under --out"
 
 # 2. A tailnet-shaped address in a .planning/ file: reported, classified, not a failure.
@@ -114,6 +118,9 @@ put "$REPO" tools/d.sh "serial=none"
 mkcommit "$REPO" "h2" >/dev/null; finish
 run "$REPO"
 check "$RC" "0" "history-only hit exits 0"
+check_grep "$OUT" '^CAVEAT history_shipped=1 ' "history-only hit prints a CAVEAT line"
+check_grep "$OUT" '^RESULT OK \(history_shipped=1 binary=0 not enforced\)$' "history-only hit result carries the caveat"
+check_nogrep "$OUT" '^RESULT OK$' "history-only hit is not a bare RESULT OK"
 check_grep "$OUT" "^HISTORY tailnet_ip ${sha_add:0:7} tools/d\\.sh area=shipped\$" "history line names the commit and path"
 check_grep "$OUT" 'history_shipped=1 ' "history_shipped is 1"
 check_grep "$OUT" 'net_shipped=0 ' "net is clean for a removed hit"
@@ -144,6 +151,15 @@ mkcommit "$REPO" "y2" >/dev/null; finish
 run "$REPO"
 check "$RC" "0" "planning home-path hit exits 0"
 check_grep "$OUT" '^NET home_path \.planning/f\.md count=1 area=planning$' "planning home-path line"
+
+# 5b. Without the override the home-path class protects the account that runs the tool.
+newrepo homeu
+put "$REPO" tools/f2.sh "cd /ho""me/fixtureuser/work"
+mkcommit "$REPO" "y3" >/dev/null; finish
+N=$((N+1)); OUTD="$TMP/out-$N"; RC=0
+OUT=$(cd "$REPO" && env -u PUBLISH_RANGE_HOST_USER USER=fixtureuser bash "$SCRIPT" --base base --head tip --out "$OUTD" 2>&1) || RC=$?
+check "$RC" "1" "the default home-path user is the running account"
+check_grep "$OUT" '^NET home_path tools/f2\.sh count=1 area=shipped$' "default-user home-path hit line"
 
 # 6. A credential-shaped added line, supplied through the overrides, is never echoed.
 CLEAN="$TMP/clean"
@@ -176,6 +192,34 @@ check "$RC" "1" "a history-only credential exits 1"
 check_grep "$OUT" '^HISTORY credential 0123456 tools/y\.sh area=shipped$' "history credential line"
 check "$(printf '%s' "$OUT" | grep -c -F -- "$CRED" || true)" "0" "the history credential text is absent from stdout"
 
+# 6b. The sk- pattern needs a left boundary: ordinary hyphenated prose is not a credential, and the
+# other GitHub token prefixes are covered.
+PROSE_DIFF="$TMP/prose.diff"
+{
+  echo "diff --git a/docs/x.md b/docs/x.md"
+  echo "--- a/docs/x.md"
+  echo "+++ b/docs/x.md"
+  echo "@@ -0,0 +3 @@"
+  echo "+the risk-adjusted-assessment-of-things pass"
+  echo "+a task-force-review-board-with-long-name"
+} > "$PROSE_DIFF"
+run "$CLEAN" --base base --head tip --out "$TMP/out-prose" --diff-file "$PROSE_DIFF"
+check_nogrep "$OUT" '^NET credential ' "hyphenated prose ending in sk is not a credential"
+check "$RC" "0" "hyphenated prose alone exits 0"
+for tokpre in "gh""o_" "gh""s_" "gh""u_" "gh""r_" "github_""pat_"; do
+  TOKDIFF="$TMP/tok.diff"
+  {
+    echo "diff --git a/tools/z.sh b/tools/z.sh"
+    echo "--- a/tools/z.sh"
+    echo "+++ b/tools/z.sh"
+    echo "@@ -0,0 +1 @@"
+    echo "+x=${tokpre}$(printf 'c%.0s' $(seq 1 36))"
+  } > "$TOKDIFF"
+  run "$CLEAN" --base base --head tip --out "$TMP/out-tok" --diff-file "$TOKDIFF"
+  check "$RC" "1" "a $tokpre token exits 1"
+  check_grep "$OUT" '^NET credential tools/z\.sh count=1 area=shipped$' "a $tokpre token is a credential hit"
+done
+
 # 7. A changed path outside the allowlist.
 newrepo outside
 put "$REPO" build.gradle.kts "plugins {}"
@@ -201,6 +245,9 @@ mkcommit "$REPO" "b1" >/dev/null; finish
 run "$REPO"
 check "$RC" "0" "a binary file alone exits 0"
 check_grep "$OUT" '^BINARY files=1$' "binary count"
+check_grep "$OUT" '^CAVEAT binary=1 ' "binary file prints a CAVEAT line"
+check_grep "$OUT" '^RESULT OK \(history_shipped=0 binary=1 not enforced\)$' "binary result carries the caveat"
+check_nogrep "$OUT" '^RESULT OK$' "binary range is not a bare RESULT OK"
 
 # 10. More than one author is counted.
 newrepo authors
