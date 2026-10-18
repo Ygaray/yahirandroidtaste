@@ -1,6 +1,7 @@
 package io.github.ygaray.yahirandroidtaste.component
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.database.DatabaseErrorHandler
 import android.database.sqlite.SQLiteDatabase
@@ -9,6 +10,7 @@ import android.os.Build
 import android.util.Log
 import java.io.File
 import java.security.MessageDigest
+import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicBoolean
 import org.osmdroid.config.Configuration
 
@@ -27,9 +29,25 @@ private const val TILE_CACHE_DB_NAME = "cache.db"
 /** True once this process has done (or started) its first placeholder scan. */
 private val placeholderScanStarted = AtomicBoolean(false)
 
+/** True while a placeholder scan is running on the purge thread (at most one at a time). */
+private val placeholderScanRunning = AtomicBoolean(false)
+
+/** Runs each scan on its own short-lived daemon thread so the main thread never waits on SQLite. */
+private val backgroundPurgeExecutor = Executor { task ->
+    Thread(task, "yat-osm-placeholder-purge").apply { isDaemon = true }.start()
+}
+
+/** Where [configureOsmdroid] runs the placeholder scan; tests swap in a direct executor. */
+@Volatile internal var placeholderPurgeExecutor: Executor = backgroundPurgeExecutor
+
 /** Test hook: makes the next [configureOsmdroid] behave like the first call of a new process. */
 internal fun resetPlaceholderScanForTests() {
     placeholderScanStarted.set(false)
+}
+
+/** Test hook: restores the production (background thread) scan executor. */
+internal fun resetPlaceholderPurgeExecutorForTests() {
+    placeholderPurgeExecutor = backgroundPurgeExecutor
 }
 
 /** True once this process has run [Configuration.load] (at most once per process, POL-03). */
@@ -126,13 +144,41 @@ internal fun configureOsmdroid(context: Context, userAgent: String) {
     // Evaluated BEFORE the install-flag test: a second call in the same process must not rescan.
     val firstScanThisProcess = !placeholderScanStarted.getAndSet(true)
     if (firstScanThisProcess || !prefs.getBoolean(PREF_PLACEHOLDER_PURGED, false)) {
-        try {
-            if (purgePlaceholderTiles(File(tileCache, TILE_CACHE_DB_NAME)) >= 0) {
-                prefs.edit().putBoolean(PREF_PLACEHOLDER_PURGED, true).apply()
+        schedulePlaceholderScan(File(tileCache, TILE_CACHE_DB_NAME), prefs)
+    }
+}
+
+/**
+ * Runs the placeholder scan off the calling thread (CR-01): [configureOsmdroid] is called from the
+ * `AndroidView` factory on the main thread, and the scan opens SQLite, hashes candidate blobs and
+ * deletes rows. At most one scan runs at a time; a call that arrives while one is running is
+ * dropped (the next call or process rescans).
+ *
+ * The scan cannot be ordered strictly before the `MapView` opens `cache.db` without making the main
+ * thread wait for it, so it does not try. It is safe to overlap because the scan uses its own SQLite
+ * connection, and SQLite's file locking serializes it against the tile writer: a lock timeout
+ * surfaces as a [SQLiteException], which [purgePlaceholderTiles] reports as `-1`, so the install
+ * flag stays unset and the scan is retried later. The delete only ever removes a row whose bytes are
+ * the placeholder, so the worst overlap outcome is that a placeholder cached after the scan read it
+ * survives until the next scan. Nothing here throws into map creation.
+ */
+private fun schedulePlaceholderScan(dbFile: File, prefs: SharedPreferences) {
+    if (!placeholderScanRunning.compareAndSet(false, true)) return
+    try {
+        placeholderPurgeExecutor.execute {
+            try {
+                if (purgePlaceholderTiles(dbFile) >= 0) {
+                    prefs.edit().putBoolean(PREF_PLACEHOLDER_PURGED, true).apply()
+                }
+            } catch (_: RuntimeException) {
+                // best effort: a failed scan is retried on the next call and never breaks map creation
+            } finally {
+                placeholderScanRunning.set(false)
             }
-        } catch (_: RuntimeException) {
-            // best effort: a failed scan is retried on the next call and never breaks map creation
         }
+    } catch (_: RuntimeException) {
+        // the executor refused the task: nothing ran, so release the single-scan guard
+        placeholderScanRunning.set(false)
     }
 }
 
@@ -245,9 +291,16 @@ internal fun purgePlaceholderTiles(
                 }
             }
         }
+        // One transaction for all deletes: a journaled commit per row would be thousands of fsyncs.
         var deleted = 0
-        for ((key, provider) in matches) {
-            deleted += db.delete("tiles", "key = ? AND provider = ?", arrayOf(key.toString(), provider))
+        db.beginTransaction()
+        try {
+            for ((key, provider) in matches) {
+                deleted += db.delete("tiles", "key = ? AND provider = ?", arrayOf(key.toString(), provider))
+            }
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
         }
         deleted
     } catch (_: SQLiteException) {

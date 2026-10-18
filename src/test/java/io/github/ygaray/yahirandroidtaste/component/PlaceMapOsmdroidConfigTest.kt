@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase
 import android.os.Build
 import android.util.Log
 import java.io.File
+import java.util.concurrent.Executor
+import java.util.concurrent.TimeUnit
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -54,6 +56,9 @@ class PlaceMapOsmdroidConfigTest {
         File(application.cacheDir, "osmdroid").deleteRecursively()
         resetPlaceholderScanForTests()
         resetOsmdroidLoadForTests()
+        // Deterministic by default: the scan runs inline. The production executor is a background
+        // thread (CR-01) and is exercised explicitly by the tests that restore it.
+        placeholderPurgeExecutor = Executor { it.run() }
         ShadowLog.clear()
     }
 
@@ -70,6 +75,7 @@ class PlaceMapOsmdroidConfigTest {
         File(application.cacheDir, "osmdroid").deleteRecursively()
         resetPlaceholderScanForTests()
         resetOsmdroidLoadForTests()
+        resetPlaceholderPurgeExecutorForTests()
     }
 
     /**
@@ -458,6 +464,44 @@ class PlaceMapOsmdroidConfigTest {
             Configuration.getInstance().osmdroidTileCache,
         )
         assertEquals("Probe/1.0 (+https://example.org)", requestProperties()["User-Agent"])
+    }
+
+    @Test
+    fun productionExecutor_runsTheScanOffTheCallingThread_andStillPurges() {
+        resetPlaceholderPurgeExecutorForTests()
+        seedCache(1L to placeholderBytes, 2L to realTileBytes())
+        configureOsmdroid(application, "Probe/1.0 (+https://example.org)")
+        // the flag is written last, by the purge thread; the shared prefs map updates in memory at once
+        val deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10)
+        while (!purgedFlag && System.nanoTime() < deadline) Thread.sleep(20)
+        assertTrue("scan flag written by the purge thread", purgedFlag)
+        assertEquals(listOf(2L), cachedKeys())
+    }
+
+    @Test
+    fun scanThatOverlapsARunningScan_isDropped_notQueued() {
+        val queued = mutableListOf<Runnable>()
+        placeholderPurgeExecutor = Executor { queued += it }
+        seedCache(1L to placeholderBytes)
+        configureOsmdroid(application, agentA)
+        resetPlaceholderScanForTests() // would otherwise rescan: only the in-flight guard may stop it
+        configureOsmdroid(application, agentA)
+        assertEquals(1, queued.size)
+        queued.single().run()
+        assertEquals(emptyList<Long>(), cachedKeys())
+        assertTrue(purgedFlag)
+    }
+
+    @Test
+    fun rejectedScanTask_neverThrows_andReleasesTheGuard() {
+        placeholderPurgeExecutor = Executor { throw java.util.concurrent.RejectedExecutionException("full") }
+        seedCache(1L to placeholderBytes)
+        configureOsmdroid(application, agentA)
+        assertFalse(purgedFlag)
+        placeholderPurgeExecutor = Executor { it.run() }
+        configureOsmdroid(application, agentA)
+        assertTrue(purgedFlag)
+        assertEquals(emptyList<Long>(), cachedKeys())
     }
 
     // ---- POL-03 load() once per process (gap plan 28-08) ---------------------------------------

@@ -89,6 +89,28 @@ class PlaceMapTilePurgeTest {
     }
 
     @Test
+    fun manyPlaceholderRows_areAllDeleted_inOnePass_andRealTilesSurvive() {
+        val db = newDb()
+        val conn = SQLiteDatabase.openDatabase(db.path, null, SQLiteDatabase.OPEN_READWRITE)
+        try {
+            conn.beginTransaction()
+            for (key in 1L..600L) {
+                val tile = if (key % 100L == 0L) realTile() else placeholder
+                conn.execSQL(
+                    "INSERT INTO tiles (key, provider, tile, expires) VALUES (?, ?, ?, ?)",
+                    arrayOf<Any>(key, "Mapnik", tile, 4102444800000L),
+                )
+            }
+            conn.setTransactionSuccessful()
+            conn.endTransaction()
+        } finally {
+            conn.close()
+        }
+        assertEquals(594, purgePlaceholderTiles(db))
+        assertEquals(listOf(100L, 200L, 300L, 400L, 500L, 600L), keys(db))
+    }
+
+    @Test
     fun sizeOnlyMatch_isKept() {
         val db = newDb()
         insert(db, 1, "Mapnik", ByteArray(PLACEHOLDER_TILE_SIZE))
