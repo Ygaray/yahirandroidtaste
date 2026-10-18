@@ -1,0 +1,18 @@
+# TalkBack speech observation: r2-c1-focused-click-4
+# trigger: adb shell "am broadcast -a com.example.yat28obs.ACT --es text Show --es act click --ei x 217 --ei y 1466"   frames: 40 (screencap back to back, ~0.3 s apart)   host-start 1792299122.103582985 device-clock 1792299121 host-clock 1792299122
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.5s f01: (no overlay)
+t+0.8s f02: Bottom Sheet
+t+2.2s f07: Drag handle
+t+4.3s f14: (no overlay)
+t+4.6s f15: Double-tap to activate, Actions available, use Tap with 3 fingers to view
+t+11.8s f39: (no overlay)
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 22:52:02.279 I/P28A    (25942): event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] desc=null cls=android.view.View srcLive=2 srcText=null srcLabel=Couldn't undo: Item changed since, Card deleted changed since srcStateDesc=null
+10-17 22:52:02.435 I/P28A    (25942): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=0 text=[] desc=null cls=androidx.compose.material3.ModalBottomSheetDialogWrapper srcLive=0 srcText=null srcLabel= srcStateDesc=null
+10-17 22:52:02.437 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][68160b/1.42s]
+10-17 22:52:02.457 I/P28A    (25942): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=0 text=[] desc=null cls=androidx.compose.material3.ModalBottomSheetDialogWrapper srcLive=0 srcText=null srcLabel= srcStateDesc=null
+10-17 22:52:02.506 I/P28A    (25942): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=16 text=[Bottom Sheet] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Drag handle / Logged 2 items / Undo all (2) / Card deleted / Tag removed / Couldn't un
+10-17 22:52:02.724 I/P28A    (25942): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Drag handle srcStateDesc=null
+10-17 22:52:03.972 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][75360b/1.57s]
+10-17 22:52:06.394 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][236640b/4.93s]

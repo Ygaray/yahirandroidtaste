@@ -1,0 +1,19 @@
+# TalkBack speech observation: r2-c1-focused-taps-4
+# trigger: adb shell "input tap 217 1466; input tap 217 1466"   frames: 40 (screencap back to back, ~0.3 s apart)   host-start 1792299369.495630839 device-clock 1792299369 host-clock 1792299369
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.5s f01: (no overlay)
+t+0.8s f02: Bottom Sheet
+t+2.3s f07: Couldn't undo: Item changed since, Card deleted changed since
+t+6.5s f21: Drag handle
+t+8.3s f27: Double-tap to activate, Actions available, use Tap with 3 fingers to view
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 22:56:09.560 I/P28A    (25942): event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] desc=null cls=android.view.View srcLive=2 srcText=null srcLabel= srcStateDesc=null
+10-17 22:56:09.720 I/P28A    (25942): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=0 text=[] desc=null cls=androidx.compose.material3.ModalBottomSheetDialogWrapper srcLive=0 srcText=null srcLabel= srcStateDesc=null
+10-17 22:56:09.737 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][68160b/1.42s]
+10-17 22:56:09.743 I/P28A    (25942): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=0 text=[] desc=null cls=androidx.compose.material3.ModalBottomSheetDialogWrapper srcLive=0 srcText=null srcLabel= srcStateDesc=null
+10-17 22:56:09.769 I/P28A    (25942): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=16 text=[Bottom Sheet] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Drag handle / Logged 2 items / Undo all (2) / Card deleted / Tag removed / Couldn't un
+10-17 22:56:09.814 I/P28A    (25942): event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] desc=null cls=android.view.View srcLive=2 srcText=null srcLabel=Couldn't undo: Item changed since, Card deleted changed since srcStateDesc=null
+10-17 22:56:10.075 I/P28A    (25942): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Drag handle srcStateDesc=null
+10-17 22:56:11.501 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][198240b/4.13s]
+10-17 22:56:15.469 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][75360b/1.57s]
+10-17 22:56:17.492 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][236640b/4.93s]

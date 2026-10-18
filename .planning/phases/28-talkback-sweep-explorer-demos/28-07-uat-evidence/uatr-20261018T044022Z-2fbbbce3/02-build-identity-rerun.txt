@@ -1,0 +1,8 @@
+HEAD=950399ed76124dfa37c2fff48ce7c58f352bfe96 src-changes=0
+exit=0
+06399f7a3d4624373de59d0d5af8e02a  /home/yahir/.m2/repository/com/github/Ygaray/yahirandroidtaste/1.10.0/yahirandroidtaste-1.10.0.aar
+
+head harness APK installed (com.example.yat28head), md5 e008b40072d32bec8d11e89dfdc52240 (pulled from device == freshly built), sha256 prefix 59517c9ad07c2656
+first-run head APK was md5 99b4b32472f24f398eeddfd5b6eeee9d (sha256 prefix 4617e1d6) built against AAR d8218b7c; stale, replaced by adb install -r
+dex string check: hiddenFromAccessibility present in new APK (2 hits), absent in first-run APK (0)
+observer com.example.yat28obs unchanged since the first run (md5 97b8a97454a183c894ac9ee6622dd292, lastUpdateTime 2026-10-17 21:17:40)

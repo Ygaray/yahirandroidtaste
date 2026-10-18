@@ -1,0 +1,40 @@
+Phase 28 Gate-1 re-run (cycle 1 of 3), driven results running log, tester R5CT10XNKQN, HEAD 950399e, harness com.example.yat28head md5 e008b40072d32bec8d11e89dfdc52240 (AAR md5 06399f7a3d4624373de59d0d5af8e02a)
+Times are the device clock, 2026-10-17 22:40 to 23:20 (host 2026-10-18 04:40 to 05:20 UTC).
+
+== C-1 (refused-undo live region), Voice Command, OutcomeSheet page, "Success, loud undo-refused substate (VUNDO-01)" ==
+Method as the first run (transcript 70 / method 115): TalkBack with "Display speech output" on, overlay frames OCR-read plus the observer events and the Samsung TTS utterance durations.
+Node dump of the live region with the sheet open (evidence 26): n d=10 cls=android.view.View text=null desc=null b=45,1942,1035,2136 focusable=false a11yFocusable=TRUE imp=true live=2 children=1 acts=[64:] label=Couldn't undo: Item changed since, Card deleted changed since
+  (first run, evidence 20: the same node had a11yFocusable=FALSE; so the merge changed the tree as planned: the node is now one screen-reader-focusable merged live region)
+Observer event at the appearance of the sheet (identical in every round): TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] desc=null cls=android.view.View srcLive=2 srcText=null srcLabel=Couldn't undo: ...
+  the event text is STILL empty and the source node's own text is still null; sheet window events follow 0.1 to 0.2 s later (WINDOW_STATE_CHANGED changeTypes=16 text=[Bottom Sheet]).
+Per-showing tally: evidence tally file (r2-c1-tally-all-showings): spoken in 6 of 22 showings.
+  realistic path (TalkBack focus on the Show sheet button, then activate), observer bound: 2 of 10 spoken (both of those showings had a SECOND live-region event after the window change);
+  TalkBack alone (observer not bound): 0 of 5 spoken (TTS log has no 4.13 s utterance; overlay shows Bottom Sheet, Drag handle, the hint only).
+  Explicit focus on the node speaks the message in full (4.13 s utterance, first-run transcript 69).
+
+== Collapsed deck, English (Feedback > FeedbackStackHost, Dismiss all, then Burst x4; 3 cards visible) ==
+observer dump (evidence 28): focusable nodes of the deck in tree order:
+  View@104,1903,976,1942 (oldest card strip) label=''  acts=[16:Open item|1048576:Dismiss|2131230721:Undo|2131230722:Dismiss]  imp=true a11yFocusable=true
+  View@376,1914,520,1942 (the oldest card's Undo child) label=''  acts=[1:|64:|16:]  a11yFocusable=true
+  [middle card View@75,1942,1005,1981: imp=false a11yFocusable=false, acts=[64:|1048576:Dismiss|2131230721:Dismiss], NOT a focus stop; was a focusable empty-label stop in the first run]
+  View@45,1981,1035,2139 (front card) label='Burst four' acts=[64:|16:Open item|1048576:Dismiss|2131230721:Dismiss]
+TalkBack speech on focus (point-targeted observer focus):
+  oldest strip: "Button", then the hint "Double-tap to Open item, Actions available, ..." (the item text "Burst two" is NOT spoken: its text is clipped out of the strip)
+  oldest Undo child: "Button", then "Double-tap to activate" (no "Undo" name)
+  middle strip point (540,1962): no node, no focus event, no speech
+  front card: "Button, Burst four", then "Double-tap to Open item, Actions available, ..."
+tap on the oldest strip (TalkBack off) fans the deck: 3 cards, all focusable with labels: 'Burst two / Undo', 'Undo' (child), 'Burst three', 'Burst four' (evidence 34, screen 37).
+
+== Collapsed deck, German (Serie x4) ==
+observer dump (evidence 38): oldest strip View@104,1945,976,1984 label='Serie zwei: Eintrag entfernt'; its Undo child View@620,1956,866,1984 label=''; front View@45,2023,1035,2181 'Serie vier: Eintrag geändert und gespeichert'; no middle-strip node.
+speech: oldest strip "Serie zwei: Eintrag entfernt, Button" + "Double-tap to Eintrag öffnen, ..."; oldest Undo child "Button" + "Double-tap to activate" (no "Rückgängig"); front "Button, Serie vier: ..."; middle point: nothing.
+tap on the oldest strip fans the deck (evidence 44, 45): 'Serie zwei: Eintrag entfernt / Rückgängig', 'Rückgängig', 'Serie drei: Hinweis ohne Ziel', 'Serie vier: ...' all focusable.
+
+== C-2 smoke (UndoCenterScreen, go-to-item rows) ==
+observer (evidence 46): row A is ONE node View b=0,956,1080,1159 click=true lclick=true a11yFocusable=true label='Changed item A / 0 minutes ago / Undo' acts=[1:|64:|16:Open item A|32:Preview]; Undo is a separate node View b=804,990,967,1125 click=true a11yFocusable=true acts=[1:|64:|16:].
+real tap on the row body (400,1060): 'Opened: none' -> 'Opened: demo-row-a' (opens, does not undo; row still shows Undo).
+hold 4.5 s on the row: the peek card 'Changed item A' appears (screen 47); German section: hold on row A leaves 'Geöffnet: keins' (screen 48); then tap on its Undo: row A shows 'Undone', readout still 'Geöffnet: keins' (screen 49).
+keyboard: fresh page, TAB x24 from the gallery index reached the row (texts 'Changed item A', '1 minute ago', 'Undo'; screen 50, 51), ENTER: 'Opened: demo-row-a'.
+
+== D-11 / D-07 smoke (stacked snackbar cards, evidence 28, 34, 38, 45) ==
+Undo is a separate child node with its custom action on the oldest card (acts of the card contain 2131230721:Undo; the child has acts=[1:|64:|16:]); both the system 1048576:Dismiss and the custom 2131230722:Dismiss (or 2131230721:Dismiss on a card without Undo) are present on the visible cards, English and German ('Verwerfen', 'Rückgängig' in the German fanned dump).

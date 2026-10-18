@@ -1,0 +1,16 @@
+# TalkBack speech observation: r2-c1-focused-taps-3
+# trigger: adb shell "input tap 217 1466; input tap 217 1466"   frames: 40 (screencap back to back, ~0.3 s apart)   host-start 1792299331.669110004 device-clock 1792299331 host-clock 1792299331
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.5s f01: (no overlay)
+t+0.8s f02: Bottom Sheet
+t+2.2s f07: Drag handle
+t+4.3s f14: Double-tap to activate, Actions available, use Tap with 3 fingers to view
+t+11.5s f38: (no overlay)
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-17 22:55:31.904 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][68160b/1.42s]
+10-17 22:55:31.910 I/P28A    (25942): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=0 text=[] desc=null cls=androidx.compose.material3.ModalBottomSheetDialogWrapper srcLive=0 srcText=null srcLabel= srcStateDesc=null
+10-17 22:55:31.927 I/P28A    (25942): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=0 text=[] desc=null cls=androidx.compose.material3.ModalBottomSheetDialogWrapper srcLive=0 srcText=null srcLabel= srcStateDesc=null
+10-17 22:55:31.976 I/P28A    (25942): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=16 text=[Bottom Sheet] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Drag handle / Logged 2 items / Undo all (2) / Card deleted / Tag removed / Couldn't un
+10-17 22:55:32.249 I/P28A    (25942): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Drag handle srcStateDesc=null
+10-17 22:55:33.402 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][75360b/1.57s]
+10-17 22:55:35.822 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][236640b/4.93s]

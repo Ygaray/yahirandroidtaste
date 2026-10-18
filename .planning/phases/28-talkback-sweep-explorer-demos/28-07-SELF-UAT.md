@@ -3,15 +3,16 @@ status: failed
 result: has_fail
 gate: 1
 evidence_schema: 3
-uat_run: uatr-20261018T023153Z-fe922063
+uat_run: uatr-20261018T044022Z-2fbbbce3
+uat_run_first: uatr-20261018T023153Z-fe922063
 phase: 28-talkback-sweep-explorer-demos
 source:
   - "28-ROADMAP success criteria"
 device: SM-S908U (R5CT10XNKQN)
-apk: com.example.yat28head (sha256 4617e1d69474)
-run: 2026-10-18T02:31:53.735Z
-command_guard_breaches: 1
-command_guard_refusals: 13
+apk: com.example.yat28head (sha256 59517c9ad07c)
+run: 2026-10-18T04:40:22.503Z
+command_guard_breaches: 0
+command_guard_refusals: 5
 ---
 
 <!-- Gate-1 self-UAT, phase 28 (TalkBack sweep and Explorer demos), run against plan 28-07 (its Gate-1 contract G1-0 to G1-8). First Gate-1 cycle for this phase: no earlier 28-07 SELF-UAT existed, so there was no prior verdict to audit; the claims I treated as claims to falsify are the `28-VERIFICATION.md` human-verification hand-off items, each re-derived from the ROADMAP wording below. -->
@@ -98,11 +99,13 @@ result: passed
 
 ## Summary
 
-total: 5
-passed: 4
+total: 9
+passed: 6
 partial: 0
-failed: 1
+failed: 3
 infra: 0
+
+(Blocks 1 to 5 are the first run; blocks 6 to 9 are the 2026-10-18 re-verification Addendum. Block 1 is the first run SC1 verdict, superseded by block 6, which still fails; the open failures are blocks 6 (C-1) and 7 (collapsed deck, finding C-5).)
 
 ## C-3/C-4 evidence
 
@@ -131,3 +134,68 @@ Recorded for the ui-designer seat through the orchestrator; I do not decide them
 ## Verdict
 
 **1 of 5 criteria FAIL, 4 PASS; Gate-1 is NOT satisfied and the phase is BLOCKED on SC1 item 2 (C-1).** SC2 (pinned scheme and the hoisted sheet), SC3 (stack and go-to-item demos, English and German at 360 dp / font 2.0), SC4 (registry guards) and SC5 (POL-03 on the wire: HEAD 0 placeholder / 24 real, the v2.7.1 control 12 placeholder, host probes, the CR-01 purge on the device with no lock error and no ConcurrentModificationException) hold on the real tester against HEAD `830caeb` (AAR md5 `d8218b7c...`, harness APK sha256 `4617e1d6...`, uat_run uatr-20261018T023153Z-fe922063). A11Y-02 items 1, 3, 4 and 5 and the C-2 smoke hold with real TalkBack speech captured; item 2 does not: the refused-undo message is not spoken when the surface appears. `command_guard_breaches: 1` (a script-text match, nothing forbidden ran) means settle/certify will fail this run as `command_breach` whatever the verdict. The Gate-2 obligation for the parked physical steps and the C-3/C-4 designer decisions is registered in `.planning/uat-pending/28-talkback-sweep-explorer-demos.md` as pending, flagged HAS_FAIL, and cannot be signed until SC1 is re-verified.
+
+
+## Addendum 2026-10-18: Gate-1 re-verification after gap plans 28-09 and 28-10 (gap cycle 1 of 3)
+
+Re-verification of the criteria the first run (above, `uat_run` uatr-20261018T023153Z-fe922063, still committed untouched) failed or that the two gap plans changed. Run dir: `28-07-uat-evidence/uatr-20261018T044022Z-2fbbbce3/` (55 signed captures and ingests: 11 screen, 6 log, 38 ingested; `uat-run verify` = verified, 0 warnings; the frontmatter `uat_run`, `apk`, `run` now name this run, the first run is kept as `uat_run_first`). SC2, SC3, SC4, SC5 and the other A11Y-02 items (1, 3, 4, 5) are NOT re-run: the library files that changed since (`OutcomeSheet.kt` refused Surface, `FeedbackCard.kt`/`FeedbackStackHost.kt` middle-card flag) do not touch them, and their first-run verdicts stand as recorded above.
+
+**Build identity (a stale build was NOT reused):** HEAD `950399e` (`git status --short src tools` empty). The mavenLocal artifact was deleted, then `./gradlew clean publishReleasePublicationToMavenLocal --no-daemon -q` (exit 0): AAR md5 `06399f7a3d4624373de59d0d5af8e02a` (the first run's was `d8218b7c...` at `830caeb`). Harness `com.example.yat28head` rebuilt with `--refresh-dependencies` against it: APK md5 `e008b40072d32bec8d11e89dfdc52240`, sha256 prefix `59517c9ad07c2656` (first run `99b4b324...` / `4617e1d6`), `adb install -r`, and the APK pulled back from the device has the same md5 (evidence 02); the new APK contains the plan-28-10 symbol `hiddenFromAccessibility` (2 hits in the dex strings), the first-run APK has 0. The observer `com.example.yat28obs` is unchanged (md5 `97b8a97454a183c894ac9ee6622dd292`, installed 2026-10-17 21:17). The control harness (v2.7.1) was not needed or touched. Rung 1 was NOT re-run by me: the unit-suite results quoted in the 28-09 and 28-10 SUMMARYs (1869 tests, 0 failures) are their claims, not mine; this addendum is device behavior only.
+
+**Leases / device / guard:** `yrig lease` showed `device:tester` and `build` held by `ui-designer@vae-bilingual`; I requested, started and released nothing. Only `adb -s R5CT10XNKQN` was used; nothing was uninstalled or cleared, no `wm density` change at all (physical 450 and the `1080x2316` size override were never touched), font scale never changed. `command_guard_breaches: 0`; `command_guard_refusals: 5` (all fail-closed `uninspectable`, none a forbidden command, each re-issued as a script file or literal path: an `adb pull` with a `$VAR` path (1), inline `python3 -c` (1), `python3` with a `$S` script path (2), a `sed -i` and the script it edits in one call (1)). The first run's one breach (the `logcat -d` script-text match) is quoted under "Command guard breaches" below and is not part of this run's count.
+
+**Method (same as the first run, evidence 115 / transcripts 69, 70):** TalkBack (Samsung 15.1.01.1) plus the throwaway observer through the secure settings only; TalkBack's developer switch "Display speech output" turned on through its settings screen (recorded before: Diagnosis mode F, Display speech output F, Handle gestures T, Echo recognized speech F, performance statistics F, Explore by touch T, node tree debugging F, debug log overlay F = evidence 54; after restore the same eight values = evidence 55), overlay frames OCR-read, the observer's events, and the Samsung TTS utterance durations (the spoken text is encrypted there, so a durations match is the corroboration: the refusal message is a 4.13 s utterance, 198240 bytes, as in the first run's explicit-focus transcript 69). One-finger swipe navigation still cannot be driven; the deck "walk" is the observer's tree order plus a TalkBack focus (`ACTION_ACCESSIBILITY_FOCUS`) on each focusable node in that order, which is how TalkBack speaks a node exactly as when the user lands on it.
+
+### 6. Re-verification of SC1 item 2 (A11Y-02, finding C-1): the refused-undo Assertive live region is spoken when the surface appears
+result: failed
+- **Rung:** 5 (TalkBack speech overlay, observer events and TTS durations; the unit suite is the plan's own).
+- **Target:** device (tester), real TalkBack, Voice Command family, OutcomeSheet page, "Success, loud undo-refused substate (VUNDO-01)", Show sheet.
+- **Expected (from the ROADMAP row and the dispatch):** the "Couldn't undo: ..." message is spoken when the surface appears, without moving focus, and the observer now shows a live-region event with usable text.
+- **Arranged (seeded):** nothing; the Explorer demo is the fixture. **Did (drove):** 22 sheet showings in four arrangements (real double tap with no prior focus; TalkBack focus on the button first, then ACTION_CLICK; focus first, then two real taps; TalkBack alone with the observer NOT bound, one tap to focus, wait, two real taps), each with the overlay frames, the events and the TTS log; plus an observer node dump with the sheet open.
+- **Observed:**
+  - **The 28-09 change took effect on the tree:** the live-region node is now ONE screen-reader-focusable merged node: `cls=android.view.View b=45,1942,1035,2136 focusable=false a11yFocusable=true imp=true live=2 children=1 acts=[64:]` (evidence 26); in the first run the same node had `a11yFocusable=false` (evidence 20).
+  - **The live-region event text is still empty:** every showing emitted `TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] desc=null cls=android.view.View srcLive=2 srcText=null srcLabel=Couldn't undo: Item changed since, Card deleted changed since` (the merged text is only reachable by walking the node's child, the source's own `text` is null). In the clean showings that event arrived about 0.2 s BEFORE the sheet window's `TYPE_WINDOW_STATE_CHANGED changeTypes=16 text=[Bottom Sheet]`.
+  - **The message is not reliably spoken: 6 of 22 showings** (tally, evidence 25; transcripts 03 to 24). By arrangement: focus the button first then ACTION_CLICK 1 of 5 (evidence 05 the only spoken one); focus first then two real taps 1 of 5 (evidence 11); two real taps without prior focus 4 of 7 (13, 14, 17, 19; in that arrangement the first tap's own focus speech and a stale 4.74 s focus phrase "OutcomeSheet - Failure, no action ..." also play, which confounds it); **TalkBack alone with no observer bound, the real user configuration: 0 of 5** (evidence 20 to 24: the TTS log has no 4.13 s utterance, the overlay shows "Bottom Sheet", "Drag handle", then "Double-tap to activate, Actions available, use Tap with 3 fingers to view" and nothing else, exactly the first run's silence). In the focus-first arrangements, the two showings that WERE spoken (evidence 05, 11) are the two that had a SECOND live-region event after the window change; with one or no event 0 of 8 were spoken. That correlation (the first event arrives before the window exists, and only a later one is announced) is observed, not proven.
+  - Order when it is spoken varies: before "Bottom Sheet" (13, 17), after it (14, 19), or between "Bottom Sheet" and "Drag handle" (05, 11).
+  - Explicit focus on the same node still speaks the message in full (first-run transcript 69), so the text is reachable; it is the announcement at appearance that is unreliable.
+- **Verdict:** FAIL (still, intermittent at best, silent in 5 of 5 on TalkBack alone). The 28-09 merge made the node focusable and gave it one merged label but did not make the announcement happen. No fix attempted (diagnose-only). Evidence: 03 to 27.
+
+### 7. Re-verification of the collapsed stacked-snackbar deck (plan 28-10): no silent or unnamed focus stop, English and German
+result: failed
+- **Rung:** 5 (TalkBack speech overlay plus screens read) with 4 (observer tree dumps with class, bounds, label, focusable, actions) beneath it.
+- **Target:** device (tester), Feedback family, FeedbackStackHost page, English stage (Dismiss all, then "Burst x4") and German stage ("Alle verwerfen", then "Serie x4"); 3 visible cards: front, middle strip, oldest strip.
+- **Expected (dispatch):** in the collapsed deck there is no accessibility-focusable node with an empty label and no focus stop where TalkBack says nothing; the front and the oldest card are still stops with their open label, Undo and Dismiss; a tap on a strip fans the deck and all three cards are present and focusable; touch unchanged. English and German.
+- **Arranged (seeded):** a fresh burst (Dismiss all, then Burst x4 / Serie x4). **Did (drove):** observer dumps (TalkBack on and off), a TalkBack focus on each focusable node by point, a real tap on the strip to fan, screens read.
+- **Observed, English collapsed deck (evidence 28, 29, 30 to 33):** the focusable nodes in tree order are the oldest card `View b=104,1903,976,1942 label='' a11yFocusable=true acts=[16:Open item|1048576:Dismiss|2131230721:Undo|2131230722:Dismiss]`, its Undo child `View b=376,1914,520,1942 label='' focusable=true acts=[1:|64:|16:]`, and the front card `View b=45,1981,1035,2139 label='Burst four' acts=[64:|16:Open item|1048576:Dismiss|2131230721:Dismiss]`. **The middle card is no longer a focus stop:** `View b=75,1942,1005,1981 imp=false a11yFocusable=false` (it was a focusable empty-label node in the first run, evidence 37); a TalkBack focus at that point finds no node and speaks nothing (evidence 32). **But two empty-label focusable nodes remain:** TalkBack on the oldest strip says only "Button" then "Double-tap to Open item, Actions available, ..." (the text "Burst two" is clipped out of the 39 px strip, evidence 30, frames read), and on the oldest card's Undo child only "Button" then "Double-tap to activate" (no "Undo", evidence 31). The front card says "Button, Burst four" then "Double-tap to Open item, ..." (33).
+- **Observed, German collapsed deck (evidence 38, 39, 40 to 43):** oldest card `label='Serie zwei: Eintrag entfernt'` (spoken "Serie zwei: Eintrag entfernt, Button", then "Double-tap to Eintrag oeffnen, ..."), front card named and spoken; no middle-strip node; but the oldest card's Undo child `View b=620,1956,866,1984 label=''` again speaks only "Button", "Double-tap to activate" (no "Rueckgaengig", evidence 41); the middle point is silent and empty (42).
+- **Fan and touch (PASS):** a real tap on the oldest strip (TalkBack off) fans the deck (English evidence 34, 35 (screen taken after the deck had folded again, not used), 37 (screen read: Burst two with Undo, Burst three, Burst four); German 44, 45): all three cards are present, focusable and named (`'Burst two / Undo'`, `'Undo'`, `'Burst three'`, `'Burst four'`; German `'Serie zwei: Eintrag entfernt / Rueckgaengig'`, `'Rueckgaengig'`, `'Serie drei: Hinweis ohne Ziel'`, `'Serie vier: ...'`). The collapsed deck's cards keep the D-11 form (Undo a separate child with the custom `Undo` action) and the D-07 form (system `1048576:Dismiss` and the custom Dismiss on every visible card, German `Verwerfen`), see evidence 28, 34, 38, 45.
+- **Verdict:** FAIL on the stated clause "no accessibility-focusable node with an empty label": the plan's target (the silent MIDDLE strip) is fixed and no stop is fully silent, but the oldest card's Undo child is an unnamed "Button" stop in both languages and, in English, the oldest strip itself is an unnamed "Button" stop. New finding **C-5** (below). Sub-claims: middle strip hidden PASS; fanned deck and tap-to-fan PASS; D-11/D-07 forms PASS; no empty-label focusable node FAIL (English 2, German 1).
+
+### 8. C-2 smoke regression and D-11/D-07 smoke (UndoCenterScreen go-to-item rows; stacked-snackbar card forms)
+result: passed
+- **Rung:** 4 (observer dumps) with 5 for the hold peek and 3/4 for the readouts.
+- **Did (drove):** observer dump of the English go-to-item row; real tap; 4.5 s hold; Undo; keyboard TAB then ENTER (TalkBack off).
+- **Observed:** the openable row is ONE merged node (`View b=0,956,1080,1159 click=true lclick=true a11yFocusable=true label='Changed item A / 0 minutes ago / Undo' acts=[1:|64:|16:Open item A|32:Preview]`) with Undo a separate node (`View b=804,990,967,1125 click=true a11yFocusable=true acts=[1:|64:|16:]`), evidence 46. A real tap on the row body: `Opened: none` to `Opened: demo-row-a` and the row still offers Undo. A 4.5 s hold shows the lifted "Changed item A" peek (screen 47); in the German section the hold leaves `Geoeffnet: keins` (48); its Undo turns the row to "Undone" with the readout still `keins` (49). Keyboard: on a freshly opened page 24 TABs reach the row, ENTER gives `Opened: demo-row-a` (50, 51). The stacked-snackbar card forms are in item 7 (Undo child with its custom action, system plus custom Dismiss on the visible cards, English and German). Running log: evidence 52.
+
+### 9. Restore (G1-8) and the restore oracle
+result: passed
+- **Observed:** `bash tools/verify-tester-restored.sh --density 450 --font-scale 1.0 --services null` printed `OK density`, `OK font_scale`, `OK enabled_accessibility_services`, `OK accessibility_enabled`, `OK touch_exploration_enabled`, `RESTORED=yes` (exit 0) twice (evidence 53). Baseline read-back: physical density 450 with no override, size override `1080x2316` unchanged, font scale 1.0, `enabled_accessibility_services` null, `accessibility_enabled` 0, `touch_exploration_enabled` 0, foreground launcher; TalkBack's "Display speech output" back to false and the other seven switches as recorded (evidence 54, 55). Installed packages left in place for Yahir to remove: `com.example.yat28head` (now the HEAD `950399e` build, md5 `e008b400...`), `com.example.yat28control`, `com.example.yat28obs`; `com.example.secondbrain` untouched. No destructive check and no provider key apply, so no `destructive_check` / `final_state_check` (as in the first run).
+
+### New finding C-5 (found by this re-run; routed with C-1)
+
+In the collapsed stacked-snackbar deck the OLDEST card's Undo child (English and German) and, in English, the oldest card strip itself are focusable with an empty label, and TalkBack says only "Button" for them. Root cause as far as observed: the deck clips the back cards to a 39 px strip, and the clipped `Text` (and the Undo button's text) is dropped from the semantics tree, so the merged card label is empty when the item text is entirely clipped (English "Burst two"; German keeps a partly visible first line, so its strip is named) and the Undo child never gets a label. The designer ruling (28-CONTEXT, 2026-10-17) hid the MIDDLE strip and kept the oldest and front cards as stops; it did not decide what the oldest card's stop and its Undo child should say. That is a designer/product call (label them, or take the oldest strip and its Undo out of the collapsed deck's focus order too, or name the Undo child), routed to the ui-designer seat through the orchestrator; the criterion text stays as written.
+
+## Command guard breaches
+
+- **Run 1 (2026-10-18 02:31 UTC, kept from the first run):** 1 breach, a false positive. `bash /tmp/.../p28/dev.sh` was refused as matching `argv: adb -d` because the script body contained `adb -s R5CT10XNKQN logcat -d -v time P28A:V '*:S'` (the `-d` is logcat's dump flag); the command did not run and no `adb -d` was ever executed. Plus 13 fail-closed `uninspectable` refusals.
+- **Run 2 (this re-verification, 2026-10-18 04:33 UTC, guard run tg-20261018T043331Z-146e93f6):** 0 breaches (`guard status` shows `"breaches": []`); 5 fail-closed `uninspectable` refusals, listed above. No logcat dump flag was used after `adb` (`logcat -t N` only).
+
+## Findings routed to gap-closure (cycle 2 of 3)
+
+- **SC1 / A11Y-02 item 2 (C-1), still FAIL after gap plan 28-09:** merging the descendants made the live region one focusable merged node, but the announcement at sheet appearance is intermittent (6 of 22; 0 of 5 on TalkBack alone) because the live-region change event (empty `text`, `srcText=null`) fires about 0.2 s before the sheet window exists and is only announced when a second event follows. The planner must choose another route; observed facts for it: explicit focus on the node speaks the message in full and reliably (4.13 s), the initial focus on the sheet goes to "Drag handle", and the speech of "Bottom Sheet", "Drag handle" and the hint is always present. Candidate routes (engineering choice for gap-closure, not decided here): make the message announce after the sheet has settled (a state change on the live region after the window is up, or an explicit announcement once the sheet is shown), or send the initial accessibility focus to the refusal message. Route: `/gsd-plan-phase 28 --gaps` then `/gsd-execute-phase 28 --gaps-only`. Re-verify with exactly this method including the TalkBack-alone arrangement (evidence 20 to 24, tally 25).
+- **C-5 (new), collapsed deck, oldest card's stop and Undo child unnamed:** see above; needs a ui-designer ruling first (label or hide), then a small internal change in `FeedbackCard.kt`/`FeedbackStackHost.kt`.
+- **Convergence:** SC1 has now failed in two Gate-1 runs (first run, and this re-verification after gap plan 28-09); one gap cycle remains under the cap of 3 before escalation to the human.
+
+## Verdict (updated by the 2026-10-18 re-verification)
+
+**Gate-1 is still NOT satisfied; the phase stays BLOCKED on SC1.** On the real tester against HEAD `950399e` (AAR md5 `06399f7a3d4624373de59d0d5af8e02a`, harness APK md5 `e008b40072d32bec8d11e89dfdc52240`, uat_run uatr-20261018T044022Z-2fbbbce3): SC1 item 2 (C-1) FAILS again (the refusal message is spoken in 6 of 22 showings, 0 of 5 on TalkBack alone; the live-region event text is still empty), the plan-28-10 target holds (the middle peek strip is no longer a focus stop, English and German) but the collapsed-deck criterion FAILS on the stated "no focusable node with an empty label" clause (new finding C-5: the oldest card's Undo child, and in English the oldest strip, are unnamed "Button" stops), the C-2 smoke and the D-11/D-07 smoke PASS, and the restore PASSES (`RESTORED=yes` twice). SC2 to SC5 and A11Y-02 items 1, 3, 4, 5 keep their first-run PASS. `command_guard_breaches: 0`, `command_guard_refusals: 5` for this run. Routed to gap-closure cycle 2 of 3 (see "Findings routed to gap-closure" in the Addendum); the Gate-2 fragment `.planning/uat-pending/28-talkback-sweep-explorer-demos.md` stays pending and flagged HAS_FAIL.

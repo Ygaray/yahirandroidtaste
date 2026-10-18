@@ -1,0 +1,532 @@
+{
+  "schema": "gsd.uat-run/v1",
+  "run_id": "uatr-20261018T044022Z-2fbbbce3",
+  "status": "finished",
+  "phase": "28",
+  "plan": "07",
+  "prefix": "28-07",
+  "surface": "android",
+  "project": "sha:df197faf5105af0ed516c727e2aafb44f5ef5743:.",
+  "phase_dir": "phases/28-talkback-sweep-explorer-demos",
+  "required_surface": {
+    "surface": "android",
+    "source": "marker:AGENT-DEVICE-TESTING.md"
+  },
+  "surface_override": null,
+  "device": {
+    "addr": "R5CT10XNKQN",
+    "serial": "R5CT10XNKQN",
+    "model": "SM-S908U",
+    "label": null
+  },
+  "app": {
+    "package": "com.example.yat28head",
+    "apk_path": "/data/app/~~rFMHl003a-a1nXnuf6Xvfw==/com.example.yat28head-XCYZVMvKIDnvP8NveDzxGQ==/base.apk",
+    "apk_sha256": "59517c9ad07c26561f79a9e00612ce186b446d4ac1d7b14b1d000d04ed052275"
+  },
+  "head_at_start": "950399ed76124dfa37c2fff48ce7c58f352bfe96",
+  "started_at": "2026-10-18T04:40:22.503Z",
+  "finished_at": "2026-10-18T05:21:37.457Z",
+  "capture_count": 55,
+  "captures": [
+    {
+      "label": "g10-baseline-before-rerun",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "01-g10-baseline-before-rerun.txt",
+      "sha256": "0ca675ddfaddbef558d3b9633826fdb43575479c180129086e57449a2f34ca61",
+      "bytes": 739,
+      "at": "2026-10-18T04:40:30.859Z"
+    },
+    {
+      "label": "build-identity-rerun",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "02-build-identity-rerun.txt",
+      "sha256": "962cd372e4fed6964bdfcdb11aa1f173d07438939ae9662e4368654031f0b7f8",
+      "bytes": 741,
+      "at": "2026-10-18T04:40:31.057Z"
+    },
+    {
+      "label": "tb-r2-c1-focused-click-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "03-tb-r2-c1-focused-click-1.txt",
+      "sha256": "efefc79b81025a8de1c7b7ca03ba1fc898c7faddfc8405c0003c28160422fda3",
+      "bytes": 2230,
+      "at": "2026-10-18T05:02:56.446Z"
+    },
+    {
+      "label": "tb-r2-c1-focused-click-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "04-tb-r2-c1-focused-click-2.txt",
+      "sha256": "d2b3eb4409800466000576b3ac2c0d096094c101c66adb7e9100a0b19e752814",
+      "bytes": 2255,
+      "at": "2026-10-18T05:02:56.664Z"
+    },
+    {
+      "label": "tb-r2-c1-focused-click-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "05-tb-r2-c1-focused-click-3.txt",
+      "sha256": "1c0d4f3d251556a90491d94634ea5576f1dbc44ea147d87a638f38f9ed1a258b",
+      "bytes": 2636,
+      "at": "2026-10-18T05:02:56.876Z"
+    },
+    {
+      "label": "tb-r2-c1-focused-click-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "06-tb-r2-c1-focused-click-4.txt",
+      "sha256": "965b13e8ec29bd25c901c5de5cb41b9c36cc0c000c0cbe7d1f5019f5c1bfcc44",
+      "bytes": 2255,
+      "at": "2026-10-18T05:02:57.129Z"
+    },
+    {
+      "label": "tb-r2-c1-focused-click-5",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "07-tb-r2-c1-focused-click-5.txt",
+      "sha256": "ded6d5b8c022f57d582b605e9a02201d2d555cb73a312d9ac689787510b8940f",
+      "bytes": 2255,
+      "at": "2026-10-18T05:02:57.405Z"
+    },
+    {
+      "label": "tb-r2-c1-focused-taps-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "08-tb-r2-c1-focused-taps-1.txt",
+      "sha256": "820b04b12dd1b4a46f91c816bdb4b967cd535c9afd1f748218dcc248629f41f2",
+      "bytes": 2199,
+      "at": "2026-10-18T05:02:57.678Z"
+    },
+    {
+      "label": "tb-r2-c1-focused-taps-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "09-tb-r2-c1-focused-taps-2.txt",
+      "sha256": "065a50d08f83518571a6a4b9f3cc13dbe319d6db70d72e25ef8e19163ac32c7d",
+      "bytes": 2174,
+      "at": "2026-10-18T05:02:57.924Z"
+    },
+    {
+      "label": "tb-r2-c1-focused-taps-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "10-tb-r2-c1-focused-taps-3.txt",
+      "sha256": "a1a10821c730b7c7fc299d1c32debdbddfeddd1a5bd062ab807ee48f6bdf5870",
+      "bytes": 1931,
+      "at": "2026-10-18T05:02:58.181Z"
+    },
+    {
+      "label": "tb-r2-c1-focused-taps-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "11-tb-r2-c1-focused-taps-4.txt",
+      "sha256": "1ec4218b92232e0bd92535f0b4f46e567616e161488fee671283b3d0f2a0f6c9",
+      "bytes": 2509,
+      "at": "2026-10-18T05:02:58.416Z"
+    },
+    {
+      "label": "tb-r2-c1-focused-taps-5",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "12-tb-r2-c1-focused-taps-5.txt",
+      "sha256": "3287b02af5e5ed38c2bd53ad26e664a4ce97d4580605583dfb03da753784ebe1",
+      "bytes": 1956,
+      "at": "2026-10-18T05:02:58.638Z"
+    },
+    {
+      "label": "tb-r2-c1-refused-sheet-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "13-tb-r2-c1-refused-sheet-1.txt",
+      "sha256": "055f45220a612aafaebcf53db3b0d623e7c3f29449447348f885147bb5bbf1a0",
+      "bytes": 2409,
+      "at": "2026-10-18T05:02:58.895Z"
+    },
+    {
+      "label": "tb-r2-c1-refused-sheet-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "14-tb-r2-c1-refused-sheet-2.txt",
+      "sha256": "cb2fc7347fef3a1b9a8cd6c5b3cceaf1f66bdd9abc71d0637aa696f476d15b26",
+      "bytes": 2652,
+      "at": "2026-10-18T05:02:59.147Z"
+    },
+    {
+      "label": "tb-r2-c1-refused-sheet-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "15-tb-r2-c1-refused-sheet-3.txt",
+      "sha256": "acf43eeefe12be174339e0abcc8247a1aa1048518b251f237acbed4dbf4eef27",
+      "bytes": 2357,
+      "at": "2026-10-18T05:02:59.389Z"
+    },
+    {
+      "label": "tb-r2-c1-refused-sheet-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "16-tb-r2-c1-refused-sheet-4.txt",
+      "sha256": "80ef79cafad9def05ceba97e01999135cdeb0e4b0eb71fea5ff6b7cb46e4aa93",
+      "bytes": 2375,
+      "at": "2026-10-18T05:02:59.633Z"
+    },
+    {
+      "label": "tb-r2-c1-refused-sheet-5",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "17-tb-r2-c1-refused-sheet-5.txt",
+      "sha256": "fd3925363893511c485a44c45e81a792bd4ab81059fe3b6b725d33c4400d85a5",
+      "bytes": 2436,
+      "at": "2026-10-18T05:02:59.895Z"
+    },
+    {
+      "label": "tb-r2-c1-refused-sheet-6",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "18-tb-r2-c1-refused-sheet-6.txt",
+      "sha256": "ab6729aafadb988af391f3ada002e97084bf962555948d60fe5c9204a7647f40",
+      "bytes": 2349,
+      "at": "2026-10-18T05:03:00.170Z"
+    },
+    {
+      "label": "tb-r2-c1-refused-sheet-7",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "19-tb-r2-c1-refused-sheet-7.txt",
+      "sha256": "29286b3e7ed96642a54c64038ca1c10bde53f173229443146571395809879fb9",
+      "bytes": 2615,
+      "at": "2026-10-18T05:03:00.505Z"
+    },
+    {
+      "label": "tb-r2-c1-talkback-only-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "20-tb-r2-c1-talkback-only-1.txt",
+      "sha256": "9f15938ba72fe8dde9fcf5441daddc155f2ee18f629bc85c1a8f0e8e92069f5a",
+      "bytes": 907,
+      "at": "2026-10-18T05:03:00.821Z"
+    },
+    {
+      "label": "tb-r2-c1-talkback-only-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "21-tb-r2-c1-talkback-only-2.txt",
+      "sha256": "841773bf494a29f0b7ee14bcf8543bc71bd8d14cc50e6ed8ef17cffd791cbc8b",
+      "bytes": 906,
+      "at": "2026-10-18T05:03:01.095Z"
+    },
+    {
+      "label": "tb-r2-c1-talkback-only-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "22-tb-r2-c1-talkback-only-3.txt",
+      "sha256": "8ecdd1a5f2c76cee33ff1d7058efa88f89429cb4027d0fab32504b22a623163c",
+      "bytes": 985,
+      "at": "2026-10-18T05:03:01.394Z"
+    },
+    {
+      "label": "tb-r2-c1-talkback-only-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "23-tb-r2-c1-talkback-only-4.txt",
+      "sha256": "6a504544bf373c5d6e605df77e5e38de872cf10e6af091904e34a89e1c6b800c",
+      "bytes": 906,
+      "at": "2026-10-18T05:03:01.708Z"
+    },
+    {
+      "label": "tb-r2-c1-talkback-only-5",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "24-tb-r2-c1-talkback-only-5.txt",
+      "sha256": "ab8c8c9e92cd527fd675ce9b559f81d819a1042afb8ecbeeb836b379dd73c0c2",
+      "bytes": 881,
+      "at": "2026-10-18T05:03:02.063Z"
+    },
+    {
+      "label": "r2-c1-tally-all-showings",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "25-r2-c1-tally-all-showings.txt",
+      "sha256": "85232a44f2bfc849d4af00144586e55d4cc156f8e1e27daa6a10fddd327ac8bc",
+      "bytes": 2896,
+      "at": "2026-10-18T05:03:02.367Z"
+    },
+    {
+      "label": "r2-c1-observer-dump-live-region-node-merged-focusable",
+      "kind": "log",
+      "source": "cli",
+      "file": "26-r2-c1-observer-dump-live-region-node-merged-focusable.log",
+      "sha256": "514bfffe06a73cf780c477f71cd8b00ced4420e85c4e658e31f61fe70dd4aa84",
+      "bytes": 20720,
+      "at": "2026-10-18T05:03:03.060Z"
+    },
+    {
+      "label": "r2-c1-refused-sheet-open-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "27-r2-c1-refused-sheet-open-screen.png",
+      "sha256": "f49ca3a8d7e4c797ae006fdc3b12bb241a7ccddcc49f4fea345cab8b0ba668d8",
+      "bytes": 188915,
+      "at": "2026-10-18T05:03:03.939Z"
+    },
+    {
+      "label": "r2-en-collapsed-deck-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "28-r2-en-collapsed-deck-observer-dump.log",
+      "sha256": "6f9db69d90dd2e3383cc37ae1015b990ff7f0f79db557797b02c1b980d8f75bc",
+      "bytes": 12428,
+      "at": "2026-10-18T05:05:18.651Z"
+    },
+    {
+      "label": "r2-en-collapsed-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "29-r2-en-collapsed-deck-screen.png",
+      "sha256": "eb25cba5ce43ded3fb1259cbcb557187db8247dbebb1a43ea4437258f1d88534",
+      "bytes": 116624,
+      "at": "2026-10-18T05:05:19.607Z"
+    },
+    {
+      "label": "tb-r2-en-deck-1-oldest-strip",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "30-tb-r2-en-deck-1-oldest-strip.txt",
+      "sha256": "362b79e5fe1327431719d62720755a6809301a1711898a3cc9a12935df78f348",
+      "bytes": 1287,
+      "at": "2026-10-18T05:08:50.927Z"
+    },
+    {
+      "label": "tb-r2-en-deck-2-oldest-undo-child",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "31-tb-r2-en-deck-2-oldest-undo-child.txt",
+      "sha256": "60762a374cdb036c97b8bc7a8c5ce624d92b0dcc9578e823781a85de3d54da87",
+      "bytes": 1141,
+      "at": "2026-10-18T05:08:51.169Z"
+    },
+    {
+      "label": "tb-r2-en-deck-3-middle-strip-point",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "32-tb-r2-en-deck-3-middle-strip-point.txt",
+      "sha256": "1e55616c82c59f30a3938de40708e3f107bc388ad55c5715481b0af6beaa0f0a",
+      "bytes": 669,
+      "at": "2026-10-18T05:08:51.395Z"
+    },
+    {
+      "label": "tb-r2-en-deck-4-front-card",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "33-tb-r2-en-deck-4-front-card.txt",
+      "sha256": "4f9e839e0f20893452125dfac1d24bd2f5b0cf13fd783a2ec732f61d43eed031",
+      "bytes": 1235,
+      "at": "2026-10-18T05:08:51.648Z"
+    },
+    {
+      "label": "r2-en-fanned-deck-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "34-r2-en-fanned-deck-observer-dump.log",
+      "sha256": "91dc63330a6afe3df5a08190c936c5591b5da43c64e457fd628546bd2e916ccf",
+      "bytes": 34158,
+      "at": "2026-10-18T05:09:05.174Z"
+    },
+    {
+      "label": "r2-en-fanned-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "35-r2-en-fanned-deck-screen.png",
+      "sha256": "4823b5ca9ecfc0148504fefb61f86eb055c5bf0bb11b7405ce9ed9afd8935f83",
+      "bytes": 116872,
+      "at": "2026-10-18T05:09:05.827Z"
+    },
+    {
+      "label": "tb-r2-en-deck-1-oldest-strip",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "36-tb-r2-en-deck-1-oldest-strip.txt",
+      "sha256": "362b79e5fe1327431719d62720755a6809301a1711898a3cc9a12935df78f348",
+      "bytes": 1287,
+      "at": "2026-10-18T05:09:06.038Z"
+    },
+    {
+      "label": "r2-en-fanned-deck-screen-immediate",
+      "kind": "screen",
+      "source": "cli",
+      "file": "37-r2-en-fanned-deck-screen-immediate.png",
+      "sha256": "f7d7993cda2515824e55772e4fa73182f7c7ab4f9792a000cc1de27ee2921e0a",
+      "bytes": 132120,
+      "at": "2026-10-18T05:09:21.809Z"
+    },
+    {
+      "label": "r2-de-collapsed-deck-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "38-r2-de-collapsed-deck-observer-dump.log",
+      "sha256": "e646f5ab67a00a3dab7a997738ad98ff98cf03090f8a77bb5c9c48050faa5524",
+      "bytes": 13463,
+      "at": "2026-10-18T05:10:34.803Z"
+    },
+    {
+      "label": "r2-de-collapsed-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "39-r2-de-collapsed-deck-screen.png",
+      "sha256": "fff285b2e281cf32cd7abc4f6a18aaf2bfcccad95139395c1551cbb58c7fd3e2",
+      "bytes": 148368,
+      "at": "2026-10-18T05:10:35.549Z"
+    },
+    {
+      "label": "tb-r2-de-deck-1-oldest-strip",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "40-tb-r2-de-deck-1-oldest-strip.txt",
+      "sha256": "e470d0eebcce44919ea1ffc044c85904568acdca53cb7473725a976e9e00f928",
+      "bytes": 1335,
+      "at": "2026-10-18T05:12:31.709Z"
+    },
+    {
+      "label": "tb-r2-de-deck-2-oldest-undo-child",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "41-tb-r2-de-deck-2-oldest-undo-child.txt",
+      "sha256": "bf8c144bc0ff0590b51670bf531177d1491571c20b811889a6748128bc053ac8",
+      "bytes": 1240,
+      "at": "2026-10-18T05:12:32.045Z"
+    },
+    {
+      "label": "tb-r2-de-deck-3-middle-strip-point",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "42-tb-r2-de-deck-3-middle-strip-point.txt",
+      "sha256": "4e188bcf2fd5bc58b09b8f7d3246de998c29f4ab392c7f34267c47f9b6e8bfed",
+      "bytes": 669,
+      "at": "2026-10-18T05:12:32.378Z"
+    },
+    {
+      "label": "tb-r2-de-deck-4-front-card",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "43-tb-r2-de-deck-4-front-card.txt",
+      "sha256": "a7237cc4b1cbf12ae6af4a30c8f084e2dd405dbffc9ee87ecbf308958263c2d6",
+      "bytes": 1365,
+      "at": "2026-10-18T05:12:32.735Z"
+    },
+    {
+      "label": "r2-de-fanned-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "44-r2-de-fanned-deck-screen.png",
+      "sha256": "61520a93b94e7d0d0ff0254cb20753abdf5962b3a5a09030e3739987b1a9bab1",
+      "bytes": 168163,
+      "at": "2026-10-18T05:12:43.586Z"
+    },
+    {
+      "label": "r2-de-fanned-deck-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "45-r2-de-fanned-deck-observer-dump.log",
+      "sha256": "a45e894151016a68c4cef81bf33f27216afaf64603840074cf66d32c4b5ceda8",
+      "bytes": 22245,
+      "at": "2026-10-18T05:12:45.972Z"
+    },
+    {
+      "label": "r2-uc-en-row-structure-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "46-r2-uc-en-row-structure-observer-dump.log",
+      "sha256": "e622086444156f716ba687c822c75b2174c249509e4db4795a46aa3106446d2c",
+      "bytes": 19412,
+      "at": "2026-10-18T05:13:57.733Z"
+    },
+    {
+      "label": "r2-uc-en-hold-peek-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "47-r2-uc-en-hold-peek-screen.png",
+      "sha256": "073581bf010abba5c384e46f426eb69e21b34b255da7481fe3c6eaf4a1bf8c7e",
+      "bytes": 173226,
+      "at": "2026-10-18T05:14:09.706Z"
+    },
+    {
+      "label": "r2-uc-de-hold-peek-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "48-r2-uc-de-hold-peek-screen.png",
+      "sha256": "7f6eea4885a55612b9bbe8951fba5f8a4884950de41c4ba751a71378f3b8742c",
+      "bytes": 133755,
+      "at": "2026-10-18T05:14:36.252Z"
+    },
+    {
+      "label": "r2-uc-de-after-undo-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "49-r2-uc-de-after-undo-screen.png",
+      "sha256": "0bfc56e6a10cb640a16b9c1e9050e8f1e7e5181816e14541fd7e81c29bfc0a69",
+      "bytes": 129242,
+      "at": "2026-10-18T05:14:46.866Z"
+    },
+    {
+      "label": "r2-uc-en-keyboard-focus-row-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "50-r2-uc-en-keyboard-focus-row-screen.png",
+      "sha256": "f5f878f641161c0dba337d1d5adb924533ff07369e8a2c28be01d1a6a1d11d08",
+      "bytes": 192866,
+      "at": "2026-10-18T05:16:13.985Z"
+    },
+    {
+      "label": "r2-uc-en-keyboard-focus-row-screen2",
+      "kind": "screen",
+      "source": "cli",
+      "file": "51-r2-uc-en-keyboard-focus-row-screen2.png",
+      "sha256": "96c3d0b2060ce2fc6082ca8e0d22f5c9a5f073a224b3c6ea3b262c79728ec10a",
+      "bytes": 179264,
+      "at": "2026-10-18T05:20:02.709Z"
+    },
+    {
+      "label": "r2-driven-results-running-log",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "52-r2-driven-results-running-log.txt",
+      "sha256": "61474213543172f68b364c11fd08019e6c28d3498fe2ad1abc2adbf28b218d50",
+      "bytes": 5378,
+      "at": "2026-10-18T05:21:31.176Z"
+    },
+    {
+      "label": "r2-g18-restore-record-oracle-twice-and-readback",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "53-r2-g18-restore-record-oracle-twice-and-readback.txt",
+      "sha256": "56b424627a141b99a6974958e9eb368600fae0804fc705ad5c95b559ca53c8cd",
+      "bytes": 2368,
+      "at": "2026-10-18T05:21:31.364Z"
+    },
+    {
+      "label": "r2-tb-developer-switches-before-display-speech-on",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "54-r2-tb-developer-switches-before-display-speech-on.xml",
+      "sha256": "ec7faf8c34cb8f81a7d3d2771bfee2ab53903fe6512f1dda5ee824a8e532f187",
+      "bytes": 34429,
+      "at": "2026-10-18T05:21:31.541Z"
+    },
+    {
+      "label": "r2-tb-developer-switches-after-restore",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "55-r2-tb-developer-switches-after-restore.xml",
+      "sha256": "ec7faf8c34cb8f81a7d3d2771bfee2ab53903fe6512f1dda5ee824a8e532f187",
+      "bytes": 34429,
+      "at": "2026-10-18T05:21:31.728Z"
+    }
+  ],
+  "sig": {
+    "alg": "HMAC-SHA256",
+    "value": "eb813cd8cf768628dcdccf21569b8eb7e20191b7e152e5186795a9005f56845b"
+  }
+}

@@ -1,0 +1,33 @@
+# Phase 28 Gate-1 re-run, C-1 (refused-undo Assertive live region), per-showing tally
+# spoken = the overlay transcript contains the phrase "Couldn't undo: Item changed since, Card deleted changed since" AND the TTS log has the 4.13 s utterance (198240 bytes) that explicit focus on the same node also produces (evidence of the first run, transcript tb-c1-focus-refused-message-text)
+# live-events = TYPE_WINDOW_CONTENT_CHANGED events with srcLive=2 the observer saw; event text was [] and srcText=null in every one
+
+## refused-sheet -- two real taps, no pre-focus (confounded by the focus speech of the first tap)
+out-r2-c1-refused-sheet-1: SPOKEN  live-events=1  bottom-sheet-at=t+5.4s  message-at=t+1.1s
+out-r2-c1-refused-sheet-2: SPOKEN  live-events=2  bottom-sheet-at=t+1.1s  message-at=t+2.5s
+out-r2-c1-refused-sheet-3: SILENT  live-events=1  bottom-sheet-at=t+5.8s  message-at=t+nones
+out-r2-c1-refused-sheet-4: SILENT  live-events=1  bottom-sheet-at=t+5.4s  message-at=t+nones
+out-r2-c1-refused-sheet-5: SPOKEN  live-events=1  bottom-sheet-at=t+5.0s  message-at=t+0.8s
+out-r2-c1-refused-sheet-6: SILENT  live-events=1  bottom-sheet-at=t+5.4s  message-at=t+nones
+out-r2-c1-refused-sheet-7: SPOKEN  live-events=2  bottom-sheet-at=t+0.8s  message-at=t+6.9s
+
+## focused-click -- TalkBack focus on the button first, then ACTION_CLICK
+out-r2-c1-focused-click-1: SILENT  live-events=1  bottom-sheet-at=t+1.0s  message-at=t+nones
+out-r2-c1-focused-click-2: SILENT  live-events=1  bottom-sheet-at=t+1.0s  message-at=t+nones
+out-r2-c1-focused-click-3: SPOKEN  live-events=2  bottom-sheet-at=t+1.0s  message-at=t+2.5s
+out-r2-c1-focused-click-4: SILENT  live-events=1  bottom-sheet-at=t+0.8s  message-at=t+nones
+out-r2-c1-focused-click-5: SILENT  live-events=1  bottom-sheet-at=t+1.1s  message-at=t+nones
+
+## focused-taps -- TalkBack focus on the button first, then two real taps
+out-r2-c1-focused-taps-1: SILENT  live-events=1  bottom-sheet-at=t+0.8s  message-at=t+nones
+out-r2-c1-focused-taps-2: SILENT  live-events=1  bottom-sheet-at=t+0.8s  message-at=t+nones
+out-r2-c1-focused-taps-3: SILENT  live-events=0  bottom-sheet-at=t+0.8s  message-at=t+nones
+out-r2-c1-focused-taps-4: SPOKEN  live-events=2  bottom-sheet-at=t+0.8s  message-at=t+2.3s
+out-r2-c1-focused-taps-5: SILENT  live-events=0  bottom-sheet-at=t+0.8s  message-at=t+nones
+
+## talkback-only -- NO observer bound (TalkBack alone), one tap to focus, wait, two real taps
+out-r2-c1-talkback-only-1: SILENT  live-events=0  bottom-sheet-at=t+0.5s  message-at=t+nones
+out-r2-c1-talkback-only-2: SILENT  live-events=0  bottom-sheet-at=t+0.5s  message-at=t+nones
+out-r2-c1-talkback-only-3: SILENT  live-events=0  bottom-sheet-at=t+0.5s  message-at=t+nones
+out-r2-c1-talkback-only-4: SILENT  live-events=0  bottom-sheet-at=t+0.5s  message-at=t+nones
+out-r2-c1-talkback-only-5: SILENT  live-events=0  bottom-sheet-at=t+nones  message-at=t+nones
