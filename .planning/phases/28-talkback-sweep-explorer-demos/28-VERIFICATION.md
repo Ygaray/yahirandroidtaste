@@ -1,13 +1,14 @@
 ---
 phase: 28-talkback-sweep-explorer-demos
-verified: 2026-10-18T09:43:06Z
-status: human_needed
+verified: 2026-10-18T09:57:21Z
+status: passed
 score: 5/5 must-haves verified
 behavior_unverified: 0
 overrides_applied: 0
 re_verification:
   previous_status: human_needed
-  previous_score: 3/5
+  previous_score: 5/5
+  status_reevaluated: "2026-10-18T09:57:21Z, human_needed to passed: the five physical items are PARTIAL partial_kind physical with a physical_step, each registered in the pending Gate-2 fragment (execute-phase verify_work_agentic_gate route has_partial), and no automatable criterion is unmet"
   gaps_closed: []
   gaps_remaining: []
   regressions: []
@@ -15,35 +16,63 @@ coincidental_reliance_items:
   - truth: "ROADMAP SC1 item 2 (A11Y-02): the refused-undo Assertive live region is spoken when it appears"
     reason: incidental-ordering
     harden: "The message is spoken once only because the named live-region node is composed AFTER the sheet window exists. The code infers that from the node's window position being still (6 frames, at least 300 ms, 1.5 s cap, OutcomeSheet.kt awaitPositionAtRest), not from the SheetState, which UndoAffordanceBody cannot reach. Nothing enforces that the window is attached when `spoken` flips. A declared precondition (pass the settled signal in, or document the dependency in the OutcomeSheet KDoc) would remove the reliance on a heuristic and on one TalkBack build (Samsung 15.1.01.1)."
-human_verification:
-  - test: "Gate-2 physical step 1 (SC1, ReceiptRow): with TalkBack on, ReceiptRow registry page, 'ReceiptRow - trailing action': from the focused row summary swipe right with one finger, then left"
+gate2_handoffs_registered: # NON-BLOCKING. Registered in .planning/uat-pending/28-talkback-sweep-explorer-demos.md (status pending) and enforced later by the milestone's human Gate-2 (verify-milestone). Deliberately not named human_verification so the status machinery does not read them as open.
+  - step: "Gate-2 physical step 1 (SC1, ReceiptRow): with TalkBack on, ReceiptRow registry page, 'ReceiptRow - trailing action': from the focused row summary swipe right with one finger, then left"
     expected: "Right lands on the Undo button, left returns to the summary"
-    why_human: "One-finger TalkBack swipes cannot be synthesized over adb on this device (input swipe only scrolled or dismissed the sheet). The Gate-1 run proved the two nodes are separate, in layout order, and each speaks correctly on explicit focus"
-  - test: "Gate-2 physical step 2 (SC1, Undo Center heading): UndoCenterScreen group-rows demo, use TalkBack headings navigation"
+    ledger: "fragment Deferred physical steps bullet 1; SELF-UAT block 18 (partial_kind physical)"
+  - step: "Gate-2 physical step 2 (SC1, Undo Center heading): UndoCenterScreen group-rows demo, use TalkBack headings navigation"
     expected: "It reaches 'Batch edit' and 'Earlier batch' as headings"
-    why_human: "Headings navigation is a gesture or reading-control action that cannot be injected. Gate-1 proved heading=true and the spoken 'Batch edit, Heading, In list, 8 items' on explicit focus"
-  - test: "Gate-2 physical step 3 (SC1, openable Undo Center row): UndoCenterScreen go-to-item rows demo, swipe right through the row 'Changed item A' and count stops"
+    ledger: "fragment bullet 2; SELF-UAT block 19"
+  - step: "Gate-2 physical step 3 (SC1, openable Undo Center row): UndoCenterScreen go-to-item rows demo, swipe right through the row 'Changed item A' and count stops"
     expected: "The row first (message plus open label), then its Undo, nothing announced twice"
-    why_human: "Swipe traversal cannot be synthesized. Gate-1 proved one merged row node plus a separate Undo child, each spoken once on explicit focus"
-  - test: "Gate-2 physical step 4 (SC1, collapsed stacked-snackbar deck): FeedbackStackHost page, fire 'Burst x4', swipe right through the collapsed deck in English and German"
+    ledger: "fragment bullet 3; SELF-UAT block 20"
+  - step: "Gate-2 physical step 4 (SC1, collapsed stacked-snackbar deck): FeedbackStackHost page, fire 'Burst x4', swipe right through the collapsed deck in English and German"
     expected: "Oldest strip, its Undo, then the front card, each named once, no silent stop, nothing spoken twice (the middle strip is not a stop)"
-    why_human: "The cross-card speaking order comes from traversalIndex, which a node dump cannot show, and the swipe cannot be injected (also the C-3 note)"
-  - test: "Gate-2 physical step 5 (SC1 item 2, explicit focus): TalkBack alone, Voice Command, OutcomeSheet, 'Success, loud undo-refused substate', Show sheet, then move TalkBack focus by one-finger swipes to the red 'Couldn't undo' message"
+    ledger: "fragment bullet 4; SELF-UAT block 21"
+  - step: "Gate-2 physical step 5 (SC1 item 2, explicit focus): TalkBack alone, Voice Command, OutcomeSheet, 'Success, loud undo-refused substate', Show sheet, then move TalkBack focus by one-finger swipes to the red 'Couldn't undo' message"
     expected: "Spoken once, no role"
-    why_human: "Explicit focus by swipe cannot be injected with TalkBack alone, and a tap on the message speaks nothing because the node has no click action. The same node focused through the observer speaks once with no role, and the appearance is spoken once on 14 of 14 TalkBack-alone showings"
-  - test: "Designer confirmation (ui-designer seat, not a failure): the refused live-region content-change events still carry empty text (TYPE_WINDOW_CONTENT_CHANGED changeTypes=1, text=[], desc=null) after the 2026-10-18 ruling asked for 'the observer shows the focus or announce event carrying the message text'"
-    expected: "The designer accepts the spoken outcome (exactly once, 27 of 27 showings) as the C-1 acceptance, or asks for a follow-up"
-    why_human: "It is a ruling-versus-evidence call for the seat that wrote the ruling. The ROADMAP wording (spoken when it appears) is met, the ruling's secondary event-text acceptance is not literally met"
+    ledger: "fragment bullet 5; SELF-UAT block 22"
+  - step: "Owner listen-through (SC1 item 2): Show sheet several times with TalkBack on a real device"
+    expected: "'Couldn't undo: Item changed since, Card deleted changed since' heard exactly once each time"
+    ledger: "fragment Owner how-to-verify item 2"
+  - step: "Owner Material You check (SC2, SC5): open the Explorer on a Material You device, then Pickers, PlaceMapPicker with Wi-Fi on"
+    expected: "Amber warn tone kept in light and dark; real OpenStreetMap tiles, not the 403 Blocked tile"
+    ledger: "fragment Owner how-to-verify item 5"
+designer_handoff: # NON-BLOCKING hand-off to the ui-designer seat; a ruling-versus-evidence call, not a failure
+  - item: "The refused live-region content-change events still carry empty text (TYPE_WINDOW_CONTENT_CHANGED changeTypes=1, text=[], desc=null) although the 2026-10-18 ruling for gap cycle 2 (28-CONTEXT) asked that the observer show the focus or announce event carrying the message text"
+    expected: "The designer accepts the spoken outcome (exactly once, 27 of 27 showings, the live region the only mechanism, the node itself carries the message via its description child) as the C-1 acceptance, or asks for a follow-up"
+    ledger: "recorded in the fragment only as 'Observation for the ui-designer seat (not a failure)'; the orchestrator should add it as an explicit Gate-2 line (see Status re-evaluation)"
 ---
 
 # Phase 28: TalkBack sweep & Explorer demos Verification Report
 
 **Phase Goal:** The new snackbars, the outcome sheet and the Undo Center pass a scoped TalkBack sweep on the TESTER, and the Explorer shows every v2.8 surface in English and German inside the pinned hub color scheme.
-**Verified:** 2026-10-18T09:43:06Z
-**Status:** human_needed (nothing failed; the only open items are the five physical TalkBack gestures that the Gate-1 self-UAT parks as PARTIAL for Gate-2, plus one designer confirmation)
-**Re-verification:** Yes, after the Gate-1 self-UAT and gap plans 28-08 to 28-12. The previous report (`ea169f0`, status human_needed, 3/5 with SC1 and SC5 held as PRESENT_BEHAVIOR_UNVERIFIED) had no `gaps:` section.
+**Verified:** 2026-10-18T09:57:21Z (status re-evaluated; the evidence pass was 2026-10-18T09:43:06Z)
+**Status:** passed (nothing failed, every automatable criterion met; the five physical TalkBack gestures are registered Gate-2 deferrals, and one designer confirmation is handed to the ui-designer; none of these blocks the phase, see "Gate-2 hand-offs (registered, not blocking)")
+**Re-verification:** Yes, after the Gate-1 self-UAT and gap plans 28-08 to 28-12. The previous report (`ea169f0`, status human_needed, 3/5 with SC1 and SC5 held as PRESENT_BEHAVIOR_UNVERIFIED) had no `gaps:` section. A further status-only re-evaluation on 2026-10-18T09:57:21Z moved the status from `human_needed` to `passed` (see the next section); score, truths and evidence are unchanged.
 
 Per the run brief: no adb command, no device touched, no gsd-tools call, nothing committed. Judged on code and tests at `main` HEAD `83aafb7` (library `src` and `tools` are byte-identical to `ca69f92`, the build the last Gate-1 run tested: `git diff ca69f92 HEAD -- src tools api.txt` is empty) plus the signed SELF-UAT evidence. `covered_files` / `covered_digest` were not written because they need a gsd-tools call; the orchestrator can stamp them.
+
+## Status re-evaluation (human_needed to passed)
+
+Asked by the orchestrator because `phase.complete` refuses `human_needed` unless the Gate-1 SELF-UAT is `all_pass`. Contract applied: execute-phase `verify_work_agentic_gate`, route `has_partial`: a Gate-1 `has_partial` whose every PARTIAL criterion carries `partial_kind: physical` + `physical_step`, each listed in the phase's pending `uat-pending/` fragment, with the same device evidence as `all_pass`, is a Gate-2 deferral that is PASSED for the phase and enforced later by the milestone's human Gate-2. Checked against the files, not against the summaries:
+
+| Check | Result |
+|-------|--------|
+| SELF-UAT frontmatter | `status: partial`, `result: has_partial`, `uat_run: uatr-20261018T080238Z-a214dfe5` (equals `run_id` in that run's `run.json`: `status: finished`, HMAC-SHA256 `sig` present, `capture_count` 206, `head_at_start` `ca69f927`), `command_guard_breaches: 0` |
+| Live criterion blocks (`### N.`) | Blocks 2 to 5, 8, 9, 12 to 17 are `result: passed` (12). Blocks 18 to 22 are `result: partial` (5). No live `failed`. The five `failed` blocks (1, 6, 7, 10, 11) are demoted to `####`, text intact, and are superseded by blocks 14 to 16; the Summary says total 17, passed 12, partial 5, failed 0, which matches my count |
+| Every PARTIAL carries `partial_kind: physical` and a `physical_step` | Yes, blocks 18, 19, 20, 21, 22, one each, and each block records the mechanism and result already verified at Gate-1 (evidence 07, 10/96, 08/99/100, 02/04/67 to 77, 54/48 to 50/block 14) |
+| Each `physical_step` is listed in the pending fragment | Yes, the five bullets under "Deferred physical steps (PARTIAL)" in `.planning/uat-pending/28-talkback-sweep-explorer-demos.md` match blocks 18 to 22 one to one; fragment `Status: pending`; the fragment is unchanged by this pass |
+| Device evidence recorded and verified | Block header of the third addendum records `uat-run verify = verified, 0 warnings` for run `uatr-20261018T080238Z-a214dfe5`. My earlier independent re-hash of that run: 206 captures, 0 missing, 0 hash mismatches. I did not verify the `sig` value (no key in scope) and did not re-run `uat-run verify` (no gsd-tools call allowed in this pass) |
+| Automatable criteria | SC1 sub-claims 1 to 5, SC2, SC3, SC4, SC5 all passed on the device or JVM (blocks 2 to 5, 14 to 16); my forced fresh JVM run (948 tests, 0 failures) is in the Behavioral Spot-Checks table; `git diff --stat ca69f92 HEAD -- src tools api.txt` is still empty, so the tested build is the shipped build |
+| Orchestrator follow-up from the first report: `28-SECURITY.md` re-audit | Done: `audited_head: 4a549cb`, `status: verified`, `threats_open: 0` (commit `7abe837`); `src` and `tools` are unchanged since |
+
+Items that could have kept `human_needed`, and why none does:
+
+- **Unregistered human item:** none of the physical steps. The listen-through and the Material You check are registered as Owner how-to-verify items 2 and 5 of the fragment (see the next paragraph for the one that is registered only weakly).
+- **Live-region event text still empty versus the 2026-10-18 ruling wording ("the observer shows the focus or announce event carrying the message text", 28-CONTEXT line 131).** Not an unmet ROADMAP criterion: SC1 reads "spoken when it appears" and that is met 27 of 27 (block 14). It is a secondary acceptance clause of a designer ruling that the SELF-UAT itself records as an observation for the ui-designer seat. In the ledger it is present only as the line "Observation for the ui-designer seat (not a failure)" under "Designer decisions with the evidence attached"; it is NOT an explicit Gate-2 step with an expected outcome. I therefore keep it visibly as a hand-off (below) and ask the orchestrator to add it to the fragment as an explicit designer line. If the orchestrator or the designer judges the ruling's event-text clause to be a hard acceptance rather than a confirmation, the correct status would revert to `human_needed` for that single item.
+- **Owner listen-through and Material You check:** registered (fragment Owner how-to-verify 2 and 5). They are the human Gate-2 for outcomes Gate-1 already proved on the tester (one utterance 27 of 27; amber pixel and OSM tiles on the tester), not unproven automatable behavior.
+- **Unmet automatable criterion or missing evidence:** none found.
 
 ## What changed since the first report
 
@@ -59,13 +88,13 @@ Per the run brief: no adb command, no device touched, no gsd-tools call, nothing
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | SC1 A11Y-02: with TalkBack on the TESTER a ReceiptRow reads as one button with its state and a separate Undo; the refused-undo Assertive live region is spoken when it appears; the saved-key summary is one item with Update/Clear separate; the group header is a heading; sheet target rows and snackbar cards announce their open label | VERIFIED (Gate-1 device evidence, JVM at HEAD); five swipe/heading gestures parked for Gate-2 | See the sub-claim table below. Real TalkBack speech was captured on the SM-S908U tester (overlay transcripts, observer tree dumps, Samsung TTS utterance log) for every sub-claim; the physical one-finger gestures are Gate-2 items, not gaps |
+| 1 | SC1 A11Y-02: with TalkBack on the TESTER a ReceiptRow reads as one button with its state and a separate Undo; the refused-undo Assertive live region is spoken when it appears; the saved-key summary is one item with Update/Clear separate; the group header is a heading; sheet target rows and snackbar cards announce their open label | VERIFIED (Gate-1 device evidence, JVM at HEAD); five swipe/heading gestures registered as Gate-2 deferrals (not blocking) | See the sub-claim table below. Real TalkBack speech was captured on the SM-S908U tester (overlay transcripts, observer tree dumps, Samsung TTS utterance log) for every sub-claim; the physical one-finger gestures are Gate-2 items, not gaps |
 | 2 | SC2 DEMO-02: every Explorer screen renders in the pinned hub scheme, warn never mauve; the hoisted `OutcomeSheet` `sheetState` demo closes through `hide()` | VERIFIED | Device: warn container pixel `(255,224,160)` hub amber in HEAD light, `(86,61,0)` HEAD dark, `(138,106,137)` mauve in the v2.7.1 control (SELF-UAT block 2, first run, evidence 06 to 12). JVM at HEAD: `ExplorerThemeTest` 5/5, `ExplorerSchemePinGuardTest` 4/4, `HoistedSheetDemoRegistryRenderTest` 5/5 in my fresh run. The slide-down through `hide()` is the unit claim; on the device only open, close, re-open and 0 sheet nodes are observable |
 | 3 | SC3 DEMO-03: stacked-snackbar demo (fire, burst of 4, swipe, tap to open with the key shown) and go-to-item demos (single, batch with mixed rows, Undo Center target rows), English and German, each reached by a registry render test | VERIFIED | Device (first run, block 3): `Opened: demo-note`, burst of 4 shows 3, swipe, `Opened: demo-burst-4`, eight go-to-item variants, Undo Center rows, German at 360 dp / font 2.0 with nothing clipped once scrolled. Cycle-3 run re-exercised the stack stage and the Undo Center rows on the HEAD build (blocks 15 and 16). JVM at HEAD: `FeedbackStackDemoRegistryRenderTest` 15/15, `GoToItemSheetDemosRegistryRenderTest` 14/14, `UndoCenterTargetRowsDemoRegistryRenderTest` 6/6 |
 | 4 | SC4: every new public composable from Phases 25-27 is registered or allowlisted; registry integrity test and CATALOG drift guard green | VERIFIED | `ComponentRegistryDriftGuardTest` 1/1 and `CatalogDocsDriftGuardTest` 10/10 in my fresh run. `git diff c1681ff HEAD -- api.txt ComponentRegistry.kt` is empty (the gap plans added no public composable). SELF-UAT recorded 67 registered, 6 unregistered, 73 on its own full forced run |
 | 5 | SC5 POL-03: the caller's user agent reaches the wire (Robolectric UA map, one `Log.w`, placeholder purge, TESTER wire check) | VERIFIED | See POL-03 below. The code for it is unchanged since the first run (`PlaceMapOsmdroidConfig.kt` and `PlaceMapPicker.kt` are not in the `830caeb..HEAD` diff), so the first-run device result still describes HEAD |
 
-**Score:** 5/5 truths verified. 0 present-but-behavior-unverified, 0 failed. Open: five Gate-2 physical steps and one designer confirmation (above).
+**Score:** 5/5 truths verified. 0 present-but-behavior-unverified, 0 failed. Not blocking: five registered Gate-2 physical steps, two registered owner checks and one designer hand-off (see "Gate-2 hand-offs (registered, not blocking)").
 
 ### SC1 sub-claims against the ROADMAP wording
 
@@ -195,9 +224,9 @@ No stubs, placeholder returns or empty handlers in the phase's production code. 
 - The addendum says SC2 to SC5 were not re-run because gap plan 28-12 changed "only `FeedbackCard.kt` and `OutcomeSheet.kt`, which those criteria do not touch". That reasoning is imprecise: SC3's stack stage runs on `FeedbackCard`/`FeedbackStackHost` and its go-to-item sheets on `OutcomeSheet`. The change is semantics-only (no size, padding or layout edit in the diff), the cycle-3 run did exercise the stack stage, the fanned and collapsed deck, tap-to-open and the Undo Center rows on the HEAD build, and my fresh JVM run covers SC3's render tests at HEAD. What was not repeated on the device after the gap plans is the German 360 dp / font scale 2.0 layout check of the stack and the sheets. Phase 29 already carries the long-string and Gate-1 device criteria, so I treat this as covered there rather than as a gap.
 - The 28-12 SUMMARY says `OutcomeSheetClassicParitySourceContractTest` "was not edited". True for 28-12; 28-09 edited it (the deliberate PD-4 edit shown in the diff).
 
-## Gate-2 hand-offs
+## Gate-2 hand-offs (registered, not blocking)
 
-Registered in `/home/yahir/Projects/Reusable/android/yahirandroidtaste/.planning/uat-pending/28-talkback-sweep-explorer-demos.md` (status pending). They do not make the phase gaps_found. Owner steps at milestone completion:
+None of the items below keeps the phase open. Items 1 to 8 are registered in `/home/yahir/Projects/Reusable/android/yahirandroidtaste/.planning/uat-pending/28-talkback-sweep-explorer-demos.md` (status pending) and are enforced later by the milestone's human Gate-2 (verify-milestone). They make the phase neither `gaps_found` nor `human_needed`. Owner steps at milestone completion:
 
 1. ReceiptRow trailing-action: one-finger swipe right from the summary reaches Undo, left returns.
 2. UndoCenterScreen group rows: headings navigation reaches "Batch edit" and "Earlier batch".
@@ -208,11 +237,15 @@ Registered in `/home/yahir/Projects/Reusable/android/yahirandroidtaste/.planning
 7. C-3 and C-4 were ruled "keep" by the ui-designer (2026-10-17); the Gate-2 note is the cosmetic duplicate Dismiss in the actions menu.
 8. Housekeeping: three throwaway harness packages were left installed on the tester per the dispatch ruling (`com.example.yat28head`, `com.example.yat28control`, `com.example.yat28obs`) for Yahir to remove. The v2.6 `uat_gaps` rows 21 to 24 remain the owner's call.
 
-Orchestrator follow-ups outside this verification: re-audit `28-SECURITY.md` (`audited_head ea169f0` predates the gap plans); flip A11Y-02, DEMO-02, DEMO-03 and POL-03 in REQUIREMENTS.md and mark Phase 28 complete in ROADMAP.md at close-out; stamp `covered_files` / `covered_digest`.
+### Designer hand-off (ui-designer seat, not a failure, not blocking)
+
+The refused-undo live-region content-change events still carry empty text (`TYPE_WINDOW_CONTENT_CHANGED changeTypes=1`, `text=[]`, `desc=null`, in 27 of 27 showings), while the 2026-10-18 ruling for gap cycle 2 asked that "the observer shows the focus or announce event carrying the message text". What the designer is asked to confirm: that the spoken outcome (the message heard exactly once on 27 of 27 valid showings, 14 of 14 with TalkBack alone, the live region as the only mechanism, no focus move, no `announceForAccessibility`, the node itself carrying the message through its description child) is accepted as the C-1 acceptance, or to request a follow-up. This is a ruling-versus-evidence call for the seat that wrote the ruling. Ledger status: recorded in the Gate-2 fragment only as an observation line; **the orchestrator should add it to `.planning/uat-pending/28-talkback-sweep-explorer-demos.md` as an explicit designer confirmation** (I did not edit the fragment).
+
+Orchestrator follow-ups outside this verification (the `28-SECURITY.md` re-audit is done, `audited_head 4a549cb`): flip A11Y-02, DEMO-02, DEMO-03 and POL-03 in REQUIREMENTS.md and mark Phase 28 complete in ROADMAP.md at close-out; stamp `covered_files` / `covered_digest`.
 
 ## Gaps Summary
 
-No gaps. All five ROADMAP criteria are met on code, on a fresh forced test run and on signed device evidence from the TESTER. The earlier Gate-1 failures (C-1 not spoken, then spoken twice; C-5 unnamed deck stops; C-6 doubled card names) were closed by plans 28-09 to 28-12 and re-measured on the real device against the HEAD build. The status is `human_needed` rather than `passed` only because five physical one-finger TalkBack gestures cannot be synthesized and are legitimately Gate-2, and because the designer should confirm that the spoken outcome satisfies the C-1 ruling although the live-region event text is still empty.
+No gaps. All five ROADMAP criteria are met on code, on a fresh forced test run and on signed device evidence from the TESTER. The earlier Gate-1 failures (C-1 not spoken, then spoken twice; C-5 unnamed deck stops; C-6 doubled card names) were closed by plans 28-09 to 28-12 and re-measured on the real device against the HEAD build. The status is `passed`: the five physical one-finger TalkBack gestures cannot be synthesized and are legitimate Gate-2 deferrals (SELF-UAT `has_partial`, every PARTIAL `partial_kind: physical`, each registered in the pending fragment), enforced later by the milestone's human Gate-2. The designer confirmation that the spoken outcome satisfies the C-1 ruling although the live-region event text is still empty is handed to the ui-designer seat and recorded above; it is not a gap.
 
 ---
 
