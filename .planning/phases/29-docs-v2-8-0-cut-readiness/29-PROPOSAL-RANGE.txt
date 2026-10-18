@@ -1,0 +1,314 @@
+ce855d2 docs(29-06): current release v2.8.0 (D-02)
+a29a6cd docs(phase-29): add security threat verification
+388cbad docs(29): add code review fix report
+6a45421 fix(29): IN-03 API.md states that tall FeedbackStackHost cards scroll inside the card
+06b1410 fix(29): WR-05 pin the capped shape hand-off into the Undo TextButton
+d08d8a1 fix(29): WR-02 WR-04 IN-04 publish-range credential boundary, visible caveat on OK, account-agnostic home path
+3ad051f fix(29): WR-03 count skipped tests as not run in verify-junit-fresh
+647f9e6 docs(29): add code review report
+4630852 docs(29-05): Gate-1 SC3 re-verified PASS on the tester after plan 29-07, Gate-2 fragment registered
+f08c866 docs(29-07): update STATE and ROADMAP after plan 07
+b9889a0 docs(29-07): summary for the clipped Spanish stacked card fix
+0bad7b6 docs(29-07): STYLE.md wrap-safe button and scrolling card rule
+46da199 fix(29-07): the stacked card's Undo keeps a capped-radius shape once its label wraps (Gate-1 SC3, D-03)
+e5392d0 fix(29-07): a tall stacked card scrolls its own content inside the host (Gate-1 SC3, D-03)
+7ceac55 docs(29): gap plan 29-07 for the clipped Spanish stacked card (Gate-1 SC3)
+c449db0 docs(29): designer ruling for the clipped Spanish stacked card
+c991799 docs(29-05): Gate-1 self-UAT on the tester, long-string probe finds a Spanish snackbar clip at font 2.0 (has_fail)
+8607c12 docs(29-04): update STATE and ROADMAP after plan 04
+06ee193 docs(29-04): summary for gate tooling plan
+e6749e6 fix(29-04): documentation-range address in the wireless-serial refusal fixture
+bb4f4d6 test(29-04): tools/verify-publish-range.sh with a fixture test
+8b7d461 test(29-04): tools/verify-junit-fresh.sh with a fixture test
+ff36f63 docs(29-03): update STATE and ROADMAP after plan 03
+75021cb docs(29-03): summary for STYLE.md v2.8 rules plan
+cfc6c69 docs(29-03): AGENT-DEVICE-TESTING note on the observer service and baseline control
+5e81020 docs(29-03): STYLE.REVERTED.md v2.8 rejected ideas
+edbb0a3 docs(29-03): STYLE.md v2.8 deck, go-to-item, pill and TalkBack rules
+c595abe docs(29-02): update STATE and ROADMAP after plan 02
+aa6d853 docs(29-02): summary for v2.8.0 API and INTEGRATION docs plan
+f8371b7 docs(29-02): INTEGRATION.md v2.8.0 wiring and OSM tile policy
+a44f436 docs(29-02): API.md v2.8.0 sheet, Undo Center, map agent and compatibility scope
+b957f30 docs(29-01): update STATE and ROADMAP after plan 01
+ebe8afb docs(29-01): summary for v2.8.0 docs tracer and Spanish pill plan
+f2aab98 test(29-01): Spanish wrapped handled-by pill at 360dp and font scale 2 (D-03)
+4fcd21f test(29-01): v2.8.0 docs guard and API.md Additions in v2.8.0 (tracer)
+732ea62 docs(29): create phase plan
+fc40547 docs(phase-29): add research and validation strategy
+11953ae docs(29): runtime carry-forward and dispatch rules
+b7495de docs(28): designer acceptance of the C-1 spoken-once result
+cf1d7c7 docs(phase-28): update current focus after transition
+bbfdb7f docs(phase-28): complete phase execution
+4346946 docs(phase-28): verification passed, physical steps registered as Gate-2 hand-offs
+b53928a docs(phase-28): finalize validation sign-off
+7abe837 docs(phase-28): re-audit security after the Gate-1 gap plans
+4a549cb docs(phase-28): update verification report after Gate-1
+83aafb7 docs(28-07): Gate-1 re-verification 3 after gap plan 28-12 (cycle 3 of 3): C-1 and the deck pass on the tester, physical steps parked
+ca69f92 docs(phase-28): update tracking after gap plan 28-12
+47e5026 chore: merge executor worktree (worktree-agent-a9684d5f3b3a5cc76)
+4bb0b3d docs(28-12): summary for the single-source double-read gap plan
+55f5288 fix(28-12): the refusal is one live-region mechanism, spoken once after the sheet settles (C-1)
+170b2d1 fix(28-12): card root and Undo child are each spoken once (C-6)
+cfca4cb docs(28): gap plan 28-12 for the double read (C-1 single live-region route, C-6 card names once)
+0598142 test(28-07): Gate-1 re-verification 2 after gap plan 28-11 (C-1 spoken 25/25 but read twice, deck named but doubled; has_fail)
+ad6784c docs(phase-28): update tracking after gap plan 28-11
+2817dfb chore: merge executor worktree (worktree-agent-a6f7a0b6d778b102a)
+6ddc6b7 docs(28-11): complete names-and-focus-route gap plan summary
+defa415 fix(28-11): move input focus to the refusal message once the sheet settles (C-1, route b)
+2c70311 fix(28-11): name every focusable deck card node from the data (C-5)
+53dedc0 docs(28): gap plan 28-11 for C-5 names and the C-1 focus route
+ca21f84 docs(28): designer rulings for C-5 labels and the C-1 focus route
+73b5451 test(28-07): Gate-1 re-verification after 28-09/28-10 (C-1 still FAIL, collapsed deck FAIL on C-5)
+950399e docs(phase-28): update tracking after gap plan 28-10
+cb27668 chore: merge executor worktree (worktree-agent-ae1cc9964c29b555c)
+645de77 docs(28-10): complete hide silent middle peek strip gap plan
+c125093 fix(28-10): hide the silent middle peek strip of a collapsed deck from accessibility
+ec0e2a0 docs(28): gap plan 28-10 hide the silent middle peek strip from accessibility
+15e8686 docs(28): designer rulings on C-3/C-4 and the silent peek-strip stop
+5196548 docs(phase-28): update tracking after gap plan 28-09
+74cc84b chore: merge executor worktree (worktree-agent-a0f1fb2076c6e70aa)
+98ec6a7 docs(28-09): complete merged live-region gap plan for Gate-1 C-1
+6406901 fix(28-09): merge descendants into the refused-undo Assertive live region (Gate-1 C-1)
+8b6f20c docs(28): gap plan 28-09 for Gate-1 finding C-1 (merge descendants into the refused live region)
+5ba71f8 docs(28-07): Gate-1 self-UAT on the tester (4 of 5 pass, SC1 C-1 live region not spoken) with signed evidence and the Gate-2 fragment
+830caeb docs(phase-28): add security threat verification
+ea169f0 docs(phase-28): add verification report
+998ab46 docs(28): mark code review resolved
+4fe75e4 docs(28): add code review fix report
+db086df fix(28): IN-09 open pulled cache.db immutable and treat a 403/429 x-blocked as a verdict
+c79b094 fix(28): IN-07 resolve the Phase28 hygiene test source root from any working directory
+88bed0f fix(28): IN-06 note where the Explorer user agent version is bumped
+8f2312e fix(28): IN-05 drop vacuous assertions from the sweep and config tests
+60cffce fix(28): IN-01 keep the go-to-item sheet shown when hide() is cancelled
+4e79738 fix(28): IN-02 compare font scale numerically only when both sides are plain decimals
+228b6ba fix(28): WR-04 allowlist the plain USB serial shape instead of refusing only a colon
+e1c3b1d fix(28): WR-03 validate --package before it reaches the device shell
+adc97c6 fix(28): IN-04 soften the cacheDir confinement KDoc to match osmdroid first-run load
+9e42e01 fix(28): IN-03 correct the KDoc on when the user agent fallback warns
+6e4fe08 fix(28): WR-02 document the load-once guard covers hub callers only
+b516210 fix(28): WR-01 make the placeholder scan flag KDoc match per-process behavior
+17ec2ee fix(28): CR-01 run placeholder purge off the main thread in one transaction
+72384f7 docs(28): add code review report
+4062a7b docs(phase-28): update tracking after wave 8
+6618e96 chore: merge executor worktree (worktree-agent-aa155bc7a90455cfa)
+cb94f52 docs(28-08): complete POL-03 load-once gap plan summary
+4f8ceea fix(28-08): call osmdroid Configuration.load() once per process
+9701f24 docs(phase-28): update tracking after wave 7
+2b2f667 chore: merge executor worktree (worktree-agent-ac7840ef82ad177cf)
+938a396 docs(28-07): complete phase hygiene contract, restore oracle and fresh gate plan summary
+32bd7d5 chore(28-07): read-only TESTER restore oracle with a fake-adb fixture test
+b2765a7 test(28-07): Phase28HygieneSourceContractTest pins the POL-03 files and the Explorer additions
+391d1d9 docs(phase-28): update tracking after wave 6
+c0a7b9d chore: merge executor worktree (worktree-agent-ada216500a7be2e87)
+b5a4bcd docs(28-06): complete Layer-1 TalkBack sweep plan summary
+d6ba327 test(28-06): A11ySweepFeedbackCardTest pins card open label encoding and the locked Undo and Dismiss forms
+53fead4 fix(28-06): openable Undo Center row is one merged button carrying its message (C-2)
+723583f test(28-06): RED - Undo Center header heading and openable-row single-stop sweep tests
+c6f3ed6 test(28-06): A11ySweepSemanticsTest pins ReceiptRow, refused live region, saved-key summary and target-row label semantics
+87238da docs(phase-28): update tracking after wave 5
+d07043e chore: merge executor worktree (worktree-agent-a8a457b8073870047)
+bb94e2b docs(28-05): complete go-to-item sheet demos and hoisted-sheet proof plan summary
+0cdb347 test(28-05): tag the hoisted sheetState demo and prove it closes through hide()
+9cb9f9e feat(28-05): mixed batch, Classic and German go-to-item sheet demos
+423682b feat(28-05): Receipt go-to-item sheet demo with hide-then-open readout
+d61eb7d docs(phase-28): update tracking after wave 4
+aead9a8 chore: merge executor worktree (worktree-agent-addc84c52a337a697)
+342a31d docs(28-04): complete Explorer stacked-snackbar stage and Undo Center target rows plan summary
+c992a09 feat(28-04): Undo Center go-to-item row demos in English and German
+a42c29c feat(28-04): complete the stacked-snackbar stage and add the German stage
+cfa131f feat(28-04): English stacked-snackbar stage with tagged readouts and registry render test
+e1e207c docs(phase-28): update tracking after wave 3
+a3721d8 chore: merge executor worktree (worktree-agent-a70cb59005df93649)
+adc8067 docs(28-03): complete Explorer hub scheme pin plan summary
+778c307 feat(28-03): pin last five screens and HubSchemeScope, add ExplorerSchemePinGuardTest
+f7714ef refactor(28-03): pin index, token browser and five family screens to ExplorerTheme
+e477a78 feat(28-03): ExplorerTheme pins the hub scheme on the Activity, Entry fallback and detail path
+ebd23b5 docs(phase-28): update tracking after wave 2, add gap plan 28-08 (load once per process)
+d3959d3 docs(28): POL-03 load() once per process (WR-02 race)
+5ce6048 chore: merge executor worktree (worktree-agent-afc63af245bc35160)
+45e89b4 docs(28-02): complete placeholder tile purge plan summary
+08ceecd feat(28-02): offline verify-osm-tile-cache script with fixture test
+4429a4d feat(28-02): run the placeholder purge once per install and on the first call of each process
+318233c feat(28-02): purge only fingerprint-matched OSM placeholder tiles from the cache
+89dec1c docs(phase-28): update tracking after wave 1
+806e25a chore: merge executor worktree (worktree-agent-ab6db0cd6210fc1d4)
+5af9361 docs(28-01): complete OSM user-agent plan summary
+ec4a597 feat(28-01): hub-owned real agent for Explorer map demos and a one-tile OSM probe script
+f3a11f2 feat(28-01): honest fallback agent, control-char guard, one Log.w for blocked-class agents
+042667c feat(28-01): inject caller user agent as User-Agent request property after every load
+48f73a8 docs(28): create phase plan
+c1681ff docs(phase-28): add validation strategy
+3cabfbc docs(28): research phase domain
+db729e8 docs(v2.8): POL-03 requirement and Phase 28 criterion at wire level
+53a9402 docs(phase-27): update current focus after transition
+5961ef7 docs(phase-27): complete phase execution
+25b7cf5 docs(phase-27): finalize validation sign-off
+6497d5b docs(27): record the final command-guard refusal count in the Gate-1 self-UAT
+ef0fb0a docs(27): Gate-1 self-UAT on the tester, all 5 criteria pass, signed run and Gate-2 fragment
+2271a0f docs(28): POL-03 sets the UA header after every load(), hub never writes the prefs key
+b9f8451 docs(28): pin the OSM placeholder fingerprint for POL-03
+3af69e5 docs(28): POL-03 purges only placeholder tiles, never the whole cache
+bc17030 docs(28): POL-03 scope change - make the UA effective for MAPNIK, verify on the wire
+ca5fae5 docs(phase-27): add security threat verification
+5017ce6 docs(phase-27): add verification report
+1fdcf4a docs(v2.8): add POL-03 (OSM user-agent foot-gun) to Phase 28
+5bea77d docs(27): mark code review resolved
+fe53157 docs(27): add code review fix report
+d5e8d1c fix(27): IN-04 pin the Classic open-target body against the pinned Classic body
+fd98540 fix(27): IN-03 measure the dot contrast on the fill composited over the pill
+88af094 fix(27): IN-02 document the approximate pill cap for a non-sp body-small line height
+64fbbfc fix(27): IN-01 announce a locked go-to-item row as disabled
+ce9eee3 fix(27): WR-01 WR-02 give the openable Undo Center row indication, focus and a long-click action
+2f1efc2 docs(27): add code review report
+35b6918 docs(phase-27): update tracking after wave 4
+f08bc7c chore: merge executor worktree (worktree-agent-a94052a8c4a8d389b)
+00b729f docs(27-04): complete pill shape, dot contrast ring and phase gate plan
+f3a0db9 test(27-04): pin the phase-wide key, logging and visibility hygiene
+88c3014 feat(27-04): add a contrast ring to the handled-by dot when its fill fails 3:1 against the pill
+046998d fix(27-04): cap the Receipt handled-by pill's corner radius so a wrapped pill keeps its text inside its shape
+6f274ec docs(phase-27): update tracking after wave 3
+48c3904 chore: merge executor worktree (worktree-agent-aa03a44401c75828f)
+c42f04c docs(27-03): complete Undo Center open-from-row plan
+ad80c4c test(27-03): pin the Undo Center row geometry in long German and Spanish and the UndoCenterScreen call shapes
+659bb2c test(27-03): pin the Undo Center open row gestures, inert cases, the stale guard and the golden parity of the new overload
+ca4771f feat(27-03): UndoCenterScreen overload with onOpenTarget
+ad85f18 docs(phase-27): update tracking after wave 2
+6211397 chore: merge executor worktree (worktree-agent-a3f4e49b32d07d787)
+8621d3f docs(27-02): complete batch open-target rows plan
+2645035 test(27-02): pin the batch open-target anatomy, edges, locks, long labels and the BatchRowResultUiModel shapes
+47da597 feat(27-02): per-row open targets for batch results in the Classic style
+6a565d7 feat(27-02): per-row open targets for batch results in the Receipt style
+c5cfced docs(phase-27): update tracking after wave 1
+7c6a739 chore: merge executor worktree (worktree-agent-a94c239d5cde4e4d5)
+bba0aac docs(27-01): complete open-target row plan summary
+1fb3e57 test(27-01): pin the open-target row, long German and Spanish geometry and the v2.7.1 shapes
+55b5bc9 feat(27-01): Classic go-to-item row via new functions inside the single scaffold
+de85ed0 feat(27-01): add Success target fields, the shared open-target row and onOpenTarget on OutcomeSheet
+65bc8cd docs(27): confirm planner FA-1/FA-5 (ui-designer)
+6c9da0a docs(27): record planning complete in STATE
+32b22cb docs(27): create phase plan
+e30df96 docs(phase-27): add pattern map
+eb90dbf docs(phase-27): add validation strategy
+08ac87a docs(27): research phase domain
+455e99d docs(27): refresh provisional undo-center-tap decision after Phase 25
+3dc5340 docs(phase-26): update current focus after transition
+8cb3d55 docs(phase-26): complete phase execution
+b22b9aa docs(phase-26): refresh verification report after gap closure
+7c131a9 docs(phase-26): update security threat verification after gap closure
+e091713 docs(phase-26): finalize validation sign-off
+ca8ffc4 docs(26): record sixth uninspectable guard refusal in the re-verification log
+f653bc3 docs(26): Gate-1 re-verification after gap-closure 26-06, all 5 criteria pass, signed run and Gate-2 fragment
+e3c87d9 docs(26): add code review 2 report, fixes and resolution
+9a4b4ba fix(26): IN-03 pin the harmless blocker on a no-Undo and a spent back card
+ace65c9 fix(26): WR-02 test the swipe versus blocker interaction and label the drag test a control
+d638d53 fix(26): WR-01 re-document the touch-slop band test as a control
+e515e65 fix(26): IN-02 share the undoOf test matcher between the deck and semantics tests
+1e3a48a fix(26): IN-01 document that the collapsed back card blocker is pointer-only
+3be7c5b docs(phase-26): update tracking after gap closure 26-06
+61224e4 chore: merge executor worktree (worktree-agent-a2b7c5108a46f1a57)
+a68eabe docs(26-06): complete peek-tap-over-Undo gap-closure plan
+e216c65 test(26-06): pin the peek tap over a back card's Undo in two- and three-card decks and the untouched Undo semantics
+030634b fix(26-06): a peek tap over a back card's Undo fans the deck instead of running Undo
+aee7103 docs(26): create gap-closure plan 26-06
+44f1b7b docs(26): Gate-1 self-UAT for phase 26 - SC3 fails (peek tap over a back card's Undo runs Undo instead of fanning)
+1f3237e docs(phase-26): add security threat verification
+d87e12a docs(phase-26): add verification report
+6dbac4b docs(26): mark code review resolved
+6409c09 docs(26): add code review fix report
+481cd2f fix(26): IN-05 cancel the early-show scope on failure and label the probe canary
+6568801 fix(26): IN-04 correct the stale Feedback family and host KDoc
+716ebd5 fix(26): IN-03 tint a spent card's dot like its inert state
+0218998 fix(26): IN-02 clamp the deck depth scale and note maxVisible is configurable
+7507105 fix(26): IN-01 invoke onEnqueued inside the try so a throwing callback frees the slot
+fdd8d66 fix(26): WR-02 key the host's fan and pause bookkeeping on the state
+fa81029 fix(26): WR-03 scroll a card that arrives while the fanned deck overflows into view
+4607899 fix(26): WR-01 count only the keyboard overlap against the fanned deck cap
+d2ec982 docs(26): add code review report
+ae6eb30 docs(phase-26): update tracking after wave 5
+4deb864 chore: merge executor worktree (worktree-agent-a69eb48db2f342f9f)
+c161b6c docs(26-05): complete card semantics, demo and phase-close plan
+43406b9 feat(26-05): Explorer demo buttons, API.md row and host KDoc for the finished deck
+8711d10 test(26-05): pin the A11Y-01 semantics matrix and the live-region stability
+91de05a feat(26-05): card semantics for A11Y-01 (merged button, polite region, dismiss, traversal)
+e67373e docs(phase-26): update tracking after wave 4
+a5bb149 chore: merge executor worktree (worktree-agent-af2cbb036234efe3f)
+a27078a docs(26-04): complete swipe-to-dismiss plan
+69848f7 test(26-04): guard the swipe crash rule and the dismiss-only settle
+5fb5759 feat(26-04): swipe matrix, displaced-card enablement and the fade helper
+9acc680 feat(26-04): swipe a card away with seeded anchors; Dismissed only
+cf9690f docs(phase-26): update tracking after wave 3
+37f5011 chore: merge executor worktree (worktree-agent-a3aacdc246b5cd7f6)
+e7e56d1 docs(26-03): complete card gestures, peek fan and deck-wide pause plan
+13e4887 feat(26-03): idle collapse, auto-collapse, disposal cleanup and the gesture source contract
+f14ecc1 feat(26-03): long-hold suppression and the deck-wide pointer pause observer
+4a865d4 feat(26-03): peek tap fans the deck; card gestures follow the single-owner pattern
+ca8304a docs(phase-26): update tracking after wave 2
+12f96fa chore: merge executor worktree (worktree-agent-a6dd9db47ba98eddc)
+7572002 docs(26-02): complete receipt-card deck plan
+6398534 feat(26-02): fanned deck geometry with a 60 percent cap, inner scroll and a 560dp width cap
+f7ad92c feat(26-02): card row with wrapping text and a capped DynamicActionButton Undo
+aad312a feat(26-02): render the feedback stack as a collapsed Receipt-card deck
+fe766fd docs(phase-26): update tracking after wave 1
+98ee6ab chore: merge executor worktree (worktree-agent-add48815afb7ad3a6)
+50a1f17 docs(26-01): complete pause-aware card timer and Wave 0 probes plan
+3d4e750 test(26-01): pin the pause contract (floor, fanned, ties, cleanup, concurrency)
+a09a640 test(26-01): pin Compose assumptions the deck relies on (probes A1-A6)
+2ceefed feat(26-01): pause-aware card timer on an injectable clock
+6b4a6a7 docs(26): create phase plan
+00c7a8c docs(26): FA-1 ruling cites the per-card semantics path
+c779d4b docs(26): settle peek-target FA-1 (keep 14dp strip, semantics expand action)
+a0c0638 docs(phase-26): add research and validation strategy
+41df09e docs(phase-25): update current focus after transition
+0d1a170 docs(phase-25): complete phase execution
+e607153 docs(phase-25): finalize validation sign-off
+1334fb0 docs(phase-25): add/update validation strategy
+636de79 docs(25): Gate-1 self-UAT all pass, signed evidence run and Gate-2 fragment
+7c19bab docs(phase-25): add security threat verification
+347aec0 docs(phase-25): add verification report
+aef2800 docs(25): mark code review resolved
+5ac4e52 docs(25): add code review fix report
+0a6fdec fix(25): IN-02 keep FeedbackTarget.key out of toString
+c69b2c8 fix(25): IN-01 refresh FeedbackEvent KDoc and document DismissScreen on the stack
+15d862d fix(25): WR-05 refresh stale registry count prose in ComponentRegistry KDoc
+4ea597d fix(25): WR-04 expose Undo as a TalkBack action on stack cards
+13a840d fix(25): WR-01 WR-02 WR-03 harden FeedbackStackState resolution and tracked undo
+c0f5470 docs(25): add code review report
+54b7774 docs(phase-25): update tracking after wave 5
+0d77b17 chore: merge executor worktree (worktree-agent-a854ab31f54f159fa)
+8bb0e5f docs(25-05): complete FeedbackStackHost and rememberFeedbackStackState plan
+f38b698 feat(25-05): register FeedbackStackHost and update catalog guards and docs
+f0ceb57 test(25-05): cover FeedbackStackHost taps, labels, spent cards and accessibility binding
+fad787e feat(25-05): add FeedbackStackHost and rememberFeedbackStackState
+bdb6e74 docs(phase-25): update tracking after wave 4
+27db708 chore: merge executor worktree (worktree-agent-a032dbf68107f18ce)
+a692e88 docs(25-04): complete tracked undo on the feedback stack plan
+b2a0add test(25-04): cover tracked stack path races, spent card and cancellation
+2d2e0a9 feat(25-04): add FeedbackStackState.emitTrackedWithUndo
+0861639 docs(phase-25): update tracking after wave 3
+954b204 chore: merge executor worktree (worktree-agent-a59de7039962f96c2)
+c142ea2 docs(25-03): complete FeedbackResult and FeedbackStackState plan
+a3774e9 feat(25-03): reference-counted accessibility scaling binding on FeedbackStackState
+9206bb1 test(25-03): cover FeedbackStackState exactly-one, cap, timers, cancellation
+0856978 feat(25-03): add FeedbackResult and FeedbackStackState core
+2f2444c docs(phase-25): update tracking after wave 2
+5e8f4ff chore: merge executor worktree (worktree-agent-a71daebf63be1ef98)
+21e27d8 docs(25-02): complete target on UndoHistoryEntry and Material3 tracked path plan
+4c1040b test(25-02): cover target on UndoHistoryEntry and the new append overload
+07c70ff feat(25-02): forward FeedbackTarget through the Material3 tracked path
+04eed30 feat(25-02): carry FeedbackTarget on UndoHistoryEntry and add append overload
+63615e2 docs(phase-25): update tracking after wave 1
+744b945 chore: merge executor worktree (worktree-agent-a9daeb6719cf9a902)
+ac6398c docs(25-01): complete FeedbackTarget and widened events plan
+56b0d91 test(25-01): add V271 call-site canary
+266f94f feat(25-01): add FeedbackTarget and widen Notify/WithUndo
+06628db docs(25): create phase plan
+e1c87f4 docs(phase-25): add validation strategy and pattern map
+11059ca docs(25): research phase domain
+30ded40 docs: milestone discussion — CONTEXT for all phases (v2.8)
+862707b docs: milestone research decision map (v2.8)
+f321bfb docs: complete milestone research (v2.8)
+7045305 docs: create milestone v2.8 roadmap (5 phases, 25-29)
+1ecab5f docs: define milestone v2.8 requirements
+f91d9bf docs: start milestone v2.8 Snackbar go-to-item + stacked feedback
+8bce1e0 docs(design): snackbar go-to-item options page for v2.8.0 (design only)
+426fcbf docs(style): STYLE.md + STYLE.REVERTED.md, the accepted look as do/don't rules
