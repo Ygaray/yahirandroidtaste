@@ -229,7 +229,7 @@ Plans:
   4. A `v2.8.0` proposal (commit sha, the `git log origin/main..HEAD` range, gate results) reaches Yahir through the teamlead. The agent creates no tag (neither `v2.8.0` nor a milestone marker), pushes nothing and repins no consumer from the hub.
 
 **Notes**: A tag push publishes every unpushed commit reachable from it, so the proposal lists the full unpushed range. Version, tag and sequencing confirmations route through the teamlead/orchestrator first.
-**Plans:** 6 plans
+**Plans:** 7 plans
 
 Plans:
 **Wave 1**
@@ -252,7 +252,11 @@ Plans:
 
 - [ ] 29-05-PLAN.md — Gate-1 on the TESTER: fresh rung-1 battery, Spanish/German long-string probe at 360dp and font 2.0 with a throwaway harness, restore oracle, SELF-UAT and Gate-2 fragment (SHIP-05, D-03)
 
-**Wave 6** *(blocked on Wave 5 completion)*
+**Wave 6** *(gap closure for the Gate-1 SC3 failure; blocked on Wave 5 completion)*
+
+- [ ] 29-07-PLAN.md — gap closure (Gate-1 SC3, Spanish stacked card at font 2.0): the card's Undo keeps a capped-radius shape through an internal path, a card taller than the deck's space scrolls its own content; Robolectric RED then GREEN, `api.txt` byte-identical, fresh unit gate (SHIP-05, D-03)
+
+**Wave 7** *(blocked on Wave 6 completion and the Gate-1 SC3 re-verification on the tester)*
 
 - [ ] 29-06-PLAN.md — release-flip commit (README.md, CLAUDE.md to v2.8.0), forced-fresh battery on that commit, unpushed-range scan, `29-PROPOSAL.md` (no tag, no push) (SHIP-05, D-01, D-02)
 
