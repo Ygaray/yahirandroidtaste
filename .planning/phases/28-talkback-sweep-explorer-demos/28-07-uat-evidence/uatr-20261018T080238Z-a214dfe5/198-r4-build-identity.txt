@@ -1,0 +1,13 @@
+# Phase 28 Gate-1 re-verification 3 (gap cycle 3, plan 28-12): build identity, 2026-10-18
+main checkout HEAD ca69f927d5d27171e4590ecfe80bec29f35ee1f8 (ca69f92), `git status --short src tools` empty (0 lines) at the time of the publish.
+Library AAR: the mavenLocal tree com.github.Ygaray/yahirandroidtaste was deleted, then `./gradlew clean publishReleasePublicationToMavenLocal --no-daemon -q` (exit 0, 1m22s).
+  AAR md5 684df61c57910824077f7b926f5f0000   (cycle-2 run: b75b14b641f5c9fd1c9d07ee027a7187 at ad6784c)
+  classes.jar of the new AAR contains io/github/ygaray/yahirandroidtaste/component/OutcomeSheetKt$awaitPositionAtRest$1.class and NO awaitSheetSettled class (the cycle-2 AAR had awaitSheetSettled).
+Harness com.example.yat28head rebuilt with --refresh-dependencies against it (throwaway module in the session scratchpad, never committed):
+  APK md5 a4f9526090024238b0124bb6be0f70fc, sha256 prefix 403ed64cfe02e5a9   (cycle-2 run: 873e1df29d8fdf551b2f3fcdcb081e3a, sha256 prefix b1a0dd4d1eda1cdc)
+  `adb install -r` Success; the APK pulled back from the device (installed-head4.apk) has the same md5 a4f9526090024238b0124bb6be0f70fc.
+  Symbol check on the dex strings (strings | grep -c): NEW installed APK: awaitPositionAtRest 6 (classes6.dex), awaitSheetSettled 0. OLD cycle-2 APK: awaitPositionAtRest 0, awaitSheetSettled 6.
+  dumpsys package: versionCode=1, lastUpdateTime 2026-10-18 02:02:26 (local clock MDT).
+Observer com.example.yat28obs unchanged: md5 8ca991e1341991a9d1072460b9eafe49 (pulled from the device and equal to the build kept from the cycle-2 run); lastUpdateTime 2026-10-17 23:57:33.
+Control harness com.example.yat28control (v2.7.1): not needed, not touched.
+Rung 1 was NOT re-run by me: the unit results quoted in the 28-12 SUMMARY (a forced fresh whole-suite run, detekt, api.txt byte-identical) are its claims, not mine; this run is device behavior only.

@@ -1,0 +1,52 @@
+# Phase 28 Gate-1 re-verification, gap cycle 3 (28-12), C-1 refusal message: per-showing tally
+# HEAD ca69f92, AAR md5 684df61c57910824077f7b926f5f0000, harness APK md5 a4f9526090024238b0124bb6be0f70fc, observer md5 8ca991e1341991a9d1072460b9eafe49
+# message-utterances = Samsung TTS synthesis requests that are the refusal message: [Synthesize] generation done of 198240 bytes / 4.13 s (encrypted text blndMGaYLtVK2Or4... in every one; this is the same single-copy 4.13 s utterance the first run measured for an explicit focus on the node; the cycle-2 doubled readings were 349440 bytes / 7.28 s)
+# overlay-copies = the largest number of times the phrase "Couldn't undo: Item changed since, Card deleted changed since" appears in ONE line of the TalkBack 'Display speech output' transcript
+# sheet-name = a 1.42 s utterance (the pane title 'Bottom Sheet'); a showing is VALID only if its observation window contains the sheet appearance (the 'Bottom Sheet' phrase is in its transcript)
+# live-region events = TYPE_WINDOW_CONTENT_CHANGED events with srcLive=2 seen by the observer (observer-bound arrangements only)
+
+## alone2 -- TalkBack ALONE, observer NOT bound: BACK closes the sheet, then two quick real taps on Show sheet in a background shell (the first tap already opens the sheet), 40 to 50 frames from the trigger
+out-r4-c1-alone2-1: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+out-r4-c1-alone2-2: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+out-r4-c1-alone2-3: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+out-r4-c1-alone2-4: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+out-r4-c1-alone2-5: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+out-r4-c1-alone2-6: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+out-r4-c1-alone2-7: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+out-r4-c1-alone2-11: NOT A VALID SHOWING (no 'Bottom Sheet' in the window: the sheet had already opened before the window or did not open)
+TALLY alone2: valid-showings=7 spoken-exactly-once=7
+
+## alonef -- TalkBack ALONE, observer NOT bound: one continuous window of 90 frames covering a first real tap, 6 s, then two more taps
+out-r4-c1-alonef-1: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+out-r4-c1-alonef-2: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+out-r4-c1-alonef-3: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+out-r4-c1-alonef-4: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+out-r4-c1-alonef-5: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+TALLY alonef: valid-showings=5 spoken-exactly-once=5
+
+## probe -- TalkBack ALONE, observer NOT bound: the first probes (BACK then one real tap; BACK then two background taps)
+out-r4-probe-tap-after-back: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+out-r4-probe-bgdouble: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=0
+TALLY probe: valid-showings=2 spoken-exactly-once=2
+
+## fclick -- observer bound: TalkBack focus on Show sheet via ACTION_ACCESSIBILITY_FOCUS, wait 6 s, ACTION_CLICK
+out-r4-c1-fclick-1: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=2
+out-r4-c1-fclick-2: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=2
+out-r4-c1-fclick-3: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=2
+out-r4-c1-fclick-4: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=2
+out-r4-c1-fclick-5: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=3
+out-r4-c1-fclick-6: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=2
+TALLY fclick: valid-showings=6 spoken-exactly-once=6
+
+## ftaps -- observer bound: TalkBack focus on Show sheet via ACTION_ACCESSIBILITY_FOCUS, wait 6 s, two quick real taps
+out-r4-c1-ftaps-1: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=3
+out-r4-c1-ftaps-2: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=2
+out-r4-c1-ftaps-3: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=3
+out-r4-c1-ftaps-4: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=2
+TALLY ftaps: valid-showings=4 spoken-exactly-once=4
+
+## cold -- observer bound: two quick real taps with no prior focus
+out-r4-c1-cold-1: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=1
+out-r4-c1-cold-2: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=4
+out-r4-c1-cold-3: SPOKEN ONCE  message-utterances=1  doubled-utterances=0  overlay-copies-in-one-line=1  sheet-name-utterances=1  live-region-events=2
+TALLY cold: valid-showings=3 spoken-exactly-once=3

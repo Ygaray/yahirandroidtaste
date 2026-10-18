@@ -1,0 +1,21 @@
+== tester baseline 2026-10-18T09:28:22Z serial=R5CT10XNKQN
+get-state: device
+model: SM-S908U  sdk: 35
+wakefulness:   mWakefulness=Awake
+keyguard:     isKeyguardShowing=false
+wm density:
+Physical density: 450
+wm size:
+Physical size: 1440x3088
+Override size: 1080x2316
+system font_scale: 1.0
+secure enabled_accessibility_services: null
+secure accessibility_enabled: 0
+secure touch_exploration_enabled: 0
+packages (talkback|example):
+package:com.samsung.android.accessibility.talkback
+package:com.example.yat28head
+package:com.example.yat28control
+package:com.example.yat28obs
+package:com.example.secondbrain
+foreground:   mCurrentFocus=Window{289e102 u0 com.sec.android.app.launcher/com.sec.android.app.launcher.activities.LauncherActivity}

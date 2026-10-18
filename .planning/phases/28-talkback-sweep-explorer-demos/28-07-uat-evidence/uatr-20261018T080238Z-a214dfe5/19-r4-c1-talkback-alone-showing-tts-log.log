@@ -1,0 +1,26 @@
+10-18 03:17:13.547 29438 15383 I SamsungTTS: [Synthesize] request = en-US-default
+10-18 03:17:13.547 29438 15383 I SamsungTTS: [loadLanguage] : eng-USA-[l05]
+10-18 03:17:13.549 29438 15383 I SamsungTTS: [Synthesize] text = i4c7EO5q1joJNJNMA1dwdA==
+10-18 03:17:13.550 29438 15383 I SamsungTTS: [Synthesize] eng-USA-l05 Speed[100] Pitch[149] StreamType[10] Caller[10140-com.samsung.android.accessibility.talkback]
+10-18 03:17:13.683 29438 21496 I SamsungTTS: [Synthesize] generation done. [110660240][DOWNLOAD][AE:482312191][V:312356000][24000hz][72960b/1.52s][FE:2ms][F:45ms][E:132ms][0.09xRT]
+10-18 03:17:14.403 29438 15383 I SamsungTTS: [Synthesize] upload done.
+10-18 03:17:14.403 29438 15383 I SamsungTTS: [Synthesize] request = en-US-default
+10-18 03:17:14.404 29438 15383 I SamsungTTS: [loadLanguage] : eng-USA-[l05]
+10-18 03:17:14.404 29438 15383 I SamsungTTS: [Synthesize] text = aFFcw8ly5dy3IOmh1KamMA==
+10-18 03:17:14.405 29438 15383 I SamsungTTS: [Synthesize] eng-USA-l05 Speed[100] Pitch[149] StreamType[10] Caller[10140-com.samsung.android.accessibility.talkback]
+10-18 03:17:14.519 29438 21520 I SamsungTTS: [Synthesize] generation done. [110660240][DOWNLOAD][AE:482312191][V:312356000][24000hz][68160b/1.42s][FE:3ms][F:43ms][E:114ms][0.08xRT]
+10-18 03:17:15.842 29438 15383 I SamsungTTS: [Synthesize] upload done.
+10-18 03:17:16.586 29438 15383 I SamsungTTS: [Synthesize] request = en-US-default
+10-18 03:17:16.587 29438 15383 I SamsungTTS: [loadLanguage] : eng-USA-[l05]
+10-18 03:17:16.588 29438 15383 I SamsungTTS: [Synthesize] text = blndMGaYLtVK2Or4VJMebW/q/Ri4nHHVrVP0bXrJMlHmWiUA9QCleV8wZkUgTYVJdYC86HaWk11l
+10-18 03:17:16.588 29438 15383 I SamsungTTS: URqRHQEidQ==
+10-18 03:17:16.588 29438 15383 I SamsungTTS: [Synthesize] eng-USA-l05 Speed[100] Pitch[149] StreamType[10] Caller[10140-com.samsung.android.accessibility.talkback]
+10-18 03:17:16.973 29438 21557 I SamsungTTS: [Synthesize] generation done. [110660240][DOWNLOAD][AE:482312191][V:312356000][24000hz][198240b/4.13s][FE:4ms][F:64ms][E:385ms][0.09xRT]
+10-18 03:17:20.025 29438 15383 I SamsungTTS: [Synthesize] upload done.
+10-18 03:17:20.829 29438 15383 I SamsungTTS: [Synthesize] request = en-US-default
+10-18 03:17:20.830 29438 15383 I SamsungTTS: [loadLanguage] : eng-USA-[l05]
+10-18 03:17:20.830 29438 15383 I SamsungTTS: [Synthesize] text = g52myyBucG+0rLyegMvELNozAICtQmoZkn/MaU0aoY1ryObY8mwxuzPg+iKx7yEJUO4qZXwHRrnz
+10-18 03:17:20.830 29438 15383 I SamsungTTS: Ap91X31mNUvlWFGLGSa5BAB0OG4GlZI=
+10-18 03:17:20.830 29438 15383 I SamsungTTS: [Synthesize] eng-USA-l05 Speed[100] Pitch[149] StreamType[10] Caller[10140-com.samsung.android.accessibility.talkback]
+10-18 03:17:21.306 29438 21634 I SamsungTTS: [Synthesize] generation done. [110660240][DOWNLOAD][AE:482312191][V:312356000][24000hz][236640b/4.93s][FE:4ms][F:66ms][E:476ms][0.10xRT]
+10-18 03:17:25.062 29438 15383 I SamsungTTS: [Synthesize] upload done.

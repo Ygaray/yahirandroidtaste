@@ -1,0 +1,28 @@
+# TalkBack speech observation: r4-c1-fclick-6
+# trigger: adb shell "am broadcast -a com.example.yat28obs.ACT --es text Show --es act click --ei x 217 --ei y 1488"   frames: 50 (screencap back to back, ~0.3 s apart)   host-start 1792315198.769594015 device-clock 1792315198 host-clock 1792315198
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.5s f01: (no overlay)
+t+1.1s f03: Bottom Sheet
+t+2.6s f08: Couldn't undo: Item changed since, Card deleted changed since
+t+6.7s f21: Drag handle
+t+8.4s f26: Double-tap to activate, Actions available, u fingers to view
+t+8.7s f27: Double-tap to activate, Actions available, use Tap with 3 fingers to view
+t+16.0s f50: (no overlay)
+## observer events, TTS synth requests (the Samsung TTS log carries the spoken text encrypted, only the audio length is readable) and TalkBack speech-controller audio-focus requests (one request per spoken utterance), device clock
+10-18 03:19:59.108 I/P28A    (22061): event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] desc=null cls=android.view.View srcLive=2 srcText=null srcLabel=Couldn't undo: Item changed since, Card deleted changed since srcStateDesc=nu
+10-18 03:19:59.133 I/MediaFocusControl( 2393): requestAudioFocus() from uid/pid 10140/25019 AA=USAGE_ASSISTANCE_ACCESSIBILITY/CONTENT_TYPE_SPEECH SpeechController$5 callingPack=com.samsung.android.accessibility.talkback req=3 flags=0x0 sdk=
+10-18 03:19:59.142 I/SamsungTTS(29438): [Synthesize] text = aFFcw8ly5dy3IOmh1KamMA==
+10-18 03:19:59.259 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][68160b/1.42s]
+10-18 03:19:59.378 I/P28A    (22061): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=0 text=[] desc=null cls=androidx.compose.material3.ModalBottomSheetDialogWrapper srcLive=0 srcText=null srcLabel= srcStateDesc=null
+10-18 03:19:59.411 I/P28A    (22061): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=0 text=[] desc=null cls=androidx.compose.material3.ModalBottomSheetDialogWrapper srcLive=0 srcText=null srcLabel= srcStateDesc=null
+10-18 03:19:59.509 I/P28A    (22061): event type=TYPE_WINDOW_STATE_CHANGED changeTypes=16 text=[Bottom Sheet] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Drag handle / Logged 2 items / Undo all (2) / Card deleted / Tag r
+10-18 03:19:59.699 I/P28A    (22061): event type=TYPE_WINDOW_CONTENT_CHANGED changeTypes=1 text=[] desc=null cls=android.view.View srcLive=2 srcText=null srcLabel=Couldn't undo: Item changed since, Card deleted changed since / Couldn't undo
+10-18 03:19:59.743 I/P28A    (22061): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Drag handle srcStateDesc=null
+10-18 03:20:00.683 I/SamsungTTS(29438): [Synthesize] text = blndMGaYLtVK2Or4VJMebW/q/Ri4nHHVrVP0bXrJMlHmWiUA9QCleV8wZkUgTYVJdYC86HaWk11l
+10-18 03:20:01.099 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][198240b/4.13s]
+10-18 03:20:04.941 I/SamsungTTS(29438): [Synthesize] text = jmHfT2d1qRGAwgO1gXhY7Q==
+10-18 03:20:05.096 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][75360b/1.57s]
+10-18 03:20:06.614 I/SamsungTTS(29438): [Synthesize] text = g52myyBucG+0rLyegMvELNozAICtQmoZkn/MaU0aoY1ryObY8mwxuzPg+iKx7yEJUO4qZXwHRrnz
+10-18 03:20:07.097 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][236640b/4.93s]
+10-18 03:20:11.665 I/MediaFocusControl( 2393): abandonAudioFocus() from uid/pid 10140/25019 SpeechController$5 callingPack=com.samsung.android.accessibility.talkback
+10-18 03:20:11.665 D/MediaFocusControl( 2393): abandonAudioFocus, clientId = android.media.AudioManager@c544e21com.google.android.accessibility.utils.output.SpeechControllerImpl$5@e398246

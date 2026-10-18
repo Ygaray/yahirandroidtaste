@@ -1,0 +1,24 @@
+# TalkBack speech observation: r4-en-undo-child-doubletap
+# trigger: adb shell "nohup sh -c 'input tap 448 1150; input tap 448 1150' >/dev/null 2>&1 &"   frames: 24 (screencap back to back, ~0.3 s apart)   host-start 1792312372.118205141 device-clock 1792312371 host-clock 1792312372
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: Double-tap to activate
+t+0.7s f02: (no overlay)
+t+1.2s f04: Back, Button
+t+3.2s f11: Double-tap to activate
+t+5.2s f18: Burst three
+## observer events, TTS synth requests (the Samsung TTS log carries the spoken text encrypted, only the audio length is readable) and TalkBack speech-controller audio-focus requests (one request per spoken utterance), device clock
+10-18 02:32:52.218 I/MediaFocusControl( 2393): abandonAudioFocus() from uid/pid 10140/25019 SpeechController$5 callingPack=com.samsung.android.accessibility.talkback
+10-18 02:32:52.218 D/MediaFocusControl( 2393): abandonAudioFocus, clientId = android.media.AudioManager@e46bde9com.google.android.accessibility.utils.output.SpeechControllerImpl$5@d320a6e
+10-18 02:32:52.605 I/P28A    (22061): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Back srcStateDesc=null
+10-18 02:32:52.607 I/MediaFocusControl( 2393): requestAudioFocus() from uid/pid 10140/25019 AA=USAGE_ASSISTANCE_ACCESSIBILITY/CONTENT_TYPE_SPEECH SpeechController$5 callingPack=com.samsung.android.accessibility.talkback req=3 flags=0x0 sdk=
+10-18 02:32:52.613 I/SamsungTTS(29438): [Synthesize] text = i4c7EO5q1joJNJNMA1dwdA==
+10-18 02:32:52.731 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][72960b/1.52s]
+10-18 02:32:54.190 I/MediaFocusControl( 2393): abandonAudioFocus() from uid/pid 10140/25019 SpeechController$5 callingPack=com.samsung.android.accessibility.talkback
+10-18 02:32:54.190 D/MediaFocusControl( 2393): abandonAudioFocus, clientId = android.media.AudioManager@e46bde9com.google.android.accessibility.utils.output.SpeechControllerImpl$5@d320a6e
+10-18 02:32:54.609 I/MediaFocusControl( 2393): requestAudioFocus() from uid/pid 10140/25019 AA=USAGE_ASSISTANCE_ACCESSIBILITY/CONTENT_TYPE_SPEECH SpeechController$5 callingPack=com.samsung.android.accessibility.talkback req=3 flags=0x0 sdk=
+10-18 02:32:54.620 I/SamsungTTS(29438): [Synthesize] text = g52myyBucG+0rLyegMvELEuhkriL4ur05ZQvIln21oc=
+10-18 02:32:54.805 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][99360b/2.07s]
+10-18 02:32:56.785 I/SamsungTTS(29438): [Synthesize] text = RPH5HeeBCFLktr3hu0FUkQ==
+10-18 02:32:56.916 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][68160b/1.42s]
+10-18 02:32:58.268 I/MediaFocusControl( 2393): abandonAudioFocus() from uid/pid 10140/25019 SpeechController$5 callingPack=com.samsung.android.accessibility.talkback
+10-18 02:32:58.269 D/MediaFocusControl( 2393): abandonAudioFocus, clientId = android.media.AudioManager@e46bde9com.google.android.accessibility.utils.output.SpeechControllerImpl$5@d320a6e

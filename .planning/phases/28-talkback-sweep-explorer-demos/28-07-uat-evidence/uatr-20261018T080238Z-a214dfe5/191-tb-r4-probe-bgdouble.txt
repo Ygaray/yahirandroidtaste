@@ -1,0 +1,20 @@
+# TalkBack speech observation: r4-probe-bgdouble
+# trigger: adb shell "nohup sh -c 'input tap 217 1480; input tap 217 1480' >/dev/null 2>&1 &"   frames: 40 (screencap back to back, ~0.3 s apart)   host-start 1792311163.552085093 device-clock 1792311163 host-clock 1792311163
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: Yat28
+t+0.7s f02: Back, Button
+t+1.2s f04: Bottom Sheet
+t+3.3s f11: (no overlay)
+t+3.7s f12: Couldn't undo: Item changed since, Card deleted changed since
+t+7.9s f26: Double-tap to activate, Actions available, use Tap with 3 fingers to view
+## observer events, TTS synth requests (the Samsung TTS log carries the spoken text encrypted, only the audio length is readable) and TalkBack speech-controller audio-focus requests (one request per spoken utterance), device clock
+10-18 02:12:43.601 I/SamsungTTS(29438): [Synthesize] text = i4c7EO5q1joJNJNMA1dwdA==
+10-18 02:12:43.740 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][72960b/1.52s]
+10-18 02:12:44.464 I/SamsungTTS(29438): [Synthesize] text = aFFcw8ly5dy3IOmh1KamMA==
+10-18 02:12:44.588 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][68160b/1.42s]
+10-18 02:12:46.649 I/SamsungTTS(29438): [Synthesize] text = blndMGaYLtVK2Or4VJMebW/q/Ri4nHHVrVP0bXrJMlHmWiUA9QCleV8wZkUgTYVJdYC86HaWk11l
+10-18 02:12:47.044 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][198240b/4.13s]
+10-18 02:12:50.906 I/SamsungTTS(29438): [Synthesize] text = g52myyBucG+0rLyegMvELNozAICtQmoZkn/MaU0aoY1ryObY8mwxuzPg+iKx7yEJUO4qZXwHRrnz
+10-18 02:12:51.384 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][236640b/4.93s]
+10-18 02:12:55.944 I/MediaFocusControl( 2393): abandonAudioFocus() from uid/pid 10140/25019 SpeechController$5 callingPack=com.samsung.android.accessibility.talkback
+10-18 02:12:55.945 D/MediaFocusControl( 2393): abandonAudioFocus, clientId = android.media.AudioManager@e972acecom.google.android.accessibility.utils.output.SpeechControllerImpl$5@ebc2def

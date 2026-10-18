@@ -1,0 +1,5 @@
+# TalkBack speech observation: r4-sil-alone2
+# trigger: adb shell "nohup sh -c 'input tap 217 1488; input tap 217 1488' >/dev/null 2>&1 &"   frames: 40 (screencap back to back, ~0.3 s apart)   host-start 1792314990.351287985 device-clock 1792314990 host-clock 1792314990
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.5s f01: (no overlay)
+## observer events, TTS synth requests (the Samsung TTS log carries the spoken text encrypted, only the audio length is readable) and TalkBack speech-controller audio-focus requests (one request per spoken utterance), device clock

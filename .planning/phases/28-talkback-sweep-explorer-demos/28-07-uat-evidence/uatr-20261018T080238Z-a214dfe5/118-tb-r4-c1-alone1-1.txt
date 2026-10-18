@@ -1,0 +1,8 @@
+# TalkBack speech observation: r4-c1-alone1-1
+# trigger: adb shell "input tap 217 1480"   frames: 50 (screencap back to back, ~0.3 s apart)   host-start 1792311091.190739429 device-clock 1792311090 host-clock 1792311091
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: Double-tap to activate, Actions available, use Tap with 3 fingers to view
+t+6.1s f20: (no overlay)
+## observer events, TTS synth requests (the Samsung TTS log carries the spoken text encrypted, only the audio length is readable) and TalkBack speech-controller audio-focus requests (one request per spoken utterance), device clock
+10-18 02:11:34.360 I/MediaFocusControl( 2393): abandonAudioFocus() from uid/pid 10140/25019 SpeechController$5 callingPack=com.samsung.android.accessibility.talkback
+10-18 02:11:34.360 D/MediaFocusControl( 2393): abandonAudioFocus, clientId = android.media.AudioManager@e972acecom.google.android.accessibility.utils.output.SpeechControllerImpl$5@ebc2def

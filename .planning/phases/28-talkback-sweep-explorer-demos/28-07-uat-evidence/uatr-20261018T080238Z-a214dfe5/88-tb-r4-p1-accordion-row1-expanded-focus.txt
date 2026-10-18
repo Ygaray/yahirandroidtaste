@@ -1,0 +1,13 @@
+# TalkBack speech observation: r4-p1-accordion-row1-expanded-focus
+# trigger: adb shell "nohup sh -c "am broadcast -a com.example.yat28obs.ACT --es text 'Accordion row 1' --es act focus --ei idx 0 " >/dev/null 2>&1 &"   frames: 24 (screencap back to back, ~0.3 s apart)   host-start 1792313573.795384342 device-clock 1792313573 host-clock 1792313573
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.4s f01: (no overlay)
+t+0.7s f02: FUE El JL Vv Tap to open row 2 Total Expanded, Accordion row 1, Tap to open row 1, 250, Total, Button
+t+6.6s f22: F baad ¥ baad Fah | | ap to open row 2 Tot it Double-tap to Toggle row 1 ¢
+t+6.9s f23: F baad ¥ baad Fah | | ap to open row 2 Tot {| Double-tap to Toggle row 1 <
+## observer events and TTS synth requests (device clock; the Samsung TTS log carries the spoken text encrypted, only the audio length is readable)
+10-18 02:52:53.696 I/P28A    (22061): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Accordion row 1 / Tap to open row 1 / 250 / Total srcStateDesc=Expanded
+10-18 02:52:53.732 I/SamsungTTS(29438): [Synthesize] text = v9qqvFvK9L7gFm0AKv+5A/1Je62U6Rb7Z7esTlCCGZfEe6dN2lGqR61Im/+jNF3An+I1yWtr6M+1
+10-18 02:52:54.250 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][260640b/5.43s]
+10-18 02:52:59.746 I/SamsungTTS(29438): [Synthesize] text = UzuaE54q0vYduY9oHL0xUY2pprRkcNq7qsXDLK/rpOE=
+10-18 02:52:59.962 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][116160b/2.42s]

@@ -1,0 +1,16 @@
+# Phase 28 Gate-1 re-verification 3, C-1: rounds that are NOT valid showings, and what I learned about driving TalkBack alone
+
+A showing is valid only if the observation window (logcat cleared, overlay frames from the trigger) contains the sheet APPEARANCE. In this TalkBack
+(Samsung 15.1.01.1) an injected `input tap` on the "Show sheet" button OPENS the sheet at the FIRST tap in several states (right after the BACK that
+dismissed the previous showing; or right after a warm focus tap). So the arrangement of the earlier runs ("one real tap to focus, wait 6 s, two real taps")
+often opened the sheet with the SETUP tap, before the window started, and then observed the aftermath of the second pair of taps landing on the open sheet.
+The tally therefore counts only rounds whose transcript contains "Bottom Sheet".
+
+Excluded rounds (kept as signed transcripts, none of them is a failure of the app):
+- out-r4-c1-alone-1..4: first arrangement (setup tap + 6 s + two taps, window after the setup tap). Round 1 and 3 show the tail of a showing that began before the window (message in the overlay at t+0.4, then the hint); rounds 2 and 4 show nothing because the sheet was already open and the taps landed on it.
+- out-r4-c1-alone1-1 and out-r4-c1-alone1-11: single tap on an already focused button; the sheet had opened earlier or did not open in the window; only the focus hint is spoken.
+- out-r4-c1-alone2-11 (and the first, overwritten, non-background alone2-1 run): two quick taps while the sheet was already open (opened by the warm tap 5 s before); no speech at all in the window, which is what a tap on an open sheet region gives. I reproduced that sequence three times (repro-zero, repro3, and the original) and each time the preceding warm tap or the single tap had already opened the sheet; in repro3 the alone1 window caught the message at t+0.4 and the hint at t+3.5, i.e. the tail of the showing opened by the warm tap. A control with the same gestures on another demo sheet (out-r4-ctl-alone1/2) speaks "Bottom Sheet", "Drag handle" and the hint normally.
+- out-r4-sil-alone1, out-r4-sil-alone2: the repro3 run described above.
+- out-r4-probe-*: kept; the two probes whose windows contain the appearance are counted in the tally ("probe" group).
+
+Explicit focus: with TalkBack alone, taps on the message node (45,1942 to 1035,2136) speak nothing (out-r4-c1-alone-explicit-focus-message-1..3): the node has no click action, an injected tap is a click, not a touch-exploration focus, and one-finger swipe navigation cannot be injected on this device (earlier runs). So the explicit-focus-by-swipe step is physical and stays a Gate-2 item. The explicit focus was driven with the observer bound (ACTION_ACCESSIBILITY_FOCUS on the node, out-r4-c1-explicit-focus-message-observer): TalkBack speaks the message ONCE (one 4.13 s utterance, encrypted text blndMGaYLtVK2Or4... identical to the utterance spoken at the sheet appearance) and no role ("Button" absent: no click action).

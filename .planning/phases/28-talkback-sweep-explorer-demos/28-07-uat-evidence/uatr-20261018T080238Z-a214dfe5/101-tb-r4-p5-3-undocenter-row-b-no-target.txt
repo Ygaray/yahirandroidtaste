@@ -1,0 +1,13 @@
+# TalkBack speech observation: r4-p5-3-undocenter-row-B-no-target
+# trigger: adb shell "nohup sh -c "am broadcast -a com.example.yat28obs.ACT --es text '*' --es act focus --ei idx 0 --ei x 200 --ei y 1500" >/dev/null 2>&1 &"   frames: 24 (screencap back to back, ~0.3 s apart)   host-start 1792313702.330616118 device-clock 1792313702 host-clock 1792313702
+## overlay transcript (OCR of the TalkBack 'Display speech output' overlay, one line per change; t+ = host seconds after the trigger returned)
+t+0.5s f01: (no overlay)
+t+0.8s f02: Renamed item B, 1 minute ago
+t+3.4s f11: (no overlay)
+## observer events, TTS synth requests (the Samsung TTS log carries the spoken text encrypted, only the audio length is readable) and TalkBack speech-controller audio-focus requests (one request per spoken utterance), device clock
+10-18 02:55:02.369 I/P28A    (22061): event type=TYPE_VIEW_ACCESSIBILITY_FOCUSED changeTypes=0 text=[] desc=null cls=android.view.View srcLive=0 srcText=null srcLabel=Renamed item B / 1 minute ago / Undo srcStateDesc=null
+10-18 02:55:02.387 I/MediaFocusControl( 2393): requestAudioFocus() from uid/pid 10140/25019 AA=USAGE_ASSISTANCE_ACCESSIBILITY/CONTENT_TYPE_SPEECH SpeechController$5 callingPack=com.samsung.android.accessibility.talkback req=3 flags=0x0 sdk=
+10-18 02:55:02.408 I/SamsungTTS(29438): [Synthesize] text = nFQFGwl6hVLZo1zhVGmPRikdRjTaGMyeTFa1rf8dIPI=
+10-18 02:55:02.650 I/SamsungTTS(29438): [Synthesize] generation done. [DOWNLOAD][24000hz][130560b/2.72s]
+10-18 02:55:05.260 I/MediaFocusControl( 2393): abandonAudioFocus() from uid/pid 10140/25019 SpeechController$5 callingPack=com.samsung.android.accessibility.talkback
+10-18 02:55:05.260 D/MediaFocusControl( 2393): abandonAudioFocus, clientId = android.media.AudioManager@dcc590ccom.google.android.accessibility.utils.output.SpeechControllerImpl$5@e6bc255

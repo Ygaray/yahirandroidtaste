@@ -1,0 +1,16 @@
+--- oracle run 1
+OK density
+OK font_scale
+OK enabled_accessibility_services
+OK accessibility_enabled
+OK touch_exploration_enabled
+RESTORED=yes
+exit=0
+--- oracle run 2
+OK density
+OK font_scale
+OK enabled_accessibility_services
+OK accessibility_enabled
+OK touch_exploration_enabled
+RESTORED=yes
+exit=0

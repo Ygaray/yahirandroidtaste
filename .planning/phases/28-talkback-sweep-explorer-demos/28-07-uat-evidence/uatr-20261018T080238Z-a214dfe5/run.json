@@ -1,0 +1,1891 @@
+{
+  "schema": "gsd.uat-run/v1",
+  "run_id": "uatr-20261018T080238Z-a214dfe5",
+  "status": "finished",
+  "phase": "28",
+  "plan": "07",
+  "prefix": "28-07",
+  "surface": "android",
+  "project": "sha:df197faf5105af0ed516c727e2aafb44f5ef5743:.",
+  "phase_dir": "phases/28-talkback-sweep-explorer-demos",
+  "required_surface": {
+    "surface": "android",
+    "source": "marker:AGENT-DEVICE-TESTING.md"
+  },
+  "surface_override": null,
+  "device": {
+    "addr": "R5CT10XNKQN",
+    "serial": "R5CT10XNKQN",
+    "model": "SM-S908U",
+    "label": null
+  },
+  "app": {
+    "package": "com.example.yat28head",
+    "apk_path": "/data/app/~~PEAngR-67DTsghcbveJ6ag==/com.example.yat28head-TgK4P578lNjCsqi6VF5QrA==/base.apk",
+    "apk_sha256": "403ed64cfe02e5a9c0179c1367145460bec3ce8d3243f396ace7e2e2c1da4bb5"
+  },
+  "head_at_start": "ca69f927d5d27171e4590ecfe80bec29f35ee1f8",
+  "started_at": "2026-10-18T08:02:38.895Z",
+  "finished_at": "2026-10-18T09:31:03.967Z",
+  "capture_count": 206,
+  "captures": [
+    {
+      "label": "r4-de-deck-fanned-after-tap-on-collapsed-strip",
+      "kind": "screen",
+      "source": "cli",
+      "file": "01-r4-de-deck-fanned-after-tap-on-collapsed-strip.png",
+      "sha256": "a7ab6664ed598e42d5fa5b4f2ca9fd4fee6196b9822c88a7bf1453fa69fdd824",
+      "bytes": 168340,
+      "at": "2026-10-18T08:37:26.763Z"
+    },
+    {
+      "label": "r4-en-collapsed-deck-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "02-r4-en-collapsed-deck-observer-dump.log",
+      "sha256": "8e7fd14b1e5575e33514b9ec2fdd1418c252050bd5b89e87d8bad28722d6253d",
+      "bytes": 13793,
+      "at": "2026-10-18T08:46:50.753Z"
+    },
+    {
+      "label": "r4-en-collapsed-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "03-r4-en-collapsed-deck-screen.png",
+      "sha256": "9b945791fd1b303933a6f1f8cb116364d51672d855eef614bde21a511a7ccbbb",
+      "bytes": 122479,
+      "at": "2026-10-18T08:46:51.478Z"
+    },
+    {
+      "label": "r4-de-collapsed-deck-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "04-r4-de-collapsed-deck-observer-dump.log",
+      "sha256": "ff0af6a38a59174f3388238994862f51a86228cbaacf6729510cc4f44b830dbe",
+      "bytes": 14946,
+      "at": "2026-10-18T08:47:21.340Z"
+    },
+    {
+      "label": "r4-de-collapsed-deck-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "05-r4-de-collapsed-deck-screen.png",
+      "sha256": "f8c40d239beb43f7ef452e0c4ea6dcecf386ca57df64673ef30875a34c0c04fc",
+      "bytes": 149222,
+      "at": "2026-10-18T08:47:22.058Z"
+    },
+    {
+      "label": "r4-p3-keylifecycle-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "06-r4-p3-keylifecycle-observer-dump.log",
+      "sha256": "40fc9efd63edfa09dfc5a289cddefd5aa90c4e228e4af9c4097ca3169f950718",
+      "bytes": 19384,
+      "at": "2026-10-18T08:48:41.532Z"
+    },
+    {
+      "label": "r4-p1-receiptrow-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "07-r4-p1-receiptrow-observer-dump.log",
+      "sha256": "bb38832329bed40a56d6c8aebd4d7a9a638ac8d8b46a90ed2626d1d8061e0da1",
+      "bytes": 16941,
+      "at": "2026-10-18T08:51:17.387Z"
+    },
+    {
+      "label": "r4-p5-undocenter-rows-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "08-r4-p5-undocenter-rows-observer-dump.log",
+      "sha256": "1cce33b1a2666dfbef2882137f7ed2788e4e45ace1bcf9d824f6fc9317e4e5c6",
+      "bytes": 27604,
+      "at": "2026-10-18T08:54:26.986Z"
+    },
+    {
+      "label": "r4-p5-undocenter-rows-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "09-r4-p5-undocenter-rows-screen.png",
+      "sha256": "ac872aa9800881d0106cb512a3a7326ff0d1164c6e5f32f017be0eb19fa86a8a",
+      "bytes": 175224,
+      "at": "2026-10-18T08:54:27.697Z"
+    },
+    {
+      "label": "r4-p4-group-header-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "10-r4-p4-group-header-observer-dump.log",
+      "sha256": "a79eba508761d48e930874d63282d67aa9d95991aecf6f5f989801a8f26a5690",
+      "bytes": 33025,
+      "at": "2026-10-18T08:55:49.070Z"
+    },
+    {
+      "label": "r4-c2-hold-peek-row-a-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "11-r4-c2-hold-peek-row-a-screen.png",
+      "sha256": "b9d6e50c3966763497aa31baf6598f4731b7741923bd70a997de9e5079be9173",
+      "bytes": 167566,
+      "at": "2026-10-18T08:57:15.406Z"
+    },
+    {
+      "label": "r4-c2-undo-row-a-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "12-r4-c2-undo-row-a-screen.png",
+      "sha256": "e2db14ac68b111c8c69eca05a518d97d2a58b131474c659840c40f2377ea340a",
+      "bytes": 165240,
+      "at": "2026-10-18T08:57:32.443Z"
+    },
+    {
+      "label": "r4-c2-de-tap-row-a-opened-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "13-r4-c2-de-tap-row-a-opened-screen.png",
+      "sha256": "a54a75188f534dd337e5dd66d040005a0fe1ae7a72a9145beea42fd5ad207d13",
+      "bytes": 137859,
+      "at": "2026-10-18T08:58:12.969Z"
+    },
+    {
+      "label": "r4-c2-en-tap-row-a-opened-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "14-r4-c2-en-tap-row-a-opened-screen.png",
+      "sha256": "1eae0ce709b2a67d49cd6c7a278baa9ca59b7919969b2004dc7a23b91918b7f1",
+      "bytes": 167511,
+      "at": "2026-10-18T08:58:28.859Z"
+    },
+    {
+      "label": "r4-c2-keyboard-enter-row-a-opened-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "15-r4-c2-keyboard-enter-row-a-opened-screen.png",
+      "sha256": "34c552c61ed94253cb7e1dda882c07887cf133f73843cd8856edcf50d2a380d1",
+      "bytes": 182939,
+      "at": "2026-10-18T09:00:05.639Z"
+    },
+    {
+      "label": "r4-en-undo-event-front-card-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "16-r4-en-undo-event-front-card-observer-dump.log",
+      "sha256": "9d04206fb68ad11bac99e9b370407b92c9b705bcefb719d3e9063ab0805d49db",
+      "bytes": 19774,
+      "at": "2026-10-18T09:01:36.486Z"
+    },
+    {
+      "label": "r4-en-undo-event-front-card-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "17-r4-en-undo-event-front-card-screen.png",
+      "sha256": "e1303d25b7cffb4e4ced8f5bef8c30d6ebe4b076dc166e1f19aa415e37121c61",
+      "bytes": 151668,
+      "at": "2026-10-18T09:01:37.310Z"
+    },
+    {
+      "label": "r4-en-deck-fanned-after-tap-on-collapsed-strip-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "18-r4-en-deck-fanned-after-tap-on-collapsed-strip-screen.png",
+      "sha256": "321a8b10c527bc165bc94821338ba06c00a9d2c1081bd07f7555e89d4931dd1c",
+      "bytes": 154652,
+      "at": "2026-10-18T09:01:47.044Z"
+    },
+    {
+      "label": "r4-c1-talkback-alone-showing-tts-log",
+      "kind": "log",
+      "source": "cli",
+      "file": "19-r4-c1-talkback-alone-showing-tts-log.log",
+      "sha256": "5d274f1006e8d8e16df1b1a04e4287f95bd750eaef28a2e553dbec290f1b6c57",
+      "bytes": 2898,
+      "at": "2026-10-18T09:19:28.073Z"
+    },
+    {
+      "label": "r4-c1-talkback-alone-sheet-open-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "20-r4-c1-talkback-alone-sheet-open-screen.png",
+      "sha256": "a478ffe76740e39ffd3b0b0f40957cbd55eecfae8e49140bf05214e11471abaf",
+      "bytes": 189248,
+      "at": "2026-10-18T09:19:28.967Z"
+    },
+    {
+      "label": "r4-c1-sheet-open-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "21-r4-c1-sheet-open-observer-dump.log",
+      "sha256": "be73a105ed37db81a46238a5dac273c564479f52413ca9a6bc9e47eefb514f17",
+      "bytes": 11297,
+      "at": "2026-10-18T09:19:49.286Z"
+    },
+    {
+      "label": "r4-c1-fclick-showing-observer-events-and-tts",
+      "kind": "log",
+      "source": "cli",
+      "file": "22-r4-c1-fclick-showing-observer-events-and-tts.log",
+      "sha256": "f6955f7251833d7c88934595697f7dd7348a5a4e555b0f592051809c1d79e76c",
+      "bytes": 13826,
+      "at": "2026-10-18T09:21:15.679Z"
+    },
+    {
+      "label": "r4-en-after-undo-doubletap-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "23-r4-en-after-undo-doubletap-observer-dump.log",
+      "sha256": "a7061fe8697dcb638aab29a895ca4f882770f074b950a9391e5dfeca21439a4c",
+      "bytes": 19880,
+      "at": "2026-10-18T09:23:32.575Z"
+    },
+    {
+      "label": "r4-en-after-undo-doubletap-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "24-r4-en-after-undo-doubletap-screen.png",
+      "sha256": "0f73c25f88d5c8bf3afcfdbc9b633ce7b599af088fc27b68cdb6a7c2d3e88e53",
+      "bytes": 136159,
+      "at": "2026-10-18T09:23:33.775Z"
+    },
+    {
+      "label": "r4-en-after-undo-doubletap-readouts-observer-dump",
+      "kind": "log",
+      "source": "cli",
+      "file": "25-r4-en-after-undo-doubletap-readouts-observer-dump.log",
+      "sha256": "c5909de8276ac9832d368101adfdefd61cf1a83fba98f139cbb214b98b9aff64",
+      "bytes": 24153,
+      "at": "2026-10-18T09:23:45.581Z"
+    },
+    {
+      "label": "r4-en-after-undo-doubletap-last-result-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "26-r4-en-after-undo-doubletap-last-result-ui.xml",
+      "sha256": "fe6c7607d3f6e50f90a735d38cfbd749e52879ca2330148f903877dea2cccc3c",
+      "bytes": 18638,
+      "at": "2026-10-18T09:23:58.800Z"
+    },
+    {
+      "label": "r4-en-oldest-undo-child-keyboard-enter-ui",
+      "kind": "ui",
+      "source": "cli",
+      "file": "27-r4-en-oldest-undo-child-keyboard-enter-ui.xml",
+      "sha256": "6ad01204bb2ee68be82420d7c515e1120f426d7273360b33d35a56acd96396de",
+      "bytes": 18877,
+      "at": "2026-10-18T09:26:52.618Z"
+    },
+    {
+      "label": "r4-en-oldest-undo-child-keyboard-enter-screen",
+      "kind": "screen",
+      "source": "cli",
+      "file": "28-r4-en-oldest-undo-child-keyboard-enter-screen.png",
+      "sha256": "990747118af6cd77e4e86d3be96c06f9e0dc3c26e8f07c0f2777605ff4664f6c",
+      "bytes": 118456,
+      "at": "2026-10-18T09:26:53.673Z"
+    },
+    {
+      "label": "tb-r4-c1-alone1-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "29-tb-r4-c1-alone1-1.txt",
+      "sha256": "1cd02cb3e5ae4262ba8b482a5b0dc75c07b2adb97e8cd00fb94c0e197cbdc517",
+      "bytes": 1059,
+      "at": "2026-10-18T09:29:42.970Z"
+    },
+    {
+      "label": "tb-r4-c1-alone1-11",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "30-tb-r4-c1-alone1-11.txt",
+      "sha256": "02532e05b471f2b98b1bc9e42ea966787976e7e2dac5fb07715e561c3cdbe327",
+      "bytes": 1334,
+      "at": "2026-10-18T09:29:43.465Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "31-tb-r4-c1-alone2-1.txt",
+      "sha256": "5f84a362e7dc90459f7fe1b1b5eb006540d9ebdea652928e972a953f3dc65212",
+      "bytes": 2745,
+      "at": "2026-10-18T09:29:44.050Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "32-tb-r4-c1-alone2-2.txt",
+      "sha256": "5af024f82cbff57af155a42e8bf5f5a8a9ad414d19e4148406a4e122b2713003",
+      "bytes": 2097,
+      "at": "2026-10-18T09:29:44.502Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "33-tb-r4-c1-alone2-3.txt",
+      "sha256": "3eea223cb25b65aec504bfad54adb3c68042e39c64c65447acd25ca22bbdb346",
+      "bytes": 2115,
+      "at": "2026-10-18T09:29:44.975Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "34-tb-r4-c1-alone2-4.txt",
+      "sha256": "8d155de57f01c366cdc28e6e77ace9fe05547943438a7cdb9295a3cad7463650",
+      "bytes": 2097,
+      "at": "2026-10-18T09:29:45.368Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-5",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "35-tb-r4-c1-alone2-5.txt",
+      "sha256": "6fde2287efcdd4d684d2dd7c81ff73c19c5e5fc786f6c052547973f3bf325381",
+      "bytes": 2115,
+      "at": "2026-10-18T09:29:45.755Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-6",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "36-tb-r4-c1-alone2-6.txt",
+      "sha256": "8ff9611f82f56bc1059390f7ea119ceaa313bdd4d8a9823ea24768b93fba6a29",
+      "bytes": 2270,
+      "at": "2026-10-18T09:29:46.136Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-7",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "37-tb-r4-c1-alone2-7.txt",
+      "sha256": "e6d25195888141bc91c63d7ae4200a15b2a53bc96db72e263cc5c14db86319d3",
+      "bytes": 2141,
+      "at": "2026-10-18T09:29:46.496Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-11",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "38-tb-r4-c1-alone2-11.txt",
+      "sha256": "afc3a2fa0dcf04b19bc44d12811fb034597ce42b97d42b3938ebaa2a860e4225",
+      "bytes": 672,
+      "at": "2026-10-18T09:29:47.010Z"
+    },
+    {
+      "label": "tb-r4-c1-alonef-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "39-tb-r4-c1-alonef-1.txt",
+      "sha256": "59c405bcbc76f391f7beaf050ab1849f9c866bc8f30ef884b5b69e4607fd3b60",
+      "bytes": 2152,
+      "at": "2026-10-18T09:29:47.623Z"
+    },
+    {
+      "label": "tb-r4-c1-alonef-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "40-tb-r4-c1-alonef-2.txt",
+      "sha256": "ee3b4ec17a10e201c823acd640f8e3fd491ba440a43b5719468ec6953d706e1a",
+      "bytes": 2383,
+      "at": "2026-10-18T09:29:48.190Z"
+    },
+    {
+      "label": "tb-r4-c1-alonef-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "41-tb-r4-c1-alonef-3.txt",
+      "sha256": "7561f7f3ff127f75e3bef16fc25ec2999baeb8d360da5cc426fda253a5639104",
+      "bytes": 2458,
+      "at": "2026-10-18T09:29:48.797Z"
+    },
+    {
+      "label": "tb-r4-c1-alonef-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "42-tb-r4-c1-alonef-4.txt",
+      "sha256": "f2ab1dcc450b8d63e129340427a4e6de8332407c655aa4ee38186bd56275a2cf",
+      "bytes": 2170,
+      "at": "2026-10-18T09:29:49.394Z"
+    },
+    {
+      "label": "tb-r4-c1-alonef-5",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "43-tb-r4-c1-alonef-5.txt",
+      "sha256": "a827d089c635174154c63cace742d21de39302c2a19630dda39993851a29e9ca",
+      "bytes": 2152,
+      "at": "2026-10-18T09:29:49.856Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "44-tb-r4-c1-alone-1.txt",
+      "sha256": "247c8ad775bd7090b0eb9deedc8af8d098d7ecee5cfb454ea834d91167112a67",
+      "bytes": 956,
+      "at": "2026-10-18T09:29:50.498Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "45-tb-r4-c1-alone-2.txt",
+      "sha256": "b913d9bad81168d151c137da1b0de00482fc7f737357153d95f184ec3960373b",
+      "bytes": 554,
+      "at": "2026-10-18T09:29:51.001Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "46-tb-r4-c1-alone-3.txt",
+      "sha256": "0a07ebe422ed8011105281cfba5b1549366f7733428f938868fab47438148fe1",
+      "bytes": 956,
+      "at": "2026-10-18T09:29:51.435Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "47-tb-r4-c1-alone-4.txt",
+      "sha256": "93cb2fc5a5d23e3b4b8ef7255f76252cc01d9e5bf771a0c1843a34242840201f",
+      "bytes": 638,
+      "at": "2026-10-18T09:29:51.912Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-explicit-focus-message-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "48-tb-r4-c1-alone-explicit-focus-message-1.txt",
+      "sha256": "9ed7ba7c1d5b4bdeff5f14ddba4bc63370499072b7fe418c77eeb8bbc6bc59d7",
+      "bytes": 673,
+      "at": "2026-10-18T09:29:52.431Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-explicit-focus-message-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "49-tb-r4-c1-alone-explicit-focus-message-2.txt",
+      "sha256": "b42cf4269be3970de4922ff95e1cdb5363ec2a59d6880c1566c2a86a406991ac",
+      "bytes": 673,
+      "at": "2026-10-18T09:29:53.094Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-explicit-focus-message-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "50-tb-r4-c1-alone-explicit-focus-message-3.txt",
+      "sha256": "025f63e693b0483a1d907a51379a7477c579a049d2bf8eacb3c9d11936bc2ec1",
+      "bytes": 673,
+      "at": "2026-10-18T09:29:53.686Z"
+    },
+    {
+      "label": "tb-r4-c1-cold-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "51-tb-r4-c1-cold-1.txt",
+      "sha256": "80bb5613da607123b9a808a579f9fad5208ec308a5a9c496ac73e6dcaa6110a5",
+      "bytes": 3263,
+      "at": "2026-10-18T09:29:54.264Z"
+    },
+    {
+      "label": "tb-r4-c1-cold-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "52-tb-r4-c1-cold-2.txt",
+      "sha256": "39f74bedcfb67e345e47a5e1484c88c1958988644b6f8385fefedafe4d7463cc",
+      "bytes": 3932,
+      "at": "2026-10-18T09:29:54.848Z"
+    },
+    {
+      "label": "tb-r4-c1-cold-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "53-tb-r4-c1-cold-3.txt",
+      "sha256": "9045b2c619b88b7950ea047fd9887562ae0c8222a3356b649c7b87208343a46f",
+      "bytes": 3445,
+      "at": "2026-10-18T09:29:55.331Z"
+    },
+    {
+      "label": "tb-r4-c1-explicit-focus-message-observer",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "54-tb-r4-c1-explicit-focus-message-observer.txt",
+      "sha256": "a61147c136385980b3b0aa4b5b085c6dd3e43072fcbe237e444f9e3efa6f78ba",
+      "bytes": 1936,
+      "at": "2026-10-18T09:29:55.859Z"
+    },
+    {
+      "label": "tb-r4-c1-fclick-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "55-tb-r4-c1-fclick-1.txt",
+      "sha256": "c40bd22126b43b51a2ccc725a468a64f0cfe92b517096d7406106448a72383de",
+      "bytes": 4126,
+      "at": "2026-10-18T09:29:56.305Z"
+    },
+    {
+      "label": "tb-r4-c1-fclick-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "56-tb-r4-c1-fclick-2.txt",
+      "sha256": "4870e20a09795b1142859788ef1a39202b46d180129b31a9ba0724aee62302fe",
+      "bytes": 4126,
+      "at": "2026-10-18T09:29:56.745Z"
+    },
+    {
+      "label": "tb-r4-c1-fclick-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "57-tb-r4-c1-fclick-3.txt",
+      "sha256": "8fabb60ec45943905cf5411aa5fe96a6b605aeb8e8c4b464501fbec0eaeedf64",
+      "bytes": 4190,
+      "at": "2026-10-18T09:29:57.421Z"
+    },
+    {
+      "label": "tb-r4-c1-fclick-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "58-tb-r4-c1-fclick-4.txt",
+      "sha256": "e09a6a37c164c4a0627b94ec92348dec0eb8b862c0721b0a414fb5b81cc6bed8",
+      "bytes": 3660,
+      "at": "2026-10-18T09:29:58.284Z"
+    },
+    {
+      "label": "tb-r4-c1-fclick-5",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "59-tb-r4-c1-fclick-5.txt",
+      "sha256": "139443f405ed90f7975d116f1398a35ae1f115e7c202e9036b65fe3840148dc7",
+      "bytes": 4367,
+      "at": "2026-10-18T09:29:58.787Z"
+    },
+    {
+      "label": "tb-r4-c1-fclick-6",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "60-tb-r4-c1-fclick-6.txt",
+      "sha256": "eabec04007b82eda0593d84ae1b5f80363df0e6ab1f29eb28b6a4059d48fe7e6",
+      "bytes": 3817,
+      "at": "2026-10-18T09:29:59.487Z"
+    },
+    {
+      "label": "tb-r4-c1-ftaps-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "61-tb-r4-c1-ftaps-1.txt",
+      "sha256": "6d81d28c6c3de7932e532661d84d682f7611c266a8e51f971dc1b7eaf88423fc",
+      "bytes": 4373,
+      "at": "2026-10-18T09:29:59.952Z"
+    },
+    {
+      "label": "tb-r4-c1-ftaps-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "62-tb-r4-c1-ftaps-2.txt",
+      "sha256": "425f6ef6b896b5bd26a54c2552856a70b8c7ef94918e46c001e2d506edfe7197",
+      "bytes": 4125,
+      "at": "2026-10-18T09:30:00.447Z"
+    },
+    {
+      "label": "tb-r4-c1-ftaps-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "63-tb-r4-c1-ftaps-3.txt",
+      "sha256": "423d83b1c8ebc3a3f5bcacee62b3cf322efa517fb662d28ad1097438e6bd6408",
+      "bytes": 4311,
+      "at": "2026-10-18T09:30:00.945Z"
+    },
+    {
+      "label": "tb-r4-c1-ftaps-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "64-tb-r4-c1-ftaps-4.txt",
+      "sha256": "bfb973f2082428fbbb1958bf470ed8a99337a7374f87c34d80b1270e0e3d5599",
+      "bytes": 4070,
+      "at": "2026-10-18T09:30:01.309Z"
+    },
+    {
+      "label": "tb-r4-ctl-alone1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "65-tb-r4-ctl-alone1.txt",
+      "sha256": "0145d73c837e4765625806153c225fdc93f8168ae9e25f71bdda7eed634ee49b",
+      "bytes": 1936,
+      "at": "2026-10-18T09:30:01.688Z"
+    },
+    {
+      "label": "tb-r4-ctl-alone2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "66-tb-r4-ctl-alone2.txt",
+      "sha256": "61439ba180c6d913512416c9c5f5ef52fca65e0c01876a3968a6323ca58a0638",
+      "bytes": 2752,
+      "at": "2026-10-18T09:30:02.017Z"
+    },
+    {
+      "label": "tb-r4-de-deck-1-oldest-strip",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "67-tb-r4-de-deck-1-oldest-strip.txt",
+      "sha256": "fecbcb13ede4b563ef1ef305f38e9bf59056cf343c656309688c6b55057a6cea",
+      "bytes": 3020,
+      "at": "2026-10-18T09:30:02.380Z"
+    },
+    {
+      "label": "tb-r4-de-deck-2-oldest-undo-child",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "68-tb-r4-de-deck-2-oldest-undo-child.txt",
+      "sha256": "f3beed38b72bc360b118b1269b0e24108e455c993da46f28f4462a593903b06a",
+      "bytes": 2770,
+      "at": "2026-10-18T09:30:02.695Z"
+    },
+    {
+      "label": "tb-r4-de-deck-3-middle-strip-point",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "69-tb-r4-de-deck-3-middle-strip-point.txt",
+      "sha256": "428e4100d592940e1b71af33e03bf750711b3752cc9be1eb012f1811095db8a8",
+      "bytes": 753,
+      "at": "2026-10-18T09:30:03.024Z"
+    },
+    {
+      "label": "tb-r4-de-deck-4-front-card",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "70-tb-r4-de-deck-4-front-card.txt",
+      "sha256": "9fdcdfae0cd86222ddd245d5511089b10d913e458efc4e5826e7aa6eb44ce7db",
+      "bytes": 2903,
+      "at": "2026-10-18T09:30:03.286Z"
+    },
+    {
+      "label": "tb-r4-en-deck-1-oldest-strip",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "71-tb-r4-en-deck-1-oldest-strip.txt",
+      "sha256": "5135db6cb9d3f4dadffdf326ef3149352bece2dbb529120dbdcb3f254e99a90e",
+      "bytes": 2752,
+      "at": "2026-10-18T09:30:03.610Z"
+    },
+    {
+      "label": "tb-r4-en-deck-2-oldest-undo-child",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "72-tb-r4-en-deck-2-oldest-undo-child.txt",
+      "sha256": "346727c63c6796f88f27945f774bd1cb0d4745dddbc469590c024d53299c0c71",
+      "bytes": 2615,
+      "at": "2026-10-18T09:30:03.924Z"
+    },
+    {
+      "label": "tb-r4-en-deck-3-middle-strip-point",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "73-tb-r4-en-deck-3-middle-strip-point.txt",
+      "sha256": "1ab0c68aeeb8b0a2988d709fad047886715776fd9d2a5ed1631096971e2db7a3",
+      "bytes": 753,
+      "at": "2026-10-18T09:30:04.235Z"
+    },
+    {
+      "label": "tb-r4-en-deck-4-front-card",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "74-tb-r4-en-deck-4-front-card.txt",
+      "sha256": "2e470e760dfa0eced8f389b865626233b743f731c2d086e841b98cf8f3ab6fa1",
+      "bytes": 2758,
+      "at": "2026-10-18T09:30:04.555Z"
+    },
+    {
+      "label": "tb-r4-en-deck-rep2-1-oldest-strip",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "75-tb-r4-en-deck-rep2-1-oldest-strip.txt",
+      "sha256": "2497719c76e8a83e02c7042ee07c1b259e254b6f6f883f83bcda06ab9e4bfa93",
+      "bytes": 2757,
+      "at": "2026-10-18T09:30:04.849Z"
+    },
+    {
+      "label": "tb-r4-en-deck-rep2-2-oldest-undo-child",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "76-tb-r4-en-deck-rep2-2-oldest-undo-child.txt",
+      "sha256": "b86ec47c5f70fc1b18b2bc72518ba16b1e3a4b617d5a96f1f89deb4f04ccc508",
+      "bytes": 2645,
+      "at": "2026-10-18T09:30:05.252Z"
+    },
+    {
+      "label": "tb-r4-en-deck-rep2-4-front-card",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "77-tb-r4-en-deck-rep2-4-front-card.txt",
+      "sha256": "0622083556e3318d19a19ced5fe8ff70ed73602afc5c92b833b39ea57a645c4f",
+      "bytes": 2763,
+      "at": "2026-10-18T09:30:05.761Z"
+    },
+    {
+      "label": "tb-r4-en-deck-rep2-4-front-card-b",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "78-tb-r4-en-deck-rep2-4-front-card-b.txt",
+      "sha256": "0d8959d1c987813d944f96fa36d25b834a5a81c164137027558b90606ddad719",
+      "bytes": 752,
+      "at": "2026-10-18T09:30:06.214Z"
+    },
+    {
+      "label": "tb-r4-en-deck-undoevent-1-oldest-strip",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "79-tb-r4-en-deck-undoevent-1-oldest-strip.txt",
+      "sha256": "e17559254ab34260ba98cd63689af6ca199fd409cdede4e5572e044253ad054e",
+      "bytes": 2679,
+      "at": "2026-10-18T09:30:06.597Z"
+    },
+    {
+      "label": "tb-r4-en-deck-undoevent-2-front-card-with-undo",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "80-tb-r4-en-deck-undoevent-2-front-card-with-undo.txt",
+      "sha256": "27f24d65f209c3bc41cdd3e28a35b3f7da120f05ba83740f785157e93261f2cd",
+      "bytes": 2789,
+      "at": "2026-10-18T09:30:06.997Z"
+    },
+    {
+      "label": "tb-r4-en-deck-undoevent-3-front-undo-child",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "81-tb-r4-en-deck-undoevent-3-front-undo-child.txt",
+      "sha256": "faf14cc6c930629a637722250ee1efe4803be138d07e988c301ca31ee224abc3",
+      "bytes": 2647,
+      "at": "2026-10-18T09:30:07.456Z"
+    },
+    {
+      "label": "tb-r4-en-undo-child-doubletap",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "82-tb-r4-en-undo-child-doubletap.txt",
+      "sha256": "543fa8f0d4b8e064a5080fe04ee9c731b8470eff471cc86bfb5c4b697f043cb9",
+      "bytes": 3123,
+      "at": "2026-10-18T09:30:07.948Z"
+    },
+    {
+      "label": "tb-r4-en-undo-child-doubletap-signed",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "83-tb-r4-en-undo-child-doubletap-signed.txt",
+      "sha256": "906974466bbf63310d3587df004e82157a2f409a544acfde86c2d19424250c90",
+      "bytes": 3306,
+      "at": "2026-10-18T09:30:08.472Z"
+    },
+    {
+      "label": "tb-r4-p1-1-accordion-row1-collapsed",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "84-tb-r4-p1-1-accordion-row1-collapsed.txt",
+      "sha256": "0ca3e18f0b28243d320a3009e45636991eedfd88a24e1dd9489353d8c4d2343c",
+      "bytes": 2839,
+      "at": "2026-10-18T09:30:08.907Z"
+    },
+    {
+      "label": "tb-r4-p1-2-accordion-row2-collapsed",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "85-tb-r4-p1-2-accordion-row2-collapsed.txt",
+      "sha256": "dfc9382df0a12fadcac7be30a6bd4ae71d3b81992a22423c5b80b132650dad4c",
+      "bytes": 2900,
+      "at": "2026-10-18T09:30:09.330Z"
+    },
+    {
+      "label": "tb-r4-p1-3-trailing-row-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "86-tb-r4-p1-3-trailing-row-summary.txt",
+      "sha256": "e36a579fb12637f40472ac00da261fc99a315a8c8cf3f8432a9a297acf2ac4a6",
+      "bytes": 2827,
+      "at": "2026-10-18T09:30:09.757Z"
+    },
+    {
+      "label": "tb-r4-p1-4-trailing-undo",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "87-tb-r4-p1-4-trailing-undo.txt",
+      "sha256": "4a0a4cf5c26ed86ecfd6937e33d9273d062c1a6af772f76c2da63a43f25669a2",
+      "bytes": 2690,
+      "at": "2026-10-18T09:30:10.202Z"
+    },
+    {
+      "label": "tb-r4-p1-accordion-row1-expanded-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "88-tb-r4-p1-accordion-row1-expanded-focus.txt",
+      "sha256": "0e48904f34692f4f8a9ea3aff8c1f3c02b45c057438dd102978f6b916bdbcd95",
+      "bytes": 1647,
+      "at": "2026-10-18T09:30:10.609Z"
+    },
+    {
+      "label": "tb-r4-p1-click-accordion-row1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "89-tb-r4-p1-click-accordion-row1.txt",
+      "sha256": "41981a4b834fe04201e428dd694e035ceab5f1fb137d62e999cd57ffc8c541de",
+      "bytes": 656,
+      "at": "2026-10-18T09:30:11.054Z"
+    },
+    {
+      "label": "tb-r4-p3-1-saved-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "90-tb-r4-p3-1-saved-summary.txt",
+      "sha256": "ffd92e851a8eab0eb014336cd9a0f0274c544c2274a91ea3dcaa29a9904ac431",
+      "bytes": 1811,
+      "at": "2026-10-18T09:30:11.484Z"
+    },
+    {
+      "label": "tb-r4-p3-2-update",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "91-tb-r4-p3-2-update.txt",
+      "sha256": "ce1c991e9a690ddfe4177121c6380ad153cf9d0ede90c8a0934d7509a9765258",
+      "bytes": 2628,
+      "at": "2026-10-18T09:30:11.914Z"
+    },
+    {
+      "label": "tb-r4-p3-3-clear",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "92-tb-r4-p3-3-clear.txt",
+      "sha256": "926fc2342bb0b05824c94d5f379613d68956ba8791fb0b0645f03b3bc4e63032",
+      "bytes": 2600,
+      "at": "2026-10-18T09:30:12.306Z"
+    },
+    {
+      "label": "tb-r4-p3-4-de-saved-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "93-tb-r4-p3-4-de-saved-summary.txt",
+      "sha256": "f1f089a2c566f684904847721f2ca662756607583455e26d096ead3dc1561fb9",
+      "bytes": 1826,
+      "at": "2026-10-18T09:30:12.795Z"
+    },
+    {
+      "label": "tb-r4-p3-5-de-update",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "94-tb-r4-p3-5-de-update.txt",
+      "sha256": "e72ae947d28004b0488b91082b6cfb0ce8a3ab6db870d03d1e8d6f704adbd820",
+      "bytes": 2665,
+      "at": "2026-10-18T09:30:13.302Z"
+    },
+    {
+      "label": "tb-r4-p3-6-de-clear",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "95-tb-r4-p3-6-de-clear.txt",
+      "sha256": "ff391d74bec8902e4eed33c2b1f7dd9e0cd8b8cc86a2f59f7f68998ec2bb1a4b",
+      "bytes": 2656,
+      "at": "2026-10-18T09:30:13.724Z"
+    },
+    {
+      "label": "tb-r4-p4-1-group-header-batch-edit",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "96-tb-r4-p4-1-group-header-batch-edit.txt",
+      "sha256": "02de34c089ab2f1e25b64c16cd6fa52f66e1ed62e3398833470138b96b7475e0",
+      "bytes": 1924,
+      "at": "2026-10-18T09:30:14.227Z"
+    },
+    {
+      "label": "tb-r4-p4-2-group-subtitle",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "97-tb-r4-p4-2-group-subtitle.txt",
+      "sha256": "b4ec08359ccf11044ffceaf400b99d6280974b55dcd0fc92e4c716993ad7af19",
+      "bytes": 1856,
+      "at": "2026-10-18T09:30:14.547Z"
+    },
+    {
+      "label": "tb-r4-p4-3-group-undo-all",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "98-tb-r4-p4-3-group-undo-all.txt",
+      "sha256": "504692f42bad1d2e1ba95b83a4e458c9304aec3bd39111860de250cde1fbdefa",
+      "bytes": 2728,
+      "at": "2026-10-18T09:30:15.020Z"
+    },
+    {
+      "label": "tb-r4-p5-1-undocenter-open-row-a",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "99-tb-r4-p5-1-undocenter-open-row-a.txt",
+      "sha256": "160112e797a5691fa775f375162b5cdf924febc1b2a5008544e648b4656b1b1d",
+      "bytes": 2829,
+      "at": "2026-10-18T09:30:15.422Z"
+    },
+    {
+      "label": "tb-r4-p5-2-undocenter-undo-button-a",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "100-tb-r4-p5-2-undocenter-undo-button-a.txt",
+      "sha256": "dc1781a1fb5627710a1edb117e75b58b9bac9de0027465b65851edd36cf57654",
+      "bytes": 2642,
+      "at": "2026-10-18T09:30:15.884Z"
+    },
+    {
+      "label": "tb-r4-p5-3-undocenter-row-b-no-target",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "101-tb-r4-p5-3-undocenter-row-b-no-target.txt",
+      "sha256": "bfee59eb82399b85335f99b55a0fec87464629fe556a998ed51e045b64f57968",
+      "bytes": 1849,
+      "at": "2026-10-18T09:30:16.299Z"
+    },
+    {
+      "label": "tb-r4-probe-bgdouble",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "102-tb-r4-probe-bgdouble.txt",
+      "sha256": "76d2d1e0b740ac43fe762bcd618fc93e25f27e90649941a4d63023fbb5a2b09b",
+      "bytes": 2118,
+      "at": "2026-10-18T09:30:16.738Z"
+    },
+    {
+      "label": "tb-r4-probe-swipe80-msg",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "103-tb-r4-probe-swipe80-msg.txt",
+      "sha256": "87e0a821c4d9d8c67913e8261882ba81e37714bf60826cb4df87a8b789f1a50f",
+      "bytes": 671,
+      "at": "2026-10-18T09:30:17.156Z"
+    },
+    {
+      "label": "tb-r4-probe-tap-after-back",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "104-tb-r4-probe-tap-after-back.txt",
+      "sha256": "8077b84343a712b1c9f83286ad698cd2199b5da2145e972cf0d9266e55dae4d9",
+      "bytes": 1986,
+      "at": "2026-10-18T09:30:17.602Z"
+    },
+    {
+      "label": "tb-r4-probe-tap-logged",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "105-tb-r4-probe-tap-logged.txt",
+      "sha256": "eb37ba616132035c354676e9759074ff366f26cc3ba0a74d9e43f72a78ca96f7",
+      "bytes": 656,
+      "at": "2026-10-18T09:30:18.021Z"
+    },
+    {
+      "label": "tb-r4-sil-alone1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "106-tb-r4-sil-alone1.txt",
+      "sha256": "ea24f593e9ab6960ef2f85b92186dabe22682045a3a0b9e087ffdc7f6d89c5dd",
+      "bytes": 1381,
+      "at": "2026-10-18T09:30:18.513Z"
+    },
+    {
+      "label": "tb-r4-sil-alone2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "107-tb-r4-sil-alone2.txt",
+      "sha256": "2f5aed62d634e8b444049026a8ddf3efd9d4bc1022199ab7a76264460cfb54a5",
+      "bytes": 670,
+      "at": "2026-10-18T09:30:18.978Z"
+    },
+    {
+      "label": "r4-c1-tally-all-showings",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "108-r4-c1-tally-all-showings.txt",
+      "sha256": "e9e36d08bec56b094910f3196c61e4a2d73046f6542cce6c638c8de69ac06bc8",
+      "bytes": 6470,
+      "at": "2026-10-18T09:30:19.371Z"
+    },
+    {
+      "label": "r4-build-identity",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "109-r4-build-identity.txt",
+      "sha256": "a6bc73c85205c326b81575df8ad78ac96a825755f52b0f1aeed09569ad1524c5",
+      "bytes": 1893,
+      "at": "2026-10-18T09:30:19.706Z"
+    },
+    {
+      "label": "r4-c1-excluded-rounds-and-method-notes",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "110-r4-c1-excluded-rounds-and-method-notes.txt",
+      "sha256": "ad231026152c5ac221af9ebb1d8284a0a0153205108a4a9ddfa3c75dbc028819",
+      "bytes": 2989,
+      "at": "2026-10-18T09:30:20.117Z"
+    },
+    {
+      "label": "r4-driven-results-running-log",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "111-r4-driven-results-running-log.txt",
+      "sha256": "f777eefd30f765beac561a66d20ece3c10c698444bf9e8894b5b352c92bbb63f",
+      "bytes": 7293,
+      "at": "2026-10-18T09:30:20.410Z"
+    },
+    {
+      "label": "g10-baseline-before-run4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "112-g10-baseline-before-run4.txt",
+      "sha256": "2fb5bf9afc15da332d46c3656037c6960a059685f1955cc01beb7d14cbed6689",
+      "bytes": 739,
+      "at": "2026-10-18T09:30:20.691Z"
+    },
+    {
+      "label": "g18-baseline-after-restore-run4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "113-g18-baseline-after-restore-run4.txt",
+      "sha256": "70efe25675a0c1c9e82cf0db6fecfae787d73300f4b079b25db755a81b7ab81f",
+      "bytes": 739,
+      "at": "2026-10-18T09:30:21.006Z"
+    },
+    {
+      "label": "g18-restore-oracle-run4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "114-g18-restore-oracle-run4.txt",
+      "sha256": "4d6af4170119b806f362fd839d43f379a96a42e77fb62909f52af1e9a5d9dbba",
+      "bytes": 300,
+      "at": "2026-10-18T09:30:21.343Z"
+    },
+    {
+      "label": "tb-developer-settings-before-run4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "115-tb-developer-settings-before-run4.xml",
+      "sha256": "ec7faf8c34cb8f81a7d3d2771bfee2ab53903fe6512f1dda5ee824a8e532f187",
+      "bytes": 34429,
+      "at": "2026-10-18T09:30:21.675Z"
+    },
+    {
+      "label": "tb-developer-settings-speech-on-run4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "116-tb-developer-settings-speech-on-run4.xml",
+      "sha256": "acd40704011771ab9344f60a8cc5bb4a2a4ef048270bc308f61f1ae81af5cad6",
+      "bytes": 34428,
+      "at": "2026-10-18T09:30:22.041Z"
+    },
+    {
+      "label": "tb-developer-settings-after-restore-run4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "117-tb-developer-settings-after-restore-run4.xml",
+      "sha256": "ec7faf8c34cb8f81a7d3d2771bfee2ab53903fe6512f1dda5ee824a8e532f187",
+      "bytes": 34429,
+      "at": "2026-10-18T09:30:22.464Z"
+    },
+    {
+      "label": "tb-r4-c1-alone1-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "118-tb-r4-c1-alone1-1.txt",
+      "sha256": "1cd02cb3e5ae4262ba8b482a5b0dc75c07b2adb97e8cd00fb94c0e197cbdc517",
+      "bytes": 1059,
+      "at": "2026-10-18T09:30:22.946Z"
+    },
+    {
+      "label": "tb-r4-c1-alone1-11",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "119-tb-r4-c1-alone1-11.txt",
+      "sha256": "02532e05b471f2b98b1bc9e42ea966787976e7e2dac5fb07715e561c3cdbe327",
+      "bytes": 1334,
+      "at": "2026-10-18T09:30:23.370Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "120-tb-r4-c1-alone2-1.txt",
+      "sha256": "5f84a362e7dc90459f7fe1b1b5eb006540d9ebdea652928e972a953f3dc65212",
+      "bytes": 2745,
+      "at": "2026-10-18T09:30:23.680Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "121-tb-r4-c1-alone2-2.txt",
+      "sha256": "5af024f82cbff57af155a42e8bf5f5a8a9ad414d19e4148406a4e122b2713003",
+      "bytes": 2097,
+      "at": "2026-10-18T09:30:24.046Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "122-tb-r4-c1-alone2-3.txt",
+      "sha256": "3eea223cb25b65aec504bfad54adb3c68042e39c64c65447acd25ca22bbdb346",
+      "bytes": 2115,
+      "at": "2026-10-18T09:30:24.441Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "123-tb-r4-c1-alone2-4.txt",
+      "sha256": "8d155de57f01c366cdc28e6e77ace9fe05547943438a7cdb9295a3cad7463650",
+      "bytes": 2097,
+      "at": "2026-10-18T09:30:24.843Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-5",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "124-tb-r4-c1-alone2-5.txt",
+      "sha256": "6fde2287efcdd4d684d2dd7c81ff73c19c5e5fc786f6c052547973f3bf325381",
+      "bytes": 2115,
+      "at": "2026-10-18T09:30:25.297Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-6",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "125-tb-r4-c1-alone2-6.txt",
+      "sha256": "8ff9611f82f56bc1059390f7ea119ceaa313bdd4d8a9823ea24768b93fba6a29",
+      "bytes": 2270,
+      "at": "2026-10-18T09:30:25.643Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-7",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "126-tb-r4-c1-alone2-7.txt",
+      "sha256": "e6d25195888141bc91c63d7ae4200a15b2a53bc96db72e263cc5c14db86319d3",
+      "bytes": 2141,
+      "at": "2026-10-18T09:30:26.188Z"
+    },
+    {
+      "label": "tb-r4-c1-alone2-11",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "127-tb-r4-c1-alone2-11.txt",
+      "sha256": "afc3a2fa0dcf04b19bc44d12811fb034597ce42b97d42b3938ebaa2a860e4225",
+      "bytes": 672,
+      "at": "2026-10-18T09:30:26.607Z"
+    },
+    {
+      "label": "tb-r4-c1-alonef-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "128-tb-r4-c1-alonef-1.txt",
+      "sha256": "59c405bcbc76f391f7beaf050ab1849f9c866bc8f30ef884b5b69e4607fd3b60",
+      "bytes": 2152,
+      "at": "2026-10-18T09:30:27.015Z"
+    },
+    {
+      "label": "tb-r4-c1-alonef-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "129-tb-r4-c1-alonef-2.txt",
+      "sha256": "ee3b4ec17a10e201c823acd640f8e3fd491ba440a43b5719468ec6953d706e1a",
+      "bytes": 2383,
+      "at": "2026-10-18T09:30:27.507Z"
+    },
+    {
+      "label": "tb-r4-c1-alonef-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "130-tb-r4-c1-alonef-3.txt",
+      "sha256": "7561f7f3ff127f75e3bef16fc25ec2999baeb8d360da5cc426fda253a5639104",
+      "bytes": 2458,
+      "at": "2026-10-18T09:30:27.901Z"
+    },
+    {
+      "label": "tb-r4-c1-alonef-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "131-tb-r4-c1-alonef-4.txt",
+      "sha256": "f2ab1dcc450b8d63e129340427a4e6de8332407c655aa4ee38186bd56275a2cf",
+      "bytes": 2170,
+      "at": "2026-10-18T09:30:28.288Z"
+    },
+    {
+      "label": "tb-r4-c1-alonef-5",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "132-tb-r4-c1-alonef-5.txt",
+      "sha256": "a827d089c635174154c63cace742d21de39302c2a19630dda39993851a29e9ca",
+      "bytes": 2152,
+      "at": "2026-10-18T09:30:28.641Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "133-tb-r4-c1-alone-1.txt",
+      "sha256": "247c8ad775bd7090b0eb9deedc8af8d098d7ecee5cfb454ea834d91167112a67",
+      "bytes": 956,
+      "at": "2026-10-18T09:30:29.072Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "134-tb-r4-c1-alone-2.txt",
+      "sha256": "b913d9bad81168d151c137da1b0de00482fc7f737357153d95f184ec3960373b",
+      "bytes": 554,
+      "at": "2026-10-18T09:30:29.543Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "135-tb-r4-c1-alone-3.txt",
+      "sha256": "0a07ebe422ed8011105281cfba5b1549366f7733428f938868fab47438148fe1",
+      "bytes": 956,
+      "at": "2026-10-18T09:30:29.969Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "136-tb-r4-c1-alone-4.txt",
+      "sha256": "93cb2fc5a5d23e3b4b8ef7255f76252cc01d9e5bf771a0c1843a34242840201f",
+      "bytes": 638,
+      "at": "2026-10-18T09:30:30.439Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-explicit-focus-message-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "137-tb-r4-c1-alone-explicit-focus-message-1.txt",
+      "sha256": "9ed7ba7c1d5b4bdeff5f14ddba4bc63370499072b7fe418c77eeb8bbc6bc59d7",
+      "bytes": 673,
+      "at": "2026-10-18T09:30:30.919Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-explicit-focus-message-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "138-tb-r4-c1-alone-explicit-focus-message-2.txt",
+      "sha256": "b42cf4269be3970de4922ff95e1cdb5363ec2a59d6880c1566c2a86a406991ac",
+      "bytes": 673,
+      "at": "2026-10-18T09:30:31.498Z"
+    },
+    {
+      "label": "tb-r4-c1-alone-explicit-focus-message-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "139-tb-r4-c1-alone-explicit-focus-message-3.txt",
+      "sha256": "025f63e693b0483a1d907a51379a7477c579a049d2bf8eacb3c9d11936bc2ec1",
+      "bytes": 673,
+      "at": "2026-10-18T09:30:32.021Z"
+    },
+    {
+      "label": "tb-r4-c1-cold-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "140-tb-r4-c1-cold-1.txt",
+      "sha256": "80bb5613da607123b9a808a579f9fad5208ec308a5a9c496ac73e6dcaa6110a5",
+      "bytes": 3263,
+      "at": "2026-10-18T09:30:32.406Z"
+    },
+    {
+      "label": "tb-r4-c1-cold-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "141-tb-r4-c1-cold-2.txt",
+      "sha256": "39f74bedcfb67e345e47a5e1484c88c1958988644b6f8385fefedafe4d7463cc",
+      "bytes": 3932,
+      "at": "2026-10-18T09:30:32.832Z"
+    },
+    {
+      "label": "tb-r4-c1-cold-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "142-tb-r4-c1-cold-3.txt",
+      "sha256": "9045b2c619b88b7950ea047fd9887562ae0c8222a3356b649c7b87208343a46f",
+      "bytes": 3445,
+      "at": "2026-10-18T09:30:33.238Z"
+    },
+    {
+      "label": "tb-r4-c1-explicit-focus-message-observer",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "143-tb-r4-c1-explicit-focus-message-observer.txt",
+      "sha256": "a61147c136385980b3b0aa4b5b085c6dd3e43072fcbe237e444f9e3efa6f78ba",
+      "bytes": 1936,
+      "at": "2026-10-18T09:30:33.637Z"
+    },
+    {
+      "label": "tb-r4-c1-fclick-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "144-tb-r4-c1-fclick-1.txt",
+      "sha256": "c40bd22126b43b51a2ccc725a468a64f0cfe92b517096d7406106448a72383de",
+      "bytes": 4126,
+      "at": "2026-10-18T09:30:33.955Z"
+    },
+    {
+      "label": "tb-r4-c1-fclick-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "145-tb-r4-c1-fclick-2.txt",
+      "sha256": "4870e20a09795b1142859788ef1a39202b46d180129b31a9ba0724aee62302fe",
+      "bytes": 4126,
+      "at": "2026-10-18T09:30:34.295Z"
+    },
+    {
+      "label": "tb-r4-c1-fclick-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "146-tb-r4-c1-fclick-3.txt",
+      "sha256": "8fabb60ec45943905cf5411aa5fe96a6b605aeb8e8c4b464501fbec0eaeedf64",
+      "bytes": 4190,
+      "at": "2026-10-18T09:30:34.632Z"
+    },
+    {
+      "label": "tb-r4-c1-fclick-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "147-tb-r4-c1-fclick-4.txt",
+      "sha256": "e09a6a37c164c4a0627b94ec92348dec0eb8b862c0721b0a414fb5b81cc6bed8",
+      "bytes": 3660,
+      "at": "2026-10-18T09:30:35.048Z"
+    },
+    {
+      "label": "tb-r4-c1-fclick-5",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "148-tb-r4-c1-fclick-5.txt",
+      "sha256": "139443f405ed90f7975d116f1398a35ae1f115e7c202e9036b65fe3840148dc7",
+      "bytes": 4367,
+      "at": "2026-10-18T09:30:35.553Z"
+    },
+    {
+      "label": "tb-r4-c1-fclick-6",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "149-tb-r4-c1-fclick-6.txt",
+      "sha256": "eabec04007b82eda0593d84ae1b5f80363df0e6ab1f29eb28b6a4059d48fe7e6",
+      "bytes": 3817,
+      "at": "2026-10-18T09:30:36.126Z"
+    },
+    {
+      "label": "tb-r4-c1-ftaps-1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "150-tb-r4-c1-ftaps-1.txt",
+      "sha256": "6d81d28c6c3de7932e532661d84d682f7611c266a8e51f971dc1b7eaf88423fc",
+      "bytes": 4373,
+      "at": "2026-10-18T09:30:36.511Z"
+    },
+    {
+      "label": "tb-r4-c1-ftaps-2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "151-tb-r4-c1-ftaps-2.txt",
+      "sha256": "425f6ef6b896b5bd26a54c2552856a70b8c7ef94918e46c001e2d506edfe7197",
+      "bytes": 4125,
+      "at": "2026-10-18T09:30:36.862Z"
+    },
+    {
+      "label": "tb-r4-c1-ftaps-3",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "152-tb-r4-c1-ftaps-3.txt",
+      "sha256": "423d83b1c8ebc3a3f5bcacee62b3cf322efa517fb662d28ad1097438e6bd6408",
+      "bytes": 4311,
+      "at": "2026-10-18T09:30:37.166Z"
+    },
+    {
+      "label": "tb-r4-c1-ftaps-4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "153-tb-r4-c1-ftaps-4.txt",
+      "sha256": "bfb973f2082428fbbb1958bf470ed8a99337a7374f87c34d80b1270e0e3d5599",
+      "bytes": 4070,
+      "at": "2026-10-18T09:30:37.580Z"
+    },
+    {
+      "label": "tb-r4-ctl-alone1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "154-tb-r4-ctl-alone1.txt",
+      "sha256": "0145d73c837e4765625806153c225fdc93f8168ae9e25f71bdda7eed634ee49b",
+      "bytes": 1936,
+      "at": "2026-10-18T09:30:37.915Z"
+    },
+    {
+      "label": "tb-r4-ctl-alone2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "155-tb-r4-ctl-alone2.txt",
+      "sha256": "61439ba180c6d913512416c9c5f5ef52fca65e0c01876a3968a6323ca58a0638",
+      "bytes": 2752,
+      "at": "2026-10-18T09:30:38.201Z"
+    },
+    {
+      "label": "tb-r4-de-deck-1-oldest-strip",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "156-tb-r4-de-deck-1-oldest-strip.txt",
+      "sha256": "fecbcb13ede4b563ef1ef305f38e9bf59056cf343c656309688c6b55057a6cea",
+      "bytes": 3020,
+      "at": "2026-10-18T09:30:38.540Z"
+    },
+    {
+      "label": "tb-r4-de-deck-2-oldest-undo-child",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "157-tb-r4-de-deck-2-oldest-undo-child.txt",
+      "sha256": "f3beed38b72bc360b118b1269b0e24108e455c993da46f28f4462a593903b06a",
+      "bytes": 2770,
+      "at": "2026-10-18T09:30:38.897Z"
+    },
+    {
+      "label": "tb-r4-de-deck-3-middle-strip-point",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "158-tb-r4-de-deck-3-middle-strip-point.txt",
+      "sha256": "428e4100d592940e1b71af33e03bf750711b3752cc9be1eb012f1811095db8a8",
+      "bytes": 753,
+      "at": "2026-10-18T09:30:39.198Z"
+    },
+    {
+      "label": "tb-r4-de-deck-4-front-card",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "159-tb-r4-de-deck-4-front-card.txt",
+      "sha256": "9fdcdfae0cd86222ddd245d5511089b10d913e458efc4e5826e7aa6eb44ce7db",
+      "bytes": 2903,
+      "at": "2026-10-18T09:30:39.496Z"
+    },
+    {
+      "label": "tb-r4-en-deck-1-oldest-strip",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "160-tb-r4-en-deck-1-oldest-strip.txt",
+      "sha256": "5135db6cb9d3f4dadffdf326ef3149352bece2dbb529120dbdcb3f254e99a90e",
+      "bytes": 2752,
+      "at": "2026-10-18T09:30:39.773Z"
+    },
+    {
+      "label": "tb-r4-en-deck-2-oldest-undo-child",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "161-tb-r4-en-deck-2-oldest-undo-child.txt",
+      "sha256": "346727c63c6796f88f27945f774bd1cb0d4745dddbc469590c024d53299c0c71",
+      "bytes": 2615,
+      "at": "2026-10-18T09:30:40.083Z"
+    },
+    {
+      "label": "tb-r4-en-deck-3-middle-strip-point",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "162-tb-r4-en-deck-3-middle-strip-point.txt",
+      "sha256": "1ab0c68aeeb8b0a2988d709fad047886715776fd9d2a5ed1631096971e2db7a3",
+      "bytes": 753,
+      "at": "2026-10-18T09:30:40.615Z"
+    },
+    {
+      "label": "tb-r4-en-deck-4-front-card",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "163-tb-r4-en-deck-4-front-card.txt",
+      "sha256": "2e470e760dfa0eced8f389b865626233b743f731c2d086e841b98cf8f3ab6fa1",
+      "bytes": 2758,
+      "at": "2026-10-18T09:30:41.215Z"
+    },
+    {
+      "label": "tb-r4-en-deck-rep2-1-oldest-strip",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "164-tb-r4-en-deck-rep2-1-oldest-strip.txt",
+      "sha256": "2497719c76e8a83e02c7042ee07c1b259e254b6f6f883f83bcda06ab9e4bfa93",
+      "bytes": 2757,
+      "at": "2026-10-18T09:30:41.737Z"
+    },
+    {
+      "label": "tb-r4-en-deck-rep2-2-oldest-undo-child",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "165-tb-r4-en-deck-rep2-2-oldest-undo-child.txt",
+      "sha256": "b86ec47c5f70fc1b18b2bc72518ba16b1e3a4b617d5a96f1f89deb4f04ccc508",
+      "bytes": 2645,
+      "at": "2026-10-18T09:30:42.239Z"
+    },
+    {
+      "label": "tb-r4-en-deck-rep2-4-front-card",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "166-tb-r4-en-deck-rep2-4-front-card.txt",
+      "sha256": "0622083556e3318d19a19ced5fe8ff70ed73602afc5c92b833b39ea57a645c4f",
+      "bytes": 2763,
+      "at": "2026-10-18T09:30:42.740Z"
+    },
+    {
+      "label": "tb-r4-en-deck-rep2-4-front-card-b",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "167-tb-r4-en-deck-rep2-4-front-card-b.txt",
+      "sha256": "0d8959d1c987813d944f96fa36d25b834a5a81c164137027558b90606ddad719",
+      "bytes": 752,
+      "at": "2026-10-18T09:30:43.149Z"
+    },
+    {
+      "label": "tb-r4-en-deck-undoevent-1-oldest-strip",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "168-tb-r4-en-deck-undoevent-1-oldest-strip.txt",
+      "sha256": "e17559254ab34260ba98cd63689af6ca199fd409cdede4e5572e044253ad054e",
+      "bytes": 2679,
+      "at": "2026-10-18T09:30:43.583Z"
+    },
+    {
+      "label": "tb-r4-en-deck-undoevent-2-front-card-with-undo",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "169-tb-r4-en-deck-undoevent-2-front-card-with-undo.txt",
+      "sha256": "27f24d65f209c3bc41cdd3e28a35b3f7da120f05ba83740f785157e93261f2cd",
+      "bytes": 2789,
+      "at": "2026-10-18T09:30:44.027Z"
+    },
+    {
+      "label": "tb-r4-en-deck-undoevent-3-front-undo-child",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "170-tb-r4-en-deck-undoevent-3-front-undo-child.txt",
+      "sha256": "faf14cc6c930629a637722250ee1efe4803be138d07e988c301ca31ee224abc3",
+      "bytes": 2647,
+      "at": "2026-10-18T09:30:44.325Z"
+    },
+    {
+      "label": "tb-r4-en-undo-child-doubletap",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "171-tb-r4-en-undo-child-doubletap.txt",
+      "sha256": "543fa8f0d4b8e064a5080fe04ee9c731b8470eff471cc86bfb5c4b697f043cb9",
+      "bytes": 3123,
+      "at": "2026-10-18T09:30:44.704Z"
+    },
+    {
+      "label": "tb-r4-en-undo-child-doubletap-signed",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "172-tb-r4-en-undo-child-doubletap-signed.txt",
+      "sha256": "906974466bbf63310d3587df004e82157a2f409a544acfde86c2d19424250c90",
+      "bytes": 3306,
+      "at": "2026-10-18T09:30:45.030Z"
+    },
+    {
+      "label": "tb-r4-p1-1-accordion-row1-collapsed",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "173-tb-r4-p1-1-accordion-row1-collapsed.txt",
+      "sha256": "0ca3e18f0b28243d320a3009e45636991eedfd88a24e1dd9489353d8c4d2343c",
+      "bytes": 2839,
+      "at": "2026-10-18T09:30:45.403Z"
+    },
+    {
+      "label": "tb-r4-p1-2-accordion-row2-collapsed",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "174-tb-r4-p1-2-accordion-row2-collapsed.txt",
+      "sha256": "dfc9382df0a12fadcac7be30a6bd4ae71d3b81992a22423c5b80b132650dad4c",
+      "bytes": 2900,
+      "at": "2026-10-18T09:30:45.743Z"
+    },
+    {
+      "label": "tb-r4-p1-3-trailing-row-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "175-tb-r4-p1-3-trailing-row-summary.txt",
+      "sha256": "e36a579fb12637f40472ac00da261fc99a315a8c8cf3f8432a9a297acf2ac4a6",
+      "bytes": 2827,
+      "at": "2026-10-18T09:30:46.094Z"
+    },
+    {
+      "label": "tb-r4-p1-4-trailing-undo",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "176-tb-r4-p1-4-trailing-undo.txt",
+      "sha256": "4a0a4cf5c26ed86ecfd6937e33d9273d062c1a6af772f76c2da63a43f25669a2",
+      "bytes": 2690,
+      "at": "2026-10-18T09:30:46.537Z"
+    },
+    {
+      "label": "tb-r4-p1-accordion-row1-expanded-focus",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "177-tb-r4-p1-accordion-row1-expanded-focus.txt",
+      "sha256": "0e48904f34692f4f8a9ea3aff8c1f3c02b45c057438dd102978f6b916bdbcd95",
+      "bytes": 1647,
+      "at": "2026-10-18T09:30:46.962Z"
+    },
+    {
+      "label": "tb-r4-p1-click-accordion-row1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "178-tb-r4-p1-click-accordion-row1.txt",
+      "sha256": "41981a4b834fe04201e428dd694e035ceab5f1fb137d62e999cd57ffc8c541de",
+      "bytes": 656,
+      "at": "2026-10-18T09:30:47.389Z"
+    },
+    {
+      "label": "tb-r4-p3-1-saved-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "179-tb-r4-p3-1-saved-summary.txt",
+      "sha256": "ffd92e851a8eab0eb014336cd9a0f0274c544c2274a91ea3dcaa29a9904ac431",
+      "bytes": 1811,
+      "at": "2026-10-18T09:30:47.824Z"
+    },
+    {
+      "label": "tb-r4-p3-2-update",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "180-tb-r4-p3-2-update.txt",
+      "sha256": "ce1c991e9a690ddfe4177121c6380ad153cf9d0ede90c8a0934d7509a9765258",
+      "bytes": 2628,
+      "at": "2026-10-18T09:30:48.131Z"
+    },
+    {
+      "label": "tb-r4-p3-3-clear",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "181-tb-r4-p3-3-clear.txt",
+      "sha256": "926fc2342bb0b05824c94d5f379613d68956ba8791fb0b0645f03b3bc4e63032",
+      "bytes": 2600,
+      "at": "2026-10-18T09:30:48.493Z"
+    },
+    {
+      "label": "tb-r4-p3-4-de-saved-summary",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "182-tb-r4-p3-4-de-saved-summary.txt",
+      "sha256": "f1f089a2c566f684904847721f2ca662756607583455e26d096ead3dc1561fb9",
+      "bytes": 1826,
+      "at": "2026-10-18T09:30:48.882Z"
+    },
+    {
+      "label": "tb-r4-p3-5-de-update",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "183-tb-r4-p3-5-de-update.txt",
+      "sha256": "e72ae947d28004b0488b91082b6cfb0ce8a3ab6db870d03d1e8d6f704adbd820",
+      "bytes": 2665,
+      "at": "2026-10-18T09:30:49.212Z"
+    },
+    {
+      "label": "tb-r4-p3-6-de-clear",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "184-tb-r4-p3-6-de-clear.txt",
+      "sha256": "ff391d74bec8902e4eed33c2b1f7dd9e0cd8b8cc86a2f59f7f68998ec2bb1a4b",
+      "bytes": 2656,
+      "at": "2026-10-18T09:30:49.509Z"
+    },
+    {
+      "label": "tb-r4-p4-1-group-header-batch-edit",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "185-tb-r4-p4-1-group-header-batch-edit.txt",
+      "sha256": "02de34c089ab2f1e25b64c16cd6fa52f66e1ed62e3398833470138b96b7475e0",
+      "bytes": 1924,
+      "at": "2026-10-18T09:30:49.805Z"
+    },
+    {
+      "label": "tb-r4-p4-2-group-subtitle",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "186-tb-r4-p4-2-group-subtitle.txt",
+      "sha256": "b4ec08359ccf11044ffceaf400b99d6280974b55dcd0fc92e4c716993ad7af19",
+      "bytes": 1856,
+      "at": "2026-10-18T09:30:50.104Z"
+    },
+    {
+      "label": "tb-r4-p4-3-group-undo-all",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "187-tb-r4-p4-3-group-undo-all.txt",
+      "sha256": "504692f42bad1d2e1ba95b83a4e458c9304aec3bd39111860de250cde1fbdefa",
+      "bytes": 2728,
+      "at": "2026-10-18T09:30:50.468Z"
+    },
+    {
+      "label": "tb-r4-p5-1-undocenter-open-row-a",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "188-tb-r4-p5-1-undocenter-open-row-a.txt",
+      "sha256": "160112e797a5691fa775f375162b5cdf924febc1b2a5008544e648b4656b1b1d",
+      "bytes": 2829,
+      "at": "2026-10-18T09:30:50.818Z"
+    },
+    {
+      "label": "tb-r4-p5-2-undocenter-undo-button-a",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "189-tb-r4-p5-2-undocenter-undo-button-a.txt",
+      "sha256": "dc1781a1fb5627710a1edb117e75b58b9bac9de0027465b65851edd36cf57654",
+      "bytes": 2642,
+      "at": "2026-10-18T09:30:51.171Z"
+    },
+    {
+      "label": "tb-r4-p5-3-undocenter-row-b-no-target",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "190-tb-r4-p5-3-undocenter-row-b-no-target.txt",
+      "sha256": "bfee59eb82399b85335f99b55a0fec87464629fe556a998ed51e045b64f57968",
+      "bytes": 1849,
+      "at": "2026-10-18T09:30:51.594Z"
+    },
+    {
+      "label": "tb-r4-probe-bgdouble",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "191-tb-r4-probe-bgdouble.txt",
+      "sha256": "76d2d1e0b740ac43fe762bcd618fc93e25f27e90649941a4d63023fbb5a2b09b",
+      "bytes": 2118,
+      "at": "2026-10-18T09:30:51.937Z"
+    },
+    {
+      "label": "tb-r4-probe-swipe80-msg",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "192-tb-r4-probe-swipe80-msg.txt",
+      "sha256": "87e0a821c4d9d8c67913e8261882ba81e37714bf60826cb4df87a8b789f1a50f",
+      "bytes": 671,
+      "at": "2026-10-18T09:30:52.286Z"
+    },
+    {
+      "label": "tb-r4-probe-tap-after-back",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "193-tb-r4-probe-tap-after-back.txt",
+      "sha256": "8077b84343a712b1c9f83286ad698cd2199b5da2145e972cf0d9266e55dae4d9",
+      "bytes": 1986,
+      "at": "2026-10-18T09:30:52.530Z"
+    },
+    {
+      "label": "tb-r4-probe-tap-logged",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "194-tb-r4-probe-tap-logged.txt",
+      "sha256": "eb37ba616132035c354676e9759074ff366f26cc3ba0a74d9e43f72a78ca96f7",
+      "bytes": 656,
+      "at": "2026-10-18T09:30:52.763Z"
+    },
+    {
+      "label": "tb-r4-sil-alone1",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "195-tb-r4-sil-alone1.txt",
+      "sha256": "ea24f593e9ab6960ef2f85b92186dabe22682045a3a0b9e087ffdc7f6d89c5dd",
+      "bytes": 1381,
+      "at": "2026-10-18T09:30:52.991Z"
+    },
+    {
+      "label": "tb-r4-sil-alone2",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "196-tb-r4-sil-alone2.txt",
+      "sha256": "2f5aed62d634e8b444049026a8ddf3efd9d4bc1022199ab7a76264460cfb54a5",
+      "bytes": 670,
+      "at": "2026-10-18T09:30:53.233Z"
+    },
+    {
+      "label": "r4-c1-tally-all-showings",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "197-r4-c1-tally-all-showings.txt",
+      "sha256": "e9e36d08bec56b094910f3196c61e4a2d73046f6542cce6c638c8de69ac06bc8",
+      "bytes": 6470,
+      "at": "2026-10-18T09:30:53.488Z"
+    },
+    {
+      "label": "r4-build-identity",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "198-r4-build-identity.txt",
+      "sha256": "a6bc73c85205c326b81575df8ad78ac96a825755f52b0f1aeed09569ad1524c5",
+      "bytes": 1893,
+      "at": "2026-10-18T09:30:53.876Z"
+    },
+    {
+      "label": "r4-c1-excluded-rounds-and-method-notes",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "199-r4-c1-excluded-rounds-and-method-notes.txt",
+      "sha256": "ad231026152c5ac221af9ebb1d8284a0a0153205108a4a9ddfa3c75dbc028819",
+      "bytes": 2989,
+      "at": "2026-10-18T09:30:54.168Z"
+    },
+    {
+      "label": "r4-driven-results-running-log",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "200-r4-driven-results-running-log.txt",
+      "sha256": "f777eefd30f765beac561a66d20ece3c10c698444bf9e8894b5b352c92bbb63f",
+      "bytes": 7293,
+      "at": "2026-10-18T09:30:54.453Z"
+    },
+    {
+      "label": "g10-baseline-before-run4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "201-g10-baseline-before-run4.txt",
+      "sha256": "2fb5bf9afc15da332d46c3656037c6960a059685f1955cc01beb7d14cbed6689",
+      "bytes": 739,
+      "at": "2026-10-18T09:30:54.732Z"
+    },
+    {
+      "label": "g18-baseline-after-restore-run4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "202-g18-baseline-after-restore-run4.txt",
+      "sha256": "70efe25675a0c1c9e82cf0db6fecfae787d73300f4b079b25db755a81b7ab81f",
+      "bytes": 739,
+      "at": "2026-10-18T09:30:54.989Z"
+    },
+    {
+      "label": "g18-restore-oracle-run4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "203-g18-restore-oracle-run4.txt",
+      "sha256": "4d6af4170119b806f362fd839d43f379a96a42e77fb62909f52af1e9a5d9dbba",
+      "bytes": 300,
+      "at": "2026-10-18T09:30:55.205Z"
+    },
+    {
+      "label": "tb-developer-settings-before-run4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "204-tb-developer-settings-before-run4.xml",
+      "sha256": "ec7faf8c34cb8f81a7d3d2771bfee2ab53903fe6512f1dda5ee824a8e532f187",
+      "bytes": 34429,
+      "at": "2026-10-18T09:30:55.476Z"
+    },
+    {
+      "label": "tb-developer-settings-speech-on-run4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "205-tb-developer-settings-speech-on-run4.xml",
+      "sha256": "acd40704011771ab9344f60a8cc5bb4a2a4ef048270bc308f61f1ae81af5cad6",
+      "bytes": 34428,
+      "at": "2026-10-18T09:30:55.692Z"
+    },
+    {
+      "label": "tb-developer-settings-after-restore-run4",
+      "kind": "ingested",
+      "source": "ingested",
+      "file": "206-tb-developer-settings-after-restore-run4.xml",
+      "sha256": "ec7faf8c34cb8f81a7d3d2771bfee2ab53903fe6512f1dda5ee824a8e532f187",
+      "bytes": 34429,
+      "at": "2026-10-18T09:30:55.902Z"
+    }
+  ],
+  "sig": {
+    "alg": "HMAC-SHA256",
+    "value": "b722c388f8e0d7fa13b28fd879ed8b2facb1d67c612e598b5442f516ef0dd3e2"
+  }
+}
