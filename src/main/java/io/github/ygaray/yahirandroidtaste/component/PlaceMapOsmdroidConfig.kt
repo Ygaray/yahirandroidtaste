@@ -114,9 +114,12 @@ internal const val BLOCKED_PLACEHOLDER_PACKAGE_PREFIX = "com.example."
  *     placeholder fingerprint (size AND md5), is not keyed on a user-agent change, and uses no
  *     cache-manager or whole-cache wipe API.
  *
- * `osmdroidBasePath` and `osmdroidTileCache` are pointed at the host app's private `cacheDir`
- * (never shared external storage) so no storage permission is required, tiles are confined to
- * the app sandbox, and the OS is free to evict them under storage pressure.
+ * `osmdroidBasePath` and `osmdroidTileCache` are redirected to the host app's private `cacheDir`
+ * (never shared external storage) after the one-time `load()`, so no storage permission is
+ * required, tiles are written inside the app sandbox, and the OS is free to evict them under
+ * storage pressure. The redirect is in memory: osmdroid's own first-run `load()` may still resolve
+ * its default storage paths, create those directories and persist them to the hub's prefs before
+ * the hub overrides them, so the persisted paths can differ from the in-memory ones.
  *
  * Imports only `android.`, `java.io.` and `org.osmdroid.` symbols (hub one-way-dependency
  * invariant).
