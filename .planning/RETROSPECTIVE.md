@@ -154,6 +154,55 @@
 - Sessions: the 2026-10-12 milestone run plus the cut, a 2026-10-13 v2.7.0 cut, and a 2026-10-14
   close (settle, certify, Gate-2 via the teamlead relay, audit, complete).
 
+## Milestone: v2.8 — Snackbar go-to-item + stacked feedback
+
+**Shipped:** 2026-10-22 (library `v2.8.0`, tag cut by Yahir at `ce855d2` on 2026-10-18)
+**Phases:** 5 | **Plans:** 34
+
+### What Was Built
+- An opaque `FeedbackTarget(key, openLabel)` on events, outcome Success, batch rows and Undo history,
+  opened through one caller `onOpenTarget` from a snackbar card, a sheet row or an Undo Center row.
+- `FeedbackStackState` / `FeedbackStackHost`: a Receipt-card deck of up to three with fan, swipe,
+  pausing timers, exactly-one results and tracked undo through the store guard.
+- A scoped TalkBack sweep, the hub scheme pinned across the Explorer, the capped handled-by pill, the
+  warn-dot contrast ring, and an OSM user agent that reaches the tile server.
+- Release tooling (`verify-publish-range.sh`, `verify-junit-fresh.sh`) and a DE/ES long-string Gate-1.
+
+### What Worked
+- **A locked brief before planning** (D-01..D-12 in `v2.8-BRIEF.md`): every phase ran without a
+  scope question back to the owner.
+- **Gate-1 caught real defects on the TESTER** that unit tests passed: the peek tap over a back card's
+  Undo (26-06), TalkBack's silent middle strip and doubled speech (28-10..28-12), and the clipped
+  Spanish card at font 2.0 (29-07).
+- **Gate-2 on the published artifact.** A throwaway Explorer built straight from JitPack `v2.8.0` let
+  the owner test exactly what consumers get.
+
+### What Was Inefficient
+- **Phase 28 used all three gap cycles** chasing TalkBack speech behaviour that only a real device
+  shows; the last five gestures still could not be synthesized and were left for Gate-2.
+- **Close-time tooling voided a signed drain.** `audit-open acknowledge` writes a marker into the
+  SELF-UAT frontmatter, which the Gate-2 drain is bound to, so Phase 28 had to be re-signed.
+- **The archive move hit the `*.log` ignore rule again** (as in v2.6); the tracked evidence had to be
+  force-added at the archive path.
+- **A stale `.git/index.lock`** from 2026-10-18 and a leftover blocked shell from Phase 25 sat for days.
+
+### Patterns Established
+- **Opaque keys, not lambdas, for navigation targets** stored in singletons.
+- **Deck internals stay internal**: fixes like the card scroll and the capped Undo (29-07) land after
+  device testing without touching `api.txt`.
+- **Build the Gate-2 app from the published coordinate**, not mavenLocal.
+
+### Key Lessons
+1. TalkBack behaviour needs a device loop early; plan the physical-gesture checks as owner steps from
+   the start instead of discovering them at the third gap cycle.
+2. Any tool that edits a SELF-UAT file after a drain must re-drain, or not edit it at all; report it.
+3. Before an archive move, diff `git ls-files` against the destination and force-add ignored tracked files.
+
+### Cost Observations
+- Model mix: orchestration on Opus, phase stages and leaf agents on Sonnet (per the milestone runner).
+- Sessions: one long ui-designer session (with a park and resume) plus GSD subagents.
+- Notable: 314 commits from `v2.7.1` to the tag; Phase 28 alone took 12 plans.
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -165,6 +214,7 @@
 | v2.4 — AI-Voice Command UI | 5 | Cross-repo orchestrator-driven milestone run + Gate-2-via-orchestrator relay; autonomous A12 tag cut; isolated tag-cut phase |
 | v2.5 — Voice UI Localization & Accessibility | 5 | Gate-2 with hostile-input fixtures reopened a phase post-tag; gap closure → code-review → re-verify loop; patch-tag follow-up instead of tag mutation |
 | v2.6 — Receipt voice surfaces + ProviderKeyCard lifecycle | 5 | Consumer-signed sketch as the decision record; cut-before-screencap-review (Y-15); mid-milestone release tag for a consumer ask; Gate-2 relayed via the teamlead |
+| v2.8 — Snackbar go-to-item + stacked feedback | 5 | Locked brief (D-01..D-12) up front; three-cycle device gap closure for TalkBack; owner-cut tag before Gate-2; Gate-2 on an app built from the JitPack artifact |
 
 ### Cumulative Quality
 
@@ -175,6 +225,7 @@
 | v2.4 | 16/16 satisfied | CLEAN | green (zero baseline) |
 | v2.5 | 14/14 satisfied | WIRED (2 combined-scenario test-gap warnings) | green (zero baseline) |
 | v2.6 | 27/27 satisfied | WIRED (2 advisory warnings) | green (zero baseline) |
+| v2.8 | 20/20 satisfied | WIRED (4 warnings, W1-W4, to v2.8.1) | green (zero baseline) |
 
 ### Top Lessons (Verified Across Milestones)
 

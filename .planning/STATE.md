@@ -21,10 +21,10 @@ current_phase: 29
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-10-17)
+See: .planning/PROJECT.md (updated 2026-10-22)
 
 **Core value:** An agent building one of Yahir's apps finds the widget it needs already here, coherent and legible, and drops it in instead of writing a new one.
-**Current focus:** Phase 29 — Docs & v2.8.0 cut readiness
+**Current focus:** Planning next milestone (patch `v2.8.1`)
 
 ## Current Position
 
