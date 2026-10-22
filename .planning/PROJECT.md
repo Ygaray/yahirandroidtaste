@@ -24,54 +24,42 @@ prunable, so reuse stays cheaper than rewriting.
 **Compatibility bar:** source compatibility for Yahir's own consumers (they recompile on every
 repin). Binary compatibility is not a goal (see API.md § "Compatibility rule").
 
-## Current Milestone: v2.8 Snackbar go-to-item + stacked feedback
+## Current Milestone
 
-**Goal:** Snackbars and the success/outcome sheet take the user straight to the item they reference
-(tap the body, no action label), and snackbars stack up to 3 as a Receipt-card deck with
-swipe-to-dismiss; release `v2.8.0`, additive only.
-
-**Target features:**
-- `FeedbackTarget` + target on `FeedbackEvent` / outcome Success / batch rows / Undo history
-- `FeedbackStackHost` (direction A deck, max 3, pause-on-touch, swipe dismiss, chevron, a11y)
-- Outcome-sheet row tap to open (Receipt and Classic); Undo Center rows open their item
-- Ride-alongs: TalkBack sweep (999.2, scoped), Explorer hub-scheme pin + `hide()` demo (999.3),
-  long handled-by pill at font scale 2.0, Grammar pill dot contrast
-
-Locked by Yahir 2026-10-17 (via director@office). Brief: `.planning/research/v2.8-BRIEF.md`.
+None active. Next: patch `v2.8.1` (Backlog 999.4 plus the v2.8 audit tech debt), started with
+`/gsd-new-milestone` on the teamlead's or Yahir's GO.
 
 ## Current State
 
-**Shipped: milestone v2.6 — Receipt voice surfaces + ProviderKeyCard lifecycle (2026-10-14) → library
-`v2.6.0`.**
+**Shipped: milestone v2.8 — Snackbar go-to-item + stacked feedback (closed 2026-10-22) → library
+`v2.8.0` (Yahir cut the tag at `ce855d2` on 2026-10-18; JitPack ok).**
 
-- **Receipt outcome sheet.** `OutcomeSheet(style = Receipt)` is an opt-in rendering of
-  NeedsConfirmation, Success and Failure, with stable test tags, a pinned action bar, an in-flight
-  action, and XR-178-01 a/b. Classic stays pixel-identical to v2.5.1.
-- **Atoms.** The tone tokens, the button emphasis axis, `RoundIconButton`, `StackedProgressBar`,
-  `ToneCard`, `PillChip`, `ReceiptRow`, the Pill selector with `disabledOptions`, and `SheetScaffold`
-  shape.
-- **Key lifecycle.** `ProviderKeyCard` gains Save/Update/Clear/Cancel with a fingerprint-only saved
-  summary. `UndoCenterScreen` gains group rows.
-- **Status.** Source compatible. Requirements: 27/27. Gate-2 is signed off with a gap on all five phases
-  (Yahir): the TalkBack checks went to a hub-wide sweep in the backlog.
+- **Go-to-item.** An opaque `FeedbackTarget(key, openLabel)` rides on `FeedbackEvent.Notify` /
+  `WithUndo`, outcome `Success`, batch rows and Undo history. A body tap (snackbar card, sheet row,
+  Undo Center row) hands the key to the caller's single `onOpenTarget`; a chevron, never an action
+  label. Undone entries stop being openable.
+- **Stacked feedback.** `FeedbackStackState` / `rememberFeedbackStackState` / `FeedbackStackHost`:
+  up to three Receipt cards as a tucked deck, peek-tap fan, swipe-to-dismiss, timers that pause under
+  a finger or while fanned, exactly one `Opened | Undone | Dismissed | TimedOut` per `show()`, tracked
+  undo only through the store guard, merged-button TalkBack semantics.
+- **Ride-alongs.** Scoped TalkBack sweep (999.2), the hub scheme pinned across the Explorer plus a
+  `hide()` demo (999.3), a capped-radius handled-by pill at font 2.0, a contrast ring for the warn dot
+  under dynamic colour, and an OSM tile user agent that actually reaches the server.
+- **Status.** Additive, source compatible against `v2.7.1` (`apiCheck`, the additive tool and a call-site
+  canary). Requirements 20/20; certify 0 gaps; audit `tech_debt`. Gate-2: Phases 25-27 signed off on
+  a fresh Explorer built from JitPack `v2.8.0`; Phases 28 and 29 signed off with a gap (the physical
+  TalkBack gestures and the Phase 29 design reviews were skipped).
 
-**`v2.7.0` shipped (2026-10-13):** CalTracker 76-14 asked for two additions, the optional
-`NeedsConfirmation.handledBy` (a Receipt confirm pill) and a hoistable `OutcomeSheet` `sheetState`
-overload. The `handledBy` field moved `NeedsConfirmation`'s positional `componentN`; Yahir accepted
-that break.
-
-**Next:** patch `v2.7.1` (Yahir approved it 2026-10-14; it starts on the teamlead's GO). It has three
-fixes:
-- tall outcome sheets skip the partial detent;
-- the Undo Center group count and status words become localizable;
-- the count-editor demo gets padding.
-
-The backlog is ROADMAP 999.2-999.4.
+**Next:** patch `v2.8.1`: Backlog 999.4 (voice-surface polish) plus the v2.8 debt — W1 (the sheet row
+still opens after its own Undo), W2 (a shared-store test/demo), W3 (`show()` KDoc), W4/WR-01 (deck is
+not intrinsic-safe; API.md line), IN-01/02/05. Consumer repins to `v2.8.0` (SecondBrain, CalTracker)
+are each owner's call.
 
 **Prior milestones:** v1.0 — Hub Stewardship (2026-09-02, `v2.0.0`); v2.0 — Line Reunification
 (2026-09-27, `v2.2.0`, + `TAGCOLOR-02` follow-on `v2.3.0`); v2.4 — AI-Voice Command UI (2026-10-01,
 `v2.4.0`, + `v2.4.1` OutcomeSheet hotfix); v2.5 — Voice UI Localization & Accessibility (2026-10-11,
-`v2.5.0`, + `v2.5.1`). See `.planning/MILESTONES.md`.
+`v2.5.0`, + `v2.5.1`); v2.6 — Receipt voice surfaces + ProviderKeyCard lifecycle (2026-10-14,
+`v2.6.0`, + `v2.7.0` and `v2.7.1`). See `.planning/MILESTONES.md`.
 
 ## Context
 
@@ -167,12 +155,17 @@ The backlog is ROADMAP 999.2-999.4.
 - ✓ `OutcomeSheet` Receipt style + state additions + test tags (Y-3..Y-7, Y-14, SB in-flight action, XR-178-01 a/b) — v2.6 (VRCPT-01..05, VTAG-01, VXR-01/02)
 - ✓ `ProviderKeyCard` key lifecycle + Undo Center group row (sketch §1, XR-178-01 c) — v2.6 (VKEY-01/02, VUNDO-02)
 - ✓ Explorer/docs/catalog integrity + the `v2.6.0` cut (Y-15) — v2.6 (CAT-03, API-03, DOC-03, INV-03, DEMO-01, SHIP-04)
+- ✓ Opaque `FeedbackTarget` on events, outcome Success, batch rows and Undo history; Undone entries not openable — v2.8 (FTGT-01, FTGT-02)
+- ✓ `FeedbackStackState` / `FeedbackStackHost`: Receipt-card deck (max 3), tap-to-open with chevron, fan, swipe dismiss, pausing timers, tracked undo through the store guard, card semantics — v2.8 (FSTK-01..07, A11Y-01)
+- ✓ Go-to-item rows in Receipt and Classic `OutcomeSheet` (single and batch) and an `UndoCenterScreen` overload with `onOpenTarget` — v2.8 (FOPEN-01..03)
+- ✓ Handled-by pill text inside its shape at font 2.0; warn-dot contrast ring; OSM user agent reaches the tile server — v2.8 (POL-01..03)
+- ✓ Scoped TalkBack sweep, pinned hub scheme + `hide()` demo, EN/DE stacked-snackbar and go-to-item demos — v2.8 (A11Y-02, DEMO-02, DEMO-03)
+- ✓ Docs, additive gates, long-string Gate-1 and the `v2.8.0` proposal (owner cut the tag) — v2.8 (SHIP-05)
 
 ### Active
 
-- [ ] v2.8: snackbar/outcome-sheet go-to-item + stacked Receipt-card snackbars (see Current Milestone)
-- [ ] v2.8 ride-alongs: TalkBack sweep (999.2, scoped), Explorer demo polish (999.3), pill font-scale + dot contrast fixes
-- [ ] Backlog: voice-surface polish (999.4) -> v2.8.1
+- [ ] Patch `v2.8.1`: voice-surface polish (999.4) plus the v2.8 audit debt (W1 sheet row opens after its own Undo, W2 shared-store test/demo, W3 `show()` KDoc, W4/WR-01 intrinsic-size note, IN-01/02/05)
+- [ ] v2.8 Gate-2 leftovers, owner-optional: the five physical TalkBack gestures (Phase 28) and the Phase 29 design reviews (card scroll, capped Undo, German font-2.0 notes)
 
 ### Out of Scope
 
@@ -194,7 +187,7 @@ The backlog is ROADMAP 999.2-999.4.
 | v2.5: ship the G-15-1 long-label layout fix as a post-tag `v2.5.1` patch, not by re-cutting `v2.5.0` | Tags are immutable JitPack coordinates. The fix is layout-only (`api.txt` unchanged), so a patch tag is the clean path | ✓ Good. `v2.5.1` cut 2026-10-11, JitPack green, SB + CT repinned |
 | v2.6: source compatibility only, with no new hidden overloads or binary shims; cut gate = `apiCheck` on a regenerated `api.txt` + `tools/test/run-all.sh` + a v2.5.1 call-site compile canary; no Roborazzi (sketch P1-P3) | Consumers recompile on every repin; shims are dead weight and a known defect source (INC-2026-10-05-02 F1c). `verify-api-additive.sh` was retired in Phase 19. Screenshot tooling was declined (Yahir) | ✓ Good. `v2.6.0` and `v2.7.0` shipped on these gates. The one positional break (`handledBy`) was reviewed and accepted |
 | v2.7.0: add an experimental-typed param (`SheetState`) as a separate `OutcomeSheet` overload, not a defaulted param | A defaulted `@ExperimentalMaterial3Api` param would force the opt-in on every caller | ✓ Good. Existing call sites are unchanged |
-| v2.8: snackbar targets are an opaque `FeedbackTarget(key, openLabel)`, not an `onOpen` lambda | The singleton `UndoHistoryStore` must not capture a NavController; one app-level `onOpenTarget` maps keys to routes and can skip same-destination opens | — Pending |
+| v2.8: snackbar targets are an opaque `FeedbackTarget(key, openLabel)`, not an `onOpen` lambda | The singleton `UndoHistoryStore` must not capture a NavController; one app-level `onOpenTarget` maps keys to routes and can skip same-destination opens | ✓ Good. Shipped in `v2.8.0`; one handler covers the card, the sheet rows and the Undo Center (integration WIRED). Edge: the sheet row ignores its own Undone state (W1, v2.8.1) |
 | v2.5: make rung-row label width depend on what the name needs, not a fixed 60% cap (CR-01) | A fixed cap stacked short English labels and broke the identical-to-v2.5.0 promise; the name now keeps whichever is smaller, its full width or 40%, and the affordances get the rest | ✓ Good. English one-line and German no-clip both verified on device (Gate-2 17/17) |
 
 ## Evolution
@@ -215,4 +208,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-14 after the v2.6 milestone (Gate-2 signed off with a TalkBack gap; next: v2.7.1). Prior: v2.6 → `v2.6.0`/`v2.7.0`; v2.5 → `v2.5.0`/`v2.5.1`; v2.4 → `v2.4.0`/`v2.4.1`; v2.0 → `v2.2.0`/`v2.3.0`; v1.0 → `v2.0.0`.*
+*Last updated: 2026-10-22 after the v2.8 milestone (Gate-2: 25-27 signed off, 28-29 signed off with a gap; next: v2.8.1). Prior: v2.6 → `v2.6.0`/`v2.7.0`/`v2.7.1`; v2.5 → `v2.5.0`/`v2.5.1`; v2.4 → `v2.4.0`/`v2.4.1`; v2.0 → `v2.2.0`/`v2.3.0`; v1.0 → `v2.0.0`.*

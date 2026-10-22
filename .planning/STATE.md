@@ -2,19 +2,19 @@
 gsd_state_version: "1.0"
 milestone: v2.8
 milestone_name: Snackbar go-to-item + stacked feedback
-current_phase: 29
-status: completed
+status: Awaiting next milestone
 stopped_at: Phase 29 complete — all phases complete
-last_updated: "2026-10-18T14:32:30.519Z"
-last_activity: 2026-10-18
-last_activity_desc: Phase 29 complete
-state_head: 60b82b7413da8599f13bde7c0b41b9faa5c902f7
+last_updated: "2026-10-22T19:12:20.780Z"
+last_activity: 2026-10-22
+last_activity_desc: Milestone v2.8 completed and archived
+state_head: 7ff0300e9db7d10c1487a61f700569929099b176
 progress:
   total_phases: 5
   completed_phases: 5
   total_plans: 34
   completed_plans: 34
   percent: 100
+current_phase: 29
 ---
 
 # Project State
@@ -28,12 +28,10 @@ See: .planning/PROJECT.md (updated 2026-10-17)
 
 ## Current Position
 
-Phase: 29
-Plan: Not started
-Status: All phases complete
-Last activity: 2026-10-18 — Phase 29 complete
-
-Progress: [██████████] 100%
+Phase: Milestone v2.8 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-10-22 — Milestone v2.8 completed and archived
 
 ## Performance Metrics
 
@@ -115,6 +113,7 @@ Items acknowledged and carried forward, most recent first:
 
 | Category | Item | Status | Deferred At | Milestone |
 |----------|------|--------|-------------|-----------|
+| uat_gaps | 28/28-07-SELF-UAT.md | partial (5 physical TalkBack steps; Gate-2 signed-off-with-gap) | 2026-10-22 | v2.8 |
 | Backlog | 999.4 voice-surface polish (pinned-bar gap, saved-summary exit, long group label, key field in flight, group count, count-editor inset, German subtitle) | Backlog, targeted at patch `v2.8.1` | 2026-10-17 | v2.8 |
 | uat_gaps | 21/21-UAT.md | partial (TalkBack blocked) — signed-off-with-gap by Yahir; sweep promoted into v2.8 Phase 28 (A11Y-02) | 2026-10-14 | v2.6 |
 | uat_gaps | 22/22-UAT.md | partial (TalkBack blocked) — signed-off-with-gap by Yahir; sweep promoted into v2.8 Phase 28 (A11Y-02) | 2026-10-14 | v2.6 |
@@ -138,4 +137,4 @@ Resume file: None
 
 ## Operator Next Steps
 
-- `/gsd-discuss-phase 25` (or `/gsd-research-milestone` → `/gsd-discuss-milestone` to settle all five phases' gray areas in one pass), then `/gsd-plan-phase 25`
+- Start the next milestone with /gsd-new-milestone

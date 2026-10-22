@@ -1,5 +1,26 @@
 # Milestones — yahirandroidtaste (Hub Stewardship)
 
+## v2.8 Snackbar go-to-item + stacked feedback (Shipped: 2026-10-22)
+
+**Phases completed:** 5 phases, 34 plans, 29 tasks
+
+**Release:** library `v2.8.0`, tag cut by Yahir at `ce855d2` (2026-10-18); `main` pushed `c2182ec..a12b44d`; JitPack ok. Additive against `v2.7.1`.
+
+**Key accomplishments:**
+
+- Opaque `FeedbackTarget(key, openLabel)` on `FeedbackEvent`, outcome `Success`, batch rows and Undo history; one app-level `onOpenTarget` opens the item from a snackbar card, a sheet row or an Undo Center row (chevron, no action label); Undone entries stop being openable.
+- `FeedbackStackState` / `FeedbackStackHost`: up to three Receipt cards as a tucked deck with peek-tap fan, swipe-to-dismiss, timers that pause under a finger or while fanned, exactly one result per `show()`, and tracked undo only through the store guard.
+- Card accessibility: one merged button node per card with the open label and a polite live region, Undo as its own stop, both Dismiss forms, newest first; the collapsed deck's middle strip is hidden and every stop is named once (TalkBack sweep, 999.2).
+- Go-to-item rows in Receipt and Classic `OutcomeSheet` (single and batch) and a new `UndoCenterScreen` overload; the v2.7.1 overloads render unchanged.
+- Polish: capped-radius handled-by pill at font 2.0, warn-dot contrast ring under dynamic colour, the hub scheme pinned across the Explorer (999.3), and an OSM user agent that reaches the tile server plus a placeholder-tile purge.
+- Release tooling: `tools/verify-publish-range.sh` and `tools/verify-junit-fresh.sh`, a long-string (DE/ES, 360dp, font 2.0) Gate-1, and the snackbar card scrolling its own content with a capped Undo shape (29-07).
+
+**Gates:** requirements 20/20; certify 0 gaps; audit `tech_debt` (W1-W4, WR-01, IN-01/02/05 → `v2.8.1`). Gate-2 (Yahir, 2026-10-22): Phases 25-27 signed off; Phases 28-29 signed off with a gap (physical TalkBack gestures and Phase 29 design reviews skipped).
+
+**Closeout:** override_closeout. Known verification overrides: 1 newly acknowledged (Phase 28 `28-07-SELF-UAT.md` partial, the five physical TalkBack steps), 8 carried forward from a prior close (see STATE.md Deferred Items).
+
+---
+
 ## v2.6 Receipt voice surfaces + ProviderKeyCard lifecycle (Shipped: 2026-10-14)
 
 **Phases completed:** 5 phases, 19 plans, 9 tasks
