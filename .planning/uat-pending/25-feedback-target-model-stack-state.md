@@ -1,6 +1,10 @@
 ### Phase 25 — feedback-target-model-stack-state (v2.8)
 
-- **Status:** `pending`
+- **Status:** `signed-off — Yahir, 2026-10-22`
+- **Drain-Sig:** `9f3d2f48dab6408be7394bf27aaa1dc86509c17093fe04be631997f3b1976470` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:85130631582167bc1e4f84fca3340a1b805aafa5d48bb07e82b6b32415607c4f` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.8 (Snackbar go-to-item + stacked feedback)
 - **Gate 1 self-UAT log:** [`.planning/phases/25-feedback-target-model-stack-state/25-05-SELF-UAT.md`](phases/25-feedback-target-model-stack-state/25-05-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device SM-S908U tester `R5CT10XNKQN`, library AAR md5 `cd6bf08da91cc12e15b9a7c679269211` @ `7c19bab`, harness APK md5 `329b9f0c0d16ef3317e64a240752ef71`, uat_run `uatr-20261017T093534Z-c9306f1b`, 15 signed captures, 2026-10-17). Fresh uncached run 1452 tests / 22 skipped / 0 failures, detekt and apiCheck executed, additive tool SOURCE-ADDITIVE OK vs v2.7.1; the stack host and both tracked-undo paths were driven on the real tester through the Explorer and a throwaway consumer harness.
 - **Items covered (5 ROADMAP success criteria):**

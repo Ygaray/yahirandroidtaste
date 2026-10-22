@@ -385,7 +385,11 @@
 
 ### Phase 25 — feedback-target-model-stack-state (v2.8)
 
-- **Status:** `pending`
+- **Status:** `signed-off — Yahir, 2026-10-22`
+- **Drain-Sig:** `9f3d2f48dab6408be7394bf27aaa1dc86509c17093fe04be631997f3b1976470` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:85130631582167bc1e4f84fca3340a1b805aafa5d48bb07e82b6b32415607c4f` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.8 (Snackbar go-to-item + stacked feedback)
 - **Gate 1 self-UAT log:** [`.planning/phases/25-feedback-target-model-stack-state/25-05-SELF-UAT.md`](phases/25-feedback-target-model-stack-state/25-05-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device SM-S908U tester `R5CT10XNKQN`, library AAR md5 `cd6bf08da91cc12e15b9a7c679269211` @ `7c19bab`, harness APK md5 `329b9f0c0d16ef3317e64a240752ef71`, uat_run `uatr-20261017T093534Z-c9306f1b`, 15 signed captures, 2026-10-17). Fresh uncached run 1452 tests / 22 skipped / 0 failures, detekt and apiCheck executed, additive tool SOURCE-ADDITIVE OK vs v2.7.1; the stack host and both tracked-undo paths were driven on the real tester through the Explorer and a throwaway consumer harness.
 - **Items covered (5 ROADMAP success criteria):**
@@ -401,7 +405,11 @@
 
 ### Phase 26 — receipt-card-stacked-snackbar-deck (v2.8)
 
-- **Status:** `pending`
+- **Status:** `signed-off — Yahir, 2026-10-22`
+- **Drain-Sig:** `5dc66916a9819cba5c27896f59af1844d128f443e4e8fc1a401dff822021a2c3` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:600fdb1ac239536dd67b1520a9b048336c6149fa12848574addefc00b43490a1` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.8 (Snackbar go-to-item + stacked feedback)
 - **Gate 1 self-UAT log:** [`.planning/phases/26-receipt-card-stacked-snackbar-deck/26-05-SELF-UAT.md`](phases/26-receipt-card-stacked-snackbar-deck/26-05-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** after gap-closure plan 26-06 (cycle 1 failed SC3, cycle 2 re-verified; device SM-S908U tester `R5CT10XNKQN`, library AAR md5 `e15dbb7884198b87df16cbcab44fb95b` @ `e3c87d9`, harness APK sha256 prefix `4869d8e4925e`, uat_run `uatr-20261017T140846Z-f3f20544`, 2026-10-17). Fresh unit/detekt/apiCheck run 1613 tests / 22 skipped / 0 failures; the exact cycle-1 failing tap (430,1985 on a back card's blank peek strip) now fans the deck and runs no Undo, plus a strip sweep on 2- and 3-card decks; SC1, SC2, SC4 and SC5 re-confirmed on the real tester with no regression from the new touch layer.
 - **Items covered (5 ROADMAP success criteria):**
@@ -419,7 +427,11 @@
 
 ### Phase 27 — open-from-the-sheet-undo-center-pill-fixes (v2.8)
 
-- **Status:** `pending`
+- **Status:** `signed-off — Yahir, 2026-10-22`
+- **Drain-Sig:** `dcd6092d888ce485089dd82dec2257b48c3936cb2c05e6cddfa80ca0566b18a1` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:b5d34377225bc3be0f3987f1c9980575d2e44a9fe86abfb9c1cd7e19600f4300` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.8 (Snackbar go-to-item + stacked feedback)
 - **Gate 1 self-UAT log:** [`.planning/phases/27-open-from-the-sheet-undo-center-pill-fixes/27-04-SELF-UAT.md`](phases/27-open-from-the-sheet-undo-center-pill-fixes/27-04-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** (device SM-S908U tester `R5CT10XNKQN`, library AAR md5 `01e623ffa9f2e8542e8c42e507e62240` from `src/` at `ca5fae5`/`b9f8451`/`2271a0f`, harness APK sha256 prefix `381843a6269f`, uat_run `uatr-20261017T194228Z-30718f43`, 2026-10-17). Fresh unit/detekt/apiCheck run 1735 tests / 22 skipped / 0 failures; additive check OK against `v2.7.1`. Every target-free scenario is pixel-identical (0 differing pixels, identical trees) to a harness built against the real `v2.7.1` AAR; a v2.7.1 control reproduces the POL-01 defect with the same probe the HEAD build passes.
 - **Items covered (5 ROADMAP success criteria):**
@@ -438,7 +450,11 @@
 
 ### Phase 28 — talkback-sweep-explorer-demos (v2.8)
 
-- **Status:** `pending`
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-22`
+- **Drain-Sig:** `f04e55cd3054c874250c4d0e884661c536b0c497d226eb3001276631c0fd051f` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:a900d4c2973d23c419725dc55918d87d39bcaa235192361f7cf83c404b95d354` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `sha256:18c5b4bdefd0989fa0816920a84d210c23ee4c477dee3eb49c91e699f489dac7,sha256:4467be8bbdd91a69fc75abbac4141bf28580dc69425dd82c7834da19778568bc,sha256:6873552c71c3f64678e9de4fa50016fe900d0e5f63f66f1abf9120fee99b2093,sha256:847047e9961bb642e3fb751c005102fcf6c5aca8bba0f853cb32091613a4d20b,sha256:9e59df569cd0133e6e7c69872cc47b49d320dc5dcd2947a8c881a8971fdd5979` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:18d763b5b4d1cecb9867556f4dceefd80a562c4d8615f293666d05d10ca9202b` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.8 (Snackbar go-to-item + stacked feedback)
 - **Gate 1 self-UAT log:** [`.planning/phases/28-talkback-sweep-explorer-demos/28-07-SELF-UAT.md`](phases/28-talkback-sweep-explorer-demos/28-07-SELF-UAT.md) — Verdict: **every automatable criterion PASSES after the third re-verification of 2026-10-18 (gap cycle 3 of 3, after plan 28-12); only five physical steps (one-finger swipe and headings-navigation gestures that cannot be synthesized) are parked as PARTIAL for Gate-2** (device SM-S908U tester `R5CT10XNKQN`; HEAD `ca69f92`, library AAR md5 `684df61c57910824077f7b926f5f0000`, harness APK md5 `a4f9526090024238b0124bb6be0f70fc`, uat_run `uatr-20261018T080238Z-a214dfe5`, 2026-10-18). SC1 item 2 (C-1): the refused-undo message is spoken exactly once on 27 of 27 valid showings (14 of 14 with TalkBack alone, 13 of 13 with the observer bound; one 4.13 s utterance each, the live region is the only mechanism, no focus move, no announcement). The collapsed and fanned stacked-snackbar deck passes in English and German (every stop named and spoken once, no empty label, middle strip hidden, Open/Undo/Dismiss on the front card, tap fans, the Undo child activates by TalkBack double tap and by keyboard). The A11Y-02 items 1, 3, 4, 5 and the C-2/D-11/D-07 smoke pass again on the new build, and the restore passes. SC2 to SC5 keep their first-run PASS. Earlier history kept in the log: first run `830caeb` (uat_run `uatr-20261018T023153Z-fe922063`), cycle-1 re-run `950399e` (`uatr-20261018T044022Z-2fbbbce3`), cycle-2 re-run `ad6784c` (`uatr-20261018T055800Z-2b1265c4`). Command guard (this run): 0 breaches, 7 fail-closed refusals, nothing forbidden ran.
 - **Items covered (5 ROADMAP success criteria, plus the re-verification items):**
@@ -469,7 +485,11 @@
 
 ### Phase 29 — docs-v2-8-0-cut-readiness (v2.8)
 
-- **Status:** `pending`
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-22`
+- **Drain-Sig:** `119ea146097b6aa18a603106bbd9caaf8ebb314716525271d14843ee7351a7ea` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:b586ac641e90a403b81c531ec8489479d6d6f92ab290d623d25998c5b548ac8b` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.8 (Snackbar go-to-item + stacked feedback)
 - **Gate 1 self-UAT log:** [`.planning/phases/29-docs-v2-8-0-cut-readiness/29-05-SELF-UAT.md`](phases/29-docs-v2-8-0-cut-readiness/29-05-SELF-UAT.md) — Verdict: **ALL 4 criteria PASS after the SC3 re-verification of 2026-10-18 (Addendum, gap cycle 2 of 3, after gap plan 29-07)** (device SM-S908U tester `R5CT10XNKQN`; HEAD `f08c866`, library AAR md5 `c8d83de76279bf687de54733a2149430`, harness APK `com.example.yat29ls` md5 `c21d775dc9e01b233647267564a8711a`, uat_run `uatr-20261018T134126Z-99ff70b7`, 2026-10-18). The first run (`uatr-20261018T112553Z-e47a3028`, HEAD `8607c12`) failed SC3 on one scene (the Spanish snackbar card at 360 dp and font scale 2.0 clipped its Undo label and its second line); plan 29-07 fixed it (the card's Undo keeps a capped-radius shape once its label wraps, a card taller than its host scrolls its own content) and the re-run passes all 28 base scenes (14 Spanish and German scenes at font scale 1.0 and 2.0), plus the scrolled and pressed-state captures. The history stays in the log.
 - **Items covered (4 ROADMAP success criteria):**

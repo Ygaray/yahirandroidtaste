@@ -1,6 +1,10 @@
 ### Phase 29 — docs-v2-8-0-cut-readiness (v2.8)
 
-- **Status:** `pending`
+- **Status:** `signed-off-with-gap — Yahir, 2026-10-22`
+- **Drain-Sig:** `119ea146097b6aa18a603106bbd9caaf8ebb314716525271d14843ee7351a7ea` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:b586ac641e90a403b81c531ec8489479d6d6f92ab290d623d25998c5b548ac8b` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.8 (Snackbar go-to-item + stacked feedback)
 - **Gate 1 self-UAT log:** [`.planning/phases/29-docs-v2-8-0-cut-readiness/29-05-SELF-UAT.md`](phases/29-docs-v2-8-0-cut-readiness/29-05-SELF-UAT.md) — Verdict: **ALL 4 criteria PASS after the SC3 re-verification of 2026-10-18 (Addendum, gap cycle 2 of 3, after gap plan 29-07)** (device SM-S908U tester `R5CT10XNKQN`; HEAD `f08c866`, library AAR md5 `c8d83de76279bf687de54733a2149430`, harness APK `com.example.yat29ls` md5 `c21d775dc9e01b233647267564a8711a`, uat_run `uatr-20261018T134126Z-99ff70b7`, 2026-10-18). The first run (`uatr-20261018T112553Z-e47a3028`, HEAD `8607c12`) failed SC3 on one scene (the Spanish snackbar card at 360 dp and font scale 2.0 clipped its Undo label and its second line); plan 29-07 fixed it (the card's Undo keeps a capped-radius shape once its label wraps, a card taller than its host scrolls its own content) and the re-run passes all 28 base scenes (14 Spanish and German scenes at font scale 1.0 and 2.0), plus the scrolled and pressed-state captures. The history stays in the log.
 - **Items covered (4 ROADMAP success criteria):**

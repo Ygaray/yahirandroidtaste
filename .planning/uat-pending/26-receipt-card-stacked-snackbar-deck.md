@@ -1,6 +1,10 @@
 ### Phase 26 — receipt-card-stacked-snackbar-deck (v2.8)
 
-- **Status:** `pending`
+- **Status:** `signed-off — Yahir, 2026-10-22`
+- **Drain-Sig:** `5dc66916a9819cba5c27896f59af1844d128f443e4e8fc1a401dff822021a2c3` <!-- uat-ledger drain (INC-2026-10-11-09); never hand-edit -->
+- **Drain-Steps:** `sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` <!-- signed digest of the Deferred physical steps reviewed (INC-2026-10-11-09 r7); never hand-edit -->
+- **Drain-SelfUAT:** `none` <!-- signed digests of the SELF-UAT deferrals accepted (INC-2026-10-11-09 r8); never hand-edit -->
+- **Drain-SelfUAT-Files:** `sha256:600fdb1ac239536dd67b1520a9b048336c6149fa12848574addefc00b43490a1` <!-- signed digest of every whole SELF-UAT file of the phase (INC-2026-10-11-09 r9); never hand-edit -->
 - **Milestone:** v2.8 (Snackbar go-to-item + stacked feedback)
 - **Gate 1 self-UAT log:** [`.planning/phases/26-receipt-card-stacked-snackbar-deck/26-05-SELF-UAT.md`](phases/26-receipt-card-stacked-snackbar-deck/26-05-SELF-UAT.md) — Verdict: **ALL 5 criteria PASS** after gap-closure plan 26-06 (cycle 1 failed SC3, cycle 2 re-verified; device SM-S908U tester `R5CT10XNKQN`, library AAR md5 `e15dbb7884198b87df16cbcab44fb95b` @ `e3c87d9`, harness APK sha256 prefix `4869d8e4925e`, uat_run `uatr-20261017T140846Z-f3f20544`, 2026-10-17). Fresh unit/detekt/apiCheck run 1613 tests / 22 skipped / 0 failures; the exact cycle-1 failing tap (430,1985 on a back card's blank peek strip) now fans the deck and runs no Undo, plus a strip sweep on 2- and 3-card decks; SC1, SC2, SC4 and SC5 re-confirmed on the real tester with no regression from the new touch layer.
 - **Items covered (5 ROADMAP success criteria):**
