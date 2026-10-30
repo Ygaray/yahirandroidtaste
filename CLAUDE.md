@@ -93,3 +93,9 @@ cross-repo-hub-phase convention.)
   with justification.
 - The module ships a component library + a standalone gallery `Activity`. It is imported and wired
   by each consumer's Hilt composition root; the gallery `Activity` is the only self-runnable part.
+
+## GSD
+
+- Planning artifacts live in `.planning/` (`PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`).
+- GSD workflow guidance loads just-in-time when a `/gsd-*` command runs; it is intentionally not
+  duplicated here (see `INC-2026-08-28-04`).
