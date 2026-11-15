@@ -1,8 +1,0 @@
-{
-  "stage": "execute",
-  "phase": "15",
-  "exit_kind": "execute",
-  "anchor_mtime_at_write": 1791768347385.851,
-  "head_sha": "f6a97ad",
-  "written_at": "2026-10-12T01:26:09.229Z"
-}

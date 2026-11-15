@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.MultiContentMeasurePolicy
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -72,7 +73,8 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  *   to hide the cap control entirely (D-05) — must be non-null exactly when [maxTierId] is
  *   non-null (enforced via `require`; violating this pairing throws immediately rather than
  *   silently leaving every rung clickable with no visible cap).
- * @param modifier Applied to the outer [Surface].
+ * @param modifier Applied to the outer [Surface], or, when a [title] is shown, to the [Column] that
+ *   holds the title and the card.
  * @param unavailableLabel Caller-localizable text of the affordance shown on a disabled rung.
  *   Defaults to the English `"Unavailable"`; rendered verbatim as plain text.
  * @param cappedLabel Caller-localizable text of the affordance shown on a rung above the cap.
@@ -100,6 +102,9 @@ import io.github.ygaray.yahirandroidtaste.theme.expressive
  * @param routerOffLabel Caller-localizable text of the router toggle's "off" segment. Defaults to
  *   the English `"Router off"`; rendered verbatim. The toggle's accessibility state words
  *   ("selected" / "not selected") are announced by [SegmentedOptionSelector] and stay English.
+ * @param title Optional caller-localizable header shown above the card (v2.8.1): `labelLarge` in
+ *   `primary`, exposed to accessibility services as a heading. `null` (the default) or a blank
+ *   string shows no header and leaves the layout exactly as before, with no dead space.
  */
 @Composable
 fun ApproachLadderCard(
@@ -117,7 +122,8 @@ fun ApproachLadderCard(
     router: Boolean? = null,
     onRouterChange: ((Boolean) -> Unit)? = null,
     routerOnLabel: String = "Router on",
-    routerOffLabel: String = "Router off"
+    routerOffLabel: String = "Router off",
+    title: String? = null
 ) {
     // Both optional prop pairs below are gated by `require()` rather than left to fail silently:
     // an earlier revision only guarded the maxTierId/onMaxTierChange pair, leaving a caller that
@@ -140,60 +146,131 @@ fun ApproachLadderCard(
     val effectiveOfflineOnly = offlineOnly == true
     val capRank = maxTierId?.let { id -> ladder.firstOrNull { it.id == id }?.rank } ?: Int.MAX_VALUE
 
+    // v2.8.1 (Yahir's pick M, T-3109): a non-blank title is a heading above the card, and the caller's
+    // modifier then wraps both. No title, or a blank one, keeps exactly today's tree.
+    val card: @Composable (Modifier) -> Unit = { surfaceModifier ->
+        LadderSurface(surfaceModifier) {
+            LadderBody(
+                ladder = ladder,
+                offlineOnly = offlineOnly,
+                onOfflineOnlyChange = onOfflineOnlyChange,
+                maxTierId = maxTierId,
+                onMaxTierChange = onMaxTierChange,
+                effectiveOfflineOnly = effectiveOfflineOnly,
+                capRank = capRank,
+                labels = LadderLabels(
+                    unavailableLabel, cappedLabel, needsNetworkLabel,
+                    onlineLabel, offlineOnlyLabel, routerOnLabel, routerOffLabel
+                ),
+                router = router,
+                onRouterChange = onRouterChange
+            )
+        }
+    }
+    if (title.isNullOrBlank()) {
+        card(modifier)
+    } else {
+        Column(modifier = modifier) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(start = Dimens.HorizontalPadding, bottom = LadderTitleGap)
+                    .semantics { heading() }
+                    .testTag("approach_ladder_card_title")
+            )
+            card(Modifier)
+        }
+    }
+}
+
+/** Space between the optional title and the card (the M render's 8dp). */
+private val LadderTitleGap = 8.dp
+
+/** The caller's localizable labels, grouped so the body keeps a short parameter list. */
+private class LadderLabels(
+    val unavailable: String,
+    val capped: String,
+    val needsNetwork: String,
+    val online: String,
+    val offlineOnly: String,
+    val routerOn: String,
+    val routerOff: String
+)
+
+@Composable
+private fun LadderSurface(modifier: Modifier, content: @Composable () -> Unit) {
     Surface(
         shape = MaterialTheme.expressive.cardShapeLarge,
         color = MaterialTheme.colorScheme.surfaceContainer,
-        modifier = modifier.testTag("approach_ladder_card_surface")
-    ) {
-        Column(modifier = Modifier.padding(Dimens.HorizontalPadding)) {
-            Column(
-                // VA11Y-01 review fix (WR-02): the rungs are Role.RadioButton + Selected only when the
-                // cap is selectable, so only then expose them as a radio group (position/group context
-                // for accessibility services). A cap-less ladder is not announced as a group.
-                modifier = if (onMaxTierChange != null) Modifier.selectableGroup() else Modifier,
-                verticalArrangement = Arrangement.spacedBy(Dimens.HairlineSpacing)
-            ) {
-                ladder.forEach { rung ->
-                    val needsNetwork = effectiveOfflineOnly && !rung.offlineCapable
-                    val isCapped = rung.rank > capRank
-                    val isEffective = rung.enabled && !needsNetwork && !isCapped
-                    RungRow(
-                        rung = rung,
-                        isEffective = isEffective,
-                        needsNetwork = needsNetwork,
-                        isCapped = isCapped,
-                        isSelected = onMaxTierChange != null && rung.id == maxTierId,
-                        unavailableLabel = unavailableLabel,
-                        cappedLabel = cappedLabel,
-                        needsNetworkLabel = needsNetworkLabel,
-                        onCapClick = onMaxTierChange?.let { callback -> { callback(rung.id) } }
-                    )
-                }
-            }
+        modifier = modifier.testTag("approach_ladder_card_surface"),
+        content = content
+    )
+}
 
-            if (offlineOnly != null && onOfflineOnlyChange != null) {
-                SegmentedOptionSelector(
-                    selectedIndex = if (offlineOnly) 1 else 0,
-                    options = listOf(onlineLabel, offlineOnlyLabel),
-                    onSelect = { index -> onOfflineOnlyChange(index == 1) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = Dimens.ContentSpacing)
-                        .testTag("approach_ladder_card_offline_toggle")
+@Composable
+@Suppress("LongParameterList")
+private fun LadderBody(
+    ladder: List<ApproachRungUiModel>,
+    offlineOnly: Boolean?,
+    onOfflineOnlyChange: ((Boolean) -> Unit)?,
+    maxTierId: String?,
+    onMaxTierChange: ((String) -> Unit)?,
+    effectiveOfflineOnly: Boolean,
+    capRank: Int,
+    labels: LadderLabels,
+    router: Boolean?,
+    onRouterChange: ((Boolean) -> Unit)?
+) {
+    Column(modifier = Modifier.padding(Dimens.HorizontalPadding)) {
+        Column(
+            // VA11Y-01 review fix (WR-02): the rungs are Role.RadioButton + Selected only when the
+            // cap is selectable, so only then expose them as a radio group (position/group context
+            // for accessibility services). A cap-less ladder is not announced as a group.
+            modifier = if (onMaxTierChange != null) Modifier.selectableGroup() else Modifier,
+            verticalArrangement = Arrangement.spacedBy(Dimens.HairlineSpacing)
+        ) {
+            ladder.forEach { rung ->
+                val needsNetwork = effectiveOfflineOnly && !rung.offlineCapable
+                val isCapped = rung.rank > capRank
+                val isEffective = rung.enabled && !needsNetwork && !isCapped
+                RungRow(
+                    rung = rung,
+                    isEffective = isEffective,
+                    needsNetwork = needsNetwork,
+                    isCapped = isCapped,
+                    isSelected = onMaxTierChange != null && rung.id == maxTierId,
+                    unavailableLabel = labels.unavailable,
+                    cappedLabel = labels.capped,
+                    needsNetworkLabel = labels.needsNetwork,
+                    onCapClick = onMaxTierChange?.let { callback -> { callback(rung.id) } }
                 )
             }
+        }
 
-            if (router != null && onRouterChange != null) {
-                SegmentedOptionSelector(
-                    selectedIndex = if (router) 1 else 0,
-                    options = listOf(routerOffLabel, routerOnLabel),
-                    onSelect = { index -> onRouterChange(index == 1) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = Dimens.ContentSpacing)
-                        .testTag("approach_ladder_card_router_toggle")
-                )
-            }
+        if (offlineOnly != null && onOfflineOnlyChange != null) {
+            SegmentedOptionSelector(
+                selectedIndex = if (offlineOnly) 1 else 0,
+                options = listOf(labels.online, labels.offlineOnly),
+                onSelect = { index -> onOfflineOnlyChange(index == 1) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = Dimens.ContentSpacing)
+                    .testTag("approach_ladder_card_offline_toggle")
+            )
+        }
+
+        if (router != null && onRouterChange != null) {
+            SegmentedOptionSelector(
+                selectedIndex = if (router) 1 else 0,
+                options = listOf(labels.routerOff, labels.routerOn),
+                onSelect = { index -> onRouterChange(index == 1) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = Dimens.ContentSpacing)
+                    .testTag("approach_ladder_card_router_toggle")
+            )
         }
     }
 }

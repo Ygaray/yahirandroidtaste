@@ -409,6 +409,15 @@ private fun ApproachLadderCardVariants() {
 
     SectionLabel("ApproachLadderCard — router on")
     ApproachLadderCardRouterFixture(initialRouter = true)
+
+    // v2.8.1 (Yahir's pick M, T-3109): the optional title as a heading above the card. A direct call,
+    // not a fixture change: the gallery test pins the fixtures' toggle count. Passes NO router.
+    SectionLabel("ApproachLadderCard — with title")
+    ApproachLadderCard(
+        ladder = fixtureLadder,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        title = "Command approach"
+    )
 }
 
 /** Fixture outcomes -- explorer-only, never registered (explorer/ is drift-guard denylisted). */

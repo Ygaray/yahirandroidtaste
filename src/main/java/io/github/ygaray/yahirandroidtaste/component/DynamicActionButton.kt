@@ -18,6 +18,7 @@ import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
@@ -180,7 +181,8 @@ internal fun emphasisColors(
  * shape parameter on [DynamicActionButton] would widen the source-compatible surface, and the card is
  * the one place a long localized label (Spanish, German at font scale 2.0) wraps to several lines
  * inside a fully rounded button and is cut by its own ends. In every other respect it renders exactly
- * what `DynamicActionButton(emphasis = ActionButtonEmphasis.Text)` renders.
+ * what `DynamicActionButton(emphasis = ActionButtonEmphasis.Text)` renders, except that a specified
+ * [contentColor] replaces the role's label colour (v2.8.1: the Undo on the inverse deck card).
  */
 @Composable
 internal fun CappedPillTextActionButton(
@@ -188,7 +190,8 @@ internal fun CappedPillTextActionButton(
     role: ActionButtonDefaults.ActionButtonRole,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    contentColor: Color = Color.Unspecified
 ) {
     EmphasisActionButton(
         label = label,
@@ -198,7 +201,8 @@ internal fun CappedPillTextActionButton(
         modifier = modifier,
         emphasis = ActionButtonEmphasis.Text,
         icon = null,
-        shape = rememberTextButtonCappedShape()
+        shape = rememberTextButtonCappedShape(),
+        contentColor = contentColor
     )
 }
 
@@ -212,9 +216,13 @@ private fun EmphasisActionButton(
     modifier: Modifier,
     emphasis: ActionButtonEmphasis,
     icon: ImageVector?,
-    shape: Shape? = null
+    shape: Shape? = null,
+    contentColor: Color = Color.Unspecified
 ) {
-    val palette = emphasisColors(emphasis, role, MaterialTheme.colorScheme)
+    val roleColors = emphasisColors(emphasis, role, MaterialTheme.colorScheme)
+    // A specified contentColor (the feedback card's Undo on the inverse card) replaces only the label
+    // colour; every other caller passes nothing and keeps the role colour.
+    val palette = if (contentColor.isSpecified) roleColors.copy(content = contentColor) else roleColors
     val labelStyle = if (emphasis == ActionButtonEmphasis.TextSmall) {
         MaterialTheme.typography.bodySmall
     } else {

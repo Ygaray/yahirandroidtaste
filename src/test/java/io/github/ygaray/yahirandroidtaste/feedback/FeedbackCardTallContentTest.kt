@@ -26,6 +26,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.up
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import io.github.ygaray.yahirandroidtaste.theme.ThemeMode
@@ -53,6 +54,7 @@ import org.robolectric.annotation.GraphicsMode
  *
  * Heights and offsets are layout values read from the semantics nodes (size and position in the
  * root), never the clipped bounds, so a card that is cut by the deck's viewport is still seen as tall.
+ * The last-line checks are line level (v2.8.1, T-3178): the paragraph itself may be taller than the card.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35], qualifiers = "w360dp-h800dp")
@@ -133,6 +135,16 @@ class FeedbackCardTallContentTest {
 
     private fun SemanticsNodeInteraction.bottom(): Float = top() + height()
 
+    /** Top and bottom, in the root, of the last drawn line of the Text showing [value]. */
+    private fun lastLine(value: String): Pair<Float, Float> {
+        val node = text(value)
+        val layouts = mutableListOf<TextLayoutResult>()
+        node.fetchSemanticsNode().config[SemanticsActions.GetTextLayoutResult].action?.invoke(layouts)
+        val layout = layouts.single()
+        val last = layout.lineCount - 1
+        return (node.top() + layout.getLineTop(last)) to (node.top() + layout.getLineBottom(last))
+    }
+
     /** A point left of the middle and inside the visible part, clear of the Undo on the right. */
     private fun TouchInjectionScope.grip() = Offset(width * 0.3f, minOf(height * 0.5f, 120.dp.toPx()))
 
@@ -191,18 +203,24 @@ class FeedbackCardTallContentTest {
             text(f.second).bottom() > card().bottom() + 1f
         )
 
+        // At scroll 0 the first line of the content is inside the card.
+        assertTrue(
+            "first line top ${text(f.message).top()} must be inside the card top ${card().top()}",
+            text(f.message).top() >= card().top() - 1f
+        )
+
         var drags = 0
-        while (text(f.second).bottom() > card().bottom() + 1f && drags < MAX_DRAGS) {
+        while (lastLine(f.second).second > card().bottom() + 1f && drags < MAX_DRAGS) {
             dragUp()
             drags++
         }
 
-        assertTrue(
-            "last line bottom ${text(f.second).bottom()} must be inside the card bottom ${card().bottom()}",
-            text(f.second).bottom() <= card().bottom() + 1f
-        )
-        assertTrue("last line top ${text(f.second).top()} must not leave the card top ${card().top()}", text(f.second).top() >= card().top() - 1f)
-        assertTrue("last line ${text(f.second).bottom()} must be inside the host $host", text(f.second).bottom() <= host + 1f)
+        // Line level, not the paragraph (T-3178): a paragraph taller than the card can never fit whole,
+        // but its last line must be fully inside the card once scrolled to the end.
+        val (lastTop, lastBottom) = lastLine(f.second)
+        assertTrue("last line bottom $lastBottom must be inside the card bottom ${card().bottom()}", lastBottom <= card().bottom() + 1f)
+        assertTrue("last line top $lastTop must not leave the card top ${card().top()}", lastTop >= card().top() - 1f)
+        assertTrue("last line $lastBottom must be inside the host $host", lastBottom <= host + 1f)
         assertEquals("the card did not move", cardTop, card().top(), 1f)
         assertEquals("the card did not change height", cardHeight, card().height(), 1f)
         state.dismissAll()

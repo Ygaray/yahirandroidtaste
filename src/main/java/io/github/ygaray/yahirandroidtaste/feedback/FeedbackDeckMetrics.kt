@@ -17,6 +17,19 @@ internal val FEEDBACK_PEEK_HEIGHT: Dp = 14.dp
 /** Scale lost per depth step: 1.0 for the newest card, then 0.94 and 0.88. */
 internal const val FEEDBACK_DEPTH_SCALE_STEP: Float = 0.06f
 
+/**
+ * Group opacity of the whole deck (v2.8.1, Yahir's pick F, T-3109): the deck draws as one offscreen
+ * layer at this alpha, so the app shows faintly through every card while, at rest, the back cards never
+ * show through the front card (the per-card depth and swipe fades still apply inside the layer).
+ */
+internal const val FEEDBACK_DECK_ALPHA: Float = 0.92f
+
+/** Inset on each side of a non-empty deck (v2.8.1, Yahir's pick J, T-3109): never edge to edge. */
+internal val FEEDBACK_DECK_SIDE_INSET: Dp = 24.dp
+
+/** Inset below a non-empty deck (v2.8.1): the gap under the front card shown in the picked render. */
+internal val FEEDBACK_DECK_BOTTOM_INSET: Dp = 8.dp
+
 /** Widest the deck's cards grow on a wide host; they stay centered. */
 internal val FEEDBACK_DECK_MAX_WIDTH: Dp = 560.dp
 

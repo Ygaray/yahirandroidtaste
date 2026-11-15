@@ -4,6 +4,14 @@ Read before editing `STYLE.md`. Newest first. One entry per idea: what was tried
 it's recorded. "SB" is SecondBrain and "CT" is CalTracker. Their refs are paths inside those repos'
 `.planning/`.
 
+- **2026-11-14 — The v2.8.1 deck and settings-title options Yahir turned down (T-3109, D-1683, D-1684,
+  Q-430).** He picked A F J M on the options doc and gave no reasons, so none are recorded. He turned down:
+  - Colour: B (tonal `secondaryContainer`) and C (today's `surfaceContainerHighest`).
+  - See-through: D (100%, opaque), E (96%, the recommended one) and G (85%).
+  - Side margin: H (8dp) and I (16dp, the recommended one).
+  - `ApproachLadderCard` title: K (none), L (a title inside the card, the recommended one) and N (a title
+    plus a subtitle inside the card).
+  → `docs/design/feedback-deck-v2.8.1/review.md`, `STYLE.md` §5
 - **2026-10-18 — Moving TalkBack focus to speak the refused-undo message.** The 28-11 route moved input
   focus to the message after the sheet settled, on a node that was also a live region. Gate-1 run 2 heard
   the message twice, because a second mechanism on the same node was read a second time. Replaced by the

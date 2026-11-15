@@ -204,7 +204,7 @@ class FeedbackDeckLayoutTest {
         fanned.value = true
         composeTestRule.waitForIdle()
 
-        assertEquals(180f, deck().getUnclippedBoundsInRoot().height.value, 1f)
+        assertEquals(175f, deck().getUnclippedBoundsInRoot().height.value, 1f)
     }
 
     @Test
@@ -227,8 +227,8 @@ class FeedbackDeckLayoutTest {
         fanned.value = true
         composeTestRule.waitForIdle()
 
-        // 240dp of host above the keyboard: 60 percent is 144dp, and the keyboard does not overlap it.
-        assertEquals(144f, deck().getUnclippedBoundsInRoot().height.value, 1f)
+        // 240dp of host above the keyboard, less the 8dp bottom inset (v2.8.1): 60 percent of 232dp is 139dp.
+        assertEquals(139f, deck().getUnclippedBoundsInRoot().height.value, 1f)
     }
 
     @Test

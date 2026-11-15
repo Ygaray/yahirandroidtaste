@@ -14,7 +14,10 @@ this file says how anything in the hub should look and behave. Paths are under
   `outlineVariant` for 1dp dividers. **Don't** use `surfaceVariant`. (`component/OutcomeSheetReceipt.kt`
   `ReceiptHandledByPill`)
 - **Do** keep `primary` rare: the Success badge, a status dot, the one Filled action. **Don't** color text
-  with it. One visual anchor per sheet; the pill is always tertiary.
+  with it. One visual anchor per sheet; the pill is always tertiary. Exception: `ApproachLadderCard`'s
+  optional title is `primary` text, as in the M render Yahir picked (v2.8.1, J8).
+- **Exception, the feedback deck:** its cards are `inverseSurface`, not `surfaceContainerHighest`, so they
+  stand out from the app background (v2.8.1, pick A; §5).
 - **Do** take tones from `ToneDefaults` / `ToneColors` (`theme/ToneTokens.kt`). Red is only for errors
   (`errorContainer` + `error`). Warn (`tertiaryContainer`) is only for policy or tier notes. An app
   passes its own warn hue through `OutcomeSheetColors`; the hub's tokens never change for one app.
@@ -29,6 +32,8 @@ this file says how anything in the hub should look and behave. Paths are under
 - **Do** use the 4dp grid and the `Dimens` tokens (`theme/Dimens.kt`): 16dp side inset everywhere
   (`HorizontalPadding`), 12dp row padding (`ReceiptRow.VerticalPadding`), 48dp touch targets. Only
   1dp dividers and 6dp dots or bars are off-grid.
+  - Exception: the feedback deck (`FeedbackStackHost`) sits 24dp in from each side and 8dp above its
+    bottom edge (v2.8.1, Yahir's pick J), so a host adds no side padding around it.
 - **Do** use 24dp top corners on Receipt sheets (`Dimens.OutcomeReceipt.CornerRadius`), not M3's 28.
   Cards use 16dp, fields 12dp; chips, pills and buttons are fully round.
 - **Do** give every demo and sheet body the 16dp inset, and keep content clear of the nav bar. **Don't**
@@ -84,8 +89,9 @@ this file says how anything in the hub should look and behave. Paths are under
   Undo, the sheet's Tonal "Undo all (N)"). The Undo Center holds the rest.
 - Snackbars: one `FeedbackEvent` per change, and `emitTrackedWithUndo` for undo, so the snackbar and
   the Undo Center share one guard (`feedback/UndoTracking.kt`).
-- **Do** draw a deck snackbar as a Receipt card: `surfaceContainerHighest`, 16dp corners, a tone dot, the
-  message and an optional second line. Undo is a `primary` text action. A trailing chevron shows only when
+- **Do** draw a deck snackbar as a Receipt card: `inverseSurface` with `inverseOnSurface` text (v2.8.1,
+  pick A), 16dp corners, a tone dot, the message and an optional second line, in a deck drawn as one
+  92% layer, 24dp in from each side. Undo is an `inversePrimary` text action. A trailing chevron shows only when
   the event has a target, and there is **no** action label: a body tap opens, and the chevron is the only
   hint (`feedback/FeedbackCard.kt`).
 - **Do** let a horizontal swipe dismiss one card. **Don't** let a swipe undo or open: the only thing it
@@ -95,6 +101,31 @@ this file says how anything in the hub should look and behave. Paths are under
 - **Do** show at most 3 cards, cascading, with older ones tucked behind the newest. A fourth arrival
   dismisses the oldest early. Tapping a peek strip fans the deck, and it re-collapses after 4 s idle
   (`feedback/FeedbackStackHost.kt`, `feedback/FeedbackStackState.kt`).
+
+- **Yahir's ruling, 2026-11-13 (CalTracker U2 Gate-2, D-1683, Q-430), applies to the v2.8.1 deck:**
+  (1) a deck card must stand out from the app background; `surfaceContainerHighest` reads too close to
+  CalTracker's background. (2) Cards are somewhat translucent, and text stays readable over busy content
+  in light and dark. (3) The deck has side margins and is never edge to edge. This overrides the
+  `surfaceContainerHighest` line above for the deck card once v2.8.1 lands; options:
+  `docs/design/feedback-deck-v2.8.1/index.html`.
+- **Yahir's picks, 2026-11-14 (T-3109, on the D-1684 options doc, D-1683, Q-430): A F J M.** Newer than the
+  ruling above and outranks it where they differ. These are the v2.8.1 defaults for every consumer:
+  - **Deck card colour A (inverse):** `inverseSurface` fill, `inverseOnSurface` text, `inversePrimary` dot and
+    Undo.
+  - **See-through F (92% group opacity).** This goes against the recommended E (96%). He accepted that CT's macro
+    bars ghost through the card at 92% in exchange for translucency you can see, which fits his U2 ask.
+  - **Side margin J (24dp each side).** This goes against the recommended I (16dp).
+  - **Settings card title M (a header above the card)** for `ApproachLadderCard`'s optional title. This goes
+    against the recommended L (a title inside the card).
+  - He gave no reasons. The picks are recorded as against the recommendation (A E I L). The options he turned
+    down are in `STYLE.REVERTED.md` (2026-11-14). Doc: `docs/design/feedback-deck-v2.8.1/review.md`.
+- **Yahir's pick, 2026-11-14 (T-3163, via the director): Undo stays a, today's `inversePrimary`.** This is
+  picked over d (a darker teal, `#00626F`, 4.54:1) and b (`inverseOnSurface`, 8.18:1). In dark theme at
+  the 92% deck opacity, a measures 4.21:1 at worst (over saturated cyan). He called it a non-issue that
+  needed no fix. Options page: `docs/design/feedback-deck-v2.8.1/undo.md`.
+- **STANDING RULE (Yahir, T-3163): a small contrast miss on an accent label is a non-issue.** An accent
+  label (Undo, a dot, a link-coloured action) that lands just under 4.5:1 is not escalated and not fixed.
+  At most, it gets one line in the packet. Body text keeps the real 4.5:1 bar, which is still a gate.
 
 ## 6. States and motion
 
@@ -130,5 +161,8 @@ this file says how anything in the hub should look and behave. Paths are under
     heading navigation, the stop count of an openable Undo Center row, and explicit swipe focus on the
     refusal message. They are listed in the v2.8.0 proposal.
 - **Default calls stay pixel-identical:** a new look is an opt-in param or style (`OutcomeSheetStyle`),
-  never a change to an existing default.
+  never a change to an existing default. Exception: v2.8.1 changed the feedback deck's default look
+  (picks A, F and J), because Yahir asked for it for every app (J4).
+- **Contrast:** body text must be at least 4.5:1 over the worst backdrop it can sit on. An accent label just
+  under 4.5:1 gets one line in the packet at most; don't escalate or fix it (§5, T-3163).
 - **Mockups first:** two or three options on a tailnet page, then build only the one Yahir picks.

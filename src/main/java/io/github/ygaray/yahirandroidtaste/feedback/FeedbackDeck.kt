@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -22,7 +23,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
@@ -70,8 +73,18 @@ private const val FAN_SETTLE_TIMEOUT_MILLIS = 2_000L
  * one width, the smaller of the incoming width and [FEEDBACK_DECK_MAX_WIDTH], centered. No items lay
  * out as 0 by 0.
  *
+ * Since v2.8.1 (Yahir's picks F and J, T-3109) the deck draws as one offscreen layer at
+ * [FEEDBACK_DECK_ALPHA] (0.92), so the app shows faintly through the cards while, at rest, the back cards
+ * never show through the front card, and a non-empty deck sits [FEEDBACK_DECK_SIDE_INSET] (24dp) in from each side
+ * and [FEEDBACK_DECK_BOTTOM_INSET] (8dp) above its bottom edge. The insets are inside the layer, so all
+ * the maths above (the 560dp width, the card clamp, the fan cap) works on the inset space. An empty
+ * deck takes no inset.
+ *
  * The host adds no window-inset padding of its own: a Scaffold snackbar slot is already lifted above
  * the system bars, and the keyboard only lowers the cap.
+ *
+ * Not intrinsic-safe (WR-01): `BoxWithConstraints` cannot answer intrinsic measurements, so a caller
+ * must not measure the deck with `IntrinsicSize`. A measure-time fix is planned for v2.8.2.
  *
  * Composition and the semantics tree stay newest first: every slot carries a `traversalIndex` equal
  * to its list index, because the draw order (zIndex) would otherwise reverse the reading order. No
@@ -111,8 +124,22 @@ internal fun FeedbackDeck(
         fan = fan,
         scroll = scroll
     )
+    // v2.8.1 (picks F and J): the whole deck is one offscreen layer at FEEDBACK_DECK_ALPHA, full width
+    // so a swiped card is clipped only at the window edge, with the insets inside it. An empty deck
+    // takes no inset, so it still lays out as 0 by 0.
+    val inset = if (items.isEmpty()) {
+        Modifier
+    } else {
+        Modifier.padding(
+            start = FEEDBACK_DECK_SIDE_INSET,
+            end = FEEDBACK_DECK_SIDE_INSET,
+            bottom = FEEDBACK_DECK_BOTTOM_INSET
+        )
+    }
     BoxWithConstraints(
         modifier = modifier
+            .graphicsLayer(alpha = FEEDBACK_DECK_ALPHA, compositingStrategy = CompositingStrategy.Offscreen)
+            .then(inset)
             .testTag(FEEDBACK_STACK_DECK_TEST_TAG)
             .semantics { isTraversalGroup = true }
             .onGloballyPositioned { coordinates ->

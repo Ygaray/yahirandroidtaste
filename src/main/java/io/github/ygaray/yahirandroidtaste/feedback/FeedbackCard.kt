@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
@@ -67,9 +69,10 @@ import kotlinx.coroutines.flow.first
 internal const val FEEDBACK_STACK_DOT_TEST_TAG = "feedback_stack_dot"
 
 /**
- * One Receipt-style card of the feedback deck (D-01): a `surfaceContainerHighest` surface with
- * 16dp corners and a level-2 shadow, an 8dp tone dot, the message, an optional second line, Undo
- * for a `WithUndo` event and a decorative chevron on a card that can still open its target.
+ * One Receipt-style card of the feedback deck (D-01): an `inverseSurface` surface (v2.8.1, see
+ * [feedbackCardColors]) with 16dp corners and a level-2 shadow, an 8dp tone dot, the message, an
+ * optional second line, Undo for a `WithUndo` event and a decorative chevron on a card that can still
+ * open its target.
  *
  * Gestures follow the MicButton split. One `detectTapGestures` owner handles the pointer path and
  * there is no `clickable` modifier: a tap on a card at the back of a collapsed deck ([collapsedBack])
@@ -258,6 +261,7 @@ internal fun FeedbackCard(
             ),
         propagateMinConstraints = true
     ) {
+        val colors = feedbackCardColors(MaterialTheme.colorScheme)
         Surface(
             modifier = Modifier.graphicsLayer {
                 // The one offset read: guarded, and inside the draw-phase lambda, so it never throws
@@ -267,7 +271,8 @@ internal fun FeedbackCard(
                 alpha = feedbackSwipeAlpha(offset, size.width)
             },
             shape = RoundedCornerShape(Dimens.CornerRadius.Card),
-            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+            color = colors.container,
+            contentColor = colors.content,
             shadowElevation = Dimens.Elevation.Level2
         ) {
             // propagateMinConstraints keeps the row at the card width and the Surface at its measured
@@ -278,6 +283,7 @@ internal fun FeedbackCard(
                 val scrollable = constraints.hasBoundedHeight && !collapsedBack
                 FeedbackCardRow(
                     item = item,
+                    colors = colors,
                     undoLabel = undoLabel,
                     showUndo = item.hasUndo && !spent,
                     showChevron = openable,
@@ -346,6 +352,7 @@ private val SlotGap = 12.dp
 @Composable
 private fun FeedbackCardRow(
     item: FeedbackStackItem,
+    colors: FeedbackCardColors,
     undoLabel: String,
     showUndo: Boolean,
     showChevron: Boolean,
@@ -354,11 +361,7 @@ private fun FeedbackCardRow(
     modifier: Modifier
 ) {
     // The dot mirrors interactivity: a spent card keeps its target but cannot open, so it goes quiet.
-    val dotColor = if (openable) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
+    val dotColor = if (openable) colors.accent else colors.supporting
     Layout(
         content = {
             Box(
@@ -375,14 +378,14 @@ private fun FeedbackCardRow(
                 Text(
                     text = item.message,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = colors.content,
                     modifier = Modifier.semantics { hideFromAccessibility() }
                 )
                 item.supportingText?.let { supporting ->
                     Text(
                         text = supporting,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = colors.supporting,
                         modifier = Modifier.semantics { hideFromAccessibility() }
                     )
                 }
@@ -393,6 +396,7 @@ private fun FeedbackCardRow(
                         label = undoLabel,
                         role = ActionButtonDefaults.ActionButtonRole.Neutral,
                         onClick = onUndo,
+                        contentColor = colors.accent,
                         // Same node as the button (one layout node, one semantics config), so it
                         // adds no focus stop: the caller's label is its name even when the drawn
                         // text is clipped away in a collapsed deck (Gate-1 C-5). The name is the only
@@ -420,7 +424,7 @@ private fun FeedbackCardRow(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = colors.supporting,
                     modifier = Modifier
                         .size(Dimens.ReceiptRow.ChevronSize)
                         .testTag(FEEDBACK_STACK_CHEVRON_TEST_TAG)
@@ -480,3 +484,26 @@ private fun FeedbackCardRow(
         }
     }
 }
+
+/**
+ * The colours a deck card draws with, read from one [ColorScheme] (v2.8.1, Yahir's pick A, T-3109):
+ * the inverse roles, so a card stands out from the app background in light and dark. [supporting] is
+ * the second line, the chevron and a quiet dot; [accent] is an openable dot and the Undo label. The
+ * card, its pixel probe and the plain-JVM contrast test all read this one mapping.
+ */
+internal data class FeedbackCardColors(
+    val container: Color,
+    val content: Color,
+    val supporting: Color,
+    val accent: Color
+)
+
+internal fun feedbackCardColors(scheme: ColorScheme): FeedbackCardColors = FeedbackCardColors(
+    container = scheme.inverseSurface,
+    content = scheme.inverseOnSurface,
+    supporting = scheme.inverseOnSurface.copy(alpha = FEEDBACK_CARD_SUPPORTING_ALPHA),
+    accent = scheme.inversePrimary
+)
+
+/** Alpha of the second line, the chevron and a quiet dot over the inverse card. */
+private const val FEEDBACK_CARD_SUPPORTING_ALPHA = 0.78f

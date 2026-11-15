@@ -57,7 +57,11 @@ internal const val FEEDBACK_STACK_CHEVRON_TEST_TAG = "feedback_stack_chevron"
  * collapsed or fanned.
  *
  * **Placement.** The host adds no window-inset padding of its own, so an M3 Scaffold snackbar slot or
- * an overlay `Box` places it. [modifier] applies to the deck container holding the cards.
+ * an overlay `Box` places it. [modifier] applies to the deck container holding the cards. Since v2.8.1
+ * a non-empty deck brings its own 24dp side and 8dp bottom insets and draws as one layer at 92%
+ * opacity with inverse-coloured cards (Yahir's picks A, F and J), so the caller adds no side padding.
+ * An empty deck still takes no space. The deck measures with `BoxWithConstraints`, so it is not
+ * intrinsic-safe: don't measure it with `IntrinsicSize` (WR-01).
  *
  * Push events with `state.show(event)` or `state.emitTrackedWithUndo(store, event)`.
  *
